@@ -1,3 +1,4 @@
+import { requirementText } from "../domain/requirementContent";
 import HealthInformationHelp from "../components/health/HealthInformationHelp";
 import { getHealthDetailSurface, getHealthDetailSurfaceName, surfaceSemanticValues } from '../config/fields/storedSurfaces';
 import { createAnswerFields } from "../config/fields/healthSiFields";
@@ -19,11 +20,11 @@ function renderDetailsItem(item: Record<string, string>) {
     <Stack spacing={0.25}>
       {item.onset && (
         <span style={{ fontSize: "0.75rem", color: "#49596f" }}>
-          Onset: {item.onset}
+          {requirementText("application.ui.onset")}{item.onset}
         </span>
       )}
       <span style={{ fontSize: "0.875rem", wordBreak: "break-word" }}>
-        {item.conditionsDetails || "No details provided"}
+        {item.conditionsDetails || requirementText("application.ui.no-details-provided")}
       </span>
     </Stack>
   );

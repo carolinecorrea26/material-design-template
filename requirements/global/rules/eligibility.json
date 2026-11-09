@@ -33,7 +33,7 @@
         "last-name",
         "birth-date"
       ],
-      "statement": "After the page validates, sites with TPA integration look up the applicant. An existing member with active coverage must pass identity verification (collecting an address first when the TPA requires it) before the page continues; the lookup outcome and submission decision are saved with the application.",
+      "statement": "After the page validates, sites with TPA integration look up the applicant. In the coverage-verification flow, an existing member with active coverage is prompted for identity verification, collecting an address first when configured. Successful verification enables portfolio access; failed or skipped verification continues as manual review without the portfolio, as recorded in coverage-tpa-portfolio-access. The lookup outcome and submission decision are saved with the application.",
       "source": "src/pages/Eligibility.tsx; src/domain/tpaIntegration.ts"
     },
     {

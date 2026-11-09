@@ -1,0 +1,14 @@
+{
+  "coverage-amount-order": "coverages.amountSelection.order",
+  "coverage-amount-default-mode": "coverages.amountSelection.defaultMode",
+  "coverage-amount-default-value": "coverages.amountSelection.defaultValue",
+  "coverage-amount-locked": "coverages.amountSelection.locked",
+  "estimated-rate-frequency": "coverages.estimatedRateDisplay.defaultFrequency",
+  "estimated-rate-frequency-toggle": "coverages.estimatedRateDisplay.showFrequencyToggle",
+  "coverage-increase-note": "coverages.additionalCoverageWarning",
+  "home-variant": "features.homePageVariant",
+  "applying-steps-presentation": "features.applyingStepsPresentation",
+  "signature-confirmation-retention-days": "confirmation.signatureRetentionDays",
+  "contact-hide-business-address": "applicantExperience.contact.hideBusinessAddress",
+  "contact-hide-correspondence": "applicantExperience.contact.hideCorrespondence"
+}

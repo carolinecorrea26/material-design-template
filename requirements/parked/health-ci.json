@@ -1,6 +1,31 @@
 {
   "page": "health-ci",
   "components": [
-    { "type": "health-ci" }
-  ]
+    {
+      "type": "health-ci"
+    }
+  ],
+  "definition": {
+    "id": "health-ci",
+    "path": "/health-ci",
+    "type": "form",
+    "groupId": "health",
+    "flow": "application",
+    "healthGate": true,
+    "displayName": "Health CI"
+  },
+  "position": 12,
+  "fieldBindings": [],
+  "looseFields": [],
+  "layout": {
+    "sections": {}
+  },
+  "content": {
+    "wording": [
+      "page.health-ci.title",
+      "page.health-ci.subhead",
+      "page.health-ci.nav-title"
+    ],
+    "runtime": []
+  }
 }

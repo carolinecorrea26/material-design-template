@@ -1,10 +1,26 @@
 {
   "components": [
-    { "id": "quote-calculator" },
-    { "id": "app-header" },
-    { "id": "app-menu" },
-    { "id": "needs-calculator" },
-    { "id": "member-verification" },
-    { "id": "form-route-page" }
+    {
+      "id": "quote-calculator"
+    },
+    {
+      "id": "app-header"
+    },
+    {
+      "id": "app-menu"
+    },
+    {
+      "id": "needs-calculator"
+    },
+    {
+      "id": "member-verification"
+    },
+    {
+      "id": "form-route-page"
+    },
+    {
+      "id": "verification-address",
+      "name": "Verification address"
+    }
   ]
 }

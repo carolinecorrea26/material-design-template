@@ -13,7 +13,10 @@ const meta = {
 export default meta;
 
 export const Interactive: StoryObj = { render: (_args, context) => <CoveragePageExample key={context.id} catalog={context.loaded.catalog as SharedCatalog} scenario={coveragePageScenarios.interactive}><Coverage /></CoveragePageExample> };
+export const CampaignAmountControls: StoryObj = { render: (_args, context) => <CoveragePageExample key={context.id} catalog={context.loaded.catalog as SharedCatalog} scenario={coveragePageScenarios.campaignAmounts}><Coverage /></CoveragePageExample> };
 export const EntryLinkWithoutProducts: StoryObj = { render: (_args, context) => <CoveragePageExample key={context.id} catalog={context.loaded.catalog as SharedCatalog} scenario={coveragePageScenarios.emptyEntry}><Coverage /></CoveragePageExample> };
 export const EntryLinkWithUnavailableSelections: StoryObj = { render: (_args, context) => <CoveragePageExample key={context.id} catalog={context.loaded.catalog as SharedCatalog} scenario={coveragePageScenarios.restrictedEntry}><Coverage /></CoveragePageExample> };
 export const DependentOnlyConfirmation: StoryObj = { render: (_args, context) => <CoveragePageExample key={context.id} catalog={context.loaded.catalog as SharedCatalog} scenario={coveragePageScenarios.dependentOnly}><Coverage /></CoveragePageExample> };
 export const ReferenceRateTable: StoryObj = { render: (_args, context) => <CoveragePageExample key={context.id} catalog={context.loaded.catalog as SharedCatalog} scenario={coveragePageScenarios.referenceRates}><Coverage /></CoveragePageExample> };
+
+export const VerifiedExistingMember: StoryObj = { name: 'Verified existing member with existing coverage', render: (_args, context) => <CoveragePageExample key={context.id} catalog={context.loaded.catalog as SharedCatalog} scenario={coveragePageScenarios.verifiedExistingMember}><Coverage /></CoveragePageExample> };

@@ -228,6 +228,9 @@ function getDefaultValueForField(field: {
   id: string;
   inputType?: string;
   options?: Array<{ value: string }>;
+  format?: string;
+  minLength?: number;
+  maxLength?: number;
 }): string | string[] | boolean | number {
   const { id: fieldId, inputType, options } = field;
 
@@ -293,6 +296,9 @@ function getDefaultValueForField(field: {
     if (fieldId === "physician-last-name") return "Doe";
     return "Smith";
   }
+
+  // Respect effective digits-only text requirements, including identifier leading zeroes.
+  if (field.format === 'digits') return '1'.repeat(field.minLength ?? 6).slice(0, field.maxLength);
 
   // Email
   if (fieldId === "email" || fieldId === "spouse-email") {

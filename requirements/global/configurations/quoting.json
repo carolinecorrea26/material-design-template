@@ -5,7 +5,10 @@
       "name": "Default estimated rate frequency",
       "status": "draft",
       "type": "enum",
-      "options": ["monthly", "annual"],
+      "options": [
+        "monthly",
+        "annual"
+      ],
       "default": "monthly",
       "source": "src/app/workflows/QuoteCalculator.tsx"
     },
@@ -16,6 +19,18 @@
       "type": "boolean",
       "default": false,
       "source": "src/app/workflows/QuoteCalculator.tsx"
+    },
+    {
+      "id": "coverage-increase-note",
+      "name": "Coverage increase wording",
+      "status": "draft",
+      "type": "enum",
+      "default": "applyForAdditional",
+      "options": [
+        "applyForAdditional",
+        "applyForTotal"
+      ],
+      "source": "Existing Coverage presentation; behavior unchanged pending increase rule review"
     }
   ]
 }

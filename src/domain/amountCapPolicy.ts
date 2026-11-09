@@ -13,7 +13,7 @@ const nonnegative = (value: number) => Number.isFinite(value) && value >= 0;
 
 /** Optional, explicitly assigned age caps. Base choices remain in amount rules;
  * absence preserves older captured revisions. No cap numbers live in this code. */
-export function resolveNormalizedAmountCap(site: CapSite, productKey: string, applicantKey: string, ageYears?: number): CapDecision {
+function resolveBaseAmountCap(site: CapSite, productKey: string, applicantKey: string, ageYears?: number): CapDecision {
   const product = site.configuration.products.find(product => product.productKey === productKey);
   const provenance: RuleProvenance[] = [];
   const fail = (reason: string): CapDecision => ({ status: "unresolved", reason, provenance });
@@ -53,4 +53,15 @@ export function resolveNormalizedAmountCap(site: CapSite, productKey: string, ap
   const cap = limit.caps.find(({ value }) => ageYears >= (value.minimumAgeYears ?? 0) && ageYears <= (value.maximumAgeYears ?? Infinity));
   const maxima = [limit.value.maximum, cap?.value.maximum].filter((value): value is number => value !== null && value !== undefined);
   return { status: "resolved", ...(maxima.length ? { maximum: Math.min(...maxima) } : {}), provenance };
+}
+
+/** Reviewed fresh-start caps and base policies are resolved at one shared boundary. */
+export function resolveNormalizedAmountCap(site: CapSite, productKey: string, applicantKey: string, ageYears?: number): CapDecision {
+  const base = resolveBaseAmountCap(site, productKey, applicantKey, ageYears);
+  if (base.status !== "resolved") return base;
+  const rows = site.configuration.coverageRequirements?.filter(row => row.product === productKey && row.applicants.includes(applicantKey as "member" | "spouse" | "child") && row.configuration === "coverage-age-maximum-amount") ?? [];
+  if (!rows.length) return base;
+  if (ageYears === undefined || !Number.isInteger(ageYears) || ageYears < 0) return { ...base, status: "needs-information", reason: "Complete applicant age to determine available coverage amounts." };
+  const maximum = rows.find(row => ageYears >= row.minimumAgeYears! && ageYears <= row.maximumAgeYears!)?.value;
+  return typeof maximum === "number" ? { ...base, maximum: Math.min(base.maximum ?? Infinity, maximum) } : base;
 }

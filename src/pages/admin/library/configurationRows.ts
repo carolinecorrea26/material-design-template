@@ -1,12 +1,17 @@
+import { withFreshStartCatalog } from "../../../domain/freshStartCatalog";
 import type { LibraryCatalog } from '../../../services/libraryCatalogService';
 import { resolveEffectiveSite } from '../../../domain/effectiveSite';
 import { configurationOwner, configurationPath, flagOwner, primaryConfigurationDefinitions, type LibraryOwner } from '../../../domain/libraryOwnership';
 import { humanize, readableValue } from './libraryRecordColumns';
 import { isPageParticipationPath } from '../../../domain/pageParticipation';
+import { coverageConfigurationDefinitions } from '../../../domain/requirementCoveragePolicy';
+import amountControls from '../../../../requirements/global/configurations/coverage-amount-controls.json';
+import productPresentation from '../../../../requirements/global/configurations/product-presentation.json';
 
 export type ConfigurationInspectionRow = { key: string; name: string; description: string; group: string; values: string; options: string; scope: string; usedIn: string; source: string; owner: LibraryOwner; referenceKey: string };
 
 export function configurationRows(catalog: LibraryCatalog, siteKey: string): ConfigurationInspectionRow[] {
+  catalog = { ...catalog, data: withFreshStartCatalog(catalog.data, siteKey === "all" ? undefined : siteKey) };
   const { data } = catalog;
   const site = data.sites.find(row => row.key === siteKey);
   if (siteKey !== 'all' && !site) return [];
@@ -41,5 +46,38 @@ export function configurationRows(catalog: LibraryCatalog, siteKey: string): Con
     const assignments = data.flagAssignments.filter(row => row.flagKey === flag.key && (!site || (!row.siteKey || row.siteKey === siteKey) && (!row.clientKey || row.clientKey === resolved?.clientKey)));
     rows.push({ key: flag.key, name: flag.name, description: flag.description, group: 'Site switches', values: assignments.length ? readableValue(assignments.map(row => ({ scope: row.siteKey ?? row.clientKey ?? 'Global', value: row.value }))) : 'Not configured', options: readableValue(flag.allowedValues ?? (flag.valueType === 'boolean' ? [true, false] : null)), scope: flag.level, usedIn: 'Applicant portal', source: flag.sourceReference ?? 'Source not recorded', owner: 'configurations', referenceKey: flag.key });
   }
+  for (const current of (site ? [site] : data.sites)) for (const assignment of (site ? resolved! : resolveEffectiveSite(data, current.key)).configuration.coverageRequirements) {
+    const offered = (site ? resolved! : resolveEffectiveSite(data, current.key)).products.some(product => product.productKey === assignment.product);
+    if (!offered) continue;
+    const definition = coverageConfigurationDefinitions.find(row => row.id === assignment.configuration)!;
+    const band = assignment.minimumAgeYears === undefined ? '' : ` · ages ${assignment.minimumAgeYears}–${assignment.maximumAgeYears}`;
+    rows.push({ key: `requirements:${current.key}:${assignment.configuration}:${assignment.product}:${assignment.applicants.join('-')}${band}`,
+      name: definition.name, description: `${assignment.product} · ${assignment.applicants.join(', ')}${band}`,
+      group: 'Coverage requirements', values: readableValue(assignment.value), options: 'options' in definition ? readableValue(definition.options) : definition.type,
+      scope: current.key, usedIn: 'Coverage · Library · prototype · Storybook', source: `requirements/parked/sites/${current.key}/coverage.json\n${assignment.source}`,
+      owner: 'configurations', referenceKey: assignment.configuration });
+  }
+  // These are global template definitions. Their availability must not depend
+  // on whether the selected effective Site has reviewed policy assignments.
+  for (const definition of amountControls.configurations) rows.push({
+      key: `requirements:${definition.id}`, referenceKey: definition.id, name: definition.name,
+      description: 'Global template configuration; runtime supported. Effective Sites inherit the definition and may supply values or product/applicant overrides.',
+      group: 'Coverage amount controls',
+      values: definition.id === 'coverage-amount-default-value' ? 'No specific amount assigned' : `Declared default: ${readableValue(definition.default)}`,
+      options: 'options' in definition ? readableValue(definition.options) : definition.type,
+      scope: 'Global template',
+      usedIn: 'Coverage · prototype · Storybook', owner: 'configurations',
+      source: `requirements/global/configurations/coverage-amount-controls.json\n${definition.source}`,
+  });
+  for (const definition of productPresentation.configurations) rows.push({
+      key: `requirements:${definition.id}`, referenceKey: definition.id, name: definition.name,
+      description: 'Global template presentation configuration. Effective Sites supply ordering values; featured_prod takes precedence across category/product displays.',
+      group: 'Category and product presentation',
+      values: `Declared default: ${readableValue(definition.default)}`,
+      options: `Ordered ${definition.format} list`, scope: 'Global template',
+      usedIn: 'Home · quote tools · About Coverage panels/drawers · application menu · Coverage · other category/product lists',
+      source: `requirements/global/configurations/product-presentation.json\n${definition.source}`,
+      owner: 'configurations',
+  });
   return rows;
 }

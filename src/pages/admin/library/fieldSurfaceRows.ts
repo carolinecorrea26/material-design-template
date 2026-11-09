@@ -1,3 +1,4 @@
+import { withFreshStartCatalog } from "../../../domain/freshStartCatalog";
 import { getPhoneTypeFieldId } from "../../../domain/phoneFields";
 import { resolveMappedFields, siteUsesRequirementFields } from "../../../domain/requirementFields";
 import type { LibraryCatalog } from "../../../services/libraryCatalogService";
@@ -15,6 +16,7 @@ export type FieldSurfaceRow = { position?: number; key: string; field: FieldDefi
 
 /** Saved page definitions remain authoritative; inspection metadata identifies shared tool surfaces. */
 export function fieldSurfaceRows(catalog: LibraryCatalog, siteKey: string): FieldSurfaceRow[] {
+  catalog = { ...catalog, data: withFreshStartCatalog(catalog.data, siteKey === "all" ? undefined : siteKey) };
   const fields = storedFieldRows(catalog, siteKey);
   const inlineKeys = (page: string) => catalog.data.pages.find(row => row.key === page)?.definition.inlineFieldKeys;
   const pageName = (page: string) => catalog.data.pages.find(row => row.key === page)?.definition.displayName ?? page;
@@ -104,7 +106,16 @@ export function fieldSurfaceRows(catalog: LibraryCatalog, siteKey: string): Fiel
     if (!row.pages.length || row.field.format !== "phone" || row.field.showPhoneTypeSelector === false) continue;
     const id = getPhoneTypeFieldId(row.field);
     if (rows.some(existing => existing.field.id === id && existing.surface === row.surface)) continue;
-    const field = catalog.data.fields.find(field => field.key === id)?.definition ?? supplementalRows.find(candidate => candidate.field.id === id)?.field;
+    const companion = rows.find(existing => existing.field.id === id && existing.pages.some(page => row.pages.includes(page)) && existing.surface === `${pageName(existing.pages[0])} page`);
+    if (companion) {
+      companion.surface = row.surface;
+      companion.position = (row.position ?? 0) + 0.5;
+      companion.order = row.order === null ? null : row.order + 0.5;
+      continue;
+    }
+    const savedField = catalog.data.fields.find(field => field.key === id)?.definition ?? supplementalRows.find(candidate => candidate.field.id === id)?.field;
+    if (!savedField) continue;
+    const field = savedField;
     if (!field) continue;
     rows.push({ position: (row.position ?? 0) + 0.5, key: `${row.key}:${id}`, field, definitionKey: id, surface: row.surface, pages: row.pages, order: row.order === null ? null : row.order + 0.5 });
   }

@@ -97,5 +97,7 @@ it("shows the source NY replacement notice only for each active adult's Yes answ
   const copy = structuredClone(db);
   (copy.configurationValues.find(row => row.key === "global:shared.profile.lifeReplacementNotice")!.value as { text: string }).text = "Captured replacement wording";
   installPrototypeLibrary(resolvePrototypeLibrary(copy, "asce", "edited-notice"));
-  await render("edited"); expect(container.textContent).toContain("Captured replacement wording");
+  await render("edited");
+  expect(container.textContent).toContain(text);
+  expect(container.textContent).not.toContain("Captured replacement wording");
 });

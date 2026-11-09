@@ -1,4 +1,4 @@
-import { requirementAnswerKey, resolveMappedFields, siteUsesRequirementFields } from "./requirementFields";
+import { requirementAnswerKey, siteUsesRequirementFields } from "./requirementFields";
 import { resolveSharedFieldDefinition } from "./fieldDefinitionOwnership";
 import type { EffectiveSiteData } from './effectiveSite';
 import type { resolveEffectiveSite } from './effectiveSite';
@@ -62,15 +62,6 @@ export function resolveStoredFieldCollections(data: EffectiveSiteData, site: Ret
       if (binding.grid) gridFields.push(field.id);
     }
     if (section.definition.value.collectionName) fields.sort((a, b) => section.fields.findIndex(field => field.value.fieldKey === a.id) - section.fields.findIndex(field => field.value.fieldKey === b.id));
-    if (key === 'children' && siteUsesRequirementFields(site.siteKey)) {
-      fields.splice(0, fields.length, ...resolveMappedFields({ component: 'eligibility' }, { siteId: site.siteKey, person: 'child', page: 'eligibility' }).map(field => ({ ...field, id: requirementAnswerKey(field.id, 'child') })));
-      for (const id of Object.keys(fieldToKey)) delete fieldToKey[id];
-      gridFields.splice(0, gridFields.length);
-      for (const field of fields) {
-        fieldToKey[field.id] = field.id;
-        if (field.id === 'child-first-name' || field.id === 'child-last-name') gridFields.push(field.id);
-      }
-    }
     result[key] = { name: definition.storageName, label: definition.label, maxItems: definition.maxItems, pageKey: definition.pageKey, sectionId: definition.sectionId, libraryGroup: definition.libraryGroup, mapping: { fields, fieldToKey, gridFields } };
   }
   return result;

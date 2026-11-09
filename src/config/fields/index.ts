@@ -1,3 +1,4 @@
+import { activeFieldDefinitions } from "../../domain/fields";
 import { tobaccoProductOptions } from "./tobaccoProductOptions";
 import type { FieldDefinition, FieldId } from "./types";
 import { waepaQualifications } from "../../domain/membershipQualifications";
@@ -95,7 +96,7 @@ const paymentFrequencyOptions = [
   { value: "monthly", label: "Monthly" },
 ];
 
-export const fieldCatalog: Record<FieldId, FieldDefinition> = {
+export const legacyFieldCatalog: Record<FieldId, FieldDefinition> = {
   "membership-status": { id: "membership-status", label: "Membership status", inputType: "radio", required: true, options: [{ value: "new", label: "New Member" }, { value: "current", label: "Current Member" }] },
   "child-full-time-student": { id: "child-full-time-student", label: "Is the child a full-time student?", inputType: "radio", options: yesNoOptions, required: true },
   membership: {
@@ -1767,3 +1768,24 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     ],
   },
 };
+
+
+/** Installed fresh-start definitions own all live field reads. The code catalog
+ * is retained only for historical extraction and detached legacy examples. */
+export const fieldCatalog = new Proxy(legacyFieldCatalog, {
+  get(target, key, receiver) {
+    const fields = activeFieldDefinitions();
+    if (fields && typeof key === 'string') {
+      const field = fields.get(key);
+      if (field) return field;
+      if (Object.hasOwn(target, key)) throw new Error(`Missing fresh-start field: ${key}`);
+    }
+    return Reflect.get(target, key, receiver);
+  },
+  ownKeys(target) { return activeFieldDefinitions() ? [...activeFieldDefinitions()!.keys()] : Reflect.ownKeys(target); },
+  getOwnPropertyDescriptor(target, key) {
+    const fields = activeFieldDefinitions();
+    if (fields && typeof key === 'string' && fields.has(key)) return { configurable: true, enumerable: true, writable: false, value: fields.get(key) };
+    return Reflect.getOwnPropertyDescriptor(target, key);
+  },
+});

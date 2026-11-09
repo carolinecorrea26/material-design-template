@@ -1,0 +1,52 @@
+{
+  "portfolios": [
+    {
+      "applicant": "self",
+      "label": "coverage.coverage-portfolio-drawer.member",
+      "coverages": [
+        {
+          "name": "Term Life Insurance",
+          "productKey": "li-term",
+          "amount": 250000,
+          "riders": [
+            {
+              "name": "Chronic Illness Rider (CIR)"
+            },
+            {
+              "name": "Accidental Death Rider",
+              "amount": 100000
+            }
+          ]
+        },
+        {
+          "name": "Long Term Disability",
+          "productKey": "di-ltd",
+          "amount": 3500,
+          "frequency": "month"
+        },
+        {
+          "name": "Accidental Death & Dismemberment",
+          "productKey": "li-add",
+          "amount": 100000
+        }
+      ]
+    },
+    {
+      "applicant": "spouse",
+      "label": "coverage.coverage-portfolio-drawer.spouse",
+      "coverages": [
+        {
+          "name": "Term Life Insurance",
+          "productKey": "li-term",
+          "amount": 100000
+        },
+        {
+          "name": "Short Term Disability",
+          "productKey": "di-std",
+          "amount": 2000,
+          "frequency": "month"
+        }
+      ]
+    }
+  ]
+}

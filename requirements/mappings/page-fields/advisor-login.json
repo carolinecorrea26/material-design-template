@@ -1,10 +1,35 @@
 {
   "page": "advisor-login",
   "fields": [
-    {"field":"advisor-flow-type","people":["self"]},
-    {"field":"advisor-email","people":["self"]},
-    {"field":"advisor-phone","people":["self"]},
-    {"field":"advisor-code","people":["self"]},
-    {"field":"applicant-email","people":["self"]}
+    {
+      "field": "advisor-flow-type",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "advisor-email",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "advisor-phone",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "advisor-code",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "applicant-email",
+      "people": [
+        "self"
+      ]
+    }
   ]
 }

@@ -1,12 +1,16 @@
 {
   "component": "quote-calculator",
   "configurations": [
+    "category-order",
+    "product-order",
     "estimated-rate-frequency",
     "estimated-rate-frequency-toggle",
     "eligible-states-only",
     "eligible-states"
   ],
   "rules": [
+    "category-product-presentation-order",
+    "browser-autofill-self-only",
     "quote-entry-location-feedback",
     "coverage-category-availability",
     "coverage-question-participation",

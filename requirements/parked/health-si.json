@@ -1,6 +1,59 @@
 {
   "page": "health-si",
   "components": [
-    { "type": "health-si" }
-  ]
+    {
+      "type": "health-si"
+    }
+  ],
+  "definition": {
+    "id": "health-si",
+    "path": "/health-si",
+    "type": "form",
+    "groupId": "health",
+    "flow": "application",
+    "healthGate": true,
+    "displayName": "Health SI"
+  },
+  "position": 8,
+  "fieldBindings": [
+    "health-si-q1",
+    "health-si-q2",
+    "health-si-q3",
+    "health-si-q4",
+    "health-si-q5",
+    "health-si-q1-spouse",
+    "health-si-q2-spouse",
+    "health-si-q3-spouse",
+    "health-si-q4-spouse",
+    "health-si-q5-spouse",
+    "health-si-detail-onset",
+    "health-si-detail-conditionsDetails",
+    "health-si-detail-physicianAddress"
+  ],
+  "looseFields": [
+    "health-si-q1",
+    "health-si-q2",
+    "health-si-q3",
+    "health-si-q4",
+    "health-si-q5",
+    "health-si-q1-spouse",
+    "health-si-q2-spouse",
+    "health-si-q3-spouse",
+    "health-si-q4-spouse",
+    "health-si-q5-spouse"
+  ],
+  "layout": {
+    "sections": {}
+  },
+  "content": {
+    "wording": [
+      "page.health-si.title",
+      "page.health-si.subhead",
+      "page.health-si.nav-title"
+    ],
+    "runtime": [
+      "application.ui.onset",
+      "application.ui.no-details-provided"
+    ]
+  }
 }

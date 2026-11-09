@@ -1,3 +1,4 @@
+import { requirementText } from "../../domain/requirementContent";
 import type { ReactNode } from "react";
 import { Box, Button, Stack } from "@mui/material";
 
@@ -41,17 +42,17 @@ export default function DynamicListItem({
           <Button
             size="small"
             onClick={onEdit}
-            aria-label={itemLabel ? `Edit ${itemLabel}` : undefined}
+            aria-label={itemLabel ? requirementText("list.edit", { label: itemLabel }) : undefined}
           >
-            Edit
+            {requirementText("list.edit-action")}
           </Button>
           <Button
             size="small"
             onClick={onRemove}
             color="error"
-            aria-label={itemLabel ? `Remove ${itemLabel}` : undefined}
+            aria-label={itemLabel ? requirementText("list.remove-label", { label: itemLabel }) : undefined}
           >
-            Remove
+            {requirementText("list.remove-action")}
           </Button>
         </Stack>
       </Stack>

@@ -2,6 +2,7 @@ import { Alert, Box, Link, Stack, Typography } from "@mui/material";
 import type { ComponentProps } from "react";
 import type { ClientConfig } from "../../config/clients/types";
 import FieldRenderer from "../forms/FieldRenderer";
+import { requirementText } from "../../domain/requirementContent";
 
 type Props = Pick<ComponentProps<typeof FieldRenderer>, "control" | "errors"> & {
   membershipField?: ComponentProps<typeof FieldRenderer>["field"];
@@ -15,6 +16,7 @@ type Props = Pick<ComponentProps<typeof FieldRenderer>, "control" | "errors"> & 
 /** Membership question with the page's existing link, eligibility and non-member feedback. */
 export default function MembershipStatus({ membershipField, client, control, errors,
   associationLinkError, membershipIneligibility, showMembershipIneligibleAlert, onMembershipChange }: Props) {
+  const [beforeWebsite, afterWebsite] = requirementText("membership.not-member.website", { clientPhone: client.support.phoneDisplay ?? client.support.phone ?? "" }).split("{{clientWebsite}}");
   return <>
     {associationLinkError && (
       <Alert severity="error" sx={{ mb: 2 }}>
@@ -40,8 +42,7 @@ export default function MembershipStatus({ membershipField, client, control, err
       <Alert severity="warning" sx={{ mt: 2 }}>
         <Stack spacing={2}>
           <Typography variant="body2">
-            We're sorry, but only members are eligible to apply for this
-            coverage.
+            {requirementText("membership.not-member.message")}
           </Typography>
 
           <Box>
@@ -49,20 +50,17 @@ export default function MembershipStatus({ membershipField, client, control, err
               variant="subtitle2"
               sx={{ fontWeight: 700, mb: 1 }}
             >
-              Not yet a member?
+              {requirementText("membership.not-member.heading")}
             </Typography>
             <Typography variant="body2">
-              You can apply for membership with your association to
-              become eligible for coverage. Contact{" "}
-              {client.branding.name} or visit your association&apos;s
-              website to learn about membership options and how to join.
+              {requirementText("membership.not-member.body", { clientName: client.branding.name })}
             </Typography>
           </Box>
 
           {client.support.website && (
             <Typography variant="body2">
-              For more information, visit{" "}
-              <Link
+              {beforeWebsite}
+              {afterWebsite !== undefined && <Link
                 href={`https://${client.support.website}`}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -71,8 +69,8 @@ export default function MembershipStatus({ membershipField, client, control, err
                 }}
               >
                 {client.support.website}
-              </Link>{" "}
-              or call {client.support.phoneDisplay}.
+              </Link>}
+              {afterWebsite}
             </Typography>
           )}
         </Stack>

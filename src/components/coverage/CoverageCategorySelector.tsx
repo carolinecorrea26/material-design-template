@@ -1,3 +1,4 @@
+import { requirementCoverageControl } from "../../domain/requirementFields";
 import ControlledFieldRenderer from "../forms/ControlledFieldRenderer";
 import { FieldGroup } from "../layout/SectionDivider";
 import type { CoverageCategory, CoverageCategoryId } from "../../config/coverageCategories";
@@ -16,18 +17,17 @@ export default function CoverageCategorySelector({
   categories,
   selectedIds,
   onToggle,
-  legend = "Which coverage are you interested in?",
+  legend,
   error = false,
   errorMessage,
 }: CoverageCategorySelectorProps) {
+  const definition = requirementCoverageControl("coverage-categories");
   return (
     <FieldGroup className="FieldGroup-root">
     <ControlledFieldRenderer
       field={{
-        id: "coverage-categories",
-        label: legend,
-        inputType: "checkbox-group",
-        required: true,
+        ...definition,
+        label: legend ?? definition.label,
         options: categories.map(category => ({ value: category.id, label: category.label })),
       }}
       value={[...selectedIds]}

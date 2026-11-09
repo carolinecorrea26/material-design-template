@@ -1,3 +1,5 @@
+import { coverageLifeMaximumError } from "../domain/coverageSubmitValidation";
+import { requirementText } from "../domain/requirementContent";
 import { getDisplayedPremium } from "../utils/coverageDisplay";
 import { rateDisplayForAmount, type RateDisplayState } from '../domain/rateDisplay';
 import { resolveSiteId } from "../data/activeSite";
@@ -11,6 +13,7 @@ import { changeCoverageAmount, selectedRiderOnly } from "../domain/coverageRider
 import { usePrototypeRates } from "./usePrototypeRates";
 import { initialCoverageCategories } from "../config/client/coverageCategoryScope";
 import { resolveApplicationCoverage, validateApplicationCoverages } from "../domain/coverageRuntime";
+import { requirementCoverageSubmitAlert } from "../domain/requirementCoveragePolicy";
 import type { CoverageDefinition } from "../domain/coverage";
 import { coverageRelationshipErrors } from "../domain/coverageRequirements";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -317,7 +320,7 @@ export function useCoverageState() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Preset benefit amounts for all visible products to the lowest non-zero amount
+  // Seed configured/campaign defaults without turning them into elections.
   useEffect(() => {
     if (!showProducts || categoryProducts.length === 0) return;
 
@@ -328,9 +331,9 @@ export function useCoverageState() {
       const visibleApplicants = getVisibleApplicants(coverage.applicants);
       for (const applicantId of visibleApplicants) {
         const key = `${coverage.id}:${applicantId}`;
-        if (nextAmounts[key] == null) {
-          const choices = generateAmountChoices(coverage, applicantId);
-          const firstNonZero = choices.find((amt) => amt > 0);
+        const control = resolveApplicationCoverage(coverage, applicantId, values, coverages).amountControl;
+        if (nextAmounts[key] == null || control.locked && nextAmounts[key] !== control.defaultAmount) {
+          const firstNonZero = control.defaultAmount;
           if (firstNonZero != null) {
             nextAmounts[key] = firstNonZero;
             hasChanges = true;
@@ -343,7 +346,7 @@ export function useCoverageState() {
       setPageValues({ coverageAmounts: nextAmounts });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showProducts, categoryProducts]);
+  }, [showProducts, categoryProducts, values.coverageEntryScope]);
 
   useEffect(() => {
     const amounts = { ...storedAmounts };
@@ -355,8 +358,8 @@ export function useCoverageState() {
       const key = `${product.id}:${applicant}`;
       // No available choices can be a temporary conflict or missing information.
       // Preserve the saved amount until a valid replacement is actually known.
-      if (result.amounts.length > 0 && amounts[key] !== 0 && !result.amounts.includes(amounts[key])) {
-        const next = result.amounts[0];
+      if (result.amountControl.defaultAmount !== undefined && (result.amountControl.locked && amounts[key] !== result.amountControl.defaultAmount || amounts[key] !== 0 && !result.amounts.includes(amounts[key]))) {
+        const next = result.amountControl.defaultAmount;
         if (amounts[key] !== next) { amounts[key] = next; changed = true; }
       }
       for (const [target, constraint] of [[waiting, result.waitingPeriod], [benefits, result.benefitPeriod]] as const) {
@@ -456,8 +459,7 @@ export function useCoverageState() {
       if (coverage) {
         const key = `${coverageId}:${applicant}`;
         if (nextAmounts[key] == null || nextAmounts[key] === 0 && !selectedRiderOnly(coverage, applicant, values)) {
-          const choices = generateAmountChoices(coverage, applicant);
-          const firstNonZero = choices.find((amt) => amt > 0);
+          const firstNonZero = resolveApplicationCoverage(coverage, applicant, values, coverages).amountControl.defaultAmount;
           if (firstNonZero != null) {
             nextAmounts[key] = firstNonZero;
           }
@@ -500,6 +502,7 @@ export function useCoverageState() {
     const [productId, applicant] = key.split(":");
     const product = coverages.find(product => product.id === productId);
     if (!product || !generateAmountChoices(product, applicant as CoverageApplicantId).includes(amount)) return;
+    if (resolveApplicationCoverage(product, applicant as CoverageApplicantId, values, coverages).amountControl.locked) return;
     beginRateCalculation(key);
     setPageValues(changeCoverageAmount(product, applicant as CoverageApplicantId, values, amount, riderOnlyId));
   }
@@ -642,7 +645,7 @@ export function useCoverageState() {
       : [];
 
     if (nextSelectedCoverageIds.length === 0) {
-      return "Please select at least one coverage to continue.";
+      return requirementText("coverage.error.select-product");
     }
 
     const nextProductApplicants =
@@ -658,7 +661,7 @@ export function useCoverageState() {
     for (const coverageId of nextSelectedCoverageIds) {
       const applicants = nextProductApplicants[coverageId];
       if (!Array.isArray(applicants) || applicants.length === 0) {
-        return "Please select at least one applicant for each selected product.";
+        return requirementText("coverage.error.select-applicant");
       }
     }
 
@@ -673,11 +676,11 @@ export function useCoverageState() {
       nextSelectedCoverageIds.includes(product.id) && (nextProductApplicants[product.id] ?? []).some(applicant => selectedRiderOnly(product, applicant, nextValues)),
     );
     if (!hasAmount) {
-      return "Select at least one benefit amount before continuing.";
+      return requirementText("coverage.error.select-amount");
     }
 
     const activeSelections = Object.fromEntries(Object.entries(nextProductApplicants).filter(([id]) => nextSelectedCoverageIds.includes(id)));
-    return validateApplicationCoverages(coverages, nextValues, { deferProfileUnderwriting: true }) ?? coverageRelationshipErrors(coverages, activeSelections)[0];
+    return requirementCoverageSubmitAlert(coverages, nextValues) ?? validateApplicationCoverages(coverages, nextValues, { deferProfileUnderwriting: true }) ?? (getPrototypeLibrary() ? coverageLifeMaximumError(getPrototypeLibrary()!.site, coverages, nextValues, activeClient) : undefined) ?? coverageRelationshipErrors(coverages, activeSelections)[0];
   }
 
   return {

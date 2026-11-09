@@ -313,7 +313,8 @@ function FieldRendererInput({
     } = {},
   ) {
     const handleChange = options.onChange ?? ((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      const value = isZipOrPostalField(field) ? formatZipOrPostalCode(event.target.value) : event.target.value;
+      const value = isZipOrPostalField(field) ? formatZipOrPostalCode(event.target.value)
+        : field.format === 'digits' ? sanitizeDigits(event.target.value) : event.target.value;
       controllerField.onChange(value);
       onValueChange?.(value);
     });

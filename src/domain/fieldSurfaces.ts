@@ -14,7 +14,7 @@ export type ResolvedFieldSurface = Omit<FieldSurfaceDefinition, 'fields'> & {
 };
 const safeKey = (key: unknown): key is string => typeof key === 'string' && /^[a-zA-Z][a-zA-Z0-9-]*$/.test(key) && !['constructor', 'prototype', '__proto__'].includes(key);
 const requiredSurfaces = ['beneficiaryIndividual', 'beneficiaryTrust', 'beneficiaryControls', 'healthLiDetails', 'healthSiDetails', ...Array.from({ length: 7 }, (_, i) => `healthDiq${i + 1}Details`), 'needsCalculator', 'quoteInputs', 'paymentControls', 'paymentBank', 'verificationControls', 'verificationQuestions'];
-export function resolveStoredFieldSurfaces(data: EffectiveSiteData, site: ReturnType<typeof resolveEffectiveSite>) {
+export function resolveStoredFieldSurfaces(data: EffectiveSiteData, site: Pick<ReturnType<typeof resolveEffectiveSite>, 'configuration' | 'siteKey' | 'clientKey'>) {
   const rows = site.configuration.configurations.filter(row => data.configurationDefinitions.find(def => def.key === row.key)?.definition.path?.join('.') === 'fieldSurfaces');
   if (rows.length !== 1 || !rows[0].value || typeof rows[0].value !== 'object' || Array.isArray(rows[0].value)) throw new Error('Missing or ambiguous stored field surface configuration');
   const definitions = rows[0].value as unknown as Record<string, FieldSurfaceDefinition>;

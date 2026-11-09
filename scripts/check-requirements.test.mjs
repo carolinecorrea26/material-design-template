@@ -7,6 +7,58 @@ import { spawnSync } from 'node:child_process';
 
 const script = path.resolve('scripts/check-requirements.mjs');
 
+test('global presentation lists reject unknown category codes and invalid or duplicate product IDs', () => withRequirements(dir => {
+  const file = path.join(dir, 'requirements/global/configurations/product-presentation.json');
+  const original = JSON.parse(fs.readFileSync(file, 'utf8'));
+  for (const [id, value, message] of [
+    ['category-order', ['UNKNOWN'], /invalid category-code default/],
+    ['product-order', ['li-term', 'li-term'], /duplicate product-id/],
+    ['product-order', ['not a product ID'], /invalid product-id default/],
+  ]) {
+    const document = structuredClone(original);
+    document.configurations.find(row => row.id === id).default = value;
+    fs.writeFileSync(file, JSON.stringify(document));
+    const result = check(dir);
+    assert.notEqual(result.status, 0);
+    assert.match(result.output, message);
+  }
+}));
+
+test('Coverage policies reject invalid shared maxima and malformed residency', () => withRequirements(dir => {
+  const file = path.join(dir, 'requirements/parked/sites/asce/coverage-policies.json');
+  const original = JSON.parse(fs.readFileSync(file, 'utf8'));
+  for (const edit of [
+    policy => { policy.lifeMaximum.maximum = 0; },
+    policy => { policy.lifeMaximum.products.push(policy.lifeMaximum.products[0]); },
+    policy => { policy.residency['di-ltd'].allowedJurisdictions = ['not-a-jurisdiction']; },
+  ]) {
+    const policy = structuredClone(original);
+    edit(policy);
+    fs.writeFileSync(file, JSON.stringify(policy));
+    const result = check(dir);
+    assert.notEqual(result.status, 0);
+    assert.match(result.output, /Invalid coverage policies/);
+  }
+}));
+
+test('reviewed layouts and consumer bindings reject stale or ambiguous sources', () => withRequirements(dir => {
+  const pageFile = path.join(dir, 'requirements/parked/coverage.json');
+  const page = JSON.parse(fs.readFileSync(pageFile, 'utf8'));
+  page.layout.sections['self-work'].fields.push('not-a-mapped-field', 'hours-worked-per-week');
+  page.controls.push('not-a-mapped-control');
+  fs.writeFileSync(pageFile, JSON.stringify(page));
+  const bindingFile = path.join(dir, 'requirements/global/content-bindings.json');
+  const bindings = JSON.parse(fs.readFileSync(bindingFile, 'utf8'));
+  bindings['coverage.title'] = bindings['coverage.subhead'];
+  fs.writeFileSync(bindingFile, JSON.stringify(bindings));
+  const result = check(dir);
+  assert.notEqual(result.status, 0);
+  assert.match(result.output, /unmapped layout field not-a-mapped-field/);
+  assert.match(result.output, /unmapped page control not-a-mapped-control/);
+  assert.match(result.output, /duplicate layout field self:hours-worked-per-week/);
+  assert.match(result.output, /duplicate consumer path/);
+}));
+
 function editRequirement(dir, kind, name, edit) {
   const file = path.join(dir, 'requirements/global', kind, `${name}.json`);
   const document = JSON.parse(fs.readFileSync(file, 'utf8'));
@@ -17,7 +69,7 @@ function editRequirement(dir, kind, name, edit) {
 test('Home review includes fresh-start settings, rules and validations with their status', () => withRequirements(dir => {
   const result = check(dir, '--page', 'home');
   assert.equal(result.status, 0, result.output);
-  assert.match(result.output, /home-variant \[draft\]/);
+  assert.match(result.output, /home-variant \[confirmed\]/);
   assert.match(result.output, /home-quote-entry-handoff \[confirmed\]/);
   assert.match(result.output, /date-value-format \[draft\]/);
   assert.match(result.output, /not proof of calendar-date validity or age eligibility/);
@@ -280,6 +332,7 @@ test('eligible-state settings are reusable across application and quote entry', 
 test('Coverage references shared quoting policies without calculator-only behavior', () => withRequirements(dir => {
   const result = check(dir, '--page', 'coverage');
   assert.equal(result.status, 0, result.output);
+  assert.match(result.output, /coverage-page-stages \[confirmed\][^\n]*\[coverage\]/);
   for (const id of ['coverage-category-availability', 'coverage-question-participation', 'coverage-product-reveal', 'coverage-product-selection', 'estimated-rate-states', 'coverage-selection-policy', 'estimated-rate-frequency']) {
     assert.match(result.output, new RegExp(`${id} \\[draft\\][^\\n]*\\[coverage\\]`));
   }
@@ -319,7 +372,7 @@ test('shared quoting definitions are classified and mapped separately from quote
     const mapping = JSON.parse(fs.readFileSync(path.join(dir, 'requirements/mappings/requirements', `${component}.json`), 'utf8'));
     assert.deepEqual(mapping.rules.filter(id => core.includes(id)).sort(), [...core].sort());
     assert.deepEqual(mapping.workflows.filter(id => id.startsWith('coverage-')).sort(),
-      ['coverage-product-reveal', 'coverage-product-selection']);
+      component === 'coverage' ? ['coverage-page-stages', 'coverage-product-reveal', 'coverage-product-selection'] : ['coverage-product-reveal', 'coverage-product-selection']);
     assert.ok(mapping.presentation.includes('estimated-rate-states'));
   }
   assert.equal(rules.some(entry => ['quote-rate-presentation', 'calculator-question-and-reveal-details'].includes(entry.id)), false);
@@ -408,7 +461,7 @@ function editMapping(dir, page, edit) {
 test('shared component relationships preserve the quote entry points and menu', () => withRequirements(dir => {
   const expected = {
     home: { calculators: ['quote-calculator'] },
-    eligibility: { drawers: ['member-verification'] },
+    eligibility: { drawers: ['member-verification', 'verification-address'] },
     'app-header': { menus: ['app-menu'] },
     'app-menu': { calculators: ['needs-calculator'] },
   };
@@ -450,7 +503,7 @@ test('one mapping can hold fields and role-based relationships', () => withRequi
   const file = path.join(dir, 'requirements/mappings/components/eligibility.json');
   const mapping = JSON.parse(fs.readFileSync(file, 'utf8'));
   assert.equal(Object.hasOwn(mapping, 'field-groups'), false);
-  assert.deepEqual(mapping.drawers, ['member-verification']);
+  assert.deepEqual(mapping.drawers, ['member-verification', 'verification-address']);
   assert.deepEqual(mapping.fields, [
     { field: 'membership', people: ['spouse'] },
     { field: 'first-name', people: ['spouse', 'child'] },
@@ -525,7 +578,7 @@ test('component fields derive possible home and membership fields without includ
   const expected = {
     home: ['zip-postal-code', 'state-province', 'birth-date'],
     'needs-calculator': ['needs-annual-income', 'needs-years-to-replace', 'needs-outstanding-debts', 'needs-existing-coverage'],
-    'quote-calculator': ['coverage-categories', 'zip-postal-code', 'state-province', 'birth-date', 'gender', 'smoker', 'tobacco-last-used', 'tobacco-products', 'average-monthly-income', 'hours-worked-per-week', 'actively-at-work', 'monthly-business-expenses', 'business-expense-responsibility', 'is-self-employed', 'years-self-employed', 'add-coverage', 'rider', 'rider-amount', 'coverage-amount', 'monthly-benefit-amount', 'rate-frequency'],
+    'quote-calculator': ['coverage-categories', 'zip-postal-code', 'state-province', 'birth-date', 'gender', 'smoker', 'tobacco-last-used', 'tobacco-products', 'average-monthly-income', 'hours-worked-per-week', 'actively-at-work', 'monthly-business-expenses', 'business-expense-responsibility', 'add-coverage', 'rider', 'rider-amount', 'coverage-amount', 'monthly-benefit-amount', 'rate-frequency', 'self-employed-under-one-year'],
     membership: ['membership', 'title', 'first-name', 'last-name', 'email', 'phone', 'phone-type', 'member-id'],
   };
   for (const [component, ids] of Object.entries(expected)) {
@@ -551,11 +604,12 @@ test('component fields derive possible home and membership fields without includ
   }
 }));
 
-test('Eligibility derives its original field and person pairs from components', () => withRequirements(dir => {
+test('Eligibility derives its page and verification address fields from components', () => withRequirements(dir => {
   const expected = {
     membership: ['spouse'], 'first-name': ['spouse', 'child'], 'last-name': ['spouse', 'child'],
     'zip-postal-code': ['self'], 'state-province': ['self'], 'birth-date': ['self', 'spouse', 'child'],
     dependents: ['self'], gender: ['child'], 'full-time-student': ['child'], 'verification-method': ['self'],
+    'street-address': ['self'], 'apt-suite': ['self'], city: ['self'], state: ['self'], 'zip-code': ['self'],
   };
   const result = check(dir, '--page', 'eligibility');
   assert.equal(result.status, 0, result.output);

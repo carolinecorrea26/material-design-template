@@ -11,7 +11,9 @@ export default function BusinessRulesLibrary({ siteKey, view = 'functional' }: {
   const catalog = useLibraryCatalog();
   const { data } = catalog;
   const functionalKeys = new Set(data.rules.filter(row => !['source-pattern', 'source-reference'].includes(ruleAuthority(row).kind)).map(row => row.key));
-  const rows = libraryRequirementRows(catalog, siteKey).filter(row => view === 'functional' ? row.dataset === 'rules' && functionalKeys.has(row.key) : view === 'applicants' ? !!row.applicant || row.categories.includes('Eligibility') : row.dataset !== 'rules' || !functionalKeys.has(row.key));
+  const allRows = libraryRequirementRows(catalog, siteKey);
+  for (const row of allRows) if (row.requirementsJson) functionalKeys.add(row.key);
+  const rows = allRows.filter(row => view === 'functional' ? row.dataset === 'rules' && functionalKeys.has(row.key) : view === 'applicants' ? !!row.applicant || row.categories.includes('Eligibility') : row.dataset !== 'rules' || !functionalKeys.has(row.key));
   const label = view === 'functional' ? 'Business rules' : view === 'applicants' ? 'Applicant eligibility' : 'Coverage settings';
   const names = new Map(data.rules.map(row => [row.key, row.definition.rule]));
   return <Stack spacing={2}>

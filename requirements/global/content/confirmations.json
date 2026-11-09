@@ -1,0 +1,19 @@
+{
+  "confirmation.advisor.title": "Application sent successfully!",
+  "confirmation.advisor.subhead": "The applicant can now review, sign, and submit their application.",
+  "confirmation.advisor.nav-title": "Sent confirmation",
+  "confirmation.edit.title": "Edit request sent!",
+  "confirmation.edit.subhead": "Your advisor has been notified of your request to edit your application.",
+  "confirmation.edit.nav-title": "Edit confirmation",
+  "confirmation.advisor.message": "The application has been sent to the following applicant for review. You will be notified when the application is signed or if any edits are needed.",
+  "confirmation.advisor.applicant-name": "Applicant name",
+  "confirmation.advisor.applicant-email": "Applicant email",
+  "confirmation.advisor.sent": "Sent for signature",
+  "confirmation.advisor.deletion": "Scheduled for deletion",
+  "confirmation.advisor.start": "Start new application",
+  "confirmation.edit.announcement": "Your request has been sent to your advisor.",
+  "confirmation.edit.message": "Your advisor will contact you regarding the required updates to your application. They will review the changes with you and return the application once the updates have been completed.",
+  "confirmation.edit.recipient": "Sent to advisor",
+  "confirmation.edit.sent": "Request sent",
+  "confirmation.edit.home": "Return to Home"
+}

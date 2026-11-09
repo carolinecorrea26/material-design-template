@@ -1,3 +1,4 @@
+import { requirementText } from "../domain/requirementContent";
 import {
   Box,
   Button,
@@ -56,7 +57,7 @@ function AdvisorLoginFields({
               shouldValidate: false,
             })
           }
-          aria-label="Advisor login type"
+          aria-label={requirementText("application.ui.advisor-login-type")}
           aria-describedby="advisor-mode-instructions"
           sx={{
             width: "100%",
@@ -70,8 +71,8 @@ function AdvisorLoginFields({
             },
           }}
         >
-          <Tab label="Start" value="new" />
-          <Tab label="Continue" value="saved" />
+          <Tab label={requirementText("application.ui.start")} value="new" />
+          <Tab label={requirementText("home.landing-notice.continue")} value="saved" />
         </Tabs>
 
         <Typography id="advisor-mode-instructions" variant="body2" color="text.secondary" sx={{ width: "100%", lineHeight: 1.65 }}>
@@ -117,8 +118,7 @@ function AdvisorLoginFields({
             boxShadow: "0 14px 28px rgba(0, 0, 0, 0.16)",
           }}
         >
-          Log in
-        </Button>
+          {requirementText("application.ui.log-in")}</Button>
       </Stack>
     </Box>
   );

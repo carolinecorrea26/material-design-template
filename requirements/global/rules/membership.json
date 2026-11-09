@@ -1,0 +1,19 @@
+{
+  "rules": [
+    {
+      "id": "membership-attestation-inline-stop",
+      "name": "Stop inline for a disqualifying membership attestation",
+      "status": "confirmed",
+      "fields": ["membership"],
+      "statement": "On the Membership page, a disqualifying answer to the applicant's yes/no membership attestation (No for ASCE) immediately shows the non-member feedback, hides the follow-up fields and disables Next. An accepted answer restores the follow-up fields and enables Next. This attestation is the only field allowed to stop a page inline. An unanswered attestation, other fields and other page-level business checks use normal submission validation and the page error alert. The spouse membership question on Eligibility does not inherit this exception.",
+      "source": "docs/requirements-spec/page-review.md; src/pages/Membership.tsx; src/components/membership/MembershipStatus.tsx"
+    },
+    {
+      "id": "membership-follow-up-fields",
+      "name": "Configure additional membership fields per site",
+      "status": "confirmed",
+      "statement": "Additional Membership Information contains the site's enabled follow-up fields and appears only after an accepted membership answer. Field definitions and available configurations are shared; the component mapping marks default-off fields and the site's Membership page file includes or hides fields. Labels, options and requiredness are overridden in the site's field file.",
+      "source": "docs/requirements-spec/page-review.md; requirements/mappings/components/membership.json; requirements/parked/sites/asce/pages/membership.json"
+    }
+  ]
+}

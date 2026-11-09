@@ -4,10 +4,11 @@ import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import CancelRoundedIcon from "@mui/icons-material/CancelRounded";
 import type { FieldDefinition } from "../../config/fields/types";
+import { isValidZipOrPostalCode } from '../../utils/zipToStateProvince';
 export type FieldStatusState = { hasError?: boolean };
 
 export function isZipOrPostalField(field: FieldDefinition) {
-  return field.autoComplete === "postal-code";
+  return field.format === 'postal-code' || field.autoComplete === "postal-code";
 }
 
 export function getLabelVariant(field: FieldDefinition) {
@@ -31,9 +32,11 @@ export function hasCompletedValue(field: FieldDefinition, value: unknown) {
   if (!stringValue) {
     return false;
   }
+  if (field.minLength !== undefined && stringValue.length < field.minLength) return false;
+  if (field.format === 'digits') return /^\d+$/.test(stringValue);
 
   if (isZipOrPostalField(field)) {
-    return stringValue.length >= 5;
+    return isValidZipOrPostalCode(stringValue);
   }
 
   if (field.format === "email") {

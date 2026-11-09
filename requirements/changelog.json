@@ -84,6 +84,96 @@
       "id": "CHG-017",
       "description": "On Eligibility, a disqualifying answer shows its reason when Next is clicked and the page does not continue; Next is no longer disabled.",
       "reason": "Page-level problems are reported on Next, like the other page validations."
+    },
+    {
+      "id": "CHG-018",
+      "description": "The applicant's yes/no membership attestation on Membership is the sole inline page-stopping field: a disqualifying No immediately shows non-member feedback, hides follow-up fields and disables Next. An unanswered attestation and all other field and page-level checks use standard submission validation and the page error alert. Eligibility's disqualifying answers keep Next enabled and report their reason on submission.",
+      "reason": "Explicitly preserves membership attestation as the exception to the standard page-validation pattern."
+    },
+    {
+      "id": "CHG-019",
+      "description": "Browser autocomplete hints apply to self/member only. Shared fields keep their authored name, email, phone and address tokens for self; date of birth now has the bday token. Spouse and child instances receive autocomplete off through the generic field loader.",
+      "reason": "Enforces the documented member-only browser autofill rule wherever shared fields are used."
+    },
+    {
+      "id": "CHG-020",
+      "description": "Moved ASCE's profession note from the Eligibility self section to the Membership page: Throughout this site you will be referred to as a Member of the Civil Engineering profession. The Membership page file selects its content key; the prototype, Library content view and Storybook read that same note.",
+      "reason": "Corrects the page assignment following Membership review."
+    },
+    {
+      "id": "CHG-021",
+      "description": "Recorded Membership's successful submission as the start of the saved-application/autosave lifecycle and eligibility for abandoned-lead processing. Incomplete applications supply applicant name, email and phone in nightly batch files for the site's TPA; XML generation and transmission remain unconnected. Additional Membership fields use mapping defaults and site page include/hide settings; ASCE enables required Member ID and hides Title. Confirmed rules and workflows are read from requirements JSON in the Library.",
+      "reason": "Makes Membership lifecycle, additional-field participation and TPA lead requirements explicit without adding an external integration."
+    },
+    {
+      "id": "CHG-022",
+      "description": "The initial autosave email is recorded as a rule triggered as soon as Membership is successfully submitted and saved. No email delivery or automatic mock email preview is connected. The save client now requires successful Membership submission to create the first saved application; email-containing browser drafts, edits, Back, unmount and reload cannot start application autosave. Subsequent successful page submissions save the established application.",
+      "reason": "Enforces the agreed Membership save boundary and distinguishes local draft caching from saved progress and email requirements."
+    },
+    {
+      "id": "CHG-023",
+      "description": "Completed the reviewed ASCE Membership JSON rollout: title, subhead, breadcrumb, loading message, non-member feedback, additional-section heading and help labels read from requirements content; help actions are listed on the page. The nested Phone Type selector uses its mapped field definition. Library, prototype and Storybook share these sources, overriding conflicting legacy catalog copy and options. Removed the unused Membership quote-help content key.",
+      "reason": "Closes the remaining content and companion-field gaps before starting the next application page review."
+    },
+    {
+      "id": "CHG-024",
+      "description": "Approved ASCE Coverage's page structure and two-stage flow: applicable questions, See my coverage options with validation and page error feedback, then products, estimates and Next. Categories without preliminary questions can reveal products automatically. The JSON now names the shared frame, question groups, product/cart area and related portfolio, confirmation and selection-feedback surfaces. Field participation and detailed coverage policies remain the next review stage.",
+      "reason": "Records the agreed Coverage structure before field review and runtime rollout."
+    },
+    {
+      "id": "CHG-025",
+      "description": "Approved ASCE Coverage policy rollout: single Yes/No self-employment-under-one-year question; member/spouse 30-hour Disability minimum; spouse ages 17\u201359; member annual income minimum $20,000; additional NC Disability exclusion; Term Life new-applicant minimum $20,000 and age-band caps; AD&D child ages 15 days through 24; member Life required for child benefits. Spouse DI remains selectable below a member benefit of $600; the standard page error alert runs on Next for joint applications below that threshold. Spouse coverage not exceeding member coverage is an informational section note only, with no added validation. Global definitions, scoped site assignments, content and shared adapters feed Library, prototype and Storybook.",
+      "reason": "Records approved MCR decisions and user exceptions in the fresh-start JSON model; numeric site values and notes remain separate from reusable behavior."
+    },
+    {
+      "id": "CHG-026",
+      "description": "Replaced the reviewed ASCE Membership, Eligibility and Coverage overlay with one fresh-start compiler shared by the catalog build, Library, prototype and Storybook. Reviewed page definitions, field/group placement, conditional sections, content, notes, product presentation and approved age/work assignments are generated from requirements; obsolete authored records and the three legacy page JSON files are removed. The single self-employment question is in member Work & Income. Older saved data cannot restore superseded definitions. Verification questions and the unchanged dummy portfolio are explicit JSON prototype fixtures.",
+      "reason": "Fixes source ownership drift before continuing business-rule review. Existing-coverage semantics, combined Life maximum timing, residency scope and remaining product/rate details stay pending."
+    },
+    {
+      "id": "CHG-027",
+      "description": "Fixed the shared Home/Eligibility field gap by removing empty reserved feedback rows. Authored ASCE combined Life maximum once in fresh coverage-policies JSON ($2 million per person, MCR Main!H165:K167); level-Life amount choices reference it. Coverage Next now reports combined selected amounts over the maximum and Review no longer repeats that aggregate page check. Disability residency follows MCR New UX Multi-page Requirements!AC21 and Main!N169, including Puerto Rico and Canada except Quebec, NC/VT/WA exclusions and spouse-only NH exclusion. Province codes normalize to Canadian jurisdictions. Superseded ASCE amount and policy records are removed from old authoring parts.",
+      "reason": "Implements the confirmed review decisions using shared fresh-start sources. Existing-coverage dependencies/lower existing Term Life amounts and remaining CIR, period wording and estimate reviews stay pending."
+    },
+    {
+      "id": "CHG-028",
+      "description": "Fixed explicit new-application entry from Home and quote Apply carrying an expired inactivity deadline into Membership. Both entry paths use one shared new-application action to clear prior progress/session state before navigation; quote Apply seeds only the current quote. Continue application retains its resume behavior. Added ASCE integration checks using the real App, providers, router and session guard for fresh/expired Home entry, quote-first entry, recovery, resume and Home through submitted Membership/Eligibility to Coverage. Timeout-guard checks now run in the ASCE suite, and quote handoff tests start with expired prior applications.",
+      "reason": "Closes the entry-flow test gap that allowed component/rule/persistence tests to pass while Start Application could immediately expire. This records navigation lifecycle behavior without changing the provisional inactivity duration."
+    },
+    {
+      "id": "CHG-029",
+      "description": "Recorded one shared confirmed portfolio-access rule for Eligibility and Coverage in fresh-start JSON. ASCE's Coverage portfolio action and drawer require the configured TPA coverage-verification mode, an existing member, active coverage and successful identity verification. Added a Storybook verified-existing-member example and real-App journeys through Membership, Eligibility, address collection and passed/failed/skipped verification. The fictional Taylor Morgan/ASCE12345 fixture provides a reproducible route to the portfolio without a live integration.",
+      "reason": "Makes the existing-member-with-existing-coverage access requirement reviewable in the Library and testable in the prototype. Failed/skipped verification is confirmed to continue as manual review without portfolio access. Portfolio data stays display-only at this stage; CHG-030 subsequently connects approved amount deductions."
+    },
+    {
+      "id": "CHG-030",
+      "description": "Confirmed verified TPA in-force amounts reduce ASCE's available Coverage dropdown amounts. A reusable boolean configuration defaults off, with ASCE product/applicant assignments in fresh-start JSON. The portfolio fixture now stores numeric amounts and product IDs, shared by the drawer and amount evaluator. Product/age/Disability limits and the single combined Life ceiling deduct each person's applicable in-force balances, preserve permitted increments and reject stale or aggregate-over-limit elections on Coverage Next. Passed/failed/skipped verification journeys now inspect the real Term Life dropdown.",
+      "reason": "Implements the approved portfolio amount rule without a live TPA service or another authored maximum. Failed/skipped verification retains manual review without deductions. Existing-policy dependencies and lower existing Term Life minimums stay pending. Verification targets the affected calculations, dropdowns, journeys and shared benefit evaluator instead of rerunning every suite."
+    },
+    {
+      "id": "CHG-031",
+      "description": "Consolidated global Coverage template requirements and an ASCE effective-site rule register from MCR v78, prior user decisions and the existing Admin Center Library URL parameter table. Added fresh-start JSON documentation for minimum-to-maximum or maximum-to-minimum amount ordering, minimum or specified defaults, locked amounts, optional rider participation, waiting/benefit periods, child one-plan selection and Coverage URL behavior. The Library shows recorded amount controls with explicit not-connected status. The amt contract uses the existing comma-separated G-number_amount format; dprods disables listed amount controls. No replacement URL names or Site-specific template behavior were invented.",
+      "reason": "Documents all Coverage rule areas and separates requirements from runtime activation. Existing MCR/user exceptions and in-force rules remain intact; amount-control/amt/dprods rollout and existing-policy decisions are clearly identified. Fictional estimates require no production-rate review. This is documentation and Library visibility work, not a new prototype behavior change."
+    },
+    {
+      "id": "CHG-032",
+      "description": "Corrected Coverage ownership to the global-template/effective-site model. Amount order/default/lock definitions and URL contracts are global template capabilities. Library visibility no longer depends on the selected Site having Coverage policy assignments, and shared rows retain Global template scope in every Site filter. Shared rule statements no longer embed ASCE-specific rider or period decisions. Documentation distinguishes global structure, fields, components, content, rules and configurations from the current ASCE effective-site values and overrides.",
+      "reason": "ASCE is the current effective-site rollout target, not an owner of separate template behavior. Added focused scope checks covering the global Library and multiple effective-site views while retaining existing Site values and runtime activation status."
+    },
+    {
+      "id": "CHG-033",
+      "description": "Added standing AGENTS.md instructions for the established global-template/effective-site model and a dedicated test:fresh-start command. The focused ownership/inheritance suite now gates catalog:check and build-storybook, protecting production, admin and Storybook builds. It covers global Library scope without Site assignments, shared definitions with independent effective-site values, reconstruction without superseded records, source validation and consumer parity.",
+      "reason": "Make the model durable in repository instructions and executable checks rather than relying on conversation context. Routine verification stays focused instead of requiring every test suite."
+    },
+    {
+      "id": "CHG-034",
+      "description": "Recorded category order and product order as global template configurations shared wherever categories/products are displayed, with featured_prod taking precedence over effective-site ordering and shared fallbacks. Mapped the global rule across Home, quote tools, Coverage and shared application-menu contexts. Moved shared ordering defaults to fresh JSON and exposed the definitions in every Library scope. CoverageOptionsPanel and ProductCatalog now apply the resolver's product sequence themselves instead of relying on a pre-sorted caller.",
+      "reason": "Avoid Coverage-only ownership or inconsistent display order across reused components. Effective-site order values retain their existing paths; no ASCE-specific sequence is added. Later-page summary readers with independent sorting remain explicitly tracked for their page reviews."
+    },
+    {
+      "id": "CHG-035",
+      "description": "Made the established global product default sequence explicit in product-presentation.json instead of leaving its list empty and inferring ranks from display names. Category defaults remain LI, AD, DI, OO, SH. Effective-site overrides and featured_prod retain precedence, partial/empty product overrides inherit omitted global defaults, and unlisted products retain incoming order. The Library displays both concrete default lists.",
+      "reason": "Ensure defaults are visible, authored once and consistently inherited. The normal registered-product sequence is preserved while renaming or localizing products no longer changes their order. No effective-site-specific sequence is introduced."
     }
   ]
 }

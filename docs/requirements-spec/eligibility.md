@@ -1,72 +1,61 @@
 # Eligibility (ASCE)
 
-| File | Holds |
+Eligibility uses fresh-start sources for its complete page surface (CHG-026).
+Its route is `/eligibility`, after Membership in Getting started.
+
+| Source | Owns |
 |---|---|
-| [global/pages/eligibility.json](../../requirements/global/pages/eligibility.json) | The page: its sections and when each shows |
-| [global/fields.json](../../requirements/global/fields.json) | The fields (each says which pages it is on) |
-| [global/option-lists.json](../../requirements/global/option-lists.json) | Shared option lists (states and provinces) |
-| [global/content/eligibility.json](../../requirements/global/content/eligibility.json) | The words |
-| [sites/asce/pages/eligibility.json](../../requirements/sites/asce/pages/eligibility.json) | ASCE: turns on two child questions |
+| [parked/eligibility.json](../../requirements/parked/eligibility.json) | Page definition, route/order, section placement, conditional visibility and child collection layout |
+| [Eligibility mapping](../../requirements/mappings/components/eligibility.json) | Reusable fields and applicant roles |
+| [field-details.json](../../requirements/parked/field-details.json) | Labels, types, required status and member-only browser hints |
+| [option-lists.json](../../requirements/global/option-lists.json) | Shared state/province and other option lists |
+| [Eligibility content](../../requirements/global/content/eligibility.json) | Header, notes, errors, verification copy and child labels |
+| [ASCE page](../../requirements/parked/sites/asce/pages/eligibility.json) | Includes the optional full-time student field |
+| [ASCE settings](../../requirements/parked/sites/asce/eligibility.json) | TPA verification mode, lookup fields and prototype member record |
+| [Verification address](../../requirements/mappings/components/verification-address.json) | Address modal field definitions, independent of Contact placement |
+| [Verification fixture](../../requirements/global/prototype-fixtures/verification.json) | Simulated security questions and failure answer |
 
-**Breadcrumb:** Eligibility, in the step **Getting started**. **Path:** `/eligibility`.
-**Title:** Confirm your eligibility
-**Subhead:** Answer a few questions to check eligibility and see your coverage options.
-**While saving:** "Saving your eligibility information..." then "Confirming which coverage options may apply..."
+## Sections
 
-## Three sections
-
-| Section | What it holds | Shown when |
+| Section | Fields | Shown when |
 |---|---|---|
-| **You** | ZIP / postal code, state / province, date of birth, and "Would you like to add dependent coverage?" (Spouse, Child) | always |
-| **Your Spouse** | Spouse membership, first name, last name, date of birth | Spouse is selected |
-| **Your Child(ren)** | A list of children, added one at a time, up to 10 | Child is selected |
+| You | ZIP/postal code, state/province, date of birth, dependent choices | Always |
+| Your Spouse | Spouse membership, first name, last name, date of birth | Spouse selected |
+| Your Child(ren) | First name, last name, date of birth, gender, full-time student for each child | Child selected |
 
-**Your Child(ren)** is a *repeating* section: each child is one record, added and edited in a
-dialog. The fields listed are the fields of one child.
+Children use an add/edit dialog and the shared list maximum (10). Names appear in
+the list's grid. The mapping/site file controls optional fields; no child marital
+status question is collected. The child section keeps its unmarried-children note.
+The profession note belongs to Membership. Spouse names and birth dates and child
+inputs have browser autocomplete off; the member's date of birth uses `bday`.
 
-## What ASCE shows
+## Existing behavior
 
-| Section | Field | Type | Required |
-|---|---|---|---|
-| You | Zip / Postal Code | Text | Yes |
-| | State / Province | Searchable list (67 states, provinces and territories) | Yes |
-| | Date of Birth | Date | Yes |
-| | Would you like to add dependent coverage? | Spouse, Child (checkboxes) | No |
-| Your Spouse | Is your spouse also an active member? | Yes / No | Yes |
-| | First Name, Last Name, Date of Birth | Text, Text, Date | Yes |
-| Your Child(ren), per child | First Name, Last Name, Date of Birth | Text, Text, Date | Yes |
-| | Gender | Male / Female | Yes |
-| | **Is the child a full-time student?** | Yes / No | Yes |
+ZIP/postal code accepts five-digit US ZIPs, ZIP+4 and Canadian postal codes, with
+formatting shared by application and quote fields. A matching code can infer
+state/province. An unmatched code leaves the current selection unchanged and
+allows manual selection. Applicants can override an inferred state; that choice
+persists until the ZIP/postal code changes again. Lookup failure is not an
+eligibility decision. Applicable field and page checks run on
+Next and report errors through the standard page error alert. Selecting spouse
+requires the spouse details; selecting child requires a child record. Membership
+attestation remains the only answer-driven inline page stop.
 
-The full-time student question is optional in the library. ASCE turns it on.
+ASCE's configured member lookup may collect a residential address before opening
+member verification. Verification controls and questions use the fresh definitions
+and prototype fixture. This records and simulates the current flow; it does not
+connect a live TPA service. Resuming an application shows the configured loaded
+notice. Autosave starts only after successful Membership submission.
 
-## How sites differ (checked against all nine current sites)
+The confirmed `coverage-tpa-portfolio-access` rule is shared with Coverage. Only an
+existing member with active coverage and successful identity verification receives
+portfolio access. The [Coverage review](coverage.md#verified-existing-member-portfolio-chg-029)
+documents the fictional ASCE member, verification steps and automated journey
+checks. Failed/skipped verification continues as manual review without portfolio
+access, as confirmed during Coverage review.
 
-| Site | Difference |
-|---|---|
-| ASCE | Turns on full-time student for each child |
-| NSO | Turns on full-time student for each child |
-| ABE | Turns on "honorably discharged service member" for each child |
-| ISI Trust | Hides the spouse membership question |
-| Others | None |
-
-## Behavior on this page
-
-These are stated plainly here and become Rules later:
-
-- Entering a ZIP or postal code fills in the state or province.
-- Next is not available when an answer makes the applicant ineligible; the reason is shown.
-- If Spouse is selected, spouse details are required. If Child is selected, at least one child
-  must be added.
-- **On Next, the applicant is checked against the TPA's member records.** For ASCE the check uses
-  first name, last name, date of birth and membership ID. When the match needs identity
-  verification, a verification dialog opens before the page continues.
-- When a saved application has just been resumed, a notice confirms: "Saved application loaded
-  successfully."
-
-## Not covered yet
-
-- The component behind each section (Components, parked).
-- The verification dialog's own questions and wording, and the error wording for the dependent
-  rules (Rules and Validations).
-- Whether a child qualifies by age, marital status and student status (Rules).
+The shared compiler produces these page records for Library, prototype and
+Storybook. Old saved page definitions, content and placements cannot supply missing
+defaults. The legacy Eligibility page file and superseded authored records have
+been removed. Product eligibility and remaining business-rule decisions continue
+in the staged Coverage review.

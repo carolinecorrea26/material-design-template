@@ -1,0 +1,20 @@
+{
+  "rules": [
+    {
+      "id": "abandoned-lead-nightly-batch",
+      "name": "Make incomplete applications available to the nightly TPA lead batch",
+      "status": "confirmed",
+      "fields": ["first-name", "last-name", "email", "phone"],
+      "statement": "After Membership is successfully validated, submitted and saved, the application's applicant name, email and phone are available for abandoned-lead processing. Applications still incomplete when the nightly batch is prepared are included in batch files for their site's TPA. Merely viewing, editing or failing Membership validation does not qualify an application. This records the business requirement only; XML generation, scheduling and TPA file transmission are not connected in this prototype.",
+      "source": "docs/requirements-spec/page-review.md; Membership review decision"
+    },
+    {
+      "id": "membership-initial-autosave-email",
+      "name": "Send the initial autosave email after successful Membership submission",
+      "status": "confirmed",
+      "fields": ["email"],
+      "statement": "The initial autosave email is triggered for the applicant as soon as Membership is successfully validated, submitted and saved, confirming the start of saved application progress. It is not triggered by viewing the page, entering an email address, failed validation or a failed save. This is a recorded business rule only: the prototype has no email delivery service and does not automatically send an email or create a mock email preview on submission.",
+      "source": "docs/requirements-spec/page-review.md; Membership review decision"
+    }
+  ]
+}

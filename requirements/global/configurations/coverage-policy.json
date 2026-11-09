@@ -1,0 +1,113 @@
+{
+  "configurations": [
+    {
+      "id": "coverage-deduct-inforce-amount",
+      "name": "Deduct verified in-force coverage from available amounts",
+      "status": "confirmed",
+      "type": "boolean",
+      "default": false,
+      "source": "User confirmed ASCE TPA portfolio amount reduction; src/domain/tpaPortfolioAmounts.ts"
+    },
+    {
+      "id": "coverage-minimum-work-hours",
+      "name": "Minimum weekly work hours",
+      "status": "confirmed",
+      "type": "number",
+      "default": 0,
+      "source": "Coverage review approved November 2026; site assignments supply MCR values; src/domain/requirementCoveragePolicy.ts"
+    },
+    {
+      "id": "coverage-minimum-annual-income",
+      "name": "Minimum gross annual income",
+      "status": "confirmed",
+      "type": "number",
+      "default": 0,
+      "source": "Coverage review approved November 2026; site assignments supply MCR values; src/domain/requirementCoveragePolicy.ts"
+    },
+    {
+      "id": "coverage-minimum-age-years",
+      "name": "Minimum applicant age in years",
+      "status": "confirmed",
+      "type": "number",
+      "default": 0,
+      "source": "Coverage review approved November 2026; site assignments supply MCR values; src/domain/requirementCoveragePolicy.ts"
+    },
+    {
+      "id": "coverage-maximum-age-years",
+      "name": "Maximum applicant age in years",
+      "status": "confirmed",
+      "type": "number",
+      "default": 0,
+      "source": "Coverage review approved November 2026; site assignments supply MCR values; src/domain/requirementCoveragePolicy.ts"
+    },
+    {
+      "id": "coverage-minimum-age-days",
+      "name": "Minimum applicant age in days",
+      "status": "confirmed",
+      "type": "number",
+      "default": 0,
+      "source": "Coverage review approved November 2026; site assignments supply MCR values; src/domain/requirementCoveragePolicy.ts"
+    },
+    {
+      "id": "coverage-excluded-states",
+      "name": "Additional excluded coverage states",
+      "status": "confirmed",
+      "type": "string-list",
+      "default": [],
+      "source": "Coverage review approved November 2026; site assignments supply MCR values; src/domain/requirementCoveragePolicy.ts",
+      "format": "state-code"
+    },
+    {
+      "id": "coverage-new-application-minimum-amount",
+      "name": "Minimum amount for a new application",
+      "status": "confirmed",
+      "type": "number",
+      "default": 0,
+      "source": "Coverage review approved November 2026; site assignments supply MCR values; src/domain/requirementCoveragePolicy.ts"
+    },
+    {
+      "id": "coverage-age-maximum-amount",
+      "name": "Age-specific maximum coverage amount",
+      "status": "confirmed",
+      "type": "number",
+      "default": 0,
+      "source": "Coverage review approved November 2026; site assignments supply MCR values; src/domain/requirementCoveragePolicy.ts"
+    },
+    {
+      "id": "coverage-member-benefit-submit-minimum",
+      "name": "Member benefit threshold for a joint spouse application on Next",
+      "status": "confirmed",
+      "type": "number",
+      "default": 0,
+      "source": "Coverage review approved November 2026; site assignments supply MCR values; src/domain/requirementCoveragePolicy.ts"
+    },
+    {
+      "id": "coverage-self-employment-question",
+      "name": "Self-employment question format",
+      "status": "confirmed",
+      "type": "enum",
+      "default": "employment-and-years",
+      "source": "Coverage review approved November 2026; site assignments supply MCR values; src/domain/requirementCoveragePolicy.ts",
+      "options": [
+        "employment-and-years",
+        "under-one-year"
+      ]
+    },
+    {
+      "id": "coverage-child-requires-member",
+      "name": "Child coverage requires member coverage in the category",
+      "status": "confirmed",
+      "type": "boolean",
+      "default": false,
+      "source": "Coverage review approved November 2026; site assignments supply MCR values; src/domain/requirementCoveragePolicy.ts"
+    },
+    {
+      "id": "coverage-student-maximum-age-years",
+      "name": "Maximum child age for a full-time student",
+      "status": "confirmed",
+      "type": "number",
+      "default": 0,
+      "source": "Approved ASCE Eligibility review; src/domain/requirementCatalog.mjs"
+    }
+  ]
+}

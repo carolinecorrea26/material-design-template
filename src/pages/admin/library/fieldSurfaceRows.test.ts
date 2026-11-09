@@ -1,3 +1,4 @@
+import { withFreshStartCatalog } from "../../../domain/freshStartCatalog";
 import { describe, expect, it } from "vitest";
 import { createReviewedMigrationDatabase } from "../../../migration/fixtures";
 import type { LibraryCatalog } from "../../../services/libraryCatalogService";
@@ -46,14 +47,14 @@ describe("field component placements", () => {
     disabled.data.sitePages.find(page => page.siteKey === "abe" && page.pageKey === "health-ci")!.requirement = "none";
     expect(fieldSurfaceRows(disabled, "abe").some(row => row.pages.includes("health-ci"))).toBe(false);
   });
-  it.each(["all", "asce"])("follows saved page order in %s without changing other scopes", (siteKey) => {
+  it.each(["all", "asce"])("uses fresh reviewed page order in %s despite stale saved positions", (siteKey) => {
     const changed = structuredClone(catalog);
     const pages = siteKey === "all" ? changed.data.pages : changed.data.sitePages.filter(page => page.siteKey === siteKey);
     const membership = pages.find(page => ("pageKey" in page ? page.pageKey : page.key) === "membership")!;
     const eligibility = pages.find(page => ("pageKey" in page ? page.pageKey : page.key) === "eligibility")!;
     [membership.position, eligibility.position] = [eligibility.position, membership.position];
     const listedPages = [...new Set(fieldSurfaceRows(changed, siteKey).flatMap(row => row.pages))].slice(0, 3);
-    expect(listedPages).toEqual(["home", "eligibility", "membership"]);
+    expect(listedPages).toEqual(["home", "membership", "eligibility"]);
     expect(listedPages).toEqual(storedApplicationPageRows(changed, siteKey).slice(0, 3).map(page => page.key));
     const otherScope = siteKey === "all" ? "asce" : "all";
     expect([...new Set(fieldSurfaceRows(changed, otherScope).flatMap(row => row.pages))].slice(0, 3)).toEqual(["home", "membership", "eligibility"]);
@@ -116,8 +117,9 @@ describe("field component placements", () => {
   });
   it("includes every configured section field and companion contact inputs in All", () => {
     const rows = fieldSurfaceRows(catalog, "all");
-    for (const placement of catalog.data.pageSectionFields) {
-      const section = catalog.data.pageSections.find(section => section.key === placement.sectionKey)!;
+    const current = withFreshStartCatalog(catalog.data);
+    for (const placement of current.pageSectionFields) {
+      const section = current.pageSections.find(section => section.key === placement.sectionKey)!;
       expect(rows.some(row => row.field.id === placement.fieldKey && row.pages.includes(section.pageKey)), `${section.key}/${placement.fieldKey}`).toBe(true);
     }
     const spouseContact = rows.filter(row => row.surface === "Contact page · Spouse");
@@ -126,8 +128,8 @@ describe("field component placements", () => {
     expect(rows.some(row => row.field.id.startsWith("beneficiary-") && row.pages.includes("beneficiary"))).toBe(true);
     expect(rows.some(row => row.field.id.startsWith("health-li-detail-") && row.pages.includes("health-li"))).toBe(true);
   });
-  it("keeps conditional Coverage inputs under their configured applicant and named subsection", () => {
-    const rows = fieldSurfaceRows(catalog, "all");
+  it("keeps fresh Coverage inputs under their applicant and named subsection", () => {
+    const rows = fieldSurfaceRows(catalog, "asce");
     for (const applicant of ["self", "spouse"] as const) {
       const label = applicant === "self" ? "Member" : "Spouse";
       const prefix = applicant === "self" ? "" : "spouse-";
@@ -135,21 +137,22 @@ describe("field component placements", () => {
       expect(personal.map(row => row.field.id)).toEqual([`${prefix}gender`, `${prefix}smoker`, `${prefix}tobacco-last-used`, `${prefix}tobacco-products`]);
       expect(personal.map(row => row.order)).toEqual([1, 2, 3, 4]);
       const work = rows.filter(row => row.surface === `Coverage page · ${label} · Work & Income`);
-      expect(work.map(row => row.field.id)).toEqual([`${prefix}hours-worked-per-week`, ...(applicant === "self" ? ["actively-at-work"] : []), `${prefix}average-monthly-income`]);
+      expect(work.map(row => row.field.id)).toEqual([`${prefix}hours-worked-per-week`, `${prefix}average-monthly-income`, ...(applicant === "self" ? ["self-employed-under-one-year"] : [])]);
     }
-    expect(rows.find(row => row.field.id === "monthly-business-expenses" && row.pages.includes("coverage"))?.surface).toBe("Coverage page · Member · Business Details");
+    expect(rows.some(row => row.field.id === "monthly-business-expenses" && row.pages.includes("coverage"))).toBe(false);
   });
-  it("derives subsection headings and order from changed project configuration", () => {
+  it("ignores obsolete saved subsection headings and order on reviewed Coverage", () => {
     const changed = structuredClone(catalog);
     const section = changed.data.pageSections.find(section => section.definition.id === "selfCoverageWorkIncome")!;
-    section.definition.description = "Updated project heading";
+    section.definition.description = "Stale heading";
     const placements = changed.data.pageSectionFields.filter(row => row.sectionKey === section.key);
     placements.forEach((placement, index) => { placement.position = placements.length - index; });
-    const rows = fieldSurfaceRows(changed, "asce").filter(row => row.surface === "Coverage page · Member · Updated project heading");
-    expect(rows.map(row => row.field.id)).toEqual(["average-monthly-income", "actively-at-work", "hours-worked-per-week"]);
+    const rows = fieldSurfaceRows(changed, "asce").filter(row => row.surface === "Coverage page · Member · Work & Income");
+    expect(rows.map(row => row.field.id)).toEqual(["hours-worked-per-week", "average-monthly-income", "self-employed-under-one-year"]);
     const parent = changed.data.pageSections.find(section => section.definition.id === "selfCoverageQuestions")!;
-    parent.definition.description = "Updated personal heading";
-    expect(fieldSurfaceLabel(changed, "coverage", "selfCoverageTobacco", "tobacco-products")).toBe("Coverage page · Member · Updated personal heading");
+    parent.definition.description = "Stale personal heading";
+    const current = { ...changed, data: withFreshStartCatalog(changed.data, "asce") };
+    expect(fieldSurfaceLabel(current, "coverage", "selfCoverageTobacco", "tobacco-products")).toBe("Coverage page · Member · Personal Details");
   });
   it("uses internal applicant names while preserving applicant-facing setup titles", () => {
     const rows = fieldSurfaceRows(catalog, "all");

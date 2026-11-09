@@ -1,10 +1,122 @@
 # Site requirements specification (redesignv6)
 
 Status: **draft for review**. This replaces the "catalog" model. It describes how the
-requirements of a site are authored, layered and consumed. ASCE is the only site in scope;
-other sites are added later, bringing any new rules or configurations they need.
+global template and effective-site requirements are authored, layered and consumed.
+ASCE is the current effective-site rollout and verification target. Shared fields,
+components, content, rules, configuration definitions and URL contracts belong to
+the global template. Only effective-site assignments, values and overrides are Site-specific.
+An ASCE/MCR source reference records review evidence; it does not make the shared
+definition ASCE-owned or justify a Site-specific implementation branch.
 
-> **Current draft:** The sections below describe an earlier model and are awaiting review.
+## Keeping the model intact
+
+`AGENTS.md` records this model as standing repository instructions. Every change
+must identify whether it changes a global definition/default or an effective-site
+assignment/override; reviewing ASCE does not change that ownership.
+
+Run `npm run test:fresh-start` for ownership and inheritance changes. This focused
+check is included in `catalog:check` and `build-storybook`, so production, admin
+and Storybook builds stop if its invariants fail. It checks that global Library definitions remain global even for
+an unconfigured Site, two effective Sites share definitions while keeping values
+independent, reviewed surfaces reconstruct without superseded authoring, and
+Library/prototype/Storybook agree despite stale saved records. Other tests remain
+scoped to the behavior being changed.
+
+## Global template source ownership (CHG-026, CHG-032)
+
+Membership, Eligibility and Coverage are authored in the fresh-start requirements.
+Their page definitions, route/order, field placement, conditions, wording, notes,
+question participation and approved eligibility settings are compiled before any
+consumer resolves the site. A reviewed page does not inherit missing structure or
+content from an old saved catalog.
+
+- `requirements/parked/<page>.json` owns each reviewed page's definition and layout.
+- Global field IDs, field details, option lists and component/page mappings own the
+  reusable inputs; site field/page files select configuration and additional fields.
+- `requirements/global/content/*.json` owns wording. `content-bindings.json` projects
+  those keys into the existing consumer content contract without copying authoring.
+- Global configuration definitions own reusable settings and defaults; each
+  effective Site supplies its assigned values and overrides. ASCE currently supplies
+  the reviewed example values, not a separate template implementation.
+  `configuration-bindings.json` maps shared controls to the consumer contract.
+- Category/product order is a cross-page template configuration, with
+  `featured_prod` taking precedence. Its shared definitions/defaults are in
+  `global/configurations/product-presentation.json`; the existing presentation
+  resolver is shared by Home, quote tools, coverage panels/menu drawers and Coverage.
+  Later-page lists inherit the same requirement during their rollout.
+- `global/products.json` owns shared product/category/rider identities, policy
+  definitions, defaults and URL contracts. Its `catalog` section uses the existing
+  relational consumer vocabulary; it is authored input, not generated output.
+  `parked/sites/<site>/products.json` owns product/applicant/rider assignments,
+  identifiers, benefit formulas/periods, dependency/selection/journey policies,
+  underwriting bands and remaining amount records. `{{site}}`/`{{siteId}}` in
+  assignment identities bind to the effective Site. No shared definition is
+  instantiated separately for ASCE. Reviewed Life amounts, eligibility values
+  and residency/aggregate policies retain their existing fresh-start owners.
+  Verification questions and the dummy portfolio are prototype fixtures.
+
+`requirementCatalog.mjs` compiles these sources for both the Node catalog build and
+the browser. Library, prototype and Storybook resolve the same projection, including
+when loading an older saved snapshot. `public/catalog/portal.json` is a generated
+deployment bundle. Superseded authored records for the transferred pages and their
+`parked/legacy` files have been removed. Historical migration inspectors use
+an explicit snapshot resolver so they can still compare captured evidence.
+
+The underlying product-policy records for Membership through Coverage have also
+been removed from the old authoring parts. `requirementProductCatalog.mjs` supplies
+them from fresh start before page compilation; missing definitions/assignments
+are errors. The ownership check removes the product graph as well as page records
+and compares Library, prototype and Storybook. Coverage's aggregate-note display
+uses that projection, and its displayed maximum derives from the one Life ceiling.
+
+Home, the shared error/recovery pages (including 404 and 500), and the existing
+sent-for-signature/edit-request confirmation pages use this compiler too. Their
+page files own definitions and layout, including explicit empty field layouts.
+`consumerKey` preserves existing runtime route identities where an earlier draft
+used a different requirement ID. Home owns its complete content object and quote
+surface field aliases; quote controls derive from shared field definitions.
+Shared wording is in `global/content/home.json`, `recovery.json` and
+`confirmations.json`. Recovery states/actions are in `global/recovery.json`;
+the existing confirmation retention display is a global configuration and the
+dummy advisor recipient is a prototype fixture. This moves source ownership
+without reviewing or changing the advisor, resume or submission workflows.
+
+All 30 page definitions now compile from fresh start. The remaining application,
+health, payment/signature/receipt, resume and advisor-login pages were transferred
+as one batch, preserving their existing participation, layouts and behavior.
+`field-details.json` binds stable runtime field IDs to shared definitions;
+`global/application.json` owns shared rules, flows, document/email definitions
+and configuration records. `sites/<site>/application.json` assigns Site values,
+flows, documents and email templates. Application wording and prototype timings
+also have shared JSON owners. Installed field consumers read the compiled library.
+The reconstruction check removes legacy fields, workflow and policy inputs, then
+compares all page projections across Library, prototype and Storybook.
+
+This completes page source transfer; it does not mark all business rules reviewed.
+Beneficiary has since been normalized individually: it uses canonical field
+mappings and page-owned dialog surfaces through the shared resolver, with stable
+saved-answer aliases at the consumer boundary. Its Site page selects product-note
+content keys; the compiler supplies the note policy from shared wording. The
+other transferred pages retain their transitional bindings until their own review.
+Contact now also uses canonical mappings for residential, business and spouse
+groups. Phone-type companions belong to their owning group/person; contextual
+defaults preserve Contact's existing defaults without changing Membership.
+Its wording and Eligibility-location carry-forward mapping are shared page
+sources, and business/correspondence visibility flags have global defaults with
+effective-Site overrides.
+Existing-policy
+dependencies and lower existing Term Life minimums remain pending. The Coverage
+register records CIR and Disability period evidence; fictional estimates require
+no production-rate review. CHG-027 confirms the combined Life maximum on Coverage
+Next and the Disability residency scope; CHG-030 adds verified in-force deductions.
+Recorded amount ordering/default/lock and `amt`/`dprods` controls are connected to
+the shared projection. The
+dependent-only dialog remains in place pending review.
+
+The remaining design sections below include earlier drafts and describe the target
+model for areas still to be reviewed.
+
+> **Earlier design draft:** The sections below await review for remaining pages. Reviewed ASCE pages use the source ownership described above.
 > Field IDs are in `requirements/global/fields.json`, page components are in
 > `requirements/parked/<page>.json`, and page-section mappings are in
 > `requirements/mappings/page-sections/<page>.json`. Each field mapping lists a field once
@@ -95,6 +207,24 @@ Where applicant wording lives:
   key. Content keys are `<area>.<element>` or `<area>.<element>.<part>`, lowercase with hyphens,
   for example `membership.not-member.message`.
 
+A content key owns an independently maintained message or a cohesive block.
+Headings and action labels can have separate keys; multiple paragraphs use
+ordered arrays, and repeated steps/cards use named parts such as title and body.
+Keep dynamic messages complete with `{{variable}}` placeholders rather than
+assembling sentence fragments. Layout and styling stay in components. Prototype
+facts such as a masked test destination belong to fixtures, supplied to those
+placeholders when rendered. Equal wording alone does not make two different
+content roles the same authored fact.
+
+Validation follows the same ownership: field definitions supply required flags,
+formats, options and limits; `global/validations` describes the checks and refers
+to message keys; `global/content/validation.json` owns the shared wording once.
+Required messages interpolate the effective field label. The Library's Validations
+view resolves these references rather than maintaining a second copy. Missing or
+malformed answers use inline field errors with the standard page summary;
+eligibility decisions use one shared ineligibility page alert. Resume-loaded
+feedback belongs to the shared recovery flow and can appear on any resumed page.
+
 ## Defaults: global states them, a site overrides
 
 Everything global states its own default. A site file only says what it does differently, and
@@ -108,6 +238,7 @@ anything it does not mention is inherited. The same rule applies to every kind o
 | **Section note** (info alert under the section header) | the page file, the section's `note` (a content key) | text or none | the site's page file, `notes: { <section>: <content key> }` |
 | **Field required or not** | the field list, `required` | true · false | `sites/<site>/fields.json` |
 | **Field wording and options** | the field list | | `sites/<site>/fields.json` |
+| **Field format and length** | the field list: `format`, `minLength`, `maxLength` | shared format and positive integer limits; omitted limits impose no restriction | `sites/<site>/fields.json` |
 
 For example, Membership ID is not required by default, because ABE and WAEPA do not require it.
 ASCE overrides it to required. Health: Critical Illness is `none` by default, because nine of ten
@@ -154,6 +285,9 @@ Child(ren)" (words in `content/people.json`).
   `requirements/parked/fields.json`; the reviewed fresh-start structure authors them
   under subject-based `global/rules/` files with separate applicability mappings.
 - Browser autofill (`autoComplete`) applies to `self` only.
+  The shared `browser-autofill-self-only` rule records this requirement. The generic
+  loader keeps authored tokens for self (including `bday`) and sets them to `off`
+  for spouse and child fields.
 
 The checker rejects a field mapping for a person its definition does not allow.
 
@@ -175,6 +309,8 @@ and the checker rejects an `include` of a field that is already on (or a `hide` 
 - **Component tree**: a page file's `components` nests PascalCase types from
   `global/components.json`. A node can name a `mapping` (a known component) or a layout `section`.
 - **Section notes**: a section's `note` is a content key; a site page file overrides it under `notes`.
+- **Page notes**: the page's optional `note` is a content key; a site page file can
+  choose its own `note`. ASCE's profession note belongs to Membership.
 - **Validations**: `level` is `field` or `page`; `message` is a content key; `code` is an optional
   error code from `global/error-codes.json`. When a validation runs comes from the mapping binding's `trigger` (next, inline, change).
 - **Configuration types** also include `number` and a `string-list` with fixed `options`.
@@ -254,7 +390,9 @@ card use the loader today; other records do not by themselves change runtime beh
 `requirementPages` in the loader. `resolvePrototypeLibrary` then replaces that page's
 saved field definitions with the JSON (label, type, required, options, help, format,
 autofill, name) for sites that load from JSON. The saved page still decides placement,
-order and inclusion, and keeps runtime-only keys such as phone bindings. Because the
+order, and keeps runtime-only keys such as phone bindings. Membership's mapped
+field inclusion now comes from mapping defaults and its site page include/hide
+settings. Because the
 prototype, Portal Library and Storybook all resolve sites through
 `resolvePrototypeLibrary`, all three show the same definitions. Rolled out: **Membership and Eligibility**. Saved answer keys are the JSON field ID for self and `<person>-<field ID>` for others, using kebab-case. Use `requirementAnswerKey` and `parseRequirementAnswerKey` to convert between keys and mapped fields.
 
@@ -429,7 +567,9 @@ which of these inputs exist and their order, with the tobacco follow-ups after
 tobacco use. Existing category policy and Home hides still control participation;
 the mapping is not display order or an unconditional visibility rule. Quote
 eligibility inputs (ZIP, state, birth date), product selection/amount controls,
-other sites, and Coverage's saved definitions remain on their existing paths. Quote riders are
+and other sites remain on their existing paths. ASCE Coverage now resolves its
+reviewed fields, single self-employment question and policy overrides from the
+fresh-start JSON layer (CHG-025); see [coverage.md](coverage.md). Quote riders are
 implemented for all sites (CHG-002): each product card offers the product's member riders (riders
 attached to a dependent are not offered), using the Coverage page's rider policy for included and
 default selections and amount choices. Selected riders use Coverage's rider pricing in the estimate
@@ -542,3 +682,20 @@ after the aspects, because they follow from them.
 - **Site override**: a requirement that differs for one site.
 - **Effective site**: the result of applying a site's overrides to global.
 - Retired words: "catalog", "snapshot", "table", "row".
+
+## Application entry regression coverage (CHG-028)
+
+The standard ASCE suite now mounts the actual application, providers, router and
+session guard for Home entry. It covers a clean browser, expired previous sessions
+in both Home variants, expired-session recovery, preserving Continue application's
+resume path, and submitting Membership and Eligibility to reach Coverage. Existing
+quote-handoff tests also begin with expired prior applications and verify current
+quote answers survive while old application answers are cleared. Timeout-guard
+tests remain responsible for warning, expiry and refusing renewal by field activity.
+
+`useStartApplication` owns the explicit new-entry reset used by Home and quote
+Apply. Initializing a new application is separate from resuming an expired one.
+The inactivity duration remains provisional. These are application integration
+checks, not a claim of automated browser coverage through final submission.
+The Home → Membership → Eligibility → Coverage path was also verified in the live
+prototype browser. Full submission paths remain separate work from this entry fix.

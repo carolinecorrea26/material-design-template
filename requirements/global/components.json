@@ -1,79 +1,274 @@
 {
   "frame": [
-    { "name": "AppShell", "description": "Chooses which header, menu and footer a page shows (application form, advisor, error)." },
-    { "name": "AppHeader", "description": "Brand, help actions, application menu, cart and the step bar." },
-    { "name": "AppMenu", "description": "Application navigation and informational drawers." },
-    { "name": "AppBody", "description": "Main content container with responsive spacing." },
-    { "name": "AppFooter", "description": "Administrator, insurer, support and legal details." },
-    { "name": "ClientHelpBanner", "description": "Client phone, chat and other support actions." },
-    { "name": "OfflineBanner", "description": "Connection notice shown above the header." },
-    { "name": "ProgressStep", "description": "The steps (Getting started, Choose your coverage, and so on) and the breadcrumbs within the current step." },
-    { "name": "FormRoutePage", "description": "Wraps each consumer form page: title, steps, breadcrumbs, back, help, validation, saving and Next." },
-    { "name": "FormShell", "description": "The visual surface a form sits on." },
-    { "name": "PageShell", "description": "Shared page container and layout." },
-    { "name": "PageHeader", "description": "Page title, supporting copy, back action and contextual help." },
-    { "name": "PageTitle", "description": "Page heading, subtitle and supporting actions." },
-    { "name": "PageNav", "description": "The page's Next or Submit action." }
+    {
+      "name": "AppShell",
+      "description": "Chooses which header, menu and footer a page shows (application form, advisor, error)."
+    },
+    {
+      "name": "AppHeader",
+      "description": "Brand, help actions, application menu, cart and the step bar."
+    },
+    {
+      "name": "AppMenu",
+      "description": "Application navigation and informational drawers."
+    },
+    {
+      "name": "AppBody",
+      "description": "Main content container with responsive spacing."
+    },
+    {
+      "name": "AppFooter",
+      "description": "Administrator, insurer, support and legal details."
+    },
+    {
+      "name": "ClientHelpBanner",
+      "description": "Client phone, chat and other support actions."
+    },
+    {
+      "name": "OfflineBanner",
+      "description": "Connection notice shown above the header."
+    },
+    {
+      "name": "ProgressStep",
+      "description": "The steps (Getting started, Choose your coverage, and so on) and the breadcrumbs within the current step."
+    },
+    {
+      "name": "FormRoutePage",
+      "description": "Wraps each consumer form page: title, steps, breadcrumbs, back, help, validation, saving and Next."
+    },
+    {
+      "name": "FormShell",
+      "description": "The visual surface a form sits on."
+    },
+    {
+      "name": "PageShell",
+      "description": "Shared page container and layout."
+    },
+    {
+      "name": "PageHeader",
+      "description": "Page title, supporting copy, back action and contextual help."
+    },
+    {
+      "name": "PageTitle",
+      "description": "Page heading, subtitle and supporting actions."
+    },
+    {
+      "name": "PageNav",
+      "description": "The page's Next or Submit action."
+    }
   ],
-
   "sections": [
-    { "name": "HomeHero", "description": "Introduction, start and resume actions, with a quote card or association image." },
-    { "name": "AssociationIntroduction", "description": "Association logo, tagline and introductory paragraphs." },
-    { "name": "HomeCoverageSection", "description": "Coverage heading, description, category choices and product information." },
-    { "name": "UnderwriterCredentials", "description": "Insurer logo, name, ratings, description and footnote." },
-
-    { "name": "MembershipStatus", "description": "The membership question, with its link, eligibility and non-member feedback." },
-    { "name": "MemberInformation", "description": "Applicant name, email and phone, collected once membership is confirmed." },
-    { "name": "AdditionalMembershipInformation", "description": "Conditional membership follow-up questions." },
-    { "name": "MembershipHelp", "description": "Coverage options and how-applying-works help actions." },
-
-    { "name": "EligibilitySections", "description": "Personal information, covered applicants, spouse details and repeated children." },
-
-    { "name": "CoverageQuestions", "description": "Category questions with their member and spouse follow-ups." },
-    { "name": "ProductCatalog", "description": "Product choices with coverage and rider options per applicant, and the combined cost." },
-
-    { "name": "BeneficiaryProductRecords", "description": "Beneficiary records per product, with add, edit and remove." },
-
-    { "name": "ContactSections", "description": "Lays out the contact sections below." },
-    { "name": "ResidentialAddress", "description": "Residential address and any mailing-address control." },
-    { "name": "BusinessInformation", "description": "Business address, with a same-as-home option." },
-    { "name": "SpouseContact", "description": "Spouse contact details." },
-
-    { "name": "ProfileSections", "description": "Personal, employment, financial, existing-coverage, travel, residence and spouse sections, in order." },
-    { "name": "ReviewSections", "description": "Application summary, legal disclosures and the required consents." },
-    { "name": "PaymentSections", "description": "Payment elections, banking fields and cost display." },
-
-    { "name": "HealthInformationHelp", "description": "Help chip and explanation drawer." },
-    { "name": "HealthQuestionList", "description": "Questions one at a time, answered separately for member and spouse, with Yes/No answers and follow-up details." },
-    { "name": "ProcessingStatusPage", "description": "A progress state: loading the externally hosted QuickDecision questions, or the signature in progress." },
-
-    { "name": "ESignInstructions", "new": true, "description": "Tells the applicant what happens next in the electronic-signature process." },
-
-    { "name": "ReceiptConfirmation", "description": "Submission confirmation, security notice and document downloads." },
-    { "name": "ReceiptDecisions", "description": "Decision letters, with the application receipt and help alongside." },
-    { "name": "ReceiptApplicationSummary", "description": "Summary of the selected coverage and payment instructions." },
-    { "name": "ReceiptNextSteps", "description": "Acknowledgement with payment and welcome-kit guidance." },
-
-    { "name": "ResumeEmailRequest", "new": true, "description": "Application email address and the action to send a secure link." },
-    { "name": "ResumeDeliveryMethod", "new": true, "description": "Choice of Text or Call to receive the verification code." },
-    { "name": "ResumeCodeEntry", "new": true, "description": "Verification code entry and the Next action." },
-    { "name": "ExpiringCodeAlert", "description": "Shows whether a secure link or code is active or expired, and confirms a send or resend." },
-    { "name": "ResendCountdownRow", "description": "Resend countdown and action." },
-
-    { "name": "AdvisorLoginTabs", "new": true, "description": "Start and Continue tabs, each with its fields and action." },
-    { "name": "ConfirmationAlert", "new": true, "description": "Success message that a request was sent." },
-    { "name": "DetailsTable", "description": "Labeled values with a follow-up action: applicant email, send time and purge date, or the edit request details." },
-
-    { "name": "ApplicationErrorState", "description": "The one layout for every error page: icon or number, heading, message, guidance and actions." }
+    {
+      "name": "HomeHero",
+      "description": "Introduction, start and resume actions, with a quote card or association image."
+    },
+    {
+      "name": "AssociationIntroduction",
+      "description": "Association logo, tagline and introductory paragraphs."
+    },
+    {
+      "name": "HomeCoverageSection",
+      "description": "Coverage heading, description, category choices and product information."
+    },
+    {
+      "name": "UnderwriterCredentials",
+      "description": "Insurer logo, name, ratings, description and footnote."
+    },
+    {
+      "name": "MembershipStatus",
+      "description": "The membership question, with its link, eligibility and non-member feedback."
+    },
+    {
+      "name": "MemberInformation",
+      "description": "Applicant name, email and phone, collected once membership is confirmed."
+    },
+    {
+      "name": "AdditionalMembershipInformation",
+      "description": "Conditional membership follow-up questions."
+    },
+    {
+      "name": "MembershipHelp",
+      "description": "Coverage options and how-applying-works help actions."
+    },
+    {
+      "name": "EligibilitySections",
+      "description": "Personal information, covered applicants, spouse details and repeated children."
+    },
+    {
+      "name": "CoverageQuestions",
+      "description": "Category questions with their member and spouse follow-ups."
+    },
+    {
+      "name": "ProductCatalog",
+      "description": "Product choices with coverage and rider options per applicant, and the combined cost."
+    },
+    {
+      "name": "CoverageCategorySelector",
+      "description": "The available coverage categories and their current selections."
+    },
+    {
+      "name": "CoverageCart",
+      "description": "Selected coverages and combined estimated cost, displayed inline or in a drawer."
+    },
+    {
+      "name": "CoveragePortfolioDrawer",
+      "description": "Existing coverage made available after TPA verification."
+    },
+    {
+      "name": "CoverageSelectionFeedback",
+      "description": "Cart drawer for the first addition and compact feedback for later additions."
+    },
+    {
+      "name": "BeneficiaryProductRecords",
+      "description": "Beneficiary records per product, with add, edit and remove."
+    },
+    {
+      "name": "ContactSections",
+      "description": "Lays out the contact sections below."
+    },
+    {
+      "name": "ResidentialAddress",
+      "description": "Residential address and any mailing-address control."
+    },
+    {
+      "name": "BusinessInformation",
+      "description": "Business address, with a same-as-home option."
+    },
+    {
+      "name": "SpouseContact",
+      "description": "Spouse contact details."
+    },
+    {
+      "name": "ProfileSections",
+      "description": "Personal, employment, financial, existing-coverage, travel, residence and spouse sections, in order."
+    },
+    {
+      "name": "ReviewSections",
+      "description": "Application summary, legal disclosures and the required consents."
+    },
+    {
+      "name": "PaymentSections",
+      "description": "Payment elections, banking fields and cost display."
+    },
+    {
+      "name": "HealthInformationHelp",
+      "description": "Help chip and explanation drawer."
+    },
+    {
+      "name": "HealthQuestionList",
+      "description": "Questions one at a time, answered separately for member and spouse, with Yes/No answers and follow-up details."
+    },
+    {
+      "name": "ProcessingStatusPage",
+      "description": "A progress state: loading the externally hosted QuickDecision questions, or the signature in progress."
+    },
+    {
+      "name": "ESignInstructions",
+      "new": true,
+      "description": "Tells the applicant what happens next in the electronic-signature process."
+    },
+    {
+      "name": "ReceiptConfirmation",
+      "description": "Submission confirmation, security notice and document downloads."
+    },
+    {
+      "name": "ReceiptDecisions",
+      "description": "Decision letters, with the application receipt and help alongside."
+    },
+    {
+      "name": "ReceiptApplicationSummary",
+      "description": "Summary of the selected coverage and payment instructions."
+    },
+    {
+      "name": "ReceiptNextSteps",
+      "description": "Acknowledgement with payment and welcome-kit guidance."
+    },
+    {
+      "name": "ResumeEmailRequest",
+      "new": true,
+      "description": "Application email address and the action to send a secure link."
+    },
+    {
+      "name": "ResumeDeliveryMethod",
+      "new": true,
+      "description": "Choice of Text or Call to receive the verification code."
+    },
+    {
+      "name": "ResumeCodeEntry",
+      "new": true,
+      "description": "Verification code entry and the Next action."
+    },
+    {
+      "name": "ExpiringCodeAlert",
+      "description": "Shows whether a secure link or code is active or expired, and confirms a send or resend."
+    },
+    {
+      "name": "ResendCountdownRow",
+      "description": "Resend countdown and action."
+    },
+    {
+      "name": "AdvisorLoginTabs",
+      "new": true,
+      "description": "Start and Continue tabs, each with its fields and action."
+    },
+    {
+      "name": "ConfirmationAlert",
+      "new": true,
+      "description": "Success message that a request was sent."
+    },
+    {
+      "name": "DetailsTable",
+      "description": "Labeled values with a follow-up action: applicant email, send time and purge date, or the edit request details."
+    },
+    {
+      "name": "ApplicationErrorState",
+      "description": "The one layout for every error page: icon or number, heading, message, guidance and actions."
+    },
+    {
+      "name": "HowApplyingWorksPanel",
+      "description": "Existing application steps and informational drawers on Home."
+    }
   ],
   "elements": [
-    { "name": "PageAlert", "description": "Page-level alert under the header: notices (resumed application) and page errors (ineligibility, business validation)." },
-    { "name": "SectionNote", "description": "Standard info alert directly under a section header; text is the section's note content." },
-    { "name": "FieldGroup", "description": "A section's fields, laid out by the page; fields come from the page's field mapping." },
-    { "name": "DynamicList", "description": "Repeating entries (children, beneficiaries, companies): add or edit in a dialog, remove with confirmation, up to a maximum." },
-    { "name": "MemberVerification", "description": "Identity verification drawer opened when the TPA finds an existing member with active coverage." },
-    { "name": "VerificationAddress", "description": "Address dialog collected before verification when the TPA requires it." },
-    { "name": "Snackbar", "description": "Short confirmation toast." },
-    { "name": "HelpChip", "description": "Inline help chip that opens help content." }
+    {
+      "name": "Button",
+      "description": "An explicit page or section action."
+    },
+    {
+      "name": "ConfirmationDialog",
+      "description": "A decision dialog with confirm and cancel actions."
+    },
+    {
+      "name": "PageAlert",
+      "description": "Page-level alert under the header: notices (resumed application) and page errors (ineligibility, business validation)."
+    },
+    {
+      "name": "SectionNote",
+      "description": "Standard info alert directly under a section header; text is the section's note content."
+    },
+    {
+      "name": "FieldGroup",
+      "description": "A section's fields, laid out by the page; fields come from the page's field mapping."
+    },
+    {
+      "name": "DynamicList",
+      "description": "Repeating entries (children, beneficiaries, companies): add or edit in a dialog, remove with confirmation, up to a maximum."
+    },
+    {
+      "name": "MemberVerification",
+      "description": "Identity verification drawer opened when the TPA finds an existing member with active coverage."
+    },
+    {
+      "name": "VerificationAddress",
+      "description": "Address dialog collected before verification when the TPA requires it."
+    },
+    {
+      "name": "Snackbar",
+      "description": "Short confirmation toast."
+    },
+    {
+      "name": "HelpChip",
+      "description": "Inline help chip that opens help content."
+    }
   ]
 }

@@ -1,0 +1,11 @@
+{
+  "workflows": [
+    {
+      "id": "membership-starts-autosave",
+      "name": "Start application autosave after successful Membership submission",
+      "status": "confirmed",
+      "statement": "Successful validation, submission and saving of Membership establishes the saved application and starts application autosave. Later successfully submitted portal pages save progress before advancing, using form-next-save. Opening Membership, typing an email or failing validation does not by itself start this business lifecycle. This requirement applies to consumer and advisor-assisted applications; local browser caching is separate from confirmed application saving.",
+      "source": "docs/requirements-spec/page-review.md; src/content/docs/flows/autosaveFlow.ts"
+    }
+  ]
+}

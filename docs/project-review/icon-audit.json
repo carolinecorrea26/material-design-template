@@ -50,7 +50,7 @@
         {
           "icon": "AccessibleRounded",
           "file": "src/config/coverageCategories.ts",
-          "line": 3,
+          "line": 5,
           "scope": "applicant",
           "used": true
         }
@@ -62,7 +62,7 @@
         {
           "icon": "AccountBalanceWalletRounded",
           "file": "src/pages/Coverage.tsx",
-          "line": 7,
+          "line": 8,
           "scope": "applicant",
           "used": true
         }
@@ -86,14 +86,14 @@
         {
           "icon": "AddCircleOutlineRounded",
           "file": "src/components/beneficiary/BeneficiaryProductRecords.tsx",
-          "line": 2,
+          "line": 3,
           "scope": "applicant",
           "used": true
         },
         {
           "icon": "AddCircleOutlineRounded",
           "file": "src/components/forms/DynamicList.tsx",
-          "line": 3,
+          "line": 4,
           "scope": "applicant",
           "used": true
         },
@@ -112,7 +112,7 @@
         {
           "icon": "ArrowBackIosRounded",
           "file": "src/components/layout/PageTitle.tsx",
-          "line": 2,
+          "line": 3,
           "scope": "applicant",
           "used": true
         }
@@ -124,7 +124,7 @@
         {
           "icon": "ArrowForwardRounded",
           "file": "src/app/workflows/QuoteCalculator.tsx",
-          "line": 19,
+          "line": 20,
           "scope": "applicant",
           "used": true
         },
@@ -145,14 +145,14 @@
         {
           "icon": "ArrowForwardRounded",
           "file": "src/components/navigation/PageNav.tsx",
-          "line": 2,
+          "line": 3,
           "scope": "applicant",
           "used": true
         },
         {
           "icon": "ArrowForwardRounded",
           "file": "src/pages/Coverage.tsx",
-          "line": 6,
+          "line": 7,
           "scope": "applicant",
           "used": true
         },
@@ -271,7 +271,7 @@
         {
           "icon": "BusinessRounded",
           "file": "src/config/coverageCategories.ts",
-          "line": 4,
+          "line": 6,
           "scope": "applicant",
           "used": true
         }
@@ -290,7 +290,7 @@
         {
           "icon": "CalculateRounded",
           "file": "src/content/helpContent.tsx",
-          "line": 4,
+          "line": 5,
           "scope": "applicant",
           "used": true
         }
@@ -361,7 +361,7 @@
         {
           "icon": "CancelRounded",
           "file": "src/components/verification/MemberVerification.tsx",
-          "line": 7,
+          "line": 9,
           "scope": "applicant",
           "used": true
         }
@@ -397,7 +397,7 @@
         {
           "icon": "CheckCircleRounded",
           "file": "src/components/coverage/CoverageCart.tsx",
-          "line": 8,
+          "line": 9,
           "scope": "applicant",
           "used": true
         },
@@ -418,7 +418,7 @@
         {
           "icon": "CheckCircleRounded",
           "file": "src/components/feedback/ProcessingStatusPage.tsx",
-          "line": 3,
+          "line": 4,
           "scope": "applicant",
           "used": true
         },
@@ -453,7 +453,7 @@
         {
           "icon": "CheckCircleRounded",
           "file": "src/components/verification/MemberVerification.tsx",
-          "line": 6,
+          "line": 8,
           "scope": "applicant",
           "used": true
         }
@@ -465,7 +465,7 @@
         {
           "icon": "CheckRounded",
           "file": "src/components/forms/EligibilityFields.tsx",
-          "line": 4,
+          "line": 7,
           "scope": "applicant",
           "used": true
         },
@@ -486,7 +486,7 @@
         {
           "icon": "CheckRounded",
           "file": "src/pages/ResumeCode.tsx",
-          "line": 6,
+          "line": 7,
           "scope": "applicant",
           "used": true
         }
@@ -522,7 +522,7 @@
         {
           "icon": "CloseRounded",
           "file": "src/components/coverage/CoverageCart.tsx",
-          "line": 4,
+          "line": 5,
           "scope": "applicant",
           "used": true
         },
@@ -564,7 +564,7 @@
         {
           "icon": "CloseRounded",
           "file": "src/components/verification/MemberVerification.tsx",
-          "line": 5,
+          "line": 7,
           "scope": "applicant",
           "used": true
         },
@@ -607,7 +607,7 @@
         {
           "icon": "CreditCardOffRounded",
           "file": "src/content/helpContent.tsx",
-          "line": 7,
+          "line": 8,
           "scope": "applicant",
           "used": true
         }
@@ -631,14 +631,14 @@
         {
           "icon": "DeleteOutlineRounded",
           "file": "src/components/coverage/CoverageCart.tsx",
-          "line": 5,
+          "line": 6,
           "scope": "applicant",
           "used": true
         },
         {
           "icon": "DeleteOutlineRounded",
           "file": "src/content/helpContent.tsx",
-          "line": 9,
+          "line": 10,
           "scope": "applicant",
           "used": true
         }
@@ -695,7 +695,7 @@
         {
           "icon": "Diversity1Rounded",
           "file": "src/config/coverageCategories.ts",
-          "line": 6,
+          "line": 8,
           "scope": "applicant",
           "used": true
         }
@@ -714,7 +714,7 @@
         {
           "icon": "EditRounded",
           "file": "src/components/coverage/CoverageCart.tsx",
-          "line": 6,
+          "line": 7,
           "scope": "applicant",
           "used": true
         },
@@ -778,7 +778,7 @@
         {
           "icon": "EscalatorWarningRounded",
           "file": "src/config/formSectionTitle.ts",
-          "line": 3,
+          "line": 4,
           "scope": "applicant",
           "used": true
         }
@@ -955,14 +955,14 @@
         {
           "icon": "InfoRounded",
           "file": "src/components/coverage/CoverageCart.tsx",
-          "line": 9,
+          "line": 10,
           "scope": "applicant",
           "used": true
         },
         {
           "icon": "InfoRounded",
           "file": "src/components/coverage/EstimatedRate.tsx",
-          "line": 1,
+          "line": 2,
           "scope": "applicant",
           "used": true
         },
@@ -976,7 +976,7 @@
         {
           "icon": "InfoRounded",
           "file": "src/components/payment/PaymentSections.tsx",
-          "line": 3,
+          "line": 4,
           "scope": "applicant",
           "used": true
         },
@@ -990,14 +990,14 @@
         {
           "icon": "InfoRounded",
           "file": "src/components/review/ReviewSections.tsx",
-          "line": 4,
+          "line": 5,
           "scope": "applicant",
           "used": true
         },
         {
           "icon": "InfoRounded",
           "file": "src/content/helpContent.tsx",
-          "line": 3,
+          "line": 4,
           "scope": "applicant",
           "used": true
         }
@@ -1090,7 +1090,7 @@
         {
           "icon": "LocalHospitalRounded",
           "file": "src/config/coverageCategories.ts",
-          "line": 2,
+          "line": 4,
           "scope": "applicant",
           "used": true
         }
@@ -1109,7 +1109,7 @@
         {
           "icon": "LockRounded",
           "file": "src/content/helpContent.tsx",
-          "line": 6,
+          "line": 7,
           "scope": "applicant",
           "used": true
         }
@@ -1121,14 +1121,14 @@
         {
           "icon": "LoopRounded",
           "file": "src/components/feedback/ResendCountdownRow.tsx",
-          "line": 2,
+          "line": 3,
           "scope": "applicant",
           "used": true
         },
         {
           "icon": "LoopRounded",
           "file": "src/content/helpContent.tsx",
-          "line": 8,
+          "line": 9,
           "scope": "applicant",
           "used": true
         }
@@ -1271,7 +1271,7 @@
         {
           "icon": "PersonRounded",
           "file": "src/config/formSectionTitle.ts",
-          "line": 1,
+          "line": 2,
           "scope": "applicant",
           "used": true
         }
@@ -1283,7 +1283,7 @@
         {
           "icon": "PersonalInjuryRounded",
           "file": "src/config/coverageCategories.ts",
-          "line": 5,
+          "line": 7,
           "scope": "applicant",
           "used": true
         }
@@ -1400,7 +1400,7 @@
         {
           "icon": "ReportRounded",
           "file": "src/components/review/ReviewSections.tsx",
-          "line": 3,
+          "line": 4,
           "scope": "applicant",
           "used": true
         }
@@ -1486,7 +1486,7 @@
         {
           "icon": "ShoppingCartRounded",
           "file": "src/components/coverage/CoverageCart.tsx",
-          "line": 7,
+          "line": 8,
           "scope": "applicant",
           "used": true
         },
@@ -1538,7 +1538,7 @@
         {
           "icon": "SupervisorAccountRounded",
           "file": "src/config/formSectionTitle.ts",
-          "line": 2,
+          "line": 3,
           "scope": "applicant",
           "used": true
         }
@@ -1634,7 +1634,7 @@
         {
           "icon": "TuneRounded",
           "file": "src/content/helpContent.tsx",
-          "line": 5,
+          "line": 6,
           "scope": "applicant",
           "used": true
         }

@@ -10,6 +10,7 @@ import { getActiveClient } from "../config/client/getActiveClient";
 import { getPageSectionNote } from "../config/pages";
 import FormRoutePage from "../app/RoutePage";
 import { membershipIneligibilityMessage } from "../domain/applicantExperience";
+import { requirementText } from "../domain/requirementContent";
 
 import { getResolvedFieldsForSite } from "../config/fields/resolvedFieldRegistry";
 import { shouldShowMembershipFollowUpFields } from "../config/clientFields/membershipFollowUpVisibility";
@@ -31,7 +32,7 @@ export default function Membership() {
     <FormRoutePage
       pageId={pageId}
       help={<MembershipHelp />}
-      initialTransitionMessage="Loading your membership application..."
+      initialTransitionMessage={requirementText("membership.loading")}
       disableNextButton={(values) => {
         const associationResolution = resolveActiveAssociationFromApplication(
           site.id,

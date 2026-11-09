@@ -4,7 +4,7 @@
       "id": "form-next-validation",
       "name": "Validate before advancing the application",
       "status": "draft",
-      "statement": "Run registered field and page checks before saving; remain with errors if validation fails.",
+      "statement": "Run registered field and page checks before saving; remain with errors if validation fails, using the page error alert. Field answers do not disable Next before submission, except for the applicant's disqualifying membership attestation on the Membership page (membership-attestation-inline-stop).",
       "source": "src/app/RoutePage.tsx; src/app/RoutePage.navigation.test.tsx"
     },
     {

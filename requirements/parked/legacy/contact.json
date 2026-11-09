@@ -1,6 +1,0 @@
-{
-  "page": "contact",
-  "layout": {
-    "sections": { "residential-address": { "for": "self" }, "business": { "for": "self" }, "spouse": { "for": "spouse" } }
-  }
-}

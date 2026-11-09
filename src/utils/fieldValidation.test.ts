@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { fieldValidationChecks, getFieldValidationRules } from "./fieldValidation";
+import { resolveMappedFields } from '../domain/requirementFields';
 
 describe("shared form and Library validation", () => {
   it.each(["radio", "dropdown", "searchable-select"] as const)("validates restored %s answers against the configured choices", inputType => {
@@ -41,6 +42,25 @@ describe("shared form and Library validation", () => {
     expect(fieldValidationChecks(field).map(check => check.rule)).toEqual(["Required", "Valid email address"]);
     expect(getFieldValidationRules(field).required).toBe("Email is required.");
   });
+});
+
+it('applies ASCE identifier restrictions without restricting global alphanumeric identifiers', () => {
+  const id = (siteId?: string) => resolveMappedFields({ component: 'membership' }, { siteId, includeAll: true }).find(field => field.id === 'member-id')!;
+  expect(id('asce')).toMatchObject({ inputType: 'text', format: 'digits', inputMode: 'numeric', minLength: 6 });
+  const validate = getFieldValidationRules(id('asce')).validate!;
+  expect(validate('001234')).toBe(true);
+  expect(validate('12345')).toBe('Membership ID must be at least 6 characters.');
+  expect(validate('ABC123')).toBe('Membership ID must contain digits only.');
+  expect(id()).not.toHaveProperty('format');
+  expect(getFieldValidationRules(id()).validate).toBeUndefined();
+});
+
+it.each(['10001', '10001-1234', '100011234', 'K1A 0B1', 'k1a0b1', '00901', '00000'])('accepts ZIP/postal format %s independently of location lookup', value => {
+  const field = resolveMappedFields({ component: 'eligibility' }).find(field => field.id === 'zip-postal-code')!;
+  expect(getFieldValidationRules(field).validate!(value)).toBe(true);
+});
+it.each(['1234', '10001-12', 'K1A', 'K1A 0B', '1234567890'])('rejects incomplete ZIP/postal format %s on validation', value => {
+  expect(getFieldValidationRules({ id: 'zip', label: 'ZIP', inputType: 'text', format: 'postal-code', autoComplete: 'off' }).validate!(value)).toBe('Enter a valid ZIP / Postal Code.');
 });
 
 it("combines authored lengths with numeric/format checks and measures currency digits", () => {

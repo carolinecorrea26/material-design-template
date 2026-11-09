@@ -1,0 +1,445 @@
+{
+  "site": "asce",
+  "records": {
+    "configurationValues": [
+      {
+        "id": "client:{{site}}.theme.type",
+        "key": "client:{{site}}.theme.type",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "configurationKey": "theme.type",
+        "value": "preset",
+        "position": 0,
+        "displayId": 92164992451949,
+        "providedBy": null,
+        "sourceReference": "prototype:configurationValues/client:asce.theme.type"
+      },
+      {
+        "id": "client:{{site}}.theme.preset",
+        "key": "client:{{site}}.theme.preset",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "configurationKey": "theme.preset",
+        "value": "default",
+        "position": 1,
+        "displayId": 40050374471390,
+        "providedBy": null,
+        "sourceReference": "prototype:configurationValues/client:asce.theme.preset"
+      },
+      {
+        "id": "client:{{site}}.features.chat",
+        "key": "client:{{site}}.features.chat",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "configurationKey": "features.chat",
+        "value": true,
+        "position": 69,
+        "displayId": 113964927207489,
+        "providedBy": null,
+        "sourceReference": "prototype:configurationValues/client:asce.features.chat"
+      },
+      {
+        "id": "client:{{site}}.features.chatUrl",
+        "key": "client:{{site}}.features.chatUrl",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "configurationKey": "features.chatUrl",
+        "value": "https://app.five9.com/clients/consoles/ChatConsole/index.html?title=Chat&tenant=Pearl%20Insurance&profiles=ASCE%20-%20Current%2CASCE%20-%20New%20or%20Additional&showProfiles=true&autostart=true&profileLabel=Are%20you%20looking%20for%20help%20with%20Current%20or%20New%2FAdditional%20coverage%3F&theme=default-theme.css&surveyOptions=%7B%22showComment%22%3Afalse%2C%22requireComment%22%3Afalse%7D&fields=%7B%22name%22%3A%7B%22value%22%3A%22Chat%20User%22%2C%22show%22%3Afalse%2C%22label%22%3A%22Name%22%7D%2C%22email%22%3A%7B%22value%22%3A%22%22%2C%22show%22%3Atrue%2C%22label%22%3A%22Email%22%7D%2C%22Chat.First_Name%22%3A%7B%22value%22%3A%22%22%2C%22show%22%3Atrue%2C%22label%22%3A%22First%20Name%22%2C%22required%22%3Atrue%7D%2C%22Chat.Last_Name%22%3A%7B%22value%22%3A%22%22%2C%22show%22%3Atrue%2C%22label%22%3A%22Last%20Name%22%2C%22required%22%3Atrue%7D%2C%22UserLocale%22%3A%7B%22value%22%3A%22en%22%2C%22show%22%3Afalse%7D%7D&playSoundOnMessage=true&allowCustomerToControlSoundPlay=false&showEmailButton=false&hideDuringAfterHours=true&useBusinessHours=false&showPrintButton=true&allowUsabilityMenu=false&enableCallback=false&allowRequestLiveAgent=false&namespace=asceinsurance.com&ga=G-XYD9Q953HL",
+        "position": 70,
+        "displayId": 262799600624786,
+        "providedBy": null,
+        "sourceReference": "prototype:configurationValues/client:asce.features.chatUrl"
+      },
+      {
+        "id": "client:{{site}}.licenseInfo",
+        "key": "client:{{site}}.licenseInfo",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "configurationKey": "licenseInfo",
+        "value": [
+          "CA Agency License # 0F76076",
+          "AR Agency License # 100106280"
+        ],
+        "position": 71,
+        "displayId": 272872043465907,
+        "providedBy": null,
+        "sourceReference": "prototype:configurationValues/client:asce.licenseInfo"
+      },
+      {
+        "id": "{{site}}.review-policy",
+        "key": "{{site}}.review-policy",
+        "displayId": 245822556998220,
+        "providedBy": null,
+        "sourceReference": "docs/archive/step3-review-and-rating.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "shared.review-policy",
+        "value": {
+          "version": 1,
+          "fraud": {
+            "defaultText": "FRAUD NOTICE:  Any person who knowingly and with intent to defraud any insurance company or other person files an application for insurance or statement of claim containing any materially false information or conceals for the purpose of misleading, information concerning any fact material thereto commits a fraudulent insurance act, which may be a crime and may subject such person to criminal and civil penalties.",
+            "byJurisdiction": {
+              "CO": "FRAUD NOTICE:  Any person who knowingly and with intent to defraud any insurance company or other person files an application for insurance or statement of claim containing any materially false information or conceals for the purpose of misleading, information concerning any fact material thereto commits a fraudulent insurance act, which may be a crime and may subject such person to criminal and civil penalties.  Any insurance company or agent who defrauds or attempts to defraud an insured shall be reported to the Colorado Division of Insurance within the Department of Regulatory Agencies.",
+              "CA": "FRAUD NOTICE: For your protection California law requires the following to appear on this form.\n\nAny person who knowingly presents false or fraudulent information to obtain or amend insurance coverage or to make a claim for the payment of a loss is guilty of a crime and may be subject to fines and confinement in state prison.",
+              "AL": "FRAUD NOTICE:  Any person who knowingly presents a false or fraudulent claim for payment of a loss or benefit or knowingly presents false information in an application for insurance is guilty of a crime and may be subject to fines and confinement in prison.",
+              "AR": "FRAUD NOTICE: Any person who knowingly presents a false or fraudulent claim for payment of a loss or benefit or knowingly presents false information in an application for insurance is guilty of a crime and may be subject to fines and confinement in prison.",
+              "LA": "FRAUD NOTICE: Any person who knowingly presents a false or fraudulent claim for payment of a loss or benefit or knowingly presents false information in an application for insurance is guilty of a crime and may be subject to fines and confinement in prison.",
+              "PA": "FRAUD NOTICE: Any person who knowingly and with intent to defraud any insurance company or other person files an application for insurance or statement of claim containing any materially false information or conceals for the purpose of misleading, information concerning any fact material thereto commits a fraudulent insurance act, which is a crime and subjects such person to criminal and civil penalties.",
+              "RI": "FRAUD NOTICE: Any person who knowingly presents a false or fraudulent claim for payment of a loss or benefit or knowingly presents false information in an application for insurance is guilty of a crime and may be subject to fines and confinement in prison.",
+              "MD": "FRAUD NOTICE: Any person who knowingly or willfully presents a false or fraudulent claim for payment of a loss or benefit or who knowingly or willfully presents false information in an application for insurance is guilty of a crime and may be subject to fines and confinement in prison.",
+              "DC": "FRAUD NOTICE - WARNING: It is a crime to provide false or misleading information to an insurer for the purpose of defrauding the insurer or any other person. Penalties include imprisonment and/or fines. In addition, an insurer may deny insurance benefits, if false information materially related to a claim was provided by the applicant.",
+              "FL": "FRAUD NOTICE: Any person who knowingly and with intent to injure, defraud, or deceive any insurer files a statement of claim or an application containing any false, incomplete, or misleading information is guilty of a felony of the third degree.",
+              "KS": "FRAUD NOTICE: Any person who knowingly presents a false or fraudulent claim for payment of a loss or benefit or knowingly presents false information in an application for insurance may be guilty of insurance fraud as determined by a court of law.",
+              "ME": "FRAUD NOTICE: It is a crime to knowingly provide false, incomplete, or misleading information to an insurance company for the purpose of defrauding the company. Penalties may include imprisonment, fines or a denial of insurance benefits.",
+              "NJ": "FRAUD NOTICE - WARNING: Any person who includes any false or misleading information on an application for an insurance policy is subject to criminal and civil penalties.",
+              "NY": "FRAUD NOTICE: For accident and health insurance only, any person who knowingly and with intent to defraud any insurance company or any other person files an application for insurance or statement of claim containing any materially false information, or conceals for the purpose of misleading, information concerning any fact material thereto, commits a fraudulent insurance act, which is a crime, and shall also be subject to civil penalty not to exceed five thousand dollars and the stated value of the claim for each such violation.",
+              "OK": "FRAUD NOTICE - WARNING: Any person who knowingly, and with intent to injure, defraud or deceive any insurer, makes any claim for the proceeds of an insurance policy containing any false, incomplete or misleading information is guilty of a felony.",
+              "PR": "FRAUD NOTICE: Any person who, knowingly and with the intent to defraud, presents false information in an insurance request form, or who presents, helps or has presented a fraudulent claim for the payment of a loss or other benefit, or presents more than one claim for the same damage or loss, will incur a felony, and upon conviction will be penalized for each violation with a fine no less than five thousand (5,000) dollars nor more than ten thousand (10,000) dollars, or imprisonment for a fixed term of three (3) years, or both penalties. If aggravated circumstances prevail, the fixed established imprisonment may be increased to a maximum of five (5) years; if attenuating circumstances prevail, it may be reduced to a minimum of two (2) years.",
+              "TN": "FRAUD NOTICE: It is a crime to knowingly provide false, incomplete, or misleading information to an insurance company for the purpose of defrauding the company.  Penalties include imprisonment, fines, and denial of insurance benefits.",
+              "WA": "FRAUD NOTICE: It is a crime to knowingly provide false, incomplete, or misleading information to an insurance company for the purpose of defrauding the company.  Penalties include imprisonment, fines, and denial of insurance benefits.",
+              "VA": "FRAUD NOTICE: Any person who, with the intent to defraud or knowing that he is facilitating a fraud against an insurer, submits an application or files a claim containing false or deceptive statements may have violated state law.",
+              "VT": "FRAUD NOTICE: Any person who knowingly and with intent to defraud any insurance company or other person files an application for insurance or statement of claim containing any materially false information or conceals for the purpose of misleading, information concerning any fact material thereto commits a fraudulent insurance act, which may be a crime and may subject such person to criminal and civil penalties.ﾠ"
+            },
+            "sourceReferences": [
+              "Read & Sign!B53:C76"
+            ]
+          },
+          "blocks": [
+            {
+              "key": "connecticut-underwritten-notice",
+              "title": "Connecticut notice",
+              "paragraphs": [
+                "REVIEW THE ANSWERS ON THIS APPLICATION CAREFULLY. IF ANY OF YOUR ANSWERS ARE INCORRECT OR UNTRUE, EVEN IF UNINTENTIONAL, THE COMPANY MAY HAVE THE RIGHT TO DENY BENEFITS OR RESCIND YOUR COVERAGE IF THE MISREPRESENTATION IS DEEMED TO BE MATERIAL."
+              ],
+              "fields": [],
+              "placement": "before-member-signature",
+              "when": {
+                "jurisdictions": [
+                  "CT"
+                ],
+                "healthQuestions": true
+              },
+              "sourceReferences": [
+                "Read & Sign!B118",
+                "Read & Sign!B119"
+              ]
+            }
+          ],
+          "authorization": {
+            "when": "participating-health-questions",
+            "pageIds": [
+              "health-li",
+              "health-si",
+              "health-di",
+              "health-qd"
+            ],
+            "introductoryStatement": "I understand that New York Life has the right to require additional information and, if necessary, an examination by a physician. I ask New York Life to rely on all such statements made on this form, and any supplements to it, while considering this request. I also understand that the coverage afforded will be in consideration of the answers and statements set forth above.",
+            "wording": {
+              "defaultText": "AUTHORIZATION:  \nI authorize any licensed physician, medical practitioner, hospital, pharmacy, clinic or other medical or medically related facility, laboratory, insurance company, MIB, LLC. (\"MIB\"), or other organization, institution or person, that has any records or knowledge of me or my health to release information, including prescription drug records, maintained by physicians, pharmacy benefit managers, and other sources of information to New York Life Insurance Company, its reinsurers, its subsidiaries or the plan administrator about the physical and mental health of any persons proposed for insurance, including significant history, findings, diagnosis and treatment, but excluding psychotherapy notes for the purpose of evaluating my application for insurance. Health information obtained will not be re-disclosed without my authorization unless permitted by law, in which case it may not be protected under federal privacy rules. For example, New York Life may be required to provide it to insurance, regulatory, or other government agencies. In this case, the information may no longer be protected by the rules governing your AUTHORIZATION.\n\nA photocopy of this AUTHORIZATION and request form shall be as valid as the original. In all circumstances, my authorized agent, representative, or I may request a copy of this AUTHORIZATION. This AUTHORIZATION may be used for a period of 24 months from the date signed, unless sooner revoked.  The AUTHORIZATION may be revoked at any time by sending written notice to New York Life Insurance Company. My revocation will not be effective to the extent that New York Life or any other person already has disclosed or collected information or taken other action in reliance on it, or to the extent that New York Life has a legal right to contest a claim under an insurance certificate or the certificate itself.",
+              "variants": [
+                {
+                  "jurisdictions": [
+                    "MN"
+                  ],
+                  "text": "AUTHORIZATION:    I  authorize  any  licensed  physician,  medical  practitioner,  hospital,  clinic  or  other  medical  or  medically  related facility,  laboratory,  insurance  company,  [MIB, LLC  (“MIB”)],  or  other  organization,  institution  or  person,  that  has  any  records  or  knowledge of me or my health to release information, including prescription drug records, maintained by physicians, pharmacy benefit managers,  and  other  sources  of  information  to  New  York  Life  Insurance  Company,  its  reinsurers,  its  subsidiaries  or  the  plan  administrator  about  the  physical  and  mental  health  of  any  persons  proposed  for  insurance,  including  significant  history,  findings, diagnosis  and  treatment,  but  excluding  psychotherapy  notes  for  the  purpose  of  evaluating  my  application  for  insurance/  Health  information obtained will not be re-disclosed without my authorization unless permitted by law, in which case it may not be protected under federal privacy rules. For example, New York Life may be required to provide it to insurance, regulatory, or other government agencies. In this case, the information may no longer be protected by the rules governing your authorization.\n\nA photocopy of this AUTHORIZATION and request form shall be as valid as the original.  In all circumstances, my authorized agent  or  representative,  or  I  may  request  a  copy  of  this  AUTHORIZATION.  This  AUTHORIZATION  may  be  used  for  as  long  as  the  [Member] or any person proposed for insurance remains continually insured with New York Life Insurance Company, unless sooner revoked  as  stated  in  the  IMPORTANT  NOTICE.    The  authorization  may  be  revoked  at  any  time  by  sending  written  notice  to  New  York Life Insurance Company. My revocation will not be effective to the extent that New York Life or any other person already has disclosed or collected information or taken other action in reliance on it, or to the extent that New York Life has a legal right to contest a claim under an insurance certificate or the certificate itself. \n\nAs used in the Statement of Health the medical questions above:\n\n “Bloodborne pathogen” means pathogenic microorganisms that are present in human blood and can cause disease in humans. These pathogens  include,  but  are  not  limited  to,  hepatitis  B  virus  (HBV),  hepatitis  C  virus  (HCV),  and  human  immunodeficiency  virus  (HIV).  \n\n“Emergency medical services person” means an individual employed or receiving compensation to provide out-of-hospital emergencymedical  services  such  as  a  firefighter,  paramedic,  emergency  medical  technician,  licensed  nurse,  rescue  squad  person,  or  other  individual who serves as an employee or volunteer of an ambulance service or a member of an organized first responder squad that is formally  recognized  by  a  political  subdivision  in  the  state,  who  provides  out-of-hospital  emergency  medical  services  during  theperformance of the individual’s duties, an individual employed as a licensed peace officer, a crime laboratory worker while working outside the laboratory and involved in criminal investigation, an individual who renders emergency care or assistance at the scene of an emergency, or while an injured person is being transported to receive medical care and who is acting as a good Samaritan, and any individual who, in the process of executing a citizens’ arrest, may have experienced a significant exposure to a source individual.\n\n “Source individual” means an individual, living or dead, whose blood, tissue, or potentially infectious body fluids may be a source of bloodborne  pathogen  exposure  to  an  emergency  medical  service  person.  Examples  include,  but  are  not  limited  to,  a  victim  of  an  accident, injury, or illness, or a deceased person.\n\n\"Significant exposure” means contact likely to transmit a bloodborne pathogen, in a manner supported by the most current guidelines and recommendations of the United States Public Health Service at the time an evaluation takes place, that includes: (1) percutaneous injury,  contact  of  mucous  membrane  or  nonintact  skin,  or  prolonged  contact  of  intact  skin;  and  (2)  contact,  in  a  manner  that  may transmit a bloodborne pathogen, with blood, tissue, or potentially infectious body fluids.",
+                  "afterConsentText": "This  AUTHORIZATION  excludes  the  release  of  information  about  HIV  (AIDS  Virus)  tests  to  disclose  the  presence  of  a  bloodborne  pathogen which were administered: to a: (1) a crime victim or criminal offender as a result of a crime that was   reported to the police; (2) a patient  who  received  the  services  of  an  emergency  medical  services  person  at  a  hospital  or  medical  care  facility;  or  (3)  an  emergency medical person who was tested as a result of performing emergency medical services."
+                },
+                {
+                  "jurisdictions": [
+                    "VA"
+                  ],
+                  "underwritingTypes": [
+                    "QD"
+                  ],
+                  "text": "AUTHORIZATION: I authorize any licensed physician, medical practitioner, hospital, pharmacy, clinic or other medical or medically related facility, laboratory, insurance company, MIB, LLC (\"MIB\") or electronic health record company, health care information technology company, that have any records or knowledge of me (including non-medical information such as driving records, past convictions, hazardous sport or aviation activity, use of alcohol or drugs, residency and other applications for insurance) or my health to release information, including electronic medical files, prescription drug records, maintained by physicians, and pharmacy benefit managers to New York Life Insurance Company, its reinsurers, its subsidiaries or the plan administrator about the physical and mental health of any persons proposed for insurance, including significant history, findings, diagnosis and treatment, but excluding psychotherapy notes for the purpose of evaluating my application for insurance. Health information obtained will not be re-disclosed without my authorization unless permitted by law, in which case it may not be protected under federal privacy rules. For example, New York Life Insurance Company may be required to provide it to insurance, regulatory, or other government agencies. In this case, the information may no longer be protected by the rules governing your authorization.\n\nI also authorize New York Life Insurance Company to obtain from consumer reporting agencies driving records (if any) about myself or any other person proposed for insurance for the purpose of evaluating this application for insurance.\n\nA photocopy of this AUTHORIZATION and request form shall be as valid as the original. In all circumstances, my authorized agent or representative, or I may request a copy of this AUTHORIZATION. This AUTHORIZATION may be used for a period of 24 months from the date signed, unless sooner revoked as stated in the IMPORTANT NOTICE. The authorization may be revoked at any time by sending written notice to New York Life Insurance Company. My revocation will not be effective to the extent that New York Life Insurance Company or any licensed physician, medical practitioner, hospital, clinic or other medical or medically related facility, laboratory, insurance company, MIB, Inc. (\"MIB\") that already has disclosed or collected information or taken other action in reliance on it, or to the extent that New York Life Insurance Company has a legal right to contest the insurance certificate or the certificate itself."
+                }
+              ],
+              "processingVariants": [
+                {
+                  "when": "qd-disability-or-qd-life-with-disability",
+                  "text": "AUTHORIZATION:  I authorize physicians, practitioners, hospitals, clinics or medically related facilities, pharmacies, pharmacy benefit managers, laboratories, insurance companies, MIB, LLC (“MIB”), medical information retrieval services, electronic health record companies or health care information technology companies to  release to New York Life Insurance Company or New York Life Insurance and Annuity Corporation (collectively “New York Life”), its reinsurers, or the plan administrator at New York Life’s expense, whether in electronic or paper form, information they may have about my physical or mental health, my prescription drug history, diagnostic testing  and copies of my drug and alcohol records, including my records relating to substance abuse education, prevention, training, treatment, rehabilitation or research. This also may include information on the diagnosis, treatment, and testing results related to HIV, AIDS, and sexually transmitted diseases, unless otherwise restricted by state law. Mental health professionals may provide their records, excluding psychotherapy notes, of my diagnosis, functional status, treatment plan, symptoms, prognosis, progress to date, medication prescription and monitoring, and clinical test results for the purpose of evaluating my application for insurance. This includes protected health information and any health information I have previously requested be withheld from further disclosure, and including my history, their findings, diagnoses and treatment.\n\nMIB, other insurance companies, any employers, financial institutions, and consumer reporting agencies may provide to New York Life at New York Life’s expense data about: my driving record; my financial information; any criminal activity; hazardous sport or aviation activity; use of alcohol or drugs; any claim of eligibility for disability income benefits; other applications for insurance; and other policies of insurance. New York Life may obtain an investigative consumer report about me. \n\nA photocopy of this AUTHORIZATION and request form shall be as valid as the original.  My authorized agent or representative, or I may request a copy of this AUTHORIZATION. This AUTHORIZATION may be used for a period of 24 months from the date signed, unless sooner revoked as stated in the Important Notice.  The AUTHORIZATION may be revoked at any time by sending written notice to New York Life. My revocation will not be effective to the extent that New York Life or any other person already has disclosed or collected information or taken other action in reliance on it, or to the extent that New York Life has a legal right to contest a claim under an insurance certificate or the certificate itself.\n\nI understand and agree that:\n•\tNew York Life may use the information obtained by this AUTHORIZATION to determine my eligibility for insurance, to evaluate a claim for benefits, to contest coverage, or for reinsurance or other insurance purposes, including development of new products and services.\n•\tTo obtain the data described above, New York Life may give my personal information to the above persons or organizations. \n•\tNew York Life may give data collected about me to: its subsidiaries; affiliates; parent company; agents and their staffs; organizations that perform business functions for it; reinsurers, and others as permitted or required by law. \n•\tThe medical information New York Life obtains through this AUTHORIZATION may no longer be subject to federal laws and regulations that apply to an individual’s protected health information (the Health Insurance Portability and Accountability Act (HIPAA) Privacy Rule). The information New York Life obtains through this AUTHORIZATION may become subject to further disclosure.\n•\tAuthorizing the disclosure of this health information is voluntary. \n•\tI can refuse to sign this AUTHORIZATION. However, failure to execute this AUTHORIZATION may result in New York Life being unable to collect information relating to me and result in denial of my application for insurance.",
+                  "sourceReferences": [
+                    "Read & Sign!B52",
+                    "Read & Sign!C52"
+                  ]
+                }
+              ]
+            },
+            "sourceReferences": [
+              "Read & Sign!B3:B4",
+              "Read & Sign!B35:B36",
+              "Read & Sign!B40:B43",
+              "Read & Sign!C43",
+              "Read & Sign!B48:C48",
+              "User decisions October 20, 2026"
+            ]
+          },
+          "consent": {
+            "underwrittenWhen": [],
+            "underwrittenWhenHealthQuestions": true,
+            "underwrittenText": "CONSENT:\nBy signing and dating this application, I request the insurance applied for (for myself and/or my dependents); I attest that the information provided in my application is true and complete to the best of my knowledge and belief and that I, and any other person proposed for insurance, has read the Fraud Notice (if any) above and the IMPORTANT NOTICE.  including how my/our information is exchanged with MIB; and I, and any other person proposed for insurance, consents to authorize the disclosure of information, to and from the providers noted in the IMPORTANT NOTICE, including making a brief report of my/our protected health information to MIB.",
+            "otherText": "CONSENT:\nBy signing and dating this application, I request the insurance applied for (for myself and/or my dependents); and I attest that the information provided in my application is true and complete to the best of my knowledge and belief and that I, and any other person proposed for insurance, has read the Fraud Notice (if any).",
+            "sourceReferences": [
+              "Read & Sign!B77:B78",
+              "Read & Sign!B92:B93",
+              "User decision October 20, 2026: shared B78/B93 consent follows actual health-question participation; preserve AMA, ABE and dedicated WAEPA wording"
+            ]
+          },
+          "premiumContributionStatement": "PLEASE READ CAREFULLY THE STATEMENTS BELOW\n\nI understand that payment of a premium contribution for insurance does not mean that there is any coverage in force before the effective date as specified by New York Life."
+        }
+      }
+    ],
+    "siteFlows": [
+      {
+        "id": "client:{{site}}.tpaVerification",
+        "key": "client:{{site}}.tpaVerification",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "flowKey": "client:asce.tpaVerification",
+        "flowId": "tpaVerification",
+        "position": 0,
+        "displayId": 84967547457176,
+        "providedBy": null,
+        "sourceReference": "prototype:siteFlows/client:asce.tpaVerification"
+      }
+    ],
+    "brandingProfiles": [
+      {
+        "id": "client:asce",
+        "key": "client:asce",
+        "definition": {
+          "name": "American Society of Civil Engineers",
+          "acronym": "ASCE",
+          "logo": "/client/asce/logo.png",
+          "logoAlt": "American Society of Civil Engineers logo"
+        },
+        "position": 0,
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "displayId": 137453496738385,
+        "providedBy": null,
+        "sourceReference": "prototype:brandingProfiles/client:asce"
+      }
+    ],
+    "supportProfiles": [
+      {
+        "id": "client:asce",
+        "key": "client:asce",
+        "definition": {
+          "phone": "8006502723",
+          "phoneDisplay": "800-650-2723",
+          "phoneHours": "M-F 8:00am-5:00pm CST",
+          "email": "customerservice@asceinsurance.com",
+          "website": "asceinsurance.com",
+          "address": {
+            "organization": "Pearl Insurance",
+            "street": "1200 E. Glen Avenue",
+            "city": "Peoria Heights",
+            "state": "Illinois",
+            "zip": "61616"
+          }
+        },
+        "position": 0,
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "sourceReference": "Associations!D16",
+        "providedBy": null,
+        "displayId": 93993997753463
+      }
+    ],
+    "siteDocuments": [
+      {
+        "id": "{{site}}.footer.termsOfUseContent",
+        "key": "{{site}}.footer.termsOfUseContent",
+        "siteKey": "{{site}}",
+        "documentKey": "footer.termsOfUseContent",
+        "position": 0,
+        "displayId": 116742127134503,
+        "providedBy": null,
+        "sourceReference": "prototype:siteDocuments/asce.footer.termsOfUseContent"
+      },
+      {
+        "id": "{{site}}.footer.privacyNoticeContent",
+        "key": "{{site}}.footer.privacyNoticeContent",
+        "siteKey": "{{site}}",
+        "documentKey": "footer.privacyNoticeContent",
+        "position": 1,
+        "displayId": 91906338017478,
+        "providedBy": null,
+        "sourceReference": "prototype:siteDocuments/asce.footer.privacyNoticeContent"
+      },
+      {
+        "id": "{{site}}.product.li-term.brochure",
+        "key": "{{site}}.product.li-term.brochure",
+        "siteKey": "{{site}}",
+        "documentKey": "product.li-term.brochure",
+        "position": 2,
+        "displayId": 170480215437877,
+        "providedBy": null,
+        "sourceReference": "prototype:siteDocuments/asce.product.li-term.brochure"
+      },
+      {
+        "id": "{{site}}.product.li-10yr.brochure",
+        "key": "{{site}}.product.li-10yr.brochure",
+        "siteKey": "{{site}}",
+        "documentKey": "product.li-10yr.brochure",
+        "position": 3,
+        "displayId": 7378795593557,
+        "providedBy": null,
+        "sourceReference": "prototype:siteDocuments/asce.product.li-10yr.brochure"
+      },
+      {
+        "id": "{{site}}.product.li-20yr.brochure",
+        "key": "{{site}}.product.li-20yr.brochure",
+        "siteKey": "{{site}}",
+        "documentKey": "product.li-20yr.brochure",
+        "position": 4,
+        "displayId": 230040706456540,
+        "providedBy": null,
+        "sourceReference": "prototype:siteDocuments/asce.product.li-20yr.brochure"
+      },
+      {
+        "id": "{{site}}.product.li-add.brochure",
+        "key": "{{site}}.product.li-add.brochure",
+        "siteKey": "{{site}}",
+        "documentKey": "product.li-add.brochure",
+        "position": 5,
+        "displayId": 123790412645380,
+        "providedBy": null,
+        "sourceReference": "prototype:siteDocuments/asce.product.li-add.brochure"
+      },
+      {
+        "id": "{{site}}.product.di-ltd.brochure",
+        "key": "{{site}}.product.di-ltd.brochure",
+        "siteKey": "{{site}}",
+        "documentKey": "product.di-ltd.brochure",
+        "position": 6,
+        "displayId": 90304672004537,
+        "providedBy": null,
+        "sourceReference": "prototype:siteDocuments/asce.product.di-ltd.brochure"
+      }
+    ],
+    "siteEmailTemplates": [
+      {
+        "id": "{{site}}.autosave",
+        "key": "{{site}}.autosave",
+        "siteKey": "{{site}}",
+        "emailTemplateKey": "autosave",
+        "enabled": true,
+        "position": 0,
+        "displayId": 47943270916495,
+        "providedBy": null,
+        "sourceReference": "prototype:siteEmailTemplates/asce.autosave"
+      },
+      {
+        "id": "{{site}}.receipt",
+        "key": "{{site}}.receipt",
+        "siteKey": "{{site}}",
+        "emailTemplateKey": "receipt",
+        "enabled": true,
+        "position": 1,
+        "displayId": 65722702072567,
+        "providedBy": null,
+        "sourceReference": "prototype:siteEmailTemplates/asce.receipt"
+      },
+      {
+        "id": "{{site}}.resume-magic-link",
+        "key": "{{site}}.resume-magic-link",
+        "siteKey": "{{site}}",
+        "emailTemplateKey": "resume-magic-link",
+        "enabled": true,
+        "position": 2,
+        "displayId": 269131139221795,
+        "providedBy": null,
+        "sourceReference": "prototype:siteEmailTemplates/asce.resume-magic-link"
+      },
+      {
+        "id": "{{site}}.pending-reminder",
+        "key": "{{site}}.pending-reminder",
+        "siteKey": "{{site}}",
+        "emailTemplateKey": "pending-reminder",
+        "enabled": true,
+        "position": 3,
+        "displayId": 171418439713741,
+        "providedBy": null,
+        "sourceReference": "prototype:siteEmailTemplates/asce.pending-reminder"
+      },
+      {
+        "id": "{{site}}.purge-reminder",
+        "key": "{{site}}.purge-reminder",
+        "siteKey": "{{site}}",
+        "emailTemplateKey": "purge-reminder",
+        "enabled": true,
+        "position": 4,
+        "displayId": 144908318604997,
+        "providedBy": null,
+        "sourceReference": "prototype:siteEmailTemplates/asce.purge-reminder"
+      },
+      {
+        "id": "{{site}}.advisor-sent-for-signature",
+        "key": "{{site}}.advisor-sent-for-signature",
+        "siteKey": "{{site}}",
+        "emailTemplateKey": "advisor-sent-for-signature",
+        "enabled": true,
+        "position": 5,
+        "displayId": 128087695474769,
+        "providedBy": null,
+        "sourceReference": "prototype:siteEmailTemplates/asce.advisor-sent-for-signature"
+      },
+      {
+        "id": "{{site}}.advisor-sent-to-applicant",
+        "key": "{{site}}.advisor-sent-to-applicant",
+        "siteKey": "{{site}}",
+        "emailTemplateKey": "advisor-sent-to-applicant",
+        "enabled": true,
+        "position": 6,
+        "displayId": 235983205655165,
+        "providedBy": null,
+        "sourceReference": "prototype:siteEmailTemplates/asce.advisor-sent-to-applicant"
+      },
+      {
+        "id": "{{site}}.advisor-pending-reminder",
+        "key": "{{site}}.advisor-pending-reminder",
+        "siteKey": "{{site}}",
+        "emailTemplateKey": "advisor-pending-reminder",
+        "enabled": true,
+        "position": 7,
+        "displayId": 59787655341938,
+        "providedBy": null,
+        "sourceReference": "prototype:siteEmailTemplates/asce.advisor-pending-reminder"
+      },
+      {
+        "id": "{{site}}.advisor-edit-request",
+        "key": "{{site}}.advisor-edit-request",
+        "siteKey": "{{site}}",
+        "emailTemplateKey": "advisor-edit-request",
+        "enabled": true,
+        "position": 8,
+        "displayId": 212400063503946,
+        "providedBy": null,
+        "sourceReference": "prototype:siteEmailTemplates/asce.advisor-edit-request"
+      },
+      {
+        "id": "{{site}}.advisor-application-complete",
+        "key": "{{site}}.advisor-application-complete",
+        "siteKey": "{{site}}",
+        "emailTemplateKey": "advisor-application-complete",
+        "enabled": true,
+        "position": 9,
+        "displayId": 75688634336056,
+        "providedBy": null,
+        "sourceReference": "prototype:siteEmailTemplates/asce.advisor-application-complete"
+      }
+    ]
+  }
+}

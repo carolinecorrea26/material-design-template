@@ -1,0 +1,15 @@
+{
+  "list.add": "Add {{label}}",
+  "list.edit": "Edit {{label}}",
+  "list.remove-title": "Remove {{label}}?",
+  "list.updated": "{{label}} updated.",
+  "list.added": "{{label}} added.",
+  "list.removed": "{{label}} removed.",
+  "list.save": "Save",
+  "list.cancel": "Cancel",
+  "list.edit-action": "Edit",
+  "list.remove-action": "Remove",
+  "list.remove-named": "Remove {{label}}? This cannot be undone.",
+  "list.remove-unnamed": "Are you sure you want to remove this {{label}}? This cannot be undone.",
+  "list.remove-label": "Remove {{label}}"
+}

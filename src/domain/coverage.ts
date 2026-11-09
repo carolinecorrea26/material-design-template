@@ -134,6 +134,8 @@ export type CoverageUnderwritingBand = {
 };
 
 export type CoverageDefinition = {
+  /** Reviewed fresh-start site assignments; numeric values are authored in requirements JSON. */
+  requirementPolicy?: import("./requirementCoverageValidation.mjs").CoverageAssignment[];
   requirements?: CoverageRequirements;
   underwritingBands?: CoverageUnderwritingBand[];
   underwritingBandsStatus?: "requires-age-reconciliation" | "confirmed";

@@ -1,5 +1,5 @@
 import type { DatabaseSchema } from "../persistence/types";
-import { resolveEffectiveSite } from "../domain/effectiveSite";
+import { resolveSnapshotSite as resolveEffectiveSite } from "../domain/effectiveSite";
 import { isStoredRider, riderOverrideProperties } from "../domain/riderOverrides";
 import { isSelectionPolicy } from "../domain/coverageSelectionPolicy";
 import { isCoverageJourneyPolicy } from "../domain/coverageJourneyPolicy";

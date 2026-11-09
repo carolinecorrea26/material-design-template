@@ -1,0 +1,18 @@
+{
+  "validation.field.required": "{{label}} is required.",
+  "validation.field.select-one": "Select at least one option.",
+  "validation.field.available-options": "Select available {{label}} options.",
+  "validation.field.available-option": "Select an available {{label}} option.",
+  "validation.field.maximum-length": "{{label}} must be {{maximumLength}} characters or fewer.",
+  "validation.field.postal-code": "Enter a valid ZIP / Postal Code.",
+  "validation.field.email": "Enter a valid email address.",
+  "validation.field.phone": "Enter a valid 10-digit phone number.",
+  "validation.field.ssn": "Enter a valid 9-digit SSN.",
+  "validation.field.percent": "Enter a percent value with up to 3 digits.",
+  "validation.field.month-year": "Enter a valid month and year (MM/YYYY).",
+  "validation.field.date": "Enter a valid date.",
+  "validation.field.number": "Enter a valid nonnegative number.",
+  "validation.page.ineligible": "Unfortunately you are ineligible for coverage. Please contact the Administrator for more information about eligibility.",
+  "validation.field.minimum-length": "{{label}} must be at least {{minimumLength}} characters.",
+  "validation.field.digits": "{{label}} must contain digits only."
+}

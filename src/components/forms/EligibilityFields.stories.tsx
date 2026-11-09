@@ -1,3 +1,4 @@
+import { requirementValidationMessage } from "../../domain/requirementValidations";
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Box } from "@mui/material";
@@ -25,11 +26,11 @@ export default meta;
 function EligibilityDemo({
   initialValues = { birthday: "", zipCode: "", state: "" },
   attempted = false,
-  ageError,
+  eligibilityError,
 }: {
   initialValues?: EligibilityValues;
   attempted?: boolean;
-  ageError?: string;
+  eligibilityError?: string;
 }) {
   const [values, setValues] = useState<EligibilityValues>(initialValues);
   return (
@@ -38,7 +39,7 @@ function EligibilityDemo({
         values={values}
         onChange={(next) => setValues((current) => ({ ...current, ...next }))}
         attempted={attempted}
-        ageError={ageError}
+        eligibilityError={eligibilityError}
       />
     </Box>
   );
@@ -67,19 +68,19 @@ export const RequiredErrors: StoryObj = {
 };
 
 export const AgeIneligible: StoryObj = {
-  name: "ageError (age 80+)",
+  name: "Ineligible applicant",
   render: () => (
     <EligibilityDemo
       initialValues={{ birthday: "1940-01-01", zipCode: "10001", state: "NY" }}
       attempted
-      ageError="We're sorry, but coverage is not available for applicants age 80 or older."
+      eligibilityError={requirementValidationMessage("applicant-ineligible")}
     />
   ),
   parameters: {
     docs: {
       description: {
         story:
-          "ageError is computed externally by the exported validateEligibility() helper, not by this component — callers own the age >= 80 exclusion rule and pass the resulting message in.",
+          "The caller supplies the result of its configured eligibility checks. State and age exclusions use the same shared page alert; missing or malformed values use standard inline field messages.",
       },
     },
   },

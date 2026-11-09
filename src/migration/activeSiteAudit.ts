@@ -1,5 +1,5 @@
 import type { DatabaseSchema, TableName } from "../persistence/types";
-import { resolveEffectiveSite } from "../domain/effectiveSite";
+import { resolveSnapshotSite as resolveEffectiveSite } from "../domain/effectiveSite";
 import { activeSiteMigrationScope, coverageAcceptanceDomains } from "./activeSiteScope";
 import { resolveDatabaseSite } from "./resolve";
 

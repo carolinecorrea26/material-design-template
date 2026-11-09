@@ -3,13 +3,14 @@
   "membership.subhead": "Progress saves as you go, so you can stop anytime and finish later.",
   "membership.breadcrumb": "Membership",
   "membership.loading": "Loading your membership application...",
-
+  "membership.note.member-profession": "Throughout this site you will be referred to as a Member of the Civil Engineering profession.",
   "membership.help.coverage-options": "What are my coverage options?",
   "membership.help.how-applying-works": "How does applying work?",
-  "membership.help.cost": "How much does it cost?",
-
+  "membership.additional.title": "Additional Membership Information",
   "membership.not-member.message": "We're sorry, but only members are eligible to apply for this coverage.",
   "membership.not-member.heading": "Not yet a member?",
   "membership.not-member.body": "You can apply for membership with your association to become eligible for coverage. Contact {{clientName}} or visit your association's website to learn about membership options and how to join.",
-  "membership.not-member.website": "For more information, visit {{clientWebsite}}."
+  "membership.not-member.website": "For more information, visit {{clientWebsite}} or call {{clientPhone}}.",
+  "membership.help.applying-title": "How does applying work?",
+  "membership.help.coverage-options-title": "What are my coverage options?"
 }

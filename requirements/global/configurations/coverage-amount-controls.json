@@ -1,0 +1,44 @@
+{
+  "configurations": [
+    {
+      "id": "coverage-amount-order",
+      "name": "Coverage amount dropdown order",
+      "status": "confirmed",
+      "type": "enum",
+      "options": [
+        "minimum-to-maximum",
+        "maximum-to-minimum"
+      ],
+      "default": "minimum-to-maximum",
+      "source": "User-confirmed Coverage documentation; Library planned setCoverageOrder in src/content/docs/configurations.ts. Runtime supported through global bindings and src/domain/coveragePresentation.ts."
+    },
+    {
+      "id": "coverage-amount-default-mode",
+      "name": "Initial coverage amount selection",
+      "status": "confirmed",
+      "type": "enum",
+      "options": [
+        "minimum",
+        "specified"
+      ],
+      "default": "minimum",
+      "source": "User-confirmed Coverage documentation; existing minimum-positive behavior in src/app/useCoverageState.ts. Order and initial selection are separate controls. Runtime supported through src/domain/coveragePresentation.ts."
+    },
+    {
+      "id": "coverage-amount-default-value",
+      "name": "Specified initial coverage amount",
+      "status": "confirmed",
+      "type": "number",
+      "default": 0,
+      "source": "Global template definition; only used when coverage-amount-default-mode is specified. Zero is the unassigned placeholder, not an instruction to select zero coverage. An effective Site may assign a specific value; runtime supported through src/domain/coveragePresentation.ts."
+    },
+    {
+      "id": "coverage-amount-locked",
+      "name": "Lock the configured coverage amount",
+      "status": "confirmed",
+      "type": "boolean",
+      "default": false,
+      "source": "Library planned setCoverageAmount in src/content/docs/configurations.ts sets and locks an amount; amt sets the value and dprods disables the dropdown in the Library URL table. Recorded control; runtime supported through src/domain/coveragePresentation.ts."
+    }
+  ]
+}

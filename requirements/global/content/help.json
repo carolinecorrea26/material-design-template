@@ -12,5 +12,48 @@
     "You assign a percentage to each individual beneficiary, and the percentages for that designation must add up to 100%.",
     "For example, if one beneficiary is assigned 60% and another is assigned 40%, they would receive those portions of the total benefit.",
     "If you name a trust as beneficiary, 100% of the proceeds will be paid to the trust."
-  ]
+  ],
+  "help.how-applying-works.intro": "This online experience is designed to help you complete your application quickly and easily.",
+  "help.how-applying-works.steps": [
+    {
+      "title": "Apply online",
+      "body": "Complete our online application to apply for coverage that fits your needs. You'll be able to review your options and see your estimated cost."
+    },
+    {
+      "title": "Answer health questions",
+      "body": "Many types of insurance require health information to provide a decision on your application. We may ask health questions on your application or a representative of New York Life or their medical service provider may contact you to collect your health history. If needed, we will schedule a medical exam at no cost to you and at a time and place convenient to you."
+    },
+    {
+      "title": "Get a decision",
+      "body": "Decisions are made after all information is received and reviewed by New York Life. If approved, you will receive a certificate of insurance and have a 30-day no-obligation free look."
+    }
+  ],
+  "help.how-applying-works.sub-drawer-titles.application-review": "Application review process",
+  "help.how-applying-works.sub-drawer-titles.quick-decision": "QuickDecision",
+  "help.application-review.title": "About the application review process",
+  "help.application-review.intro": "During the application review process, also known as underwriting, our team will review your application to provide a decision on your application.",
+  "help.application-review.what-to-expect-title": "What to expect",
+  "help.application-review.what-to-expect-items": [
+    "A medical service provider may contact you to confirm details about your health.",
+    "A medical exam may be scheduled if needed at no cost to you and at a time and place convenient to you.",
+    "We may also request additional information, such as prescription history, financial information, medical records from your physician(s), and/or medical claims history.",
+    "Any forms needing your signature will be sent securely via DocuSign."
+  ],
+  "help.application-review.closing-note": "The review process typically takes a few business days, but with QuickDecision, many applications can get a real-time decision, often without requiring a medical exam.",
+  "help.coverage-options.intro": "Review the coverage categories available and the products offered within each category.",
+  "help.quick-decision.title-prefix": "What is",
+  "help.quick-decision.intro": "helps speed up your application by using your answers to health questions along with securely accessed data, such as prescription history, medical claims, driving records, and prior insurance activity. In many cases, this means no medical exams or lab tests are needed.",
+  "help.quick-decision.what-to-expect-title": "What to expect",
+  "help.quick-decision.what-to-expect-items": [
+    "Most decisions are made quickly.",
+    "Some applications may need additional review.",
+    "If so, an underwriter may contact you for more information."
+  ],
+  "help.quick-decision.important-to-know-title": "Important to know",
+  "help.quick-decision.important-to-know-items": [
+    "Approval depends on confirming your group status and eligibility for the coverage amount selected.",
+    "may not be available for all products or in all states/territories."
+  ],
+  "help.coverage-portfolio.title": "Coverage portfolio",
+  "help.coverage-portfolio.intro": "The following coverage is currently in force based on your membership record."
 }

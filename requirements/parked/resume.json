@@ -1,6 +1,48 @@
 {
   "page": "resume",
   "components": [
-    { "type": "resume" }
-  ]
+    {
+      "type": "resume"
+    }
+  ],
+  "definition": {
+    "id": "resume",
+    "path": "/resume",
+    "type": "resume",
+    "flow": "resume",
+    "healthGate": false,
+    "displayName": "Resume"
+  },
+  "position": 17,
+  "fieldBindings": [
+    "resume-email"
+  ],
+  "looseFields": [
+    "resume-email"
+  ],
+  "layout": {
+    "sections": {}
+  },
+  "content": {
+    "wording": [
+      "page.resume.title",
+      "page.resume.subhead",
+      "page.resume.nav-title"
+    ],
+    "runtime": [
+      "application.ui.enter-a-valid-email-address",
+      "application.ui.application-recovery-is-unavailable-please-try-again-later",
+      "application.ui.resume-request-failed",
+      "application.ui.a-secure-link-has-been-sent-to",
+      "application.ui.open-your-email-and-click-the-link-to-continue",
+      "application.ui.sending-secure-link",
+      "navigation.next",
+      "application.ui.your",
+      "application.ui.secure-link",
+      "application.ui.verification-code",
+      "application.ui.has-expired",
+      "application.ui.resend",
+      "application.ui.expires-in"
+    ]
+  }
 }

@@ -1,3 +1,4 @@
+import peopleContent from "../../requirements/global/content/people.json";
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import SupervisorAccountRoundedIcon from "@mui/icons-material/SupervisorAccountRounded";
 import EscalatorWarningRoundedIcon from "@mui/icons-material/EscalatorWarningRounded";
@@ -19,15 +20,15 @@ type SectionLabelConfig = {
 const MAX_APPLICANT_LABEL_LENGTH = 20;
 
 const defaultApplicantLabels: Record<CoverageApplicantId, string> = {
-  member: "You",
-  spouse: "Your Spouse",
-  child: "Your Child(ren)",
+  member: peopleContent["people.self"],
+  spouse: peopleContent["people.spouse"],
+  child: peopleContent["people.child"],
 };
 
 const defaultApplicantSectionTitles: Record<ApplicantSectionId, string> = {
-  self: "You",
-  spouse: "Your Spouse",
-  child: "Your Child(ren)",
+  self: peopleContent["people.self"],
+  spouse: peopleContent["people.spouse"],
+  child: peopleContent["people.child"],
 };
 
 // Configure section labels and icon visibility here.

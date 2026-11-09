@@ -8,7 +8,12 @@ import { buildGlobalTemplate } from "../dev/storybook/globalTemplate";
 import { fieldSurfaceRows } from "../pages/admin/library/fieldSurfaceRows";
 import { pageCatalogRows } from "../pages/admin/library/pageCatalogRows";
 import { libraryRequirementRows } from "../pages/admin/library/libraryRequirementRows";
-import { storedApplicationPageRows } from "../pages/admin/library/storedLibraryModel";
+import { storedApplicationPageRows, storedLibraryRows } from "../pages/admin/library/storedLibraryModel";
+import membershipRules from "../../requirements/global/rules/membership.json";
+import applicationRules from "../../requirements/global/rules/application.json";
+import applicationWorkflows from "../../requirements/global/workflows/application.json";
+import fieldRules from "../../requirements/global/rules/fields.json";
+import membershipContent from "../../requirements/global/content/membership.json";
 import { getCoverageAmountChoices } from "../utils/coverageAmounts";
 import { isSelectionPolicy } from "./coverageSelectionPolicy";
 import { resolveCoverageJourneyPolicy } from "./coverageJourneyPolicy";
@@ -30,6 +35,56 @@ const product = (id: string) => {
 afterEach(() => installPrototypeLibrary(null));
 
 describe("ASCE current catalog, prototype, Library and Storybook parity", () => {
+  it("documents confirmed Membership requirements in the Library from their JSON definitions", () => {
+    const rows = libraryRequirementRows(catalog, "asce");
+    expect(rows.some(row => row.key === "rule-persistence-membership-starts-autosave-mock-communication")).toBe(false);
+    for (const record of [...membershipRules.rules, ...applicationRules.rules, ...applicationWorkflows.workflows, ...fieldRules.rules]) {
+      expect(rows.find(row => row.key === record.id)).toMatchObject({ behavior: record.statement, name: record.name, requirementsJson: true });
+      expect(rows.filter(row => row.key === record.id)).toHaveLength(1);
+      expect(libraryRequirementRows(catalog, "not-a-site").some(row => row.key === record.id)).toBe(false);
+    }
+  });
+
+  it("reads Membership wording from requirements instead of conflicting legacy catalog copy", () => {
+    const changed = structuredClone(catalog);
+    for (const row of changed.data.contentValues) if (["pages.membership.title", "pages.membership.subhead", "pages.membership.navTitle"].includes(row.contentKey)) row.value = "Stale catalog copy";
+    const phoneType = changed.data.fields.find(field => field.key === "phone-type")!.definition;
+    phoneType.label = "Stale phone type";
+    phoneType.options = phoneType.options!.map(option => ({ ...option, label: `Stale ${option.label}` }));
+    const current = resolvePrototypeLibrary(changed.data, "asce", "test:membership-content");
+    expect(current.content.pages.membership).toMatchObject({
+      title: membershipContent["membership.title"], subhead: membershipContent["membership.subhead"], navTitle: membershipContent["membership.breadcrumb"],
+    });
+    const storybook = buildGlobalTemplate(changed, "multipleTerms");
+    expect(storybook.content.pages.membership).toEqual(current.content.pages.membership);
+    expect(current.fields.find(field => field.id === "phone-type")?.label).toBe("Phone Type");
+    expect(current.fields.find(field => field.id === "phone-type")?.options).toEqual([
+      { value: "mobile", label: "Mobile" }, { value: "home", label: "Home" }, { value: "business", label: "Business" },
+    ]);
+    expect(storybook.fields.find(field => field.id === "phone-type")).toEqual(current.fields.find(field => field.id === "phone-type"));
+    expect(fieldSurfaceRows(changed, "asce").find(row => row.field.id === "phone-type" && row.pages.includes("membership"))?.field.options).toEqual(current.fields.find(field => field.id === "phone-type")?.options);
+    const rows = storedLibraryRows(changed, "contentValues", "asce");
+    for (const [key, value] of Object.entries(membershipContent)) {
+      const aliases: Record<string, string> = { "membership.title": "pages.membership.title", "membership.subhead": "pages.membership.subhead", "membership.breadcrumb": "pages.membership.navTitle", "membership.note.member-profession": "pages.membership.infoNote" };
+      expect(rows.find(row => row.contentKey === (aliases[key] ?? key))?.value).toBe(value);
+    }
+  });
+
+  it.each(["prototype", "storybook"] as const)("uses the Membership page note and member-only browser hints in %s and Library", surface => {
+    const current = surface === "prototype" ? library : buildGlobalTemplate(catalog, "multipleTerms");
+    const note = membershipContent["membership.note.member-profession"];
+    expect(current.content.pages.membership?.infoNote).toBe(note);
+    expect(current.content.pages.eligibility?.sectionNotes?.selfEligibility).toBeUndefined();
+    expect(storedLibraryRows(catalog, "contentValues", "asce").find(row => row.contentKey === "pages.membership.infoNote")?.value).toBe(note);
+    const membership = current.site.configuration.pages.find(page => page.key === "membership")!;
+    expect(membership.fields.some(field => field.included && field.key === "title")).toBe(false);
+    expect(membership.fields.find(field => field.key === "membership")?.definition.inputType).toBe("radio");
+    expect(membership.fields.find(field => field.key === "member-id")?.definition.required).toBe(true);
+    const eligibility = current.site.configuration.pages.find(page => page.key === "eligibility")!;
+    expect(eligibility.fields.find(field => field.key === "birth-date")?.definition.autoComplete).toBe("bday");
+    expect(eligibility.fields.find(field => field.key === "spouse-birth-date")?.definition.autoComplete).toBe("off");
+    expect(current.fieldCollections.children.mapping.fields.find(field => field.id === "child-birth-date")?.autoComplete).toBe("off");
+  });
   it("stores only supported eligibility dimensions and child collection bindings for every site", () => {
     const constraintKeys = ["id", "key", "displayId", "providedBy", "sourceReference", "productKey", "siteKey", "applicantTypeKey", "minimumAgeDays", "minimumAgeYears", "maximumAgeYears", "studentMaximumAgeYears", "minimumWorkHours"].sort();
     for (const constraint of catalog.data.eligibilityConstraints) expect(Object.keys(constraint).sort()).toEqual(constraintKeys);
@@ -127,7 +182,7 @@ describe("ASCE current catalog, prototype, Library and Storybook parity", () => 
     expect(resolveBenefitLimit(di.requirements, "member", { ageYears: 30, selfEmployed: false, averageMonthlyIncome: 1000 })?.maximum).toBe(600);
     const restricted = resolveApplicationCoverage(di, "member", {
       "birth-date": "1990-01-15", "state-province": "NY", "hours-worked-per-week": "30",
-      "is-self-employed": "yes", "years-self-employed": "0.5", "average-monthly-income": "5000",
+      "self-employed-under-one-year": "yes", "average-monthly-income": "5000",
     }, library.products);
     expect(restricted.waitingPeriod.requiredValue).toBe("90-days");
     expect(restricted.benefitPeriod.requiredValue).toBe("5-years");
@@ -180,7 +235,7 @@ describe("ASCE current catalog, prototype, Library and Storybook parity", () => 
     const journey = resolveCoverageJourneyPolicy(library.site, "li-term")!;
     expect(journey.questions.every(question => !question.modes.includes("rider-only"))).toBe(true);
     expect(journey.mappings.every(mapping => mapping.when.mode !== "rider-only")).toBe(true);
-    const selectionRow = libraryRequirementRows(catalog, "asce").find(row => row.key === "asce.li-term.selection-policy")!;
+    const selectionRow = libraryRequirementRows(catalog, "asce").find(row => row.key === "template.li-term.selection-policy")!;
     expect(selectionRow.behavior).toContain("Rider Only Applicants: None recorded");
     expect(selectionRow.behavior).not.toContain("rider-only");
     expect(selectionRow.behavior).not.toContain("Modes:");

@@ -1,6 +1,99 @@
 {
   "page": "health-li",
   "components": [
-    { "type": "health-li" }
-  ]
+    {
+      "type": "health-li"
+    }
+  ],
+  "definition": {
+    "id": "health-li",
+    "path": "/health-li",
+    "type": "form",
+    "groupId": "health",
+    "flow": "application",
+    "healthGate": true,
+    "displayName": "Health LI"
+  },
+  "position": 9,
+  "fieldBindings": [
+    "health-li-q1",
+    "health-li-q2",
+    "health-li-q3",
+    "health-li-q4",
+    "health-li-q5",
+    "health-li-q6",
+    "health-li-q7",
+    "health-li-q8",
+    "health-li-q9",
+    "health-li-q10",
+    "health-li-q11",
+    "health-li-q12",
+    "health-li-q13",
+    "health-li-q14",
+    "health-li-q15",
+    "health-li-q1-spouse",
+    "health-li-q2-spouse",
+    "health-li-q3-spouse",
+    "health-li-q4-spouse",
+    "health-li-q5-spouse",
+    "health-li-q6-spouse",
+    "health-li-q7-spouse",
+    "health-li-q8-spouse",
+    "health-li-q9-spouse",
+    "health-li-q10-spouse",
+    "health-li-q11-spouse",
+    "health-li-q12-spouse",
+    "health-li-q13-spouse",
+    "health-li-q14-spouse",
+    "health-li-q15-spouse",
+    "health-li-detail-onset",
+    "health-li-detail-conditionsDetails",
+    "health-li-detail-physicianAddress"
+  ],
+  "looseFields": [
+    "health-li-q1",
+    "health-li-q2",
+    "health-li-q3",
+    "health-li-q4",
+    "health-li-q5",
+    "health-li-q6",
+    "health-li-q7",
+    "health-li-q8",
+    "health-li-q9",
+    "health-li-q10",
+    "health-li-q11",
+    "health-li-q12",
+    "health-li-q13",
+    "health-li-q14",
+    "health-li-q15",
+    "health-li-q1-spouse",
+    "health-li-q2-spouse",
+    "health-li-q3-spouse",
+    "health-li-q4-spouse",
+    "health-li-q5-spouse",
+    "health-li-q6-spouse",
+    "health-li-q7-spouse",
+    "health-li-q8-spouse",
+    "health-li-q9-spouse",
+    "health-li-q10-spouse",
+    "health-li-q11-spouse",
+    "health-li-q12-spouse",
+    "health-li-q13-spouse",
+    "health-li-q14-spouse",
+    "health-li-q15-spouse"
+  ],
+  "layout": {
+    "sections": {}
+  },
+  "content": {
+    "wording": [
+      "page.health-li.title",
+      "page.health-li.subhead",
+      "page.health-li.nav-title"
+    ],
+    "runtime": [
+      "application.ui.onset",
+      "application.ui.no-details-provided"
+    ]
+  }
 }

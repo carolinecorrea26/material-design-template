@@ -8,6 +8,7 @@ import FieldRenderer from "../forms/FieldRenderer";
 import FieldGrid from "../layout/FieldGrid";
 import SectionDivider from "../layout/SectionDivider";
 import { clearFields, waepaConditionalFieldIds, type MembershipSetValue } from "./membershipFieldReset";
+import { requirementText } from "../../domain/requirementContent";
 
 function fieldById(fields: FieldDefinition[], id: string) {
   return fields.find((field) => field.id === id);
@@ -132,7 +133,7 @@ export default function AdditionalMembershipInformation({ fields: additionalFiel
         label={
           hasAmaPhysicianFields
             ? "Physician Information"
-            : "Additional Membership Information"
+            : requirementText("membership.additional.title")
         }
         variant="subsection"
       >

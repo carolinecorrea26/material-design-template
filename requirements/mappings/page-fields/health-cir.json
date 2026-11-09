@@ -1,19 +1,103 @@
 {
   "page": "health-cir",
   "fields": [
-    {"field":"health-cir-q1","people":["self","spouse"]},
-    {"field":"health-cir-activities","people":["self","spouse"]},
-    {"field":"health-cir-q2","people":["self","spouse"]},
-    {"field":"health-cir-q3","people":["self","spouse"]},
-    {"field":"health-cir-q4","people":["self","spouse"]},
-    {"field":"health-cir-q5","people":["self","spouse"]},
-    {"field":"health-cir-q6","people":["self","spouse"]},
-    {"field":"health-cir-q7","people":["self","spouse"]},
-    {"field":"health-cir-q8","people":["self","spouse"]},
-    {"field":"health-cir-q9","people":["self","spouse"]},
-    {"field":"health-cir-q10","people":["self","spouse"]},
-    {"field":"health-cir-q11","people":["self","spouse"]},
-    {"field":"health-cir-dwelling-other","people":["self","spouse"]},
-    {"field":"health-cir-q12","people":["self","spouse"]}
+    {
+      "field": "health-cir-q1",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "health-cir-activities",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "health-cir-q2",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "health-cir-q3",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "health-cir-q4",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "health-cir-q5",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "health-cir-q6",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "health-cir-q7",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "health-cir-q8",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "health-cir-q9",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "health-cir-q10",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "health-cir-q11",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "health-cir-dwelling-other",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "health-cir-q12",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    }
   ]
 }

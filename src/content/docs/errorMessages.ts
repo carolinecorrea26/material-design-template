@@ -1,3 +1,4 @@
+import { requirementValidationMessage } from "../../domain/requirementValidations";
 // ---------------------------------------------------------------------------
 // Error messages data
 //
@@ -41,13 +42,13 @@ export const errorMessages: ErrorMessageEntry[] = [
     level: "Field",
     trigger:
       "A required text/select/dropdown/radio/date field is left blank on submit.",
-    message: "{Field label} is required.",
+    message: requirementValidationMessage("required-fields"),
   },
   {
     page: "global",
     level: "Field",
     trigger: "A required checkbox is left unchecked on submit.",
-    message: "{Field label} is required.",
+    message: requirementValidationMessage("required-fields"),
   },
   {
     page: "global",
@@ -114,7 +115,7 @@ export const errorMessages: ErrorMessageEntry[] = [
     level: "Page",
     trigger:
       "Next/submit is clicked on any FormRoutePage-driven page while one or more field-level validation errors remain; focus/scroll moves to the first invalid field.",
-    message: "Please correct the errors below before continuing.",
+    message: requirementValidationMessage("form-validation-summary"),
   },
   {
     page: "home",
@@ -189,7 +190,7 @@ export const errorMessages: ErrorMessageEntry[] = [
     trigger:
       "Inline quote tool on Home: the age calculated from date of birth is 80 or older.",
     message:
-      "We're sorry, but coverage is not available for applicants age 80 or older.",
+      requirementValidationMessage("applicant-ineligible"),
   },
   {
     page: "resume",
@@ -282,7 +283,7 @@ export const errorMessages: ErrorMessageEntry[] = [
     level: "Page",
     trigger:
       "'See my coverage options' is clicked while a category-level question (tobacco use, income, hours) fails validation.",
-    message: "Please correct the errors below before continuing.",
+    message: requirementValidationMessage("form-validation-summary"),
   },
   {
     page: "coverage",

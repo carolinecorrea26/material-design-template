@@ -1,3 +1,4 @@
+import { requirementText } from "../domain/requirementContent";
 import { helpChipDefinitions } from "./interactionLabels";
 import { Box, Stack, Link, Typography } from "@mui/material";
 import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
@@ -128,13 +129,13 @@ export function groupInsuranceHelpItem(
 
 export const howApplyingWorksHelpItem: FormPageHelpItem = {
   ...helpChipDefinitions.applying,
-  title: "How does applying work?",
+  title: requirementText("membership.help.applying-title"),
   content: <HowApplyingWorksPanel variant="drawer" />,
 };
 
 export const coverageOptionsAvailableHelpItem: FormPageHelpItem = {
   ...helpChipDefinitions.coverageOptions,
-  title: "What are my coverage options?",
+  title: requirementText("membership.help.coverage-options-title"),
   content: <CoverageOptionsDrawerContent />,
 };
 

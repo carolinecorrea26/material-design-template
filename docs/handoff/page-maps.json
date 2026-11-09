@@ -19,20 +19,21 @@
             "demo.membership",
             "abe.membership",
             "ama.membership",
-            "asce.membership",
             "avma.membership",
             "csea.membership",
             "nso.membership",
             "isitrust.membership",
             "waepa.membership",
-            "waepa-gi.membership"
+            "waepa-gi.membership",
+            "asce.membership"
           ]
         },
         {
           "table": "pageSections",
           "file": "public/catalog/pages/pages.json",
           "keys": [
-            "membership.default"
+            "membership.default",
+            "membership.membershipInformation"
           ]
         },
         {
@@ -40,11 +41,11 @@
           "file": "public/catalog/fields/fields.json",
           "keys": [
             "membership.membership",
-            "membership.title",
             "membership.first-name",
             "membership.last-name",
             "membership.email",
-            "membership.phone"
+            "membership.phone",
+            "membership.member-id"
           ]
         },
         {
@@ -52,11 +53,11 @@
           "file": "public/catalog/fields/fields.json",
           "keys": [
             "membership.default.membership",
-            "membership.default.title",
             "membership.default.first-name",
             "membership.default.last-name",
             "membership.default.email",
-            "membership.default.phone"
+            "membership.default.phone",
+            "membership.membershipInformation.member-id"
           ]
         },
         {
@@ -74,9 +75,6 @@
             "site:ama.membership.ama-physician-last-name.override",
             "site:ama.membership.ama-physician-birth-date.override",
             "site:ama.membership.ama-physician-email.override",
-            "site:asce.membership.title.override",
-            "site:asce.membership.membership.override",
-            "site:asce.membership.member-id.override",
             "site:avma.membership.title.override",
             "site:avma.membership.membership.override",
             "site:avma.membership.avma-vet-college.override",
@@ -108,7 +106,13 @@
             "site:waepa.membership.membership-referral-source.include",
             "site:waepa-gi.membership.membership-referral-source.include",
             "site:waepa-gi.membership.membership-status.include",
-            "abe.membership.member-id"
+            "abe.membership.member-id",
+            "requirements.asce.membership.membership",
+            "requirements.asce.membership.first-name",
+            "requirements.asce.membership.last-name",
+            "requirements.asce.membership.email",
+            "requirements.asce.membership.phone",
+            "requirements.asce.membership.member-id"
           ]
         },
         {
@@ -116,12 +120,7 @@
           "file": "public/catalog/fields/fields.json",
           "keys": [
             "membership-status",
-            "membership",
             "title",
-            "first-name",
-            "last-name",
-            "email",
-            "phone",
             "active-military",
             "waepa-declaration",
             "waepa-attestation",
@@ -132,7 +131,6 @@
             "waepa-member-first-name",
             "waepa-member-last-name",
             "waepa-member-id",
-            "member-id",
             "avma-vet-college",
             "avma-graduation-year",
             "avma-occupation",
@@ -147,7 +145,13 @@
             "nurse-type",
             "waepa-member-middle-initial",
             "membership-referral-source",
-            "abe-member-id"
+            "abe-member-id",
+            "membership",
+            "first-name",
+            "last-name",
+            "email",
+            "phone",
+            "member-id"
           ]
         },
         {
@@ -155,12 +159,7 @@
           "file": "public/catalog/validations/validation.json",
           "keys": [
             "membership-status.validation",
-            "membership.validation",
             "title.validation",
-            "first-name.validation",
-            "last-name.validation",
-            "email.validation",
-            "phone.validation",
             "active-military.validation",
             "waepa-declaration.validation",
             "waepa-attestation.validation",
@@ -171,7 +170,6 @@
             "waepa-member-first-name.validation",
             "waepa-member-last-name.validation",
             "waepa-member-id.validation",
-            "member-id.validation",
             "avma-vet-college.validation",
             "avma-graduation-year.validation",
             "avma-occupation.validation",
@@ -251,30 +249,45 @@
           "table": "flowSteps",
           "file": "public/catalog/flows/flows.json",
           "keys": [
+            "client:waepa.tpaVerification.waepa-attestation",
             "global:*.consumer.consumer-membership",
             "global:*.advisor.advisor-membership",
             "global:*.tpaVerification.tpa-membership",
-            "client:asce.tpaVerification.tpa-membership",
-            "client:waepa.tpaVerification.waepa-attestation"
+            "client:asce.tpaVerification.tpa-membership"
           ]
         },
         {
           "table": "flowTransitions",
           "file": "public/catalog/flows/flows.json",
           "keys": [
+            "client:waepa.tpaVerification.waepa-attestation-lookup",
             "global:*.consumer.consumer-e1",
             "global:*.consumer.consumer-e2",
             "global:*.advisor.advisor-e1",
             "global:*.advisor.advisor-e2",
             "global:*.tpaVerification.tpa-attestation-lookup",
-            "client:asce.tpaVerification.tpa-attestation-lookup",
-            "client:waepa.tpaVerification.waepa-attestation-lookup"
+            "client:asce.tpaVerification.tpa-attestation-lookup"
           ]
         },
         {
           "table": "contentEntries",
           "file": "public/catalog/content/content.json",
-          "keys": []
+          "keys": [
+            "membership.title",
+            "membership.subhead",
+            "membership.breadcrumb",
+            "membership.loading",
+            "membership.note.member-profession",
+            "membership.help.coverage-options",
+            "membership.help.how-applying-works",
+            "membership.additional.title",
+            "membership.not-member.message",
+            "membership.not-member.heading",
+            "membership.not-member.body",
+            "membership.not-member.website",
+            "membership.help.applying-title",
+            "membership.help.coverage-options-title"
+          ]
         }
       ]
     },
@@ -296,13 +309,13 @@
             "demo.eligibility",
             "abe.eligibility",
             "ama.eligibility",
-            "asce.eligibility",
             "avma.eligibility",
             "csea.eligibility",
             "nso.eligibility",
             "isitrust.eligibility",
             "waepa.eligibility",
-            "waepa-gi.eligibility"
+            "waepa-gi.eligibility",
+            "asce.eligibility"
           ]
         },
         {
@@ -310,7 +323,6 @@
           "file": "public/catalog/pages/pages.json",
           "keys": [
             "eligibility.selfEligibility",
-            "eligibility.dependentSelection",
             "eligibility.spouseSection",
             "eligibility.childSection"
           ]
@@ -336,7 +348,7 @@
             "eligibility.selfEligibility.zip-postal-code",
             "eligibility.selfEligibility.state-province",
             "eligibility.selfEligibility.birth-date",
-            "eligibility.dependentSelection.dependents",
+            "eligibility.selfEligibility.dependents",
             "eligibility.spouseSection.spouse-membership",
             "eligibility.spouseSection.spouse-first-name",
             "eligibility.spouseSection.spouse-last-name",
@@ -345,8 +357,7 @@
             "eligibility.childSection.child-last-name",
             "eligibility.childSection.child-birth-date",
             "eligibility.childSection.child-gender",
-            "eligibility.childSection.child-full-time-student",
-            "eligibility.childSection.child-honorably-discharged-service-member"
+            "eligibility.childSection.child-full-time-student"
           ]
         },
         {
@@ -355,22 +366,32 @@
           "keys": [
             "abe.eligibility.spouse-membership.authored.override",
             "ama.eligibility.dependents.authored.override",
-            "asce.eligibility.child-full-time-student.requirement",
             "site:isitrust.eligibility.spouse-membership.exclude",
             "site:waepa.eligibility.spouse-membership.include",
             "site:abe.eligibility.child-honorably-discharged-service-member.include",
-            "site:ama.eligibility.dependents.source-presentation"
+            "site:ama.eligibility.dependents.source-presentation",
+            "requirements.asce.eligibility.zip-postal-code",
+            "requirements.asce.eligibility.state-province",
+            "requirements.asce.eligibility.birth-date",
+            "requirements.asce.eligibility.dependents",
+            "requirements.asce.eligibility.spouse-membership",
+            "requirements.asce.eligibility.spouse-first-name",
+            "requirements.asce.eligibility.spouse-last-name",
+            "requirements.asce.eligibility.spouse-birth-date",
+            "requirements.asce.eligibility.child-first-name",
+            "requirements.asce.eligibility.child-last-name",
+            "requirements.asce.eligibility.child-birth-date",
+            "requirements.asce.eligibility.child-gender",
+            "requirements.asce.eligibility.child-full-time-student"
           ]
         },
         {
           "table": "fields",
           "file": "public/catalog/fields/fields.json",
           "keys": [
-            "child-full-time-student",
-            "zip-postal-code",
-            "state-province",
-            "birth-date",
+            "child-honorably-discharged-service-member",
             "dependents",
+            "spouse-membership",
             "spouse-first-name",
             "spouse-last-name",
             "spouse-birth-date",
@@ -378,28 +399,16 @@
             "child-last-name",
             "child-birth-date",
             "child-gender",
-            "spouse-membership",
-            "child-honorably-discharged-service-member"
+            "child-full-time-student",
+            "zip-postal-code",
+            "state-province",
+            "birth-date"
           ]
         },
         {
           "table": "validationRules",
           "file": "public/catalog/validations/validation.json",
-          "keys": [
-            "child-full-time-student.validation",
-            "zip-postal-code.validation",
-            "state-province.validation",
-            "birth-date.validation",
-            "dependents.validation",
-            "spouse-first-name.validation",
-            "spouse-last-name.validation",
-            "spouse-birth-date.validation",
-            "child-first-name.validation",
-            "child-last-name.validation",
-            "child-birth-date.validation",
-            "child-gender.validation",
-            "spouse-membership.validation"
-          ]
+          "keys": []
         },
         {
           "table": "components",
@@ -489,7 +498,38 @@
         {
           "table": "contentEntries",
           "file": "public/catalog/content/content.json",
-          "keys": []
+          "keys": [
+            "eligibility.title",
+            "eligibility.subhead",
+            "eligibility.breadcrumb",
+            "eligibility.loading",
+            "eligibility.note.spouse",
+            "eligibility.note.children",
+            "eligibility.error.child-required",
+            "eligibility.error.spouse-details",
+            "eligibility.children.item",
+            "eligibility.verification.address.title",
+            "eligibility.verification.address.message",
+            "eligibility.verification.address.continue",
+            "eligibility.verification.cancel",
+            "eligibility.verification.title",
+            "eligibility.verification.close",
+            "eligibility.verification.method-intro",
+            "eligibility.verification.code-notice",
+            "eligibility.verification.next",
+            "eligibility.verification.questions-intro",
+            "eligibility.verification.success.title",
+            "eligibility.verification.success.body",
+            "eligibility.verification.failure.title",
+            "eligibility.verification.failure.body",
+            "eligibility.verification.continue",
+            "eligibility.verification.steps",
+            "eligibility.children.library",
+            "eligibility.verification.methods-label",
+            "eligibility.verification.questions-label",
+            "eligibility.verification.library-label",
+            "eligibility.inferred-state"
+          ]
         }
       ]
     },
@@ -511,13 +551,13 @@
             "demo.coverage",
             "abe.coverage",
             "ama.coverage",
-            "asce.coverage",
             "avma.coverage",
             "csea.coverage",
             "nso.coverage",
             "isitrust.coverage",
             "waepa.coverage",
-            "waepa-gi.coverage"
+            "waepa-gi.coverage",
+            "asce.coverage"
           ]
         },
         {
@@ -527,7 +567,6 @@
             "coverage.selfCoverageQuestions",
             "coverage.selfCoverageTobacco",
             "coverage.selfCoverageWorkIncome",
-            "coverage.selfCoverageBusinessExpenses",
             "coverage.spouseCoverageQuestions",
             "coverage.spouseCoverageTobacco",
             "coverage.spouseCoverageWorkIncome"
@@ -541,18 +580,15 @@
             "coverage.smoker",
             "coverage.tobacco-last-used",
             "coverage.tobacco-products",
-            "coverage.average-monthly-income",
             "coverage.hours-worked-per-week",
-            "coverage.actively-at-work",
-            "coverage.monthly-business-expenses",
-            "coverage.business-expense-responsibility",
-            "coverage.average-employees-6-months",
+            "coverage.average-monthly-income",
+            "coverage.self-employed-under-one-year",
             "coverage.spouse-gender",
             "coverage.spouse-smoker",
             "coverage.spouse-tobacco-last-used",
             "coverage.spouse-tobacco-products",
-            "coverage.spouse-average-monthly-income",
-            "coverage.spouse-hours-worked-per-week"
+            "coverage.spouse-hours-worked-per-week",
+            "coverage.spouse-average-monthly-income"
           ]
         },
         {
@@ -564,11 +600,8 @@
             "coverage.selfCoverageTobacco.tobacco-last-used",
             "coverage.selfCoverageTobacco.tobacco-products",
             "coverage.selfCoverageWorkIncome.hours-worked-per-week",
-            "coverage.selfCoverageWorkIncome.actively-at-work",
             "coverage.selfCoverageWorkIncome.average-monthly-income",
-            "coverage.selfCoverageBusinessExpenses.monthly-business-expenses",
-            "coverage.selfCoverageBusinessExpenses.business-expense-responsibility",
-            "coverage.selfCoverageBusinessExpenses.average-employees-6-months",
+            "coverage.selfCoverageWorkIncome.self-employed-under-one-year",
             "coverage.spouseCoverageQuestions.spouse-gender",
             "coverage.spouseCoverageQuestions.spouse-smoker",
             "coverage.spouseCoverageTobacco.spouse-tobacco-last-used",
@@ -584,9 +617,6 @@
             "demo.coverage.average-employees-6-months.authored.hidden",
             "abe.coverage.average-employees-6-months.authored.hidden",
             "ama.coverage.average-employees-6-months.authored.hidden",
-            "asce.coverage.is-self-employed.requirement",
-            "asce.coverage.years-self-employed.requirement",
-            "asce.coverage.average-employees-6-months.authored.hidden",
             "avma.coverage.average-employees-6-months.authored.include",
             "csea.coverage.average-employees-6-months.authored.hidden",
             "nso.coverage.average-employees-6-months.authored.hidden",
@@ -611,31 +641,27 @@
             "avma.prototype-fact:di-ltd-plus:member:monthlyLoanPayment",
             "avma.prototype-fact:oo-professional:member:eligibleExpenseFraction",
             "csea.prototype-fact:di-ltd:member:applicantClass",
-            "site:abe.coverage.firm-member-count.include"
+            "site:abe.coverage.firm-member-count.include",
+            "requirements.asce.coverage.gender",
+            "requirements.asce.coverage.smoker",
+            "requirements.asce.coverage.tobacco-last-used",
+            "requirements.asce.coverage.tobacco-products",
+            "requirements.asce.coverage.hours-worked-per-week",
+            "requirements.asce.coverage.average-monthly-income",
+            "requirements.asce.coverage.self-employed-under-one-year",
+            "requirements.asce.coverage.spouse-gender",
+            "requirements.asce.coverage.spouse-smoker",
+            "requirements.asce.coverage.spouse-tobacco-last-used",
+            "requirements.asce.coverage.spouse-tobacco-products",
+            "requirements.asce.coverage.spouse-hours-worked-per-week",
+            "requirements.asce.coverage.spouse-average-monthly-income"
           ]
         },
         {
           "table": "fields",
           "file": "public/catalog/fields/fields.json",
           "keys": [
-            "gender",
-            "smoker",
-            "tobacco-last-used",
-            "tobacco-products",
-            "average-monthly-income",
-            "actively-at-work",
-            "hours-worked-per-week",
-            "monthly-business-expenses",
-            "business-expense-responsibility",
             "average-employees-6-months",
-            "spouse-gender",
-            "spouse-smoker",
-            "spouse-tobacco-last-used",
-            "spouse-tobacco-products",
-            "spouse-average-monthly-income",
-            "spouse-hours-worked-per-week",
-            "is-self-employed",
-            "years-self-employed",
             "prototype-fact:li-group-term:member:activeMilitary",
             "prototype-fact:li-term:member:membership",
             "prototype-fact:li-10yr:member:membership",
@@ -654,31 +680,27 @@
             "prototype-fact:di-level-rated:member:applicantClass",
             "prototype-fact:di-ltd-plus:member:monthlyLoanPayment",
             "prototype-fact:di-ltd:member:applicantClass",
-            "firm-member-count"
+            "firm-member-count",
+            "tobacco-last-used",
+            "tobacco-products",
+            "self-employed-under-one-year",
+            "spouse-gender",
+            "spouse-smoker",
+            "spouse-tobacco-last-used",
+            "spouse-tobacco-products",
+            "spouse-hours-worked-per-week",
+            "spouse-average-monthly-income",
+            "gender",
+            "smoker",
+            "average-monthly-income",
+            "hours-worked-per-week"
           ]
         },
         {
           "table": "validationRules",
           "file": "public/catalog/validations/validation.json",
           "keys": [
-            "gender.validation",
-            "smoker.validation",
-            "tobacco-last-used.validation",
-            "tobacco-products.validation",
-            "average-monthly-income.validation",
-            "actively-at-work.validation",
-            "hours-worked-per-week.validation",
-            "monthly-business-expenses.validation",
-            "business-expense-responsibility.validation",
-            "average-employees-6-months.validation",
-            "spouse-gender.validation",
-            "spouse-smoker.validation",
-            "spouse-tobacco-last-used.validation",
-            "spouse-tobacco-products.validation",
-            "spouse-average-monthly-income.validation",
-            "spouse-hours-worked-per-week.validation",
-            "is-self-employed.validation",
-            "years-self-employed.validation"
+            "average-employees-6-months.validation"
           ]
         },
         {
@@ -773,19 +795,116 @@
           "table": "contentEntries",
           "file": "public/catalog/content/content.json",
           "keys": [
+            "coverage.note.spouse-member-maximum",
+            "coverage.alert.joint-spouse-benefit",
+            "coverage.note.life-member-maximum",
+            "coverage.note.life-spouse-maximum",
+            "coverage.title",
+            "coverage.subhead",
+            "coverage.breadcrumb",
+            "coverage.loading",
+            "coverage.portfolio.button",
+            "coverage.portfolio.monthly-amount",
+            "coverage.no-coverage",
+            "coverage.selection-unavailable",
+            "coverage.selection-unavailable.action",
+            "coverage.error.select-category",
+            "coverage.error.correct",
+            "coverage.section.personal",
+            "coverage.section.work",
+            "coverage.section.business",
+            "coverage.reveal.button",
+            "coverage.category.li.description",
+            "coverage.category.ad.description",
+            "coverage.category.di.description",
+            "coverage.category.oo.description",
+            "coverage.category.sh.description",
+            "coverage.select.member",
+            "coverage.select.spouse",
+            "coverage.select.child",
+            "coverage.add",
+            "coverage.estimated-cost",
+            "coverage.total-cost",
+            "coverage.dialog.dependent.title",
+            "coverage.dialog.dependent.message",
+            "coverage.dialog.dependent.confirm",
+            "coverage.dialog.dependent.cancel",
+            "coverage.error.select-product",
+            "coverage.error.select-applicant",
+            "coverage.error.select-amount",
+            "coverage.product-catalog.loading-your-coverage-options",
+            "coverage.product-catalog.your-eligible-coverage-options",
+            "coverage.product-catalog.based-on-your-answers-you-are-not-eligible",
+            "coverage.product-catalog.coverage-at-this-time",
+            "coverage.product-catalog.you-are-not-eligible-for-any-coverage-options",
+            "coverage.product-catalog.based-on-your-answers-you-are-not-currently",
+            "coverage.product-catalog.phone",
+            "coverage.product-catalog.email",
+            "coverage.product-catalog.underwriting-requirements-for-this-selection-are-unresolved-contact",
+            "coverage.product-catalog.the-maximum-length-of-time-office-overhead-benefits",
+            "coverage.product-catalog.optional-benefit-s",
+            "coverage.product-catalog.you-have-selected-0-for-this-coverage-this",
+            "coverage.coverage-cart.coverage-added",
+            "coverage.coverage-cart.your-requested-coverage",
+            "coverage.coverage-cart.close-coverage-requested",
+            "coverage.coverage-cart.no-coverage-selected-yet",
+            "coverage.coverage-cart.your-application-summary-will-appear-here-once-you",
+            "coverage.coverage-cart.requested-coverage",
+            "coverage.coverage-cart.applying-for",
+            "coverage.coverage-cart.only",
+            "coverage.coverage-cart.cost-calculated-after-amount-selection",
+            "coverage.coverage-cart.eligibility-concern",
+            "coverage.coverage-cart.based-on-your-answers-you-may-not-be",
+            "coverage.coverage-cart.you-may-still-continue-with-your-other-selected",
+            "coverage.coverage-cart.quoted-cost-is-the-best-rate-available-final",
+            "coverage.coverage-cart.remove-coverage",
+            "coverage.coverage-cart.remove",
+            "coverage.coverage-cart.are-you-sure-you-want-to-remove",
+            "coverage.coverage-cart.from-your-selections",
+            "coverage.coverage-cart.quoted-cost-is-the-best-rate-available-final-2",
+            "coverage.coverage-cart.edit-coverage",
+            "coverage.coverage-cart.yes",
+            "coverage.coverage-cart.to-edit-your-coverage-you-will-be-sent",
+            "coverage.coverage-selection-feedback.added",
+            "coverage.estimated-rate.estimate-unavailable",
+            "coverage.estimated-rate.rate-provided-separately",
+            "coverage.estimated-rate.recalculating-estimated-cost",
+            "coverage.total-cost-summary.total",
+            "coverage.coverage-portfolio-drawer.member",
+            "coverage.coverage-portfolio-drawer.spouse",
+            "coverage.rider.child-fallback",
+            "coverage.increase.total-note",
+            "coverage.increase.additional-note",
+            "coverage.policy-fee",
+            "coverage.rider.only-label",
+            "coverage.product.li-term.name",
+            "coverage.product.li-term.definition",
+            "coverage.product.li-10yr.name",
+            "coverage.product.li-10yr.definition",
+            "coverage.product.li-10yr.description",
+            "coverage.product.li-20yr.name",
+            "coverage.product.li-20yr.definition",
+            "coverage.product.li-20yr.description",
+            "coverage.product.li-add.name",
+            "coverage.product.li-add.definition",
+            "coverage.product.di-ltd.name",
+            "coverage.product.di-ltd.definition",
+            "coverage.product.di-ltd.description",
+            "coverage.category.section-title",
+            "coverage.error.combined-life-maximum",
             "coverage.categoryDescriptions.LI",
             "coverage.categoryDescriptions.AD",
             "coverage.categoryDescriptions.DI",
             "coverage.categoryDescriptions.OO",
             "coverage.categoryDescriptions.SH",
-            "coverage.applicantLabels.member",
-            "coverage.applicantLabels.spouse",
-            "coverage.applicantLabels.child",
             "coverage.applicantCheckboxLabels.member",
             "coverage.applicantCheckboxLabels.spouse",
             "coverage.applicantCheckboxLabels.child",
             "coverage.selectAtLeastOneCategoryError",
-            "coverage.correctErrorsMessage"
+            "coverage.correctErrorsMessage",
+            "coverage.applicantLabels.member",
+            "coverage.applicantLabels.spouse",
+            "coverage.applicantLabels.child"
           ]
         }
       ]

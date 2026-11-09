@@ -7,6 +7,7 @@ import type { QuoteCalculatorInitialValues } from "../../app/workflows/QuoteCalc
 import type { SiteContent } from "../../content/types";
 import type { ClientConfig, HomePageVariant } from "../../config/clients/types";
 import type { AssociationId } from "../../data/model";
+import { requirementText } from "../../domain/requirementContent";
 import { homeQuoteSurfaceSx } from "./homeQuoteSurfaceSx";
 
 const SINGLE_TEMPLATE_FORM_MAX_WIDTH = 800;
@@ -29,14 +30,14 @@ function HomeQuoteSection({ onOpenQuote, content, eligibilityPresentation }: Hom
   });
   const [attempted, setAttempted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [ageError, setAgeError] = useState("");
+  const [eligibilityError, setEligibilityError] = useState("");
 
   function handleGetEstimate() {
     setAttempted(true);
-    setAgeError("");
-    const { ageError: newAgeError, isValid } =
+    setEligibilityError("");
+    const { eligibilityError: newEligibilityError, isValid } =
       validateEligibility(eligibilityValues, eligibilityPresentation);
-    setAgeError(newAgeError);
+    setEligibilityError(newEligibilityError);
     if (!isValid) return;
 
     setIsLoading(true);
@@ -66,7 +67,7 @@ function HomeQuoteSection({ onOpenQuote, content, eligibilityPresentation }: Hom
             setEligibilityValues((prev) => ({ ...prev, ...next }))
           }
           attempted={attempted}
-          ageError={ageError}
+          eligibilityError={eligibilityError}
           idPrefix="home"
         />
 
@@ -80,7 +81,7 @@ function HomeQuoteSection({ onOpenQuote, content, eligibilityPresentation }: Hom
           {isLoading ? (
             <CircularProgress size={20} color="inherit" />
           ) : (
-            "Get an instant quote"
+            requirementText("home.quote-section.action")
           )}
         </Button>
       </Stack>

@@ -14,7 +14,8 @@
     "repeating-entry-list",
     "applicant-disqualifying-answer",
     "tpa-member-lookup",
-    "applicant-product-eligibility"
+    "applicant-product-eligibility",
+    "coverage-tpa-portfolio-access"
   ],
   "validations": [
     {
@@ -43,6 +44,11 @@
     },
     {
       "validation": "spouse-details-required",
+      "trigger": "next",
+      "scope": "page"
+    },
+    {
+      "validation": "applicant-ineligible",
       "trigger": "next",
       "scope": "page"
     }

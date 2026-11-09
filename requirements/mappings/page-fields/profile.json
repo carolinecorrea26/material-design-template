@@ -1,61 +1,376 @@
 {
   "page": "profile",
   "fields": [
-    {"field":"height-feet","people":["self","spouse"]},
-    {"field":"height-inches","people":["self","spouse"]},
-    {"field":"weight-lbs","people":["self","spouse"]},
-    {"field":"weight-12-months-ago-lbs","people":["self","spouse"]},
-    {"field":"social-security-number","people":["self","spouse"]},
-    {"field":"marital-status","people":["self"]},
-    {"field":"has-drivers-license","people":["self","spouse"]},
-    {"field":"intend-live-outside-us","people":["self","spouse"]},
-    {"field":"travel-outside-us-six-months","people":["self","spouse"]},
-    {"field":"drivers-license-number","people":["self","spouse"]},
-    {"field":"drivers-license-state","people":["self","spouse"]},
-    {"field":"outside-us-months","people":["self","spouse"]},
-    {"field":"outside-us-country","people":["self","spouse"]},
-    {"field":"travel-outside-us-country","people":["self","spouse"]},
-    {"field":"physician-first-name","people":["self","spouse"]},
-    {"field":"physician-last-name","people":["self","spouse"]},
-    {"field":"physician-phone","people":["self","spouse"]},
-    {"field":"medical-facility-name","people":["self","spouse"]},
-    {"field":"medical-facility-street-address","people":["self","spouse"]},
-    {"field":"medical-facility-apt-suite","people":["self","spouse"]},
-    {"field":"medical-city","people":["self","spouse"]},
-    {"field":"medical-state","people":["self","spouse"]},
-    {"field":"medical-zip-code","people":["self","spouse"]},
-    {"field":"has-other-life-insurance","people":["self","spouse"]},
-    {"field":"existing-life-insurance-amount","people":["self","spouse"]},
-    {"field":"is-replacing-life-insurance","people":["self","spouse"]},
-    {"field":"has-pending-life-insurance-applications","people":["self","spouse"]},
-    {"field":"pending-life-insurance-amount","people":["self","spouse"]},
-    {"field":"pending-life-insurance-company","people":["self","spouse"]},
-    {"field":"has-disability-insurance","people":["self","spouse"]},
-    {"field":"di-company-name","people":["self","spouse"]},
-    {"field":"di-company-monthly-benefit","people":["self","spouse"]},
-    {"field":"di-company-benefit-period","people":["self","spouse"]},
-    {"field":"di-company-waiting-period","people":["self","spouse"]},
-    {"field":"is-replacing-disability-insurance","people":["self","spouse"]},
-    {"field":"disability-replacement-amount","people":["self","spouse"]},
-    {"field":"total-net-worth","people":["self"]},
-    {"field":"total-annual-unearned-income","people":["self"]},
-    {"field":"is-self-employed","people":["self"]},
-    {"field":"is-sole-proprietor","people":["self"]},
-    {"field":"is-professional-corporation","people":["self"]},
-    {"field":"sole-proprietor-gross-income","people":["self"]},
-    {"field":"sole-proprietor-gross-earnings","people":["self"]},
-    {"field":"sole-proprietor-business-expenses","people":["self"]},
-    {"field":"professional-corporation-annual-salary","people":["self"]},
-    {"field":"professional-corporation-s-corp-distribution","people":["self"]},
-    {"field":"professional-corporation-dividends","people":["self"]},
-    {"field":"professional-corporation-bonus","people":["self"]},
-    {"field":"bonus-payment-frequency","people":["self"]},
-    {"field":"professional-corporation-commission","people":["self"]},
-    {"field":"commission-payment-frequency","people":["self"]},
-    {"field":"professional-corporation-benefits-cost","people":["self"]},
-    {"field":"years-self-employed","people":["self"]},
-    {"field":"work-from-home","people":["self"]},
-    {"field":"has-work-location-outside-home","people":["self"]},
-    {"field":"work-location-details","people":["self"]}
+    {
+      "field": "height-feet",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "height-inches",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "weight-lbs",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "weight-12-months-ago-lbs",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "social-security-number",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "marital-status",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "has-drivers-license",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "intend-live-outside-us",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "travel-outside-us-six-months",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "drivers-license-number",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "drivers-license-state",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "outside-us-months",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "outside-us-country",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "travel-outside-us-country",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "physician-first-name",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "physician-last-name",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "physician-phone",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "medical-facility-name",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "medical-facility-street-address",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "medical-facility-apt-suite",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "medical-city",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "medical-state",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "medical-zip-code",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "has-other-life-insurance",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "existing-life-insurance-amount",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "is-replacing-life-insurance",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "has-pending-life-insurance-applications",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "pending-life-insurance-amount",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "pending-life-insurance-company",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "has-disability-insurance",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "di-company-name",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "di-company-monthly-benefit",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "di-company-benefit-period",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "di-company-waiting-period",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "is-replacing-disability-insurance",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "disability-replacement-amount",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "total-net-worth",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "total-annual-unearned-income",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "is-self-employed",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "is-sole-proprietor",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "is-professional-corporation",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "sole-proprietor-gross-income",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "sole-proprietor-gross-earnings",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "sole-proprietor-business-expenses",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "professional-corporation-annual-salary",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "professional-corporation-s-corp-distribution",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "professional-corporation-dividends",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "professional-corporation-bonus",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "bonus-payment-frequency",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "professional-corporation-commission",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "commission-payment-frequency",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "professional-corporation-benefits-cost",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "years-self-employed",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "work-from-home",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "has-work-location-outside-home",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "work-location-details",
+      "people": [
+        "self"
+      ]
+    }
   ]
 }

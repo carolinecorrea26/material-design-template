@@ -1,10 +1,9 @@
 import { act, useState } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
-import EligibilityFields, { type EligibilityValues } from './EligibilityFields';
-import { installPrototypeLibrary, resolvePrototypeLibrary } from '../../domain/prototypeLibrary';
-import { createReviewedMigrationDatabase } from '../../migration/fixtures';
-import ConfiguredEligibilityFields from '../../app/sections/ConfiguredEligibilityFields';
+import EligibilityFields, { validateEligibility, type EligibilityValues } from './EligibilityFields';
+import { installPrototypeLibrary } from '../../domain/prototypeLibrary';
+import { resolveMappedFields } from '../../domain/requirementFields';
 
 let root: Root;
 let container: HTMLDivElement;
@@ -16,10 +15,6 @@ function QuoteForm() {
     <button onClick={() => setAttempted(true)}>Validate quote</button>
     <output>{values.state}</output>
   </>;
-}
-function ConfiguredQuoteForm() {
-  const [values, setValues] = useState<EligibilityValues>({ zipCode: '', state: '', birthday: '' });
-  return <ConfiguredEligibilityFields values={values} attempted={false} onChange={next => setValues(current => ({ ...current, ...next }))} />;
 }
 beforeEach(async () => {
   vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
@@ -38,17 +33,13 @@ async function enter(id: string, value: string) {
     input.dispatchEvent(new Event('input', { bubbles: true }));
   });
 }
-it('uses ZIP / State / Birthday order with helper space present before validation', async () => {
+it('uses ZIP / State / Birthday order and displays complete validation messages', async () => {
   expect([...container.querySelectorAll('[data-analytics-field]')].map(field => field.getAttribute('data-analytics-field')))
     .toEqual(['elig-zip-postal-code', 'elig-state-province', 'elig-birth-date']);
-  const helpers = [...container.querySelectorAll('.MuiFormHelperText-root')];
-  expect(helpers).toHaveLength(3);
-  expect(helpers.every(helper => parseFloat(getComputedStyle(helper).minHeight) > 0)).toBe(true);
   await act(async () => [...container.querySelectorAll('button')].find(button => button.textContent === 'Validate quote')!.click());
-  expect(container.textContent).toContain('ZIP / postal code is required.');
-  expect(container.textContent).toContain('State is required.');
-  expect(container.textContent).toContain('Date of birth is required.');
-  expect([...container.querySelectorAll('.MuiFormHelperText-root')]).toEqual(helpers);
+  expect(container.textContent).toContain('Zip / Postal Code is required.');
+  expect(container.textContent).toContain('State / Province is required.');
+  expect(container.textContent).toContain('Date of Birth is required.');
 });
 it('shares inferred-State feedback and preserves a manual choice until ZIP changes', async () => {
   await enter('elig-zip-postal-code', '10001');
@@ -65,20 +56,44 @@ it('shares inferred-State feedback and preserves a manual choice until ZIP chang
   await enter('elig-zip-postal-code', '19019');
   expect(container.querySelector('output')!.textContent).toBe('PA');
 });
-it('shows only configured eligible states in the quote state dropdown', async () => {
-  window.history.replaceState(null, '', '/?site=csea');
-  const data = createReviewedMigrationDatabase();
-  for (const field of data.siteFieldConfigurations.filter(row => row.siteKey === 'csea' && row.pageKey === 'home')) field.hidden = false;
-  installPrototypeLibrary(resolvePrototypeLibrary(data, 'csea', 'test'));
-  await act(async () => root.render(<ConfiguredQuoteForm />));
+it('uses standard field checks and one message for configured age ineligibility', () => {
+  expect(validateEligibility({ birthday: '1990-05', state: 'NY', zipCode: '10001' }).errors.birthday).toBe('Enter a valid date.');
+  const values = { birthday: '1950-01-01', state: 'NY', zipCode: '10001' };
+  const result = validateEligibility(values, { maxAge: 65 });
+  expect(result.errors).toEqual({});
+  expect(result.eligibilityError).toBe('Unfortunately you are ineligible for coverage. Please contact the Administrator for more information about eligibility.');
+  expect(validateEligibility(values, { maxAge: null }).isValid).toBe(true);
+});
+it('allows a manual state when lookup has no available match, including eligible-only lists', async () => {
+  const fields = resolveMappedFields({ component: 'eligibility' }).filter(field => ['zip-postal-code', 'state-province', 'birth-date'].includes(field.id))
+    .map(field => field.id === 'state-province' ? { ...field, options: field.options?.filter(option => ['NY', 'NJ'].includes(option.value)) } : field);
+  const values = { zipCode: '90001', state: 'NY', birthday: '1990-01-01' };
+  const result = validateEligibility(values, { fields, eligibleStatesOnly: true, maxAge: null });
+  expect(result.isValid).toBe(true);
+  expect(result.eligibilityError).toBe('');
+  await act(async () => root.render(<EligibilityFields fields={fields} values={values} eligibleStatesOnly attempted eligibilityError={result.eligibilityError} onChange={() => {}} />));
+  expect(container.querySelector('[role="alert"]')).toBeNull();
+  expect(container.querySelector<HTMLInputElement>('input[name="elig-state-province"]')?.value).toBe('New York');
   await enter('elig-state-province', 'New');
   const options = [...document.querySelectorAll<HTMLElement>('[role="option"]')].map(option => option.textContent);
   expect(options).toContain('New York');
   expect(options).toContain('New Jersey');
   expect(options).not.toContain('New Hampshire');
-  const newYork = [...document.querySelectorAll<HTMLElement>('[role="option"]')].find(option => option.textContent === 'New York')!;
-  await act(async () => newYork.click());
-  await enter('elig-zip-postal-code', '90001');
-  expect(container.textContent).toContain('The state for this ZIP / Postal Code may not be eligible for coverage.');
-  expect(container.querySelector<HTMLInputElement>('[data-analytics-field="elig-state-province"] input')!.value).toBe('');
-}, 120000);
+});
+
+it('retains ZIP+4 and Canadian postal formatting and preserves manual selection for unknown codes', async () => {
+  const zip = () => container.querySelector<HTMLInputElement>('input[name="elig-zip-postal-code"]')!;
+  expect(zip().inputMode).toBe('text');
+  await enter('elig-zip-postal-code', '100011234');
+  expect(zip().value).toBe('10001-1234');
+  expect(container.querySelector('output')!.textContent).toBe('NY');
+  await enter('elig-zip-postal-code', 'k1a0b1');
+  expect(zip().value).toBe('K1A 0B1');
+  expect(container.querySelector('output')!.textContent).toBe('ON');
+  await enter('elig-zip-postal-code', '00000');
+  expect(container.querySelector('output')!.textContent).toBe('ON');
+  await enter('elig-state-province', 'California');
+  await act(async () => [...document.querySelectorAll<HTMLElement>('[role="option"]')].find(option => option.textContent === 'California')!.click());
+  expect(container.querySelector('output')!.textContent).toBe('CA');
+  expect(validateEligibility({ zipCode: '00000', state: 'CA', birthday: '1990-01-01' }, { maxAge: null }).isValid).toBe(true);
+});

@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { compileReviewedRequirements } from './requirement-source.mjs';
 import { libraryOwners } from '../src/domain/libraryOwnership.ts';
 import { normalizedSnapshotTables } from '../src/persistence/catalogTables.ts';
 import { validateIdentityCatalog } from '../src/persistence/identityCatalog.ts';
@@ -58,7 +59,7 @@ export function readCatalogParts() {
   const unexpected = Object.keys(tables).find(table => !normalizedSnapshotTables.includes(table));
   if (unexpected) throw new Error(`Unexpected catalog table: ${unexpected}`);
   validateIdentityCatalog(tables);
-  return { formatVersion: 1, data: tables, analyticsTags };
+  return { formatVersion: 1, data: compileReviewedRequirements(tables), analyticsTags };
 }
 
 // Sites the deployment bundle carries. Only ASCE is active while it is being finalized; the
@@ -73,7 +74,7 @@ export function activeCatalog(catalog = readCatalogParts()) {
     ? rows.filter(site => activeSites.includes(site.key))
     : rows.filter(row => !(keys.has(row?.siteKey) || ids.has(row?.siteId)))]));
   validateIdentityCatalog(data);
-  return { ...catalog, data, analyticsTags: catalog.analyticsTags.filter(tag => !keys.has(tag?.siteKey)) };
+  return { ...catalog, data: compileReviewedRequirements(data), analyticsTags: catalog.analyticsTags.filter(tag => !keys.has(tag?.siteKey)) };
 }
 
 export function writeCatalogBundle() {

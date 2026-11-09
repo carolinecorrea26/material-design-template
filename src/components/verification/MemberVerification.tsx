@@ -1,3 +1,5 @@
+import verificationFixture from "../../../requirements/global/prototype-fixtures/verification.json";
+import { requirementText, requirementTextList } from "../../domain/requirementContent";
 import { getSurfaceField, getSurfaceFields } from "../../config/fields/storedSurfaces";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -26,7 +28,7 @@ import {
 
 
 
-const NONE_ANSWER = "None of the answers apply to me";
+const NONE_ANSWER = verificationFixture.failureAnswer;
 
 // ---------------------------------------------------------------------------
 // Sub-step 0: method selection
@@ -48,12 +50,11 @@ function MethodStep({
   return (
     <Stack spacing={3}>
       <Typography variant="body1">
-        We need to verify your identity before proceeding. Please choose how you
-        would like to complete verification.
+        {requirementText("eligibility.verification.method-intro")}
       </Typography>
       <FieldRenderer field={field} control={form.control} errors={form.formState.errors} />
       {["text", "voice"].includes(method) && (
-        <Typography variant="caption" color="text.secondary">Code will be sent to ••••••1111.</Typography>
+        <Typography variant="caption" color="text.secondary">{requirementText("eligibility.verification.code-notice", { phone: verificationFixture.maskedPhone })}</Typography>
       )}
       <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
         <Button
@@ -61,7 +62,7 @@ function MethodStep({
           disabled={!method}
           onClick={() => method && onNext(method as VerificationMethod)}
         >
-          Next
+          {requirementText("eligibility.verification.next")}
         </Button>
       </Box>
     </Stack>
@@ -95,7 +96,7 @@ function SecurityQuestionsStep({
   return (
     <Stack spacing={3}>
       <Typography variant="body1">
-        Please answer the following questions to verify your identity.
+        {requirementText("eligibility.verification.questions-intro")}
       </Typography>
       {questions.map((q) => (
         <Box key={q.id}>
@@ -109,7 +110,7 @@ function SecurityQuestionsStep({
           disabled={!allAnswered}
           onClick={handleNext}
         >
-          Next
+          {requirementText("eligibility.verification.next")}
         </Button>
       </Box>
     </Stack>
@@ -135,28 +136,26 @@ function ResultStep({
             sx={{ fontSize: 64, color: "success.main" }}
           />
           <Typography variant="h6" sx={{ fontWeight: 700 }}>
-            Member verification successful
+            {requirementText("eligibility.verification.success.title")}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Your identity has been verified. You can now continue with your
-            application.
+            {requirementText("eligibility.verification.success.body")}
           </Typography>
           <Button variant="contained" onClick={onClose}>
-            Continue
+            {requirementText("eligibility.verification.continue")}
           </Button>
         </>
       ) : (
         <>
           <CancelRoundedIcon sx={{ fontSize: 64, color: "error.main" }} />
           <Typography variant="h6" sx={{ fontWeight: 700 }}>
-            Member verification unsuccessful
+            {requirementText("eligibility.verification.failure.title")}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            We were unable to verify your identity based on the answers
-            provided. You may continue your application without verification.
+            {requirementText("eligibility.verification.failure.body")}
           </Typography>
           <Button variant="contained" onClick={onClose}>
-            Continue
+            {requirementText("eligibility.verification.continue")}
           </Button>
         </>
       )}
@@ -213,7 +212,8 @@ export default function MemberVerification({
     }, 300);
   }
 
-  const stepLabels = ["Choose method", "Answer questions", "Result"];
+  const stepCount = 3;
+  const stepLabels = requirementTextList('eligibility.verification.steps');
   // For non-security-question flows the stepper still shows 3 dots but we skip
   // directly to step 2 without rendering step 1 content.
 
@@ -237,16 +237,18 @@ export default function MemberVerification({
           pb: 1,
         }}
       >
-        <Typography component="span" variant="h5">Member verification</Typography>
-        <IconButton onClick={handleClose} aria-label="Close" size="small">
+        <Typography component="span" variant="h5">{requirementText("eligibility.verification.title")}</Typography>
+        <IconButton onClick={handleClose} aria-label={requirementText("eligibility.verification.close")} size="small">
           <CloseRoundedIcon />
         </IconButton>
       </DialogTitle>
 
       {/* Dot stepper */}
       <MobileStepper
+        role="group"
+        aria-label={stepLabels[step]}
         variant="dots"
-        steps={stepLabels.length}
+        steps={stepCount}
         position="static"
         activeStep={step}
         nextButton={null}

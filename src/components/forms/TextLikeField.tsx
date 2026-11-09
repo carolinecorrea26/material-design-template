@@ -17,7 +17,7 @@ export function TextLikeField({ field, value, onChange, onBlur, hideLabel = fals
   const input = <TextField name={field.id} label={labelVariant === 'floating' ? renderFieldLabel(field) : undefined}
     required={field.required} type={type} fullWidth margin={labelVariant === 'floating' ? margin : 'none'}
     placeholder={placeholder ?? field.placeholder} autoComplete={field.autoComplete}
-    inputProps={{ inputMode: field.inputMode, maxLength: field.format === 'currency' ? undefined : field.maxLength, ...inputProps }}
+    inputProps={{ inputMode: field.inputMode, minLength: field.minLength, maxLength: field.format === 'currency' ? undefined : field.maxLength, ...inputProps }}
     value={value} onChange={onChange} onBlur={onBlur} disabled={field.disabled} error={hasError}
     helperText={labelVariant === 'floating' ? helperText : undefined} multiline={field.multiline}
     minRows={field.multiline ? field.minRows ?? 3 : undefined} InputProps={adornments} />;

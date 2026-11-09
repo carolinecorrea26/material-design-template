@@ -5,10 +5,12 @@ import { resolveAssociationAmounts } from "./associationAmountPolicy";
 /** Checks amounts against the captured normalized Library, without prototype fallback.
  * This validates the amount dimension only; eligibility/other policy remain separate.
  */
-export function validateNormalizedCoverageAmount(site: EffectiveSite, productKey: string, applicantKey: string, amount: number, applicantClass?: string, associationKey?: string) {
+export function validateNormalizedCoverageAmount(site: EffectiveSite, productKey: string, applicantKey: string, amount: number, applicantClass?: string, associationKey?: string, mode: "new" | "increase" | "rider-only" = "new") {
   const product = site.configuration.products.find(product => product.productKey === productKey);
   const applicant = site.products.find(product => product.productKey === productKey)?.applicants.find(applicant => applicant.applicantKey === applicantKey);
   if (!product || !applicant) return { status: "resolved" as const, allowed: false, reason: "Product or applicant is unavailable" };
+  const minimum = site.configuration.coverageRequirements?.find(row => row.product === productKey && row.applicants.includes(applicantKey as "member" | "spouse" | "child") && row.configuration === "coverage-new-application-minimum-amount")?.value;
+  if (mode === "new" && typeof minimum === "number" && amount < minimum) return { status: "resolved" as const, allowed: false, reason: "Amount is below the minimum for a new application" };
   if (!Number.isFinite(amount) || amount <= 0) return { status: "resolved" as const, allowed: false, reason: "Amount must be finite and positive" };
   const assignment = resolveAssociationAmounts(site, productKey, associationKey);
   if (assignment.status !== "resolved") return { status: assignment.status, allowed: false, reason: assignment.reason! };

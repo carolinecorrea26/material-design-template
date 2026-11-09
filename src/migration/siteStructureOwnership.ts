@@ -2,7 +2,7 @@ import type { DatabaseSchema } from "../persistence/types";
 import { activeSiteMigrationScope } from "./activeSiteScope";
 import { libraryMetadata } from "../domain/provenance";
 import { isSiteStructurePath } from "../domain/siteStructureOwnership";
-import { resolveEffectiveSite } from "../domain/effectiveSite";
+import { resolveSnapshotSite as resolveEffectiveSite } from "../domain/effectiveSite";
 
 /** Retire only copies whose exact value already exists on the effective field
  * placement or Site mode. Do not reinterpret old MCR page locations. */

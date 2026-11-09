@@ -8,7 +8,7 @@
     {"field":"tobacco-products","people":["self","spouse"]},
     {"field":"hours-worked-per-week","people":["self","spouse"]},
     {"field":"average-monthly-income","people":["self","spouse"]},
-    {"field":"self-employed-under-one-year","people":["self"]},
+    {"field":"self-employed-under-one-year","people":["self"],"replaces":["is-self-employed","years-self-employed"]},
     {"field":"actively-at-work","people":["self"]},
     {"field":"monthly-business-expenses","people":["self"]},
     {"field":"business-expense-responsibility","people":["self"]},

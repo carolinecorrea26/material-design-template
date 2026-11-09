@@ -1,0 +1,29 @@
+{
+  "tpa": {
+    "requireAddressBeforeVerification": true,
+    "lookupFields": [
+      "first-name",
+      "last-name",
+      "birth-date",
+      "member-id",
+      "state-province"
+    ],
+    "prototypeRecords": [
+      {
+        "facts": {
+          "first-name": "Taylor",
+          "last-name": "Morgan",
+          "birth-date": "1990-08-26",
+          "member-id": "00123456",
+          "state-province": "NY"
+        },
+        "activeCoverage": true
+      }
+    ]
+  },
+  "configurations": {
+    "tpa-integration": "member-lookup",
+    "eligible-states-only": false,
+    "eligible-states": []
+  }
+}

@@ -1,3 +1,4 @@
+import { requirementText } from "../domain/requirementContent";
 import { getActiveClient } from '../config/client/getActiveClient';
 import { getSurfaceField } from '../config/fields/storedSurfaces';
 import ReceiptApplicationSummary from '../components/receipt/ReceiptApplicationSummary';
@@ -111,7 +112,7 @@ export default function Receipt() {
   return (
     <PageShell title={getPageTitle("receipt")} maxWidth="lg" noTitle>
       <Snackbar open={documentPlaceholderOpen} autoHideDuration={4000} onClose={() => setDocumentPlaceholderOpen(false)}>
-        <Alert severity="info" onClose={() => setDocumentPlaceholderOpen(false)}>Document downloads are placeholders in this prototype.</Alert>
+        <Alert severity="info" onClose={() => setDocumentPlaceholderOpen(false)}>{requirementText("application.ui.document-downloads-are-placeholders-in-this-prototype")}</Alert>
       </Snackbar>
       <FormShell sx={{ p: { xs: 3, md: 5 } }}>
         <Stack spacing={4}>
@@ -161,9 +162,9 @@ export default function Receipt() {
                       >
                         {group.attachedBenefits.filter(benefit => benefit.owner === entry.applicant).map(benefit => <ApplicantSectionDivider key={`${benefit.rider.id}-${benefit.owner}`} applicant={benefit.applicant === "member" ? "self" : benefit.applicant} showLabel={benefit.applicant !== "member"}>
                           <Typography variant="subtitle1">{benefit.rider.name}</Typography>
-                          {benefit.amount !== undefined && <Typography variant="body2">Requested: {formatCurrencyAmount(benefit.amount)}</Typography>}
+                          {benefit.amount !== undefined && <Typography variant="body2">{requirementText("application.ui.requested")}{formatCurrencyAmount(benefit.amount)}</Typography>}
                           <Typography variant="body2" color="text.secondary">{benefit.rider.description}</Typography>
-                          <Typography variant="body2" sx={{ mt: 1 }}>Included in {benefit.owner === "member" ? "member" : benefit.owner} coverage; shares its application decision.</Typography>
+                          <Typography variant="body2" sx={{ mt: 1 }}>{requirementText("application.ui.included-in")}{benefit.owner === "member" ? "member" : benefit.owner}{requirementText("application.ui.coverage-shares-its-application-decision")}</Typography>
                         </ApplicantSectionDivider>)}
                       </ReceiptCoverageDecision>
                     );

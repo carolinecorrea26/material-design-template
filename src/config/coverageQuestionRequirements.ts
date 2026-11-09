@@ -1,3 +1,4 @@
+import authoredCoverageQuestions from "../../requirements/global/coverage-questions.json";
 import { getPrototypeLibrary, type PrototypeLibrary } from "../domain/prototypeLibrary";
 import type { CoverageCategoryId } from "./coverages/types";
 import type { FieldId } from "./fields/types";
@@ -9,44 +10,7 @@ type ApplicantQuestionFields = Partial<
 >;
 
 /** Canonical coverage-category → application-question relationship. */
-export const coverageQuestionRequirements: Record<
-  CoverageCategoryId,
-  ApplicantQuestionFields
-> = {
-  LI: {
-    self: ["gender", "smoker", "tobacco-last-used", "tobacco-products"],
-    spouse: [
-      "spouse-gender",
-      "spouse-smoker",
-      "spouse-tobacco-last-used",
-      "spouse-tobacco-products",
-    ],
-  },
-  AD: {},
-  DI: {
-    self: ["gender", "average-monthly-income", "hours-worked-per-week"],
-    spouse: [
-      "spouse-gender",
-      "spouse-average-monthly-income",
-      "spouse-hours-worked-per-week",
-    ],
-  },
-  OO: {
-    self: [
-      "hours-worked-per-week",
-      "monthly-business-expenses",
-      "business-expense-responsibility",
-    ],
-  },
-  SH: {
-    self: ["smoker", "tobacco-last-used", "tobacco-products"],
-    spouse: [
-      "spouse-smoker",
-      "spouse-tobacco-last-used",
-      "spouse-tobacco-products",
-    ],
-  },
-};
+export const coverageQuestionRequirements: Record<CoverageCategoryId, ApplicantQuestionFields> = { OO: {}, SH: {}, ...authoredCoverageQuestions } as Record<CoverageCategoryId, ApplicantQuestionFields>;
 
 const smokerQuestionIds = new Set<FieldId>([
   "smoker",

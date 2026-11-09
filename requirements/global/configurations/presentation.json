@@ -3,29 +3,48 @@
     {
       "id": "home-variant",
       "name": "Home presentation",
-      "status": "draft",
+      "status": "confirmed",
       "type": "enum",
-      "options": ["default", "hero-image", "welcome-back", "quoteFirst"],
+      "options": [
+        "default",
+        "hero-image",
+        "welcome-back",
+        "quoteFirst"
+      ],
       "default": "default",
-      "source": "src/pages/Home.tsx"
+      "source": "Existing Home behavior; requirements/global/configuration-bindings.json; runtime supported"
     },
     {
       "id": "applying-steps-presentation",
       "name": "How applying works presentation",
-      "status": "draft",
+      "status": "confirmed",
       "type": "enum",
-      "options": ["static", "animated"],
+      "options": [
+        "static",
+        "animated"
+      ],
       "default": "static",
-      "source": "src/config/homepagePresentation.ts"
+      "source": "Existing Home behavior; requirements/global/configuration-bindings.json; runtime supported"
     },
     {
       "id": "form-template",
       "name": "Application form template",
       "status": "draft",
       "type": "enum",
-      "options": ["multi", "single"],
+      "options": [
+        "multi",
+        "single"
+      ],
       "default": "multi",
       "source": "src/config/template/resolveTemplate.ts"
+    },
+    {
+      "id": "signature-confirmation-retention-days",
+      "name": "Sent-for-signature confirmation retention days",
+      "status": "confirmed",
+      "type": "number",
+      "default": 9,
+      "source": "Existing AdvisorSendConfirmation behavior; runtime supported; prototype display only"
     }
   ]
 }

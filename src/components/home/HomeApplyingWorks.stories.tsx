@@ -1,3 +1,4 @@
+import ComponentFixture from "../../../.storybook/fixtures/ComponentFixture";
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import HowApplyingWorksPanel from "./HowApplyingWorksPanel";
@@ -26,4 +27,4 @@ function ApplyingWorksExample() {
     </AppDrawer>
   </>;
 }
-export const Default: StoryObj = { render: () => <ApplyingWorksExample /> };
+export const Default: StoryObj = { render: () => <ComponentFixture>{() => <ApplyingWorksExample />}</ComponentFixture> };

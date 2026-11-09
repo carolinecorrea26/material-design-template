@@ -1,18 +1,222 @@
 {
   "page": "health-di",
   "fields": [
-    {"field":"health-detail-onset","people":["self","spouse"]},
-    {"field":"health-detail-conditions","people":["self","spouse"]},
-    {"field":"health-detail-physician-address","people":["self","spouse"]},
-    {"field":"health-di-q1","people":["self","spouse"]},
-    {"field":"health-di-q2","people":["self","spouse"]},
-    {"field":"health-di-q3","people":["self","spouse"]},
-    {"field":"health-di-q4","people":["self","spouse"]},
-    {"field":"health-di-q5","people":["self","spouse"]},
-    {"field":"health-di-q6","people":["self","spouse"]},
-    {"field":"health-di-q7","people":["self","spouse"]},
-    {"field":"health-di-assistance-type","people":["self","spouse"]},
-    {"field":"health-di-fall-type","people":["self","spouse"]},
-    {"field":"health-di-details","people":["self","spouse"]}
+    {
+      "field": "health-detail-onset",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "health-detail-conditions",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "health-detail-physician-address",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "health-di-q1",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "health-di-q2",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "health-di-q3",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "health-di-q4",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "health-di-q5",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "health-di-q6",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "health-di-q7",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "health-di-assistance-type",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "health-di-fall-type",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "health-di-details",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "health-di-q1-detail-assistance-type",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "health-di-q1-detail-onset",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "health-di-q1-detail-conditions-details",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "health-di-q1-detail-physician-address",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "health-di-q2-detail-fall-type",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "health-di-q2-detail-onset",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "health-di-q2-detail-conditions-details",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "health-di-q2-detail-physician-address",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "health-di-q3-detail-onset",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "health-di-q3-detail-conditions-details",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "health-di-q3-detail-physician-address",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "health-di-q4-detail-onset",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "health-di-q4-detail-conditions-details",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "health-di-q4-detail-physician-address",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "health-di-q5-detail-onset",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "health-di-q5-detail-conditions-details",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "health-di-q5-detail-physician-address",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "health-di-q6-detail-onset",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "health-di-q6-detail-conditions-details",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "health-di-q6-detail-physician-address",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "health-di-q7-detail-details",
+      "people": [
+        "self"
+      ]
+    }
   ]
 }

@@ -1,3 +1,4 @@
+import { requirementText } from "../../domain/requirementContent";
 import type { ReactNode } from "react";
 import { Alert, Box, List, ListItem, Stack, Typography } from "@mui/material";
 import ReportRoundedIcon from "@mui/icons-material/ReportRounded";
@@ -36,15 +37,9 @@ export default function ReviewSections({ control, errors, reviewContent, documen
         >
           <Stack spacing={0.5}>
             <Typography variant="body2" fontWeight={600}>
-              Your advisor has completed this section of the
-              application.
-            </Typography>
+              {requirementText("application.ui.your-advisor-has-completed-this-section-of-the-application")}</Typography>
             <Typography variant="body2">
-              Review the information below. If anything needs to be
-              corrected, click the edit icon and your application will
-              be sent back to your advisor. Otherwise, continue to
-              complete and submit your application.
-            </Typography>
+              {requirementText("application.ui.review-the-information-below-if-anything-needs-to-be-corrected-click-the-edit")}</Typography>
           </Stack>
         </Alert>
 
@@ -54,28 +49,26 @@ export default function ReviewSections({ control, errors, reviewContent, documen
           sx={{ py: 0.75 }}
         >
           <Typography variant="body2">
-            Steps completed by your advisor - Getting Started, Coverage,
-            and Profile - are locked and cannot be edited directly.
-          </Typography>
+            {requirementText("application.ui.steps-completed-by-your-advisor-getting-started-coverage-and-profile-are-locke")}</Typography>
         </Alert>
       </>
     ) : null}
     <Alert severity="info" role="status" icon={<InfoRoundedIcon />}>
-      <Typography variant="subtitle2">You're entering the final stages of your application</Typography>
-      <Typography variant="body2">Check your application below and provide your consent. After this page, you'll complete:</Typography>
+      <Typography variant="subtitle2">{requirementText("application.ui.you-re-entering-the-final-stages-of-your-application")}</Typography>
+      <Typography variant="body2">{requirementText("application.ui.check-your-application-below-and-provide-your-consent-after-this-page-you-ll-c")}</Typography>
       <Box component="ol" sx={{ my: 1, pl: 2.5 }}>{(remainingSteps ?? [...(showHealthQuestionsNote ? ['Health questions'] : []), 'Payment', 'Sign with DocuSign']).map(step => <li key={step}>{step}</li>)}</Box>
-      <Typography variant="body2">Your application is submitted after you complete the remaining steps.</Typography>
+      <Typography variant="body2">{requirementText("application.ui.your-application-is-submitted-after-you-complete-the-remaining-steps")}</Typography>
     </Alert>
     <Box component="section" aria-labelledby="application-preview-heading">
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} justifyContent="space-between" sx={{ mb: 2 }}>
-        <Box><Typography id="application-preview-heading" component="h2" variant="h5">1. Preview your application</Typography><Typography variant="body2" color="text.secondary">Check your answers and use Edit to make corrections before continuing.</Typography></Box>
+        <Box><Typography id="application-preview-heading" component="h2" variant="h5">{requirementText("application.ui.preview-your-application")}</Typography><Typography variant="body2" color="text.secondary">{requirementText("application.ui.check-your-answers-and-use-edit-to-make-corrections-before-continuing")}</Typography></Box>
 
       </Stack>
       {documentPreview}
     </Box>
     <Box component="section" aria-labelledby="application-consent-heading">
-    <Typography id="application-consent-heading" component="h2" variant="h5" sx={{ mb: 1 }}>2. Read and consent</Typography>
-    <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>Read the statements and electronic consent below, then confirm your agreement to continue.</Typography>
+    <Typography id="application-consent-heading" component="h2" variant="h5" sx={{ mb: 1 }}>{requirementText("application.ui.read-and-consent")}</Typography>
+    <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>{requirementText("application.ui.read-the-statements-and-electronic-consent-below-then-confirm-your-agreement-t")}</Typography>
 
     <Stack spacing={3}>
     <LegalReviewSection id="read-and-sign" title={reviewContent.readAndSignTitle} onPrint={onPrint}>

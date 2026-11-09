@@ -1,3 +1,4 @@
+import { requirementText } from "../../domain/requirementContent";
 import {
   Box,
   Chip,
@@ -9,52 +10,7 @@ import AppDrawer from "../layout/AppDrawer";
 import { useComponentContent } from "../content/ComponentContentContext";
 import { formatUSD } from "../../utils/formatUSD";
 
-// ---------------------------------------------------------------------------
-// Dummy existing-coverage data
-// ---------------------------------------------------------------------------
-
-type CoverageItem = {
-  name: string;
-  amount: string;
-  riders?: { name: string; amount?: number }[];
-};
-
-type ApplicantPortfolio = {
-  applicant: "self" | "spouse";
-  label: string;
-  coverages: CoverageItem[];
-};
-
-const DUMMY_PORTFOLIO: ApplicantPortfolio[] = [
-  {
-    applicant: "self",
-    label: "Member",
-    coverages: [
-      {
-        name: "Term Life Insurance",
-        amount: "$250,000",
-        riders: [
-          { name: "Chronic Illness Rider (CIR)" },
-          { name: "Accidental Death Rider", amount: 100000 },
-        ],
-      },
-      { name: "Long Term Disability", amount: "$3,500 / month" },
-      { name: "Accidental Death & Dismemberment", amount: "$100,000" },
-    ],
-  },
-  {
-    applicant: "spouse",
-    label: "Spouse",
-    coverages: [
-      { name: "Term Life Insurance", amount: "$100,000" },
-      { name: "Short Term Disability", amount: "$2,000 / month" },
-    ],
-  },
-];
-
-// ---------------------------------------------------------------------------
-// Component
-// ---------------------------------------------------------------------------
+import portfolioFixture from "../../../requirements/global/prototype-fixtures/portfolio.json";
 
 type CoveragePortfolioDrawerProps = {
   open: boolean;
@@ -68,7 +24,7 @@ export default function CoveragePortfolioDrawer({
   onClose,
   hasSpouse = false,
 }: CoveragePortfolioDrawerProps) {
-  const visiblePortfolio = DUMMY_PORTFOLIO.filter(
+  const visiblePortfolio = portfolioFixture.portfolios.filter(
     (p) => p.applicant === "self" || hasSpouse,
   );
   const coveragePortfolioContent = useComponentContent().help.coveragePortfolio;
@@ -92,7 +48,7 @@ export default function CoveragePortfolioDrawer({
               color="text.secondary"
               sx={{ fontWeight: 700, letterSpacing: "0.08em" }}
             >
-              {portfolio.label}
+              {requirementText(portfolio.label)}
             </Typography>
             <Stack spacing={2} sx={{ mt: 1 }}>
               {portfolio.coverages.map((coverage) => (
@@ -120,7 +76,9 @@ export default function CoveragePortfolioDrawer({
                       sx={{ fontWeight: 700, whiteSpace: "nowrap" }}
                       color="primary.main"
                     >
-                      {coverage.amount}
+                      {"frequency" in coverage && coverage.frequency === "month"
+                        ? requirementText("coverage.portfolio.monthly-amount", { amount: formatUSD(coverage.amount, 0) })
+                        : formatUSD(coverage.amount, 0)}
                     </Typography>
                   </Stack>
                   {coverage.riders && coverage.riders.length > 0 && (

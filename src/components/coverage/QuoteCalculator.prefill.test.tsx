@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { MemoryRouter, Routes, Route, useNavigate } from "react-router-dom";
@@ -5,6 +6,8 @@ import { afterEach, beforeAll, expect, it, vi } from "vitest";
 import QuoteCalculator from "../../app/workflows/QuoteCalculator";
 import { ApplicationFormProvider, useApplicationForm } from "../../app/ApplicationFormContext";
 import { ApplicationSessionProvider } from "../../app/ApplicationSessionContext";
+import { applicationTimeoutKey, isApplicationSessionExpired } from "../../app/applicationTimeout";
+import { applicationStorageKey } from "../../app/ApplicationFormContext";
 import Eligibility from "../../pages/Eligibility";
 import Coverage from "../../pages/Coverage";
 import Contact from "../../pages/Contact";
@@ -51,6 +54,8 @@ it.each([
   vi.stubGlobal('requestAnimationFrame', () => 0);
   vi.stubGlobal('cancelAnimationFrame', (id: number) => window.clearTimeout(id));
   window.history.replaceState(null, '', '/?site=asce');
+  sessionStorage.setItem(applicationTimeoutKey('asce'), String(Date.now() - 1000));
+  sessionStorage.setItem(applicationStorageKey('asce'), JSON.stringify({ 'first-name': 'Previous applicant', email: 'previous@example.test' }));
   const library = resolvePrototypeLibrary(structuredClone(db), 'asce', 'test:tobacco');
   if (oldSurface) library.fieldSurfaces.quoteInputs.mapping.fields = library.fieldSurfaces.quoteInputs.mapping.fields.filter(field => !['tobacco-last-used', 'tobacco-products'].includes(field.id));
   installPrototypeLibrary(library);
@@ -85,6 +90,9 @@ it.each([
   expect(select).not.toBeNull();
   await act(async () => select.click());
   await act(async () => button('Apply for coverage').click());
+  expect(isApplicationSessionExpired('asce')).toBe(false);
+  expect(currentValues()['first-name']).toBeUndefined();
+  expect(currentValues().email).toBeUndefined();
   expect(currentValues()['tobacco-last-used']).toBe('2020-01-15');
   expect(currentValues()['tobacco-products']).toHaveLength(1);
   await act(async () => button('Inspect Coverage').click());
@@ -94,10 +102,10 @@ it.each([
 
 it.each([
   { site: 'asce', product: 'li-term', radios: { gender: 'Female', smoker: 'No' }, inputs: {}, contextualInputs: [] },
-  { site: 'asce', product: 'di-ltd', radios: { gender: 'Female' }, inputs: { 'average-monthly-income': '9000', 'hours-worked-per-week': '45' }, contextualInputs: [{ label: 'Years Self-Employed', value: '3' }] },
+  { site: 'asce', product: 'di-ltd', radios: { gender: 'Female' }, inputs: { 'average-monthly-income': '9000', 'hours-worked-per-week': '45' }, contextualInputs: [] },
   { site: 'abe', product: 'oo-professional', radios: {}, inputs: { 'hours-worked-per-week': '45', 'monthly-business-expenses': '4000', 'business-expense-responsibility': '75' }, contextualInputs: [{ label: 'How many members are in your firm?', value: '3' }] },
   { site: 'avma', product: 'li-term', radios: { gender: 'Female', smoker: 'No' }, inputs: {}, contextualInputs: [{ label: '# Hours You Work/Week', value: '20' }] },
-])("pre-fills $site/$product quote answers in the actual application controls", async ({ site, product, radios, inputs, contextualInputs }) => {
+].filter(example => JSON.parse(readFileSync("public/catalog/portal.json", "utf8")).data.sites.some((site: { key: string }) => site.key === example.site)))("pre-fills $site/$product quote answers in the actual application controls", async ({ site, product, radios, inputs, contextualInputs }) => {
   vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
   vi.useFakeTimers();
   vi.stubGlobal('requestAnimationFrame', () => 0);
@@ -132,9 +140,10 @@ it.each([
   const contextualValues: Record<string, string> = {};
   for (const group of document.querySelectorAll<HTMLElement>('[role="radiogroup"]')) {
     const id = group.getAttribute('aria-labelledby') ?? '';
-    if (id === 'is-self-employed-label') {
-      await act(async () => radio('is-self-employed', 'Yes').click());
-      contextualValues['is-self-employed'] = 'yes';
+    if (id === 'is-self-employed-label' || id === 'self-employed-under-one-year-label') {
+      const field = id.slice(0, -'-label'.length);
+      await act(async () => radio(field, 'Yes').click());
+      contextualValues[field] = 'yes';
       continue;
     }
     if (!id.startsWith('prototype-fact:')) continue;
@@ -252,7 +261,7 @@ it.each(["drawer", "inline"] as const)("requires a current product selection bef
   expect(currentValues().coverageSelections).toEqual(['li-term']);
 }, 120000);
 
-it("requires newly applicable DI facts before applying an already selected quote", async () => {
+it("requires the single self-employment answer and carries its restricted benefit into the application", async () => {
   vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
   vi.useFakeTimers();
   vi.stubGlobal('requestAnimationFrame', () => 0);
@@ -271,13 +280,15 @@ it("requires newly applicable DI facts before applying an already selected quote
   await type(labeledInput(getSurfaceField('quoteInputs', 'hours-worked-per-week')!.label), '45');
   await act(async () => button('See my quote').click());
   await act(async () => { await vi.advanceTimersByTimeAsync(1100); });
-  await act(async () => radio('is-self-employed', 'No').click());
+  expect(document.querySelector<HTMLInputElement>('input[name="di-ltd-selection"]')!.disabled).toBe(true);
+  await act(async () => radio('self-employed-under-one-year', 'No').click());
   const select = document.querySelector<HTMLInputElement>('input[name="di-ltd-selection"]')!;
   expect(select.disabled).toBe(false);
   await act(async () => select.click());
-  await act(async () => radio('is-self-employed', 'Yes').click());
+  await act(async () => radio('self-employed-under-one-year', 'Yes').click());
+  expect(document.querySelector('input[name="years-self-employed"]')).toBeNull();
   await act(async () => button('Apply for coverage').click());
-  expect(document.body.textContent).toContain('Please complete the coverage eligibility information before applying.');
-  expect(onClose).not.toHaveBeenCalled();
-  expect(currentValues().coverageSelections).toBeUndefined();
+  expect(currentValues()['self-employed-under-one-year']).toBe('yes');
+  expect(currentValues().coverageSelections).toEqual(['di-ltd']);
+  expect(Number(currentValues().coverageAmounts['di-ltd:member'])).toBeLessThanOrEqual(1050);
 }, 120000);

@@ -1,6 +1,7 @@
 import type { ClientCoverageQuestions } from "../clients/types";
 import type { CoverageCategoryId } from "../coverages/types";
 import { getCategoryQuestionFieldIds } from "../coverageQuestionRequirements";
+import { getPrototypeLibrary, type PrototypeLibrary } from "../../domain/prototypeLibrary";
 import type {
   PageSectionConfig,
   PageSectionId,
@@ -39,7 +40,7 @@ export function resolveCoverageQuestionSections({
   sections,
   selectedCategories,
   coverageQuestions,
-}: ResolveCoverageQuestionSectionsOptions): PageSectionConfig[] {
+}: ResolveCoverageQuestionSectionsOptions, library: PrototypeLibrary | null = getPrototypeLibrary()): PageSectionConfig[] {
   if (selectedCategories.length === 0) return [];
 
   const removedDefaults = new Set(coverageQuestions?.removeDefaults ?? []);
@@ -64,7 +65,7 @@ export function resolveCoverageQuestionSections({
 
     const applicant = section.applicant === "spouse" ? "spouse" : "self";
     const requiredFieldIds = new Set(
-      getCategoryQuestionFieldIds(selectedCategories, applicant),
+      getCategoryQuestionFieldIds(selectedCategories, applicant, undefined, library),
     );
     const fieldIds = section.fieldIds.filter((fieldId) =>
       requiredFieldIds.has(fieldId),

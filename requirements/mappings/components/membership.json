@@ -8,6 +8,6 @@
     {"field":"email","people":["self"]},
     {"field":"phone","people":["self"]},
     {"field":"phone-type","people":["self"]},
-    {"field":"member-id","people":["self"]}
+    {"field":"member-id","people":["self"],"default":"off"}
   ]
 }

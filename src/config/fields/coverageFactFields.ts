@@ -3,6 +3,7 @@ import { getPrototypeLibrary } from "../../domain/prototypeLibrary";
 import type { CoverageDefinition } from "../../domain/coverage";
 import type { FieldId } from "../../domain/fields";
 import { getCategoryQuestionFieldIds } from "../coverageQuestionRequirements";
+import { coverageRequirementValue } from "../../domain/requirementCoveragePolicy";
 
 /** Additional collection points inferred from normalized requirements, never Site identity. */
 export function coverageFactFieldIds(products: CoverageDefinition[], values?: Record<string, unknown>, collection: "selected" | "presented" = "selected"): FieldId[] {
@@ -19,8 +20,11 @@ export function coverageFactFieldIds(products: CoverageDefinition[], values?: Re
   if (library) for (const field of library.site.configuration.pages.find(p => p.key === "coverage")?.fields ?? []) if (field.included && field.key.startsWith("prototype-fact:") && products.some(p => field.key.startsWith(`prototype-fact:${p.id}:`))) ids.add(field.key as FieldId);
   for (const product of products) {
     if (product.requirements?.benefitLimit?.caps.some(cap => cap.when.selfEmployedLessThanYears !== undefined)) {
-      ids.add("is-self-employed");
-      if (!values || values["is-self-employed"] === "yes" || values["is-self-employed"] === true) ids.add("years-self-employed");
+      if (coverageRequirementValue(product, "member", "coverage-self-employment-question") === "under-one-year") ids.add("self-employed-under-one-year" as FieldId);
+      else {
+        ids.add("is-self-employed");
+        if (!values || values["is-self-employed"] === "yes" || values["is-self-employed"] === true) ids.add("years-self-employed");
+      }
     }
   }
   return [...ids];

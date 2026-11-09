@@ -1,6 +1,42 @@
 {
   "page": "application-unavailable",
   "components": [
-    { "type": "application-unavailable" }
-  ]
+    {
+      "type": "ApplicationErrorState"
+    }
+  ],
+  "definition": {
+    "id": "application-unavailable",
+    "path": "/application-unavailable",
+    "type": "error",
+    "displayName": "Application unavailable",
+    "flow": "utility",
+    "healthGate": false
+  },
+  "position": 36,
+  "layout": {
+    "sections": {}
+  },
+  "content": {
+    "wording": [
+      "recovery.application-unavailable.title",
+      "recovery.application-unavailable.message",
+      "recovery.application-unavailable.guidance"
+    ],
+    "actions": [
+      "recovery.action.home",
+      "recovery.action.resume",
+      "recovery.action.start-new",
+      "recovery.action.retry",
+      "recovery.action.payment"
+    ],
+    "contextual": [
+      "recovery.payment.failed",
+      "recovery.submission.failed",
+      "recovery.payment.guidance",
+      "recovery.submission.guidance",
+      "recovery.operation.unknown",
+      "recovery.page.failed"
+    ]
+  }
 }

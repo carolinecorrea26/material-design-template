@@ -52,23 +52,6 @@
       "sourceReference": "prototype:brandingProfiles/client:ama"
     },
     {
-      "id": "client:asce",
-      "key": "client:asce",
-      "definition": {
-        "name": "American Society of Civil Engineers",
-        "acronym": "ASCE",
-        "logo": "/client/asce/logo.png",
-        "logoAlt": "American Society of Civil Engineers logo"
-      },
-      "position": 0,
-      "scope": "client",
-      "clientKey": "asce",
-      "siteKey": null,
-      "displayId": 137453496738385,
-      "providedBy": null,
-      "sourceReference": "prototype:brandingProfiles/client:asce"
-    },
-    {
       "id": "client:avma",
       "key": "client:avma",
       "definition": {

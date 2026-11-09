@@ -1,3 +1,4 @@
+import { requirementText } from "../../domain/requirementContent";
 import { Box, Button } from "@mui/material";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 
@@ -23,7 +24,7 @@ export default function PageNav({
   formId,
   isTransitioning = false,
   disabled = false,
-  nextLabel = "Next",
+  nextLabel = requirementText("navigation.next"),
 }: PageNavProps) {
   return (
     <Box sx={{ mt: "2rem", mb: "1rem" }}>
@@ -36,7 +37,7 @@ export default function PageNav({
         fullWidth
         disabled={disabled || isTransitioning}
         loading={isTransitioning}
-        aria-label={isTransitioning ? `${nextLabel} — submitting` : undefined}
+        aria-label={isTransitioning ? requirementText("navigation.submitting", { label: nextLabel }) : undefined}
         endIcon={<ArrowForwardRoundedIcon />}
       >
         {nextLabel}

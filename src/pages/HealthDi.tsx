@@ -1,3 +1,4 @@
+import { requirementText } from "../domain/requirementContent";
 import HealthInformationHelp from "../components/health/HealthInformationHelp";
 import { getPrototypeLibrary } from "../domain/prototypeLibrary";
 import { configuredHealthQuestionnaire } from "../domain/configuredHealthQuestionnaire";
@@ -24,7 +25,7 @@ import type { FieldDefinition } from "../config/fields/types";
 function renderGeneralItem(item: Record<string, string>) {
   return (
     <span style={{ fontSize: "0.875rem", wordBreak: "break-word" }}>
-      {item.details || "No details provided"}
+      {item.details || requirementText("application.ui.no-details-provided")}
     </span>
   );
 }
@@ -34,11 +35,11 @@ function renderSpecificItem(item: Record<string, string>) {
     <Stack spacing={0.25}>
       {item.onset && (
         <span style={{ fontSize: "0.75rem", color: "#49596f" }}>
-          Onset: {item.onset}
+          {requirementText("application.ui.onset")}{item.onset}
         </span>
       )}
       <span style={{ fontSize: "0.875rem", wordBreak: "break-word" }}>
-        {item.conditionsDetails || "No details provided"}
+        {item.conditionsDetails || requirementText("application.ui.no-details-provided")}
       </span>
     </Stack>
   );
@@ -54,11 +55,11 @@ function renderAssistanceItem(item: Record<string, string>) {
       )}
       {item.onset && (
         <span style={{ fontSize: "0.75rem", color: "#49596f" }}>
-          Onset: {item.onset}
+          {requirementText("application.ui.onset")}{item.onset}
         </span>
       )}
       <span style={{ fontSize: "0.875rem", wordBreak: "break-word" }}>
-        {item.conditionsDetails || "No details provided"}
+        {item.conditionsDetails || requirementText("application.ui.no-details-provided")}
       </span>
     </Stack>
   );
@@ -74,11 +75,11 @@ function renderFallItem(item: Record<string, string>) {
       )}
       {item.onset && (
         <span style={{ fontSize: "0.75rem", color: "#49596f" }}>
-          Onset: {item.onset}
+          {requirementText("application.ui.onset")}{item.onset}
         </span>
       )}
       <span style={{ fontSize: "0.875rem", wordBreak: "break-word" }}>
-        {item.conditionsDetails || "No details provided"}
+        {item.conditionsDetails || requirementText("application.ui.no-details-provided")}
       </span>
     </Stack>
   );

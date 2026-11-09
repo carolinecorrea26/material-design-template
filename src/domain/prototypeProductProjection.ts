@@ -100,6 +100,7 @@ export function buildPrototypeProduct(data: EffectiveSiteData, site: EffectiveSi
     if (last) Object.assign(coverage, { [kind]: last.value.definition });
   }
   if (!coverage.planCode) coverage.planCode = { primary: journey.mappings[0].identifiers.planCode.display };
+  coverage.requirementPolicy = site.configuration.coverageRequirements.filter(row => row.product === product.productKey);
   return coverage;
 }
 

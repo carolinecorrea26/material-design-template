@@ -1,0 +1,103 @@
+{
+  "home.hero.tagline": "Simple \u2022 Secure \u2022 Member-only rates",
+  "home.hero.title": "Safeguard your financial future.",
+  "home.hero.description": "Coverage designed exclusively for {{clientName}} members. Get started today!",
+  "home.hero.welcome-back-title": "Welcome!",
+  "home.hero.welcome-back-description": "Continue your saved application or begin a new one below.",
+  "home.hero.cta-label": "Start my application",
+  "home.hero.secondary-cta-label": "Continue application",
+  "home.how-applying-works.title": "How does applying work?",
+  "home.how-applying-works.description": "Three simple steps from application to coverage.",
+  "home.applying-steps": [
+    {
+      "title": "Apply online in minutes",
+      "body": "Complete our online application to apply for coverage that fits your needs. Review your options and see your estimated cost."
+    },
+    {
+      "title": "Answer health questions",
+      "body": "Some coverages require health information. We may ask questions during the application, or a representative may follow up to collect your health history. If a medical exam is needed, it's scheduled at no cost to you."
+    },
+    {
+      "title": "Get your decision",
+      "body": "Once all information is received and reviewed, you'll get a decision from New York Life. If approved, you'll receive a certificate of insurance with a 30-day free look period."
+    }
+  ],
+  "home.coverage-options.title": "Your coverage options",
+  "home.coverage-options.description": "Learn more about the coverage available to you.",
+  "home.nyl-credentials.name": "New York Life Insurance Company",
+  "home.nyl-credentials.tagline": "A trusted name for over 180 years",
+  "home.nyl-credentials.description": "At the heart of New York Life is a commitment to be there for customers when they need us, whether today or decades into the future. As of today, New York Life has received the highest financial strength ratings currently awarded to any U.S. life insurer. For our customers, that means promises kept, and peace of mind for the millions of families and businesses who rely on us.",
+  "home.nyl-credentials.ratings-note": "Third Party Rating Reports as of 09/30/2025.",
+  "home.nyl-credentials.ratings": [
+    {
+      "grade": "A++",
+      "source": "A.M. Best"
+    },
+    {
+      "grade": "AAA",
+      "source": "Fitch Ratings"
+    },
+    {
+      "grade": "Aa1",
+      "source": "Moody's Investors Service"
+    },
+    {
+      "grade": "AA+",
+      "source": "Standard & Poor's"
+    }
+  ],
+  "home.quote-section.title": "Get an instant quote",
+  "home.quote-section.description": "Find a premium and amount that's a good fit for you.",
+  "home.review-process-link-label": "Learn more about the review process.",
+  "home.quick-decision-available-suffix": " is available, you may get a faster decision with no medical exam.",
+  "home.no-coverage-categories-message": "No coverage categories are currently available for this site.",
+  "home.available-for-label": "Available for:",
+  "home.title": "Home",
+  "home.quote-first.title": "Find the right coverage for your needs.",
+  "home.quote-first.description": "Answer a few questions to get an instant estimate. No obligation. {{clientAcronym}} member rates.",
+  "home.quote-section.action": "Get an instant quote",
+  "home.landing-notice.view": "View {{title}}",
+  "home.landing-notice.cancel": "Cancel",
+  "home.landing-notice.continue": "Continue",
+  "home.applying-steps.when": "When",
+  "home.applying-illustrations": [
+    {
+      "image": "apply",
+      "alt": "Apply online"
+    },
+    {
+      "image": "health",
+      "alt": "Answer health questions"
+    },
+    {
+      "image": "decision",
+      "alt": "Receive your decision"
+    }
+  ],
+  "home.quote.about-you": "About you",
+  "home.quote.tell-us-a-little-about-yourself-to-see-the-coverage-available-to-you": "Tell us a little about yourself to see the coverage available to you.",
+  "home.quote.coverage-needs": "Coverage needs",
+  "home.quote.choose-the-coverage-you-d-like-included-in-your-estimate": "Choose the coverage you'd like included in your estimate.",
+  "home.quote.your-quote": "Your quote",
+  "home.quote.review-your-coverage-options-and-estimated-rates-then-continue-when-you-re-ready": "Review your coverage options and estimated rates, then continue when you're ready.",
+  "home.quote.how-much-does-it-cost": "How much does it cost?",
+  "home.quote.please-correct-the-quote-answers-before-applying": "Please correct the quote answers before applying.",
+  "home.quote.please-complete-the-coverage-eligibility-information-before-applying": "Please complete the coverage eligibility information before applying.",
+  "home.quote.coverage-details": "Coverage details",
+  "home.quote.select-at-least-one-coverage-category": "Select at least one coverage category.",
+  "home.quote.see-my-quote": "See my quote",
+  "home.quote.your-estimated-cost-will-appear-here": "Your estimated cost will appear here",
+  "home.quote.select-a-coverage-category-to-see-your-estimated-cost": "Select a coverage category to see your estimated cost.",
+  "home.quote.loading-your-coverage-options": "Loading your coverage options\u2026",
+  "home.quote.we-re-sorry-but-products-in-this-category-require-working-at-least": "We're sorry, but products in this category require working at least ",
+  "home.quote.hours-per-week": " hours per week.",
+  "home.quote.based-on-your-answers-you-are-not-eligible-for-coverage-in-this-category-at-this": "Based on your answers, you are not eligible for coverage in this category at this time.",
+  "home.quote.rider-benefit-amount": "Rider Benefit Amount",
+  "home.quote.quoted-cost-is-the-best-rate-available-final-cost-may-vary-based-on-gender-healt": "Quoted cost is the best rate available. Final cost may vary based on gender, health status, and tobacco/nicotine use.",
+  "home.quote.apply-for-coverage": "Apply for coverage",
+  "home.quote.step": "Step",
+  "home.quote.of-3": "of 3",
+  "home.quote.invalid-field": "Choose an available {{field}}.",
+  "home.quote.selection-label": "Select for myself",
+  "home.quote.coverage-details-description": "Answer a few questions about your {{category}} coverage."
+}

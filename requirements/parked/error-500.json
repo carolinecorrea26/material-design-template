@@ -1,0 +1,42 @@
+{
+  "page": "error-500",
+  "definition": {
+    "id": "error-500",
+    "path": "/500",
+    "type": "error",
+    "displayName": "Error 500",
+    "flow": "utility",
+    "healthGate": false
+  },
+  "position": 32,
+  "layout": {
+    "sections": {}
+  },
+  "components": [
+    {
+      "type": "ApplicationErrorState"
+    }
+  ],
+  "content": {
+    "wording": [
+      "recovery.500.title",
+      "recovery.500.message",
+      "recovery.500.guidance"
+    ],
+    "actions": [
+      "recovery.action.home",
+      "recovery.action.resume",
+      "recovery.action.start-new",
+      "recovery.action.retry",
+      "recovery.action.payment"
+    ],
+    "contextual": [
+      "recovery.payment.failed",
+      "recovery.submission.failed",
+      "recovery.payment.guidance",
+      "recovery.submission.guidance",
+      "recovery.operation.unknown",
+      "recovery.page.failed"
+    ]
+  }
+}

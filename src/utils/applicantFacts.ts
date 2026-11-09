@@ -29,6 +29,7 @@ export function applicationApplicantFacts(values: Record<string, unknown>, appli
     averageMonthlyIncome: numericFact(values[`${prefix}average-monthly-income`]),
     selfEmployed: booleanFact(values[`${prefix}is-self-employed`]),
     yearsSelfEmployed: numericFact(values[`${prefix}years-self-employed`]),
+    selfEmployedUnderOneYear: booleanFact(values[`${prefix}self-employed-under-one-year`]),
     firmMemberCount: numericFact(values[`${prefix}firm-member-count`]),
   };
 }

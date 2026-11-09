@@ -1,3 +1,4 @@
+import { requirementText } from "../domain/requirementContent";
 import BeneficiaryProductRecords from "../components/beneficiary/BeneficiaryProductRecords";
 import { type BeneficiaryDesignation, type BeneficiaryType, type BeneficiaryItem } from "../components/beneficiary/beneficiaryRecords";
 import { collectsBeneficiaries } from "../domain/beneficiaryParticipation";
@@ -475,7 +476,7 @@ export default function Beneficiary() {
   function applyBeneficiaryToSelected() {
     if (!applyToOthersItem || !applyToOthersSource) return;
     if (!applyToOthersSelected.length) {
-      setApplyToOthersError("Select at least one coverage or skip this step.");
+      setApplyToOthersError(requirementText("beneficiary.apply.error-empty"));
       return;
     }
 
@@ -729,7 +730,7 @@ export default function Beneficiary() {
               }
               actions={[
                 {
-                  label: "Save Beneficiary",
+                  label: requirementText("beneficiary.dialog.save"),
                   onClick: () => {
                     const formEl = document.getElementById(
                       "beneficiary-modal-form",
@@ -739,7 +740,7 @@ export default function Beneficiary() {
                   variant: "contained",
                 },
                 {
-                  label: "Cancel",
+                  label: requirementText("beneficiary.dialog.cancel"),
                   onClick: closeModal,
                   variant: "text",
                 },
@@ -762,8 +763,8 @@ export default function Beneficiary() {
                         setModalDesignation(value)
                       }
                     >
-                      <Tab label="Primary" value="primary" />
-                      <Tab label="Contingent" value="contingent" />
+                      <Tab label={requirementText("beneficiary.designation.primary")} value="primary" />
+                      <Tab label={requirementText("beneficiary.designation.contingent")} value="contingent" />
                     </Tabs>
                     <Typography
                       variant="caption"
@@ -783,15 +784,12 @@ export default function Beneficiary() {
                       >
                         {remainingDesignationSlots}
                       </Typography>{" "}
-                      {modalDesignation} beneficiaries remaining
-                    </Typography>
+                      {modalDesignation} {requirementText("beneficiary.designation.remaining")}</Typography>
                   </Box>
 
                   {remainingDesignationSlots === 0 && !editingId && (
                     <Alert severity="warning">
-                      No more {modalDesignation} beneficiaries can be added
-                      online.
-                    </Alert>
+                      {requirementText("beneficiary.error.designation-full").replace("{designation}", modalDesignation)}</Alert>
                   )}
 
                   <ControlledFieldRenderer
@@ -804,16 +802,16 @@ export default function Beneficiary() {
                     individualBlocked && (
                       <Alert severity="warning">
                         {designationHasTrust
-                          ? `A trust has already been designated as ${modalDesignation} beneficiary. Individuals cannot be added for this designation.`
-                          : "No more individuals can be added \u2014 0% unassigned share remaining."}
+                          ? requirementText("beneficiary.error.trust-exists").replace("{designation}", modalDesignation)
+                          : requirementText("beneficiary.error.no-unassigned-share")}
                       </Alert>
                     )}
 
                   {modalBeneficiaryType === "trust" && trustBlocked && (
                     <Alert severity="warning">
                       {designationHasTrust
-                        ? `Only one trust can be designated per ${modalDesignation} beneficiary.`
-                        : `An individual has already been designated as ${modalDesignation} beneficiary. A trust cannot be added for this designation.`}
+                        ? requirementText("beneficiary.error.one-trust").replace("{designation}", modalDesignation)
+                        : requirementText("beneficiary.error.individual-exists").replace("{designation}", modalDesignation)}
                     </Alert>
                   )}
 
@@ -847,8 +845,7 @@ export default function Beneficiary() {
                               setModalValue(shareKey, String(percent));
                             }}
                           >
-                            {percent}%
-                          </Button>
+                            {percent}{"%"}</Button>
                         ))}
                       </Stack>
 
@@ -867,10 +864,8 @@ export default function Beneficiary() {
                             fontSize: "inherit",
                           }}
                         >
-                          {displayRemainingShare}%
-                        </Typography>{" "}
-                        unassigned remaining
-                      </Typography>
+                          {displayRemainingShare}{"%"}</Typography>{" "}
+                        {requirementText("beneficiary.share.remaining")}</Typography>
                     </>
                   ) : (
                     <>
@@ -913,12 +908,12 @@ export default function Beneficiary() {
               title={content.dialogs.beneficiary.applyToOthersTitle}
               actions={[
                 {
-                  label: "Apply to Selected",
+                  label: requirementText("beneficiary.apply.confirm"),
                   onClick: applyBeneficiaryToSelected,
                   variant: "contained",
                 },
                 {
-                  label: "Skip",
+                  label: requirementText("beneficiary.apply.cancel"),
                   onClick: closeApplyToOthers,
                   variant: "text",
                 },

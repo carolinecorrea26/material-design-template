@@ -3,6 +3,9 @@
 //   --page <id>  prints one page's mapped sections, fields and people
 //   --map        prints which pages each field is on
 import fs from 'node:fs';
+import { parseCoverageAssignments } from '../src/domain/requirementCoverageValidation.mjs';
+import { parseCoveragePolicies } from '../src/domain/requirementCoveragePolicies.mjs';
+import { validateProductCatalog } from '../src/domain/requirementProductCatalog.mjs';
 import { pricingFormulas } from '../src/domain/pricingFormulas.mjs';
 import path from 'node:path';
 
@@ -18,6 +21,12 @@ const SOURCES = ['site-defined', 'site-associations', 'product-defined', 'produc
 const peopleOf = field => field.people ?? ['self'];
 const pagesOf = field => field.pages ?? [];
 const siteDirs = fs.existsSync(`${root}/parked/sites`) ? fs.readdirSync(`${root}/parked/sites`) : [];
+// Fresh-start product definitions/defaults and Site assignments are authored
+// here; the public catalog parts are no longer their source.
+for (const [file, scope] of [[`${root}/global/products.json`, 'global'], ...siteDirs.map(site => [`${root}/parked/sites/${site}/products.json`, 'site'])]) {
+  if (!fs.existsSync(file)) continue;
+  try { validateProductCatalog(read(file).catalog, scope); } catch (error) { fail(file, error.message); }
+}
 
 // Pages: the list of ids
 const pageList = read(`${root}/global/pages.json`).pages;
@@ -169,6 +178,9 @@ for (const field of read(fieldsFile).fields) {
   } else for (const key of field.type === 'tabs' ? ['type'] : ['type', 'label']) if (!field[key]) fail(fieldsFile, `field ${field.id} has no ${key}`);
   for (const person of field.people ?? []) if (!PEOPLE.includes(person)) fail(fieldsFile, `field ${field.id} has unknown person ${person}`);
   if (field.required && typeof field.required === 'object') for (const page of Object.keys(field.required)) if (!pagesOf(field).includes(page)) fail(fieldsFile, `field ${field.id} has a required setting for ${page}, which it is not on`);
+  if (field.defaultValue && typeof field.defaultValue === 'object' && !Array.isArray(field.defaultValue)) {
+    for (const key of Object.keys(field.defaultValue)) if (key !== 'default' && !PEOPLE.includes(key) && !pagesOf(field).includes(key)) fail(fieldsFile, `field ${field.id} has a default value for unknown context ${key}`);
+  }
   if (field.helperText && typeof field.helperText === 'object') for (const person of Object.keys(field.helperText)) if (!peopleOf(field).includes(person)) fail(fieldsFile, `field ${field.id} has helper text for ${person}, who it is not asked of`);
   const labels = [field.label, ...Object.values(field.configurations ?? {}).map(c => c.label)];
   for (const label of labels) if (label && typeof label === 'object') for (const key of Object.keys(label)) if (key !== 'default' && !peopleOf(field).includes(key) && !pagesOf(field).includes(key)) fail(fieldsFile, `field ${field.id} has a label for ${key}, which is neither a person it is asked of nor a page it is on`);
@@ -186,7 +198,8 @@ function checkFieldMappings(file, entries) {
   for (const entry of entries) {
     const field = fields.get(entry.field);
     if (!field) fail(file, `unknown field ${entry.field}`);
-    for (const key of Object.keys(entry)) if (!['field', 'people', 'default'].includes(key)) fail(file, `${entry.field} has unexpected property ${key}`);
+    for (const key of Object.keys(entry)) if (!['field', 'people', 'default', 'replaces'].includes(key)) fail(file, `${entry.field} has unexpected property ${key}`);
+    if (entry.replaces !== undefined && (!Array.isArray(entry.replaces) || !entry.replaces.length || new Set(entry.replaces).size !== entry.replaces.length || entry.replaces.some(id => !fields.has(id) || id === entry.field))) fail(file, `${entry.field} has invalid replacement fields`);
     if (entry.default !== undefined && entry.default !== 'off') fail(file, `${entry.field} default must be "off" (fields are on unless marked)`);
     if (seen.has(entry.field)) fail(file, `duplicate field ${entry.field}`);
     seen.add(entry.field);
@@ -263,10 +276,16 @@ for (const kind of requirementKinds) {
           if (!Array.isArray(entry.options) || !entry.options.length || entry.options.some(option => typeof option !== 'string' || !kebab.test(option))) fail(where, 'options must be a non-empty array of lowercase hyphenated values');
           else if (!Array.isArray(entry.default) || entry.default.some(value => !entry.options.includes(value)) || new Set(entry.default).size !== entry.default.length) fail(where, 'default must list authored options once each');
         } else if (entry.type === 'string-list') {
-          if (entry.format !== 'state-code') fail(where, 'string-list format must be state-code');
+          const validItem = {
+            'state-code': value => typeof value === 'string' && /^[A-Z]{2}$/.test(value),
+            'category-code': value => ['LI', 'AD', 'DI', 'OO', 'SH'].includes(value),
+            'product-id': value => typeof value === 'string' && kebab.test(value),
+          }[entry.format];
+          if (!validItem) fail(where, 'string-list format must be state-code, category-code or product-id');
           if (Object.hasOwn(entry, 'options')) fail(where, 'string-list configuration must not declare options');
-          if (!Array.isArray(entry.default) || entry.default.some(value => typeof value !== 'string' || !/^[A-Z]{2}$/.test(value))) fail(where, 'state-code default must be an array of two-letter uppercase codes');
-          else if (new Set(entry.default).size !== entry.default.length) fail(where, 'duplicate state code');
+          const checkItem = validItem ?? (value => typeof value === 'string' && /^[A-Z]{2}$/.test(value));
+          if (!Array.isArray(entry.default) || entry.default.some(value => !checkItem(value))) fail(where, entry.format === 'state-code' || !validItem ? 'state-code default must be an array of two-letter uppercase codes' : `invalid ${entry.format} default`);
+          else if (new Set(entry.default).size !== entry.default.length) fail(where, entry.format === 'state-code' ? 'duplicate state code' : `duplicate ${entry.format}`);
         } else if (entry.type !== 'enum') fail(where, 'configuration type must be enum, boolean, number or string-list');
         else if (!Array.isArray(entry.options) || !entry.options.length || entry.options.some(option => typeof option !== 'string' || !option.trim())) {
           fail(where, 'options must be a non-empty array of strings');
@@ -401,13 +420,31 @@ const checkCondition = (where, condition) => {
   for (const nested of condition.any ?? []) checkCondition(where, nested);
 };
 
-// Parked: layout (sections, order), content links, help, behavior and conditions. Placed when those are reviewed.
+// Bindings project one authored fact into the existing consumer contract.
+for (const [file, resolve] of [
+  ['content-bindings.json', id => useContent(`${root}/global/content-bindings.json`, id)],
+  ['configuration-bindings.json', id => { if (!requirementRecords.get('configurations').some(row => row.id === id)) fail(`${root}/global/configuration-bindings.json`, `unknown configuration ${id}`); }],
+]) {
+  const targets = new Set();
+  for (const [id, binding] of Object.entries(read(`${root}/global/${file}`))) {
+    resolve(id);
+    for (const target of file === 'content-bindings.json' ? [binding].flat() : [binding]) {
+      if (typeof target !== 'string' || !target.split('.').every(part => /^[a-zA-Z][a-zA-Z0-9-]*$/.test(part) && !['constructor', 'prototype', '__proto__'].includes(part))) fail(file, `invalid consumer path ${target}`);
+      if (targets.has(target)) fail(file, `duplicate consumer path ${target}`);
+      targets.add(target);
+    }
+  }
+}
+
+// Reviewed pages own complete layout; unreviewed drafts may still refer to legacy.
 const parkedByPage = new Map();
 for (const file of list(`${root}/parked`).filter(f => !['pages.json', 'fields.json', 'field-details.json', 'page-details.json'].includes(path.basename(f)))) {
   const pageDraft = read(file);
   const legacyFile = `${root}/parked/legacy/${pageDraft.page}.json`;
+  if (pageDraft.definition && pageDraft.layout && fs.existsSync(legacyFile)) fail(file, 'reviewed page must not have a legacy source');
   const parked = fs.existsSync(legacyFile) ? { ...read(legacyFile), ...pageDraft } : pageDraft;
   parkedByPage.set(parked.page, parked);
+  useContent(file, parked.note);
   if (!pageIds.has(parked.page)) { fail(file, `page ${parked.page} is not in pages.json`); continue; }
   if (path.basename(file, '.json') !== parked.page) fail(file, 'file name does not match the page id');
 
@@ -423,10 +460,52 @@ for (const file of list(`${root}/parked`).filter(f => !['pages.json', 'fields.js
     checkComponents(component.components);
   } };
   checkComponents(parked.components);
+  for (const [name, surface] of Object.entries(parked.surfaces ?? {})) {
+    if (!surface.definition) continue;
+    const where = `${file} (${name})`;
+    useContent(where, surface.definition.label);
+    useContent(where, surface.definition.libraryGroup?.label);
+    const person = surface.for ?? 'self';
+    if (!PEOPLE.includes(person)) fail(where, `unknown surface person ${person}`);
+    const mapping = surface.mapping?.component ? componentFields.get(surface.mapping.component) : mappings.get(surface.mapping?.page);
+    if (!mapping) fail(where, 'unknown surface field mapping');
+    const placed = new Set([...(parked.controls ?? []), ...Object.values(parked.layout?.dialogs ?? {}).filter(group => (group.for ?? 'self') === person).flatMap(group => group.fields ?? [])]);
+    if (!Array.isArray(surface.definition.fields) || !surface.definition.fields.length) fail(where, 'surface must list fields');
+    for (const binding of surface.definition.fields ?? []) {
+      const canonical = surface.aliases?.[binding.fieldKey]?.field ?? binding.fieldKey;
+      if (!mapping?.some(row => row.field === canonical && row.people.includes(person)) || !placed.has(canonical)) fail(where, `unmapped dialog field ${canonical}`);
+    }
+  }
   const groups = [...Object.entries(parked.layout?.sections ?? {}).map(([id, g]) => ({ id, g, kind: 'section' })), ...Object.entries(parked.layout?.dialogs ?? {}).map(([id, g]) => ({ id, g, kind: 'dialog' }))];
+  const placements = new Set();
+  const fieldMapping = parked.fieldMapping;
+  const mapped = fieldMapping && (fieldMapping.component ? componentFields.get(fieldMapping.component) : mappings.get(fieldMapping.page));
+  if (fieldMapping && !mapped) fail(file, 'unknown reviewed page field mapping');
+  for (const id of [...(parked.controls ?? []), ...Object.values(parked.companions ?? {}).flat()]) {
+    if (!mapped?.some(row => row.field === id && row.people.includes('self'))) fail(file, `unmapped page control ${id}`);
+  }
   for (const { id, g, kind } of groups) {
     if (!kebab.test(id)) fail(file, `${kind} id ${id} is not lowercase with hyphens`);
     if (!PEOPLE.includes(g.for ?? 'self')) fail(file, `${kind} ${id} is for unknown person ${g.for}`);
+    if (fieldMapping) {
+      useContent(file, g.title);
+      for (const field of g.fields ?? []) {
+        if (!mapped?.some(row => row.field === field && row.people.includes(g.for ?? 'self'))) fail(file, `unmapped layout field ${field} for ${g.for ?? 'self'}`);
+        const key = `${g.for ?? 'self'}:${field}`;
+        if (placements.has(key)) fail(file, `duplicate layout field ${key}`);
+        placements.add(key);
+      }
+      for (const [owner, companions] of Object.entries(g.companions ?? {})) {
+        if (!(g.fields ?? []).includes(owner)) fail(file, `unplaced companion owner ${owner}`);
+        if (!Array.isArray(companions) || !companions.length || new Set(companions).size !== companions.length) fail(file, `invalid companion list for ${owner}`);
+        for (const field of Array.isArray(companions) ? companions : []) if (!mapped?.some(row => row.field === field && row.people.includes(g.for ?? 'self'))) fail(file, `unmapped companion ${field} for ${g.for ?? 'self'}`);
+      }
+      if (g.when && !fields.has(g.when.field?.replace(/^(spouse|child)-/, ''))) fail(file, `unknown layout condition field ${g.when.field}`);
+      if (g.repeats) {
+        useContent(file, g.repeats.item);
+        if (!requirementRecords.get('configurations').some(row => row.id === g.repeats.max && row.type === 'number')) fail(file, `unknown collection maximum ${g.repeats.max}`);
+      }
+    }
   }
   for (const [id, section] of Object.entries(parked.sections ?? {})) {
     if (!parked.layout?.sections?.[id]) fail(file, `parked section ${id} is not on the page`);
@@ -439,6 +518,13 @@ for (const file of list(`${root}/parked`).filter(f => !['pages.json', 'fields.js
     for (const key of [dialog.title, dialog.editTitle, dialog.message, dialog.confirm, dialog.cancel]) useContent(file, key);
   }
   const rules = parked.shownWhen ?? {};
+  for (const transition of Object.values(parked.transitions ?? {})) {
+    if (!transition.id || !transition.trigger || !Array.isArray(transition.fieldMappings)) { fail(file, 'invalid page transition'); continue; }
+    for (const mapping of transition.fieldMappings) {
+      if (!fields.has(mapping.source) || !mapped?.some(row => row.field === mapping.targetFieldId)) fail(file, `unmapped transition field ${mapping.source} → ${mapping.targetFieldId}`);
+      if (!['always', 'if-empty'].includes(mapping.overwrite)) fail(file, `invalid transition overwrite ${mapping.overwrite}`);
+    }
+  }
   for (const [id, condition] of Object.entries(rules.sections ?? {})) {
     if (!parked.layout?.sections?.[id]) fail(file, `rule for section ${id}, which is not on the page`);
     checkCondition(file, condition);
@@ -459,6 +545,19 @@ for (const file of list(`${root}/parked`).filter(f => !['pages.json', 'fields.js
 // Sites: only what differs
 for (const site of siteDirs) {
   const dir = `${root}/parked/sites/${site}`;
+  if (fs.existsSync(`${dir}/coverage-policies.json`)) {
+    try { parseCoveragePolicies(read(`${dir}/coverage-policies.json`), site); }
+    catch (error) { fail(`${dir}/coverage-policies.json`, error.message); }
+  }
+  const policyFile = `${dir}/coverage.json`;
+  if (fs.existsSync(policyFile)) {
+    try {
+      const catalog = read(new URL('../public/catalog/portal.json', import.meta.url));
+      const data = catalog.data ?? catalog;
+      const productApplicants = Object.fromEntries(data.siteProductApplicants.filter(row => row.siteKey === site).map(row => [row.productKey, data.siteProductApplicants.filter(other => other.siteKey === site && other.productKey === row.productKey).map(other => other.applicantKey)]));
+      parseCoverageAssignments(read(policyFile), requirementRecords.get('configurations'), site, productApplicants);
+    } catch (error) { fail(policyFile, error.message); }
+  }
   if (fs.existsSync(`${dir}/pages.json`)) for (const id of Object.keys(read(`${dir}/pages.json`).pages ?? {})) if (!pageIds.has(id)) fail(`${dir}/pages.json`, `unknown page ${id}`);
   if (fs.existsSync(`${dir}/fields.json`)) for (const [id, override] of Object.entries(read(`${dir}/fields.json`).fields ?? {})) {
     const field = fields.get(id);
@@ -472,7 +571,12 @@ for (const site of siteDirs) {
   for (const file of list(`${dir}/pages`)) {
     const override = read(file);
     if (!parkedByPage.has(override.page)) { fail(file, `no layout for page ${override.page}`); continue; }
+    useContent(file, override.note);
     for (const key of Object.values(override.notes ?? {})) useContent(file, key);
+    for (const [product, assignment] of Object.entries(override.productNotes ?? {})) {
+      useContent(file, assignment.content);
+      if (!parkedByPage.get(override.page)?.productNotes) fail(file, `page does not declare product notes for ${product}`);
+    }
     const onPage = new Map([...(mappings.get(override.page) ?? []), ...(possiblePageFields.get(override.page) ?? [])].map(row => [row.field, row]));
     for (const [key, off] of [['include', true], ['hide', false]]) {
       if (override[key] === undefined) continue;

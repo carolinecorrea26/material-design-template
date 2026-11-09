@@ -9,6 +9,7 @@ export type SavedApplication = {
 export type RecoveredApplication = SavedApplication & { values: Record<string, unknown> };
 export type RecoveryDetails = { applicationId: string; siteKey: string; recipient: string; recoveryId: string; token: string };
 export type ResumeMessage = { id: string; kind: 'link' | 'code'; applicationId: string; recipient: string; url?: string; code?: string; expiresAt: number; method?: string };
+export type ApplicationSavePage = 'membership' | 'coverage' | 'review';
 const handleKey = (siteKey: string) => `applicantSave:${siteKey}`;
 
 export function readSavedApplication(siteKey: string): SavedApplication | null {
@@ -22,13 +23,13 @@ export function readSavedApplication(siteKey: string): SavedApplication | null {
 export function rememberSavedApplication(application: SavedApplication) { sessionStorage.setItem(handleKey(application.siteKey), JSON.stringify(application)); }
 export function forgetSavedApplication(siteKey: string) { sessionStorage.removeItem(handleKey(siteKey)); }
 
-/** Serial saves prevent initial autosave and Next creating two households. */
+/** Only successful Membership submission may create a saved application; later writes are serialized. */
 export function createApplicantSaveClient(siteKey: string) {
   let queue: Promise<unknown> = Promise.resolve();
   let generation = 0;
   return {
     cancelPending() { generation += 1; },
-    save(values: Record<string, unknown>, validatedPage?: 'coverage' | 'review'): Promise<SavedApplication | null> {
+    save(values: Record<string, unknown>, submittedPage?: ApplicationSavePage): Promise<SavedApplication | null> {
       const snapshot = structuredClone(values);
       const capturedGeneration = generation;
       const task = queue.catch(() => {}).then(async () => {
@@ -40,6 +41,9 @@ export function createApplicantSaveClient(siteKey: string) {
         const library = getPrototypeLibrary(siteKey);
         if (!import.meta.env.VITE_MOCK_PLATFORM_ENABLED || !library || !snapshot.email) return null;
         const existing = readSavedApplication(siteKey);
+        if (!existing && submittedPage !== 'membership') return null;
+        // Membership starts saving; only Coverage/Review completion clears revalidation.
+        const validatedPage = submittedPage === 'coverage' || submittedPage === 'review' ? submittedPage : undefined;
         const environment = sessionStorage.getItem('prototypeReleaseEnvironment') ?? undefined;
         const application = await mockRequest<SavedApplication>('/applicant/save', {
           siteKey, recipient: String(snapshot.email).trim().toLowerCase(), revision: library.revision, values: snapshot, validatedPage, environment,

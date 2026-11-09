@@ -1,6 +1,43 @@
 {
   "page": "not-found",
   "components": [
-    { "type": "not-found" }
-  ]
+    {
+      "type": "ApplicationErrorState"
+    }
+  ],
+  "definition": {
+    "id": "error-404",
+    "path": "/404",
+    "type": "error",
+    "displayName": "Error 404",
+    "flow": "utility",
+    "healthGate": false
+  },
+  "position": 31,
+  "consumerKey": "error-404",
+  "layout": {
+    "sections": {}
+  },
+  "content": {
+    "wording": [
+      "recovery.404.title",
+      "recovery.404.message",
+      "recovery.404.guidance"
+    ],
+    "actions": [
+      "recovery.action.home",
+      "recovery.action.resume",
+      "recovery.action.start-new",
+      "recovery.action.retry",
+      "recovery.action.payment"
+    ],
+    "contextual": [
+      "recovery.payment.failed",
+      "recovery.submission.failed",
+      "recovery.payment.guidance",
+      "recovery.submission.guidance",
+      "recovery.operation.unknown",
+      "recovery.page.failed"
+    ]
+  }
 }

@@ -1,0 +1,6 @@
+{
+  "page": "membership",
+  "include": ["member-id"],
+  "hide": ["title"],
+  "note": "membership.note.member-profession"
+}

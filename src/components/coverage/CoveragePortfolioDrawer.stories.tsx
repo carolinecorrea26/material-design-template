@@ -6,10 +6,10 @@ import CoveragePortfolioDrawer from "./CoveragePortfolioDrawer";
 /**
  * CoveragePortfolioDrawer is a read-only "existing coverage" summary shown
  * on the Coverage page to TPA-verified members — its coverage data is
- * intentionally hardcoded dummy data (DUMMY_PORTFOLIO), not real client
- * config, since there's no real member-record integration in this
- * prototype. Missing from componentInventory.ts before this pass — added
- * now.
+ * fictional data from the fresh-start portfolio fixture, also used for
+ * configured in-force amount reductions. The
+ * Coverage page enforces TPA portfolio access; these standalone examples
+ * illustrate the drawer after access has been granted.
  */
 const meta = {
   id: "coverage-commerce-coverageportfoliodrawer",

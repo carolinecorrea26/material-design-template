@@ -1,3 +1,4 @@
+import { requirementText } from "../../domain/requirementContent";
 import { Alert, Box, Typography } from "@mui/material";
 import type { FormRouteRenderProps } from "../../app/RoutePage";
 import type { ClientApplicantLabels } from "../../config/clients/types";
@@ -201,7 +202,7 @@ export default function ProfileSections({ control, errors, watchedValues, allFie
               >
                 <SectionDivider
                   label={
-                    section.description ?? "Financial questionnaire"
+                    section.description ?? requirementText("page.profile.profile-financial-questionnaire-self")
                   }
                   variant="subsection"
                   sx={{ mb: 1 }}
@@ -457,9 +458,9 @@ function renderFinancialFields(
   function renderDisabilityCompanySummary(item: Record<string, string>) {
     return (
       <>
-        <Typography variant="subtitle2">{item.company || "Company"}</Typography>
+        <Typography variant="subtitle2">{item.company || requirementText("application.ui.company")}</Typography>
         <Typography variant="caption" color="text.secondary">
-          {`${item.monthlyBenefitAmount || "$0"} | ${item.benefitPeriod || "Benefit period not provided"} | ${item.waitingPeriod || "Waiting period not provided"}`}
+          {`${item.monthlyBenefitAmount || requirementText("application.ui.zero-amount")} | ${item.benefitPeriod || requirementText("application.ui.benefit-period-not-provided")} | ${item.waitingPeriod || requirementText("application.ui.waiting-period-not-provided")}`}
         </Typography>
       </>
     );
@@ -500,7 +501,7 @@ function renderFinancialFields(
                 <DynamicList
                   control={control as never}
                   name={collection?.name ?? disabilityListName}
-                  label={collection?.label ?? "Company"}
+                  label={collection?.label ?? requirementText("application.ui.company")}
                   maxItems={collection?.maxItems ?? 10}
                   mapping={collection?.mapping ?? disabilityCompanyMapping}
                   renderItem={renderDisabilityCompanySummary}

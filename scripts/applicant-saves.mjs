@@ -2,6 +2,7 @@ import { normalizeSiteReferences } from '../src/domain/siteIdentity.mjs';
 import { createHash, randomBytes, randomInt, randomUUID, timingSafeEqual } from 'node:crypto';
 import { mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
+const prototypeDefaults = JSON.parse(readFileSync(new URL('../requirements/global/prototype-fixtures/application.json', import.meta.url), 'utf8'));
 
 const digest = value => createHash('sha256').update(value).digest('hex');
 const secret = () => randomBytes(32).toString('hex');
@@ -13,7 +14,7 @@ const email = value => {
   return value.trim().toLowerCase();
 };
 const record = value => value && typeof value === 'object' && !Array.isArray(value);
-const lifetime = 10 * 24 * 60 * 60 * 1000;
+const lifetime = prototypeDefaults.savedApplicationLifetimeMs;
 
 /** Separate local applicant store. No Library drafts, administrator credentials,
  * real delivery or production authentication. Outbox credentials are simulation only. */
@@ -54,7 +55,7 @@ export function createApplicantSaves({ statePath, clock = Date.now, availableSit
   };
   const challenge = (application, recovery, method) => {
     const code = String(randomInt(0, 1000000)).padStart(6, '0');
-    recovery.codeHash = digest(code); recovery.codeExpiresAt = clock() + 5 * 60000; recovery.attempts = 0;
+    recovery.codeHash = digest(code); recovery.codeExpiresAt = clock() + prototypeDefaults.resumeCodeValidityMs; recovery.attempts = 0;
     state.outbox.push({ id: randomUUID(), kind: 'code', mode: 'mock', simulation: true, siteKey: application.siteKey, applicationId: application.id, recoveryId: recovery.id, recipient: application.recipient, method, code, expiresAt: recovery.codeExpiresAt });
     if (state.outbox.length > 100) state.outbox.shift();
     const phone = String(application.values.phone ?? application.values['phone-number'] ?? '').replace(/\D/g, '');
@@ -104,7 +105,7 @@ export function createApplicantSaves({ statePath, clock = Date.now, availableSit
         return commit(() => {
           application.resumeRequests = [...recent, clock()];
           revoke(application.id);
-          const token = secret(), recovery = { id: randomUUID(), applicationId: application.id, tokenHash: digest(token), expiresAt: clock() + 10 * 60000, consumed: false, revoked: false };
+          const token = secret(), recovery = { id: randomUUID(), applicationId: application.id, tokenHash: digest(token), expiresAt: clock() + prototypeDefaults.resumeLinkValidityMs, consumed: false, revoked: false };
           state.recoveries[recovery.id] = recovery;
           const query = new URLSearchParams({ site: application.siteKey, applicationId: application.id, recipient: application.recipient, recoveryId: recovery.id, token, ...(application.environment ? { environment: application.environment } : {}) });
           state.outbox.push({ id: randomUUID(), kind: 'link', mode: 'mock', simulation: true, siteKey: application.siteKey, applicationId: application.id, recoveryId: recovery.id, recipient: application.recipient, url: `/resume-method?${query}`, expiresAt: recovery.expiresAt });

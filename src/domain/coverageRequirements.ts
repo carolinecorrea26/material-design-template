@@ -4,7 +4,7 @@ import type { CoverageApplicantId, CoverageDefinition, CoverageRequirements } fr
 export type ApplicantFacts = {
   ageYears?: number; ageDays?: number; honorablyDischargedServiceMember?: boolean; fullTimeStudent?: boolean;
   workHoursPerWeek?: number; averageMonthlyIncome?: number; activelyAtWork?: boolean; associationMember?: boolean; activeMilitary?: boolean;
-  selfEmployed?: boolean; yearsSelfEmployed?: number;
+  selfEmployed?: boolean; yearsSelfEmployed?: number; selfEmployedUnderOneYear?: boolean;
   associationKey?: string; firmMemberCount?: number;
 };
 export type RequirementResult = "eligible" | "ineligible" | "needs-information";
@@ -34,7 +34,7 @@ export function resolveBenefitLimit(requirements: CoverageRequirements | undefin
     const checks: Array<boolean | undefined> = [];
     if (when.minimumAgeYears !== undefined) checks.push(facts.ageYears === undefined ? undefined : facts.ageYears >= when.minimumAgeYears);
     if (when.maximumAgeYears !== undefined) checks.push(facts.ageYears === undefined ? undefined : facts.ageYears <= when.maximumAgeYears);
-    if (when.selfEmployedLessThanYears !== undefined) checks.push(facts.selfEmployed === false ? false : facts.selfEmployed === undefined || facts.yearsSelfEmployed === undefined ? undefined : facts.yearsSelfEmployed < when.selfEmployedLessThanYears);
+    if (when.selfEmployedLessThanYears !== undefined) checks.push(when.selfEmployedLessThanYears === 1 && facts.selfEmployedUnderOneYear !== undefined ? facts.selfEmployedUnderOneYear : facts.selfEmployed === false ? false : facts.selfEmployed === undefined || facts.yearsSelfEmployed === undefined ? undefined : facts.yearsSelfEmployed < when.selfEmployedLessThanYears);
     if (checks.includes(false)) continue;
     if (checks.includes(undefined)) { complete = false; break; }
     cap = candidate; break;

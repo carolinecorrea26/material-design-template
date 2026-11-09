@@ -1,6 +1,145 @@
 {
   "page": "home",
   "components": [
-    { "type": "home" }
-  ]
+    {
+      "type": "HomeHero",
+      "mapping": "home"
+    },
+    {
+      "type": "HowApplyingWorksPanel"
+    },
+    {
+      "type": "HomeCoverageSection"
+    },
+    {
+      "type": "AssociationIntroduction"
+    },
+    {
+      "type": "UnderwriterCredentials"
+    }
+  ],
+  "definition": {
+    "id": "home",
+    "path": "/",
+    "type": "home",
+    "flow": "application",
+    "healthGate": false,
+    "displayName": "Home",
+    "inlineFieldKeys": [
+      "birth-date",
+      "zip-postal-code",
+      "state-province"
+    ]
+  },
+  "position": 0,
+  "layout": {
+    "sections": {
+      "eligibility": {
+        "id": "homeEligibility",
+        "fields": [
+          "zip-postal-code",
+          "state-province",
+          "birth-date"
+        ]
+      }
+    }
+  },
+  "fieldMapping": {
+    "component": "home"
+  },
+  "contentRoots": [
+    "home"
+  ],
+  "content": {
+    "wording": [
+      "home.hero.tagline",
+      "home.hero.title",
+      "home.hero.description",
+      "home.hero.welcome-back-title",
+      "home.hero.welcome-back-description",
+      "home.hero.cta-label",
+      "home.hero.secondary-cta-label",
+      "home.how-applying-works.title",
+      "home.how-applying-works.description",
+      "home.applying-steps",
+      "home.coverage-options.title",
+      "home.coverage-options.description",
+      "home.nyl-credentials.name",
+      "home.nyl-credentials.tagline",
+      "home.nyl-credentials.description",
+      "home.nyl-credentials.ratings-note",
+      "home.nyl-credentials.ratings",
+      "home.quote-section.title",
+      "home.quote-section.description",
+      "home.review-process-link-label",
+      "home.quick-decision-available-suffix",
+      "home.no-coverage-categories-message",
+      "home.available-for-label",
+      "home.title",
+      "home.quote-first.title",
+      "home.quote-first.description",
+      "home.quote-section.action",
+      "home.landing-notice.view",
+      "home.landing-notice.cancel",
+      "home.landing-notice.continue",
+      "home.applying-steps.when",
+      "home.applying-illustrations",
+      "home.quote.about-you",
+      "home.quote.tell-us-a-little-about-yourself-to-see-the-coverage-available-to-you",
+      "home.quote.coverage-needs",
+      "home.quote.choose-the-coverage-you-d-like-included-in-your-estimate",
+      "home.quote.your-quote",
+      "home.quote.review-your-coverage-options-and-estimated-rates-then-continue-when-you-re-ready",
+      "home.quote.how-much-does-it-cost",
+      "home.quote.please-correct-the-quote-answers-before-applying",
+      "home.quote.please-complete-the-coverage-eligibility-information-before-applying",
+      "home.quote.coverage-details",
+      "home.quote.select-at-least-one-coverage-category",
+      "home.quote.see-my-quote",
+      "home.quote.your-estimated-cost-will-appear-here",
+      "home.quote.select-a-coverage-category-to-see-your-estimated-cost",
+      "home.quote.loading-your-coverage-options",
+      "home.quote.we-re-sorry-but-products-in-this-category-require-working-at-least",
+      "home.quote.hours-per-week",
+      "home.quote.based-on-your-answers-you-are-not-eligible-for-coverage-in-this-category-at-this",
+      "home.quote.rider-benefit-amount",
+      "home.quote.quoted-cost-is-the-best-rate-available-final-cost-may-vary-based-on-gender-healt",
+      "home.quote.apply-for-coverage",
+      "home.quote.step",
+      "home.quote.of-3",
+      "home.quote.invalid-field",
+      "home.quote.selection-label",
+      "home.quote.coverage-details-description"
+    ]
+  },
+  "surfaces": {
+    "quoteInputs": {
+      "mapping": {
+        "component": "quote-calculator"
+      },
+      "aliases": {
+        "quote-selection": {
+          "field": "add-coverage",
+          "label": "home.quote.selection-label"
+        },
+        "quote-amount": {
+          "field": "coverage-amount"
+        },
+        "quote-monthly-amount": {
+          "field": "monthly-benefit-amount"
+        },
+        "quote-categories": {
+          "field": "coverage-categories"
+        },
+        "quote-rate-frequency": {
+          "field": "rate-frequency"
+        }
+      }
+    },
+    "needsCalculator": {
+      "mapping": {
+        "component": "needs-calculator"
+      }
+    }
+  }
 }

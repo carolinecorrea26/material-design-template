@@ -1,0 +1,387 @@
+{
+  "site": "asce",
+  "assignments": [
+    { "configuration": "coverage-deduct-inforce-amount", "product": "li-term", "applicants": ["member", "spouse"], "value": true, "source": "User confirmed: deduct verified TPA in-force amounts from the configured coverage maximum" },
+    { "configuration": "coverage-deduct-inforce-amount", "product": "li-10yr", "applicants": ["member", "spouse"], "value": true, "source": "User confirmed: deduct verified TPA in-force amounts from product and combined Life maxima" },
+    { "configuration": "coverage-deduct-inforce-amount", "product": "li-20yr", "applicants": ["member", "spouse"], "value": true, "source": "User confirmed: deduct verified TPA in-force amounts from product and combined Life maxima" },
+    { "configuration": "coverage-deduct-inforce-amount", "product": "li-add", "applicants": ["member", "spouse"], "value": true, "source": "User confirmed: deduct verified TPA in-force amounts from the configured coverage maximum" },
+    { "configuration": "coverage-deduct-inforce-amount", "product": "di-ltd", "applicants": ["member", "spouse"], "value": true, "source": "User confirmed: deduct verified TPA in-force monthly benefits from available Disability benefits" },
+    {
+      "configuration": "coverage-minimum-work-hours",
+      "product": "di-ltd",
+      "applicants": [
+        "member",
+        "spouse"
+      ],
+      "value": 30,
+      "source": "MCR v78 Main!R169:S169; user confirmed 30 for both"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "di-ltd",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 17,
+      "source": "MCR v78 Main!P169; user confirmed"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "di-ltd",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 59,
+      "source": "MCR v78 Main!P169; user confirmed"
+    },
+    {
+      "configuration": "coverage-minimum-annual-income",
+      "product": "di-ltd",
+      "applicants": [
+        "member"
+      ],
+      "value": 20000,
+      "source": "MCR v78 New UX Multi-page Requirements!AC21; user confirmed"
+    },
+    {
+      "configuration": "coverage-self-employment-question",
+      "product": "di-ltd",
+      "applicants": [
+        "member"
+      ],
+      "value": "under-one-year",
+      "source": "User confirmed single Yes/No question; MCR v78 Disability!D11 benefit exception"
+    },
+    {
+      "configuration": "coverage-member-benefit-submit-minimum",
+      "product": "di-ltd",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 600,
+      "source": "User exception to MCR v78 New UX Multi-page Requirements!AD21: keep spouse selectable; page alert on Next only when both apply and member benefit is below threshold"
+    },
+    {
+      "configuration": "coverage-new-application-minimum-amount",
+      "product": "li-term",
+      "applicants": [
+        "member",
+        "spouse"
+      ],
+      "value": 20000,
+      "source": "MCR v78 Main!H167:I167; existing coverage is not a new application"
+    },
+    {
+      "configuration": "coverage-age-maximum-amount",
+      "product": "li-term",
+      "applicants": [
+        "member",
+        "spouse"
+      ],
+      "value": 500000,
+      "source": "MCR v78 Main!H167:I167",
+      "minimumAgeYears": 70,
+      "maximumAgeYears": 72
+    },
+    {
+      "configuration": "coverage-age-maximum-amount",
+      "product": "li-term",
+      "applicants": [
+        "member",
+        "spouse"
+      ],
+      "value": 350000,
+      "source": "MCR v78 Main!H167:I167",
+      "minimumAgeYears": 73,
+      "maximumAgeYears": 75
+    },
+    {
+      "configuration": "coverage-minimum-age-days",
+      "product": "li-add",
+      "applicants": [
+        "child"
+      ],
+      "value": 15,
+      "source": "MCR v78 Main!Q168"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-add",
+      "applicants": [
+        "child"
+      ],
+      "value": 24,
+      "source": "MCR v78 Main!Q168"
+    },
+    {
+      "configuration": "coverage-child-requires-member",
+      "product": "li-term",
+      "applicants": [
+        "child"
+      ],
+      "value": true,
+      "source": "User confirmed member coverage required; MCR v78 Main!J165:J167 takes precedence over T165:T167"
+    },
+    {
+      "configuration": "coverage-child-requires-member",
+      "product": "li-10yr",
+      "applicants": [
+        "child"
+      ],
+      "value": true,
+      "source": "User confirmed member coverage required; MCR v78 Main!J165:J167 takes precedence over T165:T167"
+    },
+    {
+      "configuration": "coverage-child-requires-member",
+      "product": "li-20yr",
+      "applicants": [
+        "child"
+      ],
+      "value": true,
+      "source": "User confirmed member coverage required; MCR v78 Main!J165:J167 takes precedence over T165:T167"
+    },
+    {
+      "configuration": "coverage-minimum-age-days",
+      "product": "li-term",
+      "applicants": [
+        "child"
+      ],
+      "value": 14,
+      "source": "prototype:asce.li-term"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-term",
+      "applicants": [
+        "child"
+      ],
+      "value": 22,
+      "source": "prototype:asce.li-term"
+    },
+    {
+      "configuration": "coverage-student-maximum-age-years",
+      "product": "li-term",
+      "applicants": [
+        "child"
+      ],
+      "value": 24,
+      "source": "prototype:asce.li-term"
+    },
+    {
+      "configuration": "coverage-minimum-age-days",
+      "product": "li-10yr",
+      "applicants": [
+        "child"
+      ],
+      "value": 14,
+      "source": "prototype:asce.li-10yr"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-10yr",
+      "applicants": [
+        "child"
+      ],
+      "value": 22,
+      "source": "prototype:asce.li-10yr"
+    },
+    {
+      "configuration": "coverage-student-maximum-age-years",
+      "product": "li-10yr",
+      "applicants": [
+        "child"
+      ],
+      "value": 24,
+      "source": "prototype:asce.li-10yr"
+    },
+    {
+      "configuration": "coverage-minimum-age-days",
+      "product": "li-20yr",
+      "applicants": [
+        "child"
+      ],
+      "value": 14,
+      "source": "prototype:asce.li-20yr"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-20yr",
+      "applicants": [
+        "child"
+      ],
+      "value": 22,
+      "source": "prototype:asce.li-20yr"
+    },
+    {
+      "configuration": "coverage-student-maximum-age-years",
+      "product": "li-20yr",
+      "applicants": [
+        "child"
+      ],
+      "value": 24,
+      "source": "prototype:asce.li-20yr"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-10yr",
+      "applicants": [
+        "member"
+      ],
+      "value": 18,
+      "source": "docs/asce-business-decisions.md#asce.li-10yr.base-eligibility-ages"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-10yr",
+      "applicants": [
+        "member"
+      ],
+      "value": 69,
+      "source": "docs/asce-business-decisions.md#asce.li-10yr.base-eligibility-ages"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-10yr",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 18,
+      "source": "docs/asce-business-decisions.md#asce.li-10yr.base-eligibility-ages"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-10yr",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 69,
+      "source": "docs/asce-business-decisions.md#asce.li-10yr.base-eligibility-ages"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-20yr",
+      "applicants": [
+        "member"
+      ],
+      "value": 18,
+      "source": "docs/asce-business-decisions.md#asce.li-20yr.base-eligibility-ages"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-20yr",
+      "applicants": [
+        "member"
+      ],
+      "value": 59,
+      "source": "docs/asce-business-decisions.md#asce.li-20yr.base-eligibility-ages"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-20yr",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 18,
+      "source": "docs/asce-business-decisions.md#asce.li-20yr.base-eligibility-ages"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-20yr",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 59,
+      "source": "docs/asce-business-decisions.md#asce.li-20yr.base-eligibility-ages"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-term",
+      "applicants": [
+        "member"
+      ],
+      "value": 17,
+      "source": "Main!O167"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-term",
+      "applicants": [
+        "member"
+      ],
+      "value": 75,
+      "source": "Main!O167"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-term",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 17,
+      "source": "Main!P167"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-term",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 75,
+      "source": "Main!P167"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-add",
+      "applicants": [
+        "member"
+      ],
+      "value": 17,
+      "source": "Main!O168"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-add",
+      "applicants": [
+        "member"
+      ],
+      "value": 69,
+      "source": "Main!O168"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-add",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 17,
+      "source": "Main!P168"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-add",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 69,
+      "source": "Main!P168"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "di-ltd",
+      "applicants": [
+        "member"
+      ],
+      "value": 17,
+      "source": "Main!O169; other dimensions: prototype:asce.di-ltd; work eligibility: Main!R169"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "di-ltd",
+      "applicants": [
+        "member"
+      ],
+      "value": 69,
+      "source": "Main!O169; other dimensions: prototype:asce.di-ltd; work eligibility: Main!R169"
+    }
+  ]
+}

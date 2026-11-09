@@ -1,0 +1,11 @@
+{
+  "rules": [
+    {
+      "id": "category-product-presentation-order",
+      "name": "Shared category and product presentation order",
+      "status": "confirmed",
+      "statement": "Category order and product order are global template configurations, with values supplied by the effective Site. Use the same ordering wherever categories or products are displayed, including Home, quote tools, About Coverage panels/drawers, application navigation, Coverage and selected-product summaries on later pages. A valid featured_prod takes precedence: move its category first and its product first within that category, then preserve configured ordering for the remaining entries. Otherwise use effective-site categoryOrder/productOrder, followed by the global defaults for omitted entries. Product order is within a category. Unknown or unavailable featured products do not enable products or alter ordering. Filtering and eligibility determine participation separately. This is distinct from numeric amount-dropdown ordering. Cross-page requirements apply to later-page rollout as well; documenting them does not mark every consumer migrated.",
+      "source": "User-confirmed global template review; existing Library URL parameter featured_prod; src/domain/coveragePresentation.ts; src/config/client/getActiveClientCoverages.ts"
+    }
+  ]
+}

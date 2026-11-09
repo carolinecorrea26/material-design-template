@@ -1,0 +1,422 @@
+{
+  "navigation.progress-step-labels.getting-started": "Getting started",
+  "navigation.progress-step-labels.coverage-options": "Choose your coverage",
+  "navigation.progress-step-labels.profile": "Your application details",
+  "navigation.progress-step-labels.application-review": "Review your application",
+  "navigation.progress-step-labels.esign-submit": "E-sign and submit",
+  "navigation.transition-messages.contact": [
+    "Saving your contact information...",
+    "Preparing the next section with your contact details..."
+  ],
+  "navigation.transition-messages.profile": [
+    "Saving your personal information...",
+    "Preparing your application for review..."
+  ],
+  "navigation.transition-messages.review": [
+    "Preparing your application review...",
+    "Checking for anything that needs attention..."
+  ],
+  "navigation.transition-messages.health-si": [
+    "Saving your health information...",
+    "Preparing the next health questions..."
+  ],
+  "navigation.transition-messages.health-qd": [
+    "Saving your health information...",
+    "Preparing the next health questions..."
+  ],
+  "navigation.transition-messages.health-di": [
+    "Saving your health information...",
+    "Preparing the next health questions..."
+  ],
+  "navigation.transition-messages.health-cir": [
+    "Saving your health information...",
+    "Preparing the next health questions..."
+  ],
+  "navigation.transition-messages.payment": [
+    "Preparing your payment step...",
+    "Setting up a secure path to complete your application..."
+  ],
+  "navigation.transition-messages.docusign": [
+    "Preparing your signature step...",
+    "Getting your documents ready to sign..."
+  ],
+  "navigation.transition-messages.receipt": [
+    "Finalizing your confirmation...",
+    "Preparing your receipt details..."
+  ],
+  "navigation.transition-defaults": [
+    "Saving your information...",
+    "Preparing the next step..."
+  ],
+  "navigation.back-message": "Returning to the previous step...",
+  "footer.administered-by-label": "Administered By:",
+  "footer.underwritten-by.label": "Underwritten By:",
+  "footer.underwritten-by.name": "New York Life Insurance Company",
+  "footer.underwritten-by.policy-form": "on Policy Form GMR",
+  "footer.underwritten-by.address": "51 Madison Avenue\nNew York, New York 10010",
+  "footer.ratings": [
+    {
+      "grade": "A++",
+      "source": "A.M. Best"
+    },
+    {
+      "grade": "AAA",
+      "source": "Fitch Ratings"
+    },
+    {
+      "grade": "Aa1",
+      "source": "Moody's Investors Service"
+    },
+    {
+      "grade": "AA+",
+      "source": "Standard & Poor's"
+    }
+  ],
+  "footer.ratings-as-of": "1 Third Party Rating Reports as of 09/30/2025.",
+  "footer.legal": [
+    "New York Life Insurance Company is licensed/authorized to transact business in all of the 50 United States, the District of Columbia, Puerto Rico and Canada. However, not all group policies it underwrites are available in all jurisdictions. Please check the Coverage detail sections for current availability. New York Life Insurance Company's state of domicile is New York, and NAIC ID is #66915.",
+    "NEW YORK LIFE and the NEW YORK LIFE Box Logo are trademarks of New York Life Insurance Company."
+  ],
+  "footer.links.terms-of-use": "NYL Terms of Use",
+  "footer.links.privacy-notice": "NYL Privacy Notice",
+  "footer.terms-of-use-content.title": "New York Life Terms of Use",
+  "footer.terms-of-use-content.sections": [
+    {
+      "type": "paragraph",
+      "text": "If you are applying online, you are applying for insurance coverage using electronic processes that include the use of electronic records and electronic signatures. New York Life is required by law to provide you with certain disclosures and information regarding your insurance application. Upon your consent, these notices will be delivered electronically."
+    },
+    {
+      "type": "paragraph",
+      "text": "Please print or download New York Life's Online Privacy Notice and retain it for your records. Your consent also permits the use of electronic records and electronic signatures throughout your application."
+    },
+    {
+      "type": "paragraph",
+      "text": "If you do not consent to electronic delivery of these disclosures, New York Life cannot continue processing your electronic application. A paper application may be required instead."
+    },
+    {
+      "type": "paragraph",
+      "text": "This notice contains important information regarding your consent to the use of electronic signatures and records. Please read it carefully before continuing."
+    },
+    {
+      "type": "paragraph",
+      "text": "By electronically signing your application, you consent to the use of electronic transactions, electronic signatures, and electronic delivery of records related to your insurance application. You also agree that any consent or agreement transmitted through this website is legally binding and has the same legal effect as your handwritten signature."
+    },
+    {
+      "type": "paragraph",
+      "text": "Your consent applies to:"
+    },
+    {
+      "type": "list",
+      "items": [
+        "Information required to complete your insurance application.",
+        "Your insurance application.",
+        "Associated notices, disclosures, and supporting documents."
+      ]
+    },
+    {
+      "type": "paragraph",
+      "text": "You may withdraw your consent at any time. However, withdrawing consent will prevent New York Life from continuing to process your electronic application. You may instead submit a paper application through your plan administrator."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "System Requirements"
+    },
+    {
+      "type": "list",
+      "items": [
+        "128-bit SSL encryption.",
+        "Screen resolution of 1280 × 800 or higher.",
+        "A current version of Google Chrome. Other browsers may not be fully supported."
+      ]
+    }
+  ],
+  "footer.terms-of-use-content.revision": "November 1, 2011",
+  "footer.privacy-notice-content.title": "New York Life Privacy Notice",
+  "footer.privacy-notice-content.sections": [
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Our Information Practices"
+    },
+    {
+      "type": "paragraph",
+      "text": "This Privacy Notice applies to information collected in connection with financial products and services provided by members of the New York Life Family of Companies that are subject to the Gramm-Leach-Bliley Act."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Information We Collect"
+    },
+    {
+      "type": "list",
+      "items": [
+        "Information provided on applications and forms.",
+        "Transaction information.",
+        "Publicly available information.",
+        "Website and cookie information.",
+        "Consumer reporting information.",
+        "Health information collected with authorization."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Safeguarding Your Information"
+    },
+    {
+      "type": "paragraph",
+      "text": "We maintain physical, electronic, and procedural safeguards designed to protect confidential information and comply with applicable regulations."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "How We Use Information"
+    },
+    {
+      "type": "paragraph",
+      "text": "Information may be shared as permitted by law for normal business administration and servicing."
+    },
+    {
+      "type": "list",
+      "items": [
+        "Within the New York Life Family of Companies.",
+        "With service providers performing business functions.",
+        "When required by law."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Privacy Notice Distribution"
+    },
+    {
+      "type": "paragraph",
+      "text": "This Privacy Notice was last updated in January 2026."
+    },
+    {
+      "type": "address",
+      "lines": [
+        "Group Membership Compliance Officer",
+        "New York Life Insurance Company",
+        "44 South Broadway",
+        "White Plains, NY 10601"
+      ]
+    },
+    {
+      "type": "paragraph",
+      "text": "Phone: (866) 891-0631 Ext. 3004595"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "New York Life Family of Companies"
+    },
+    {
+      "type": "paragraph",
+      "text": "The New York Life Family of Companies includes New York Life Insurance Company and numerous affiliated insurance, investment, and asset management companies."
+    },
+    {
+      "type": "note",
+      "text": "Form 22294-CA (January 2026) · © 2026 New York Life Insurance Company"
+    }
+  ],
+  "review.alert-title": "Important information about your application and next steps:",
+  "review.alert-items": [
+    {
+      "title": "Check your information",
+      "description": "Make any edits now—changes can't be made after this step."
+    },
+    {
+      "title": "Review and authorize",
+      "description": "Read the consent information carefully and provide your consent to continue."
+    }
+  ],
+  "review.health-questions-note.title": "Answer health questions",
+  "review.health-questions-note.description": "Based on your coverage, you'll answer a short set of health questions in the next step. This only takes a few minutes.",
+  "review.read-and-sign-title": "Read & Sign",
+  "review.read-and-sign-content": "Please read carefully the statements below.\nI understand that payment of a premium contribution for insurance does not mean that there is any coverage in force before the effective date as specified by New York Life.\n\nI understand that New York Life has the right to require additional information and, if necessary, an examination by a physician. I ask New York Life to rely on all such statements made on this form, and any supplements to it, while considering this request. I also understand that the coverage afforded will be in consideration of the answers and statements set forth above.\n\nAUTHORIZATION: I authorize physicians, practitioners, hospitals, clinics or medically related facilities, pharmacies, pharmacy benefit managers, laboratories, insurance companies, MIB, LLC (\"MIB\"), medical information retrieval services, electronic health record companies or health care information technology companies to release to New York Life Insurance Company or New York Life Insurance and Annuity Corporation (collectively \"New York Life\"), its reinsurers, or the plan administrator at New York Life's expense, whether in electronic or paper form, information they may have about my physical or mental health, my prescription drug history, diagnostic testing and copies of my drug and alcohol records, including my records relating to substance abuse education, prevention, training, treatment, rehabilitation or research. This also may include information on the diagnosis, treatment, and testing results related to HIV, AIDS, and sexually transmitted diseases, unless otherwise restricted by state law. Mental health professionals may provide their records, excluding psychotherapy notes, of my diagnosis, functional status, treatment plan, symptoms, prognosis, progress to date, medication prescription and monitoring, and clinical test results for the purpose of evaluating my application for insurance. This includes protected health information and any health information I have previously requested be withheld from further disclosure, and including my history, their findings, diagnoses and treatment.\n\nMIB, other insurance companies, any employers, financial institutions, and consumer reporting agencies may provide to New York Life at New York Life's expense data about: my driving record; my financial information; any criminal activity; hazardous sport or aviation activity; use of alcohol or drugs; any claim of eligibility for disability income benefits; other applications for insurance; and other policies of insurance. New York Life may obtain an investigative consumer report about me.\n\nA photocopy of this AUTHORIZATION and request form shall be as valid as the original. My authorized agent or representative, or I may request a copy of this AUTHORIZATION. This AUTHORIZATION may be used for a period of 24 months from the date signed, unless sooner revoked as stated in the Important Notice. The AUTHORIZATION may be revoked at any time by sending written notice to New York Life. My revocation will not be effective to the extent that New York Life or any other person already has disclosed or collected information or taken other action in reliance on it, or to the extent that New York Life has a legal right to contest a claim under an insurance certificate or the certificate itself.\n\nI understand and agree that:\n\nNew York Life may use the information obtained by this AUTHORIZATION to determine my eligibility for insurance, to evaluate a claim for benefits, to contest coverage, or for reinsurance or other insurance purposes, including development of new products and services.\nTo obtain the data described above, New York Life may give my personal information to the above persons or organizations.\nNew York Life may give data collected about me to: its subsidiaries; affiliates; parent company; agents and their staffs; organizations that perform business functions for it; reinsurers, and others as permitted or required by law.\nThe medical information New York Life obtains through this AUTHORIZATION may no longer be subject to federal laws and regulations that apply to an individual's protected health information (the Health Insurance Portability and Accountability Act (HIPAA) Privacy Rule). The information New York Life obtains through this AUTHORIZATION may become subject to further disclosure.\nAuthorizing the disclosure of this health information is voluntary.\nI can refuse to sign this AUTHORIZATION. However, failure to execute this AUTHORIZATION may result in New York Life being unable to collect information relating to me and result in denial of my application for insurance.\n\nCONSENT: By signing and dating this application, I request the insurance applied for (for myself and/or my dependents); I attest that the information provided in my application is true and complete to the best of my knowledge and belief and that I, and any other person proposed for insurance, has read the Fraud Notice (if any) above and the IMPORTANT NOTICE , including how my/our information is exchanged with MIB; and I, and any other person proposed for insurance, consents to authorize the disclosure of information, to and from the providers noted in the IMPORTANT NOTICE, including making a brief report of my/our protected health information to MIB.",
+  "review.electronic-consent-title": "Electronic Consent",
+  "review.electronic-consent-content": "NEW YORK LIFE INSURANCE COMPANY\n\nCustomer Electronic Consent and Disclosure\n(the \"Consent\")\n\nIMPORTANT NOTICE - PLEASE READ CAREFULLY\n\nWhat is the purpose of this Consent?\n\nYou are applying for insurance coverage from New York Life Insurance Company (\"New York Life\") and have expressed your desire to electronically sign the application Forms for the insurance certificate (the \"Insurance Certificate\") and electronically receive communications related to the application for the Insurance Certificate. To conduct this business electronically, you must provide New York Life and its authorized designees with your consent. By clicking the \"Submit\" button below, and applying your electronic signature, you will be providing New York Life and its authorized designees, with your consent:\n\n(a) to have the Required Documents described in this Consent delivered to you electronically;\n\n(b) to execute via electronic means the application Forms that are described in this Consent; and\n\n(c) to agree to all of the terms and conditions set forth below in this Consent.\n\nIf you do not want to have the Required Documents delivered to you electronically, if you do not want to execute via electronic means the Application Forms, and/or if you do not agree with all of the terms and conditions of this Consent, you may not conduct business electronically with New York Life, and you must not click the submit link below. In this event you may contact the Administrator below to request a paper application.\n\nWhat does the Consent cover once I click \"Sign\" and apply my electronic signature?\n\nThe Consent covers your agreement to all of the terms and conditions of the Consent, including your agreement to:\n\n1. execute via electronic means any documents that New York Life requires to be signed in connection with the application process for this Insurance Certificate (the \"application Forms\");\n\n2. be bound with the same force and effect as if you had affixed your signature on paper, by hand, when you click \"Submit\" and apply your electronic signature or otherwise apply your electronic signature to the application Forms;\n\n3. receive via electronic means the application Forms, Important Notice and New York Life Online Privacy Notice that New York Life is required to deliver and/or make available to you, in writing, in connection with the Insurance Certificate (the \"Required Documents\").\n\nEven though you have provided New York Life with the Consent, New York Life may, at its option, deliver the Required Documents to you on paper.\n\nMay I obtain paper copies of the Required Documents and the Consent?\n\nYes. You may obtain paper copies of any of the Required Documents and/or the Consent at any time and without charge by contacting New York Life at GMAD_DocumentRequest@newyorklife.com or (914) 846-3017.\n\n\nShould I maintain copies of the Required Documents received by electronic means?\n\nYes. You agree to print or save the Required Documents and to keep printed or electronic copies of them for your records. If you have any trouble with printing or saving, you should contact New York Life at GMAD_DocumentRequest@newyorklife.com or (914) 846-3017.\n\nIn what form will I receive Required Documents by electronic means?\n\nRequired Documents will be provided in Portable Document Format (PDF). I agree that I must have Adobe Acrobat viewer software installed on my personal computer in order to view these Required Documents. I agree that if I do not have the ability to access and retain PDF documents, I should not click the \"Submit\" button. By clicking the \"Submit\" button, I acknowledge that I can access the Required Documents on my personal computer in PDF Form.\n\nHow will I receive Required Documents by electronic means?\n\nThere are links to the notices and documents on this website and in this notice. Click on the linked text to open the document. Upon selecting the link, you will be able to view, download, and/or print all the Required Documents pertaining to your application. For reference, these required documents are:\nImportant Notice\nNew York Life Online Privacy Notice\n\nHow long will this Consent remain in effect?\n\nThis Consent shall become effective once you click the \"Submit\" button below and shall remain in effect until you withdraw your consent (as described in the next section) or the Insurance Certificate is issued.\n\nWhat if I change my mind?\n\nYou may only withdraw your consent to do business electronically before the Insurance Certificate is issued. If you would like to do so, you must provide New York Life with a written withdrawal of your consent to do business electronically. This will terminate the Consent and your Insurance Certificate application as of the date you sign your withdrawal, subject to any action New York Life took before recording the withdrawal. If we issue the Insurance Certificate before we record your withdrawal, and you wish to cancel this Insurance Certificate thereafter, you must exercise your right to surrender the Insurance Certificate according to its terms. There is no charge to withdraw your consent.\n\nWhat if my contact information changes?\n\nYou must keep New York Life informed of any changes to your e-mail address. You may inform New York Life of any such changes by contacting New York Life at GMAD_DocumentRequest@newyorklife.com or (914) 846-3017.\n\nAre there any hardware or software requirements to do business electronically with New York Life?\n\nYes. To do business electronically with New York Life and to access and retain the Required Documents sent or made available to you electronically by New York Life requires that you have a personal computer or mobile device with appropriate browser software, such as Microsoft Internet Explorer, Mozilla Firefox, or equivalent, and email software as well as communications access to the Internet. You must ensure that the mobile device that you are using to view or electronically sign the application Forms allows you to access all associated content. This access may incur charges from Internet Service Providers and telephone or cable companies. These costs are your responsibility. In order to view certain Required Documents in the Portable Document Format (PDF), you must have Adobe Acrobat viewer software. This software is available for download, free of charge, from the Adobe Web site (www.adobe.com). You must have the ability to save the Required Documents to a storage device for later reference or have a connection between your computer or mobile device and a printer so you can print out the Required Documents.\n\nGMA-EC\n1/1/18 ed.",
+  "receipt.decision-steps": [
+    "Submitted",
+    "Reviewed",
+    "Decision"
+  ],
+  "receipt.decision-statuses.fully-underwritten.label": "Sent for review",
+  "receipt.decision-statuses.fully-underwritten.description": "QuickDecision is not currently available for this product. Your application will continue through the standard review process, and you'll be contacted if additional information is needed or when a decision is available.",
+  "receipt.decision-statuses.conditionally-approved.label": "Conditionally approved",
+  "receipt.decision-statuses.conditionally-approved.description": "Congratulations! Your application has been conditionally approved. Once your group plan administrator confirms your eligibility, you'll receive details about your new coverage.",
+  "receipt.decision-statuses.referred.label": "Sent for review",
+  "receipt.decision-statuses.referred.description": "We need a bit more information before we can make a decision. Your application will continue through the standard review process, and you'll be contacted if additional information is needed or when a decision is available.",
+  "receipt.decision-statuses.soft-declined.label": "Unable to offer",
+  "receipt.decision-statuses.soft-declined.description": "Based on the information provided and the data securely reviewed, we're unable to offer this coverage through QuickDecision at this time. Your application will still be reviewed by the plan administrator and carrier, and you'll be contacted if additional information is needed.",
+  "receipt.decision-statuses.database-unavailable.label": "Sent for review",
+  "receipt.decision-statuses.database-unavailable.description": "We couldn't complete QuickDecision processing for this coverage in real time. Your application will continue through the standard review process, and you'll be contacted if additional information is needed or when a decision is available.",
+  "receipt.documents-note": "Please download a copy of your application below for your records. For security, we cannot send a copy to your email inbox. A copy will be included in your welcome kit.",
+  "receipt.confirmation-number-label": "Confirmation number:",
+  "receipt.document-download-labels.application": "Application PDF",
+  "receipt.document-download-labels.payment": "Payment PDF",
+  "receipt.document-download-labels.quick-decision": "QuickDecision PDF",
+  "receipt.summary-labels.status": "Status",
+  "receipt.summary-labels.applying": "Applying",
+  "receipt.summary-labels.requested": "Requested",
+  "receipt.summary-labels.submitted-status": "Submitted",
+  "receipt.summary-labels.default-applicant": "Member",
+  "receipt.summary-labels.product-singular": "product",
+  "receipt.summary-labels.product-plural": "products",
+  "receipt.coverage-card-labels.coverage-suffix": "coverage",
+  "receipt.coverage-card-labels.requested": "Requested:",
+  "receipt.coverage-decisions.title": "Coverage decisions",
+  "receipt.coverage-decisions.description": "Review the decision for each coverage below. Your coverage and payment selections are listed in your application receipt.",
+  "receipt.coverage-decisions.no-selections-message": "No selected coverage details are available for this application.",
+  "receipt.what-happens-next.title": "What happens next?",
+  "receipt.what-happens-next.items": [
+    {
+      "title": "Save your documents",
+      "description": "Download your PDFs before leaving this page."
+    },
+    {
+      "title": "You'll be contacted if needed",
+      "description": "Additional information may be requested for coverage sent for review."
+    }
+  ],
+  "receipt.support.title": "Questions? We're here to help.",
+  "receipt.support.administrator-label": "{{clientName}} Insurance Administrator",
+  "receipt.support.call-label": "Call:",
+  "receipt.support.email-label": "Email:",
+  "help.group-insurance.intro": "With group insurance through {{associationName}}, eligible applicants can take advantage of specially negotiated rates made available through the group.",
+  "help.group-insurance.explore-title": "Explore available group insurance options",
+  "help.group-insurance.explore-items": [
+    "Group rates may be available to eligible applicants through their association or sponsoring organization.",
+    "Because eligibility and coverage needs can vary, the application helps confirm which products, coverage amounts, and rates are available for each applicant.",
+    "Availability and rates may vary based on state, eligibility, underwriting requirements, coverage selected, and other application details."
+  ],
+  "help.why-asked.intro": "We understand these questions can feel personal. Here's how this information is used in your application.",
+  "help.why-asked.sections": [
+    {
+      "title": "Determining your coverage options",
+      "description": "Your answers help us identify the coverage types and amounts available to you. Different products have different eligibility requirements, and this information ensures we show you the right options."
+    },
+    {
+      "title": "Calculating your estimated cost",
+      "description": "Health and lifestyle information is used to calculate personalized premium estimates. The more accurate your answers, the more accurate your quoted rate will be."
+    },
+    {
+      "title": "Your information is protected",
+      "description": "All information you provide is transmitted securely and used only for the purpose of evaluating your application. It is never sold or shared for marketing purposes."
+    }
+  ],
+  "help.payment-handling.intro": "We take the security of your payment information seriously. Here's how we handle it throughout the application process.",
+  "help.payment-handling.sections": [
+    {
+      "title": "You will not be charged yet.",
+      "description": "Your payment information is collected as part of the application but you will not be charged until and unless you are approved for coverage. No money leaves your account during the application process."
+    },
+    {
+      "title": "Stored securely",
+      "description": "All payment data is encrypted in transit and at rest using industry-standard security protocols. Your information is stored in PCI-compliant systems and is never accessible in plain text."
+    },
+    {
+      "title": "How payment is processed",
+      "description": "If your application is approved, payment will be processed according to the frequency you select (monthly, quarterly, semiannually, or annually). You'll receive confirmation before any charge is made."
+    },
+    {
+      "title": "Cancellation & data purge",
+      "description": "You can cancel your application at any time before approval with no obligation. All payment and application information is purged from our systems 10 days after submission if no action is taken or the application is not approved."
+    }
+  ],
+  "shared.cookie-banner.message": "New York Life uses cookies to enhance your experience and analyze site performance. By continuing, you agree to our use of cookies.",
+  "shared.cookie-banner.learn-more-label": "Privacy Notice",
+  "shared.cookie-banner.learn-more-href": "https://www.newyorklife.com/privacy",
+  "page.review.title": "Review your application",
+  "page.review.subhead": "Check your answers before submitting your application.",
+  "page.review.nav-title": "Review",
+  "page.docusign.title": "Review and sign your application.",
+  "page.docusign.subhead": "Review and sign your application documents electronically.",
+  "page.docusign.nav-title": "E-sign",
+  "page.health-si.title": "About your health history",
+  "page.health-si.subhead": "Please answer the following questions about your health as accurately as you can.",
+  "page.health-si.nav-title": "Health",
+  "page.health-li.title": "Please answer the following health questions to the best of your ability.",
+  "page.health-li.subhead": "Answer health questions required for your selected coverage.",
+  "page.health-li.nav-title": "Health",
+  "page.health-qd.title": "About your health",
+  "page.health-qd.subhead": "Answer health questions required for your selected coverage.",
+  "page.health-qd.nav-title": "Health",
+  "page.health-di.title": "About your health history",
+  "page.health-di.subhead": "Please answer the following questions about your health as accurately as you can.",
+  "page.health-di.nav-title": "Health",
+  "page.health-ci.title": "Critical illness health questions",
+  "page.health-ci.subhead": "Answer the health questions required for your critical illness coverage.",
+  "page.health-ci.nav-title": "Health",
+  "page.health-cir.title": "About your health",
+  "page.health-cir.subhead": "Answer health questions required for your selected coverage.",
+  "page.health-cir.nav-title": "Health",
+  "page.payment.title": "Choose your payment method",
+  "page.payment.subhead": "Select how you would like to pay for your coverage.",
+  "page.payment.nav-title": "Payment",
+  "page.receipt.title": "Application received",
+  "page.receipt.subhead": "Your application has been received, and we'll guide you through any next steps.",
+  "page.receipt.nav-title": "Receipt",
+  "page.resume.title": "Continue saved application",
+  "page.resume.subhead": "Before proceeding, we need to confirm your identity. Please enter your email and we'll send a secure link for verification.",
+  "page.resume.nav-title": "Resume application",
+  "page.resume-method.title": "Get your verification code",
+  "page.resume-method.subhead": "Choose how you would like to receive your verification code for the phone number (•••)•••1111.",
+  "page.resume-method.nav-title": "Verification method",
+  "page.resume-code.title": "Enter your verification code",
+  "page.resume-code.subhead": "Please enter the verification code sent to the phone number (•••)•••1111.",
+  "page.resume-code.nav-title": "Verification code",
+  "page.advisor-login.title": "Advisor Portal",
+  "page.advisor-login.subhead": "Prepare applications for your clients.",
+  "page.advisor-login.nav-title": "Advisor login",
+  "page.mock-email-preview.title": "Mock Email Preview",
+  "page.mock-email-preview.nav-title": "Mock email preview",
+  "page.site-details.title": "Site Details",
+  "page.site-details.nav-title": "Site Details",
+  "page.design-system.title": "Design System",
+  "page.design-system.nav-title": "Design system",
+  "page.portal-admin.title": "Portal Admin",
+  "page.portal-admin.nav-title": "Portal Admin",
+  "page.cms.title": "CMS",
+  "page.cms.nav-title": "CMS",
+  "page.portal-template-project.title": "Portal Site Template (v3) Project",
+  "page.portal-template-project.nav-title": "Portal Site Template (v3) Project",
+  "page.portal-requirements-project.title": "Portal Admin Project",
+  "page.portal-requirements-project.nav-title": "Portal Admin Project",
+  "page.profile.title": "About you",
+  "page.profile.subhead": "Share the personal and financial details needed to complete your application.",
+  "page.profile.nav-title": "Profile",
+  "dialogs.confirmation.edit-application.title": "Edit your application",
+  "dialogs.confirmation.edit-application.message": "To edit your application, you will be sent back to the page where that information is collected. Do you want to go to this page to make edits?",
+  "dialogs.send-application.send-to-applicant.title": "Send to applicant for review",
+  "dialogs.send-application.send-to-applicant.intro-text": "This application will be sent to the following applicant for review, completion of any remaining steps, and e-signature.",
+  "dialogs.send-application.request-edit-to-application.title": "Request edit to application",
+  "dialogs.send-application.request-edit-to-application.intro-text": "Your advisor will be notified of your request to edit your application and will contact you for additional details",
+  "dialogs.coverage-details.fallback-title": "Coverage Details",
+  "dialogs.coverage-details.benefit-amount-label": "Benefit amount:",
+  "dialogs.coverage-details.coverage-note-label": "Coverage note:",
+  "dialogs.coverage-details.eligible-applicants-label": "Eligible applicants:",
+  "dialogs.coverage-details.waiting-periods-label": "Waiting periods:",
+  "dialogs.coverage-details.max-benefit-periods-label": "Max benefit periods:",
+  "dialogs.coverage-details.available-riders-label": "Available riders",
+  "dialogs.coverage-details.view-full-details-link-label": "View full coverage details",
+  "status.docusign.heading": "DocuSign",
+  "status.docusign.body": "You are about to be taken to a new page to securely review and sign your application with DocuSign. Please do not close this window.",
+  "status.health-qd.heading": "QuickDecision",
+  "status.health-qd.body-before-mark": "You are about to be taken to a new page to answer health questions online for",
+  "status.health-qd.body-after-mark": ". Please do not close this window.",
+  "status.health-cir.body": "This page is a placeholder for CIR health questions.",
+  "page.advisor-login.section-notes.advisor-login-new": "Enter your advisor details to start at Membership. Complete the application through Profile, then send it to the applicant to review and sign.",
+  "page.advisor-login.section-notes.advisor-login-saved": "Enter the applicant’s email address to reopen an application you previously started. You’ll verify access before continuing the saved application.",
+  "receipt.payment-notice-title": "Payment and your welcome kit",
+  "receipt.payment-notice": "Upon full approval, you will be charged according to your selected payment method and frequency. Your welcome kit will include your coverage documents and more information about your payments.",
+  "receipt.received-message": "Thank you! We’ve received your application.",
+  "page.profile.profile-personal-self": "Personal information",
+  "page.profile.profile-financial-self": "Other coverage",
+  "page.profile.profile-financial-questionnaire-self": "Financial questionnaire",
+  "application.coverage-applicant-labels-member": "You",
+  "application.coverage-applicant-labels-spouse": "Your Spouse",
+  "application.coverage-applicant-labels-child": "Your Child(ren)"
+}

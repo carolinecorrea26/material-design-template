@@ -1,6 +1,79 @@
 {
   "page": "receipt",
   "components": [
-    { "type": "receipt" }
-  ]
+    {
+      "type": "receipt"
+    }
+  ],
+  "definition": {
+    "id": "receipt",
+    "path": "/receipt",
+    "type": "receipt",
+    "flow": "application",
+    "healthGate": false,
+    "displayName": "Receipt"
+  },
+  "position": 16,
+  "fieldBindings": [],
+  "looseFields": [],
+  "layout": {
+    "sections": {}
+  },
+  "content": {
+    "wording": [
+      "receipt.decision-steps",
+      "receipt.decision-statuses.fully-underwritten.label",
+      "receipt.decision-statuses.fully-underwritten.description",
+      "receipt.decision-statuses.conditionally-approved.label",
+      "receipt.decision-statuses.conditionally-approved.description",
+      "receipt.decision-statuses.referred.label",
+      "receipt.decision-statuses.referred.description",
+      "receipt.decision-statuses.soft-declined.label",
+      "receipt.decision-statuses.soft-declined.description",
+      "receipt.decision-statuses.database-unavailable.label",
+      "receipt.decision-statuses.database-unavailable.description",
+      "receipt.documents-note",
+      "receipt.confirmation-number-label",
+      "receipt.document-download-labels.application",
+      "receipt.document-download-labels.payment",
+      "receipt.document-download-labels.quick-decision",
+      "receipt.summary-labels.status",
+      "receipt.summary-labels.applying",
+      "receipt.summary-labels.requested",
+      "receipt.summary-labels.submitted-status",
+      "receipt.summary-labels.default-applicant",
+      "receipt.summary-labels.product-singular",
+      "receipt.summary-labels.product-plural",
+      "receipt.coverage-card-labels.coverage-suffix",
+      "receipt.coverage-card-labels.requested",
+      "receipt.coverage-decisions.title",
+      "receipt.coverage-decisions.description",
+      "receipt.coverage-decisions.no-selections-message",
+      "receipt.what-happens-next.title",
+      "receipt.what-happens-next.items",
+      "receipt.support.title",
+      "receipt.support.administrator-label",
+      "receipt.support.call-label",
+      "receipt.support.email-label",
+      "page.receipt.title",
+      "page.receipt.subhead",
+      "page.receipt.nav-title",
+      "receipt.payment-notice-title",
+      "receipt.payment-notice",
+      "receipt.received-message"
+    ],
+    "runtime": [
+      "application.ui.document-downloads-are-placeholders-in-this-prototype",
+      "application.ui.requested",
+      "application.ui.included-in",
+      "application.ui.coverage-shares-its-application-decision",
+      "application.ui.application-receipt",
+      "application.ui.your-coverage-and-payment-selections",
+      "coverage.coverage-cart.requested-coverage",
+      "application.ui.not-available",
+      "application.ui.estimated-payment",
+      "application.ui.payment-method",
+      "application.ui.not-selected"
+    ]
+  }
 }

@@ -27,13 +27,16 @@ import { buildContentForClientAlias, getContent } from "../content";
 import { getActiveClient } from "../config/client/getActiveClient";
 import { getPagePath } from "../config/pages";
 import type { ClientConfig, HomePageVariant } from "../config/clients/types";
-import { getFormTemplate } from "../config/template/resolveTemplate";
+import { getFormTemplate, DEFAULT_TEMPLATE } from "../config/template/resolveTemplate";
 import SinglePageApplication from "../app/SinglePageApplication";
 import HeroClouds from "../components/home/HeroClouds";
 import type { PageId } from "../types";
 import { useApplicationForm } from "../app/ApplicationFormContext";
+import { useStartApplication } from "../app/useStartApplication";
 import { getActiveSite, resolveEffectiveBranding } from "../data";
 
+import { requirementText } from "../domain/requirementContent";
+import homePresentation from "../../requirements/global/configurations/presentation.json";
 import { homeQuoteSurfaceSx } from "../components/home/homeQuoteSurfaceSx";
 
 type DrawerId = "application-review" | "quick-decision" | null;
@@ -57,24 +60,20 @@ const FADE_IN_SECTION_SX = (delay: number) => ({
   animation: `${fadeInUp} 0.7s ease-out ${delay}s forwards`,
 });
 
-const activeContent = getContent();
 
-const VALID_VARIANTS: HomePageVariant[] = [
-  "default",
-  "hero-image",
-  "welcome-back",
-  "quoteFirst",
-];
+
+const VALID_VARIANTS = homePresentation.configurations.find(configuration => configuration.id === "home-variant")!.options as HomePageVariant[];
 
 export default function Home({
   previewClient,
   initialFormPageId,
-  previewTemplate = "multi",
+  previewTemplate = DEFAULT_TEMPLATE,
 }: { previewClient?: ClientConfig; initialFormPageId?: PageId; previewTemplate?: "single" | "multi" } = {}) {
   const isPreview = Boolean(previewClient);
   const isSingleTemplate = (isPreview ? previewTemplate : getFormTemplate()) === "single";
   const client = previewClient ?? getActiveClient();
   const { activeAssociationId } = useApplicationForm();
+  const startApplication = useStartApplication();
   const effectiveBranding = previewClient
     ? previewClient.branding
     : resolveEffectiveBranding({
@@ -83,7 +82,7 @@ export default function Home({
       });
   const content = previewClient
     ? buildContentForClientAlias(previewClient.id)
-    : activeContent;
+    : getContent();
   const [searchParams] = useSearchParams();
   const urlVariant = searchParams.get("variant") as HomePageVariant | null;
   const variant: HomePageVariant =
@@ -98,7 +97,7 @@ export default function Home({
   const [landingNoticeOpen, setLandingNoticeOpen] = useState(false);
   const landingNotice = client.applicantExperience?.landingNotice;
   function handleApplyClick(event: MouseEvent<HTMLElement>) {
-    if (!landingNotice) return;
+    if (!landingNotice) { if (!isPreview) startApplication(); return; }
     event.preventDefault(); setLandingNoticeOpen(true);
   }
   const [activeDrawer, setActiveDrawer] = useState<DrawerId>(null);
@@ -139,7 +138,7 @@ export default function Home({
           pb: { xs: 4, md: 6 },
         }}
       >
-        {isSingleTemplate && landingNotice && <Button variant="outlined" onClick={() => setLandingNoticeOpen(true)}>View {landingNotice.title}</Button>}
+        {isSingleTemplate && landingNotice && <Button variant="outlined" onClick={() => setLandingNoticeOpen(true)}>{requirementText("home.landing-notice.view", { title: landingNotice.title })}</Button>}
         {showQuoteFirst ? (
           <Stack
             spacing={{ xs: 3, md: 4 }}
@@ -172,11 +171,10 @@ export default function Home({
                 }}
               />
               <Typography variant="h1">
-                Find the right coverage for your needs.
+                {requirementText("home.quote-first.title")}
               </Typography>
               <Typography variant="body1" color="text.secondary">
-                Answer a few questions to get an instant estimate. No
-                obligation. {client.branding.acronym} member rates.
+                {requirementText("home.quote-first.description", { clientAcronym: client.branding.acronym ?? "" })}
               </Typography>
             </Stack>
 
@@ -305,7 +303,7 @@ export default function Home({
       {landingNotice && <Dialog open={landingNoticeOpen} onClose={() => setLandingNoticeOpen(false)} fullWidth maxWidth="md" aria-labelledby="landing-notice-title">
         <DialogTitle id="landing-notice-title">{landingNotice.title}</DialogTitle>
         <DialogContent dividers><Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>{landingNotice.text}</Typography></DialogContent>
-        <DialogActions><Button onClick={() => setLandingNoticeOpen(false)}>Cancel</Button><Button variant="contained" onClick={() => { setLandingNoticeOpen(false); if (!isPreview && !isSingleTemplate) navigate(getPagePath("membership")); }}>Continue</Button></DialogActions>
+        <DialogActions><Button onClick={() => setLandingNoticeOpen(false)}>{requirementText("home.landing-notice.cancel")}</Button><Button variant="contained" onClick={() => { setLandingNoticeOpen(false); if (!isPreview && !isSingleTemplate) { startApplication(); navigate(getPagePath("membership")); } }}>{requirementText("home.landing-notice.continue")}</Button></DialogActions>
       </Dialog>}
       <AppDrawer
         open={activeDrawer !== null}

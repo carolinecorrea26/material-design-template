@@ -6,7 +6,7 @@ import ApplicationSessionGuard from './ApplicationSessionGuard';
 import { applicationTimeoutKey, readApplicationDeadline, resetApplicationTimeout, timeoutMilliseconds, warningMilliseconds } from './applicationTimeout';
 import ApplicationErrorState from '../components/feedback/ApplicationErrorState';
 
-vi.mock('../data/activeSite', async importOriginal => ({ ...await importOriginal<typeof import('../data/activeSite')>(), resolveSiteId: () => 'abe' }));
+vi.mock('../data/activeSite', async importOriginal => ({ ...await importOriginal<typeof import('../data/activeSite')>(), resolveSiteId: () => 'asce' }));
 let root: Root, container: HTMLDivElement;
 beforeEach(() => {
   vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
@@ -42,55 +42,55 @@ it('extends an active session on form activity but never revives an expired dead
   await act(async () => vi.advanceTimersByTime(timeoutMilliseconds - warningMilliseconds - 30_000));
   await act(async () => window.dispatchEvent(new Event('input')));
   expect(document.querySelector('[role="alertdialog"]')).toBeNull();
-  expect(readApplicationDeadline('abe')).toBe(Date.now() + timeoutMilliseconds);
-  sessionStorage.setItem(applicationTimeoutKey('abe'), String(Date.now() - 1));
+  expect(readApplicationDeadline('asce')).toBe(Date.now() + timeoutMilliseconds);
+  sessionStorage.setItem(applicationTimeoutKey('asce'), String(Date.now() - 1));
   await act(async () => window.dispatchEvent(new Event('keydown')));
   expect(onExpire).toHaveBeenCalledTimes(1);
-  expect(readApplicationDeadline('abe')).toBeLessThan(Date.now());
+  expect(readApplicationDeadline('asce')).toBeLessThan(Date.now());
 });
 it('requires the alert action to renew and refuses renewal after the deadline', async () => {
   const onExpire = await mount();
   await act(async () => vi.advanceTimersByTime(timeoutMilliseconds - warningMilliseconds));
-  const deadline = readApplicationDeadline('abe');
+  const deadline = readApplicationDeadline('asce');
   const modal = () => document.querySelector<HTMLElement>('[role="alertdialog"]')!;
   expect(modal().getAttribute('aria-labelledby')).toBeTruthy();
   expect(modal().getAttribute('aria-describedby')).toBeTruthy();
   for (const event of [new Event('pointerdown'), new KeyboardEvent('keydown', { key: 'Escape' }), new Event('input')]) {
     await act(async () => window.dispatchEvent(event));
-    expect(readApplicationDeadline('abe')).toBe(deadline);
+    expect(readApplicationDeadline('asce')).toBe(deadline);
     expect(modal()).not.toBeNull();
   }
   await act(async () => modal().querySelector('button')!.click());
-  expect(readApplicationDeadline('abe')).toBe(Date.now() + timeoutMilliseconds);
+  expect(readApplicationDeadline('asce')).toBe(Date.now() + timeoutMilliseconds);
   await act(async () => vi.advanceTimersByTime(300));
   expect(modal()).toBeNull();
   await act(async () => vi.advanceTimersByTime(timeoutMilliseconds - warningMilliseconds));
-  const expiredDeadline = readApplicationDeadline('abe');
+  const expiredDeadline = readApplicationDeadline('asce');
   vi.setSystemTime(expiredDeadline + 1);
   await act(async () => modal().querySelector('button')!.click());
   expect(onExpire).toHaveBeenCalledTimes(1);
-  expect(readApplicationDeadline('abe')).toBeLessThan(Date.now());
+  expect(readApplicationDeadline('asce')).toBeLessThan(Date.now());
 });
 it('retains the original deadline across reloads and checks time after a background pause', async () => {
-  const deadline = readApplicationDeadline('abe');
+  const deadline = readApplicationDeadline('asce');
   await mount();
   vi.setSystemTime(deadline + 1000);
   await act(async () => document.dispatchEvent(new Event('visibilitychange')));
-  expect(readApplicationDeadline('abe')).toBe(deadline);
-  resetApplicationTimeout('abe');
-  expect(readApplicationDeadline('abe')).toBe(Date.now() + timeoutMilliseconds);
+  expect(readApplicationDeadline('asce')).toBe(deadline);
+  resetApplicationTimeout('asce');
+  expect(readApplicationDeadline('asce')).toBe(Date.now() + timeoutMilliseconds);
 });
 it('leaves utility pages usable and routes technical failures to the shared recovery page with Site context', async () => {
   const onExpire = await mount(false);
-  expect(sessionStorage.getItem(applicationTimeoutKey('abe'))).toBeNull();
+  expect(sessionStorage.getItem(applicationTimeoutKey('asce'))).toBeNull();
   await act(async () => window.dispatchEvent(new Event('application:session-expired')));
   expect(onExpire).not.toHaveBeenCalled();
   await mount(true, onExpire);
   await act(async () => window.dispatchEvent(new Event('application:technical-error')));
   expect(container.querySelector('h1')?.textContent).toBe('We ran into an issue');
-  expect(container.querySelector('output')?.textContent).toBe('/technical-error?site=abe');
+  expect(container.querySelector('output')?.textContent).toBe('/technical-error?site=asce');
   expect(container.querySelector('input')).toBeNull();
-  expect(container.querySelector('a')?.getAttribute('href')).toBe('/resume?site=abe');
+  expect(container.querySelector('a')?.getAttribute('href')).toBe('/resume?site=asce');
 });
 
 it.each(['payment', 'submission'] as const)('carries an unconfirmed %s into the same recovery page without repeat actions', async operation => {

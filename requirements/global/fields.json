@@ -1,207 +1,700 @@
 {
   "fields": [
-    { "id": "membership" },
-    { "id": "title" },
-    { "id": "first-name" },
-    { "id": "last-name" },
-    { "id": "email" },
-    { "id": "phone" },
-    { "id": "phone-type" },
-    { "id": "member-id" },
-    { "id": "zip-postal-code" },
-    { "id": "state-province" },
-    { "id": "birth-date" },
-    { "id": "dependents" },
-    { "id": "gender" },
-    { "id": "full-time-student" },
-    { "id": "coverage-categories" },
-    { "id": "smoker" },
-    { "id": "tobacco-last-used" },
-    { "id": "tobacco-products" },
-    { "id": "hours-worked-per-week" },
-    { "id": "average-monthly-income" },
-    { "id": "self-employed-under-one-year" },
-    { "id": "actively-at-work" },
-    { "id": "monthly-business-expenses" },
-    { "id": "business-expense-responsibility" },
-    { "id": "average-employees-6-months" },
-    { "id": "coverage-amount" },
-    { "id": "add-coverage" },
-    { "id": "waiting-period" },
-    { "id": "benefit-option" },
-    { "id": "rider" },
-    { "id": "rider-amount" },
-    { "id": "beneficiary-information-opt-in" },
-    { "id": "beneficiary-designation" },
-    { "id": "beneficiary-type" },
-    { "id": "beneficiary-relationship" },
-    { "id": "beneficiary-share" },
-    { "id": "beneficiary-trust-name" },
-    { "id": "beneficiary-trust-date" },
-    { "id": "street-address" },
-    { "id": "apt-suite" },
-    { "id": "city" },
-    { "id": "state" },
-    { "id": "zip-code" },
-    { "id": "correspondence-to" },
-    { "id": "business-name" },
-    { "id": "business-type" },
-    { "id": "business-address-same-as-home" },
-    { "id": "business-street-address" },
-    { "id": "business-apt-suite" },
-    { "id": "business-city" },
-    { "id": "business-state" },
-    { "id": "business-zip-code" },
-    { "id": "business-phone" },
-    { "id": "business-phone-type" },
-    { "id": "height-feet" },
-    { "id": "height-inches" },
-    { "id": "weight-lbs" },
-    { "id": "weight-12-months-ago-lbs" },
-    { "id": "social-security-number" },
-    { "id": "marital-status" },
-    { "id": "has-drivers-license" },
-    { "id": "intend-live-outside-us" },
-    { "id": "travel-outside-us-six-months" },
-    { "id": "drivers-license-number" },
-    { "id": "drivers-license-state" },
-    { "id": "outside-us-months" },
-    { "id": "outside-us-country" },
-    { "id": "travel-outside-us-country" },
-    { "id": "physician-first-name" },
-    { "id": "physician-last-name" },
-    { "id": "physician-phone" },
-    { "id": "medical-facility-name" },
-    { "id": "medical-facility-street-address" },
-    { "id": "medical-facility-apt-suite" },
-    { "id": "medical-city" },
-    { "id": "medical-state" },
-    { "id": "medical-zip-code" },
-    { "id": "has-other-life-insurance" },
-    { "id": "existing-life-insurance-amount" },
-    { "id": "is-replacing-life-insurance" },
-    { "id": "has-pending-life-insurance-applications" },
-    { "id": "pending-life-insurance-amount" },
-    { "id": "pending-life-insurance-company" },
-    { "id": "has-disability-insurance" },
-    { "id": "is-replacing-disability-insurance" },
-    { "id": "disability-replacement-amount" },
-    { "id": "total-net-worth" },
-    { "id": "total-annual-unearned-income" },
-    { "id": "is-self-employed" },
-    { "id": "is-sole-proprietor" },
-    { "id": "is-professional-corporation" },
-    { "id": "sole-proprietor-gross-income" },
-    { "id": "sole-proprietor-gross-earnings" },
-    { "id": "sole-proprietor-business-expenses" },
-    { "id": "professional-corporation-annual-salary" },
-    { "id": "professional-corporation-s-corp-distribution" },
-    { "id": "professional-corporation-dividends" },
-    { "id": "professional-corporation-bonus" },
-    { "id": "bonus-payment-frequency" },
-    { "id": "professional-corporation-commission" },
-    { "id": "commission-payment-frequency" },
-    { "id": "professional-corporation-benefits-cost" },
-    { "id": "years-self-employed" },
-    { "id": "work-from-home" },
-    { "id": "has-work-location-outside-home" },
-    { "id": "work-location-details" },
-    { "id": "review-consent" },
-    { "id": "health-si-q1" },
-    { "id": "health-si-q2" },
-    { "id": "health-si-q3" },
-    { "id": "health-si-q4" },
-    { "id": "health-si-q5" },
-    { "id": "health-detail-onset" },
-    { "id": "health-detail-conditions" },
-    { "id": "health-detail-physician-address" },
-    { "id": "health-li-q1" },
-    { "id": "health-li-q2" },
-    { "id": "health-li-q3" },
-    { "id": "health-li-q4" },
-    { "id": "health-li-q5" },
-    { "id": "health-li-q6" },
-    { "id": "health-li-q7" },
-    { "id": "health-li-q8" },
-    { "id": "health-li-q9" },
-    { "id": "health-li-q10" },
-    { "id": "health-li-q11" },
-    { "id": "health-li-q12" },
-    { "id": "health-li-q13" },
-    { "id": "health-li-q14" },
-    { "id": "health-li-q15" },
-    { "id": "health-di-q1" },
-    { "id": "health-di-q2" },
-    { "id": "health-di-q3" },
-    { "id": "health-di-q4" },
-    { "id": "health-di-q5" },
-    { "id": "health-di-q6" },
-    { "id": "health-di-q7" },
-    { "id": "health-di-assistance-type" },
-    { "id": "health-di-fall-type" },
-    { "id": "health-di-details" },
-    { "id": "rate-frequency" },
-    { "id": "monthly-benefit-amount" },
-    { "id": "needs-annual-income" },
-    { "id": "needs-years-to-replace" },
-    { "id": "needs-outstanding-debts" },
-    { "id": "needs-existing-coverage" },
-    { "id": "verification-method" },
-    { "id": "di-company-name" },
-    { "id": "di-company-monthly-benefit" },
-    { "id": "di-company-benefit-period" },
-    { "id": "di-company-waiting-period" },
-    { "id": "dividend-acknowledgement" },
-    { "id": "dividend-first-name" },
-    { "id": "dividend-last-name" },
-    { "id": "dividend-birth-date" },
-    { "id": "payment-information-opt-in" },
-    { "id": "payment-method" },
-    { "id": "payment-frequency" },
-    { "id": "payment-shared-method" },
-    { "id": "payment-shared-frequency" },
-    { "id": "bank-name-on-account" },
-    { "id": "bank-institution" },
-    { "id": "bank-routing-number" },
-    { "id": "bank-account-number" },
-    { "id": "bank-authorization" },
-    { "id": "resume-email" },
-    { "id": "resume-delivery-method" },
-    { "id": "resume-security-code" },
-    { "id": "advisor-flow-type" },
-    { "id": "advisor-email" },
-    { "id": "advisor-phone" },
-    { "id": "advisor-code" },
-    { "id": "applicant-email" },
-    { "id": "health-ci-q1" },
-    { "id": "health-ci-q2" },
-    { "id": "health-ci-q3" },
-    { "id": "health-ci-q4" },
-    { "id": "health-ci-q5" },
-    { "id": "health-ci-q6" },
-    { "id": "health-ci-q7" },
-    { "id": "health-ci-q8" },
-    { "id": "health-ci-q9" },
-    { "id": "health-ci-q10" },
-    { "id": "health-ci-q11" },
-    { "id": "health-ci-q12" },
-    { "id": "health-ci-q13" },
-    { "id": "health-ci-q14" },
-    { "id": "health-ci-q15" },
-    { "id": "health-ci-q16" },
-    { "id": "health-cir-q1" },
-    { "id": "health-cir-q2" },
-    { "id": "health-cir-q3" },
-    { "id": "health-cir-q4" },
-    { "id": "health-cir-q5" },
-    { "id": "health-cir-q6" },
-    { "id": "health-cir-q7" },
-    { "id": "health-cir-q8" },
-    { "id": "health-cir-q9" },
-    { "id": "health-cir-q10" },
-    { "id": "health-cir-q11" },
-    { "id": "health-cir-q12" },
-    { "id": "health-cir-activities" },
-    { "id": "health-cir-dwelling-other" }
+    {
+      "id": "membership"
+    },
+    {
+      "id": "title"
+    },
+    {
+      "id": "first-name"
+    },
+    {
+      "id": "last-name"
+    },
+    {
+      "id": "email"
+    },
+    {
+      "id": "phone"
+    },
+    {
+      "id": "phone-type"
+    },
+    {
+      "id": "member-id"
+    },
+    {
+      "id": "zip-postal-code"
+    },
+    {
+      "id": "state-province"
+    },
+    {
+      "id": "birth-date"
+    },
+    {
+      "id": "dependents"
+    },
+    {
+      "id": "gender"
+    },
+    {
+      "id": "full-time-student"
+    },
+    {
+      "id": "coverage-categories"
+    },
+    {
+      "id": "smoker"
+    },
+    {
+      "id": "tobacco-last-used"
+    },
+    {
+      "id": "tobacco-products"
+    },
+    {
+      "id": "hours-worked-per-week"
+    },
+    {
+      "id": "average-monthly-income"
+    },
+    {
+      "id": "self-employed-under-one-year"
+    },
+    {
+      "id": "actively-at-work"
+    },
+    {
+      "id": "monthly-business-expenses"
+    },
+    {
+      "id": "business-expense-responsibility"
+    },
+    {
+      "id": "average-employees-6-months"
+    },
+    {
+      "id": "coverage-amount"
+    },
+    {
+      "id": "add-coverage"
+    },
+    {
+      "id": "waiting-period"
+    },
+    {
+      "id": "benefit-option"
+    },
+    {
+      "id": "rider"
+    },
+    {
+      "id": "rider-amount"
+    },
+    {
+      "id": "beneficiary-information-opt-in"
+    },
+    {
+      "id": "beneficiary-designation"
+    },
+    {
+      "id": "beneficiary-type"
+    },
+    {
+      "id": "beneficiary-relationship"
+    },
+    {
+      "id": "beneficiary-share"
+    },
+    {
+      "id": "beneficiary-trust-name"
+    },
+    {
+      "id": "beneficiary-trust-date"
+    },
+    {
+      "id": "street-address"
+    },
+    {
+      "id": "apt-suite"
+    },
+    {
+      "id": "city"
+    },
+    {
+      "id": "state"
+    },
+    {
+      "id": "zip-code"
+    },
+    {
+      "id": "correspondence-to"
+    },
+    {
+      "id": "business-name"
+    },
+    {
+      "id": "business-type"
+    },
+    {
+      "id": "business-address-same-as-home"
+    },
+    {
+      "id": "business-street-address"
+    },
+    {
+      "id": "business-apt-suite"
+    },
+    {
+      "id": "business-city"
+    },
+    {
+      "id": "business-state"
+    },
+    {
+      "id": "business-zip-code"
+    },
+    {
+      "id": "business-phone"
+    },
+    {
+      "id": "business-phone-type"
+    },
+    {
+      "id": "height-feet"
+    },
+    {
+      "id": "height-inches"
+    },
+    {
+      "id": "weight-lbs"
+    },
+    {
+      "id": "weight-12-months-ago-lbs"
+    },
+    {
+      "id": "social-security-number"
+    },
+    {
+      "id": "marital-status"
+    },
+    {
+      "id": "has-drivers-license"
+    },
+    {
+      "id": "intend-live-outside-us"
+    },
+    {
+      "id": "travel-outside-us-six-months"
+    },
+    {
+      "id": "drivers-license-number"
+    },
+    {
+      "id": "drivers-license-state"
+    },
+    {
+      "id": "outside-us-months"
+    },
+    {
+      "id": "outside-us-country"
+    },
+    {
+      "id": "travel-outside-us-country"
+    },
+    {
+      "id": "physician-first-name"
+    },
+    {
+      "id": "physician-last-name"
+    },
+    {
+      "id": "physician-phone"
+    },
+    {
+      "id": "medical-facility-name"
+    },
+    {
+      "id": "medical-facility-street-address"
+    },
+    {
+      "id": "medical-facility-apt-suite"
+    },
+    {
+      "id": "medical-city"
+    },
+    {
+      "id": "medical-state"
+    },
+    {
+      "id": "medical-zip-code"
+    },
+    {
+      "id": "has-other-life-insurance"
+    },
+    {
+      "id": "existing-life-insurance-amount"
+    },
+    {
+      "id": "is-replacing-life-insurance"
+    },
+    {
+      "id": "has-pending-life-insurance-applications"
+    },
+    {
+      "id": "pending-life-insurance-amount"
+    },
+    {
+      "id": "pending-life-insurance-company"
+    },
+    {
+      "id": "has-disability-insurance"
+    },
+    {
+      "id": "is-replacing-disability-insurance"
+    },
+    {
+      "id": "disability-replacement-amount"
+    },
+    {
+      "id": "total-net-worth"
+    },
+    {
+      "id": "total-annual-unearned-income"
+    },
+    {
+      "id": "is-self-employed"
+    },
+    {
+      "id": "is-sole-proprietor"
+    },
+    {
+      "id": "is-professional-corporation"
+    },
+    {
+      "id": "sole-proprietor-gross-income"
+    },
+    {
+      "id": "sole-proprietor-gross-earnings"
+    },
+    {
+      "id": "sole-proprietor-business-expenses"
+    },
+    {
+      "id": "professional-corporation-annual-salary"
+    },
+    {
+      "id": "professional-corporation-s-corp-distribution"
+    },
+    {
+      "id": "professional-corporation-dividends"
+    },
+    {
+      "id": "professional-corporation-bonus"
+    },
+    {
+      "id": "bonus-payment-frequency"
+    },
+    {
+      "id": "professional-corporation-commission"
+    },
+    {
+      "id": "commission-payment-frequency"
+    },
+    {
+      "id": "professional-corporation-benefits-cost"
+    },
+    {
+      "id": "years-self-employed"
+    },
+    {
+      "id": "work-from-home"
+    },
+    {
+      "id": "has-work-location-outside-home"
+    },
+    {
+      "id": "work-location-details"
+    },
+    {
+      "id": "review-consent"
+    },
+    {
+      "id": "health-si-q1"
+    },
+    {
+      "id": "health-si-q2"
+    },
+    {
+      "id": "health-si-q3"
+    },
+    {
+      "id": "health-si-q4"
+    },
+    {
+      "id": "health-si-q5"
+    },
+    {
+      "id": "health-detail-onset"
+    },
+    {
+      "id": "health-detail-conditions"
+    },
+    {
+      "id": "health-detail-physician-address"
+    },
+    {
+      "id": "health-li-q1"
+    },
+    {
+      "id": "health-li-q2"
+    },
+    {
+      "id": "health-li-q3"
+    },
+    {
+      "id": "health-li-q4"
+    },
+    {
+      "id": "health-li-q5"
+    },
+    {
+      "id": "health-li-q6"
+    },
+    {
+      "id": "health-li-q7"
+    },
+    {
+      "id": "health-li-q8"
+    },
+    {
+      "id": "health-li-q9"
+    },
+    {
+      "id": "health-li-q10"
+    },
+    {
+      "id": "health-li-q11"
+    },
+    {
+      "id": "health-li-q12"
+    },
+    {
+      "id": "health-li-q13"
+    },
+    {
+      "id": "health-li-q14"
+    },
+    {
+      "id": "health-li-q15"
+    },
+    {
+      "id": "health-di-q1"
+    },
+    {
+      "id": "health-di-q2"
+    },
+    {
+      "id": "health-di-q3"
+    },
+    {
+      "id": "health-di-q4"
+    },
+    {
+      "id": "health-di-q5"
+    },
+    {
+      "id": "health-di-q6"
+    },
+    {
+      "id": "health-di-q7"
+    },
+    {
+      "id": "health-di-assistance-type"
+    },
+    {
+      "id": "health-di-fall-type"
+    },
+    {
+      "id": "health-di-details"
+    },
+    {
+      "id": "rate-frequency"
+    },
+    {
+      "id": "monthly-benefit-amount"
+    },
+    {
+      "id": "needs-annual-income"
+    },
+    {
+      "id": "needs-years-to-replace"
+    },
+    {
+      "id": "needs-outstanding-debts"
+    },
+    {
+      "id": "needs-existing-coverage"
+    },
+    {
+      "id": "verification-method"
+    },
+    {
+      "id": "di-company-name"
+    },
+    {
+      "id": "di-company-monthly-benefit"
+    },
+    {
+      "id": "di-company-benefit-period"
+    },
+    {
+      "id": "di-company-waiting-period"
+    },
+    {
+      "id": "dividend-acknowledgement"
+    },
+    {
+      "id": "dividend-first-name"
+    },
+    {
+      "id": "dividend-last-name"
+    },
+    {
+      "id": "dividend-birth-date"
+    },
+    {
+      "id": "payment-information-opt-in"
+    },
+    {
+      "id": "payment-method"
+    },
+    {
+      "id": "payment-frequency"
+    },
+    {
+      "id": "payment-shared-method"
+    },
+    {
+      "id": "payment-shared-frequency"
+    },
+    {
+      "id": "bank-name-on-account"
+    },
+    {
+      "id": "bank-institution"
+    },
+    {
+      "id": "bank-routing-number"
+    },
+    {
+      "id": "bank-account-number"
+    },
+    {
+      "id": "bank-authorization"
+    },
+    {
+      "id": "resume-email"
+    },
+    {
+      "id": "resume-delivery-method"
+    },
+    {
+      "id": "resume-security-code"
+    },
+    {
+      "id": "advisor-flow-type"
+    },
+    {
+      "id": "advisor-email"
+    },
+    {
+      "id": "advisor-phone"
+    },
+    {
+      "id": "advisor-code"
+    },
+    {
+      "id": "applicant-email"
+    },
+    {
+      "id": "health-ci-q1"
+    },
+    {
+      "id": "health-ci-q2"
+    },
+    {
+      "id": "health-ci-q3"
+    },
+    {
+      "id": "health-ci-q4"
+    },
+    {
+      "id": "health-ci-q5"
+    },
+    {
+      "id": "health-ci-q6"
+    },
+    {
+      "id": "health-ci-q7"
+    },
+    {
+      "id": "health-ci-q8"
+    },
+    {
+      "id": "health-ci-q9"
+    },
+    {
+      "id": "health-ci-q10"
+    },
+    {
+      "id": "health-ci-q11"
+    },
+    {
+      "id": "health-ci-q12"
+    },
+    {
+      "id": "health-ci-q13"
+    },
+    {
+      "id": "health-ci-q14"
+    },
+    {
+      "id": "health-ci-q15"
+    },
+    {
+      "id": "health-ci-q16"
+    },
+    {
+      "id": "health-cir-q1"
+    },
+    {
+      "id": "health-cir-q2"
+    },
+    {
+      "id": "health-cir-q3"
+    },
+    {
+      "id": "health-cir-q4"
+    },
+    {
+      "id": "health-cir-q5"
+    },
+    {
+      "id": "health-cir-q6"
+    },
+    {
+      "id": "health-cir-q7"
+    },
+    {
+      "id": "health-cir-q8"
+    },
+    {
+      "id": "health-cir-q9"
+    },
+    {
+      "id": "health-cir-q10"
+    },
+    {
+      "id": "health-cir-q11"
+    },
+    {
+      "id": "health-cir-q12"
+    },
+    {
+      "id": "health-cir-activities"
+    },
+    {
+      "id": "health-cir-dwelling-other"
+    },
+    {
+      "id": "health-si-detail-onset"
+    },
+    {
+      "id": "health-si-detail-conditions-details"
+    },
+    {
+      "id": "health-si-detail-physician-address"
+    },
+    {
+      "id": "health-li-detail-onset"
+    },
+    {
+      "id": "health-li-detail-conditions-details"
+    },
+    {
+      "id": "health-li-detail-physician-address"
+    },
+    {
+      "id": "health-di-q1-detail-assistance-type"
+    },
+    {
+      "id": "health-di-q1-detail-onset"
+    },
+    {
+      "id": "health-di-q1-detail-conditions-details"
+    },
+    {
+      "id": "health-di-q1-detail-physician-address"
+    },
+    {
+      "id": "health-di-q2-detail-fall-type"
+    },
+    {
+      "id": "health-di-q2-detail-onset"
+    },
+    {
+      "id": "health-di-q2-detail-conditions-details"
+    },
+    {
+      "id": "health-di-q2-detail-physician-address"
+    },
+    {
+      "id": "health-di-q3-detail-onset"
+    },
+    {
+      "id": "health-di-q3-detail-conditions-details"
+    },
+    {
+      "id": "health-di-q3-detail-physician-address"
+    },
+    {
+      "id": "health-di-q4-detail-onset"
+    },
+    {
+      "id": "health-di-q4-detail-conditions-details"
+    },
+    {
+      "id": "health-di-q4-detail-physician-address"
+    },
+    {
+      "id": "health-di-q5-detail-onset"
+    },
+    {
+      "id": "health-di-q5-detail-conditions-details"
+    },
+    {
+      "id": "health-di-q5-detail-physician-address"
+    },
+    {
+      "id": "health-di-q6-detail-onset"
+    },
+    {
+      "id": "health-di-q6-detail-conditions-details"
+    },
+    {
+      "id": "health-di-q6-detail-physician-address"
+    },
+    {
+      "id": "health-di-q7-detail-details"
+    },
+    {
+      "id": "review-self-consent"
+    },
+    {
+      "id": "review-spouse-consent"
+    }
   ]
 }

@@ -1,7 +1,0 @@
-{
-  "page": "health-si",
-  "layout": {
-    "sections": { "questions": { "for": "self" }, "spouse-questions": { "for": "spouse" } },
-    "dialogs": { "details": { "for": "self", "repeats": { "item": "Detail", "max": 10 } } }
-  }
-}

@@ -12,8 +12,8 @@ import FormRoutePage from "../app/RoutePage";
 import { getPagePath } from "../config/pages";
 import DetailsTable from "../components/layout/DetailsTable";
 
-// Dummy advisor email used until a real advisor record is available
-const ADVISOR_DUMMY_EMAIL = "advisor@example.com";
+import advisorFixture from '../../requirements/global/prototype-fixtures/advisor.json';
+import { requirementText } from '../domain/requirementContent';
 
 /**
  * Confirmation page shown to the applicant after they request the advisor to
@@ -36,16 +36,16 @@ export default function ApplicationEditConfirmation() {
     const timer = window.setTimeout(() => {
       if (announcementRef.current) {
         announcementRef.current.textContent =
-          "Your request has been sent to your advisor.";
+          requirementText('confirmation.edit.announcement');
       }
     }, 100);
     return () => window.clearTimeout(timer);
   }, []);
 
   const details = [
-    { label: "Sent to advisor", value: ADVISOR_DUMMY_EMAIL },
+    { label: requirementText('confirmation.edit.recipient'), value: advisorFixture.email },
     {
-      label: "Request sent",
+      label: requirementText('confirmation.edit.sent'),
       value: new Intl.DateTimeFormat("en-US", {
         month: "long",
         day: "numeric",
@@ -74,9 +74,7 @@ export default function ApplicationEditConfirmation() {
             }}
           />
           <Alert severity="success" icon={<UndoRoundedIcon fontSize="small" />}>
-            Your advisor will contact you regarding the required updates to your
-            application. They will review the changes with you and return the
-            application once the updates have been completed.
+            {requirementText('confirmation.edit.message')}
           </Alert>
 
           <DetailsTable rows={details} />
@@ -87,7 +85,7 @@ export default function ApplicationEditConfirmation() {
               startIcon={<HomeRoundedIcon />}
               onClick={() => navigate(getPagePath("home"))}
             >
-              Return to Home
+              {requirementText('confirmation.edit.home')}
             </Button>
           </Box>
         </Stack>

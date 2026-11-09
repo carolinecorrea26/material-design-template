@@ -1,6 +1,55 @@
 {
   "page": "resume-code",
   "components": [
-    { "type": "resume-code" }
-  ]
+    {
+      "type": "resume-code"
+    }
+  ],
+  "definition": {
+    "id": "resume-code",
+    "path": "/resume-code",
+    "type": "resume",
+    "flow": "resume",
+    "healthGate": false,
+    "displayName": "Resume Code"
+  },
+  "position": 19,
+  "fieldBindings": [
+    "resume-security-code"
+  ],
+  "looseFields": [
+    "resume-security-code"
+  ],
+  "layout": {
+    "sections": {}
+  },
+  "content": {
+    "wording": [
+      "page.resume-code.title",
+      "page.resume-code.subhead",
+      "page.resume-code.nav-title"
+    ],
+    "runtime": [
+      "application.ui.resend-failed",
+      "application.ui.enter-your-six-digit-verification-code",
+      "application.ui.recovery-failed",
+      "application.ui.please-enter-the-verification-code-sent-to",
+      "application.ui.your-email-address",
+      "application.ui.please-enter-the-verification-code-sent-to-the-phone-number",
+      "application.ui.open-a-valid-resume-link-to-continue",
+      "application.ui.a-new-verification-code-has-been-sent",
+      "application.ui.verified-successfully",
+      "application.ui.verifying-code",
+      "navigation.next",
+      "application.ui.your",
+      "application.ui.secure-link",
+      "application.ui.verification-code",
+      "application.ui.has-expired",
+      "application.ui.resend",
+      "application.ui.expires-in"
+    ],
+    "shared-feedback": [
+      "recovery.resume-loaded"
+    ]
+  }
 }

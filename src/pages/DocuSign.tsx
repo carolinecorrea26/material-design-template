@@ -1,3 +1,4 @@
+import { requirementText } from "../domain/requirementContent";
 import { useState } from "react";
 import { Alert, Box, Button } from "@mui/material";
 import FormRoutePage from "../app/RoutePage";
@@ -13,13 +14,11 @@ export default function DocuSign() {
       formMaxWidth={1200}
       hideActions={!complete}
       validate={() =>
-        complete ? undefined : "Complete the simulated signing step before continuing."
+        complete ? undefined : requirementText("application.ui.complete-the-simulated-signing-step-before-continuing")
       }
     >
       <Alert severity="info">
-        Prototype preview: DocuSign is not connected. Use the simulation below to
-        preview completion; no documents will be signed.
-      </Alert>
+        {requirementText("application.ui.prototype-preview-docusign-is-not-connected-use-the-simulation-below-to-previe")}</Alert>
       <ProcessingStatusPage
         operation="signature"
         phase={complete ? "complete" : "pending"}
@@ -36,8 +35,7 @@ export default function DocuSign() {
       {!complete && (
         <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
           <Button type="button" variant="outlined" onClick={() => setComplete(true)}>
-            Simulate signing completion
-          </Button>
+            {requirementText("application.ui.simulate-signing-completion")}</Button>
         </Box>
       )}
     </FormRoutePage>

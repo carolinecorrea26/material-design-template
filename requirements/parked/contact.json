@@ -1,6 +1,150 @@
 {
   "page": "contact",
   "components": [
-    { "type": "contact" }
-  ]
+    {
+      "type": "FormRoutePage",
+      "components": [
+        {
+          "type": "ProgressStep"
+        },
+        {
+          "type": "PageHeader"
+        },
+        {
+          "type": "PageAlert",
+          "purpose": "submission validation errors"
+        },
+        {
+          "type": "ContactSections",
+          "components": [
+            {
+              "type": "ResidentialAddress",
+              "section": "residential-address",
+              "components": [
+                {
+                  "type": "FieldGroup",
+                  "purpose": "shared responsive address rows and correspondence choice"
+                }
+              ]
+            },
+            {
+              "type": "BusinessInformation",
+              "section": "business",
+              "purpose": "configured business/employer fields and same-as-home address copying"
+            },
+            {
+              "type": "SpouseContact",
+              "section": "spouse"
+            }
+          ],
+          "mapping": "contact"
+        },
+        {
+          "type": "PageNav"
+        }
+      ]
+    }
+  ],
+  "definition": {
+    "id": "contact",
+    "path": "/contact",
+    "type": "form",
+    "groupId": "profile",
+    "flow": "application",
+    "healthGate": false,
+    "displayName": "Contact"
+  },
+  "position": 5,
+  "layout": {
+    "sections": {
+      "residential-address": {
+        "id": "contactResidentialAddress",
+        "for": "self",
+        "title": "people.self",
+        "fields": [
+          "street-address",
+          "apt-suite",
+          "city",
+          "state",
+          "zip-code",
+          "correspondence-to"
+        ]
+      },
+      "business": {
+        "id": "contactBusinessInfo",
+        "for": "self",
+        "title": "contact.section.business",
+        "fields": [
+          "business-name",
+          "business-type",
+          "business-address-same-as-home",
+          "business-street-address",
+          "business-apt-suite",
+          "business-city",
+          "business-state",
+          "business-zip-code",
+          "business-phone"
+        ],
+        "companions": {
+          "business-phone": [
+            "business-phone-type"
+          ]
+        }
+      },
+      "spouse": {
+        "id": "contactSpouse",
+        "for": "spouse",
+        "title": "people.spouse",
+        "fields": [
+          "phone",
+          "email"
+        ],
+        "companions": {
+          "phone": [
+            "phone-type"
+          ]
+        },
+        "when": {
+          "field": "dependents",
+          "includes": "spouse"
+        }
+      }
+    }
+  },
+  "content": {
+    "title": "contact.title",
+    "subhead": "contact.subhead",
+    "breadcrumb": "contact.breadcrumb",
+    "section-headings": [
+      "people.self",
+      "people.spouse",
+      "contact.section.business"
+    ],
+    "shared-navigation": [
+      "navigation.next",
+      "navigation.submitting",
+      "navigation.back"
+    ]
+  },
+  "fieldMapping": {
+    "page": "contact"
+  },
+  "transitions": {
+    "enter": {
+      "id": "contact-carry-forward",
+      "trigger": "contact.enter",
+      "fieldMappings": [
+        {
+          "source": "state-province",
+          "targetFieldId": "state",
+          "overwrite": "if-empty"
+        },
+        {
+          "source": "zip-postal-code",
+          "targetFieldId": "zip-code",
+          "overwrite": "if-empty"
+        }
+      ]
+    }
+  }
 }

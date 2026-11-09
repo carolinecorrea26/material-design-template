@@ -1,13 +1,24 @@
 {
   "validations": [
     {
+      "id": "applicant-ineligible",
+      "name": "Applicant fails an eligibility requirement",
+      "status": "confirmed",
+      "check": "page-check",
+      "level": "page",
+      "message": "validation.page.ineligible",
+      "statement": "When a configured eligibility requirement disqualifies the applicant, show the shared ineligibility alert on submission. The eligibility rules retain their own facts, values and thresholds; this defines their common message only. Missing or malformed field values use normal field validation.",
+      "source": "User confirmation; src/pages/Eligibility.tsx; src/components/forms/EligibilityFields.tsx",
+      "code": "VALIDATION_FAILED"
+    },
+    {
       "id": "eligible-state-required",
       "name": "State must be eligible",
       "status": "draft",
       "check": "page-check",
       "level": "page",
-      "message": "eligibility.error.state-not-eligible",
-      "statement": "When eligible-states-only is on and the ZIP or postal code does not resolve to an eligible state, the page shows an error.",
+      "message": "validation.page.ineligible",
+      "statement": "When eligible-states-only is enabled, validate the selected State / Province against the effective eligible options. ZIP/postal inference is optional; an unresolved code does not reject a valid manual selection.",
       "source": "src/pages/Eligibility.tsx",
       "code": "VALIDATION_FAILED"
     },

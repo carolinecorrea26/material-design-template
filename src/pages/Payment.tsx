@@ -1,3 +1,4 @@
+import { requirementText } from "../domain/requirementContent";
 import { getSurfaceField, getSurfaceFields, paymentControlField } from "../config/fields/storedSurfaces";
 import SharedPaymentControls from "../components/forms/SharedPaymentControls";
 import { sharedPaymentState, SHARED_METHOD_FIELD, SHARED_FREQUENCY_FIELD } from "../domain/sharedPaymentChoices";
@@ -286,7 +287,7 @@ export default function Payment() {
         payments.push(await mockRequest<MockPayment>("/payments/authorize", { quoteId: quote.quoteId, paymentToken, idempotencyKey: crypto.randomUUID() }));
       }
       setAuthorization({ input: inputFor(values), paymentIds: payments.map(p => p.paymentId), status: payments.every(p => p.status === "authorized") ? "authorized" : "declined" });
-    } catch (error) { setMockError(error instanceof Error ? error.message : "Payment authorization failed"); }
+    } catch (error) { setMockError(error instanceof Error ? error.message : requirementText("application.ui.payment-authorization-failed")); }
     finally { setMockBusy(false); }
   };
   return (
@@ -294,9 +295,9 @@ export default function Payment() {
       pageId="payment"
       onBeforeNext={({ values, continueNavigation }) => {
         if (!import.meta.env.VITE_MOCK_PLATFORM_ENABLED) return true;
-        if (requiresRevalidation) { setMockError('Complete Coverage or Review against the current Library before submitting.'); return false; }
+        if (requiresRevalidation) { setMockError(requirementText("application.ui.complete-coverage-or-review-against-the-current-library-before-submitting")); return false; }
         const paymentDeferred = pageRequirement === "optional" && values[PAYMENT_INFO_OPT_IN_FIELD_ID] === "no";
-        if (!paymentDeferred && (!authorization || authorization.status !== "authorized" || authorization.input !== inputFor(values))) { setMockError("Authorize payment for your current selections before submitting."); return false; }
+        if (!paymentDeferred && (!authorization || authorization.status !== "authorized" || authorization.input !== inputFor(values))) { setMockError(requirementText("application.ui.authorize-payment-for-your-current-selections-before-submitting")); return false; }
         if (paymentDeferred && deferredSubmission.current?.input !== inputFor(values)) deferredSubmission.current = { input: inputFor(values), key: crypto.randomUUID() };
         const paymentIds = paymentDeferred ? [] : authorization!.paymentIds;
         const idempotencyKey = paymentDeferred ? deferredSubmission.current!.key : paymentIds[0];
@@ -346,8 +347,8 @@ export default function Payment() {
           optInField={pageRequirement === "optional" ? getSurfaceField("paymentControls", PAYMENT_INFO_OPT_IN_FIELD_ID) : undefined}
           feedback={<>
             {import.meta.env.VITE_MOCK_PLATFORM_ENABLED && showPaymentQuestions && <Stack spacing={1}>
-              <Stack direction="row" spacing={1}><Button disabled={mockBusy} onClick={() => void authorize(values, "mock-approved")}>Authorize payment</Button><Button disabled={mockBusy} onClick={() => void authorize(values, "mock-declined")}>Try declined payment</Button></Stack>
-              {authorization && <Alert severity={authorization.status === "authorized" ? "success" : "warning"}>Payment: {authorization.status}. {authorization.input !== inputFor(values) ? "Elections changed; authorize again." : ""}</Alert>}
+              <Stack direction="row" spacing={1}><Button disabled={mockBusy} onClick={() => void authorize(values, "mock-approved")}>{requirementText("application.ui.authorize-payment")}</Button><Button disabled={mockBusy} onClick={() => void authorize(values, "mock-declined")}>{requirementText("application.ui.try-declined-payment")}</Button></Stack>
+              {authorization && <Alert severity={authorization.status === "authorized" ? "success" : "warning"}>{requirementText("application.ui.payment")}{authorization.status}{". "}{authorization.input !== inputFor(values) ? requirementText("application.ui.elections-changed-authorize-again") : ""}</Alert>}
               {mockError && <Alert severity="error">{mockError}</Alert>}
             </Stack>}
             {!showPaymentQuestions && mockError && <Alert severity="error">{mockError}</Alert>}
@@ -414,9 +415,8 @@ export default function Payment() {
                           variant="body2"
                           color="text.secondary"
                         >
-                          Estimated{" "}
-                          {frequencyLabel.toLowerCase().replace('annually', 'annual')} cost
-                        </Typography>
+                          {requirementText("application.ui.estimated")}{" "}
+                          {frequencyLabel.toLowerCase().replace('annually', 'annual')} {requirementText("application.ui.cost")}</Typography>
                       )}
 
                       {hasDependentBreakdown &&
@@ -456,7 +456,7 @@ export default function Payment() {
                         >
                           <Typography variant="subtitle2">
                             {hasDependentBreakdown
-                              ? "Total estimated cost"
+                              ? requirementText("application.ui.total-estimated-cost")
                               : `Estimated ${frequencyLabel.toLowerCase().replace('annually', 'annual')} cost`}
                             <sup>1</sup>
                           </Typography>

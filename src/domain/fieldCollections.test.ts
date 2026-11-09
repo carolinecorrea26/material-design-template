@@ -12,7 +12,7 @@ let baseline: DatabaseSchema;
 beforeAll(() => { baseline = createReviewedMigrationDatabase(); }, 120000);
 const policies = (data: DatabaseSchema) => data.configurationValues.find(row => row.configurationKey === 'field-collections')!.value as unknown as Record<string, FieldCollectionDefinition>;
 
-it('resolves saved collection labels, bindings, order, limits and per-Site field overrides', () => {
+it('uses fresh children and retains saved settings for unreviewed collections', () => {
   const data = structuredClone(baseline);
   data.fields.find(row => row.key === 'child-first-name')!.definition.label = 'Stored given name';
   data.fields.find(row => row.key === 'di-company-name')!.definition.label = 'Stored carrier name';
@@ -21,7 +21,7 @@ it('resolves saved collection labels, bindings, order, limits and per-Site field
   policies(data).selfDisabilityCompanies.fields.reverse();
   data.siteFieldConfigurations.push({ id: 'collection-override', key: 'collection-override', fieldKey: 'di-company-name', pageKey: 'profile', position: 0, scope: 'site', clientKey: null, siteKey: 'asce', include: null, hidden: null, values: { label: 'ASCE carrier' } });
   const collection = resolvePrototypeLibrary(data, 'asce', 'test').fieldCollections;
-  expect(collection.children).toMatchObject({ name: 'children', label: 'Dependent', maxItems: 3 });
+  expect(collection.children).toMatchObject({ name: 'children', label: 'Child', maxItems: 10 });
   expect(collection.children.mapping.fields[0].label).toBe('First Name');
   expect(collection.children.mapping.fieldToKey['child-first-name']).toBe('child-first-name');
   expect(collection.selfDisabilityCompanies.mapping.fields.map(field => field.id)).toEqual([...policies(data).selfDisabilityCompanies.fields].map(row => row.fieldKey));
@@ -46,10 +46,10 @@ it('honors relational child order and removals and a hidden collection field', (
 it('refuses missing configuration, unsafe or duplicate bindings and conflicting overrides', () => {
   const data = structuredClone(baseline);
   data.configurationValues = data.configurationValues.filter(row => row.configurationKey !== 'field-collections');
-  expect(() => resolvePrototypeLibrary(data, 'asce', 'test')).toThrow('Missing or ambiguous');
-  for (const valueKey of ['constructor', '__proto__', 'child-first-name']) {
+  expect(() => resolvePrototypeLibrary(data, 'asce', 'test')).toThrow('Missing stored field collection: selfDisabilityCompanies');
+  for (const valueKey of ['constructor', '__proto__', 'company']) {
     const invalid = structuredClone(baseline);
-    policies(invalid).children.fields[1].valueKey = valueKey;
+    policies(invalid).selfDisabilityCompanies.fields[1].valueKey = valueKey;
     expect(() => resolvePrototypeLibrary(invalid, 'asce', 'test')).toThrow('Invalid collection binding');
   }
   const conflicting = structuredClone(baseline);

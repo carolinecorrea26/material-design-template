@@ -1,0 +1,6 @@
+{
+  "coverage.note.spouse-member-maximum": "Spouse coverage can’t exceed member coverage.",
+  "coverage.alert.joint-spouse-benefit": "When applying for {{coverageName}} for yourself and your spouse, your monthly benefit must be at least {{minimum}}. Update your coverage to continue.",
+  "coverage.note.life-member-maximum": "The maximum Life Insurance amount available for a member through this Insurance Program underwritten by New York Life is {{maximum}} whether coverage is in one or divided among several group policies.",
+  "coverage.note.life-spouse-maximum": "The maximum Life Insurance amount available for a spouse through this Insurance Program underwritten by New York Life is {{maximum}} whether coverage is in one or divided among several group policies."
+}

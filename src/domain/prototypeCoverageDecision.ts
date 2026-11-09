@@ -5,7 +5,7 @@ import { isSelectionPolicy } from "./coverageSelectionPolicy";
 import { prototypeApplicantOperand } from './prototypeApplicantOperands';
 import { getPrototypeLibrary } from './prototypeLibrary';
 import type { CoverageApplicantId } from './coverage';
-import { resolveNormalizedResidency } from './residencyPolicy';
+import { resolveNormalizedResidency, jurisdictionFromStateProvince } from './residencyPolicy';
 import { resolveNormalizedBenefit, isBenefitPolicy } from './benefitPolicy';
 import { resolveDependentCoverage } from './dependentPolicy';
 import { applicationApplicantFacts, numericFact } from '../utils/applicantFacts';
@@ -13,6 +13,8 @@ import { resolveNormalizedAmountCap } from './amountCapPolicy';
 import { resolveAssociationAmounts } from "./associationAmountPolicy";
 import { buildPrototypeAmounts } from "./prototypeProductProjection";
 import { getCoverageAmountChoices } from "../utils/coverageAmounts";
+import { requirementCoverageFacts } from "./requirementCoveragePolicy";
+import { coverageInForceAmount, coverageInForceLife } from "./tpaPortfolioAmounts";
 
 export function prototypeCoverageDecision(productKey: string, applicant: CoverageApplicantId, values: Record<string, unknown>, choices: number[]) {
   const library = getPrototypeLibrary();
@@ -26,7 +28,8 @@ export function prototypeCoverageDecision(productKey: string, applicant: Coverag
       amounts: [], messages: [association ? "This product is not available for the selected Association." : "Select an Association on Membership before continuing."], waitingPeriods: undefined, benefitPeriods: undefined,
     };
   }
-  const facts = applicationApplicantFacts(values, applicant);
+  const definition = library.products.find(product => product.id === productKey)!;
+  const facts = requirementCoverageFacts(definition, applicationApplicantFacts(values, applicant));
   const amounts = values.coverageAmounts as Record<string, number> ?? {};
   const selections = values.productApplicants as Record<string, CoverageApplicantId[]> ?? {};
   const selectedProducts = Array.isArray(values.coverageSelections) ? values.coverageSelections.map(String) : [];
@@ -45,11 +48,17 @@ export function prototypeCoverageDecision(productKey: string, applicant: Coverag
     const definition = library.products.find(product => product.id === productKey)!;
     choices = getCoverageAmountChoices({ ...definition, coverageAmounts: buildPrototypeAmounts({ ...product, amounts: assignedAmounts.rules }) }, applicant);
   }
-  const residency = resolveNormalizedResidency(library.site, productKey, applicant, { jurisdiction: jurisdiction ? jurisdiction.includes('-') ? jurisdiction : `US-${jurisdiction}` : undefined, associationKey: typeof association === 'string' ? association : undefined, activeMilitary: (values['active-military'] ?? values[`prototype-fact:${productKey}:member:activeMilitary`]) === 'yes' ? true : (values['active-military'] ?? values[`prototype-fact:${productKey}:member:activeMilitary`]) === 'no' ? false : undefined });
+  const residency = resolveNormalizedResidency(library.site, productKey, applicant, { jurisdiction: jurisdictionFromStateProvince(jurisdiction), associationKey: typeof association === 'string' ? association : undefined, activeMilitary: (values['active-military'] ?? values[`prototype-fact:${productKey}:member:activeMilitary`]) === 'yes' ? true : (values['active-military'] ?? values[`prototype-fact:${productKey}:member:activeMilitary`]) === 'no' ? false : undefined });
   if (!residency.allowed) messages.push(residency.reason);
   const amountCap = resolveNormalizedAmountCap(library.site, productKey, applicant, facts.ageYears);
   if (amountCap.status !== 'resolved') return { amounts: [], messages: [...messages, amountCap.reason ?? 'Coverage amount cap is unresolved.'], waitingPeriods: undefined, benefitPeriods: undefined };
-  const capped = (values: number[]) => values.filter(amount => amountCap.maximum === undefined || amount <= amountCap.maximum);
+  const inForceAmount = coverageInForceAmount(library.client, definition, applicant, values);
+  const inForceLife = coverageInForceLife(library.site, library.client, library.products, applicant, values);
+  const maximum = inForceAmount > 0
+    ? Math.min(Math.max(...getCoverageAmountChoices(definition, applicant)), amountCap.maximum ?? Infinity) - inForceAmount
+    : amountCap.maximum ?? Infinity;
+  const lifeMaximum = inForceLife?.productKeys.includes(productKey) ? inForceLife.maximum - inForceLife.amount : Infinity;
+  const capped = (amounts: number[]) => amounts.filter(amount => amount <= maximum && amount <= lifeMaximum);
   choices = capped(choices);
   const selectionPolicy = product.selectionPolicies[0]?.value;
   if (applicant === 'child' && isSelectionPolicy(selectionPolicy) && selectionPolicy.childSchedule) {
@@ -64,6 +73,8 @@ export function prototypeCoverageDecision(productKey: string, applicant: Coverag
   if (product.benefitPolicies.length) {
     const benefit = resolveNormalizedBenefit(library.site, productKey, applicant, {
       waitingPeriod: scopedPeriod('coverageWaitingPeriods'), ageYears: facts.ageYears, monthlyIncome: facts.averageMonthlyIncome, selfEmployed: facts.selfEmployed, selfEmployedYears: facts.yearsSelfEmployed,
+      selfEmployedUnderOneYear: facts.selfEmployedUnderOneYear,
+      verifiedInForceAmount: inForceAmount,
       applicantClass: typeof operand('applicantClass') === 'string' ? String(operand('applicantClass')) : undefined,
       existingMonthlyBenefit: numericFact(operand('existingMonthlyBenefit')), retirement: operand('retirement') === 'yes' ? true : operand('retirement') === 'no' ? false : undefined,
       monthlyLoanPayment: numericFact(operand('monthlyLoanPayment')), eligibleMonthlyExpenses: numericFact(values[`${prefix}monthly-business-expenses`]), eligibleExpenseFraction: numericFact(operand('eligibleExpenseFraction')),

@@ -1,4 +1,5 @@
-import { coverageLinkUnavailableMessage } from "../content/interactionLabels";
+import { canViewCoveragePortfolio } from "../domain/tpaIntegration";
+import { requirementText } from "../domain/requirementContent";
 import { resolveApplicationCoverage } from "../domain/coverageRuntime";
 import { useRef, useState } from "react";
 import { Box, Button, Divider, Stack } from "@mui/material";
@@ -17,16 +18,16 @@ import { useApplicationForm } from "../app/ApplicationFormContext";
 import type { CoverageApplicantId } from "../config/coverages/types";
 import type { BeforeNextContext } from "../app/RoutePage";
 import ConfirmationDialog from "../components/layout/ConfirmationDialog";
-import { getContent } from "../content";
+import { useComponentContent } from "../components/content/ComponentContentContext";
 import CoverageSelectionFeedback from "../components/coverage/CoverageSelectionFeedback";
 
-const content = getContent();
 
 export default function Coverage() {
+  const content = useComponentContent();
   const state = useCoverageState();
   const { values } = useApplicationForm();
 
-  const isTpaVerified = values["tpa-portfolio-enabled"] === true && values["tpa-verified"] === true;
+  const isTpaVerified = canViewCoveragePortfolio(state.activeClient, values);
   const hasSpouse =
     Array.isArray(values.dependents) &&
     (values.dependents as string[]).includes("spouse");
@@ -166,7 +167,7 @@ export default function Coverage() {
           />
 
           <CoveragePortfolioDrawer
-            open={portfolioDrawerOpen}
+            open={portfolioDrawerOpen && isTpaVerified}
             onClose={() => setPortfolioDrawerOpen(false)}
             hasSpouse={hasSpouse}
           />
@@ -176,8 +177,8 @@ export default function Coverage() {
             onClose={handleDependentCoverageCancel}
             title={content.dialogs.confirmation.dependentCoverage.title}
             message={content.dialogs.confirmation.dependentCoverage.message}
-            confirmLabel="Continue"
-            cancelLabel="Cancel"
+            confirmLabel={requirementText("coverage.dialog.dependent.confirm")}
+            cancelLabel={requirementText("coverage.dialog.dependent.cancel")}
             onConfirm={handleDependentCoverageContinue}
           />
 
@@ -214,6 +215,7 @@ function CoveragePageContent({
   isTpaVerified: boolean;
   onOpenPortfolio: () => void;
 }) {
+  const content = useComponentContent();
   const [pageError, setPageError] = useState<string | null>(null);
 
   function handleCoverageQuestionChange() {
@@ -234,15 +236,15 @@ function CoveragePageContent({
             startIcon={<AccountBalanceWalletRoundedIcon />}
             onClick={onOpenPortfolio}
           >
-            View coverage portfolio
+            {requirementText("coverage.portfolio.button")}
           </Button>
         </Box>
       )}
 
-      {state.coverages.length === 0 && <PageAlert severity="info" message={coverageLinkUnavailableMessage} />}
+      {state.coverages.length === 0 && <PageAlert severity="info" message={requirementText("coverage.no-coverage")} />}
       {state.selectedCoverageIds.some(id => !state.coverages.some(product => product.id === id)) && <PageAlert severity="warning" message={<Stack spacing={1}>
-        <span>Some previously selected coverage is not available through this link. Remove those selections to continue, or return to the original application link.</span>
-        <Button sx={{ alignSelf: "flex-start" }} onClick={() => state.setPageValues({ coverageSelections: state.selectedCoverageIds.filter(id => state.coverages.some(product => product.id === id)) })}>Remove unavailable selections</Button>
+        <span>{requirementText("coverage.selection-unavailable")}</span>
+        <Button sx={{ alignSelf: "flex-start" }} onClick={() => state.setPageValues({ coverageSelections: state.selectedCoverageIds.filter(id => state.coverages.some(product => product.id === id)) })}>{requirementText("coverage.selection-unavailable.action")}</Button>
       </Stack>} />}
       {/* Coverage questions: category question and its follow-ups */}
       <PageAlert severity="error" message={pageError ?? undefined} />
@@ -346,7 +348,7 @@ function CoveragePageContent({
               }}
               endIcon={<ArrowForwardRoundedIcon />}
             >
-              See my coverage options
+              {requirementText("coverage.reveal.button")}
             </Button>
           </Box>
         )}

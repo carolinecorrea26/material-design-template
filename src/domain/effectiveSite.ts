@@ -9,6 +9,7 @@ import { resolveEffectiveConfiguration, type EffectiveConfiguration, type Effect
 import type { DatabaseSchema } from "../persistence/types";
 import type { LibraryMetadata } from "./provenance";
 import { asceBusinessDecisions, inspectAsceBusinessDecisions } from "./asceBusinessDecisions";
+import { withFreshStartCatalog } from "./freshStartCatalog";
 
 export type EffectiveSiteData = EffectiveConfigurationData & Pick<DatabaseSchema, "sites" | "clients" | "organizations" | "organizationProfiles" | "siteProducts" | "siteProductApplicants" | "eligibilityConstraints" | "underwritingBands" | "semanticRequirements" | "associations" | "siteAssociations" | "sitePolicies">;
 export type RuleProvenance = Partial<LibraryMetadata> & { table: string; key: string; approvalKey?: string };
@@ -43,13 +44,14 @@ function unique<T>(rows: T[], key: (row: T) => string, label: string) {
 const compare = (a: string, b: string) => a < b ? -1 : a > b ? 1 : 0;
 
 /** Pure resolution over a persisted snapshot. No static fallback, extraction or writes. */
-export function resolveEffectiveSite(data: EffectiveSiteData, siteKey: string): EffectiveSite {
+export function resolveEffectiveSite(data: EffectiveSiteData, siteKey: string, options: { freshStart?: boolean } = {}): EffectiveSite {
+  if (options.freshStart !== false) data = withFreshStartCatalog(data, siteKey);
   const sites = data.sites.filter(s => s.key === siteKey);
   if (sites.length !== 1 || sites[0].deletedAt || sites[0].status !== "active") throw new Error(`Unavailable Site: ${siteKey}`);
   const site = sites[0];
   const clients = data.clients.filter(c => c.id === site.clientId);
   if (clients.length !== 1 || clients[0].status !== "active") throw new Error(`Unavailable Client: ${site.clientId}`);
-  if (siteKey === "asce") {
+  if (siteKey === "asce" && options.freshStart === false) {
     const invalid = inspectAsceBusinessDecisions(data).filter(d => !d.approved);
     if (invalid.length) throw new Error(`Unapproved ASCE rules: ${invalid.map(d => d.key).join(", ")}`);
   }
@@ -117,11 +119,17 @@ export function resolveEffectiveSite(data: EffectiveSiteData, siteKey: string): 
   return structuredClone({ assignedAssociationKeys: data.siteAssociations.filter(link => link.siteKey === siteKey).map(link => link.associationKey), enabledAssociationKeys: data.siteAssociations.filter(link => link.siteKey === siteKey && link.enabled).map(link => link.associationKey), provisionalDecisions, siteKey, clientKey: clients[0].key, name: { value: site.name, provenance: [provenance("sites", site)] }, runtimeActivation: "pending-phase-6", resolution: { completeness: "partial", implementedScopes }, configuration, products });
 }
 
+/** Historical extraction and ownership audits compare their captured snapshot.
+ * Applicant, Library and Storybook consumers use resolveEffectiveSite instead. */
+export function resolveSnapshotSite(data: EffectiveSiteData, siteKey: string): EffectiveSite {
+  return resolveEffectiveSite(data, siteKey, { freshStart: false });
+}
+
 export type EffectiveDecision = { status: "resolved" | "needs-information" | "unresolved" | "ineligible"; eligible?: boolean; pathway?: string; reason?: string; provenance: RuleProvenance[] };
 export type EligibilityFacts = { ageYears?: number; ageDays?: number; fullTimeStudent?: boolean; workHoursPerWeek?: number; activeMilitary?: boolean; activelyAtWork?: boolean; associationMember?: boolean; membershipType?: string;
   associationKey?: string;
   honorablyDischargedServiceMember?: boolean;
-  firmMemberCount?: number;
+  firmMemberCount?: number; averageMonthlyIncome?: number;
   selectedPlans?: { productKey: string; categoryKey: string; applicantKey: string }[];
 };
 /** Shared structural eligibility gate for capability metadata and execution. */
@@ -158,6 +166,11 @@ export function resolveEffectiveEligibility(site: EffectiveSite, productKey: str
   const category = site.configuration.products.find(product => product.productKey === productKey)?.catalog?.value.categoryKey ?? "";
   const categoryDecision = categoryEligibility(categoryPolicy, facts.membershipType, category);
   if (categoryDecision !== "eligible") return { status: categoryDecision === "ineligible" ? "resolved" : "needs-information", eligible: false, reason: "Applicant type does not establish eligibility for this category", provenance: [...provenance, ...site.configuration.categoryEligibilityPolicies.flatMap(policy => policy.provenance)] };
+  const incomeMinimum = site.configuration.coverageRequirements?.find(row => row.product === productKey && row.applicants.includes(applicantKey as "member" | "spouse" | "child") && row.configuration === "coverage-minimum-annual-income")?.value;
+  if (typeof incomeMinimum === "number") {
+    if (facts.averageMonthlyIncome === undefined || !Number.isFinite(facts.averageMonthlyIncome) || facts.averageMonthlyIncome < 0) return { status: "needs-information", reason: "Average monthly income is required", provenance };
+    if (facts.averageMonthlyIncome * 12 < incomeMinimum) return { status: "resolved", eligible: false, reason: "Income is below the coverage minimum", provenance };
+  }
   const valid = (n: unknown, integer = false): n is number => typeof n === "number" && Number.isFinite(n) && n >= 0 && (!integer || Number.isInteger(n));
   const ageRequired = c.minimumAgeYears !== null || c.maximumAgeYears !== null || c.studentMaximumAgeYears !== null;
   if (ageRequired && !valid(facts.ageYears, true) || c.minimumAgeDays !== null && !valid(facts.ageDays, true) || c.minimumWorkHours !== null && !valid(facts.workHoursPerWeek)) return { status: "needs-information", provenance };

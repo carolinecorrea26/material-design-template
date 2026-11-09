@@ -1,3 +1,4 @@
+import { requirementText } from "../../domain/requirementContent";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import LoopRoundedIcon from "@mui/icons-material/LoopRounded";
 import { formatCountdown } from "../../utils/formatCountdown";
@@ -33,7 +34,7 @@ export default function ResendCountdownRow({
           `${label} expired`
         ) : (
           <>
-            {label} expires in {" "}
+            {label}{requirementText("application.ui.expires-in")}
             <Box component="span" sx={{ fontWeight: 700 }}>
               {formatCountdown(secondsLeft)}
             </Box>
@@ -48,7 +49,7 @@ export default function ResendCountdownRow({
         disabled={disabled}
         sx={{ textTransform: "none", fontSize: "0.8125rem" }}
       >
-        Resend {kind}
+        {requirementText("application.ui.resend")}{kind}
       </Button>
     </Stack>
   );

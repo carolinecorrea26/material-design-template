@@ -122,7 +122,7 @@ import { clientEntities, siteEntities, tpaEntities } from "../data/registry";
 import { associationEntities, siteAssociationEntities } from "../data/associations";
 import { pages } from "../config/pages";
 import { pageSections } from "../config/pageSections/pageSections";
-import { fieldCatalog } from "../config/fields";
+import { legacyFieldCatalog as fieldCatalog } from "../config/fields";
 import { pageFieldOrder } from "../config/fields/pageFieldOrder";
 import { siteFieldOverrides } from "../config/fields/fieldOverrides";
 import { categoryMaxAggregate, categoryMaxAggregateNotes, siteMaxAggregateNoteOverrides } from "../config/coverageConstants";

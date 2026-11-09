@@ -1,7 +1,7 @@
 import type { DatabaseSchema, Json } from "../persistence/types";
 import type { ConfigurationTarget } from "../persistence/types/content";
 import { libraryMetadata } from "../domain/provenance";
-import { resolveEffectiveSite } from "../domain/effectiveSite";
+import { resolveSnapshotSite as resolveEffectiveSite } from "../domain/effectiveSite";
 import { isSelectionPolicy, type SelectionPolicy, type RiderAmount } from "../domain/coverageSelectionPolicy";
 import { isCoverageJourneyPolicy, type CoverageJourneyPolicy, type IdentifierRoles, type MappingDimensions } from "../domain/coverageJourneyPolicy";
 import type { PaymentPolicy } from "../domain/paymentPolicy";

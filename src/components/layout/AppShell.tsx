@@ -1,7 +1,10 @@
 import { ComponentContentContext } from "../content/ComponentContentContext";
 import { getContent } from "../../content";
 import { ClientIconContext } from "../content/ClientIconContext";
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
+import { useLocation, useNavigate } from 'react-router-dom';
+import { requirementText } from '../../domain/requirementContent';
+import AppSnackbar from '../feedback/AppSnackbar';
 import { Box } from "@mui/material";
 import { getActiveClient } from "../../config/client/getActiveClient";
 import CookieDialog from "./CookieDialog";
@@ -50,6 +53,16 @@ export default function AppShell({
   sessionActive = variant === 'applicationForm' || variant === 'homepage' && getFormTemplate() === 'single',
 }: AppShellProps) {
   const client = getActiveClient();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [showResumeLoaded, setShowResumeLoaded] = useState(Boolean((location.state as { resumeLoaded?: boolean } | null)?.resumeLoaded));
+  useEffect(() => {
+    if (!(location.state as { resumeLoaded?: boolean } | null)?.resumeLoaded) return;
+    setShowResumeLoaded(true);
+    const state = { ...(location.state as Record<string, unknown>) };
+    delete state.resumeLoaded;
+    navigate({ pathname: location.pathname, search: location.search, hash: location.hash }, { replace: true, state: Object.keys(state).length ? state : null });
+  }, [location, navigate]);
 
   const [showCookieBanner, setShowCookieBanner] = useState(() => {
     return localStorage.getItem("cookieConsent") !== "accepted";
@@ -78,6 +91,7 @@ export default function AppShell({
       <AppBody><ApplicationSessionGuard active={sessionActive}>{children}</ApplicationSessionGuard></AppBody>
       <AppFooter client={client} />
       <DevTools />
+      <AppSnackbar open={showResumeLoaded} onClose={() => setShowResumeLoaded(false)} message={requirementText('recovery.resume-loaded')} severity="success" autoHideDuration={4000} />
     </Box></ClientIconContext></ComponentContentContext>
   );
 }

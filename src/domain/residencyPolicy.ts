@@ -5,6 +5,15 @@ export const usJurisdictions = "AL AK AZ AR CA CO CT DE DC FL GA HI ID IL IN IA 
 /** Internal eligibility diagnostic; not approved applicant alert copy. */
 export const residencyExclusionDiagnostic = "Jurisdiction or military status is excluded";
 const known = new Set([...usJurisdictions, ..."AB BC MB NB NL NS NT NU ON PE QC SK YT".split(" ").map(code => `CA-${code}`)]);
+/** The shared state/province field uses short codes for both countries. */
+export function jurisdictionFromStateProvince(value: unknown): string | undefined {
+  if (typeof value !== "string" || !value.trim()) return undefined;
+  const code = value.trim().toUpperCase();
+  if (known.has(code)) return code;
+  if (known.has(`CA-${code}`)) return `CA-${code}`;
+  if (known.has(`US-${code}`)) return `US-${code}`;
+  return undefined;
+}
 export type ResidencyPolicy = { version: 1; allowedJurisdictions: string[]; associationAllowedJurisdictions?: Record<string, string[]>; applicantExcludedJurisdictions?: Record<string, string[]>; excludeActiveMilitary: boolean; provisional: boolean; revisit: string[] };
 const object = (value: unknown): value is Record<string, unknown> => value !== null && typeof value === "object" && !Array.isArray(value);
 const jurisdictions = (value: unknown): value is string[] => Array.isArray(value) && value.length > 0 && value.every(code => typeof code === "string" && known.has(code)) && new Set(value).size === value.length;
@@ -29,6 +38,8 @@ export function resolveNormalizedResidency(site: EffectiveSite, productKey: stri
   if (facts.jurisdiction === undefined || value.excludeActiveMilitary && facts.activeMilitary === undefined) return { ...evidence, status: "needs-information" as const, allowed: false, reason: "Jurisdiction and any required military status must be supplied" };
   if (!known.has(facts.jurisdiction) || facts.activeMilitary !== undefined && typeof facts.activeMilitary !== "boolean") return { ...evidence, status: "unresolved" as const, allowed: false, reason: "Invalid residency facts" };
   const allowedJurisdictions = facts.associationKey && Object.hasOwn(value.associationAllowedJurisdictions ?? {}, facts.associationKey) ? value.associationAllowedJurisdictions![facts.associationKey] : value.allowedJurisdictions;
-  const allowed = allowedJurisdictions.includes(facts.jurisdiction) && !value.applicantExcludedJurisdictions?.[applicantKey]?.includes(facts.jurisdiction) && !(value.excludeActiveMilitary && facts.activeMilitary);
+  const additionalExclusions = site.configuration.coverageRequirements?.find(row => row.product === productKey && row.applicants.includes(applicantKey as "member" | "spouse" | "child") && row.configuration === "coverage-excluded-states")?.value;
+  const additionallyExcluded = Array.isArray(additionalExclusions) && additionalExclusions.some(state => facts.jurisdiction === `US-${state}`);
+  const allowed = !additionallyExcluded && allowedJurisdictions.includes(facts.jurisdiction) && !value.applicantExcludedJurisdictions?.[applicantKey]?.includes(facts.jurisdiction) && !(value.excludeActiveMilitary && facts.activeMilitary);
   return { ...evidence, status: "resolved" as const, allowed, reason: allowed ? "Residency satisfies the reviewed policy" : residencyExclusionDiagnostic };
 }

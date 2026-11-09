@@ -1,9 +1,51 @@
 {
   "page": "beneficiary",
-  "notes": {
-    "li-term": "beneficiary.note.replaces-prior",
-    "li-add": "beneficiary.note.replaces-prior",
-    "li-10yr": "beneficiary.note.new-insurance",
-    "li-20yr": "beneficiary.note.new-insurance"
+  "requirement": "required",
+  "position": 4,
+  "productNotes": {
+    "li-term": {
+      "content": "beneficiary.note.replaces-prior",
+      "applicants": [
+        "member",
+        "spouse"
+      ],
+      "sourceReferences": [
+        "Beneficiary Note!C3",
+        "User decision October 20, 2026; Beneficiary Note!C2:C3/C6: apply the common notes to current Sites with CSEA's dedicated AD&D wording; child automatic beneficiaries and PDF scope remain separate"
+      ]
+    },
+    "li-10yr": {
+      "content": "beneficiary.note.new-insurance",
+      "applicants": [
+        "member",
+        "spouse"
+      ],
+      "sourceReferences": [
+        "Beneficiary Note!C2",
+        "User decision October 20, 2026; Beneficiary Note!C2:C3/C6: apply the common notes to current Sites with CSEA's dedicated AD&D wording; child automatic beneficiaries and PDF scope remain separate"
+      ]
+    },
+    "li-20yr": {
+      "content": "beneficiary.note.new-insurance",
+      "applicants": [
+        "member",
+        "spouse"
+      ],
+      "sourceReferences": [
+        "Beneficiary Note!C2",
+        "User decision October 20, 2026; Beneficiary Note!C2:C3/C6: apply the common notes to current Sites with CSEA's dedicated AD&D wording; child automatic beneficiaries and PDF scope remain separate"
+      ]
+    },
+    "li-add": {
+      "content": "beneficiary.note.replaces-prior",
+      "applicants": [
+        "member",
+        "spouse"
+      ],
+      "sourceReferences": [
+        "Beneficiary Note!C3",
+        "User decision October 20, 2026; Beneficiary Note!C2:C3/C6: apply the common notes to current Sites with CSEA's dedicated AD&D wording; child automatic beneficiaries and PDF scope remain separate"
+      ]
+    }
   }
 }

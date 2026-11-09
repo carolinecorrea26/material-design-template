@@ -1,6 +1,215 @@
 {
   "page": "membership",
+  "content": {
+    "title": "membership.title",
+    "subhead": "membership.subhead",
+    "breadcrumb": "membership.breadcrumb",
+    "loading": "membership.loading",
+    "shared-help": [
+      "help.how-applying-works.intro",
+      "help.how-applying-works.steps",
+      "help.how-applying-works.sub-drawer-titles.application-review",
+      "help.how-applying-works.sub-drawer-titles.quick-decision",
+      "help.application-review.title",
+      "help.application-review.intro",
+      "help.application-review.what-to-expect-title",
+      "help.application-review.what-to-expect-items",
+      "help.application-review.closing-note",
+      "help.coverage-options.intro",
+      "help.quick-decision.title-prefix",
+      "help.quick-decision.intro",
+      "help.quick-decision.what-to-expect-title",
+      "help.quick-decision.what-to-expect-items",
+      "help.quick-decision.important-to-know-title",
+      "help.quick-decision.important-to-know-items",
+      "help.coverage-portfolio.title",
+      "help.coverage-portfolio.intro"
+    ],
+    "help-titles": [
+      "membership.help.applying-title",
+      "membership.help.coverage-options-title"
+    ],
+    "shared-navigation": [
+      "navigation.next",
+      "navigation.submitting",
+      "navigation.back"
+    ]
+  },
+  "help": [
+    {
+      "id": "coverage-options-available",
+      "chip": "membership.help.coverage-options"
+    },
+    {
+      "id": "application-process",
+      "chip": "membership.help.how-applying-works"
+    }
+  ],
+  "sections": {
+    "membership": {
+      "feedback": {
+        "not-eligible": [
+          "membership.not-member.message",
+          "membership.not-member.heading",
+          "membership.not-member.body",
+          "membership.not-member.website"
+        ]
+      }
+    },
+    "follow-up": {
+      "title": "membership.additional.title"
+    }
+  },
   "components": [
-    { "type": "membership" }
-  ]
+    {
+      "type": "FormRoutePage",
+      "mapping": "membership",
+      "components": [
+        {
+          "type": "ProgressStep"
+        },
+        {
+          "type": "PageHeader",
+          "components": [
+            {
+              "type": "MembershipHelp"
+            }
+          ]
+        },
+        {
+          "type": "PageAlert",
+          "purpose": "optional page note; submission validation errors"
+        },
+        {
+          "type": "FieldGroup",
+          "section": "membership",
+          "components": [
+            {
+              "type": "MembershipStatus"
+            },
+            {
+              "type": "MemberInformation"
+            }
+          ]
+        },
+        {
+          "type": "AdditionalMembershipInformation",
+          "section": "follow-up"
+        },
+        {
+          "type": "PageNav"
+        }
+      ]
+    }
+  ],
+  "fieldMapping": {
+    "component": "membership"
+  },
+  "definition": {
+    "id": "membership",
+    "path": "/membership",
+    "type": "form",
+    "groupId": "get-started",
+    "flow": "application",
+    "displayName": "Membership"
+  },
+  "position": 1,
+  "layout": {
+    "sections": {
+      "membership": {
+        "id": "default",
+        "for": "self",
+        "fields": [
+          "membership",
+          "title",
+          "first-name",
+          "last-name",
+          "email",
+          "phone"
+        ]
+      },
+      "follow-up": {
+        "id": "membershipInformation",
+        "for": "self",
+        "remaining": true
+      }
+    }
+  },
+  "shownWhen": {
+    "sections": {
+      "follow-up": {
+        "outcome": [
+          "member",
+          "new-member"
+        ]
+      }
+    },
+    "fields": [
+      {
+        "field": "title",
+        "section": "membership",
+        "shownWhen": {
+          "outcome": [
+            "member",
+            "new-member"
+          ]
+        }
+      },
+      {
+        "field": "first-name",
+        "section": "membership",
+        "shownWhen": {
+          "outcome": [
+            "member",
+            "new-member"
+          ]
+        }
+      },
+      {
+        "field": "last-name",
+        "section": "membership",
+        "shownWhen": {
+          "outcome": [
+            "member",
+            "new-member"
+          ]
+        }
+      },
+      {
+        "field": "email",
+        "section": "membership",
+        "shownWhen": {
+          "outcome": [
+            "member",
+            "new-member"
+          ]
+        }
+      },
+      {
+        "field": "phone",
+        "section": "membership",
+        "shownWhen": {
+          "outcome": [
+            "member",
+            "new-member"
+          ]
+        }
+      },
+      {
+        "field": "phone-type",
+        "section": "membership",
+        "shownWhen": {
+          "outcome": [
+            "member",
+            "new-member"
+          ]
+        }
+      }
+    ]
+  },
+  "companions": {
+    "phone": [
+      "phone-type"
+    ]
+  }
 }

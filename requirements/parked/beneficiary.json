@@ -1,6 +1,339 @@
 {
   "page": "beneficiary",
   "components": [
-    { "type": "beneficiary" }
-  ]
+    {
+      "type": "FormRoutePage",
+      "components": [
+        {
+          "type": "ProgressStep"
+        },
+        {
+          "type": "PageHeader",
+          "components": [
+            {
+              "type": "HelpChip",
+              "purpose": "beneficiary definition and percentage share help"
+            }
+          ]
+        },
+        {
+          "type": "PageAlert",
+          "purpose": "submission validation errors; no applicable products"
+        },
+        {
+          "type": "FieldGroup",
+          "section": "participation",
+          "purpose": "optional-page opt-in control"
+        },
+        {
+          "type": "BeneficiaryProductRecords",
+          "section": "self",
+          "purpose": "applicant → category → applicable product → designation note and repeatable beneficiary list",
+          "components": [
+            {
+              "type": "SectionNote",
+              "purpose": "effective-site product note selection"
+            },
+            {
+              "type": "DynamicList",
+              "purpose": "primary and contingent beneficiaries for each product/applicant"
+            }
+          ]
+        },
+        {
+          "type": "BeneficiaryProductRecords",
+          "section": "spouse",
+          "purpose": "applicant → category → applicable product → designation note and repeatable beneficiary list",
+          "components": [
+            {
+              "type": "SectionNote",
+              "purpose": "effective-site product note selection"
+            },
+            {
+              "type": "DynamicList",
+              "purpose": "primary and contingent beneficiaries for each product/applicant"
+            }
+          ]
+        },
+        {
+          "type": "PageNav"
+        }
+      ]
+    }
+  ],
+  "definition": {
+    "id": "beneficiary",
+    "path": "/beneficiary",
+    "type": "form",
+    "groupId": "coverage",
+    "flow": "application",
+    "healthGate": false,
+    "displayName": "Beneficiary"
+  },
+  "position": 4,
+  "layout": {
+    "sections": {
+      "participation": {
+        "id": "beneficiaryParticipation",
+        "for": "self",
+        "fields": []
+      },
+      "self": {
+        "id": "selfBeneficiaries",
+        "for": "self",
+        "fields": []
+      },
+      "spouse": {
+        "id": "spouseBeneficiaries",
+        "for": "spouse",
+        "fields": [],
+        "when": {
+          "field": "dependents",
+          "includes": "spouse"
+        }
+      }
+    },
+    "dialogs": {
+      "add-edit": {
+        "for": "beneficiary",
+        "fields": [
+          "beneficiary-type",
+          "first-name",
+          "last-name",
+          "beneficiary-relationship",
+          "beneficiary-share",
+          "beneficiary-trust-name",
+          "beneficiary-trust-date"
+        ]
+      },
+      "apply-to-other-coverages": {
+        "fields": []
+      }
+    }
+  },
+  "content": {
+    "wording": [
+      "beneficiary.title",
+      "beneficiary.subhead",
+      "beneficiary.breadcrumb",
+      "beneficiary.full",
+      "beneficiary.no-products",
+      "beneficiary.error.missing",
+      "beneficiary.loading",
+      "beneficiary.help.what-is",
+      "beneficiary.help.share",
+      "beneficiary.add",
+      "beneficiary.designation.primary",
+      "beneficiary.designation.contingent",
+      "beneficiary.note.replaces-prior",
+      "beneficiary.note.new-insurance",
+      "beneficiary.dialog.add-title",
+      "beneficiary.dialog.edit-title",
+      "beneficiary.apply.title",
+      "beneficiary.apply.prompt",
+      "beneficiary.apply.confirm",
+      "beneficiary.apply.cancel",
+      "help.beneficiary.what-is",
+      "help.beneficiary.share"
+    ],
+    "runtime": [
+      "beneficiary.individual-label",
+      "beneficiary.dialog.library-label",
+      "beneficiary.trust-label",
+      "beneficiary.apply.error-empty",
+      "beneficiary.dialog.save",
+      "beneficiary.designation.remaining",
+      "beneficiary.error.no-unassigned-share",
+      "beneficiary.share.remaining",
+      "beneficiary.dialog.cancel",
+      "beneficiary.error.designation-full",
+      "beneficiary.error.trust-exists",
+      "beneficiary.error.one-trust",
+      "beneficiary.error.individual-exists"
+    ]
+  },
+  "fieldMapping": {
+    "page": "beneficiary"
+  },
+  "controls": [
+    "beneficiary-information-opt-in"
+  ],
+  "dialogs": {
+    "add-edit": {
+      "title": "beneficiary.dialog.add-title",
+      "editTitle": "beneficiary.dialog.edit-title",
+      "confirm": "beneficiary.dialog.save",
+      "cancel": "beneficiary.dialog.cancel"
+    },
+    "apply-to-other-coverages": {
+      "title": "beneficiary.apply.title",
+      "message": "beneficiary.apply.prompt",
+      "confirm": "beneficiary.apply.confirm",
+      "cancel": "beneficiary.apply.cancel"
+    }
+  },
+  "shownWhen": {
+    "sections": {
+      "participation": {
+        "pageRequirement": "optional"
+      }
+    },
+    "fields": [
+      {
+        "field": "first-name",
+        "dialog": "add-edit",
+        "shownWhen": {
+          "field": "beneficiary-type",
+          "equals": "individual"
+        }
+      },
+      {
+        "field": "last-name",
+        "dialog": "add-edit",
+        "shownWhen": {
+          "field": "beneficiary-type",
+          "equals": "individual"
+        }
+      },
+      {
+        "field": "beneficiary-relationship",
+        "dialog": "add-edit",
+        "shownWhen": {
+          "field": "beneficiary-type",
+          "equals": "individual"
+        }
+      },
+      {
+        "field": "beneficiary-share",
+        "dialog": "add-edit",
+        "shownWhen": {
+          "field": "beneficiary-type",
+          "equals": "individual"
+        }
+      },
+      {
+        "field": "beneficiary-trust-name",
+        "dialog": "add-edit",
+        "shownWhen": {
+          "field": "beneficiary-type",
+          "equals": "trust"
+        }
+      },
+      {
+        "field": "beneficiary-trust-date",
+        "dialog": "add-edit",
+        "shownWhen": {
+          "field": "beneficiary-type",
+          "equals": "trust"
+        }
+      }
+    ]
+  },
+  "productNotes": {
+    "configuration": "shared.beneficiary-notes"
+  },
+  "surfaces": {
+    "beneficiaryIndividual": {
+      "mapping": {
+        "page": "beneficiary"
+      },
+      "for": "beneficiary",
+      "definition": {
+        "label": "beneficiary.individual-label",
+        "maxItems": 10,
+        "fields": [
+          {
+            "fieldKey": "beneficiary-firstName",
+            "valueKey": "firstName",
+            "grid": true
+          },
+          {
+            "fieldKey": "beneficiary-lastName",
+            "valueKey": "lastName",
+            "grid": true
+          },
+          {
+            "fieldKey": "beneficiary-relationship",
+            "valueKey": "relationship"
+          },
+          {
+            "fieldKey": "beneficiary-share",
+            "valueKey": "share"
+          }
+        ],
+        "libraryGroup": {
+          "label": "beneficiary.dialog.library-label"
+        }
+      },
+      "aliases": {
+        "beneficiary-firstName": {
+          "field": "first-name"
+        },
+        "beneficiary-lastName": {
+          "field": "last-name"
+        }
+      }
+    },
+    "beneficiaryTrust": {
+      "mapping": {
+        "page": "beneficiary"
+      },
+      "for": "beneficiary",
+      "definition": {
+        "label": "beneficiary.trust-label",
+        "maxItems": 10,
+        "fields": [
+          {
+            "fieldKey": "beneficiary-trustName",
+            "valueKey": "trustName"
+          },
+          {
+            "fieldKey": "beneficiary-trustDate",
+            "valueKey": "trustDate"
+          }
+        ],
+        "libraryGroup": {
+          "label": "beneficiary.dialog.library-label"
+        }
+      },
+      "aliases": {
+        "beneficiary-trustName": {
+          "field": "beneficiary-trust-name"
+        },
+        "beneficiary-trustDate": {
+          "field": "beneficiary-trust-date"
+        }
+      }
+    },
+    "beneficiaryControls": {
+      "mapping": {
+        "page": "beneficiary"
+      },
+      "for": "beneficiary",
+      "definition": {
+        "label": "beneficiary.individual-label",
+        "fields": [
+          {
+            "fieldKey": "beneficiary-information-opt-in",
+            "valueKey": "beneficiary-information-opt-in"
+          },
+          {
+            "fieldKey": "beneficiaryType",
+            "valueKey": "beneficiaryType"
+          }
+        ],
+        "libraryGroup": {
+          "label": "beneficiary.dialog.library-label",
+          "excludeFieldKeys": [
+            "beneficiary-information-opt-in"
+          ]
+        }
+      },
+      "aliases": {
+        "beneficiaryType": {
+          "field": "beneficiary-type"
+        }
+      }
+    }
+  }
 }

@@ -1,0 +1,6 @@
+{
+  "component": "app-menu",
+  "pages": ["home", "membership", "eligibility", "coverage", "beneficiary", "contact", "profile", "review", "payment", "receipt"],
+  "configurations": ["category-order", "product-order"],
+  "rules": ["category-product-presentation-order"]
+}

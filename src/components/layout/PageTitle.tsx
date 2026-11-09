@@ -1,3 +1,4 @@
+import { requirementText } from "../../domain/requirementContent";
 import { Box, IconButton, Stack, Typography } from "@mui/material";
 import ArrowBackIosRoundedIcon from "@mui/icons-material/ArrowBackIosRounded";
 import type { ReactNode } from "react";
@@ -19,7 +20,7 @@ export default function PageTitle({
         {onBack && (
           <IconButton
             onClick={onBack}
-            aria-label="Go back"
+            aria-label={requirementText("navigation.back")}
             sx={{ color: "#8fa1b9", ml: "-8px !important", p: 0.75 }}
           >
             <ArrowBackIosRoundedIcon sx={{ fontSize: "1rem" }} />

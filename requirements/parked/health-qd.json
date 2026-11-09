@@ -1,6 +1,34 @@
 {
   "page": "health-qd",
   "components": [
-    { "type": "health-qd" }
-  ]
+    {
+      "type": "health-qd"
+    }
+  ],
+  "definition": {
+    "id": "health-qd",
+    "path": "/health-qd",
+    "type": "form",
+    "groupId": "health",
+    "flow": "application",
+    "healthGate": true,
+    "displayName": "Health QD"
+  },
+  "position": 10,
+  "fieldBindings": [],
+  "looseFields": [],
+  "layout": {
+    "sections": {}
+  },
+  "content": {
+    "wording": [
+      "page.health-qd.title",
+      "page.health-qd.subhead",
+      "page.health-qd.nav-title"
+    ],
+    "runtime": [
+      "application.ui.sm",
+      "application.ui.support-reference"
+    ]
+  }
 }

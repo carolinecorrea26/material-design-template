@@ -640,7 +640,7 @@ const siteRuleInventory: (Omit<RuleDefinition, "id"> & { id?: RuleDefinition["id
     area: "Coverage",
     rule: "Coverage Options featured-first sort and category fallback",
     behavior:
-      "Default category order is LI, AD, DI, OO, SH. A client coverages.categoryOrder (or categories array) configuration overrides it. A client coverages.productOrder optionally overrides product order within categories; omitted products retain the default order. AMA uses its source 20/15/10-year, Pure Term, Preferred Term, Premier Accident order; URL parameter featured_prod moves the identified product’s category first and that product first within it. Default products are Term Life, ascending level-term durations; Long-Term, Long-Term Plus, Mid-Term, Short-Term Disability; Critical Illness, Hospital Indemnity. Remaining products retain catalog order. An unavailable active category falls back to the first available category in the resolved order.",
+      "Global category and registered-product default lists are defined in requirements/global/configurations/product-presentation.json. Category defaults are LI, AD, DI, OO, SH. Effective-site categoryOrder (or the existing categories array fallback) and productOrder override the defaults; omitted products inherit the global list. URL featured_prod moves its available product and category first. Product IDs, rather than display names, determine default order; unlisted products retain incoming order. An unavailable active category falls back to the first available category in the resolved order.",
     ref: "src/domain/coveragePresentation.ts; src/config/client/getActiveClientCoverages.ts; src/components/coverage/CoverageOptionsPanel.tsx; src/app/workflows/QuoteCalculator.tsx",
   },
   {

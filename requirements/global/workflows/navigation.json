@@ -11,8 +11,8 @@
       "id": "home-start-and-resume",
       "name": "Start or resume from Home",
       "status": "draft",
-      "statement": "Start the application or open the resume flow from Home.",
-      "source": "src/pages/Home.tsx; src/components/home/HomeHero.tsx"
+      "statement": "Explicitly starting a new application from Home clears the prior application draft, saved-application handle and transient session flags before entering Membership, so an expired inactivity deadline cannot carry into the new application. Continue application opens the resume flow and preserves the existing draft. Ordinary field activity and navigation cannot revive an expired session.",
+      "source": "src/pages/Home.tsx; src/app/useStartApplication.ts; src/app/ApplicationEntry.integration.test.tsx; src/app/ApplicationSessionGuard.test.tsx"
     },
     {
       "id": "form-next-destination",

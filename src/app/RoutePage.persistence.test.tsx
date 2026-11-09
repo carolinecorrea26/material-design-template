@@ -45,9 +45,9 @@ async function submit() { await act(async () => container.querySelector("form")!
 
 it("awaits a successful Membership save, retains fields and shows progress feedback on the destination", async () => {
   await render(); await change(); await submit();
-  expect(save).toHaveBeenCalledWith(expect.objectContaining({ "first-name": "Changed" }), undefined);
+  expect(save).toHaveBeenCalledWith(expect.objectContaining({ "first-name": "Changed" }), "membership");
   expect(observed["first-name"]).toBe("Changed");
-  expect(sendAutosaveMockEmail).toHaveBeenCalledWith(expect.objectContaining({ "first-name": "Changed" }));
+  expect(sendAutosaveMockEmail).not.toHaveBeenCalled();
   await act(async () => vi.advanceTimersByTimeAsync(4400));
   expect(container.querySelector("[data-path]")?.textContent).toBe("/eligibility");
   expect(container.querySelector('[role="status"]')?.textContent).toContain("Progress saved");
@@ -83,7 +83,7 @@ it.each(["coverage", "review"])("marks only an explicit %s completion as revalid
 
 it("saves before expanding the next single-page section and shows success without changing the URL", async () => {
   await render("membership", true); await change(); await submit();
-  expect(save).toHaveBeenCalledWith(expect.objectContaining({ "first-name": "Changed" }), undefined);
+  expect(save).toHaveBeenCalledWith(expect.objectContaining({ "first-name": "Changed" }), "membership");
   await act(async () => vi.advanceTimersByTimeAsync(4400));
   expect(container.querySelector("#eligibility-form")).not.toBeNull();
   expect(container.querySelector("[data-path]")?.textContent).toBe("/membership");

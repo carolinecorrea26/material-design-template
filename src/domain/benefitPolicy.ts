@@ -35,11 +35,14 @@ export type BenefitFacts = {
   applicantClass?: string;
   monthlyIncome?: number;
   existingMonthlyBenefit?: number;
+  /** Verified portfolio balance, deducted before quantizing available increments. */
+  verifiedInForceAmount?: number;
   memberCoverage?: boolean;
   memberRequestedBenefit?: number;
   memberTotalMonthlyBenefit?: number;
   selfEmployedYears?: number;
   selfEmployed?: boolean;
+  selfEmployedUnderOneYear?: boolean;
   retirement?: boolean;
   monthlyLoanPayment?: number;
   eligibleMonthlyExpenses?: number;
@@ -169,9 +172,11 @@ export function resolveNormalizedBenefit(site: EffectiveSite, productKey: string
     if (member !== undefined) maximum = Math.min(maximum, member * row.memberBenefitMultiplier);
   }
   if (row.selfEmployedOverride) {
-    if (typeof facts.selfEmployed !== "boolean") result.missingFacts.push("selfEmployed");
-    const years = facts.selfEmployed === true ? need("selfEmployedYears") : undefined;
-    if (facts.selfEmployed === true && years !== undefined && years < row.selfEmployedOverride.lessThanYears) {
+    const direct = row.selfEmployedOverride.lessThanYears === 1 && typeof facts.selfEmployedUnderOneYear === "boolean";
+    if (!direct && typeof facts.selfEmployed !== "boolean") result.missingFacts.push("selfEmployed");
+    const years = !direct && facts.selfEmployed === true ? need("selfEmployedYears") : undefined;
+    const restricted = direct ? facts.selfEmployedUnderOneYear : facts.selfEmployed === true && years !== undefined && years < row.selfEmployedOverride.lessThanYears;
+    if (restricted) {
       maximum = Math.min(maximum, row.selfEmployedOverride.maximum);
       waitingPeriods = waitingPeriods.filter(period => period.accidentDays === row.selfEmployedOverride!.waitingDays && period.sicknessDays === row.selfEmployedOverride!.waitingDays);
       benefitPeriods = [row.selfEmployedOverride.benefitPeriod];
@@ -213,6 +218,10 @@ export function resolveNormalizedBenefit(site: EffectiveSite, productKey: string
       if (member !== undefined) cap = Math.min(cap, member);
     }
     if (existing !== undefined && object(others) && Object.values(others).every(finite) && group.productKeys.filter(key => key !== productKey).every(key => finite(others[key]))) maximum = Math.min(maximum, Math.max(0, cap - existing - Object.values(others).reduce<number>((sum, amount) => sum + (amount as number), 0)));
+  }
+  if (facts.verifiedInForceAmount !== undefined) {
+    if (!finite(facts.verifiedInForceAmount)) result.errors.push("Invalid verified in-force benefit");
+    else maximum = Math.max(0, maximum - facts.verifiedInForceAmount);
   }
   // Only selectable increments are returned; the mathematical cap is never rounded up.
   maximum = maximum < minimum ? 0 : minimum + Math.floor((maximum - minimum) / row.increment + 1e-10) * row.increment;

@@ -1,3 +1,4 @@
+import { requirementText } from "../../domain/requirementContent";
 import { combineRateDisplays, rateDisplayForAmount } from '../../domain/rateDisplay';
 import { resolveSiteId } from "../../data/activeSite";
 import { orderCoveragePresentation } from "../../domain/coveragePresentation";
@@ -65,6 +66,7 @@ import type { EstimatedRateFrequency } from "../../config/clients/types";
 import { getPagePath } from "../../config/pages";
 import { sectionLabels } from "../../config/pageSections";
 import { useApplicationForm } from "../ApplicationFormContext";
+import { useStartApplication } from "../useStartApplication";
 import {
   executeQuoteApplyTransition,
 } from "../../config/applicationTransitions";
@@ -80,18 +82,18 @@ type EstimateYesNo = "yes" | "no" | "";
 
 const INLINE_STEP_COPY = [
   {
-    title: "About you",
+    title: requirementText("home.quote.about-you"),
     subhead:
-      "Tell us a little about yourself to see the coverage available to you.",
+      requirementText("home.quote.tell-us-a-little-about-yourself-to-see-the-coverage-available-to-you"),
   },
   {
-    title: "Coverage needs",
-    subhead: "Choose the coverage you'd like included in your estimate.",
+    title: requirementText("home.quote.coverage-needs"),
+    subhead: requirementText("home.quote.choose-the-coverage-you-d-like-included-in-your-estimate"),
   },
   {
-    title: "Your quote",
+    title: requirementText("home.quote.your-quote"),
     subhead:
-      "Review your coverage options and estimated rates, then continue when you're ready.",
+      requirementText("home.quote.review-your-coverage-options-and-estimated-rates-then-continue-when-you-re-ready"),
   },
 ] as const;
 
@@ -125,13 +127,14 @@ type QuoteCalculatorProps = {
 export default function QuoteCalculator({
   open,
   onClose,
-  title = "How much does it cost?",
+  title = requirementText("home.quote.how-much-does-it-cost"),
   collectEligibility = false,
   initialEligibility,
   displayMode = "drawer",
 }: QuoteCalculatorProps) {
   const navigate = useNavigate();
   const { values, setPageValues } = useApplicationForm();
+  const startApplication = useStartApplication();
   const activeClient = useMemo(() => getActiveClient(), []);
   const coverages = useMemo(() => getActiveClientCoverages(), []);
   const categoryPolicy = readCategoryEligibilityPolicy(getPrototypeLibrary()?.site.configuration.categoryEligibilityPolicies ?? []);
@@ -162,7 +165,7 @@ export default function QuoteCalculator({
     },
   );
   const [eligibilityAttempted, setEligibilityAttempted] = useState(false);
-  const [ageError, setAgeError] = useState("");
+  const [eligibilityError, setEligibilityError] = useState("");
   const [inlineStep, setInlineStep] = useState(0);
   const [categoryAttempted, setCategoryAttempted] = useState(false);
 
@@ -204,7 +207,7 @@ export default function QuoteCalculator({
     const value = inputValues[field.id];
     const invalid = fieldValidationChecks(field).find(check => !check.validate(value));
     if (invalid) fieldErrors[field.id] = invalid.message;
-    else if (typeof value === 'string' && value && field.options && !field.options.some(option => option.value === value)) fieldErrors[field.id] = `Choose an available ${field.label}.`;
+    else if (typeof value === 'string' && value && field.options && !field.options.some(option => option.value === value)) fieldErrors[field.id] = requirementText("home.quote.invalid-field", { field: field.label });
   }
   const isFieldsValid = Object.keys(fieldErrors).length === 0;
 
@@ -341,9 +344,9 @@ export default function QuoteCalculator({
 
     if (inlineStep === 0) {
       setEligibilityAttempted(true);
-      const { ageError: newAgeError, isValid } =
+      const { eligibilityError: newEligibilityError, isValid } =
         validateEligibility(eligibilityValues);
-      setAgeError(newAgeError);
+      setEligibilityError(newEligibilityError);
       if (!isValid) return;
       setInlineStep(1);
       return;
@@ -477,24 +480,24 @@ export default function QuoteCalculator({
     setFieldsAttempted(true);
     setApplyError("");
     if (!isFieldsValid) {
-      setApplyError("Please correct the quote answers before applying.");
+      setApplyError(requirementText("home.quote.please-correct-the-quote-answers-before-applying"));
       return;
     }
     if (!await factForm.trigger(coverageFactFieldIds(categoryProducts, quoteValues, "presented"))) {
-      setApplyError("Please complete the coverage eligibility information before applying.");
+      setApplyError(requirementText("home.quote.please-complete-the-coverage-eligibility-information-before-applying"));
       return;
     }
-    const coverageError = validateApplicationCoverages(coverages, quoteValues, { deferUnansweredMembership: true, deferProfileUnderwriting: true });
-    if (coverageError) {
-      setApplyError(coverageError);
+    const covereligibilityError = validateApplicationCoverages(coverages, quoteValues, { deferUnansweredMembership: true, deferProfileUnderwriting: true });
+    if (covereligibilityError) {
+      setApplyError(covereligibilityError);
       return;
     }
     // Validate eligibility fields if collecting them here
     if (collectEligibility) {
       setEligibilityAttempted(true);
-      const { ageError: newAgeError, isValid } =
+      const { eligibilityError: newEligibilityError, isValid } =
         validateEligibility(eligibilityValues);
-      setAgeError(newAgeError);
+      setEligibilityError(newEligibilityError);
       if (!isValid) return;
     }
 
@@ -527,12 +530,13 @@ export default function QuoteCalculator({
         ...quoteRiderElections,
         hideSmokerQuestion: activeClient.coverages.hideSmokerQuestion,
       },
-      values,
+      {},
       [...coverageFactFieldIds(categoryProducts, quoteValues, "presented"), ...(requirements.needsActiveWork ? ['actively-at-work' as const] : []), ...(['tobacco-last-used', 'tobacco-products'] as const).filter(id => quoteInputFields.some(field => field.id === id))].flatMap(id => {
         const value = id === 'actively-at-work' || id === 'tobacco-last-used' || id === 'tobacco-products' ? inputValues[id] : contextualFacts[id];
         return value === undefined ? [] : [{ fieldId: id, value }];
       }),
     );
+    startApplication();
     setPageValues(applicationValues);
 
     onClose();
@@ -544,8 +548,8 @@ export default function QuoteCalculator({
   const inlineStepCopy =
     inlineStep === 1 && singleAvailableCategory
       ? {
-          title: "Coverage details",
-          subhead: `Answer a few questions about your ${singleAvailableCategory.label.toLowerCase()} coverage.`,
+          title: requirementText("home.quote.coverage-details"),
+          subhead: requirementText("home.quote.coverage-details-description", { category: singleAvailableCategory.label.toLowerCase() }),
         }
       : INLINE_STEP_COPY[inlineStep];
 
@@ -577,7 +581,7 @@ export default function QuoteCalculator({
                 setEligibilityValues((prev) => ({ ...prev, ...next }))
               }
               attempted={eligibilityAttempted}
-              ageError={ageError}
+              eligibilityError={eligibilityError}
               idPrefix="qc"
             />
           )}
@@ -595,8 +599,7 @@ export default function QuoteCalculator({
             )}
             {categoryAttempted && selectedCategories.length === 0 && (
               <Alert severity="error">
-                Select at least one coverage category.
-              </Alert>
+                {requirementText("home.quote.select-at-least-one-coverage-category")}</Alert>
             )}
           </>
         )}
@@ -620,8 +623,7 @@ export default function QuoteCalculator({
                 size="large"
                 onClick={handleGetEstimates}
               >
-                See my quote
-              </Button>
+                {requirementText("home.quote.see-my-quote")}</Button>
             )}
             </Stack>
           )}
@@ -629,8 +631,8 @@ export default function QuoteCalculator({
         {/* ── Empty state ── */}
         {displayMode === "drawer" && selectedCategories.length === 0 && (
           <EmptyState
-            title="Your estimated cost will appear here"
-            body="Select a coverage category to see your estimated cost."
+            title={requirementText("home.quote.your-estimated-cost-will-appear-here")}
+            body={requirementText("home.quote.select-a-coverage-category-to-see-your-estimated-cost")}
           />
         )}
 
@@ -651,12 +653,11 @@ export default function QuoteCalculator({
               >
                 <CircularProgress size={28} aria-hidden />
                 <Typography variant="body2" color="text.secondary">
-                  Loading your coverage options…
-                </Typography>
+                  {requirementText("home.quote.loading-your-coverage-options")}</Typography>
               </Stack>
             ) : allProductsIneligible ? (
               <Alert severity="error">
-                {isHoursIneligible ? <>We're sorry, but products in this category require working at least {minimumWorkHours} hours per week.</> : "Based on your answers, you are not eligible for coverage in this category at this time."}
+                {isHoursIneligible ? <>{requirementText("home.quote.we-re-sorry-but-products-in-this-category-require-working-at-least")}{minimumWorkHours} {requirementText("home.quote.hours-per-week")}</> : requirementText("home.quote.based-on-your-answers-you-are-not-eligible-for-coverage-in-this-category-at-this")}
               </Alert>
             ) : (
               <>
@@ -718,7 +719,7 @@ export default function QuoteCalculator({
                                 const checked = !!quoteRiderElections.coverageRiders[riderKey];
                                 const options = applicationRiderOptions(product, rider, "member", quoteValues);
                                 return { id: rider.id, name: rider.name, description: rider.description, checked, disabled: !!rider.included || currentAmount <= 0 || !options.available,
-                                  amount: rider.hasAmount && rider.coverageAmounts ? { label: rider.amountLabel ?? "Rider Benefit Amount", value: quoteRiderElections.coverageRiderAmounts[riderKey] ?? rider.defaultAmount ?? 0, choices: [...(rider.included || options.configured ? [] : [0]), ...options.choices] } : undefined };
+                                  amount: rider.hasAmount && rider.coverageAmounts ? { label: rider.amountLabel ?? requirementText("home.quote.rider-benefit-amount"), value: quoteRiderElections.coverageRiderAmounts[riderKey] ?? rider.defaultAmount ?? 0, choices: [...(rider.included || options.configured ? [] : [0]), ...options.choices] } : undefined };
                               })}
                               onRiderToggle={riderId => handleRiderToggle(product, riderId)}
                               onRiderAmountChange={(riderId, amount) => handleRiderAmountChange(product, riderId, amount)}
@@ -736,9 +737,7 @@ export default function QuoteCalculator({
                   >
                     1
                   </Box>
-                  Quoted cost is the best rate available. Final cost may vary
-                  based on gender, health status, and tobacco/nicotine use.
-                </Typography>
+                  {requirementText("home.quote.quoted-cost-is-the-best-rate-available-final-cost-may-vary-based-on-gender-healt")}</Typography>
               </>
             )}
           </Stack>
@@ -758,10 +757,7 @@ export default function QuoteCalculator({
                   totalSuffix={rateSuffix}
                   disclaimer={
                     <>
-                      <sup>1</sup> Quoted cost is the best rate available.
-                      Final cost may vary based on gender, health status, and
-                      tobacco/nicotine use.
-                    </>
+                      <sup>1</sup> {requirementText("home.quote.quoted-cost-is-the-best-rate-available-final-cost-may-vary-based-on-gender-healt")}</>
                   }
                 />
               )}
@@ -784,8 +780,7 @@ export default function QuoteCalculator({
                 onClick={handleApply}
                 sx={{ mt: 1, display: displayMode === "inline" ? "none" : undefined }}
               >
-                Apply for coverage
-              </Button>
+                {requirementText("home.quote.apply-for-coverage")}</Button>
             </Stack>
           )}
 
@@ -809,7 +804,7 @@ export default function QuoteCalculator({
               onClick={inlineStep === 2 ? handleApply : handleInlineContinue}
               disabled={inlineStep === 2 && (productsLoading || allProductsIneligible)}
             >
-              {inlineStep === 2 ? "Apply for coverage" : "Continue"}
+              {inlineStep === 2 ? requirementText("home.quote.apply-for-coverage") : "Continue"}
             </Button>
           </Stack>
         )}
@@ -829,15 +824,13 @@ export default function QuoteCalculator({
             variant="overline"
             sx={{ color: "primary.main", fontWeight: 800, letterSpacing: 1.1 }}
           >
-            Get an instant quote
-          </Typography>
+            {requirementText("home.quote-section.title")}</Typography>
           <Typography
             variant="body2"
             color="text.secondary"
             aria-live="polite"
           >
-            Step {inlineStep + 1} of 3
-          </Typography>
+            {requirementText("home.quote.step")}{inlineStep + 1} {requirementText("home.quote.of-3")}</Typography>
         </Stack>
         <Box
           sx={{

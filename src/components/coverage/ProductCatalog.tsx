@@ -1,3 +1,5 @@
+import { requirementText } from "../../domain/requirementContent";
+import { requirementCoverageControl } from "../../domain/requirementFields";
 import { combineRateDisplays, rateDisplayForAmount, type RateDisplayState } from '../../domain/rateDisplay';
 import { orderCoveragePresentation } from "../../domain/coveragePresentation";
 import EstimatedRate from "./EstimatedRate";
@@ -42,8 +44,7 @@ import ProductCostBreakdown, {
 } from "./ProductCostBreakdown";
 import {
   getDisplayedPremium,
-  getBenefitAmountLabel,
-} from "../../utils/coverageDisplay";
+  } from "../../utils/coverageDisplay";
 import { baseMonthlyPremium, riderMonthlyPremium } from "../../domain/pricing";
 
 type ResolvedCoverage = import("../../domain/coverage").CoverageDefinition & { featured: boolean };
@@ -85,7 +86,7 @@ function collectBreakdownRiderItems({
     ) {
       const childLabel =
         breakdownConfig?.childApplicantRider?.label ??
-        "Child applicant coverage";
+        requirementText("coverage.rider.child-fallback");
       const childAmount = toMonthlyAmount(
         breakdownConfig?.childApplicantRider?.amount,
       );
@@ -126,7 +127,7 @@ function collectBreakdownRiderItems({
   }));
 }
 
-const applicantCheckboxLabels = { member: "You", spouse: "Your Spouse", child: "Your Child(ren)" };
+const applicantCheckboxLabels = { member: requirementText("people.self"), spouse: requirementText("people.spouse"), child: requirementText("people.child") };
 
 export type ProductPresentation = {
   productNames?: Record<string, string>;
@@ -262,10 +263,11 @@ export default function ProductCatalog(props: ProductCatalogProps) {
 
   const additionalCoverageWarningText =
     additionalCoverageWarningMode === "applyForTotal"
-      ? "If you're increasing your current coverage, enter the total amount of coverage you want, including the coverage you already have."
-      : "If you already have coverage and want to increase it, apply for only the additional coverage amount you want.";
+      ? requirementText("coverage.increase.total-note")
+      : requirementText("coverage.increase.additional-note");
 
-  const categoryDisplayOrder = orderCoveragePresentation(categoryProducts, coverageConfig, presentation.featuredProduct ?? null).categories;
+  const orderedPresentation = orderCoveragePresentation(categoryProducts, coverageConfig, presentation.featuredProduct ?? null);
+  const categoryDisplayOrder = orderedPresentation.categories;
   const orderedCategories = [...selectedCategories].sort((a, b) => categoryDisplayOrder.indexOf(a) - categoryDisplayOrder.indexOf(b));
 
   if (selectedCategories.length === 0 || !showProducts) return null;
@@ -280,9 +282,7 @@ export default function ProductCatalog(props: ProductCatalogProps) {
         aria-live="polite"
       >
         <CircularProgress size={32} aria-hidden />
-        <Typography variant="body2" color="text.secondary">
-          Loading your coverage options…
-        </Typography>
+        <Typography variant="body2" color="text.secondary">{requirementText("coverage.product-catalog.loading-your-coverage-options")}</Typography>
       </Stack>
     );
   }
@@ -308,9 +308,7 @@ export default function ProductCatalog(props: ProductCatalogProps) {
   return (
     <>
       {/* Section header */}
-      <Typography variant="h5" sx={{ mb: 2 }}>
-        Your eligible coverage options:
-      </Typography>
+      <Typography variant="h5" sx={{ mb: 2 }}>{requirementText("coverage.product-catalog.your-eligible-coverage-options")}</Typography>
 
       {/* QuickDecision note */}
       {hasQdCategorySelected && <QuickDecisionInfoBox />}
@@ -349,15 +347,13 @@ export default function ProductCatalog(props: ProductCatalogProps) {
                         )}
                         icon={CategoryIcon as any}
                       />
-                      <Alert severity="warning">
-                        Based on your answers, you are not eligible for{" "}
-                        {category.label} coverage at this time.
-                      </Alert>
+                      <Alert severity="warning">{requirementText("coverage.product-catalog.based-on-your-answers-you-are-not-eligible")}{" "}
+                        {category.label}{requirementText("coverage.product-catalog.coverage-at-this-time")}</Alert>
                     </Stack>
                   );
                 }
 
-                const productsInCategory = categoryProducts.filter(
+                const productsInCategory = orderedPresentation.products.filter(
                   (c) => c.categoryId === categoryId && getVisibleApplicants(c.applicants, c.id).some(applicant => getCoverageBehavior?.(c, applicant).eligibility !== "ineligible"),
                 );
                 if (productsInCategory.length === 0) return null;
@@ -435,21 +431,14 @@ export default function ProductCatalog(props: ProductCatalogProps) {
                     "& .MuiAlert-message": { width: "100%" },
                   }}
                 >
-                  <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                    You are not eligible for any coverage options
-                  </Typography>
-                  <Typography variant="body2" sx={{ mb: 1 }}>
-                    Based on your answers, you are not currently eligible for
-                    any available coverage. Please contact us for assistance.
-                  </Typography>
+                  <Typography variant="subtitle2" sx={{ mb: 1 }}>{requirementText("coverage.product-catalog.you-are-not-eligible-for-any-coverage-options")}</Typography>
+                  <Typography variant="body2" sx={{ mb: 1 }}>{requirementText("coverage.product-catalog.based-on-your-answers-you-are-not-currently")}</Typography>
                   {activeClient.support.phoneDisplay && (
-                    <Typography variant="body2">
-                      Phone: {activeClient.support.phoneDisplay}
+                    <Typography variant="body2">{requirementText("coverage.product-catalog.phone")}{activeClient.support.phoneDisplay}
                     </Typography>
                   )}
                   {activeClient.support.email && (
-                    <Typography variant="body2">
-                      Email: {activeClient.support.email}
+                    <Typography variant="body2">{requirementText("coverage.product-catalog.email")}{activeClient.support.email}
                     </Typography>
                   )}
                 </Alert>
@@ -544,7 +533,7 @@ export function ProductCard({
   ).filter(applicant => getCoverageBehavior?.(coverage, applicant).eligibility !== "ineligible");
   const currentApplicants = productApplicants[coverage.id] ?? [];
   const hasAnyApplicantSelected = currentApplicants.length > 0;
-  const amountLabel = coverage.options.find(option => option.id === "amount")?.label ?? getBenefitAmountLabel(coverage.categoryId);
+  const amountLabel = requirementCoverageControl("coverage-amount").label;
   const rateSuffix = rateFrequency === "annual" ? "/yr" : "/mo";
   const isMultiApplicant = visibleApplicants.length > 1;
 
@@ -566,7 +555,7 @@ export function ProductCard({
   });
 
   const policyFeeLabel =
-    breakdownConfig?.policyFee?.label ?? "Non-member policy fee";
+    breakdownConfig?.policyFee?.label ?? requirementText("coverage.policy-fee");
   const policyFeeAmount = toMonthlyAmount(breakdownConfig?.policyFee?.amount);
   const shouldShowBreakdown =
     hasAnyApplicantSelected &&
@@ -718,12 +707,12 @@ export function ProductCard({
 
               {behavior?.messages.filter(message => message !== residencyExclusionDiagnostic).map(message => <Alert key={message} severity="warning" sx={{ mb: 1 }}>{message}</Alert>)}
               {behavior?.notices.map(notice => <Alert key={notice} severity="info" sx={{ mb: 1 }}>{notice}</Alert>)}
-              {behavior?.underwriting.status === "unresolved" && <Alert severity="warning">Underwriting requirements for this selection are unresolved. Contact support before continuing.</Alert>}
+              {behavior?.underwriting.status === "unresolved" && <Alert severity="warning">{requirementText("coverage.product-catalog.underwriting-requirements-for-this-selection-are-unresolved-contact")}</Alert>}
               {/* Benefit amount & cost */}
               <Stack spacing={1.5} sx={{ mt: 1.5 }}>
                 <ControlledFieldRenderer
-                  field={{ id: `${key}-amount`, label: amountLabel, inputType: "dropdown", options: [
-                    ...standaloneOptions.map(rider => ({ value: `rider-only:${rider.id}`, label: `$0 - Applying for ${rider.name} only` })),
+                  field={{ ...requirementCoverageControl("coverage-amount", applicantId), id: `${key}-amount`, label: amountLabel, disabled: behavior?.amountControl?.locked, options: [
+                    ...standaloneOptions.map(rider => ({ value: `rider-only:${rider.id}`, label: requirementText("coverage.rider.only-label", { rider: rider.name }) })),
                     ...choices.filter(amount => amount !== 0 || !standaloneOptions.length).map(amount => ({ value: String(amount), label: formatUSD(amount, 0) })),
                   ] }}
                   value={String(selectValue)}
@@ -735,7 +724,7 @@ export function ProductCard({
                 />
                 <Box sx={{ pt: 1.5 }}>
                   <ControlledFieldRenderer
-                    field={{ id: `${key}-selected`, label: "Add coverage", inputType: "checkbox", disabled: !isSelected && applicantId === "child" && behavior?.selectable === false }}
+                    field={{ ...requirementCoverageControl("add-coverage", applicantId), id: `${key}-selected`, disabled: !isSelected && applicantId === "child" && behavior?.selectable === false }}
                     value={isSelected}
                     onChange={() => onToggleApplicant(coverage.id, applicantId)}
                   />
@@ -750,9 +739,9 @@ export function ProductCard({
                         coverage.categoryId === "OO") && (
                         <ControlledFieldRenderer
                           field={{
-                            id: `${applicantOptionKey}-waiting-period`, label: "Waiting Period", inputType: "dropdown",
+                            ...requirementCoverageControl("waiting-period", applicantId === "child" ? "member" : applicantId), id: `${applicantOptionKey}-waiting-period`,
                             disabled: isRiderOnly || !!behavior?.waitingPeriod.requiredValue, options: waitingPeriodOptions,
-                            helperText: "The number of consecutive days you must be totally disabled by a covered illness or injury and not gainfully employed in any occupation before benefits commence. Coverage with a longer waiting period is less expensive.",
+                            helperText: requirementCoverageControl("waiting-period").helperText,
                           }}
                           value={behavior?.waitingPeriod.requiredValue ?? storedWaitingPeriods[applicantOptionKey] ?? storedWaitingPeriods[coverage.id] ?? waitingPeriodOptions[0].value}
                           onChange={value => onWaitingPeriodChange(coverage.id, String(value), applicantId)}
@@ -765,10 +754,10 @@ export function ProductCard({
                       maxBenefitPeriodOptions && maxBenefitPeriodOptions.length > 0 && (
                         <ControlledFieldRenderer
                           field={{
+                            ...requirementCoverageControl("benefit-option", applicantId === "child" ? "member" : applicantId),
                             id: `${applicantOptionKey}-max-benefit-period`,
-                            label: coverage.categoryId === "DI" ? "Benefit Option" : "Maximum Benefit Period", inputType: "dropdown",
                             disabled: isRiderOnly || !!behavior?.benefitPeriod.requiredValue, options: maxBenefitPeriodOptions,
-                            helperText: coverage.categoryId === "OO" ? "The maximum length of time Office Overhead benefits will be paid for eligible business expenses while disabled." : undefined,
+                            helperText: coverage.categoryId === "OO" ? requirementText("coverage.product-catalog.the-maximum-length-of-time-office-overhead-benefits") : undefined,
                           }}
                           value={behavior?.benefitPeriod.requiredValue ?? storedMaxBenefitPeriods[applicantOptionKey] ?? storedMaxBenefitPeriods[coverage.id] ?? maxBenefitPeriodOptions[0].value}
                           onChange={value => onMaxBenefitPeriodChange(coverage.id, String(value), applicantId)}
@@ -783,9 +772,7 @@ export function ProductCard({
                     <Typography
                       variant="body2"
                       sx={{ fontWeight: 700, mb: 1 }}
-                    >
-                      Optional Benefit(s)
-                    </Typography>
+                    >{requirementText("coverage.product-catalog.optional-benefit-s")}</Typography>
                     <Stack spacing={1}>
                       {coverage.riders
                         .filter(
@@ -811,7 +798,7 @@ export function ProductCard({
                               rider.coverageAmounts && (
                                 <ControlledFieldRenderer
                                   field={{
-                                    id: `${riderKey}-amount`, label: rider.amountLabel ?? "Rider Benefit Amount", inputType: "dropdown",
+                                    ...requirementCoverageControl("rider-amount"), id: `${riderKey}-amount`, label: rider.amountLabel ?? requirementCoverageControl("rider-amount").label,
                                     disabled: isRiderOnly && standalone?.id !== rider.id,
                                     options: [...(rider.included || rider.dependentApplicant || isRiderOnly || options.configured ? [] : [0]), ...options.choices].map(amount => ({ value: String(amount), label: formatUSD(amount, 0) })),
                                   }}
@@ -829,11 +816,7 @@ export function ProductCard({
 
                 {/* Message when amount is $0 */}
                 {isSelected && hasAmountSelection && currentAmount === 0 && !isRiderOnly && (
-                  <Alert severity="info" icon={false} sx={{ mt: 1 }}>
-                    You have selected $0 for this coverage. This means you are
-                    not applying for this product. Please ensure your selections
-                    look correct.
-                  </Alert>
+                  <Alert severity="info" icon={false} sx={{ mt: 1 }}>{requirementText("coverage.product-catalog.you-have-selected-0-for-this-coverage-this")}</Alert>
                 )}
 
                 {/* Estimated cost */}
@@ -848,7 +831,7 @@ export function ProductCard({
                     <EstimatedRate
                       display={getRateDisplay?.(coverage.id, applicantId) ?? (ratePresentation?.referenceTable ? { status: 'reference-table', table: ratePresentation.referenceTable } : ratePresentation?.rateArea === 'hidden' ? { status: 'hidden' } : rateDisplayForAmount(displayedPremium))}
                       amount={displayedPremium} suffix={rateSuffix} isCalculating={isCalculatingRate || frequencyCalculating}
-                      label={<>Est. cost<sup>1</sup>:</>} appearance="product"
+                      label={<>{requirementText("coverage.estimated-cost")}<sup>1</sup>:</>} appearance="product"
                     />
                   </Stack>
                 )}

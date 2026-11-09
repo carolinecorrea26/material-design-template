@@ -2,9 +2,10 @@ import { Stack, Typography } from '@mui/material';
 import BrowseTable from '../../../components/docs/BrowseTable';
 import type { LibraryCatalog } from '../../../services/libraryCatalogService';
 import { useLibraryCatalog } from './LibraryCatalogContext';
+import { withFreshStartCatalog } from '../../../domain/freshStartCatalog';
 
 export function urlParameterRows(catalog: LibraryCatalog, siteKey: string) {
-  const { data } = catalog;
+  const data = withFreshStartCatalog(catalog.data);
   if (siteKey !== 'all' && !data.sites.some(row => row.key === siteKey)) return [];
   return data.urlParameters.map(parameter => {
     const assignments = data.siteUrlParameters.filter(row => row.urlParameterKey === parameter.key && (siteKey === 'all' || row.siteKey === siteKey));

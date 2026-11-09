@@ -1,0 +1,214 @@
+{
+  "states": {
+    "404": {
+      "actions": [
+        "home",
+        "resume"
+      ],
+      "placement": "page",
+      "severity": "error",
+      "icon": "not-found",
+      "content": {
+        "title": "recovery.404.title",
+        "message": "recovery.404.message",
+        "guidance": "recovery.404.guidance"
+      }
+    },
+    "500": {
+      "actions": [
+        "resume",
+        "start-new"
+      ],
+      "placement": "page",
+      "severity": "error",
+      "icon": "error",
+      "content": {
+        "title": "recovery.500.title",
+        "message": "recovery.500.message",
+        "guidance": "recovery.500.guidance"
+      }
+    },
+    "session-expired": {
+      "actions": [
+        "resume",
+        "start-new"
+      ],
+      "placement": "page",
+      "severity": "error",
+      "icon": "expired",
+      "content": {
+        "title": "recovery.session-expired.title",
+        "message": "recovery.session-expired.message",
+        "guidance": "recovery.session-expired.guidance"
+      }
+    },
+    "technical-error": {
+      "actions": [
+        "resume",
+        "start-new"
+      ],
+      "placement": "page",
+      "severity": "error",
+      "icon": "error",
+      "content": {
+        "title": "recovery.technical-error.title",
+        "message": "recovery.technical-error.message",
+        "guidance": "recovery.technical-error.guidance"
+      }
+    },
+    "maintenance": {
+      "actions": [],
+      "placement": "page",
+      "severity": "info",
+      "icon": "maintenance",
+      "content": {
+        "title": "recovery.maintenance.title",
+        "message": "recovery.maintenance.message",
+        "guidance": "recovery.maintenance.guidance"
+      }
+    },
+    "application-unavailable": {
+      "actions": [
+        "resume",
+        "start-new"
+      ],
+      "placement": "page",
+      "severity": "error",
+      "icon": "unavailable",
+      "content": {
+        "title": "recovery.application-unavailable.title",
+        "message": "recovery.application-unavailable.message",
+        "guidance": "recovery.application-unavailable.guidance"
+      }
+    },
+    "outcome-unknown": {
+      "actions": [],
+      "placement": "page",
+      "severity": "warning",
+      "icon": "error",
+      "content": {
+        "title": "recovery.outcome-unknown.title",
+        "message": "recovery.outcome-unknown.message",
+        "guidance": "recovery.outcome-unknown.guidance"
+      }
+    },
+    "validation": {
+      "actions": [],
+      "placement": "field",
+      "severity": "error",
+      "icon": "error",
+      "content": {
+        "title": "recovery.validation.title",
+        "message": "recovery.validation.message",
+        "guidance": "recovery.validation.guidance"
+      }
+    },
+    "offline": {
+      "actions": [],
+      "placement": "alert",
+      "severity": "warning",
+      "icon": "error",
+      "content": {
+        "title": "recovery.offline.title",
+        "message": "recovery.offline.message",
+        "guidance": "recovery.offline.guidance"
+      }
+    },
+    "save-failed": {
+      "actions": [
+        "retry"
+      ],
+      "placement": "alert",
+      "severity": "error",
+      "icon": "error",
+      "content": {
+        "title": "recovery.save-failed.title",
+        "message": "recovery.save-failed.message",
+        "guidance": "recovery.save-failed.guidance"
+      }
+    },
+    "save-conflict": {
+      "actions": [],
+      "placement": "alert",
+      "severity": "warning",
+      "icon": "error",
+      "content": {
+        "title": "recovery.save-conflict.title",
+        "message": "recovery.save-conflict.message",
+        "guidance": "recovery.save-conflict.guidance"
+      }
+    },
+    "processing-pending": {
+      "actions": [],
+      "placement": "status",
+      "severity": "info",
+      "icon": "pending",
+      "content": {
+        "title": "recovery.processing-pending.title",
+        "message": "recovery.processing-pending.message",
+        "guidance": "recovery.processing-pending.guidance"
+      }
+    },
+    "processing-timeout": {
+      "actions": [
+        "resume"
+      ],
+      "placement": "alert",
+      "severity": "warning",
+      "icon": "pending",
+      "content": {
+        "title": "recovery.processing-timeout.title",
+        "message": "recovery.processing-timeout.message",
+        "guidance": "recovery.processing-timeout.guidance"
+      }
+    },
+    "processing-complete": {
+      "actions": [],
+      "placement": "status",
+      "severity": "success",
+      "icon": "complete",
+      "content": {
+        "title": "recovery.processing-complete.title",
+        "message": "recovery.processing-complete.message",
+        "guidance": "recovery.processing-complete.guidance"
+      }
+    }
+  },
+  "codeStates": {
+    "PAGE_NOT_FOUND": 404,
+    "PAGE_LOAD_FAILED": "technical-error",
+    "SESSION_EXPIRED": "session-expired",
+    "TECHNICAL_ERROR": "technical-error",
+    "MAINTENANCE": "maintenance",
+    "VALIDATION_FAILED": "validation",
+    "OFFLINE": "offline",
+    "SAVE_FAILED": "save-failed",
+    "SAVE_CONFLICT": "save-conflict",
+    "APPLICATION_UNAVAILABLE": "application-unavailable",
+    "OPERATION_PENDING": "processing-pending",
+    "OPERATION_TIMED_OUT": "processing-timeout",
+    "OUTCOME_UNKNOWN": "outcome-unknown",
+    "OPERATION_COMPLETE": "processing-complete"
+  },
+  "actions": {
+    "home": {
+      "label": "recovery.action.home",
+      "page": "home"
+    },
+    "resume": {
+      "label": "recovery.action.resume",
+      "page": "resume"
+    },
+    "start-new": {
+      "label": "recovery.action.start-new",
+      "page": "home"
+    },
+    "retry": {
+      "label": "recovery.action.retry"
+    },
+    "payment": {
+      "label": "recovery.action.payment",
+      "page": "payment"
+    }
+  }
+}

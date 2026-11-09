@@ -1,6 +1,42 @@
 {
   "page": "session-expired",
   "components": [
-    { "type": "session-expired" }
-  ]
+    {
+      "type": "ApplicationErrorState"
+    }
+  ],
+  "definition": {
+    "id": "session-expired",
+    "path": "/session-expired",
+    "type": "error",
+    "displayName": "Session Expired",
+    "flow": "utility",
+    "healthGate": false
+  },
+  "position": 33,
+  "layout": {
+    "sections": {}
+  },
+  "content": {
+    "wording": [
+      "recovery.session-expired.title",
+      "recovery.session-expired.message",
+      "recovery.session-expired.guidance"
+    ],
+    "actions": [
+      "recovery.action.home",
+      "recovery.action.resume",
+      "recovery.action.start-new",
+      "recovery.action.retry",
+      "recovery.action.payment"
+    ],
+    "contextual": [
+      "recovery.payment.failed",
+      "recovery.submission.failed",
+      "recovery.payment.guidance",
+      "recovery.submission.guidance",
+      "recovery.operation.unknown",
+      "recovery.page.failed"
+    ]
+  }
 }

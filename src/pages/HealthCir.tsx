@@ -1,3 +1,4 @@
+import { requirementText } from "../domain/requirementContent";
 import HealthInformationHelp from "../components/health/HealthInformationHelp";
 import { Alert } from "@mui/material";
 import FormRoutePage from "../app/RoutePage";
@@ -17,6 +18,6 @@ export default function HealthCir() {
     const entries = library ? (["self", "spouse"] as const)
       .filter(applicant => applicantParticipatesInPage("health-cir", applicant, watchedValues))
       .flatMap(applicant => configuredHealthQuestionEntries({ questionnaire: configuredHealthQuestionnaire(library.site, "health-cir", applicant, watchedValues), applicant, control, errors })) : [];
-    return entries.length ? <HealthQuestionList values={watchedValues} entries={entries} /> : <Alert severity="error">Unable to load health questions. Please try again.</Alert>;
+    return entries.length ? <HealthQuestionList values={watchedValues} entries={entries} /> : <Alert severity="error">{requirementText("application.ui.unable-to-load-health-questions-please-try-again")}</Alert>;
   }}</FormRoutePage>;
 }

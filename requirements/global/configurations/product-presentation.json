@@ -1,0 +1,28 @@
+{
+  "configurations": [
+    {
+      "id": "category-order",
+      "name": "Category order",
+      "status": "confirmed",
+      "type": "string-list",
+      "format": "category-code",
+      "default": ["LI", "AD", "DI", "OO", "SH"],
+      "source": "Global template configuration coverages.categoryOrder; effective Sites may override. Shared across every category/product listing; featured_prod takes precedence. src/domain/coveragePresentation.ts"
+    },
+    {
+      "id": "product-order",
+      "name": "Product order",
+      "status": "confirmed",
+      "type": "string-list",
+      "format": "product-id",
+      "default": [
+        "li-term", "li-group-term", "li-10yr", "li-15yr", "li-20yr", "li-50plus", "li-preferred",
+        "li-add", "li-premier-accident",
+        "di-ltd", "di-ltd-plus", "di-mtd", "di-short-term", "di-step-rated", "di-level-rated",
+        "oo-professional", "oo-office-overhead",
+        "sh-critical-illness", "sh-hospital-money", "sh-hospital-income"
+      ],
+      "source": "Established global template order from src/domain/coveragePresentation.ts and src/config/coverages/index.ts; preserved registered-product sequence, now explicit rather than inferred from display names. Effective-site productOrder overrides this list within categories; featured_prod takes precedence. Unlisted products retain their incoming order."
+    }
+  ]
+}

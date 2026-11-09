@@ -1,4 +1,4 @@
-import { withRequirementPageFields } from "../../../domain/requirementFields";
+import { withFreshStartCatalog } from "../../../domain/freshStartCatalog";
 import { resolveStoredFieldSurfaces } from "../../../domain/fieldSurfaces";
 import { resolveStoredFieldCollections } from "../../../domain/fieldCollections";
 import type { LibraryCatalog } from "../../../services/libraryCatalogService";
@@ -26,19 +26,19 @@ export const storedDomains: Record<string, Array<[SnapshotTable, string]>> = {
 };
 export type StoredRow = Record<string, unknown> & { id: string; key?: string };
 function orderedPages(catalog: LibraryCatalog, siteKey: string) {
-  return resolvePageCatalog(catalog.data, siteKey === "all" ? undefined : siteKey).map((row, index) => ({ ...row, sequence: index + 1 }));
+  return resolvePageCatalog(withFreshStartCatalog(catalog.data, siteKey === "all" ? undefined : siteKey), siteKey === "all" ? undefined : siteKey).map((row, index) => ({ ...row, sequence: index + 1 }));
 }
 /** All Sites shows the catalog; a selected Site shows only its enabled pages. */
 export function storedApplicationPageRows(catalog: LibraryCatalog, siteKey: string) {
   if (siteKey !== "all" && !catalog.data.sites.some(site => site.key === siteKey)) return [];
   const labels = { application: "Application", resume: "Resume", advisor: "Advisor", utility: "Utility", internal: "Internal" };
-  return resolvePageCatalog(catalog.data, siteKey === "all" ? undefined : siteKey).filter(row => row.definition.flow !== "internal" && (siteKey === "all" || row.enabled)).map(row => ({
+  return resolvePageCatalog(withFreshStartCatalog(catalog.data, siteKey === "all" ? undefined : siteKey), siteKey === "all" ? undefined : siteKey).filter(row => row.definition.flow !== "internal" && (siteKey === "all" || row.enabled)).map(row => ({
     ...row, flow: labels[row.definition.flow],
     route: row.definition.path, requirement: siteKey === "all" || row.definition.flow !== "application" && row.enabled ? "—" : row.requirement ?? "Not configured",
   }));
 }
 export function storedLibraryRows(catalog: LibraryCatalog, table: SnapshotTable, siteKey: string): StoredRow[] {
-  const data = catalog.data;
+  const data = withFreshStartCatalog(catalog.data, siteKey === "all" ? undefined : siteKey);
   const site = data.sites.find(site => site.key === siteKey);
   let rows = data[table] as unknown as StoredRow[];
   if (siteKey === "all") return table === "pages" ? orderedPages(catalog, siteKey) : rows;
@@ -69,7 +69,7 @@ export function storedLibraryRows(catalog: LibraryCatalog, table: SnapshotTable,
   return rows;
 }
 export function childCollection(catalog: LibraryCatalog, siteKey: string) {
-  const data = catalog.data;
+  const data = withFreshStartCatalog(catalog.data, siteKey === "all" ? undefined : siteKey);
   const section = data.pageSections.find(row => row.definition.collectionName === "children");
   const resolved = siteKey === "all" ? null : resolveEffectiveSite(data, siteKey);
   const setting = resolved?.configuration.configurations.filter(row => data.configurationDefinitions.find(def => def.key === row.key)?.definition.path?.join(".") === "applicantExperience").at(-1);
@@ -92,7 +92,7 @@ export type StoredFieldRow = LibraryCatalog["data"]["fields"][number] & StoredRo
 
 /** One field row per page: scoped additions and definitions belong to that page. */
 export function storedFieldRows(catalog: LibraryCatalog, siteKey: string): StoredFieldRow[] {
-  const data = catalog.data;
+  const data = withFreshStartCatalog(catalog.data, siteKey === "all" ? undefined : siteKey);
   const collection = childCollection(catalog, siteKey);
   const resolved = siteKey === "all" ? null : resolveEffectiveSite(data, siteKey);
   const definitions = new Map(data.fields.map(field => [field.key, field]));
@@ -100,7 +100,7 @@ export function storedFieldRows(catalog: LibraryCatalog, siteKey: string): Store
   for (const page of storedLibraryRows(catalog, "pages", siteKey)) {
     const pageKey = String(page.key);
     const savedPage = resolved?.configuration.pages.find(row => row.key === pageKey);
-    const effectivePage = savedPage ? { ...savedPage, fields: withRequirementPageFields(pageKey, savedPage.fields, siteKey) } : undefined;
+    const effectivePage = savedPage;
     const sections = data.pageSections.filter(section => section.pageKey === pageKey).sort((a, b) => a.position - b.position);
     const baseFields = data.pageFields.filter(row => row.pageKey === pageKey).sort((a, b) => a.position - b.position);
     const sectionFields = data.pageSectionFields.filter(row => sections.some(section => section.key === row.sectionKey));
@@ -113,9 +113,9 @@ export function storedFieldRows(catalog: LibraryCatalog, siteKey: string): Store
       for (const field of collection.fields) if (!keys.includes(field.key)) keys.push(field.key);
     }
     for (const [index, key] of keys.entries()) {
-      const field = definitions.get(key);
-      if (!field) continue;
       const effective = effectivePage?.fields.find(row => row.key === key);
+      const field = definitions.get(key) ?? (effective ? { id: `requirements:${pageKey}:${key}`, key, position: index, definition: effective.definition, sourceReference: 'requirements/parked/field-details.json' } : undefined);
+      if (!field) continue;
       if (effective && !effective.included) continue;
       const sectionPlacement = sectionFields.find(row => row.fieldKey === key);
       const section = sections.find(row => row.key === sectionPlacement?.sectionKey);

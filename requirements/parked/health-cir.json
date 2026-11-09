@@ -1,6 +1,33 @@
 {
   "page": "health-cir",
   "components": [
-    { "type": "health-cir" }
-  ]
+    {
+      "type": "health-cir"
+    }
+  ],
+  "definition": {
+    "id": "health-cir",
+    "path": "/health-cir",
+    "type": "form",
+    "groupId": "health",
+    "flow": "application",
+    "healthGate": true,
+    "displayName": "Health CIR"
+  },
+  "position": 13,
+  "fieldBindings": [],
+  "looseFields": [],
+  "layout": {
+    "sections": {}
+  },
+  "content": {
+    "wording": [
+      "page.health-cir.title",
+      "page.health-cir.subhead",
+      "page.health-cir.nav-title"
+    ],
+    "runtime": [
+      "application.ui.unable-to-load-health-questions-please-try-again"
+    ]
+  }
 }

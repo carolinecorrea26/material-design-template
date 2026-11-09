@@ -1,90 +1,86 @@
 # Membership (ASCE)
 
-The pilot page, built end to end: sections, fields and content.
+Status: complete for the reviewed ASCE scope. Coverage is the next application page
+to review; Eligibility has already been reviewed.
 
-| File | Holds |
+Membership is a required form page in Getting started, at `/membership`.
+Its component tree uses the same frame and section structure as Eligibility:
+FormRoutePage, progress, page header/help, page alerts, MembershipStatus and
+MemberInformation in a FieldGroup, AdditionalMembershipInformation, and PageNav.
+
+| Fact | Authoritative requirements |
 |---|---|
-| [global/pages/membership.json](../../requirements/global/pages/membership.json) | The page: its sections and when each shows |
-| [global/fields.json](../../requirements/global/fields.json) | The fields (each says which pages it is on) |
-| [global/content/membership.json](../../requirements/global/content/membership.json) | The words |
-| [sites/asce/pages/membership.json](../../requirements/sites/asce/pages/membership.json) | ASCE: hide Title, turn on Member ID |
-| [sites/asce/fields.json](../../requirements/sites/asce/fields.json) | ASCE: membership question wording, and Membership ID is required |
+| Components | `requirements/parked/membership.json` |
+| Available fields | `requirements/mappings/components/membership.json` |
+| Field definitions and attestation configurations | `requirements/parked/field-details.json` |
+| ASCE field wording, attestation configuration and requiredness | `requirements/parked/sites/asce/fields.json` |
+| ASCE inclusion and page note | `requirements/parked/sites/asce/pages/membership.json` |
+| Rules and workflow applicability | `requirements/mappings/requirements/membership.json` |
+| Member-only browser autofill | `requirements/global/rules/fields.json`; mapped through the shared form wrapper |
+| Membership behavior | `requirements/global/rules/membership.json` |
+| Autosave start | `requirements/global/workflows/application.json` |
+| Nightly abandoned-lead batches | `requirements/global/rules/application.json` |
+| Page wording and note | `requirements/global/content/membership.json` |
 
-**Breadcrumb:** Membership, in the step **Getting started**. **Path:** `/membership`.
-**Title:** Your application for ASCE-sponsored insurance
-**Subhead:** Progress saves as you go, so you can stop anytime and finish later.
-**Help chips:** What are my coverage options? · How does applying work? (The "How much does it cost?" quote chip was removed; see [CHG-003](../../requirements/changelog.json).)
+ASCE selects the shared yes/no membership attestation, with the question “Are you
+a member of the American Society of Civil Engineers?” No immediately displays
+non-member feedback and disables Next. This is the sole field-answer exception
+to normal submission validation. An unanswered question and other invalid inputs
+are reported on submission using the page error alert.
 
-The application record is created on this page and autosave starts. Next is not available when
-the outcome is not eligible.
+Yes reveals required first name, last name, email, phone and phone type, followed
+by required Membership ID under Additional Membership Information. Member ID is
+off by default in the component mapping; ASCE includes it and hides Title. ASCE
+configures digits-only text with a minimum length of six, retaining leading zeroes.
+The shared field remains unrestricted text so other Sites can use alphanumeric IDs.
+Site page include/hide settings control mapped field participation; site field
+overrides control requiredness, labels, options, format, keyboard hints and length limits.
 
-## Two sections
+Browser autocomplete uses authored field tokens for self/member only, wherever
+those fields appear. Date of birth uses `bday`, including on Eligibility and quote
+entry. Spouse and child fields receive autocomplete off. Input type and keyboard
+hints are separate, and suggestions depend on browser availability.
 
-| Section | What it holds | Shown when |
-|---|---|---|
-| **Membership** | The membership question, then the applicant's title, name, email and phone. The name and contact fields wait until the outcome is member or new member. Feedback appears here for an outcome. | always |
-| **Follow-up** | Follow-up questions about membership. None are on by default; a site turns on the ones it uses (here: Membership ID) | the outcome is member or new member |
+ASCE's page note is “Throughout this site you will be referred to as a Member of
+the Civil Engineering profession.” It appears below Membership's header. It no
+longer appears on Eligibility. The prototype, Library content view and Storybook
+resolve the same content key selected by ASCE's page file.
 
-A field can narrow when it shows (for example, only for a new member).
+Successful validated Membership submission and saving starts the saved-application
+and autosave lifecycle. Subsequent successful page submissions save before
+advancing. That milestone makes applicant name, email and phone available for
+abandoned-lead processing. Applications still incomplete at nightly batch
+preparation are included in files for the site's TPA.
 
-## Outcomes
+The initial autosave email is triggered as soon as Membership has been successfully
+validated, submitted and saved. It confirms the start of saved progress. The
+`membership-initial-autosave-email` rule records this requirement only: there is no
+email delivery service and submission does not automatically create a mock email
+preview. Invalid, unsubmitted or unsuccessfully saved pages do not trigger it.
 
-The membership question differs on each site, but each answer means one of three things. The
-sections react to the outcome, never to a site's own answer values.
+Confirmed rules and workflows appear in the Library directly from the requirements
+JSON and its applicability mappings. These lifecycle records do not execute an
+XML export, nightly schedule or TPA transmission.
 
-| Outcome | Meaning |
-|---|---|
-| **member** | An existing member |
-| **new member** | Someone becoming a member as part of applying |
-| **not eligible** | Cannot apply. Next is blocked, and the feedback for this outcome is shown. |
+The runtime now enforces the initial save boundary: only a successful Membership
+submission may create the saved application. Email-containing drafts remain in
+the browser cache; loading, editing, Back, unmount and reload do not submit them
+to the mock save service. After Membership, successful page submissions save
+progress. Restored saved applications retain their existing save identity.
 
-| Site | Question | Answer → outcome |
-|---|---|---|
-| ASCE (the global default) | Are you a member of …? | Yes → member · No → not eligible |
-| WAEPA | Current member, or becoming a new member? | Current → member · New → new member |
+Membership's title, subhead, breadcrumb, loading message, non-member feedback,
+additional-section title and help labels now read from the fresh-start content
+JSON. Its help actions are referenced by the page JSON. The nested Phone Type
+selector reads its mapped field definition through the same loader as other
+Membership fields. Library content and field views, prototype pages and Storybook
+examples share these definitions, even when the older catalog contains different
+copy or options. The reviewed tree describes the structure; React owns rendering.
 
-## Follow-up questions across sites
+## Fresh-start ownership (CHG-026)
 
-Every site's extra membership questions fit in Follow-up. Checked against the current pages:
-
-| Site | Follow-up questions |
-|---|---|
-| ASCE | Membership ID |
-| ABE | Membership ID |
-| AVMA | Veterinary college, year of graduation, occupation |
-| CSEA | Occupation group |
-| NSO | Nurse type (only when the answer is Yes) |
-| WAEPA | Declaration, eligibility category, employer, start date, retired employer, retirement date, associated-member name and ID, active-duty question, referral source (several only for a new member) |
-
-## What ASCE shows
-
-**Status:** *Are you a member of the American Society of Civil Engineers?* Yes / No (required).
-
-**Feedback if No (not eligible):**
-> We're sorry, but only members are eligible to apply for this coverage.
-> **Not yet a member?** You can apply for membership with your association to become eligible
-> for coverage. Contact American Society of Civil Engineers or visit your association's website
-> to learn about membership options and how to join.
-> For more information, visit asceinsurance.com.
-
-**If Yes (member):**
-
-| Section | Field | Type | Required |
-|---|---|---|---|
-| Membership | First Name | Text | Yes |
-| | Last Name | Text | Yes |
-| | Email | Text | Yes |
-| | Phone Number | Text | Yes |
-| Follow-up | Membership ID | Text | Yes |
-
-Email helper text: "Provide a valid email address where you can receive important updates about
-your application." ASCE hides **Title**, which other sites show. Membership ID is the field
-ASCE, ABE and WAEPA each name separately today; it is now one field, `member-id`. It is **not
-required by default** (ABE and WAEPA do not require it); ASCE makes it required.
-
-## Not covered yet
-
-- The component behind each section (Components, parked).
-- Rules such as the membership lookup against the TPA, conditions between fields (WAEPA's
-  attestation choices), and the association-link error some sites use.
-- AMA's membership question (a category, with a spouse case). Not needed for ASCE.
+The page definition, route/order, main and additional field groups and nested phone
+type binding now compile from `parked/membership.json` and its mappings. The shared
+compiler replaces old page structure instead of overlaying saved fields. Header,
+notes and help content use fresh content keys. The superseded authored records and
+legacy Membership page file have been removed; the same projection serves Library,
+prototype and Storybook, including older saved snapshots.

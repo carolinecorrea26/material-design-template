@@ -1,3 +1,4 @@
+import { requirementText } from "../domain/requirementContent";
 import HealthInformationHelp from "../components/health/HealthInformationHelp";
 import QuickDecisionIcon from "../components/coverage/QuickDecisionIcon";
 import FormRoutePage from "../app/RoutePage";
@@ -15,13 +16,13 @@ export default function HealthQd({ loadingTimeoutMs }: { loadingTimeoutMs?: numb
           heading={
             <>
               {content.heading}
-              <sup style={{ fontSize: "0.6em" }}>SM</sup>
+              <sup style={{ fontSize: "0.6em" }}>{requirementText("application.ui.sm")}</sup>
             </>
           }
           body={
             <>
               {content.bodyBeforeMark} {content.heading}
-              <sup style={{ fontSize: "0.6em" }}>SM</sup>
+              <sup style={{ fontSize: "0.6em" }}>{requirementText("application.ui.sm")}</sup>
               {content.bodyAfterMark}
             </>
           }

@@ -1,5 +1,4 @@
 {
   "page": "eligibility",
-  "include": ["full-time-student"],
-  "notes": { "self": "eligibility.note.member-profession" }
+  "include": ["full-time-student"]
 }

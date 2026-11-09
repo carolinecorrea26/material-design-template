@@ -1,3 +1,4 @@
+import { requirementText } from "../../domain/requirementContent";
 import { combineRateDisplays, type RateDisplayState } from '../../domain/rateDisplay';
 import EstimatedRate from "./EstimatedRate";
 import { useMemo, useState } from "react";
@@ -160,20 +161,16 @@ function CoverageCartDrawer({
                 <Typography
                   variant="h6"
                   sx={{ color: isEmpty ? "text.primary" : "success.main" }}
-                >
-                  Coverage added
-                </Typography>
+                >{requirementText("coverage.coverage-cart.coverage-added")}</Typography>
               </>
             ) : (
               <>
                 <ShoppingCartRoundedIcon sx={{ color: "primary.main" }} />
-                <Typography variant="h6" color="text.primary">
-                  Your requested coverage
-                </Typography>
+                <Typography variant="h6" color="text.primary">{requirementText("coverage.coverage-cart.your-requested-coverage")}</Typography>
               </>
             )}
           </Stack>
-          <IconButton aria-label="Close coverage requested" onClick={onClose}>
+          <IconButton aria-label={requirementText("coverage.coverage-cart.close-coverage-requested")} onClick={onClose}>
             <CloseRoundedIcon />
           </IconButton>
         </Box>
@@ -188,8 +185,8 @@ function CoverageCartDrawer({
             }}
           >
             <EmptyState
-              title="No coverage selected yet."
-              body="Your application summary will appear here once you select coverage."
+              title={requirementText("coverage.coverage-cart.no-coverage-selected-yet")}
+              body={requirementText("coverage.coverage-cart.your-application-summary-will-appear-here-once-you")}
             />
           </Box>
         ) : (
@@ -209,7 +206,7 @@ function CoverageCartDrawer({
                       headerAction={
                             <IconButton
                               size="small"
-                              aria-label={`Remove ${coverage.name}`}
+                              aria-label={requirementText("list.remove-label", { label: coverage.name })}
                               onClick={() => setConfirmRemoveId(coverage.id)}
                               sx={{
                                 color: "text.secondary",
@@ -235,10 +232,10 @@ function CoverageCartDrawer({
                                   {hasSelectedAmount ? (
                                     <>
                                       <Stack direction="row" justifyContent="space-between" alignItems="baseline" spacing={1} useFlexGap flexWrap="wrap">
-                                        <Typography variant="caption" color="text.secondary">Requested coverage</Typography>
+                                        <Typography variant="caption" color="text.secondary">{requirementText("coverage.coverage-cart.requested-coverage")}</Typography>
                                         <Typography variant="body2" color="primary" fontWeight={700} sx={{ fontVariantNumeric: 'tabular-nums' }}>{formatUSD(amount, 0)}</Typography>
                                       </Stack>
-                                      {standalone && <Typography variant="caption" color="text.secondary">Applying for {standalone.name} only</Typography>}
+                                      {standalone && <Typography variant="caption" color="text.secondary">{requirementText("coverage.coverage-cart.applying-for")}{standalone.name}{requirementText("coverage.coverage-cart.only")}</Typography>}
                                       {selectedRiders.length > 0 && (
                                         <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
                                           {selectedRiders.map((rider) => (
@@ -258,7 +255,7 @@ function CoverageCartDrawer({
                                       {!ratesSuppressed && display.status !== 'hidden' && (display.status === 'reference-table'
                                         ? <EstimatedRate display={display} />
                                         : <Stack direction="row" justifyContent="space-between" alignItems="baseline" spacing={1} useFlexGap flexWrap="wrap">
-                                            <Typography variant="caption" color="text.secondary">Est. cost<sup>1</sup></Typography>
+                                            <Typography variant="caption" color="text.secondary">{requirementText("coverage.estimated-cost")}<sup>1</sup></Typography>
                                             <EstimatedRate appearance="summary" display={display} amount={monthlyEstimate} suffix="/mo" />
                                           </Stack>)}
                                     </>
@@ -281,9 +278,7 @@ function CoverageCartDrawer({
                                       <InfoRoundedIcon
                                         sx={{ fontSize: 17, color: "text.disabled" }}
                                       />
-                                      <Typography variant="caption" fontWeight={700}>
-                                        Cost calculated after amount selection
-                                      </Typography>
+                                      <Typography variant="caption" fontWeight={700}>{requirementText("coverage.coverage-cart.cost-calculated-after-amount-selection")}</Typography>
                                     </Box>
                                   )}
                                 </Stack>
@@ -303,12 +298,9 @@ function CoverageCartDrawer({
                   variant="outlined"
                   sx={{ backgroundColor: "rgba(255, 152, 0, 0.04)" }}
                 >
-                  <Typography variant="subtitle2">Eligibility concern</Typography>
-                  <Typography variant="body2" sx={{ mt: 0.5 }}>
-                    Based on your answers, you may not be eligible for:{" "}
-                    {ineligibleProducts.join(", ")}. You may still continue with
-                    your other selected coverage.
-                  </Typography>
+                  <Typography variant="subtitle2">{requirementText("coverage.coverage-cart.eligibility-concern")}</Typography>
+                  <Typography variant="body2" sx={{ mt: 0.5 }}>{requirementText("coverage.coverage-cart.based-on-your-answers-you-may-not-be")}{" "}
+                    {ineligibleProducts.join(", ")}{requirementText("coverage.coverage-cart.you-may-still-continue-with-your-other-selected")}</Typography>
                 </Alert>
               )}
 
@@ -330,10 +322,7 @@ function CoverageCartDrawer({
                   totalSuffix="/mo"
                   disclaimer={
                     <>
-                      <sup>1</sup> Quoted cost is the best rate available. Final
-                      cost may vary based on health status, gender, and
-                      tobacco/nicotine use.
-                    </>
+                      <sup>1</sup>{requirementText("coverage.coverage-cart.quoted-cost-is-the-best-rate-available-final")}</>
                   }
                 />
               )}
@@ -346,26 +335,23 @@ function CoverageCartDrawer({
         open={confirmRemoveId != null}
         onClose={() => setConfirmRemoveId(null)}
         maxWidth={400}
-        title="Remove coverage"
+        title={requirementText("coverage.coverage-cart.remove-coverage")}
         role="alertdialog"
         actions={[
           {
-            label: "Remove",
+            label: requirementText("coverage.coverage-cart.remove"),
             onClick: () => handleRemoveCoverage(confirmRemoveId!),
             variant: "contained",
             color: "error",
           },
           {
-            label: "Cancel",
+            label: requirementText("coverage.dialog.dependent.cancel"),
             onClick: () => setConfirmRemoveId(null),
             variant: "text",
           },
         ]}
       >
-        <DialogContentText>
-          Are you sure you want to remove <strong>{confirmCoverageName}</strong>{" "}
-          from your selections?
-        </DialogContentText>
+        <DialogContentText>{requirementText("coverage.coverage-cart.are-you-sure-you-want-to-remove")}<strong>{confirmCoverageName}</strong>{" "}{requirementText("coverage.coverage-cart.from-your-selections")}</DialogContentText>
       </AppModal>
     </>
   );
@@ -424,9 +410,7 @@ function CoverageCartInline({
         <>
           <Stack direction="row" spacing={1} alignItems="center">
             <ShoppingCartRoundedIcon sx={{ color: "primary.main" }} />
-            <Typography variant="subtitle1" fontWeight={700}>
-              Your requested coverage
-            </Typography>
+            <Typography variant="subtitle1" fontWeight={700}>{requirementText("coverage.coverage-cart.your-requested-coverage")}</Typography>
           </Stack>
 
           {(onEditCoverage || onDeleteCoverage) && (
@@ -445,7 +429,7 @@ function CoverageCartInline({
                     {onEditCoverage && (
                       <IconButton
                         size="small"
-                        aria-label={`Edit ${item.name}`}
+                        aria-label={requirementText("list.edit", { label: item.name })}
                         onClick={() => setEditDialogOpen(true)}
                         sx={{ color: "primary.main" }}
                       >
@@ -455,7 +439,7 @@ function CoverageCartInline({
                     {onDeleteCoverage && (
                       <IconButton
                         size="small"
-                        aria-label={`Remove ${item.name}`}
+                        aria-label={requirementText("list.remove-label", { label: item.name })}
                         onClick={() => setDeleteTargetId(item.id)}
                         sx={{
                           color: "text.secondary",
@@ -478,10 +462,7 @@ function CoverageCartInline({
             isCalculating={isAnyCalculating}
             disclaimer={
               <>
-                <sup>1</sup> Quoted cost is the best rate available. Final cost
-                may vary based on gender, health status, and tobacco/nicotine
-                use.
-              </>
+                <sup>1</sup>{requirementText("coverage.coverage-cart.quoted-cost-is-the-best-rate-available-final-2")}</>
             }
           />
 
@@ -501,11 +482,11 @@ function CoverageCartInline({
           onClose={() => setEditDialogOpen(false)}
           maxWidth={480}
           minHeight="auto"
-          title="Edit coverage"
+          title={requirementText("coverage.coverage-cart.edit-coverage")}
           role="alertdialog"
           actions={[
             {
-              label: "Yes",
+              label: requirementText("coverage.coverage-cart.yes"),
               onClick: () => {
                 setEditDialogOpen(false);
                 onEditCoverage();
@@ -513,16 +494,13 @@ function CoverageCartInline({
               variant: "contained",
             },
             {
-              label: "Cancel",
+              label: requirementText("coverage.dialog.dependent.cancel"),
               onClick: () => setEditDialogOpen(false),
               variant: "text",
             },
           ]}
         >
-          <DialogContentText>
-            To edit your coverage, you will be sent back to the coverage page. Do
-            you want to go to the coverage page to make edits?
-          </DialogContentText>
+          <DialogContentText>{requirementText("coverage.coverage-cart.to-edit-your-coverage-you-will-be-sent")}</DialogContentText>
         </AppModal>
       )}
 
@@ -532,11 +510,11 @@ function CoverageCartInline({
           onClose={() => setDeleteTargetId(null)}
           maxWidth={480}
           minHeight="auto"
-          title="Remove coverage"
+          title={requirementText("coverage.coverage-cart.remove-coverage")}
           role="alertdialog"
           actions={[
             {
-              label: "Remove",
+              label: requirementText("coverage.coverage-cart.remove"),
               onClick: () => {
                 if (deleteTargetId) onDeleteCoverage(deleteTargetId);
                 setDeleteTargetId(null);
@@ -545,16 +523,14 @@ function CoverageCartInline({
               color: "error",
             },
             {
-              label: "Cancel",
+              label: requirementText("coverage.dialog.dependent.cancel"),
               onClick: () => setDeleteTargetId(null),
               variant: "text",
             },
           ]}
         >
-          <DialogContentText>
-            Are you sure you want to remove{" "}
-            <strong>{deleteTargetName}</strong> from your selections?
-          </DialogContentText>
+          <DialogContentText>{requirementText("coverage.coverage-cart.are-you-sure-you-want-to-remove")}{" "}
+            <strong>{deleteTargetName}</strong>{requirementText("coverage.coverage-cart.from-your-selections")}</DialogContentText>
         </AppModal>
       )}
     </Stack>

@@ -1,18 +1,55 @@
 {
   "component": "coverage",
   "configurations": [
+    "category-order",
+    "product-order",
+    "coverage-amount-order",
+    "coverage-amount-default-mode",
+    "coverage-amount-default-value",
+    "coverage-amount-locked",
+    "coverage-deduct-inforce-amount",
     "estimated-rate-frequency",
-    "estimated-rate-frequency-toggle"
+    "estimated-rate-frequency-toggle",
+    "coverage-minimum-work-hours",
+    "coverage-minimum-annual-income",
+    "coverage-minimum-age-years",
+    "coverage-maximum-age-years",
+    "coverage-minimum-age-days",
+    "coverage-excluded-states",
+    "coverage-new-application-minimum-amount",
+    "coverage-age-maximum-amount",
+    "coverage-member-benefit-submit-minimum",
+    "coverage-self-employment-question",
+    "coverage-child-requires-member",
+    "coverage-student-maximum-age-years",
+    "coverage-increase-note",
+    "tpa-integration"
   ],
   "rules": [
+    "category-product-presentation-order",
+    "coverage-amount-presentation-defaults",
+    "coverage-url-product-presentation",
+    "coverage-configured-rider-participation",
+    "coverage-configured-benefit-periods",
+    "coverage-child-one-life-plan",
+    "coverage-tpa-inforce-amounts",
     "coverage-category-availability",
     "coverage-question-participation",
-    "coverage-selection-policy"
+    "coverage-selection-policy",
+    "coverage-configured-eligibility",
+    "coverage-configured-residency",
+    "coverage-configured-amount-limits",
+    "coverage-joint-spouse-submit-alert",
+    "coverage-child-member-dependency",
+    "coverage-self-employment-benefits",
+    "coverage-combined-life-submit-maximum",
+    "coverage-tpa-portfolio-access"
   ],
   "presentation": [
     "estimated-rate-states"
   ],
   "workflows": [
+    "coverage-page-stages",
     "coverage-product-reveal",
     "coverage-product-selection"
   ],

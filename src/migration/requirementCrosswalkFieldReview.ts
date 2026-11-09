@@ -1,6 +1,6 @@
 import type { DatabaseSchema } from "../persistence/types";
 import type { CrosswalkRow } from "./requirementCrosswalk";
-import { resolveEffectiveSite } from "../domain/effectiveSite";
+import { resolveSnapshotSite as resolveEffectiveSite } from "../domain/effectiveSite";
 import { standardizedPlacementDecisionKey } from "./standardizedPlacementDecision";
 
 /** A bounded existing-behavior review, not whole-cell adoption. Native field

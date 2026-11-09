@@ -1,5 +1,11 @@
 import type { ConditionId } from "./rules";
 
+let installedFieldDefinitions: ReadonlyMap<string, FieldDefinition> | null = null;
+export function installFieldDefinitions(fields: FieldDefinition[] | null) {
+  installedFieldDefinitions = fields ? new Map(fields.map(field => [field.id, field])) : null;
+}
+export function activeFieldDefinitions() { return installedFieldDefinitions; }
+
 export type FieldOption = {
   value: string;
   label: string;
@@ -218,6 +224,7 @@ export type FieldDefinition = {
   required?: boolean;
   /** Optional authored limit, measured in unformatted characters. */
   maxLength?: number;
+  minLength?: number;
   /** Permit fractional numeric facts, such as years of employment. */
   allowDecimal?: boolean;
   placeholder?: string;
@@ -226,7 +233,7 @@ export type FieldDefinition = {
   optionExclusions?: Array<{ conditionId: ConditionId; values: string[] }>;
   autoComplete?: string;
   inputMode?: "text" | "email" | "tel" | "numeric" | "decimal";
-  format?: "email" | "phone" | "ssn" | "currency" | "percent" | "month-year";
+  format?: "email" | "phone" | "ssn" | "currency" | "percent" | "month-year" | "digits" | "postal-code";
   labelVariant?: "floating" | "standard";
   multiline?: boolean;
   minRows?: number;

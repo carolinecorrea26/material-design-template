@@ -1,33 +1,20 @@
+import { requirementValidationMessage } from "../domain/requirementValidations";
 import { eligibilityIneligibilityMessage } from "../domain/applicantExperience";
 import { getClientPageFields } from "../config/clientFields/getClientPageFields";
-import { useEffect, useRef, useState } from "react";
-import { Alert, Snackbar } from "@mui/material";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useRef, useState } from "react";
 import FormRoutePage from "../app/RoutePage";
 import EligibilitySections from "../app/sections/ConfiguredEligibilitySections";
 import MemberVerification from "../components/verification/MemberVerification";
 import VerificationAddress from "../components/verification/VerificationAddress";
-import { addressFieldNames } from "../components/forms/AddressFields";
+import { resolveMappedFields } from "../domain/requirementFields";
+import { getActiveSite } from "../data";
 import { lookupPrototypeTpa, resolveTpaOutcome, tpaOutcomeValues, type TpaResolution } from "../domain/tpaIntegration";
-import {
-  deriveStateProvinceFromZipOrPostalCode,
-} from "../utils/zipToStateProvince";
 import { useApplicationForm, type ApplicationFormValues } from "../app/ApplicationFormContext";
 import { getActiveClient } from "../config/client/getActiveClient";
 
 export default function Eligibility() {
-  const location = useLocation();
-  const navigate = useNavigate();
   const { setPageValues } = useApplicationForm();
   const client = getActiveClient();
-
-  const resumeLoadedFromRouteState = Boolean(
-    (location.state as { resumeLoaded?: boolean } | null)?.resumeLoaded,
-  );
-
-  const [showResumeLoadedSnackbar, setShowResumeLoadedSnackbar] = useState(
-    resumeLoadedFromRouteState,
-  );
 
   const [memberVerificationOpen, setMemberVerificationOpen] = useState(false);
   const [verificationAddressValues, setVerificationAddressValues] = useState<ApplicationFormValues | null>(null);
@@ -37,11 +24,6 @@ export default function Eligibility() {
   const tpaMemberRef = useRef<TpaResolution>({ existingMember: false, activeCoverage: false });
   // Ref to the hidden form submit button so we can trigger it after modal close.
   const formSubmitRef = useRef<HTMLButtonElement | null>(null);
-
-  useEffect(() => {
-    if (!resumeLoadedFromRouteState) return;
-    navigate(location.pathname, { replace: true, state: {} });
-  }, [location.pathname, navigate, resumeLoadedFromRouteState]);
 
   function handleModalClose(verified: boolean) {
     tpaCompletedRef.current = tpaPendingRef.current;
@@ -58,11 +40,10 @@ export default function Eligibility() {
     <>
       <FormRoutePage
         pageId="eligibility"
-        disableNextButton={values => !!eligibilityIneligibilityMessage(client.applicantExperience, values)}
         validate={(nextValues) => {
           const disqualification = eligibilityIneligibilityMessage(client.applicantExperience, nextValues);
-          if (disqualification) return disqualification;
-          if (client.applicantExperience?.eligibleStatesOnly && !deriveStateProvinceFromZipOrPostalCode(String(nextValues["zip-postal-code"] ?? ""), getClientPageFields("eligibility").find(f => f.id === "state-province")?.options ?? [])) return "The state for this ZIP / Postal Code may not be eligible for coverage.";
+          if (disqualification) return requirementValidationMessage('applicant-ineligible');
+          if (client.applicantExperience?.eligibleStatesOnly && !getClientPageFields("eligibility").find(f => f.id === "state-province")?.options?.some(option => option.value === nextValues['state-province'])) return requirementValidationMessage('eligible-state-required');
           const dependents = Array.isArray(nextValues.dependents)
             ? nextValues.dependents
             : [];
@@ -72,7 +53,7 @@ export default function Eligibility() {
               ? nextValues.children
               : [];
             if (children.length === 0) {
-              return "Please add at least one child or remove child from dependents.";
+              return requirementValidationMessage('child-required');
             }
           }
 
@@ -84,7 +65,7 @@ export default function Eligibility() {
               nextValues["spouse-last-name"] ?? "",
             ).trim();
             if (!spouseFirstName && !spouseLastName) {
-              return "Please add spouse details or remove spouse from dependents.";
+              return requirementValidationMessage('spouse-details-required');
             }
           }
 
@@ -115,7 +96,6 @@ export default function Eligibility() {
       >
         {(props) => (
           <>
-            {eligibilityIneligibilityMessage(client.applicantExperience, props.watchedValues) && <Alert severity="error" sx={{ mb: 2 }}>{eligibilityIneligibilityMessage(client.applicantExperience, props.watchedValues)}</Alert>}
             <EligibilitySections {...props} />
             {/* Hidden submit trigger used by handleModalClose */}
             <button
@@ -130,7 +110,7 @@ export default function Eligibility() {
       </FormRoutePage>
 
       {verificationAddressValues && <VerificationAddress
-        fields={getClientPageFields("contact", verificationAddressValues).filter(field => addressFieldNames.some(id => id === field.id))}
+        fields={resolveMappedFields({ component: "verification-address" }, { siteId: getActiveSite().id, page: "eligibility" })}
         values={verificationAddressValues}
         onContinue={address => {
           setPageValues(address);
@@ -144,21 +124,6 @@ export default function Eligibility() {
         onClose={handleModalClose}
       />
 
-      <Snackbar
-        open={showResumeLoadedSnackbar}
-        autoHideDuration={4000}
-        onClose={() => setShowResumeLoadedSnackbar(false)}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <Alert
-          onClose={() => setShowResumeLoadedSnackbar(false)}
-          severity="success"
-          variant="filled"
-          sx={{ width: "100%" }}
-        >
-          Saved application loaded successfully.
-        </Alert>
-      </Snackbar>
     </>
   );
 }

@@ -1,6 +1,40 @@
 {
   "page": "resume-method",
   "components": [
-    { "type": "resume-method" }
-  ]
+    {
+      "type": "resume-method"
+    }
+  ],
+  "definition": {
+    "id": "resume-method",
+    "path": "/resume-method",
+    "type": "resume",
+    "flow": "resume",
+    "healthGate": false,
+    "displayName": "Resume Method"
+  },
+  "position": 18,
+  "fieldBindings": [
+    "resume-delivery-method"
+  ],
+  "looseFields": [
+    "resume-delivery-method"
+  ],
+  "layout": {
+    "sections": {}
+  },
+  "content": {
+    "wording": [
+      "page.resume-method.title",
+      "page.resume-method.subhead",
+      "page.resume-method.nav-title"
+    ],
+    "runtime": [
+      "application.ui.challenge-failed",
+      "application.ui.choose-how-you-would-like-to-receive-your-verification-code",
+      "application.ui.open-a-valid-link-from-your-resume-request-no-application-has-been-loaded",
+      "application.ui.sending-code",
+      "navigation.next"
+    ]
+  }
 }

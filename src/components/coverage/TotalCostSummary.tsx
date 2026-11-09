@@ -1,3 +1,4 @@
+import { requirementText } from "../../domain/requirementContent";
 import { combineRateDisplays, rateDisplayForAmount, type RateDisplayState } from '../../domain/rateDisplay';
 import { type ReactNode } from "react";
 import {
@@ -91,8 +92,7 @@ export default function TotalCostSummary({
           justifyContent="space-between"
           alignItems="baseline"
         >
-          <Typography variant="subtitle2" fontWeight={700}>
-            Total<sup>1</sup>
+          <Typography variant="subtitle2" fontWeight={700}>{requirementText("coverage.total-cost-summary.total")}<sup>1</sup>
           </Typography>
           <EstimatedRate appearance={rateAppearance} display={totalDisplay} amount={total} suffix={totalSuffix} isCalculating={isCalculating} />
         </Stack>}

@@ -1,0 +1,11 @@
+{
+  "rules": [
+    {
+      "id": "browser-autofill-self-only",
+      "name": "Offer browser autofill for the applicant only",
+      "status": "confirmed",
+      "statement": "Fields with an authored browser autocomplete token offer the browser's saved information when available for self (the member/applicant) only, wherever those fields appear. This includes name, email, phone, addresses and date of birth. Spouse, child and other people's fields must not request the browser owner's saved details. Autocomplete hints are independent of input type and keyboard mode; browser availability does not change requiredness or validation, and autofill is never guaranteed.",
+      "source": "docs/requirements-spec/README.md; src/domain/requirementFields.ts"
+    }
+  ]
+}

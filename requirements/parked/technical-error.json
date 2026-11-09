@@ -1,6 +1,86 @@
 {
   "page": "technical-error",
   "components": [
-    { "type": "technical-error" }
-  ]
+    {
+      "type": "ApplicationErrorState"
+    }
+  ],
+  "definition": {
+    "id": "technical-error",
+    "path": "/technical-error",
+    "type": "error",
+    "displayName": "Technical Error",
+    "flow": "utility",
+    "healthGate": false
+  },
+  "position": 34,
+  "layout": {
+    "sections": {}
+  },
+  "content": {
+    "wording": [
+      "recovery.technical-error.title",
+      "recovery.technical-error.message",
+      "recovery.technical-error.guidance"
+    ],
+    "actions": [
+      "recovery.action.home",
+      "recovery.action.resume",
+      "recovery.action.start-new",
+      "recovery.action.retry",
+      "recovery.action.payment"
+    ],
+    "contextual": [
+      "recovery.payment.failed",
+      "recovery.submission.failed",
+      "recovery.payment.guidance",
+      "recovery.submission.guidance",
+      "recovery.operation.unknown",
+      "recovery.page.failed"
+    ],
+    "sharedStates": [
+      "recovery.404.title",
+      "recovery.404.message",
+      "recovery.404.guidance",
+      "recovery.500.title",
+      "recovery.500.message",
+      "recovery.500.guidance",
+      "recovery.session-expired.title",
+      "recovery.session-expired.message",
+      "recovery.session-expired.guidance",
+      "recovery.technical-error.title",
+      "recovery.technical-error.message",
+      "recovery.technical-error.guidance",
+      "recovery.maintenance.title",
+      "recovery.maintenance.message",
+      "recovery.maintenance.guidance",
+      "recovery.application-unavailable.title",
+      "recovery.application-unavailable.message",
+      "recovery.application-unavailable.guidance",
+      "recovery.outcome-unknown.title",
+      "recovery.outcome-unknown.message",
+      "recovery.outcome-unknown.guidance",
+      "recovery.validation.title",
+      "recovery.validation.message",
+      "recovery.validation.guidance",
+      "recovery.offline.title",
+      "recovery.offline.message",
+      "recovery.offline.guidance",
+      "recovery.save-failed.title",
+      "recovery.save-failed.message",
+      "recovery.save-failed.guidance",
+      "recovery.save-conflict.title",
+      "recovery.save-conflict.message",
+      "recovery.save-conflict.guidance",
+      "recovery.processing-pending.title",
+      "recovery.processing-pending.message",
+      "recovery.processing-pending.guidance",
+      "recovery.processing-timeout.title",
+      "recovery.processing-timeout.message",
+      "recovery.processing-timeout.guidance",
+      "recovery.processing-complete.title",
+      "recovery.processing-complete.message",
+      "recovery.processing-complete.guidance"
+    ]
+  }
 }

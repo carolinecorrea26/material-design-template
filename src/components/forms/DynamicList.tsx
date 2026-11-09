@@ -1,3 +1,4 @@
+import { requirementText } from "../../domain/requirementContent";
 import { useRef, useState } from "react";
 import { Box, Button, DialogContentText } from "@mui/material";
 import AddCircleOutlineRoundedIcon from "@mui/icons-material/AddCircleOutlineRounded";
@@ -94,10 +95,10 @@ export default function DynamicList<T extends Record<string, string>>({
     }
     if (editingIndex !== null) {
       update(editingIndex, { ...savedRows?.[editingIndex], ...item });
-      setStatusMessage(`${label} updated.`);
+      setStatusMessage(requirementText("list.updated", { label: label }));
     } else {
       append(item);
-      setStatusMessage(`${label} added.`);
+      setStatusMessage(requirementText("list.added", { label: label }));
     }
     setShowForm(false);
     reset(defaultFormValues);
@@ -118,8 +119,8 @@ export default function DynamicList<T extends Record<string, string>>({
     if (removeIndex !== null) {
       setStatusMessage(
         removeItemLabel
-          ? `${removeItemLabel} removed.`
-          : `${label} removed.`,
+          ? requirementText("list.removed", { label: removeItemLabel })
+          : requirementText("list.removed", { label: label }),
       );
       remove(removeIndex);
     }
@@ -174,7 +175,7 @@ export default function DynamicList<T extends Record<string, string>>({
           fullWidth
           startIcon={<AddCircleOutlineRoundedIcon />}
         >
-          Add {label}
+          {requirementText("list.add", { label })}
         </Button>
       )}
 
@@ -198,10 +199,10 @@ export default function DynamicList<T extends Record<string, string>>({
         open={showForm}
         onClose={handleCancel}
         maxWidth={600}
-        title={editingIndex !== null ? `Edit ${label}` : `Add ${label}`}
+        title={editingIndex !== null ? requirementText("list.edit", { label: label }) : requirementText("list.add", { label: label })}
         actions={[
           {
-            label: "Save",
+            label: requirementText("list.save"),
             onClick: () => {
               const formEl = document.getElementById(
                 formId,
@@ -211,7 +212,7 @@ export default function DynamicList<T extends Record<string, string>>({
             variant: "contained",
           },
           {
-            label: "Cancel",
+            label: requirementText("list.cancel"),
             onClick: handleCancel,
             variant: "text",
           },
@@ -269,17 +270,17 @@ export default function DynamicList<T extends Record<string, string>>({
         open={removeIndex !== null}
         onClose={handleRemoveCancel}
         maxWidth={400}
-        title={`Remove ${label}?`}
+        title={requirementText("list.remove-title", { label: label })}
         role="alertdialog"
         actions={[
           {
-            label: "Remove",
+            label: requirementText("list.remove-action"),
             onClick: handleRemoveConfirm,
             variant: "contained",
             color: "error",
           },
           {
-            label: "Cancel",
+            label: requirementText("list.cancel"),
             onClick: handleRemoveCancel,
             variant: "text",
           },
@@ -287,8 +288,8 @@ export default function DynamicList<T extends Record<string, string>>({
       >
         <DialogContentText>
           {removeItemLabel
-            ? `Remove ${removeItemLabel}? This cannot be undone.`
-            : `Are you sure you want to remove this ${label.toLowerCase()}? This cannot be undone.`}
+            ? requirementText("list.remove-named", { label: removeItemLabel })
+            : requirementText("list.remove-unnamed", { label: label.toLowerCase() })}
         </DialogContentText>
       </AppModal>
     </div>

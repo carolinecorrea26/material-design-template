@@ -1,6 +1,347 @@
 {
   "page": "coverage",
   "components": [
-    { "type": "coverage" }
+    {
+      "type": "FormRoutePage",
+      "mapping": "coverage",
+      "components": [
+        {
+          "type": "ProgressStep"
+        },
+        {
+          "type": "PageHeader"
+        },
+        {
+          "type": "PageAlert",
+          "purpose": "entry-link notices and submission or reveal validation errors"
+        },
+        {
+          "type": "Button",
+          "section": "portfolio",
+          "purpose": "open existing coverage when TPA verification enables the portfolio"
+        },
+        {
+          "type": "CoverageQuestions",
+          "components": [
+            {
+              "type": "CoverageCategorySelector",
+              "section": "categories"
+            },
+            {
+              "type": "FieldGroup",
+              "section": "self-personal"
+            },
+            {
+              "type": "FieldGroup",
+              "section": "self-work"
+            },
+            {
+              "type": "FieldGroup",
+              "section": "spouse-personal"
+            },
+            {
+              "type": "FieldGroup",
+              "section": "spouse-work"
+            }
+          ]
+        },
+        {
+          "type": "Button",
+          "section": "reveal",
+          "purpose": "validate applicable questions and reveal coverage options"
+        },
+        {
+          "type": "ProductCatalog",
+          "section": "products",
+          "components": [
+            {
+              "type": "CoverageCart",
+              "section": "summary",
+              "purpose": "inline combined estimate and configured frequency control"
+            }
+          ]
+        },
+        {
+          "type": "PageNav"
+        }
+      ]
+    },
+    {
+      "type": "CoveragePortfolioDrawer",
+      "section": "portfolio"
+    },
+    {
+      "type": "ConfirmationDialog",
+      "purpose": "dependent-only coverage confirmation"
+    },
+    {
+      "type": "CoverageSelectionFeedback",
+      "components": [
+        {
+          "type": "CoverageCart",
+          "purpose": "cart drawer after the first addition"
+        },
+        {
+          "type": "Snackbar",
+          "purpose": "feedback after later additions"
+        }
+      ]
+    }
+  ],
+  "content": {
+    "title": "coverage.title",
+    "subhead": "coverage.subhead",
+    "breadcrumb": "coverage.breadcrumb",
+    "loading": "coverage.loading",
+    "notices": [
+      "coverage.no-coverage",
+      "coverage.selection-unavailable",
+      "coverage.selection-unavailable.action"
+    ],
+    "jointSpouseBenefitAlert": "coverage.alert.joint-spouse-benefit",
+    "validation": [
+      "coverage.error.select-product",
+      "coverage.error.select-applicant",
+      "coverage.error.select-amount",
+      "coverage.error.combined-life-maximum"
+    ],
+    "interface": [
+      "coverage.title",
+      "coverage.subhead",
+      "coverage.breadcrumb",
+      "coverage.loading",
+      "coverage.portfolio.button",
+      "coverage.portfolio.monthly-amount",
+      "coverage.no-coverage",
+      "coverage.selection-unavailable",
+      "coverage.selection-unavailable.action",
+      "coverage.error.select-category",
+      "coverage.error.correct",
+      "coverage.section.personal",
+      "coverage.section.work",
+      "coverage.section.business",
+      "coverage.reveal.button",
+      "coverage.category.li.description",
+      "coverage.category.ad.description",
+      "coverage.category.di.description",
+      "coverage.category.oo.description",
+      "coverage.category.sh.description",
+      "coverage.select.member",
+      "coverage.select.spouse",
+      "coverage.select.child",
+      "coverage.add",
+      "coverage.estimated-cost",
+      "coverage.total-cost",
+      "coverage.dialog.dependent.title",
+      "coverage.dialog.dependent.message",
+      "coverage.dialog.dependent.confirm",
+      "coverage.dialog.dependent.cancel",
+      "coverage.error.select-product",
+      "coverage.error.select-applicant",
+      "coverage.error.select-amount",
+      "coverage.product-catalog.loading-your-coverage-options",
+      "coverage.product-catalog.your-eligible-coverage-options",
+      "coverage.product-catalog.based-on-your-answers-you-are-not-eligible",
+      "coverage.product-catalog.coverage-at-this-time",
+      "coverage.product-catalog.you-are-not-eligible-for-any-coverage-options",
+      "coverage.product-catalog.based-on-your-answers-you-are-not-currently",
+      "coverage.product-catalog.phone",
+      "coverage.product-catalog.email",
+      "coverage.product-catalog.underwriting-requirements-for-this-selection-are-unresolved-contact",
+      "coverage.product-catalog.the-maximum-length-of-time-office-overhead-benefits",
+      "coverage.product-catalog.optional-benefit-s",
+      "coverage.product-catalog.you-have-selected-0-for-this-coverage-this",
+      "coverage.coverage-cart.coverage-added",
+      "coverage.coverage-cart.your-requested-coverage",
+      "coverage.coverage-cart.close-coverage-requested",
+      "coverage.coverage-cart.no-coverage-selected-yet",
+      "coverage.coverage-cart.your-application-summary-will-appear-here-once-you",
+      "coverage.coverage-cart.requested-coverage",
+      "coverage.coverage-cart.applying-for",
+      "coverage.coverage-cart.only",
+      "coverage.coverage-cart.cost-calculated-after-amount-selection",
+      "coverage.coverage-cart.eligibility-concern",
+      "coverage.coverage-cart.based-on-your-answers-you-may-not-be",
+      "coverage.coverage-cart.you-may-still-continue-with-your-other-selected",
+      "coverage.coverage-cart.quoted-cost-is-the-best-rate-available-final",
+      "coverage.coverage-cart.remove-coverage",
+      "coverage.coverage-cart.remove",
+      "coverage.coverage-cart.are-you-sure-you-want-to-remove",
+      "coverage.coverage-cart.from-your-selections",
+      "coverage.coverage-cart.quoted-cost-is-the-best-rate-available-final-2",
+      "coverage.coverage-cart.edit-coverage",
+      "coverage.coverage-cart.yes",
+      "coverage.coverage-cart.to-edit-your-coverage-you-will-be-sent",
+      "coverage.coverage-selection-feedback.added",
+      "coverage.estimated-rate.estimate-unavailable",
+      "coverage.estimated-rate.rate-provided-separately",
+      "coverage.estimated-rate.recalculating-estimated-cost",
+      "coverage.total-cost-summary.total",
+      "coverage.coverage-portfolio-drawer.member",
+      "coverage.coverage-portfolio-drawer.spouse",
+      "coverage.rider.child-fallback",
+      "coverage.increase.total-note",
+      "coverage.increase.additional-note",
+      "coverage.policy-fee",
+      "coverage.rider.only-label",
+      "coverage.category.section-title"
+    ],
+    "products": [
+      "coverage.product.li-term.name",
+      "coverage.product.li-term.definition",
+      "coverage.product.li-10yr.name",
+      "coverage.product.li-10yr.definition",
+      "coverage.product.li-10yr.description",
+      "coverage.product.li-20yr.name",
+      "coverage.product.li-20yr.definition",
+      "coverage.product.li-20yr.description",
+      "coverage.product.li-add.name",
+      "coverage.product.li-add.definition",
+      "coverage.product.di-ltd.name",
+      "coverage.product.di-ltd.definition",
+      "coverage.product.di-ltd.description"
+    ],
+    "shared-help": [
+      "help.how-applying-works.intro",
+      "help.how-applying-works.steps",
+      "help.how-applying-works.sub-drawer-titles.application-review",
+      "help.how-applying-works.sub-drawer-titles.quick-decision",
+      "help.application-review.title",
+      "help.application-review.intro",
+      "help.application-review.what-to-expect-title",
+      "help.application-review.what-to-expect-items",
+      "help.application-review.closing-note",
+      "help.coverage-options.intro",
+      "help.quick-decision.title-prefix",
+      "help.quick-decision.intro",
+      "help.quick-decision.what-to-expect-title",
+      "help.quick-decision.what-to-expect-items",
+      "help.quick-decision.important-to-know-title",
+      "help.quick-decision.important-to-know-items",
+      "help.coverage-portfolio.title",
+      "help.coverage-portfolio.intro"
+    ],
+    "shared-navigation": [
+      "navigation.next",
+      "navigation.submitting",
+      "navigation.back"
+    ],
+    "lifeMaximumNotes": [
+      "coverage.note.life-member-maximum",
+      "coverage.note.life-spouse-maximum"
+    ]
+  },
+  "fieldMapping": {
+    "page": "coverage"
+  },
+  "definition": {
+    "id": "coverage",
+    "path": "/coverage",
+    "type": "form",
+    "groupId": "coverage",
+    "flow": "application",
+    "displayName": "Coverage"
+  },
+  "position": 3,
+  "layout": {
+    "sections": {
+      "portfolio": {},
+      "categories": {},
+      "self-personal": {
+        "id": "selfCoverageQuestions",
+        "for": "self",
+        "title": "coverage.section.personal",
+        "fields": [
+          "gender",
+          "smoker"
+        ]
+      },
+      "self-tobacco": {
+        "id": "selfCoverageTobacco",
+        "for": "self",
+        "fields": [
+          "tobacco-last-used",
+          "tobacco-products"
+        ],
+        "when": {
+          "field": "smoker",
+          "equals": "yes"
+        },
+        "presentation": "conditional"
+      },
+      "self-work": {
+        "id": "selfCoverageWorkIncome",
+        "for": "self",
+        "title": "coverage.section.work",
+        "fields": [
+          "hours-worked-per-week",
+          "average-monthly-income",
+          "self-employed-under-one-year"
+        ]
+      },
+      "spouse-personal": {
+        "id": "spouseCoverageQuestions",
+        "for": "spouse",
+        "title": "coverage.section.personal",
+        "fields": [
+          "gender",
+          "smoker"
+        ],
+        "when": {
+          "field": "dependents",
+          "includes": "spouse"
+        }
+      },
+      "spouse-tobacco": {
+        "id": "spouseCoverageTobacco",
+        "for": "spouse",
+        "fields": [
+          "tobacco-last-used",
+          "tobacco-products"
+        ],
+        "when": {
+          "field": "spouse-smoker",
+          "equals": "yes"
+        },
+        "presentation": "conditional"
+      },
+      "spouse-work": {
+        "id": "spouseCoverageWorkIncome",
+        "for": "spouse",
+        "title": "coverage.section.work",
+        "fields": [
+          "hours-worked-per-week",
+          "average-monthly-income"
+        ],
+        "when": {
+          "field": "dependents",
+          "includes": "spouse"
+        }
+      },
+      "reveal": {},
+      "products": {},
+      "summary": {}
+    },
+    "dialogs": {
+      "dependent-coverage": {}
+    }
+  },
+  "dialogs": {
+    "dependent-coverage": {
+      "title": "coverage.dialog.dependent.title",
+      "message": "coverage.dialog.dependent.message",
+      "confirm": "coverage.dialog.dependent.confirm",
+      "cancel": "coverage.dialog.dependent.cancel"
+    }
+  },
+  "controls": [
+    "coverage-categories",
+    "coverage-amount",
+    "add-coverage",
+    "waiting-period",
+    "benefit-option",
+    "rider",
+    "rider-amount",
+    "rate-frequency"
   ]
 }

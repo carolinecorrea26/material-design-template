@@ -1,0 +1,35 @@
+{
+  "component": "verification-address",
+  "fields": [
+    {
+      "field": "street-address",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "apt-suite",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "city",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "state",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "zip-code",
+      "people": [
+        "self"
+      ]
+    }
+  ]
+}

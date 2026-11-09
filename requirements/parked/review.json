@@ -1,6 +1,54 @@
 {
   "page": "review",
   "components": [
-    { "type": "review" }
-  ]
+    {
+      "type": "review"
+    }
+  ],
+  "definition": {
+    "id": "review",
+    "path": "/review",
+    "type": "form",
+    "groupId": "review",
+    "flow": "application",
+    "healthGate": false,
+    "displayName": "Review"
+  },
+  "position": 7,
+  "fieldBindings": [
+    "review-self-consent",
+    "review-spouse-consent"
+  ],
+  "looseFields": [],
+  "layout": {
+    "sections": {}
+  },
+  "content": {
+    "wording": [
+      "review.alert-title",
+      "review.alert-items",
+      "review.health-questions-note.title",
+      "review.health-questions-note.description",
+      "review.read-and-sign-title",
+      "review.read-and-sign-content",
+      "review.electronic-consent-title",
+      "review.electronic-consent-content",
+      "page.review.title",
+      "page.review.subhead",
+      "page.review.nav-title"
+    ],
+    "runtime": [
+      "application.ui.select-a-valid-applicant-type-to-display-the-applicable-consent",
+      "application.ui.your-advisor-has-completed-this-section-of-the-application",
+      "application.ui.review-the-information-below-if-anything-needs-to-be-corrected-click-the-edit",
+      "application.ui.steps-completed-by-your-advisor-getting-started-coverage-and-profile-are-locke",
+      "application.ui.you-re-entering-the-final-stages-of-your-application",
+      "application.ui.check-your-application-below-and-provide-your-consent-after-this-page-you-ll-c",
+      "application.ui.your-application-is-submitted-after-you-complete-the-remaining-steps",
+      "application.ui.preview-your-application",
+      "application.ui.check-your-answers-and-use-edit-to-make-corrections-before-continuing",
+      "application.ui.read-and-consent",
+      "application.ui.read-the-statements-and-electronic-consent-below-then-confirm-your-agreement-t"
+    ]
+  }
 }

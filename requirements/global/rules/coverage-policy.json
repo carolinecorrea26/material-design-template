@@ -1,0 +1,102 @@
+{
+  "rules": [
+    {
+      "id": "coverage-amount-presentation-defaults",
+      "name": "Coverage amount order, defaults and locked amounts",
+      "status": "confirmed",
+      "statement": "Document amount-list order separately from initial selection. Support minimum-to-maximum or maximum-to-minimum order, the current minimum initial selection or a configured specific amount, and a separately recorded lock setting. The Library's planned setCoverageAmount combines a specific amount with a locked dropdown. The amt URL parameter supplies product_amount pairs using G-numbers, with comma-separated pairs and unformatted numeric amounts; dprods disables the listed products' amount dropdowns. Defaults and locks cannot bypass product/applicant availability, permitted increments, age/income limits or verified in-force reductions. Initial defaults do not constitute Add coverage elections. The shared runtime supports these controls. A valid amt value overrides the configured initial amount for each eligible applicant; invalid, ambiguous or unavailable defaults fall back to the configured valid amount or minimum positive choice and cannot force an unavailable locked value. Defaults seed unanswered editable selections and preserve saved edits; locked controls enforce their valid target. Campaign amt/dprods values persist with application entry context across navigation and resume. Definitions and defaults belong to the global template; effective Sites supply product/applicant values and overrides.",
+      "source": "User-confirmed Coverage documentation; src/content/docs/configurations.ts setCoverageAmount/setCoverageOrder; Library URL parameters amt/dprods; src/content/docs/urlParameters.ts; src/app/useCoverageState.ts"
+    },
+    {
+      "id": "coverage-url-product-presentation",
+      "name": "Coverage URL product restrictions and featured presentation",
+      "status": "confirmed",
+      "statement": "The Library URL parameter table defines coverage entry behavior: category restricts categories; prods lists G-number products and requires category; featured_prod prioritizes the named product and its category with a Featured chip; firstCategory replaces ctg to prioritize a category; applicant restricts who may apply. amt sets product amount defaults and dprods disables the listed amount controls. URL presentation never enables an unavailable product or applicant and does not override eligibility or amount limits. Product/category restrictions, featured presentation and amt/dprods have current prototype readers. firstCategory remains a separate cross-page rollout item. Site usage is separate from support: absence of an effective-Site URL assignment does not establish that the parameter is enabled or disabled. Preselect remains TBD and is not an approved automatic election rule. Removed mrate and nc parameters are not supported in the new template.",
+      "source": "Admin Center Library URL parameters table; src/content/docs/urlParameters.ts; src/pages/admin/library/UrlParametersLibrary.tsx; src/config/client/coverageCategoryScope.ts; src/config/client/coverageProductScope.ts"
+    },
+    {
+      "id": "coverage-configured-rider-participation",
+      "name": "Configured optional rider participation and limits",
+      "status": "confirmed",
+      "statement": "Resolve optional riders separately from base coverage using configured parent products, applicants, age bounds, residency exclusions, amount ranges/increments and relationships to base coverage. A rider amount is not additional base Life for the combined Life maximum. Rider-only participation, existing-policy treatment and product-specific exceptions come from the effective Site, not from this shared definition.",
+      "source": "MCR v78 Main!L167; Riders!B43:H43; user-approved CIR-only removal; src/domain/applicationRiders.ts"
+    },
+    {
+      "id": "coverage-configured-benefit-periods",
+      "name": "Configured waiting periods and benefit periods",
+      "status": "confirmed",
+      "statement": "Use the configured waiting-period and benefit-period options for each product/applicant. Show fixed single options as fixed choices; apply configured mandatory options for the short-self-employment exception. Record user-facing period labels separately from stored keys; this documentation does not change period keys or downstream routing.",
+      "source": "MCR v78 Disability!D11:D12; New UX Multi-page Requirements!AE21; src/domain/benefitPolicy.ts; src/domain/prototypeCoverageDecision.ts"
+    },
+    {
+      "id": "coverage-child-one-life-plan",
+      "name": "Child Life coverage belongs to one Life plan",
+      "status": "confirmed",
+      "statement": "Where configured, a child may be elected under only one Life plan, using that plan's child amount and age/student eligibility. The effective Site supplies the required adult-coverage dependency separately. Do not infer a new existing-policy dependency from portfolio display data.",
+      "source": "MCR v78 Main!J165:J167; QD LI!L47:L48; src/domain/dependentPolicy.ts"
+    },
+    {
+      "id": "coverage-tpa-inforce-amounts",
+      "name": "Available coverage after verified TPA in-force amounts",
+      "status": "confirmed",
+      "statement": "When configured for a product/applicant, use the successfully verified TPA portfolio to deduct that person's existing in-force amount from the applicable product maximum, including applicable age and benefit limits. Also deduct that person's in-force Life amounts from the configured combined Life maximum. Amount dropdowns offer only existing permitted increments within the remaining capacity; exhausted capacity offers no positive amount. Do not deduct spouse amounts from the member or count riders as base coverage. Coverage Next rejects stale/unavailable amounts and combined new Life elections plus verified in-force Life over the same configured maximum. Failed/skipped verification continues as manual review without using portfolio amounts. The prototype uses the same structured fictional portfolio for its drawer and calculations, without a live TPA service. Existing-policy dependency and lower-minimum decisions remain separate.",
+      "source": "User-confirmed ASCE Coverage review; requirements/parked/sites/asce/coverage.json; requirements/global/prototype-fixtures/portfolio.json; src/domain/tpaPortfolioAmounts.ts"
+    },
+    {
+      "id": "coverage-configured-eligibility",
+      "name": "Configured applicant eligibility",
+      "status": "confirmed",
+      "statement": "Use each site/product/applicant’s configured age, weekly work hours and gross annual income bounds. Missing applicable facts require answers; monthly income is multiplied by 12 for the annual minimum.",
+      "source": "Approved ASCE Coverage review; requirements/parked/sites/<site>/coverage.json; src/domain/requirementCoveragePolicy.ts"
+    },
+    {
+      "id": "coverage-configured-residency",
+      "name": "Configured coverage state exclusions",
+      "status": "confirmed",
+      "statement": "Use the configured product residency policy, including its allowed jurisdictions and applicant-specific exclusions. A reviewed policy replaces provisional residency assumptions for that product. Apply additional state exclusions only where separately configured.",
+      "source": "Approved ASCE Coverage review; requirements/parked/sites/<site>/coverage.json; src/domain/requirementCoveragePolicy.ts"
+    },
+    {
+      "id": "coverage-configured-amount-limits",
+      "name": "Configured new and age-based amounts",
+      "status": "confirmed",
+      "statement": "For new applications apply the configured minimum amount; apply matching inclusive age-band maximum amounts. Existing in-force coverage is not reclassified as a new application.",
+      "source": "Approved ASCE Coverage review; requirements/parked/sites/<site>/coverage.json; src/domain/requirementCoveragePolicy.ts"
+    },
+    {
+      "id": "coverage-joint-spouse-submit-alert",
+      "name": "Joint spouse application alert on Next",
+      "status": "confirmed",
+      "statement": "Keep spouse coverage selectable below the configured member benefit threshold. On Next, show the standard page error alert if both member and spouse apply for this product and the member’s positive benefit is below that threshold.",
+      "source": "Approved ASCE Coverage review; requirements/parked/sites/<site>/coverage.json; src/domain/requirementCoveragePolicy.ts"
+    },
+    {
+      "id": "coverage-child-member-dependency",
+      "name": "Child coverage requires member coverage",
+      "status": "confirmed",
+      "statement": "When configured, require member coverage in the same category for a child election; spouse coverage alone does not satisfy this dependency.",
+      "source": "Approved ASCE Coverage review; requirements/parked/sites/<site>/coverage.json; src/domain/requirementCoveragePolicy.ts"
+    },
+    {
+      "id": "coverage-self-employment-benefits",
+      "name": "Short self-employment benefit exception",
+      "status": "confirmed",
+      "statement": "When configured, ask only whether the member has been self-employed for less than one year, using one Yes/No question. Use that answer for the existing short self-employment benefit cap and mandatory waiting and benefit periods. Do not collect a separate employment flag or years field on Coverage.",
+      "source": "Approved ASCE Coverage review; requirements/parked/sites/<site>/coverage.json; src/domain/requirementCoveragePolicy.ts"
+    },
+    {
+      "id": "coverage-combined-life-submit-maximum",
+      "name": "Combined Life maximum on Coverage Next",
+      "status": "confirmed",
+      "statement": "Use one configured combined Life maximum per person across the assigned Life products. On Coverage Next, compare the selected amounts plus any configured verified TPA in-force Life for each person against that maximum and show the standard page error alert if exceeded. Do not combine member and spouse amounts. Existing-insurance answers collected later are not required for this check. Do not repeat this page error on Review. Product amount choices reference the shared maximum where it is their upper bound.",
+      "source": "User confirmed Coverage review; MCR v78 Main!H165:K167; New UX Multi-page Requirements!X21"
+    },
+    {
+      "id": "coverage-tpa-portfolio-access",
+      "name": "Coverage portfolio for a verified existing insured member",
+      "status": "confirmed",
+      "statement": "For a site configured for TPA coverage verification, show the Coverage portfolio action and allow its drawer only when the TPA lookup identifies an existing member with existing active coverage and identity verification succeeds. New or unmatched members, members without existing coverage, failed or skipped verification and incomplete verification outcomes do not receive portfolio access. A failed or skipped identity-verification attempt may continue from Eligibility to Coverage as manual review without portfolio access. The prototype uses configured lookup/verification fixtures and fictional portfolio data. Live TPA integration and use of existing policies for coverage dependencies remain separate; configured amount reductions follow coverage-tpa-inforce-amounts.",
+      "source": "User-confirmed ASCE Coverage review; requirements/parked/sites/asce/eligibility.json; src/domain/tpaIntegration.ts; src/pages/Eligibility.tsx; src/pages/Coverage.tsx; src/app/ApplicationEntry.integration.test.tsx"
+    }
+  ]
+}

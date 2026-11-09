@@ -1,6 +1,13 @@
 {
   "workflows": [
     {
+      "id": "coverage-page-stages",
+      "name": "Use question and product stages on the Coverage page",
+      "status": "confirmed",
+      "statement": "The Coverage page first collects category selections and their applicable questions. When selected categories require preliminary questions, See my coverage options validates those questions on click; errors remain on the page with a page error alert. Successful validation reveals eligible products, amounts, applicants and riders, followed by estimates and Next. Categories requiring no preliminary questions may reveal products automatically. Next is hidden during product loading and while the reveal action is shown. This is staged navigation, not another field-answer inline stopping exception. Next uses the shared submission validation and save-before-advance workflow. This confirms page structure and stage transitions; exact field participation, product controls and detailed policies are reviewed separately.",
+      "source": "docs/requirements-spec/page-review.md; src/pages/Coverage.tsx; src/app/useCoverageState.ts"
+    },
+    {
       "id": "coverage-product-reveal",
       "name": "Reveal coverage products",
       "status": "draft",

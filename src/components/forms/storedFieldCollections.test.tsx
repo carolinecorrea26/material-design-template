@@ -10,7 +10,7 @@ import type { DatabaseSchema } from '../../persistence/types';
 
 let baseline: DatabaseSchema;
 beforeAll(() => { baseline = createReviewedMigrationDatabase(); }, 120000);
-it('renders saved child labels and layout, restores bound values and enforces the stored item limit', async () => {
+it('renders fresh child labels and layout and restores bound values despite stale collection settings', async () => {
   vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
   const data = structuredClone(baseline);
   data.fields.find(row => row.key === 'child-first-name')!.definition.label = 'Saved child given name';
@@ -26,10 +26,10 @@ it('renders saved child labels and layout, restores bound values and enforces th
   try {
     await act(async () => root.render(<Form />));
     expect(container.textContent).toContain('Existing child');
-    expect(container.textContent).not.toContain('Add Dependent');
+    expect(container.textContent).toContain('Add Child');
     await act(async () => [...container.querySelectorAll('button')].find(button => button.textContent === 'Edit')!.click());
     const dialog = document.querySelector('[role="dialog"]')!;
-    expect(dialog.textContent).toContain('Edit Dependent');
+    expect(dialog.textContent).toContain('Edit Child');
     expect(dialog.textContent).toContain('First Name');
     expect(dialog.querySelectorAll('input').length).toBeGreaterThan(2);
     expect([...dialog.querySelectorAll<HTMLInputElement>('input')].slice(0, 2).map(input => input.value)).toEqual(['Existing child', 'Example']);

@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { DatabaseSchema } from "../persistence/types";
-import { resolveEffectiveSite } from "../domain/effectiveSite";
+import { resolveSnapshotSite as resolveEffectiveSite } from "../domain/effectiveSite";
 import { buildPrototypeAssociationContext } from "../domain/prototypeAssociationProjection";
 import { buildPrototypeContent } from "../domain/prototypeConfigurationProjection";
 import type { CrosswalkRow } from "./requirementCrosswalk";

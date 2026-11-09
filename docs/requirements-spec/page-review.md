@@ -5,9 +5,10 @@ One page at a time. **Order: sections first, then fields.** Words (content) are 
 | Page | Sections | Fields | Rolled out (prototype, Library, Storybook) |
 |---|---|---|---|
 | Home | **agreed: 4 section groups** | not yet reviewed | quote-entry fields only |
-| Membership | **agreed: 2 sections** | **agreed** | **fields, ASCE (reviewed)** |
-| Eligibility | **agreed: 3 sections** | **agreed** | **fields, answer keys and section notes, ASCE**; page structure **agreed** (runtime not yet) |
-| Coverage, Beneficiary | written, not yet reviewed | not yet | no |
+| Membership | **agreed: 2 sections** | **agreed** | **complete for reviewed ASCE scope**: fields (including Phone Type), participation, content, help labels, page note, member autofill and save boundary; email and lead rules documented in Library |
+| Eligibility | **agreed: 3 sections** | **agreed** | **complete for reviewed ASCE scope**: fresh-start structure, fields, content and simulated verification flow |
+| Coverage | **agreed: shared structure and two-stage flow** | **reviewed through the ASCE effective Site** | Global template definitions are shared. [Coverage ownership and rule register](coverage.md) separates effective-site values from global amount controls and URL contracts; planned controls remain explicitly marked. |
+| Beneficiary | written, not yet reviewed | not yet | no |
 
 After a page's JSON is agreed it is rolled out: the prototype, Portal Library and
 Storybook read its field definitions from the JSON, and the result is reviewed on all
@@ -197,6 +198,42 @@ What ASCE shows, top to bottom:
   name, email, phone and the follow-up section. Otherwise they see only the first question.
 - Phone Type is its own field, shown next to the phone number.
 
+### Membership attestation exception (agreed, CHG-018)
+
+The applicant's yes/no membership attestation on Membership is the only field that
+stops a page inline: No immediately shows the non-member feedback, hides the
+follow-up fields and disables Next. Yes restores those fields and enables Next.
+Leaving the attestation unanswered uses normal required-field validation on Next.
+All other field and page-level checks use standard submission validation and the
+page error alert; this exception does not apply to the spouse membership question
+on Eligibility. Submission/loading states may still temporarily disable Next.
+
+The rule is defined once in `global/rules/membership.json` and assigned through
+`mappings/requirements/membership.json`; the shared `form-next-validation`
+workflow records the standard behavior and this sole field-answer exception.
+
+### Configurations and lifecycle (agreed)
+
+| Requirement | Definition and applicability |
+|---|---|
+| Attestation control | The shared `membership` field owns its four configurations (yes-no, new-or-current, category, association), including control type and options. ASCE selects yes-no in its field overrides. This is not duplicated as a second configuration setting. |
+| Additional fields | The component field mapping lists available fields; `member-id` is default-off. ASCE's Membership page file includes it and hides Title; its field file makes Member ID required. Additional Membership Information follows an accepted attestation. |
+| Autosave start | `membership-starts-autosave` in `global/workflows/application.json`: successful validated Membership submission and save establishes the saved application and starts autosave, for consumer and advisor-assisted applications. Later page saves use `form-next-save`. Browser caching is separate. |
+| Initial autosave email | `membership-initial-autosave-email` in `global/rules/application.json`: triggered as soon as Membership is successfully submitted and saved. Recorded only; no email service or automatic mock email preview runs in the prototype. |
+| Browser autofill | Shared `browser-autofill-self-only` rule in `global/rules/fields.json`: authored autocomplete hints for name, email, phone, addresses and birthday apply only to self/member wherever those fields appear. Dependents receive autocomplete off. This is independent of input type and keyboard mode; browser suggestions depend on availability. |
+| Abandoned leads | `abandoned-lead-nightly-batch` in `global/rules/application.json`: successfully submitted and saved Membership makes applicant name, email and phone available. Applications still incomplete enter nightly batch files for the site's TPA. This is a recorded rule only; no XML generation, scheduler or transmission is connected. |
+| Page note | Optional page-level `note` references a content key; site page files select the site's note. ASCE's Membership page selects `membership.note.member-profession`: “Throughout this site you will be referred to as a Member of the Civil Engineering profession.” It no longer appears on Eligibility (CHG-020). |
+
+The Library displays confirmed rules and workflows directly from these definitions
+and their applicability mappings. They are declarative records, not an executable
+workflow engine. Membership's component tree uses the same named frame and section
+structure as Eligibility; React still owns layout rendering.
+
+The save client now requires the Membership submission event to create a saved
+application. Email in a local draft cannot start autosave; browser caching and
+reloads do not send application saves. Later successful page submissions update
+the established saved application (CHG-022).
+
 ### Membership question configurations (agreed)
 
 The membership question is one field (`membership`, "Membership attestation"). It has four **configurations**.
@@ -270,9 +307,10 @@ file (`note`); a site page file can override them under `notes`.
 
 | Section | Content key | ASCE text |
 |---|---|---|
-| self | `eligibility.note.member-profession` (ASCE only, via `notes.self`) | Throughout this site you will be referred to as a Member of the Civil Engineering profession. |
 | spouse | `eligibility.note.spouse` (all sites) | Domestic Partnership/Civil Union is determined by State Law and they will be referred to as "Spouse" throughout the application. |
 | children | `eligibility.note.children` (all sites) | Only unmarried children are eligible for coverage. |
+
+The profession note formerly assigned to self was moved to the Membership page (CHG-020).
 
 ### Page structure (agreed)
 
@@ -285,3 +323,31 @@ file (`note`); a site page file can override them under `notes`.
 | Validations | `global/validations/eligibility.json` | Page level, on Next: eligible-state-required, child-required, spouse-details-required, each with a content message and code `VALIDATION_FAILED`. Inline (before Next): only format checks, ZIP (`postal-code-format`) and dates of birth (`date-value-format`). Everything else on Next. |
 | Error codes | `global/error-codes.json` | The 14 established recovery codes (`src/domain/recoveryIncident.ts`, Storybook's Error pages); a validation `code` must be one of them. |
 | Ineligible | rule `applicant-disqualifying-answer` | The reason shows when Next is clicked and the page does not continue; Next is no longer disabled (CHG-017). |
+
+
+---
+
+## Coverage (step: Choose your coverage, required)
+
+### Structure and stages (agreed, CHG-024)
+
+The shared form frame contains progress, header and page alerts; an optional
+verified portfolio action; category selection; personal/work questions for self
+and a participating spouse; the reveal action; products and inline estimate/cart;
+and Next. Portfolio, dependent-only confirmation and selection-feedback surfaces
+are related drawers/dialogs, not extra application pages. Children's details remain
+on Eligibility. The current review covers ASCE only.
+
+Keep two stages: answer applicable questions, click See my coverage options,
+then choose products and use Next. The reveal action validates on click and
+reports errors using a page alert. Categories without preliminary questions, such
+as AD&D, can reveal automatically. Next is hidden during loading and while the
+reveal action is showing. Membership attestation remains the sole field-answer
+inline stopping exception.
+
+The named component tree is in `parked/coverage.json`; `coverage-page-stages` is
+confirmed in `global/workflows/coverage.json` and mapped only to Coverage.
+The approved question and MCR-policy decisions are implemented in the ASCE
+fresh-start JSON layer (CHG-025). The spouse maximum wording is a configurable
+section note only. Values, sources, exceptions and remaining staged scope are
+recorded in [coverage.md](coverage.md).

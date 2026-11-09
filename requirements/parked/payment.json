@@ -1,6 +1,64 @@
 {
   "page": "payment",
   "components": [
-    { "type": "payment" }
-  ]
+    {
+      "type": "payment"
+    }
+  ],
+  "definition": {
+    "id": "payment",
+    "path": "/payment",
+    "type": "form",
+    "groupId": "payment",
+    "flow": "application",
+    "healthGate": false,
+    "displayName": "Payment"
+  },
+  "position": 14,
+  "fieldBindings": [
+    "bank-name-on-account",
+    "bank-institution",
+    "bank-routing-number",
+    "bank-account-number",
+    "bank-authorization",
+    "payment-information-opt-in",
+    "payment-method",
+    "payment-frequency",
+    "payment-shared-method",
+    "payment-shared-frequency"
+  ],
+  "looseFields": [
+    "bank-name-on-account",
+    "bank-institution",
+    "bank-routing-number",
+    "bank-account-number",
+    "bank-authorization"
+  ],
+  "layout": {
+    "sections": {}
+  },
+  "content": {
+    "wording": [
+      "page.payment.title",
+      "page.payment.subhead",
+      "page.payment.nav-title"
+    ],
+    "runtime": [
+      "application.ui.payment-authorization-failed",
+      "application.ui.complete-coverage-or-review-against-the-current-library-before-submitting",
+      "application.ui.authorize-payment-for-your-current-selections-before-submitting",
+      "application.ui.authorize-payment",
+      "application.ui.try-declined-payment",
+      "application.ui.payment",
+      "application.ui.elections-changed-authorize-again",
+      "application.ui.estimated",
+      "application.ui.cost",
+      "application.ui.total-estimated-cost",
+      "application.ui.you-will-not-be-charged-yet",
+      "application.ui.your-payment-information-is-collected-as-part-of-the-application-but-you-will",
+      "application.ui.no-applied-for-products-were-found-return-to-coverage-options-to-choose-covera",
+      "application.ui.banking-information",
+      "application.ui.quoted-cost-is-the-best-rate-available-based-on-the-information-you-provided-f"
+    ]
+  }
 }

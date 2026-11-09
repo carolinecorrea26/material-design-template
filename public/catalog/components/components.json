@@ -3764,9 +3764,19 @@
         "parts": [],
         "usages": [
           {
+            "source": "src/components/layout/AppShell.tsx",
+            "label": "Advisor Login → App Shell",
+            "pageKey": "advisor-login"
+          },
+          {
             "source": "src/components/feedback/ProgressSavedSnackbar.tsx",
             "label": "Advisor Login → Progress Saved Snackbar",
             "pageKey": "advisor-login"
+          },
+          {
+            "source": "src/components/layout/AppShell.tsx",
+            "label": "Advisor Send Confirmation → App Shell",
+            "pageKey": "advisor-send-confirmation"
           },
           {
             "source": "src/components/feedback/ProgressSavedSnackbar.tsx",
@@ -3774,9 +3784,24 @@
             "pageKey": "advisor-send-confirmation"
           },
           {
+            "source": "src/components/layout/AppShell.tsx",
+            "label": "Application Edit Confirmation → App Shell",
+            "pageKey": "application-edit-confirmation"
+          },
+          {
             "source": "src/components/feedback/ProgressSavedSnackbar.tsx",
             "label": "Application Edit Confirmation → Progress Saved Snackbar",
             "pageKey": "application-edit-confirmation"
+          },
+          {
+            "source": "src/components/layout/AppShell.tsx",
+            "label": "Application unavailable → App Shell",
+            "pageKey": "application-unavailable"
+          },
+          {
+            "source": "src/components/layout/AppShell.tsx",
+            "label": "Beneficiary → App Shell",
+            "pageKey": "beneficiary"
           },
           {
             "source": "src/components/feedback/ProgressSavedSnackbar.tsx",
@@ -3784,9 +3809,19 @@
             "pageKey": "beneficiary"
           },
           {
+            "source": "src/components/layout/AppShell.tsx",
+            "label": "Contact → App Shell",
+            "pageKey": "contact"
+          },
+          {
             "source": "src/components/feedback/ProgressSavedSnackbar.tsx",
             "label": "Contact → Progress Saved Snackbar",
             "pageKey": "contact"
+          },
+          {
+            "source": "src/components/layout/AppShell.tsx",
+            "label": "Coverage → App Shell",
+            "pageKey": "coverage"
           },
           {
             "source": "src/components/coverage/CoverageSelectionFeedback.tsx",
@@ -3799,9 +3834,19 @@
             "pageKey": "coverage"
           },
           {
+            "source": "src/components/layout/AppShell.tsx",
+            "label": "Docusign → App Shell",
+            "pageKey": "docusign"
+          },
+          {
             "source": "src/components/feedback/ProgressSavedSnackbar.tsx",
             "label": "Docusign → Progress Saved Snackbar",
             "pageKey": "docusign"
+          },
+          {
+            "source": "src/components/layout/AppShell.tsx",
+            "label": "Eligibility → App Shell",
+            "pageKey": "eligibility"
           },
           {
             "source": "src/components/feedback/ProgressSavedSnackbar.tsx",
@@ -3809,9 +3854,29 @@
             "pageKey": "eligibility"
           },
           {
+            "source": "src/components/layout/AppShell.tsx",
+            "label": "Error 404 → App Shell",
+            "pageKey": "error-404"
+          },
+          {
+            "source": "src/components/layout/AppShell.tsx",
+            "label": "Error 500 → App Shell",
+            "pageKey": "error-500"
+          },
+          {
+            "source": "src/components/layout/AppShell.tsx",
+            "label": "Health CI → App Shell",
+            "pageKey": "health-ci"
+          },
+          {
             "source": "src/components/feedback/ProgressSavedSnackbar.tsx",
             "label": "Health CI → Progress Saved Snackbar",
             "pageKey": "health-ci"
+          },
+          {
+            "source": "src/components/layout/AppShell.tsx",
+            "label": "Health CIR → App Shell",
+            "pageKey": "health-cir"
           },
           {
             "source": "src/components/feedback/ProgressSavedSnackbar.tsx",
@@ -3819,9 +3884,19 @@
             "pageKey": "health-cir"
           },
           {
+            "source": "src/components/layout/AppShell.tsx",
+            "label": "Health DI → App Shell",
+            "pageKey": "health-di"
+          },
+          {
             "source": "src/components/feedback/ProgressSavedSnackbar.tsx",
             "label": "Health DI → Progress Saved Snackbar",
             "pageKey": "health-di"
+          },
+          {
+            "source": "src/components/layout/AppShell.tsx",
+            "label": "Health LI → App Shell",
+            "pageKey": "health-li"
           },
           {
             "source": "src/components/feedback/ProgressSavedSnackbar.tsx",
@@ -3829,9 +3904,19 @@
             "pageKey": "health-li"
           },
           {
+            "source": "src/components/layout/AppShell.tsx",
+            "label": "Health QD → App Shell",
+            "pageKey": "health-qd"
+          },
+          {
             "source": "src/components/feedback/ProgressSavedSnackbar.tsx",
             "label": "Health QD → Progress Saved Snackbar",
             "pageKey": "health-qd"
+          },
+          {
+            "source": "src/components/layout/AppShell.tsx",
+            "label": "Health SI → App Shell",
+            "pageKey": "health-si"
           },
           {
             "source": "src/components/feedback/ProgressSavedSnackbar.tsx",
@@ -3839,9 +3924,24 @@
             "pageKey": "health-si"
           },
           {
+            "source": "src/components/layout/AppShell.tsx",
+            "label": "Home → App Shell",
+            "pageKey": "home"
+          },
+          {
             "source": "src/components/layout/SinglePageSections.tsx",
             "label": "Home → Single Page Sections",
             "pageKey": "home"
+          },
+          {
+            "source": "src/components/layout/AppShell.tsx",
+            "label": "Maintenance → App Shell",
+            "pageKey": "maintenance"
+          },
+          {
+            "source": "src/components/layout/AppShell.tsx",
+            "label": "Membership → App Shell",
+            "pageKey": "membership"
           },
           {
             "source": "src/components/feedback/ProgressSavedSnackbar.tsx",
@@ -3849,9 +3949,19 @@
             "pageKey": "membership"
           },
           {
+            "source": "src/components/layout/AppShell.tsx",
+            "label": "Payment → App Shell",
+            "pageKey": "payment"
+          },
+          {
             "source": "src/components/feedback/ProgressSavedSnackbar.tsx",
             "label": "Payment → Progress Saved Snackbar",
             "pageKey": "payment"
+          },
+          {
+            "source": "src/components/layout/AppShell.tsx",
+            "label": "Profile → App Shell",
+            "pageKey": "profile"
           },
           {
             "source": "src/components/feedback/ProgressSavedSnackbar.tsx",
@@ -3859,9 +3969,49 @@
             "pageKey": "profile"
           },
           {
+            "source": "src/components/layout/AppShell.tsx",
+            "label": "Receipt → App Shell",
+            "pageKey": "receipt"
+          },
+          {
+            "source": "src/components/layout/AppShell.tsx",
+            "label": "Resume → App Shell",
+            "pageKey": "resume"
+          },
+          {
+            "source": "src/components/layout/AppShell.tsx",
+            "label": "Resume Code → App Shell",
+            "pageKey": "resume-code"
+          },
+          {
+            "source": "src/components/layout/AppShell.tsx",
+            "label": "Resume Method → App Shell",
+            "pageKey": "resume-method"
+          },
+          {
+            "source": "src/components/layout/AppShell.tsx",
+            "label": "Review → App Shell",
+            "pageKey": "review"
+          },
+          {
             "source": "src/components/feedback/ProgressSavedSnackbar.tsx",
             "label": "Review → Progress Saved Snackbar",
             "pageKey": "review"
+          },
+          {
+            "source": "src/components/layout/AppShell.tsx",
+            "label": "Session Expired → App Shell",
+            "pageKey": "session-expired"
+          },
+          {
+            "source": "src/components/layout/AppShell.tsx",
+            "label": "Technical Error → App Shell",
+            "pageKey": "technical-error"
+          },
+          {
+            "source": "src/components/layout/AppShell.tsx",
+            "label": "Unconfirmed payment/submission result → App Shell",
+            "pageKey": "outcome-unknown"
           }
         ],
         "examples": [
@@ -7245,6 +7395,7 @@
           "component-app-body",
           "component-app-footer",
           "component-app-header",
+          "component-app-snackbar",
           "component-cookie-dialog",
           "component-offline-banner"
         ],

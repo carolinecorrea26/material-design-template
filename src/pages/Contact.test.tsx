@@ -9,6 +9,7 @@ import { isApplicantExperience, showContactBusinessSection } from "../domain/app
 import { getClientPageFields } from "../config/clientFields/getClientPageFields";
 import { applyWaepaContactAdoption } from "../migration/waepaContactAdoption";
 import type { DatabaseSchema } from "../persistence/types";
+import { fieldSurfaceRows } from './admin/library/fieldSurfaceRows';
 
 const form = vi.hoisted(() => ({ values: { coverageSelections: ["di-short-term"], productApplicants: { "di-short-term": ["member"] }, "correspondence-to": "business", "business-address-same-as-home": true }, setPageValues: vi.fn(), saveApplication: vi.fn() }));
 vi.mock("../app/ApplicationFormContext", () => ({ useApplicationForm: () => form }));
@@ -22,6 +23,58 @@ afterEach(async () => {
   if (root) await act(async () => root!.unmount());
   container?.remove(); root = undefined; container = undefined;
   installPrototypeLibrary(null); vi.unstubAllGlobals(); window.sessionStorage.clear();
+});
+
+async function renderAsceContact(values: Record<string, unknown> = {}) {
+  vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
+  window.history.replaceState(null, '', '/?site=asce');
+  installPrototypeLibrary(resolvePrototypeLibrary(db, 'asce', 'Contact-source-review'));
+  const answers = form.values as Record<string, unknown>;
+  for (const key of Object.keys(answers)) delete answers[key];
+  Object.assign(answers, { coverageSelections: ['li-10yr'], productApplicants: { 'li-10yr': ['member'] }, dependents: [], 'correspondence-to': 'residential' }, values);
+  form.saveApplication.mockReset();
+  container = document.createElement('div'); document.body.append(container); root = createRoot(container);
+  await act(async () => root!.render(<MemoryRouter><Contact /></MemoryRouter>));
+}
+
+it.each([
+  { selections: ['li-10yr'], correspondence: 'residential', address: false, employer: false },
+  { selections: ['li-10yr'], correspondence: 'business', address: true, employer: false },
+  { selections: ['di-ltd'], correspondence: 'residential', address: true, employer: true },
+])('ASCE Contact preserves business visibility for $selections and $correspondence', async ({ selections, correspondence, address, employer }) => {
+  await renderAsceContact({ coverageSelections: selections, 'correspondence-to': correspondence });
+  expect(!!container!.querySelector('[name="business-street-address"]')).toBe(address);
+  expect(!!container!.querySelector('[name="business-name"]')).toBe(employer);
+  expect(container!.querySelector('[name="spouse-phone"]')).toBeNull();
+  expect(container!.querySelector('[name="street-address"]')?.getAttribute('autocomplete')).toBe('street-address');
+});
+
+it('ASCE Contact keeps spouse autofill off and phone companions independent', async () => {
+  await renderAsceContact({ coverageSelections: ['di-ltd'], productApplicants: { 'di-ltd': ['member', 'spouse'] }, dependents: ['spouse'], 'spouse-phone-type': 'home', 'business-phone-type': 'business' });
+  expect(container!.querySelector('[name="spouse-email"]')?.getAttribute('autocomplete')).toBe('off');
+  expect(container!.querySelector('[name="spouse-phone"]')?.getAttribute('autocomplete')).toBe('off');
+  expect((container!.querySelector('[name="spouse-phone-type"]') as HTMLInputElement)?.value).toBe('home');
+  expect((container!.querySelector('[name="business-phone-type"]') as HTMLInputElement)?.value).toBe('business');
+  for (const name of ['spouse-phone-type', 'business-phone-type']) expect(container!.querySelectorAll(`[name="${name}"]`)).toHaveLength(1);
+});
+
+it('ASCE Contact submits the residential address while hidden business and spouse fields do not block', async () => {
+  const scroll = vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
+  try {
+    await renderAsceContact({ 'street-address': '100 Home Street', city: 'New York', 'state-province': 'NY', 'zip-postal-code': '10001' });
+    await act(async () => container!.querySelector('#contact-form')!.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })));
+    expect(form.saveApplication).toHaveBeenCalledOnce();
+    expect(form.saveApplication.mock.calls[0][0]).toMatchObject({ state: 'NY', 'zip-code': '10001', city: 'New York' });
+  } finally { scroll.mockRestore(); }
+});
+
+it('ASCE Contact lists each phone type once beside its owner in the Library', () => {
+  const rows = fieldSurfaceRows({ data: db, revision: 'Contact-library-review', analyticsTags: [] }, 'asce').filter(row => row.pages.includes('contact'));
+  for (const [phone, type] of [['business-phone', 'business-phone-type'], ['spouse-phone', 'spouse-phone-type']]) {
+    const companions = rows.filter(row => row.field.id === type);
+    expect(companions).toHaveLength(1);
+    expect(companions[0].surface).toBe(rows.find(row => row.field.id === phone)!.surface);
+  }
 });
 
 it("shows Standard WAEPA business details only for STD, retaining GI hiding and other Sites' defaults", () => {

@@ -1,6 +1,36 @@
 {
   "page": "docusign",
   "components": [
-    { "type": "docusign" }
-  ]
+    {
+      "type": "docusign"
+    }
+  ],
+  "definition": {
+    "id": "docusign",
+    "path": "/docusign",
+    "type": "form",
+    "groupId": "review",
+    "flow": "application",
+    "healthGate": false,
+    "displayName": "Docusign"
+  },
+  "position": 15,
+  "fieldBindings": [],
+  "looseFields": [],
+  "layout": {
+    "sections": {}
+  },
+  "content": {
+    "wording": [
+      "page.docusign.title",
+      "page.docusign.subhead",
+      "page.docusign.nav-title"
+    ],
+    "runtime": [
+      "application.ui.complete-the-simulated-signing-step-before-continuing",
+      "application.ui.prototype-preview-docusign-is-not-connected-use-the-simulation-below-to-previe",
+      "application.ui.simulate-signing-completion",
+      "application.ui.support-reference"
+    ]
+  }
 }

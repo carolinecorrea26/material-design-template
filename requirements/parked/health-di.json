@@ -1,6 +1,85 @@
 {
   "page": "health-di",
   "components": [
-    { "type": "health-di" }
-  ]
+    {
+      "type": "health-di"
+    }
+  ],
+  "definition": {
+    "id": "health-di",
+    "path": "/health-di",
+    "type": "form",
+    "groupId": "health",
+    "flow": "application",
+    "healthGate": true,
+    "displayName": "Health DI"
+  },
+  "position": 11,
+  "fieldBindings": [
+    "health-di-q1",
+    "health-di-q2",
+    "health-di-q3",
+    "health-di-q4",
+    "health-di-q5",
+    "health-di-q6",
+    "health-di-q7",
+    "health-di-q1-spouse",
+    "health-di-q2-spouse",
+    "health-di-q3-spouse",
+    "health-di-q4-spouse",
+    "health-di-q5-spouse",
+    "health-di-q6-spouse",
+    "health-di-q7-spouse",
+    "health-di-q1-detail-assistanceType",
+    "health-di-q1-detail-onset",
+    "health-di-q1-detail-conditionsDetails",
+    "health-di-q1-detail-physicianAddress",
+    "health-di-q2-detail-fallType",
+    "health-di-q2-detail-onset",
+    "health-di-q2-detail-conditionsDetails",
+    "health-di-q2-detail-physicianAddress",
+    "health-di-q3-detail-onset",
+    "health-di-q3-detail-conditionsDetails",
+    "health-di-q3-detail-physicianAddress",
+    "health-di-q4-detail-onset",
+    "health-di-q4-detail-conditionsDetails",
+    "health-di-q4-detail-physicianAddress",
+    "health-di-q5-detail-onset",
+    "health-di-q5-detail-conditionsDetails",
+    "health-di-q5-detail-physicianAddress",
+    "health-di-q6-detail-onset",
+    "health-di-q6-detail-conditionsDetails",
+    "health-di-q6-detail-physicianAddress",
+    "health-di-q7-detail-details"
+  ],
+  "looseFields": [
+    "health-di-q1",
+    "health-di-q2",
+    "health-di-q3",
+    "health-di-q4",
+    "health-di-q5",
+    "health-di-q6",
+    "health-di-q7",
+    "health-di-q1-spouse",
+    "health-di-q2-spouse",
+    "health-di-q3-spouse",
+    "health-di-q4-spouse",
+    "health-di-q5-spouse",
+    "health-di-q6-spouse",
+    "health-di-q7-spouse"
+  ],
+  "layout": {
+    "sections": {}
+  },
+  "content": {
+    "wording": [
+      "page.health-di.title",
+      "page.health-di.subhead",
+      "page.health-di.nav-title"
+    ],
+    "runtime": [
+      "application.ui.no-details-provided",
+      "application.ui.onset"
+    ]
+  }
 }

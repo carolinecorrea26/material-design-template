@@ -16,6 +16,22 @@
       "format": "state-code",
       "default": [],
       "source": "src/domain/applicantExperience.ts"
+    },
+    {
+      "id": "contact-hide-business-address",
+      "name": "Hide business address on Contact",
+      "status": "confirmed",
+      "type": "boolean",
+      "default": false,
+      "source": "Existing shared Contact configuration; src/domain/applicantExperience.ts; runtime supported"
+    },
+    {
+      "id": "contact-hide-correspondence",
+      "name": "Hide correspondence choice on Contact",
+      "status": "confirmed",
+      "type": "boolean",
+      "default": false,
+      "source": "Existing shared Contact configuration; src/domain/applicantExperience.ts; runtime supported"
     }
   ]
 }

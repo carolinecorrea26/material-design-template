@@ -1,6 +1,43 @@
 {
   "page": "application-edit-confirmation",
   "components": [
-    { "type": "application-edit-confirmation" }
-  ]
+    {
+      "type": "FormRoutePage",
+      "components": [
+        {
+          "type": "ConfirmationAlert"
+        },
+        {
+          "type": "DetailsTable"
+        },
+        {
+          "type": "Button"
+        }
+      ]
+    }
+  ],
+  "definition": {
+    "id": "application-edit-confirmation",
+    "path": "/application-edit-confirmation",
+    "type": "form",
+    "flow": "advisor",
+    "healthGate": false,
+    "displayName": "Application Edit Confirmation"
+  },
+  "position": 22,
+  "layout": {
+    "sections": {}
+  },
+  "content": {
+    "wording": [
+      "confirmation.edit.title",
+      "confirmation.edit.subhead",
+      "confirmation.edit.nav-title",
+      "confirmation.edit.announcement",
+      "confirmation.edit.message",
+      "confirmation.edit.recipient",
+      "confirmation.edit.sent",
+      "confirmation.edit.home"
+    ]
+  }
 }

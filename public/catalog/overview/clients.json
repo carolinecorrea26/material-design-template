@@ -1313,31 +1313,6 @@
       "displayId": 239927302896332
     },
     {
-      "id": "client:asce",
-      "key": "client:asce",
-      "definition": {
-        "phone": "8006502723",
-        "phoneDisplay": "800-650-2723",
-        "phoneHours": "M-F 8:00am-5:00pm CST",
-        "email": "customerservice@asceinsurance.com",
-        "website": "asceinsurance.com",
-        "address": {
-          "organization": "Pearl Insurance",
-          "street": "1200 E. Glen Avenue",
-          "city": "Peoria Heights",
-          "state": "Illinois",
-          "zip": "61616"
-        }
-      },
-      "position": 0,
-      "scope": "client",
-      "clientKey": "asce",
-      "siteKey": null,
-      "sourceReference": "Associations!D16",
-      "providedBy": null,
-      "displayId": 93993997753463
-    },
-    {
       "id": "client:avma",
       "key": "client:avma",
       "definition": {

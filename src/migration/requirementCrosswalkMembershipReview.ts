@@ -4,7 +4,7 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { DatabaseSchema } from "../persistence/types";
 import type { CrosswalkRow } from "./requirementCrosswalk";
-import { resolveEffectiveSite } from "../domain/effectiveSite";
+import { resolveSnapshotSite as resolveEffectiveSite } from "../domain/effectiveSite";
 
 const evidence: Record<string, string> = {
   "src/app/sections/ConfiguredMembershipHelp.tsx": "d6df8ebefc8a49c5c39be6fcc9d808341dd7367816c8fe0fd36c091aef2c7f5b",

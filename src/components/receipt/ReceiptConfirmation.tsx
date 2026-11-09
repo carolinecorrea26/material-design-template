@@ -18,7 +18,7 @@ export default function ReceiptConfirmation({ title, content, confirmationNumber
   return <Stack spacing={2.5}>
     <Stack spacing={1}>
       <Typography variant="h3" component="h1">{title}</Typography>
-      <Typography variant="body2" color="text.secondary">{content.confirmationNumberLabel} <Typography component="span" variant="inherit" fontWeight={700} color="text.primary">{confirmationNumber || '—'}</Typography></Typography>
+      <Typography variant="body2" color="text.secondary">{content.confirmationNumberLabel} <Typography component="span" variant="inherit" fontWeight={700} color="text.primary">{confirmationNumber || "—"}</Typography></Typography>
     </Stack>
     <ReceiptNextSteps content={{ title: content.receivedMessage ?? receiptDefaults.receivedMessage!, items: [{ title: '', description: content.paymentNotice ?? receiptDefaults.paymentNotice! }] }} />
     <Alert severity="warning" sx={{ '& .MuiAlert-message': { width: '100%', minWidth: 0 } }}>

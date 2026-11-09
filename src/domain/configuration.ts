@@ -158,7 +158,13 @@ export type ClientProductEstimatedCostBreakdown = {
 };
 
 export type ClientCoverages = {
-  /** Product order within category; omitted products use the default semantic order. */
+  amountSelection?: {
+    order?: "minimum-to-maximum" | "maximum-to-minimum";
+    defaultMode?: "minimum" | "specified";
+    defaultValue?: number;
+    locked?: boolean;
+  };
+  /** Product order within category; omitted products inherit the global JSON order. */
   productOrder?: CoverageId[];
   /** Display order override; omitted categories follow the canonical default order. */
   categoryOrder?: CoverageCategoryId[];

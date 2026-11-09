@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import type { DatabaseSchema } from "../persistence/types";
 import type { buildRequirementCrosswalk, CrosswalkRow } from "./requirementCrosswalk";
-import { resolveEffectiveSite } from "../domain/effectiveSite";
+import { resolveSnapshotSite as resolveEffectiveSite } from "../domain/effectiveSite";
 import { activeSiteMainRows } from "./activeSiteIdentity";
 import { currentMcrSource } from "./currentMcr";
 import { reviewAbeSourceFollowThrough } from "./requirementCrosswalkAbeSources";

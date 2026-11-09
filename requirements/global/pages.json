@@ -1,42 +1,94 @@
 {
   "pages": [
-    { "id": "home" },
-
-    { "id": "membership" },
-    { "id": "eligibility" },
-
-    { "id": "coverage" },
-
-    { "id": "beneficiary" },
-    { "id": "contact" },
-    { "id": "profile" },
-
-    { "id": "review" },
-    { "id": "health-si" },
-    { "id": "health-li" },
-    { "id": "health-qd" },
-    { "id": "health-di" },
-    { "id": "health-ci" },
-    { "id": "health-cir" },
-    { "id": "payment" },
-
-    { "id": "docusign" },
-
-    { "id": "receipt" },
-
-    { "id": "resume" },
-    { "id": "resume-method" },
-    { "id": "resume-code" },
-
-    { "id": "advisor-login" },
-    { "id": "advisor-send-confirmation" },
-    { "id": "application-edit-confirmation" },
-
-    { "id": "not-found" },
-    { "id": "application-unavailable" },
-    { "id": "technical-error" },
-    { "id": "maintenance" },
-    { "id": "session-expired" },
-    { "id": "unconfirmed-result" }
+    {
+      "id": "home"
+    },
+    {
+      "id": "membership"
+    },
+    {
+      "id": "eligibility"
+    },
+    {
+      "id": "coverage"
+    },
+    {
+      "id": "beneficiary"
+    },
+    {
+      "id": "contact"
+    },
+    {
+      "id": "profile"
+    },
+    {
+      "id": "review"
+    },
+    {
+      "id": "health-si"
+    },
+    {
+      "id": "health-li"
+    },
+    {
+      "id": "health-qd"
+    },
+    {
+      "id": "health-di"
+    },
+    {
+      "id": "health-ci"
+    },
+    {
+      "id": "health-cir"
+    },
+    {
+      "id": "payment"
+    },
+    {
+      "id": "docusign"
+    },
+    {
+      "id": "receipt"
+    },
+    {
+      "id": "resume"
+    },
+    {
+      "id": "resume-method"
+    },
+    {
+      "id": "resume-code"
+    },
+    {
+      "id": "advisor-login"
+    },
+    {
+      "id": "advisor-send-confirmation"
+    },
+    {
+      "id": "application-edit-confirmation"
+    },
+    {
+      "id": "not-found"
+    },
+    {
+      "id": "application-unavailable"
+    },
+    {
+      "id": "technical-error"
+    },
+    {
+      "id": "maintenance"
+    },
+    {
+      "id": "session-expired"
+    },
+    {
+      "id": "unconfirmed-result"
+    },
+    {
+      "id": "error-500"
+    }
   ]
 }

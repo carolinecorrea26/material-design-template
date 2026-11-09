@@ -65,15 +65,17 @@ export default function CoverageOptionsPanel({
   const getApplicantLabel = (applicant: CoverageApplicantId) => content.shared.applicantLabels[applicant];
 
   const coverageGroups = useMemo(
-    () =>
-      orderCoveragePresentation(coverages, coverageConfig, featuredProduct).categories
+    () => {
+      const ordered = orderCoveragePresentation(coverages, coverageConfig, featuredProduct);
+      return ordered.categories
         .map(id => coverageCategories.find(category => category.id === id)!)
         .map((category) => ({
           category,
-          products: coverages
+          products: ordered.products
             .filter((coverage) => coverage.categoryId === category.id),
         }))
-        .filter((group) => group.products.length > 0),
+        .filter((group) => group.products.length > 0);
+    },
     [coverages, coverageConfig, featuredProduct],
   );
 

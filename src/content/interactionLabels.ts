@@ -1,3 +1,5 @@
+import { requirementHelpChips, requirementText } from "../domain/requirementContent";
+
 /** Shared by rendered controls and Library inspection. These are element labels,
  * not analytics action descriptions. */
 export const menuTools = {
@@ -8,8 +10,8 @@ export const menuTools = {
 } as const;
 
 export const helpChipDefinitions = {
-  coverageOptions: { id: "coverage-options-available", label: "What are my coverage options?" },
-  applying: { id: "application-process", label: "How does applying work?" },
+  coverageOptions: { id: "coverage-options-available", label: requirementText("membership.help.coverage-options") },
+  applying: { id: "application-process", label: requirementText("membership.help.how-applying-works") },
   beneficiaryBasics: { id: "beneficiary-basics", label: "What is a beneficiary?" },
   beneficiaryShare: { id: "beneficiary-share", label: "What is the % share?" },
   payment: { id: "payment-handling", label: "How is my payment information handled?" },
@@ -17,7 +19,7 @@ export const helpChipDefinitions = {
 } as const;
 
 export const pageHelpChips: Record<string, readonly { id: string; label: string }[]> = {
-  membership: [helpChipDefinitions.coverageOptions, helpChipDefinitions.applying],
+  membership: requirementHelpChips("membership"),
   coverage: [],
   beneficiary: [helpChipDefinitions.beneficiaryBasics, helpChipDefinitions.beneficiaryShare],
   payment: [helpChipDefinitions.payment],
@@ -29,4 +31,4 @@ export const pageHelpChips: Record<string, readonly { id: string; label: string 
   "health-qd": [helpChipDefinitions.health],
 };
 
-export const coverageLinkUnavailableMessage = "No coverage is available through this link. Please contact your plan administrator for help.";
+export const coverageLinkUnavailableMessage = requirementText("coverage.no-coverage");

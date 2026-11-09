@@ -6,10 +6,10 @@ import CoverageQuestions from "./CoverageQuestions";
 import type { CoverageCategoryId } from "../../config/coverages/types";
 import { coverageCategories } from "../../config/coverageCategories";
 
-import { fieldCatalog } from "../../config/fields";
-import { pageSections } from "../../config/pageSections/pageSections";
-import { coverageQuestionRequirements } from "../../config/coverageQuestionRequirements";
-import { conditionDefinitions } from "../../config/conditions/conditions";
+import ComponentFixture from "../../../.storybook/fixtures/ComponentFixture";
+import type { PrototypeLibrary } from "../../domain/prototypeLibrary";
+import { coverageFactFieldIds } from "../../config/fields/coverageFactFields";
+import { resolveCoverageQuestionSections } from "../../config/resolvers/resolveCoverageQuestionSections";
 import { evaluateCondition } from "../../config/conditions/evaluateConditions";
 /** The same category question, configured follow-ups and product facts as the live page. */
 const meta = {
@@ -28,12 +28,19 @@ function CoverageQuestionsDemo({
   selectedCategories: CoverageCategoryId[];
   hasSpouse?: boolean;
 }) {
+  return <ComponentFixture>{fixture => <CoverageQuestionsForm initialCategories={initialCategories} hasSpouse={hasSpouse} fixture={fixture} />}</ComponentFixture>;
+}
+
+function CoverageQuestionsForm({ initialCategories, hasSpouse, fixture }: { initialCategories: CoverageCategoryId[]; hasSpouse: boolean; fixture: PrototypeLibrary }) {
   const { control, formState, trigger, watch } = useForm<Record<string, string | boolean | string[]>>({ defaultValues: { dependents: hasSpouse ? ["spouse"] : [] }, mode: "onChange" });
   const watchedValues = watch();
   const [selectedCategories, setSelectedCategories] = useState(initialCategories);
-  const ids = selectedCategories.flatMap(category => [...coverageQuestionRequirements[category].self ?? [], ...(hasSpouse ? coverageQuestionRequirements[category].spouse ?? [] : [])]);
-  const fields = ids.map(id => fieldCatalog[id]).filter(field => !field.visibilityConditionId || conditionDefinitions.some(condition => condition.id === field.visibilityConditionId && evaluateCondition(condition, watchedValues)));
-  const sections = (pageSections.coverage ?? []).map(section => ({ ...section, fieldIds: section.fieldIds.filter(id => fields.some(field => field.id === id)) })).filter(section => section.fieldIds.length);
+  const visible = (target: { visibilityConditionId?: string }) => !target.visibilityConditionId || fixture.site.configuration.conditions.some(condition => condition.value.definition.id === target.visibilityConditionId && evaluateCondition(condition.value.definition, watchedValues));
+  const page = fixture.site.configuration.pages.find(page => page.key === "coverage")!;
+  const fields = page.fields.filter(row => row.included && visible(row.definition)).map(row => row.definition);
+  const sections = resolveCoverageQuestionSections({ sections: page.sections.map(section => section.definition.value), selectedCategories, coverageQuestions: fixture.client.coverageQuestions }, fixture).filter(visible);
+  const products = fixture.products.filter(product => selectedCategories.includes(product.categoryId));
+  const factIds = coverageFactFieldIds(products, watchedValues);
 
   return (
     <Box sx={{ maxWidth: 640 }}>
@@ -45,8 +52,11 @@ function CoverageQuestionsDemo({
         pageSections={sections}
         selectedCategories={selectedCategories}
         hasSpouse={hasSpouse}
-        availableCategories={coverageCategories}
-        categoryProducts={[]}
+        availableCategories={coverageCategories.filter(category => fixture.products.some(product => product.categoryId === category.id))}
+        categoryProducts={products}
+        factFields={fields.filter(field => factIds.includes(field.id as typeof factIds[number]) && !sections.some(section => section.fieldIds.some(id => id === field.id)))}
+        applicantLabels={fixture.client.applicantLabels}
+        sectionNotes={fixture.content.pages.coverage?.sectionNotes}
         onCategoryToggle={id => setSelectedCategories(current => current.includes(id) ? current.filter(value => value !== id) : [...current, id])}
       />
       <Button variant="outlined" sx={{ mt: 3 }} onClick={() => void trigger()}>Check required fields</Button>

@@ -2,6 +2,18 @@ import type { CoverageDefinition } from "../../domain/coverage";
 import type { EffectiveSite } from "../../domain/effectiveSite";
 import { resolveCoverageJourneyPolicy } from "../../domain/coverageJourneyPolicy";
 
+const entryParameters = [["category", "coverage-category-scope"], ["prods", "coverage-product-scope"], ["featured_prod", "coverage-featured-product"], ["amt", "coverage-amount-defaults"], ["dprods", "coverage-amount-locks"]] as const;
+
+/** Preserve amount campaign controls across routes and saved-application resume. */
+export function captureCoverageAmountParameters(siteKey: string) {
+  const params = new URLSearchParams(window.location.search);
+  if (!["category", "prods", "amt", "dprods"].some(key => params.has(key))) return;
+  for (const [parameter, prefix] of entryParameters.filter(([parameter]) => parameter === "amt" || parameter === "dprods")) {
+    if (params.has(parameter)) window.sessionStorage.setItem(`${prefix}:${siteKey}`, params.get(parameter)!);
+    else window.sessionStorage.removeItem(`${prefix}:${siteKey}`);
+  }
+}
+
 /** Campaign product IDs are G-numbers, including captured Association variants. */
 export function restrictCoverageProducts(products: CoverageDefinition[], prods: string | null, site?: EffectiveSite) {
   if (prods === null) return products;
@@ -38,7 +50,7 @@ export function activeFeaturedProduct(siteKey: string) {
 
 export function capturedCoverageEntryScope(siteKey: string): Record<string, string> {
   const result: Record<string, string> = {};
-  for (const [parameter, prefix] of [["category", "coverage-category-scope"], ["prods", "coverage-product-scope"], ["featured_prod", "coverage-featured-product"]]) {
+  for (const [parameter, prefix] of entryParameters) {
     const value = window.sessionStorage.getItem(`${prefix}:${siteKey}`);
     if (value !== null) result[parameter] = value;
   }
@@ -57,7 +69,7 @@ export function withCapturedCoverageEntryScope<T extends Record<string, unknown>
 export function restoreCoverageEntryScope(siteKey: string, value: unknown) {
   const validObject = value !== null && typeof value === "object" && !Array.isArray(value);
   const scope = validObject ? value as Record<string, unknown> : value === undefined || value === null ? {} : { category: "", prods: "" };
-  for (const [parameter, prefix] of [["category", "coverage-category-scope"], ["prods", "coverage-product-scope"], ["featured_prod", "coverage-featured-product"]]) {
+  for (const [parameter, prefix] of entryParameters) {
     const key = `${prefix}:${siteKey}`;
     if (typeof scope[parameter] === "string") window.sessionStorage.setItem(key, scope[parameter]);
     else if (Object.hasOwn(scope, parameter)) window.sessionStorage.setItem(key, "");

@@ -1,6 +1,42 @@
 {
   "page": "maintenance",
   "components": [
-    { "type": "maintenance" }
-  ]
+    {
+      "type": "ApplicationErrorState"
+    }
+  ],
+  "definition": {
+    "id": "maintenance",
+    "path": "/maintenance",
+    "type": "error",
+    "displayName": "Maintenance",
+    "flow": "utility",
+    "healthGate": false
+  },
+  "position": 35,
+  "layout": {
+    "sections": {}
+  },
+  "content": {
+    "wording": [
+      "recovery.maintenance.title",
+      "recovery.maintenance.message",
+      "recovery.maintenance.guidance"
+    ],
+    "actions": [
+      "recovery.action.home",
+      "recovery.action.resume",
+      "recovery.action.start-new",
+      "recovery.action.retry",
+      "recovery.action.payment"
+    ],
+    "contextual": [
+      "recovery.payment.failed",
+      "recovery.submission.failed",
+      "recovery.payment.guidance",
+      "recovery.submission.guidance",
+      "recovery.operation.unknown",
+      "recovery.page.failed"
+    ]
+  }
 }

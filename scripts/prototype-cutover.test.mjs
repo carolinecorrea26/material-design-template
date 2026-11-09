@@ -49,8 +49,8 @@ it.each(['abe', 'asce'].filter(site => activeSites.includes(site)))('%s persists
     payload.data.sitePages.find(page => page.siteKey === siteKey && page.pageKey === 'contact').requirement = 'none';
     const assertPages = envelope => {
       const pages = validatePrototypeEnvelope(envelope, siteKey).pages;
-      expect(pages.slice(0, 3).map(page => page.key)).toEqual(['home', 'eligibility', 'membership']);
-      expect(pages.find(page => page.key === 'eligibility').definition.path).toBe('/saved-eligibility');
+      expect(pages.slice(0, 3).map(page => page.key)).toEqual(siteKey === 'asce' ? ['home', 'membership', 'eligibility'] : ['home', 'eligibility', 'membership']);
+      expect(pages.find(page => page.key === 'eligibility').definition.path).toBe(siteKey === 'asce' ? '/eligibility' : '/saved-eligibility');
       expect(pages.find(page => page.key === 'contact').enabled).toBe(false);
     };
     const saved = await request('/library/save', { expectedVersion: 0, payload });

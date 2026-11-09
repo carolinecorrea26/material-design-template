@@ -1,3 +1,4 @@
+import { requirementText } from "../../domain/requirementContent";
 import { Alert, Box, Stack } from "@mui/material";
 import { useForm } from "react-hook-form";
 import type { FieldDefinition } from "../../config/fields/types";
@@ -13,10 +14,10 @@ export default function VerificationAddress({ fields, values, onContinue, onClos
   const form = useForm<Record<string, string | boolean | string[]>>({
     defaultValues: Object.fromEntries(fields.map(field => [field.id, String(values[field.id] ?? "")])),
   });
-  return <AppModal open onClose={onClose} title="Confirm your address" maxWidth={680}
-    actions={[{ label: "Continue to member verification", onClick: () => { void form.handleSubmit(onContinue)(); } }, { label: "Cancel", onClick: onClose, variant: "text" }]}>
+  return <AppModal open onClose={onClose} title={requirementText("eligibility.verification.address.title")} maxWidth={680}
+    actions={[{ label: requirementText("eligibility.verification.address.continue"), onClick: () => { void form.handleSubmit(onContinue)(); } }, { label: requirementText("eligibility.verification.cancel"), onClick: onClose, variant: "text" }]}>
     <Stack spacing={2}>
-      <Alert severity="info">Please provide your full residential address before continuing to member verification.</Alert>
+      <Alert severity="info">{requirementText("eligibility.verification.address.message")}</Alert>
       <Box component="form" noValidate onSubmit={form.handleSubmit(onContinue)}>
         <AddressFields fields={fields} control={form.control} errors={form.formState.errors} />
       </Box>

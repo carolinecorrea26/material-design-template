@@ -1,5 +1,12 @@
 {
   "component": "contact",
-  "configurations": ["eligible-states-only", "eligible-states"],
-  "presentation": ["eligible-state-options"]
+  "configurations": [
+    "eligible-states-only",
+    "eligible-states",
+    "contact-hide-business-address",
+    "contact-hide-correspondence"
+  ],
+  "presentation": [
+    "eligible-state-options"
+  ]
 }

@@ -15,6 +15,16 @@
       "check": "page-check",
       "statement": "After registered field checks pass, invoke the configured page validation callback with merged current application/form values. A returned error message blocks forward submission. Page-specific business checks must be authored separately; this defines only the shared invocation.",
       "source": "src/app/RoutePage.tsx"
+    },
+    {
+      "id": "form-validation-summary",
+      "name": "Show the standard field-validation page alert",
+      "status": "confirmed",
+      "check": "field-definition",
+      "level": "page",
+      "message": "recovery.validation.message",
+      "statement": "When submitted participating fields fail their shared checks, keep their inline messages and show the standard page alert. Eligibility failures use their separate shared ineligibility message.",
+      "source": "src/app/RoutePage.tsx"
     }
   ]
 }

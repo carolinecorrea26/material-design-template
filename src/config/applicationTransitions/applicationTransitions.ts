@@ -7,6 +7,7 @@ import { getCategoryQuestionFieldIds } from "../coverageQuestionRequirements";
 import type { FieldId } from "../fields/types";
 import type { ApplicationTransitionDefinition } from "./types";
 import { executeApplicationTransition } from "./executeApplicationTransition";
+import contactPage from '../../../requirements/parked/contact.json';
 
 export type QuoteApplySource = {
   birthday: string;
@@ -113,14 +114,7 @@ export function executeQuoteApplyTransition(source: QuoteApplySource, currentVal
 
 type ContactCarryForwardSource = ApplicationFormValues;
 
-export const contactCarryForwardTransition: ApplicationTransitionDefinition<ContactCarryForwardSource> = {
-  id: "contact-carry-forward",
-  trigger: "contact.enter",
-  fieldMappings: [
-    { source: "state-province", targetFieldId: "state", overwrite: "if-empty" },
-    { source: "zip-postal-code", targetFieldId: "zip-code", overwrite: "if-empty" },
-  ],
-};
+export const contactCarryForwardTransition = contactPage.transitions.enter as ApplicationTransitionDefinition<ContactCarryForwardSource>;
 
 export function describeApplicationTransition<Source extends Record<string, unknown>>(
   definition: ApplicationTransitionDefinition<Source>,

@@ -1,3 +1,4 @@
+import { requirementText } from "../../domain/requirementContent";
 import ApplyingStepIllustration from "./ApplyingStepIllustration";
 import { useState, type ReactNode } from "react";
 import { Box, Stack, Typography, useMediaQuery } from "@mui/material";
@@ -8,7 +9,7 @@ import QuickDecisionDrawerContent, {
   QuickDecisionMark,
 } from "../content/QuickDecisionExplainer";
 import ApplicationReviewDrawerContent from "../content/ApplicationReviewDrawerContent";
-import { applyingWorksImages } from "../../config/homepagePresentation";
+import { applyingWorksImages, getApplyingWorksPresentation } from "../../config/homepagePresentation";
 import { useComponentContent } from "../content/ComponentContentContext";
 import ApplicationPreview, {
   APPLICATION_PREVIEW_STEPS,
@@ -27,7 +28,7 @@ export type HowApplyingWorksPanelProps = {
 
 export default function HowApplyingWorksPanel({
   variant,
-  presentation = "static",
+  presentation = getApplyingWorksPresentation(),
   onOpenApplicationReview,
   onOpenQuickDecision,
 }: HowApplyingWorksPanelProps) {
@@ -70,7 +71,7 @@ export default function HowApplyingWorksPanel({
       return (
         <>
           {" "}
-          When{" "}
+          {requirementText("home.applying-steps.when")}{" "}
           <InlineDrawerLink onClick={openQuickDecision}>
             <QuickDecisionMark />
           </InlineDrawerLink>

@@ -1,6 +1,44 @@
 {
   "page": "advisor-send-confirmation",
   "components": [
-    { "type": "advisor-send-confirmation" }
-  ]
+    {
+      "type": "FormRoutePage",
+      "components": [
+        {
+          "type": "ConfirmationAlert"
+        },
+        {
+          "type": "DetailsTable"
+        },
+        {
+          "type": "Button"
+        }
+      ]
+    }
+  ],
+  "definition": {
+    "id": "advisor-send-confirmation",
+    "path": "/advisor-send-confirmation",
+    "type": "form",
+    "flow": "advisor",
+    "healthGate": false,
+    "displayName": "Advisor Send Confirmation"
+  },
+  "position": 21,
+  "layout": {
+    "sections": {}
+  },
+  "content": {
+    "wording": [
+      "confirmation.advisor.title",
+      "confirmation.advisor.subhead",
+      "confirmation.advisor.nav-title",
+      "confirmation.advisor.message",
+      "confirmation.advisor.applicant-name",
+      "confirmation.advisor.applicant-email",
+      "confirmation.advisor.sent",
+      "confirmation.advisor.deletion",
+      "confirmation.advisor.start"
+    ]
+  }
 }

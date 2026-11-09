@@ -560,8 +560,8 @@ const configurationInventory: ConfigRowSource[] = [
     label: "Set coverage amount",
     name: "setCoverageAmount",
     description:
-      "Planned configuration. Sets the Coverage page coverage-amount dropdown to a specified amount and disables the control so the applicant cannot change it.",
-    sourcePath: "Planned — not yet implemented in prototype",
+      "Implemented through global coverage-amount-default-mode/default-value/locked definitions and coverages.amountSelection bindings. A valid specified default may be locked; amt/dprods use the same eligible-amount resolver.",
+    sourcePath: "requirements/global/configurations/coverage-amount-controls.json; src/domain/coveragePresentation.ts",
     scope: "Client Configurable",
     usedIn: "Coverage page coverage amount dropdown",
   },
@@ -570,8 +570,8 @@ const configurationInventory: ConfigRowSource[] = [
     label: "Set coverage amount order",
     name: "setCoverageOrder",
     description:
-      "Planned configuration. Controls whether coverage-amount dropdown options are displayed in ascending or descending order.",
-    sourcePath: "Planned — not yet implemented in prototype",
+      "Global coverage-amount-order controls ascending or descending positive choices through the shared amount resolver; effective Sites may override without changing eligibility or increments.",
+    sourcePath: "requirements/global/configurations/coverage-amount-controls.json; src/domain/coveragePresentation.ts",
     scope: "Client Configurable",
     usedIn: "Coverage page coverage amount dropdown",
   },

@@ -4,7 +4,7 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { DatabaseSchema } from "../persistence/types";
 import type { CrosswalkRow } from "./requirementCrosswalk";
-import { resolveEffectiveSite } from "../domain/effectiveSite";
+import { resolveSnapshotSite as resolveEffectiveSite } from "../domain/effectiveSite";
 import namedEvidence from "../../docs/project-review/step1-owner-review-evidence.json";
 import { reviewedNamedOwnerCodeMatches } from "./requirementCrosswalkOwnerReview";
 const evidence: Record<string, string> = {

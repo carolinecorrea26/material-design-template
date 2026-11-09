@@ -1,3 +1,4 @@
+import { requirementText } from "../../domain/requirementContent";
 import type { ReactNode } from "react";
 import { Alert, Link } from "@mui/material";
 
@@ -24,8 +25,7 @@ export default function ExpiringCodeAlert({
   if (secondsLeft === 0) {
     return (
       <Alert severity="error">
-        Your {kind === "link" ? "secure link" : "verification code"} has
-        expired. {" "}
+        {requirementText("application.ui.your")}{kind === "link" ? requirementText("application.ui.secure-link") : requirementText("application.ui.verification-code")} {requirementText("application.ui.has-expired")}{" "}
         <Link
           href="#"
           onClick={(event) => {
@@ -34,7 +34,7 @@ export default function ExpiringCodeAlert({
           }}
           sx={{ fontSize: "inherit", verticalAlign: "baseline" }}
         >
-          Resend {kind}
+          {requirementText("application.ui.resend")}{kind}
         </Link>
       </Alert>
     );

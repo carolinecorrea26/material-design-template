@@ -1,6 +1,6 @@
 import { Alert, Typography } from "@mui/material";
 import type { FormRouteRenderProps } from "../../app/RoutePage";
-import { childMapping } from "../../config/fields/eligibilityListFields";
+import { requirementChildCollection } from "../../domain/requirementCollections";
 import FieldRenderer from "../forms/FieldRenderer";
 import EligibilityFields from "../forms/EligibilityFields";
 import DynamicList from "../forms/DynamicList";
@@ -27,6 +27,7 @@ export default function EligibilitySections({
   childNotice, collection, sectionNotes = {}, applicantLabels, eligibleStatesOnly,
 }: EligibilitySectionsProps) {
 
+  const childCollection = collection ?? requirementChildCollection();
   return (
     <>
       {pageSections.map((section) => {
@@ -34,17 +35,12 @@ export default function EligibilitySections({
         const content =
           section.id === "childSection" && childNotice ? <Alert severity="info">{childNotice}</Alert> : section.id === "childSection" ? (
             <>
-              {sectionNotes.childSection === undefined && (
-                <Alert severity="info" sx={{ mt: 1, mb: 2 }}>
-                  Only unmarried children are eligible for coverage.
-                </Alert>
-              )}
               <DynamicList
                 control={control}
-                name={collection?.name ?? "children"}
-                label={collection?.label ?? "Child"}
-                maxItems={collection?.maxItems ?? 10}
-                mapping={collection?.mapping ?? childMapping}
+                name={childCollection.name}
+                label={childCollection.label}
+                maxItems={childCollection.maxItems}
+                mapping={childCollection.mapping}
                 renderItem={(item) => (
                   <Typography variant="body2">
                     {`${item["child-first-name"] ?? ""} ${item["child-last-name"] ?? ""}`.trim().toUpperCase()}

@@ -1,3 +1,4 @@
+import { requirementCoverageControl } from "../../domain/requirementFields";
 import type { FieldDefinition } from "../../domain/fields";
 import { Stack, Typography, type StackProps } from "@mui/material";
 import RateFrequencyToggle from "./RateFrequencyToggle";
@@ -18,7 +19,7 @@ export default function RateFrequencyControl({
   onChange,
   justifyContent = "center",
   field,
-  ariaLabel = "Toggle estimated cost between monthly and annual",
+  ariaLabel = requirementCoverageControl("rate-frequency").label,
 }: RateFrequencyControlProps) {
   return (
     <Stack
@@ -32,7 +33,7 @@ export default function RateFrequencyControl({
         fontWeight={700}
         color={value === "monthly" ? "primary.main" : "text.secondary"}
       >
-        {field?.options?.find(option => option.value === "monthly")?.label ?? "Monthly"}
+        {field?.options?.find(option => option.value === "monthly")?.label ?? requirementCoverageControl("rate-frequency").options!.find(option => option.value === "monthly")!.label}
       </Typography>
       <RateFrequencyToggle
         checked={value === "annual"}
@@ -44,7 +45,7 @@ export default function RateFrequencyControl({
         fontWeight={700}
         color={value === "annual" ? "primary.main" : "text.secondary"}
       >
-        {field?.options?.find(option => option.value === "annual")?.label ?? "Annual"}
+        {field?.options?.find(option => option.value === "annual")?.label ?? requirementCoverageControl("rate-frequency").options!.find(option => option.value === "annual")!.label}
       </Typography>
     </Stack>
   );

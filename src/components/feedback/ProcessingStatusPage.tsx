@@ -1,3 +1,4 @@
+import { requirementText } from "../../domain/requirementContent";
 import { useEffect, useState, type ReactNode } from "react";
 import { Box, CircularProgress, Stack, Typography } from "@mui/material";
 import CheckCircleRounded from '@mui/icons-material/CheckCircleRounded';
@@ -6,6 +7,7 @@ import ApplicationErrorState from './ApplicationErrorState';
 import { recoveryIncident, supportReference, type RecoveryOperation } from '../../domain/recoveryIncident';
 import { applicationRecovery, recoveryPresentation } from '../../content/applicationRecovery';
 import type { ApplicationSupportIds } from '../../domain/applicationSupportReference';
+import prototypeDefaults from '../../../requirements/global/prototype-fixtures/application.json';
 
 type ProcessingStatusPageProps = ApplicationSupportIds & {
   heading: ReactNode;
@@ -25,7 +27,7 @@ export default function ProcessingStatusPage({
   mark,
   operation = 'decision',
   phase = 'pending',
-  timeoutMs = 15000,
+  timeoutMs = prototypeDefaults.processingTimeoutMs,
   reference,
   applicationId,
   confirmationId,
@@ -34,7 +36,7 @@ export default function ProcessingStatusPage({
   useEffect(() => {
     setTimedOut(false);
     if (phase !== 'pending' || timeoutMs === null) return;
-    const duration = Number.isFinite(timeoutMs) ? Math.min(60000, Math.max(1000, timeoutMs)) : 15000;
+    const duration = Number.isFinite(timeoutMs) ? Math.min(60000, Math.max(1000, timeoutMs)) : prototypeDefaults.processingTimeoutMs;
     const timer = window.setTimeout(() => setTimedOut(true), duration);
     return () => clearTimeout(timer);
   }, [phase, timeoutMs, operation]);
@@ -73,7 +75,7 @@ export default function ProcessingStatusPage({
           >
             {complete ? applicationRecovery['processing-complete'].message : body}
           </Typography>
-          {safeReference && <Typography variant="caption">Support reference: {safeReference}</Typography>}
+          {safeReference && <Typography variant="caption">{requirementText("application.ui.support-reference")}{safeReference}</Typography>}
         </Stack>
       </Stack>
     </Box>

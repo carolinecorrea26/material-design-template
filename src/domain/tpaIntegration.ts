@@ -28,3 +28,12 @@ export function tpaOutcomeValues(member: TpaResolution, outcome: TpaOutcome) {
   return { "tpa-existing-member": member.existingMember, "tpa-active-coverage": member.activeCoverage,
     "tpa-verified": outcome.verified, "tpa-portfolio-enabled": outcome.portfolio, "tpa-submission-decision": outcome.decision };
 }
+
+/** Shared access gate for the portfolio and configured in-force amount deductions. */
+export function canViewCoveragePortfolio(client: ClientConfig, values: Record<string, unknown>): boolean {
+  return client.tpaIntegration?.mode === "coverage-verification"
+    && values["tpa-existing-member"] === true
+    && values["tpa-active-coverage"] === true
+    && values["tpa-verified"] === true
+    && values["tpa-portfolio-enabled"] === true;
+}

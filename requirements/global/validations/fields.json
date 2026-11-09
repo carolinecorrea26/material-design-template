@@ -6,15 +6,138 @@
       "status": "draft",
       "check": "required-fields",
       "statement": "Reject missing values for mapped fields marked required in their effective field definitions. Do not maintain a second required setting here. The applicability mapping identifies which fields are checked.",
-      "source": "src/components/forms/EligibilityFields.tsx"
+      "source": "src/utils/fieldValidation.ts",
+      "level": "field",
+      "message": "validation.field.required"
     },
     {
       "id": "postal-code-format",
       "name": "Check the ZIP or postal code format",
-      "status": "draft",
+      "status": "confirmed",
       "check": "postal-code-format",
       "level": "field",
-      "statement": "A supplied ZIP or postal code must be at least 5 characters (\"Enter a valid ZIP / Postal Code.\").",
+      "statement": "Accept a five-digit US ZIP, ZIP+4 (nine digits, with an optional hyphen), or a Canadian postal code (A1A 1A1, with an optional space). Location inference is optional and does not determine format validity or prevent manual State / Province selection.",
+      "source": "src/utils/fieldValidation.ts",
+      "message": "validation.field.postal-code"
+    },
+    {
+      "id": "required-selection",
+      "name": "Require at least one selection",
+      "status": "confirmed",
+      "check": "field-definition",
+      "level": "field",
+      "message": "validation.field.select-one",
+      "statement": "A required checkbox-group or multi-select must contain at least one value.",
+      "source": "src/utils/fieldValidation.ts"
+    },
+    {
+      "id": "available-selections",
+      "name": "Validate available selections",
+      "status": "confirmed",
+      "check": "field-definition",
+      "level": "field",
+      "message": "validation.field.available-options",
+      "statement": "Supplied multi-select choices must be distinct values in the effective field options.",
+      "source": "src/utils/fieldValidation.ts"
+    },
+    {
+      "id": "available-selection",
+      "name": "Validate the available selection",
+      "status": "confirmed",
+      "check": "field-definition",
+      "level": "field",
+      "message": "validation.field.available-option",
+      "statement": "A supplied radio or select value must occur in the effective field options.",
+      "source": "src/utils/fieldValidation.ts"
+    },
+    {
+      "id": "field-maximum-length",
+      "name": "Validate the authored field length",
+      "status": "confirmed",
+      "check": "field-definition",
+      "level": "field",
+      "message": "validation.field.maximum-length",
+      "statement": "Check the maximum length supplied by the effective field definition; do not maintain a second limit here.",
+      "source": "src/utils/fieldValidation.ts"
+    },
+    {
+      "id": "field-email",
+      "name": "Validate an email address",
+      "status": "confirmed",
+      "check": "field-definition",
+      "level": "field",
+      "message": "validation.field.email",
+      "statement": "Use the shared email-format check for fields with email format.",
+      "source": "src/utils/fieldValidation.ts"
+    },
+    {
+      "id": "field-phone",
+      "name": "Validate a phone number",
+      "status": "confirmed",
+      "check": "field-definition",
+      "level": "field",
+      "message": "validation.field.phone",
+      "statement": "Use the shared ten-digit check for fields with phone format.",
+      "source": "src/utils/fieldValidation.ts"
+    },
+    {
+      "id": "field-ssn",
+      "name": "Validate an SSN",
+      "status": "confirmed",
+      "check": "field-definition",
+      "level": "field",
+      "message": "validation.field.ssn",
+      "statement": "Use the shared nine-digit check for fields with SSN format.",
+      "source": "src/utils/fieldValidation.ts"
+    },
+    {
+      "id": "field-percent",
+      "name": "Validate a percentage format",
+      "status": "confirmed",
+      "check": "field-definition",
+      "level": "field",
+      "message": "validation.field.percent",
+      "statement": "Use the shared up-to-three-digit check for percentage fields.",
+      "source": "src/utils/fieldValidation.ts"
+    },
+    {
+      "id": "field-month-year",
+      "name": "Validate a month and year",
+      "status": "confirmed",
+      "check": "field-definition",
+      "level": "field",
+      "message": "validation.field.month-year",
+      "statement": "Use the shared MM/YYYY format check with a valid month and a four-digit year.",
+      "source": "src/utils/fieldValidation.ts"
+    },
+    {
+      "id": "field-number",
+      "name": "Validate a nonnegative number",
+      "status": "confirmed",
+      "check": "field-definition",
+      "level": "field",
+      "message": "validation.field.number",
+      "statement": "Use the effective field definition to decide whether decimals are permitted; reject negative or malformed numbers.",
+      "source": "src/utils/fieldValidation.ts"
+    },
+    {
+      "id": "field-minimum-length",
+      "name": "Validate the authored minimum field length",
+      "status": "confirmed",
+      "check": "field-definition",
+      "level": "field",
+      "message": "validation.field.minimum-length",
+      "statement": "Check the minimum length supplied by the effective field definition. Empty optional answers remain allowed; requiredness is checked separately.",
+      "source": "src/utils/fieldValidation.ts"
+    },
+    {
+      "id": "field-digits",
+      "name": "Validate digits-only text",
+      "status": "confirmed",
+      "check": "field-definition",
+      "level": "field",
+      "message": "validation.field.digits",
+      "statement": "Fields with digits format accept digits only and retain leading zeroes. Format and length are selected by the effective field definition; membership identifiers can remain unrestricted text for other Sites.",
       "source": "src/utils/fieldValidation.ts"
     }
   ]

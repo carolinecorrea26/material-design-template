@@ -1,3 +1,4 @@
+import type { CoverageAssignment } from "./requirementCoverageValidation.mjs";
 import { isFinancialQuestionnairePolicy } from "./financialQuestionnaire";
 import { isBeneficiaryParticipationPolicy } from "./beneficiaryParticipation";
 import { isBeneficiaryNotePolicy } from "./beneficiaryNotes";
@@ -296,6 +297,15 @@ export function resolveEffectiveConfiguration(db: EffectiveConfigurationData, si
       benefitPeriods: wrap("benefitPeriodOptions", selected(db.benefitPeriodOptions)), selectionPolicies, journeyPolicies, amountCapPolicies, limits, amounts: amountRules, riderOwnership, riders, rates, rating, rateInputPolicies, rateModifierPolicies };
   });
 
+  // Dialog/tool fields have their own placement and validation boundary. A
+  // scoped property override must not turn them into inline page questions.
+  const surfacePlacements = new Set(configurations.filter(row => db.configurationDefinitions.find(definition => definition.key === row.key)?.definition.path?.join('.') === 'fieldSurfaces').flatMap(row => {
+    if (!row.value || typeof row.value !== 'object' || Array.isArray(row.value)) return [];
+    return Object.values(row.value).flatMap(surface => {
+      if (!surface || typeof surface !== 'object' || Array.isArray(surface) || typeof surface.pageKey !== 'string' || !Array.isArray(surface.fields)) return [];
+      return surface.fields.flatMap((field: unknown) => field && typeof field === 'object' && !Array.isArray(field) && 'fieldKey' in field && typeof field.fieldKey === 'string' ? [`${surface.pageKey}:${field.fieldKey}`] : []);
+    });
+  }));
   const pages = order(db.sitePages.filter(p => p.siteKey === siteKey)).map(assignment => {
     const page = one(db.pages, assignment.pageKey, "pages");
     const fieldKeys = new Map<string, { included: boolean; definition: DatabaseSchema["fields"][number]["definition"]; provenance: RuleProvenance[] }>();
@@ -324,7 +334,10 @@ export function resolveEffectiveConfiguration(db: EffectiveConfigurationData, si
         written.add(key);
       }
       const value = fieldKeys.get(row.fieldKey) ?? (row.include === true ? field(row.fieldKey) : undefined);
-      if (!value) { issue("fields", row.key, "Override references an unassigned field", [source("siteFieldConfigurations", row)]); continue; }
+      if (!value) {
+        if (!surfacePlacements.has(`${assignment.pageKey}:${row.fieldKey}`)) issue("fields", row.key, "Override references an unassigned field", [source("siteFieldConfigurations", row)]);
+        continue;
+      }
       fieldKeys.set(row.fieldKey, { included: row.hidden !== null ? !row.hidden : row.include ?? value.included, definition: { ...value.definition, ...row.values }, provenance: [...value.provenance, source("siteFieldConfigurations", row)] });
     }
     for (const value of fieldKeys.values()) {
@@ -400,11 +413,12 @@ export function resolveEffectiveConfiguration(db: EffectiveConfigurationData, si
     const resolved = resolveSharedFieldDefinition(row, db.validationRules, fieldDefinitionOwnership);
     return [{ key, definition: resolved.definition, provenance: resolved.provenance }];
   }) : [] }));
-  return { financialQuestionnairePolicies, beneficiaryParticipationPolicies, beneficiaryNotePolicies, healthQuestionnairePolicies, siteStructureOwnership, productAvailabilityOwnership, fieldDefinitionOwnership, pageParticipation, routing, lifeAggregateParticipation, reviewPolicies, categoryEligibilityPolicies, products, pages, flows, rules, conditions: wrap("conditions", order(db.conditions)), content, configurations, lifeAggregates, ratePresentationPolicies, branding, support, features, issues };
+  const coverageRequirements = configurations.filter(row => db.configurationDefinitions.find(definition => definition.key === row.key)?.definition.path?.join(".") === "coverageRequirements").flatMap(row => Array.isArray(row.value) ? row.value as CoverageAssignment[] : []);
+  return { coverageRequirements, financialQuestionnairePolicies, beneficiaryParticipationPolicies, beneficiaryNotePolicies, healthQuestionnairePolicies, siteStructureOwnership, productAvailabilityOwnership, fieldDefinitionOwnership, pageParticipation, routing, lifeAggregateParticipation, reviewPolicies, categoryEligibilityPolicies, products, pages, flows, rules, conditions: wrap("conditions", order(db.conditions)), content, configurations, lifeAggregates, ratePresentationPolicies, branding, support, features, issues };
 }
 export type EffectiveConfiguration = ReturnType<typeof resolveEffectiveConfiguration>;
 
-export type AmountFacts = { applicantKey: string; applicantClass?: string; associationKey?: string; amount?: number | string; baseAmount?: number };
+export type AmountFacts = { applicantKey: string; applicantClass?: string; associationKey?: string; amount?: number | string; baseAmount?: number; mode?: "new" | "increase" | "rider-only" };
 export type EffectiveAmountDecision = { status: "resolved" | "needs-information" | "unresolved"; allowed?: boolean; derivedAmount?: number; provenance: RuleProvenance[] };
 /** Evaluates one explicit Site/applicant amount assignment. Overlapping scopes never win implicitly. */
 export function resolveEffectiveAmount(configuration: EffectiveConfiguration, productKey: string, facts: AmountFacts): EffectiveAmountDecision {
@@ -426,6 +440,8 @@ export function resolveEffectiveAmount(configuration: EffectiveConfiguration, pr
   if (facts.amount === undefined || typeof facts.amount === "number" && (!Number.isFinite(facts.amount) || facts.amount < 0)) return { status: "needs-information", provenance };
   if (pattern.amountType !== "named-option" && typeof facts.amount !== "number") return { status: "needs-information", provenance };
   const selected = facts.amount;
+  const minimum = configuration.coverageRequirements?.find(row => row.product === productKey && row.applicants.includes(facts.applicantKey as "member" | "spouse" | "child") && row.configuration === "coverage-new-application-minimum-amount")?.value;
+  if ((facts.mode ?? "new") === "new" && typeof selected === "number" && typeof minimum === "number" && selected < minimum) return { status: "resolved", allowed: false, provenance };
   const allowed = amount.options.some(o => o.value.value === String(selected)) || typeof selected === "number" && amount.bands.some(({ value: b }) => selected >= b.minimum! && selected <= b.maximum! && Math.abs((selected - b.minimum!) / b.increment! - Math.round((selected - b.minimum!) / b.increment!)) < 1e-9);
   return { status: "resolved", allowed, provenance };
 }

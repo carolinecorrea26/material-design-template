@@ -1,12 +1,13 @@
 import { getPrototypeLibrary } from "../../domain/prototypeLibrary";
 import { resolveSiteFeatures } from "../../data/resolvers";
 import { resolveSiteId } from "../../data/activeSite";
+import presentation from '../../../requirements/global/configurations/presentation.json';
 
 export type FormTemplate = "single" | "multi";
 
 const TEMPLATE_QUERY_PARAM = "template";
 const TEMPLATE_STORAGE_KEY = "activeFormTemplate";
-export const DEFAULT_TEMPLATE: FormTemplate = "multi";
+export const DEFAULT_TEMPLATE = presentation.configurations.find(configuration => configuration.id === 'form-template')!.default as FormTemplate;
 
 function isTemplate(v: string | null): v is FormTemplate {
   return v === "single" || v === "multi";

@@ -1,33 +1,139 @@
 {
   "pages": {
-    "home": { "type": "entry", "requirement": "required" },
-    "membership": { "type": "form", "step": "Getting started", "requirement": "required" },
-    "eligibility": { "type": "form", "step": "Getting started", "requirement": "required" },
-    "coverage": { "type": "form", "step": "Choose your coverage", "requirement": "required" },
-    "beneficiary": { "type": "form", "step": "Your application details", "requirement": "required" },
-    "contact": { "type": "form", "step": "Your application details", "requirement": "required" },
-    "profile": { "type": "form", "step": "Your application details", "requirement": "required" },
-    "review": { "type": "form", "step": "Review your application", "requirement": "required" },
-    "health-si": { "type": "form", "step": "Review your application", "requirement": "required" },
-    "health-li": { "type": "form", "step": "Review your application", "requirement": "required" },
-    "health-qd": { "type": "form", "step": "Review your application", "requirement": "required" },
-    "health-di": { "type": "form", "step": "Review your application", "requirement": "required" },
-    "health-ci": { "type": "form", "step": "Review your application", "requirement": "none" },
-    "health-cir": { "type": "form", "step": "Review your application", "requirement": "required" },
-    "payment": { "type": "form", "step": "Review your application", "requirement": "required" },
-    "docusign": { "type": "form", "step": "E-sign and submit", "requirement": "required" },
-    "receipt": { "type": "entry", "requirement": "required" },
-    "resume": { "type": "resume", "requirement": "required" },
-    "resume-method": { "type": "resume", "requirement": "required" },
-    "resume-code": { "type": "resume", "requirement": "required" },
-    "advisor-login": { "type": "advisor", "requirement": "required" },
-    "advisor-send-confirmation": { "type": "advisor", "requirement": "required" },
-    "application-edit-confirmation": { "type": "advisor", "requirement": "required" },
-    "not-found": { "type": "error", "requirement": "required" },
-    "application-unavailable": { "type": "error", "requirement": "required" },
-    "technical-error": { "type": "error", "requirement": "required" },
-    "maintenance": { "type": "error", "requirement": "required" },
-    "session-expired": { "type": "error", "requirement": "required" },
-    "unconfirmed-result": { "type": "error", "requirement": "required" }
+    "home": {
+      "type": "entry",
+      "requirement": "required"
+    },
+    "membership": {
+      "type": "form",
+      "step": "Getting started",
+      "requirement": "required"
+    },
+    "eligibility": {
+      "type": "form",
+      "step": "Getting started",
+      "requirement": "required"
+    },
+    "coverage": {
+      "type": "form",
+      "step": "Choose your coverage",
+      "requirement": "required"
+    },
+    "beneficiary": {
+      "type": "form",
+      "step": "Your application details",
+      "requirement": "required"
+    },
+    "contact": {
+      "type": "form",
+      "step": "Your application details",
+      "requirement": "required"
+    },
+    "profile": {
+      "type": "form",
+      "step": "Your application details",
+      "requirement": "required"
+    },
+    "review": {
+      "type": "form",
+      "step": "Review your application",
+      "requirement": "required"
+    },
+    "health-si": {
+      "type": "form",
+      "step": "Review your application",
+      "requirement": "required"
+    },
+    "health-li": {
+      "type": "form",
+      "step": "Review your application",
+      "requirement": "required"
+    },
+    "health-qd": {
+      "type": "form",
+      "step": "Review your application",
+      "requirement": "required"
+    },
+    "health-di": {
+      "type": "form",
+      "step": "Review your application",
+      "requirement": "required"
+    },
+    "health-ci": {
+      "type": "form",
+      "step": "Review your application",
+      "requirement": "none"
+    },
+    "health-cir": {
+      "type": "form",
+      "step": "Review your application",
+      "requirement": "required"
+    },
+    "payment": {
+      "type": "form",
+      "step": "Review your application",
+      "requirement": "required"
+    },
+    "docusign": {
+      "type": "form",
+      "step": "E-sign and submit",
+      "requirement": "required"
+    },
+    "receipt": {
+      "type": "entry",
+      "requirement": "required"
+    },
+    "resume": {
+      "type": "resume",
+      "requirement": "required"
+    },
+    "resume-method": {
+      "type": "resume",
+      "requirement": "required"
+    },
+    "resume-code": {
+      "type": "resume",
+      "requirement": "required"
+    },
+    "advisor-login": {
+      "type": "advisor",
+      "requirement": "required"
+    },
+    "advisor-send-confirmation": {
+      "type": "advisor",
+      "requirement": "required"
+    },
+    "application-edit-confirmation": {
+      "type": "advisor",
+      "requirement": "required"
+    },
+    "not-found": {
+      "type": "error",
+      "requirement": "required"
+    },
+    "application-unavailable": {
+      "type": "error",
+      "requirement": "required"
+    },
+    "technical-error": {
+      "type": "error",
+      "requirement": "required"
+    },
+    "maintenance": {
+      "type": "error",
+      "requirement": "required"
+    },
+    "session-expired": {
+      "type": "error",
+      "requirement": "required"
+    },
+    "unconfirmed-result": {
+      "type": "error",
+      "requirement": "required"
+    },
+    "error-500": {
+      "type": "error",
+      "requirement": "required"
+    }
   }
 }

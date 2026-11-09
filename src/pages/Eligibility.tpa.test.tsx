@@ -6,6 +6,7 @@ import { afterEach, expect, it, vi } from "vitest";
 import Eligibility from "./Eligibility";
 import { installPrototypeLibrary, resolvePrototypeLibrary } from "../domain/prototypeLibrary";
 import { validateSharedCatalog } from "../persistence/sharedCatalog";
+import asceEligibility from '../../requirements/parked/sites/asce/eligibility.json';
 
 const form = vi.hoisted(() => ({ values: {} as Record<string, unknown>, setPageValues: vi.fn(), saveApplication: vi.fn(async () => null) }));
 vi.mock("../app/ApplicationFormContext", () => ({ useApplicationForm: () => form }));
@@ -28,9 +29,8 @@ it("collects a validated residential address before ASCE member verification", a
   const catalog = validateSharedCatalog(JSON.parse(readFileSync("public/catalog/portal.json", "utf8")));
   installPrototypeLibrary(resolvePrototypeLibrary(catalog.data, "asce", "test:tpa-address"));
   form.values = {
-    membership: "yes", "first-name": "Taylor", "last-name": "Morgan",
-    "birth-date": "1990-08-26", "member-id": "ASCE12345",
-    "state-province": "NY", "zip-postal-code": "10001", dependents: [],
+    ...asceEligibility.tpa.prototypeRecords[0].facts,
+    membership: "yes", "zip-postal-code": "10001", dependents: [],
   };
   form.setPageValues.mockImplementation(patch => Object.assign(form.values, patch));
   container = document.createElement("div"); document.body.append(container); root = createRoot(container);

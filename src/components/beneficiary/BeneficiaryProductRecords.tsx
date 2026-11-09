@@ -1,3 +1,4 @@
+import { requirementText } from "../../domain/requirementContent";
 import { Alert, Button, Stack, Typography } from '@mui/material';
 import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
 import type { Ref } from 'react';
@@ -23,11 +24,11 @@ export default function BeneficiaryProductRecords({ productName, quickDecision, 
             itemLabel={`${getBeneficiaryDisplayName(item)}${item.beneficiaryType === 'individual' ? ` (${item.share}%)` : ''}`}>
             <Typography variant="subtitle2">{getBeneficiaryDisplayName(item)}</Typography>
             <Typography variant="caption" color="text.secondary">{getRelationshipLabel(item)}{item.beneficiaryType === 'individual' ? ` | ${item.share}%` : ''}</Typography>
-            {onApply && (!canApply || canApply(item)) && <Button size="small" onClick={() => onApply(item)}>Apply to Other Coverages</Button>}
+            {onApply && (!canApply || canApply(item)) && <Button size="small" onClick={() => onApply(item)}>{requirementText("beneficiary.apply.title")}</Button>}
           </DynamicListItem>)}
         </Stack> : null;
       })}
-      {capacityMessage ? <Alert severity="info" sx={{ mt: 1 }}>{capacityMessage}</Alert> : <Button ref={addButtonRef} variant="outlined" fullWidth startIcon={<AddCircleOutlineRoundedIcon />} onClick={onAdd}>Add Beneficiary</Button>}
+      {capacityMessage ? <Alert severity="info" sx={{ mt: 1 }}>{capacityMessage}</Alert> : <Button ref={addButtonRef} variant="outlined" fullWidth startIcon={<AddCircleOutlineRoundedIcon />} onClick={onAdd}>{requirementText("beneficiary.dialog.add-title")}</Button>}
     </Stack>
   </ProductCard>;
 }

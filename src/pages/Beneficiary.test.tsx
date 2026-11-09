@@ -39,6 +39,20 @@ it("restores Edit fields, changes allocations and preserves independent saved pr
   await render(); await act(async () => button("Remove", container).click());
   expect((form.values.beneficiaries as Record<string, unknown>)["li-10yr:member"]).toEqual([]);
 });
+it("submits saved beneficiary collections without adding dialog inputs as page answers", async () => {
+  prepare();
+  form.saveApplication.mockReset();
+  form.values = { ...form.values, beneficiaries: { 'li-10yr:member': [person('a', 100)], 'li-20yr:member': [person('b', 100)] } };
+  const scroll = vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
+  try {
+    await render();
+    await act(async () => container.querySelector('#beneficiary-form')!.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })));
+    expect(form.saveApplication).toHaveBeenCalledOnce();
+    const answers = form.saveApplication.mock.calls[0][0] as Record<string, unknown>;
+    expect(answers.beneficiaries).toEqual(form.values.beneficiaries);
+    expect(Object.keys(answers).filter(key => key.startsWith('beneficiary-') || key === 'beneficiaryType')).toEqual([]);
+  } finally { scroll.mockRestore(); }
+});
 it("shows both designation limits and restores the trust form independently", async () => {
   prepare(); form.values = { ...form.values, beneficiaries: { "li-10yr:member": [person("a", 100), { id: "trust", designation: "contingent", beneficiaryType: "trust", trustName: "Saved trust", trustDate: "2000-01-01", share: 0 }] } }; await render();
   expect(container.textContent).toContain("SAVED TRUST");
@@ -99,18 +113,16 @@ it("does not offer reuse when only the current coverage remains", async () => {
   await act(async () => dialog().querySelector("form")!.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true })));
   expect(document.querySelector('[role="dialog"]')?.textContent).not.toContain("Apply to Other Coverages");
 });
-it("honors captured optional participation and renamed saved field bindings", async () => {
+it("keeps fresh participation and field bindings despite stale saved configuration", async () => {
   prepare(); const edited = structuredClone(db);
   edited.sitePages.find(row => row.siteKey === "asce" && row.pageKey === "beneficiary")!.requirement = "optional";
   const surfaces = edited.configurationValues.find(row => row.key === "global.field-surfaces")!.value as unknown as { beneficiaryIndividual: { fields: Array<{ fieldKey: string; valueKey: string }> } };
   surfaces.beneficiaryIndividual.fields.find(row => row.fieldKey === "beneficiary-firstName")!.valueKey = "givenName";
   installPrototypeLibrary(resolvePrototypeLibrary(edited, "asce", "optional-renamed-beneficiary"));
-  form.values = { ...form.values, "beneficiary-information-opt-in": "no", beneficiaries: { "li-10yr:member": [{ ...person("renamed"), firstName: undefined, givenName: "Captured" }] } }; await render();
-  expect(container.textContent).toContain("Do you want to add beneficiary information?");
-  expect([...container.querySelectorAll("button")].filter(button => button.textContent === "Add Beneficiary")).toHaveLength(0);
-  form.values = { ...form.values, "beneficiary-information-opt-in": "yes" }; await render();
+  form.values = { ...form.values, "beneficiary-information-opt-in": "no", beneficiaries: { "li-10yr:member": [{ ...person("renamed"), firstName: "Captured", givenName: "Stale" }] } }; await render();
+  expect(container.textContent).not.toContain("Do you want to add beneficiary information?");
   expect(container.textContent).toContain("CAPTURED BENEFICIARY");
   await act(async () => button("Edit", container).click());
-  expect((dialog().querySelector('[name="givenName"]') as HTMLInputElement).value).toBe("Captured");
-  expect(dialog().querySelector('[name="firstName"]')).toBeNull();
+  expect((dialog().querySelector('[name="firstName"]') as HTMLInputElement).value).toBe("Captured");
+  expect(dialog().querySelector('[name="givenName"]')).toBeNull();
 });

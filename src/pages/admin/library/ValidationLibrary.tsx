@@ -10,6 +10,7 @@ import { useLibraryCatalog } from "./LibraryCatalogContext";
 import { storedFieldRows, storedFieldVisibility, storedLibraryRows } from "./storedLibraryModel";
 import { fieldSurfaceRows, type FieldSurfaceRow } from "./fieldSurfaceRows";
 import RecoveryStatesLibrary from "./RecoveryStatesLibrary";
+import { requirementPageValidations, requirementValidationMessage } from '../../../domain/requirementValidations';
 
 type ValidationRow = { id: string; page: string; field: string | null; label: string; level: string; rule: string; message: string; when: string; required: boolean | null };
 export function requirementsFieldValidationRows(usages: FieldSurfaceRow[]): ValidationRow[] {
@@ -51,8 +52,14 @@ export default function ValidationLibrary({ siteKey }: { siteKey: string }) {
     level: "Field", rule: check.rule, message: check.message, when: usageConditions.get(`${placement.page}:${field.key}`) ?? storedFieldVisibility(catalog, field, fields), required: !!field.definition.required,
   }))));
   rows.push(...requirementsFieldValidationRows(usages));
+  const authoredPageRows = pages.flatMap(page => requirementPageValidations(page).map(definition => ({
+    id: `requirements:page:${page}:${definition.id}`, page, field: null, label: 'Page', level: 'Page',
+    rule: definition.name, message: requirementValidationMessage(definition.id), when: definition.statement, required: null,
+  })));
+  rows.push(...authoredPageRows);
+  const authoredPages = new Set(authoredPageRows.map(row => row.page));
   for (const [index, entry] of errorMessages.entries()) {
-    if (entry.level === "Page" && (entry.page === "global" || pages.includes(entry.page))) rows.push({ id: `page-validation:${index}`, page: entry.page, field: null, label: "Page", level: "Page", rule: entry.trigger, message: entry.message, when: entry.trigger, required: null });
+    if (entry.level === "Page" && !authoredPages.has(entry.page) && (entry.page === "global" || pages.includes(entry.page))) rows.push({ id: `page-validation:${index}`, page: entry.page, field: null, label: "Page", level: "Page", rule: entry.trigger, message: entry.message, when: entry.trigger, required: null });
   }
   for (const [page, rule, message] of [
     ['beneficiary', 'Individual beneficiary shares must be positive and total no more than 100% for each designation.', 'Enter valid shares totaling at most 100% for {designation} beneficiaries.'],

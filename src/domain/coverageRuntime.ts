@@ -13,6 +13,8 @@ import { categoryEligibility, readCategoryEligibilityPolicy } from "./categoryEl
 import { resolveAssociationEligibility } from "./associationEligibilityPolicy";
 import { resolveCoverageJourneyPolicy } from "./coverageJourneyPolicy";
 import { applicationUnderwritingContext } from "./quickDecisionPolicy";
+import { requirementCoverageAmounts, requirementCoverageEligibility, requirementCoverageFacts, requirementCoverageResidencyMessage } from "./requirementCoveragePolicy";
+import { getCoverageAmountControl } from "./coveragePresentation";
 
 export function applicationCoverageName(product: CoverageDefinition, values: Record<string, unknown>) {
   const library = getPrototypeLibrary();
@@ -56,7 +58,7 @@ export function applicationUnderwriting(product: CoverageDefinition, applicant: 
 }
 
 export function resolveApplicationCoverage(product: CoverageDefinition, applicant: CoverageApplicantId, values: Record<string, unknown>, products: CoverageDefinition[] = [product], options?: { deferUnansweredMembership?: boolean }) {
-  const facts = applicationApplicantFacts(values, applicant);
+  const facts = requirementCoverageFacts(product, applicationApplicantFacts(values, applicant));
   const library = getPrototypeLibrary();
   const eligibilityResults = applicationApplicantFactSet(values, applicant, product.id).flatMap(fact => {
     const scoped = library ? resolveAssociationEligibility(library.site, product.id, applicant, fact) : null;
@@ -65,6 +67,7 @@ export function resolveApplicationCoverage(product: CoverageDefinition, applican
     return [evaluateEligibility(requirements, applicant, fact)];
   });
   const categoryPolicy = readCategoryEligibilityPolicy(getPrototypeLibrary()?.site.configuration.categoryEligibilityPolicies ?? []);
+  eligibilityResults.push(requirementCoverageEligibility(product, applicant, facts));
   eligibilityResults.push(categoryEligibility(categoryPolicy, categoryPolicy ? values[categoryPolicy.fieldId] : undefined, product.categoryId, options?.deferUnansweredMembership));
   const eligibility = eligibilityResults.includes("ineligible") ? "ineligible" : eligibilityResults.includes("needs-information") ? "needs-information" : "eligible";
   const limit = resolveBenefitLimit(product.requirements, applicant, facts);
@@ -78,8 +81,13 @@ export function resolveApplicationCoverage(product: CoverageDefinition, applican
     selections[id] = selections[id].filter(type => selectedAmounts[`${id}:${type}`] === undefined || selectedAmounts[`${id}:${type}`] > 0);
   }
   selections[product.id] = [...new Set([...(selections[product.id] ?? []), applicant])];
+  amounts = requirementCoverageAmounts(product, applicant, facts.ageYears, amounts);
   const normalized = prototypeCoverageDecision(product.id, applicant, values, amounts);
   if (normalized) amounts = normalized.amounts;
+  amounts = requirementCoverageAmounts(product, applicant, facts.ageYears, amounts);
+  const residencyMessage = requirementCoverageResidencyMessage(product, applicant, values);
+  const amountControl = getCoverageAmountControl(product, applicant, amounts, library?.client.coverages ?? {}, values.coverageEntryScope);
+  amounts = amountControl.choices;
   const relationshipErrors = coverageRelationshipErrors(products, selections);
   const messages = [
     ...(!product.applicants.includes(applicant) ? ["This applicant is not supported."] : []),
@@ -89,11 +97,12 @@ export function resolveApplicationCoverage(product: CoverageDefinition, applican
     ...relationshipErrors,
     ...(amounts.length === 0 && (!limit || limit.maximum !== undefined) ? ["No benefit amount is available for these applicant facts."] : []),
     ...(normalized?.messages ?? []),
+    ...(residencyMessage ? [residencyMessage] : []),
   ];
   const waitingOptions = normalized?.waitingPeriods?.map(p => ({ value: p.key, label: p.accidentDays === p.sicknessDays ? `${p.sicknessDays} days` : `${p.accidentDays}-day Accident / ${p.sicknessDays}-day Sickness`, days: p.sicknessDays })) ?? product.waitingPeriodOptionsByApplicant?.[applicant] ?? product.waitingPeriodOptions;
   const benefitOptions = normalized?.benefitPeriods ? (normalized.benefitPeriods.length ? normalized.benefitPeriods.map(value => ({ value, label: value.replaceAll("-", " ") })) : undefined) : product.maxBenefitPeriodOptionsByApplicant?.[applicant] ?? product.maxBenefitPeriodOptions;
   return {
-    eligibility, limit, amounts, messages, notices: normalized?.notices ?? [], selectable: messages.length === 0,
+    eligibility, limit, amounts, amountControl, messages, notices: normalized?.notices ?? [], selectable: messages.length === 0,
     eligibilityStatus: (!product.requirements?.eligibility?.some(rule => rule.applicantType === applicant) ? "no-rule" : eligibility === "needs-information" ? "needs-information" : "resolved") as ResolutionStatus,
     benefitLimitStatus: (!limit ? "no-rule" : limit.maximum === undefined ? "needs-information" : "resolved") as ResolutionStatus,
     requirementsStatus: (product.requirements?.unresolved?.length ? "unresolved" : !product.requirements ? "no-rule" : eligibility === "needs-information" || (limit && limit.maximum === undefined) ? "needs-information" : "resolved") as ResolutionStatus,
@@ -125,7 +134,7 @@ export function validateApplicationCoverages(products: CoverageDefinition[], val
           const riderAmount = (values.coverageRiderAmounts as Record<string, number> | undefined)?.[riderKey];
           if (riderAmount === undefined || !getCoverageAmountChoices({ coverageAmounts: standalone.coverageAmounts }, applicant).includes(riderAmount)) return `${standalone.name}: select an available rider amount.`;
         }
-      } else if (!amount || !result.amounts.includes(amount)) return `${product.name}: select an available benefit amount for ${applicant}.`;
+      } else if (!amount || !result.amounts.includes(amount) || result.amountControl.locked && amount !== result.amountControl.defaultAmount) return `${product.name}: select an available benefit amount for ${applicant}.`;
       for (const [field, constraint] of standalone ? [] : [["coverageWaitingPeriods", result.waitingPeriod], ["coverageMaxBenefitPeriods", result.benefitPeriod]] as const) {
         const stored = values[field] as Record<string, string> | undefined;
         const value = stored?.[key] ?? stored?.[product.id] ?? constraint.requiredValue ?? constraint.options?.[0]?.value;

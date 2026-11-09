@@ -4,23 +4,45 @@
       "id": "membership",
       "name": "Membership attestation",
       "required": true,
-      "people": ["self", "spouse"],
+      "people": [
+        "self",
+        "spouse"
+      ],
       "configurations": {
         "yes-no": {
           "default": true,
           "type": "radio",
-          "label": { "self": "Are you currently a member?", "spouse": "Is your spouse also an active member?" },
+          "label": {
+            "self": "Are you currently a member?",
+            "spouse": "Is your spouse also an active member?"
+          },
           "options": [
-            { "value": "yes", "label": "Yes", "outcome": "member" },
-            { "value": "no", "label": "No", "outcome": "not-eligible" }
+            {
+              "value": "yes",
+              "label": "Yes",
+              "outcome": "member"
+            },
+            {
+              "value": "no",
+              "label": "No",
+              "outcome": "not-eligible"
+            }
           ]
         },
         "new-or-current": {
           "type": "radio",
           "label": "Are you a current member, or are you becoming a new member?",
           "options": [
-            { "value": "new", "label": "New Member", "outcome": "new-member" },
-            { "value": "current", "label": "Current Member", "outcome": "member" }
+            {
+              "value": "new",
+              "label": "New Member",
+              "outcome": "new-member"
+            },
+            {
+              "value": "current",
+              "label": "Current Member",
+              "outcome": "member"
+            }
           ]
         },
         "category": {
@@ -44,10 +66,22 @@
       "label": "Title",
       "placeholder": "Select",
       "options": [
-        { "value": "mr", "label": "Mr." },
-        { "value": "mrs", "label": "Mrs." },
-        { "value": "ms", "label": "Ms." },
-        { "value": "dr", "label": "Dr." }
+        {
+          "value": "mr",
+          "label": "Mr."
+        },
+        {
+          "value": "mrs",
+          "label": "Mrs."
+        },
+        {
+          "value": "ms",
+          "label": "Ms."
+        },
+        {
+          "value": "dr",
+          "label": "Dr."
+        }
       ]
     },
     {
@@ -56,7 +90,12 @@
       "type": "text",
       "label": "First Name",
       "required": true,
-      "people": ["self", "spouse", "child", "beneficiary"],
+      "people": [
+        "self",
+        "spouse",
+        "child",
+        "beneficiary"
+      ],
       "autoComplete": "given-name"
     },
     {
@@ -65,7 +104,12 @@
       "type": "text",
       "label": "Last Name",
       "required": true,
-      "people": ["self", "spouse", "child", "beneficiary"],
+      "people": [
+        "self",
+        "spouse",
+        "child",
+        "beneficiary"
+      ],
       "autoComplete": "family-name"
     },
     {
@@ -80,7 +124,10 @@
       "helperText": {
         "self": "Provide a valid email address where you can receive important updates about your application."
       },
-      "people": ["self", "spouse"]
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "phone",
@@ -91,7 +138,10 @@
       "format": "phone",
       "inputMode": "tel",
       "autoComplete": "tel",
-      "people": ["self", "spouse"]
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "phone-type",
@@ -100,11 +150,26 @@
       "label": "Phone Type",
       "required": true,
       "options": [
-        { "value": "mobile", "label": "Mobile" },
-        { "value": "home", "label": "Home" },
-        { "value": "business", "label": "Business" }
+        {
+          "value": "mobile",
+          "label": "Mobile"
+        },
+        {
+          "value": "home",
+          "label": "Home"
+        },
+        {
+          "value": "business",
+          "label": "Business"
+        }
       ],
-      "people": ["self", "spouse"]
+      "people": [
+        "self",
+        "spouse"
+      ],
+      "defaultValue": {
+        "contact": "mobile"
+      }
     },
     {
       "id": "member-id",
@@ -120,7 +185,8 @@
       "label": "Zip / Postal Code",
       "required": true,
       "autoComplete": "postal-code",
-      "inputMode": "numeric"
+      "inputMode": "text",
+      "format": "postal-code"
     },
     {
       "id": "state-province",
@@ -129,7 +195,9 @@
       "label": "State / Province",
       "required": true,
       "placeholder": "Select",
-      "options": { "list": "states-provinces" }
+      "options": {
+        "list": "states-provinces"
+      }
     },
     {
       "id": "birth-date",
@@ -137,14 +205,28 @@
       "type": "date",
       "label": "Date of Birth",
       "required": true,
-      "people": ["self", "spouse", "child"]
+      "autoComplete": "bday",
+      "people": [
+        "self",
+        "spouse",
+        "child"
+      ]
     },
     {
       "id": "dependents",
       "name": "Dependents",
       "type": "checkbox-group",
       "label": "Would you like to add dependent coverage?",
-      "options": [{ "value": "spouse", "label": "Spouse" }, { "value": "child", "label": "Child" }]
+      "options": [
+        {
+          "value": "spouse",
+          "label": "Spouse"
+        },
+        {
+          "value": "child",
+          "label": "Child"
+        }
+      ]
     },
     {
       "id": "gender",
@@ -152,8 +234,21 @@
       "type": "radio",
       "label": "Gender",
       "required": true,
-      "people": ["self", "spouse", "child"],
-      "options": [{ "value": "male", "label": "Male" }, { "value": "female", "label": "Female" }]
+      "people": [
+        "self",
+        "spouse",
+        "child"
+      ],
+      "options": [
+        {
+          "value": "male",
+          "label": "Male"
+        },
+        {
+          "value": "female",
+          "label": "Female"
+        }
+      ]
     },
     {
       "id": "full-time-student",
@@ -161,8 +256,19 @@
       "type": "radio",
       "label": "Is the child a full-time student?",
       "required": true,
-      "people": ["child"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "people": [
+        "child"
+      ],
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ]
     },
     {
       "id": "coverage-categories",
@@ -170,7 +276,9 @@
       "type": "checkbox-group",
       "label": "Which coverage are you interested in?",
       "required": true,
-      "options": { "list": "coverage-categories" }
+      "options": {
+        "list": "coverage-categories"
+      }
     },
     {
       "id": "smoker",
@@ -178,8 +286,20 @@
       "type": "radio",
       "label": "Have you used tobacco or any nicotine substitute in any form (including nicotine patches and nicotine chewing gum)?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "people": [
+        "self",
+        "spouse"
+      ],
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ]
     },
     {
       "id": "tobacco-last-used",
@@ -187,7 +307,10 @@
       "type": "date",
       "label": "Last Used",
       "required": true,
-      "people": ["self", "spouse"]
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "tobacco-products",
@@ -195,8 +318,13 @@
       "type": "multi-select",
       "label": "Product(s) Used",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": { "list": "tobacco-products" }
+      "people": [
+        "self",
+        "spouse"
+      ],
+      "options": {
+        "list": "tobacco-products"
+      }
     },
     {
       "id": "hours-worked-per-week",
@@ -204,7 +332,10 @@
       "type": "number",
       "label": "# Hours You Work/Week",
       "required": true,
-      "people": ["self", "spouse"],
+      "people": [
+        "self",
+        "spouse"
+      ],
       "inputMode": "numeric"
     },
     {
@@ -213,7 +344,10 @@
       "type": "text",
       "label": "Average Monthly Income",
       "required": true,
-      "people": ["self", "spouse"],
+      "people": [
+        "self",
+        "spouse"
+      ],
       "format": "currency",
       "inputMode": "numeric"
     },
@@ -221,9 +355,18 @@
       "id": "self-employed-under-one-year",
       "name": "Self-employed less than 1 year",
       "type": "radio",
-      "label": "Are you self employed for less than 1 year?",
+      "label": "Are you self-employed for less than 1 year?",
       "required": true,
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ]
     },
     {
       "id": "actively-at-work",
@@ -231,7 +374,16 @@
       "type": "radio",
       "label": "Are you actively at work performing the normal duties of your occupation?",
       "required": true,
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ]
     },
     {
       "id": "monthly-business-expenses",
@@ -262,11 +414,28 @@
     {
       "id": "coverage-amount",
       "name": "Coverage amount",
-      "people": ["self", "spouse", "child"],
+      "people": [
+        "self",
+        "spouse",
+        "child"
+      ],
       "configurations": {
-        "range": { "default": true, "type": "dropdown", "label": "Benefit amount", "options": "product-range" },
-        "set": { "type": "dropdown", "label": "Benefit amount", "options": "product-set" },
-        "fixed": { "type": "dropdown", "label": "Benefit amount", "options": "product-fixed" }
+        "range": {
+          "default": true,
+          "type": "dropdown",
+          "label": "Benefit amount",
+          "options": "product-range"
+        },
+        "set": {
+          "type": "dropdown",
+          "label": "Benefit amount",
+          "options": "product-set"
+        },
+        "fixed": {
+          "type": "dropdown",
+          "label": "Benefit amount",
+          "options": "product-fixed"
+        }
       }
     },
     {
@@ -274,14 +443,22 @@
       "name": "Add coverage",
       "type": "checkbox",
       "label": "Add coverage",
-      "people": ["self", "spouse", "child"]
+      "people": [
+        "self",
+        "spouse",
+        "child"
+      ]
     },
     {
       "id": "waiting-period",
       "name": "Waiting period",
       "type": "dropdown",
       "label": "Waiting Period",
-      "people": ["self", "spouse"],
+      "people": [
+        "self",
+        "spouse"
+      ],
+      "helperText": "The number of consecutive days you must be totally disabled by a covered illness or injury and not gainfully employed in any occupation before benefits commence. Coverage with a longer waiting period is less expensive.",
       "options": "product-defined"
     },
     {
@@ -289,7 +466,10 @@
       "name": "Benefit option",
       "type": "dropdown",
       "label": "Benefit Option",
-      "people": ["self", "spouse"],
+      "people": [
+        "self",
+        "spouse"
+      ],
       "options": "product-defined"
     },
     {
@@ -297,38 +477,79 @@
       "name": "Rider",
       "type": "checkbox",
       "label": "product-defined",
-      "people": ["self", "spouse"]
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "rider-amount",
       "name": "Rider amount",
       "type": "dropdown",
       "label": "Rider Benefit Amount",
-      "people": ["self", "spouse"],
+      "people": [
+        "self",
+        "spouse"
+      ],
       "options": "product-defined"
     },
     {
       "id": "beneficiary-information-opt-in",
-      "name": "Add beneficiary information",
+      "name": "Beneficiary information opt in",
       "type": "radio",
       "label": "Do you want to add beneficiary information?",
       "required": true,
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "people": [
+        "self",
+        "beneficiary"
+      ]
     },
     {
       "id": "beneficiary-designation",
       "name": "Beneficiary designation",
       "type": "tabs",
-      "people": ["beneficiary"],
-      "options": [{ "value": "primary", "label": "Primary" }, { "value": "contingent", "label": "Contingent" }]
+      "people": [
+        "beneficiary"
+      ],
+      "options": [
+        {
+          "value": "primary",
+          "label": "Primary"
+        },
+        {
+          "value": "contingent",
+          "label": "Contingent"
+        }
+      ]
     },
     {
       "id": "beneficiary-type",
-      "name": "Beneficiary type",
+      "name": "Beneficiary Type",
       "type": "radio",
       "label": "Beneficiary Type",
-      "people": ["beneficiary"],
-      "options": [{ "value": "individual", "label": "Individual" }, { "value": "trust", "label": "Trust" }]
+      "options": [
+        {
+          "value": "individual",
+          "label": "Individual"
+        },
+        {
+          "value": "trust",
+          "label": "Trust"
+        }
+      ],
+      "people": [
+        "beneficiary"
+      ]
     },
     {
       "id": "beneficiary-relationship",
@@ -336,14 +557,34 @@
       "type": "dropdown",
       "label": "Relationship",
       "required": true,
-      "people": ["beneficiary"],
       "options": [
-        { "value": "Spouse", "label": "Spouse" },
-        { "value": "Child", "label": "Child" },
-        { "value": "Parent", "label": "Parent" },
-        { "value": "Sibling", "label": "Sibling" },
-        { "value": "Other Relative", "label": "Other Relative" },
-        { "value": "Other", "label": "Other" }
+        {
+          "value": "Spouse",
+          "label": "Spouse"
+        },
+        {
+          "value": "Child",
+          "label": "Child"
+        },
+        {
+          "value": "Parent",
+          "label": "Parent"
+        },
+        {
+          "value": "Sibling",
+          "label": "Sibling"
+        },
+        {
+          "value": "Other Relative",
+          "label": "Other Relative"
+        },
+        {
+          "value": "Other",
+          "label": "Other"
+        }
+      ],
+      "people": [
+        "beneficiary"
       ]
     },
     {
@@ -351,26 +592,32 @@
       "name": "Beneficiary share",
       "type": "text",
       "label": "% Share",
+      "inputMode": "numeric",
       "required": true,
-      "people": ["beneficiary"],
       "format": "percent",
-      "inputMode": "numeric"
+      "people": [
+        "beneficiary"
+      ]
     },
     {
       "id": "beneficiary-trust-name",
-      "name": "Trust name",
+      "name": "Beneficiary trust Name",
       "type": "text",
       "label": "Name of Trust",
       "required": true,
-      "people": ["beneficiary"]
+      "people": [
+        "beneficiary"
+      ]
     },
     {
       "id": "beneficiary-trust-date",
-      "name": "Trust date",
+      "name": "Beneficiary trust Date",
       "type": "date",
       "label": "Date of Trust",
       "required": true,
-      "people": ["beneficiary"]
+      "people": [
+        "beneficiary"
+      ]
     },
     {
       "id": "street-address",
@@ -378,14 +625,21 @@
       "type": "text",
       "label": "Street Address",
       "required": true,
-      "autoComplete": "street-address"
+      "autoComplete": "street-address",
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "apt-suite",
-      "name": "Apt / suite",
+      "name": "Apt suite",
       "type": "text",
       "label": "Apt/Suite",
-      "autoComplete": "address-line2"
+      "required": false,
+      "autoComplete": "address-line2",
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "city",
@@ -393,36 +647,57 @@
       "type": "text",
       "label": "City",
       "required": true,
-      "autoComplete": "address-level2"
+      "autoComplete": "address-level2",
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "state",
-      "name": "State",
+      "name": "Address state",
       "type": "searchable-select",
       "label": "State",
       "required": true,
       "placeholder": "Select",
+      "options": {
+        "list": "states-provinces"
+      },
       "autoComplete": "address-level1",
-      "options": { "list": "states-provinces" }
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "zip-code",
-      "name": "ZIP / postal code",
+      "name": "Address zip code",
       "type": "text",
       "label": "Zip / Postal Code",
       "required": true,
-      "inputMode": "numeric",
-      "autoComplete": "postal-code"
+      "inputMode": "text",
+      "autoComplete": "postal-code",
+      "people": [
+        "self"
+      ],
+      "format": "postal-code"
     },
     {
       "id": "correspondence-to",
-      "name": "Correspondence address",
+      "name": "Correspondence to",
       "type": "radio",
       "label": "Where should we send correspondence regarding your application?",
       "required": true,
       "options": [
-        { "value": "residential", "label": "Home Address" },
-        { "value": "business", "label": "Business Address" }
+        {
+          "value": "residential",
+          "label": "Home Address"
+        },
+        {
+          "value": "business",
+          "label": "Business Address"
+        }
+      ],
+      "people": [
+        "self"
       ]
     },
     {
@@ -431,7 +706,10 @@
       "type": "text",
       "label": "Name of Business or Employer",
       "required": true,
-      "autoComplete": "organization"
+      "autoComplete": "organization",
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "business-type",
@@ -440,16 +718,32 @@
       "label": "Type of Business",
       "required": true,
       "options": [
-        { "value": "sole-proprietor", "label": "Sole Proprietor" },
-        { "value": "corporation", "label": "Corporation" },
-        { "value": "partnership", "label": "Partnership" }
+        {
+          "value": "sole-proprietor",
+          "label": "Sole Proprietor"
+        },
+        {
+          "value": "corporation",
+          "label": "Corporation"
+        },
+        {
+          "value": "partnership",
+          "label": "Partnership"
+        }
+      ],
+      "people": [
+        "self"
       ]
     },
     {
       "id": "business-address-same-as-home",
       "name": "Business address same as home",
       "type": "checkbox",
-      "label": "Business address is the same as home address"
+      "label": "Business address is the same as home address",
+      "required": false,
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "business-street-address",
@@ -457,14 +751,21 @@
       "type": "text",
       "label": "Business Street Address",
       "required": true,
-      "autoComplete": "street-address"
+      "autoComplete": "street-address",
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "business-apt-suite",
-      "name": "Business apt / suite",
+      "name": "Business apt suite",
       "type": "text",
       "label": "Apt/Suite",
-      "autoComplete": "address-line2"
+      "required": false,
+      "autoComplete": "address-line2",
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "business-city",
@@ -472,7 +773,10 @@
       "type": "text",
       "label": "City",
       "required": true,
-      "autoComplete": "address-level2"
+      "autoComplete": "address-level2",
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "business-state",
@@ -481,25 +785,39 @@
       "label": "State",
       "required": true,
       "placeholder": "Select",
-      "options": { "list": "states-provinces" }
+      "options": {
+        "list": "states-provinces"
+      },
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "business-zip-code",
-      "name": "Business ZIP / postal code",
+      "name": "Business zip code",
       "type": "text",
       "label": "Zip Code",
       "required": true,
-      "inputMode": "numeric",
-      "autoComplete": "postal-code"
+      "inputMode": "text",
+      "autoComplete": "postal-code",
+      "people": [
+        "self"
+      ],
+      "format": "postal-code"
     },
     {
       "id": "business-phone",
-      "name": "Business phone number",
+      "name": "Business phone",
       "type": "text",
       "label": "Business Phone Number",
+      "required": false,
       "format": "phone",
       "inputMode": "tel",
-      "autoComplete": "tel"
+      "autoComplete": "tel",
+      "phoneTypeFieldId": "business-phone-type",
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "business-phone-type",
@@ -508,498 +826,800 @@
       "label": "Business Phone Type",
       "required": true,
       "options": [
-        { "value": "mobile", "label": "Mobile" },
-        { "value": "home", "label": "Home" },
-        { "value": "business", "label": "Business" }
-      ]
+        {
+          "value": "mobile",
+          "label": "Mobile"
+        },
+        {
+          "value": "home",
+          "label": "Home"
+        },
+        {
+          "value": "business",
+          "label": "Business"
+        }
+      ],
+      "defaultValue": "mobile"
     },
     {
       "id": "height-feet",
       "name": "Height feet",
       "type": "number",
       "label": "Height (Feet)",
+      "inputMode": "numeric",
       "required": true,
-      "people": ["self", "spouse"],
-      "inputMode": "numeric"
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "height-inches",
       "name": "Height inches",
       "type": "number",
       "label": "Inches",
+      "inputMode": "numeric",
       "required": true,
-      "people": ["self", "spouse"],
-      "inputMode": "numeric"
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "weight-lbs",
       "name": "Weight lbs",
       "type": "number",
       "label": "Weight (lbs.)",
+      "inputMode": "numeric",
       "required": true,
-      "people": ["self", "spouse"],
-      "inputMode": "numeric"
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "weight-12-months-ago-lbs",
       "name": "Weight 12 months ago lbs",
       "type": "number",
       "label": "Weight 12 Mos. Ago",
+      "inputMode": "numeric",
       "required": true,
-      "people": ["self", "spouse"],
-      "inputMode": "numeric"
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "social-security-number",
       "name": "Social security number",
       "type": "text",
       "label": "Social Security Number",
-      "required": true,
-      "people": ["self", "spouse"],
       "placeholder": "XXX-XX-XXXX",
       "format": "ssn",
       "inputMode": "numeric",
-      "autoComplete": "off"
+      "autoComplete": "off",
+      "required": true,
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "marital-status",
       "name": "Marital status",
       "type": "dropdown",
       "label": "Marital Status",
-      "required": true,
       "placeholder": "Select",
+      "required": true,
       "options": [
-        { "value": "single", "label": "Single" },
-        { "value": "married", "label": "Married" },
-        { "value": "divorced", "label": "Divorced" },
-        { "value": "widowed", "label": "Widowed" },
-        { "value": "separated", "label": "Separated" }
+        {
+          "value": "single",
+          "label": "Single"
+        },
+        {
+          "value": "married",
+          "label": "Married"
+        },
+        {
+          "value": "divorced",
+          "label": "Divorced"
+        },
+        {
+          "value": "widowed",
+          "label": "Widowed"
+        },
+        {
+          "value": "separated",
+          "label": "Separated"
+        }
+      ],
+      "people": [
+        "self"
       ]
     },
     {
       "id": "has-drivers-license",
       "name": "Has drivers license",
       "type": "radio",
-      "label": {
-        "self": "Do you have a valid driver's license?",
-        "spouse": "Does your spouse have a valid driver's license?"
-      },
+      "label": "Do you have a valid driver's license?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "intend-live-outside-us",
       "name": "Intend live outside us",
       "type": "radio",
-      "label": {
-        "self": "Do you intend to live outside the United States?",
-        "spouse": "Does your spouse intend to reside outside the U.S. or Canada within the next 12 months?"
-      },
+      "label": "Do you intend to live outside the United States?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "travel-outside-us-six-months",
       "name": "Travel outside us six months",
       "type": "radio",
-      "label": {
-        "self": "Will you travel outside the U.S. for 6+ months in the next year?",
-        "spouse": "Does your spouse intend to travel outside the U.S. or Canada within the next 12 months?"
-      },
+      "label": "Will you travel outside the U.S. for 6+ months in the next year?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "drivers-license-number",
       "name": "Drivers license number",
       "type": "text",
-      "label": { "self": "Driver's License Number", "spouse": "Spouse Driver's License Number" },
+      "label": "Driver's License Number",
+      "autoComplete": "off",
       "required": true,
-      "people": ["self", "spouse"],
-      "autoComplete": "off"
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "drivers-license-state",
       "name": "Drivers license state",
       "type": "searchable-select",
-      "label": { "self": "Driver's License State", "spouse": "Spouse Driver's License State" },
-      "required": true,
-      "people": ["self", "spouse"],
+      "label": "Driver's License State",
       "placeholder": "Select",
-      "options": { "list": "states-provinces" }
+      "required": true,
+      "options": {
+        "list": "states-provinces"
+      },
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "outside-us-months",
       "name": "Outside us months",
       "type": "number",
       "label": "How many months?",
+      "inputMode": "numeric",
       "required": true,
-      "people": ["self", "spouse"],
-      "inputMode": "numeric"
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "outside-us-country",
       "name": "Outside us country",
       "type": "dropdown",
       "label": "Country",
-      "required": true,
-      "people": ["self", "spouse"],
       "placeholder": "Select",
-      "options": { "list": "countries" }
+      "required": true,
+      "options": {
+        "list": "countries"
+      },
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "travel-outside-us-country",
       "name": "Travel outside us country",
       "type": "dropdown",
       "label": "Country",
-      "required": true,
-      "people": ["self", "spouse"],
       "placeholder": "Select",
-      "options": { "list": "countries" }
+      "required": true,
+      "options": {
+        "list": "countries"
+      },
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "physician-first-name",
       "name": "Physician first name",
       "type": "text",
       "label": "Physician First Name",
-      "people": ["self", "spouse"],
-      "autoComplete": "off"
+      "autoComplete": "off",
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "physician-last-name",
       "name": "Physician last name",
       "type": "text",
       "label": "Physician Last Name",
-      "people": ["self", "spouse"],
-      "autoComplete": "off"
+      "autoComplete": "off",
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "physician-phone",
       "name": "Physician phone",
       "type": "text",
       "label": "Physician Phone Number",
-      "people": ["self", "spouse"],
       "format": "phone",
       "inputMode": "tel",
-      "autoComplete": "off"
+      "autoComplete": "off",
+      "showPhoneTypeSelector": false,
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "medical-facility-name",
       "name": "Medical facility name",
       "type": "text",
       "label": "Medical Facility Name",
-      "people": ["self", "spouse"],
-      "autoComplete": "organization"
+      "autoComplete": "organization",
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "medical-facility-street-address",
       "name": "Medical facility street address",
       "type": "text",
       "label": "Street Address",
-      "people": ["self", "spouse"],
-      "autoComplete": "street-address"
+      "autoComplete": "street-address",
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "medical-facility-apt-suite",
       "name": "Medical facility apt suite",
       "type": "text",
       "label": "Apt/Suite",
-      "people": ["self", "spouse"],
-      "autoComplete": "address-line2"
+      "autoComplete": "address-line2",
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "medical-city",
       "name": "Medical city",
       "type": "text",
       "label": "City",
-      "people": ["self", "spouse"],
-      "autoComplete": "address-level2"
+      "autoComplete": "address-level2",
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "medical-state",
       "name": "Medical state",
       "type": "searchable-select",
       "label": "State",
-      "people": ["self", "spouse"],
       "placeholder": "Select",
-      "options": { "list": "states-provinces" }
+      "options": {
+        "list": "states-provinces"
+      },
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "medical-zip-code",
       "name": "Medical zip code",
       "type": "text",
       "label": "Zip Code",
-      "people": ["self", "spouse"],
-      "inputMode": "numeric",
-      "autoComplete": "postal-code"
+      "inputMode": "text",
+      "autoComplete": "postal-code",
+      "people": [
+        "self",
+        "spouse"
+      ],
+      "format": "postal-code"
     },
     {
       "id": "has-other-life-insurance",
       "name": "Has other life insurance",
       "type": "radio",
-      "label": {
-        "self": "Do you have other life insurance in force?",
-        "spouse": "Does your spouse have other life insurance in force?"
-      },
+      "label": "Do you have other life insurance in force?",
+      "helperText": "If you have life insurance in-force with New York Life or another carrier, select \"Yes\"",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "labelVariant": "standard",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }],
-      "helperText": {
-        "self": "If you have life insurance in-force with New York Life or another carrier, select \"Yes\"",
-        "spouse": "If your spouse has life insurance in-force with New York Life or another carrier, select \"Yes\""
-      }
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "existing-life-insurance-amount",
       "name": "Existing life insurance amount",
       "type": "text",
       "label": "Total life insurance amount",
-      "required": true,
-      "people": ["self", "spouse"],
+      "helperText": "You can find your current coverage amount in your recent statement from your carrier.",
       "format": "currency",
       "inputMode": "numeric",
-      "helperText": "You can find your current coverage amount in your recent statement from your carrier."
+      "labelVariant": "standard",
+      "required": true,
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "is-replacing-life-insurance",
       "name": "Is replacing life insurance",
       "type": "radio",
       "label": "Is the life insurance applied for intended to replace, discontinue, or change an existing life insurance policy or annuity contract?",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "labelVariant": "standard",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "has-pending-life-insurance-applications",
       "name": "Has pending life insurance applications",
       "type": "radio",
-      "label": {
-        "self": "Do you have other life insurance applications pending?",
-        "spouse": "Does your spouse have other life insurance applications pending?"
-      },
+      "label": "Do you have other life insurance applications pending?",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "labelVariant": "standard",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "pending-life-insurance-amount",
       "name": "Pending life insurance amount",
       "type": "text",
       "label": "Amount",
-      "required": true,
-      "people": ["self", "spouse"],
       "format": "currency",
-      "inputMode": "numeric"
+      "inputMode": "numeric",
+      "labelVariant": "floating",
+      "required": true,
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "pending-life-insurance-company",
       "name": "Pending life insurance company",
       "type": "text",
       "label": "Company",
+      "labelVariant": "floating",
       "required": true,
-      "people": ["self", "spouse"]
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "has-disability-insurance",
       "name": "Has disability insurance",
       "type": "radio",
-      "label": {
-        "self": "Do you now have or are you now applying for any other insurance which provides benefits if you are unable to work because of a disability?",
-        "spouse": "Does your spouse now have or is your spouse now applying for any other insurance which provides benefits if they are unable to work because of a disability?"
-      },
+      "label": "Do you now have or are you now applying for any other insurance which provides benefits if you are unable to work because of a disability?",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "labelVariant": "standard",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "is-replacing-disability-insurance",
       "name": "Is replacing disability insurance",
       "type": "radio",
       "label": "Will this disability coverage replace any other company's coverage?",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "labelVariant": "standard",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "disability-replacement-amount",
       "name": "Disability replacement amount",
       "type": "text",
       "label": "Replacement amount",
-      "required": true,
-      "people": ["self", "spouse"],
       "format": "currency",
-      "inputMode": "numeric"
+      "inputMode": "numeric",
+      "labelVariant": "floating",
+      "required": true,
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "total-net-worth",
       "name": "Total net worth",
       "type": "text",
       "label": "Total net worth (Assets minus liabilities)",
-      "required": true,
       "format": "currency",
-      "inputMode": "numeric"
+      "inputMode": "numeric",
+      "labelVariant": "standard",
+      "required": true,
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "total-annual-unearned-income",
       "name": "Total annual unearned income",
       "type": "text",
       "label": "Total annual unearned income",
-      "required": true,
       "format": "currency",
-      "inputMode": "numeric"
+      "inputMode": "numeric",
+      "labelVariant": "standard",
+      "required": true,
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "is-self-employed",
-      "name": "Self-employed",
+      "name": "Is self employed",
       "type": "radio",
       "label": "Are you self-employed?",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "labelVariant": "standard",
       "required": true,
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "is-sole-proprietor",
       "name": "Is sole proprietor",
       "type": "checkbox",
-      "label": "Sole proprietor"
+      "label": "Sole proprietor",
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "is-professional-corporation",
       "name": "Is professional corporation",
       "type": "checkbox",
-      "label": "Professional corporation"
+      "label": "Professional corporation",
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "sole-proprietor-gross-income",
       "name": "Sole proprietor gross income",
       "type": "text",
       "label": "Annual gross revenue",
-      "required": true,
       "format": "currency",
-      "inputMode": "numeric"
+      "inputMode": "numeric",
+      "labelVariant": "standard",
+      "required": true,
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "sole-proprietor-gross-earnings",
       "name": "Sole proprietor gross earnings",
       "type": "text",
       "label": "Annual net income after business expenses",
-      "required": true,
       "format": "currency",
-      "inputMode": "numeric"
+      "inputMode": "numeric",
+      "labelVariant": "standard",
+      "required": true,
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "sole-proprietor-business-expenses",
       "name": "Sole proprietor business expenses",
       "type": "text",
       "label": "Business expenses",
-      "required": true,
       "format": "currency",
-      "inputMode": "numeric"
+      "inputMode": "numeric",
+      "labelVariant": "standard",
+      "required": true,
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "professional-corporation-annual-salary",
       "name": "Professional corporation annual salary",
       "type": "text",
       "label": "Annual salary",
-      "required": true,
       "format": "currency",
-      "inputMode": "numeric"
+      "inputMode": "numeric",
+      "labelVariant": "standard",
+      "required": true,
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "professional-corporation-s-corp-distribution",
       "name": "Professional corporation s corp distribution",
       "type": "text",
       "label": "S-Corp distribution",
-      "required": true,
       "format": "currency",
-      "inputMode": "numeric"
+      "inputMode": "numeric",
+      "labelVariant": "standard",
+      "required": true,
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "professional-corporation-dividends",
       "name": "Professional corporation dividends",
       "type": "text",
       "label": "Dividends",
-      "required": true,
       "format": "currency",
-      "inputMode": "numeric"
+      "inputMode": "numeric",
+      "labelVariant": "standard",
+      "required": true,
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "professional-corporation-bonus",
       "name": "Professional corporation bonus",
       "type": "text",
       "label": "Bonus amount",
-      "required": true,
       "format": "currency",
-      "inputMode": "numeric"
+      "inputMode": "numeric",
+      "labelVariant": "standard",
+      "required": true,
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "bonus-payment-frequency",
       "name": "Bonus payment frequency",
       "type": "radio",
       "label": "Bonus payment frequency",
+      "options": {
+        "list": "pay-frequencies"
+      },
+      "labelVariant": "standard",
       "required": true,
-      "options": { "list": "pay-frequencies" }
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "professional-corporation-commission",
       "name": "Professional corporation commission",
       "type": "text",
       "label": "Commission amount",
-      "required": true,
       "format": "currency",
-      "inputMode": "numeric"
+      "inputMode": "numeric",
+      "labelVariant": "standard",
+      "required": true,
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "commission-payment-frequency",
       "name": "Commission payment frequency",
       "type": "radio",
       "label": "Commission payment frequency",
+      "options": {
+        "list": "pay-frequencies"
+      },
+      "labelVariant": "standard",
       "required": true,
-      "options": { "list": "pay-frequencies" }
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "professional-corporation-benefits-cost",
       "name": "Professional corporation benefits cost",
       "type": "text",
       "label": "Employer-paid benefits cost",
-      "required": true,
       "format": "currency",
-      "inputMode": "numeric"
+      "inputMode": "numeric",
+      "labelVariant": "standard",
+      "required": true,
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "years-self-employed",
-      "name": "Years self-employed",
+      "name": "Years self employed",
       "type": "number",
       "label": "Years self-employed",
-      "required": true,
-      "inputMode": "numeric",
       "allowDecimal": true,
-      "helperText": "You may enter a fraction of a year, for example 0.5 for six months."
+      "helperText": "You may enter a fraction of a year, for example 0.5 for six months.",
+      "inputMode": "numeric",
+      "labelVariant": "standard",
+      "required": true,
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "work-from-home",
       "name": "Work from home",
       "type": "radio",
       "label": "Do you work from home?",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "labelVariant": "standard",
       "required": true,
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "has-work-location-outside-home",
       "name": "Has work location outside home",
       "type": "radio",
       "label": "Do you have a work location outside your home?",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "labelVariant": "standard",
       "required": true,
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "work-location-details",
       "name": "Work location details",
       "type": "text",
       "label": "Please explain where you work outside your home",
-      "required": true
+      "labelVariant": "standard",
+      "multiline": true,
+      "minRows": 4,
+      "required": true,
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "review-consent",
@@ -1007,52 +1627,120 @@
       "type": "checkbox",
       "label": "I confirm that I have reviewed and understand the above material. I consent to the use of electronic signature and delivery of electronic records.",
       "required": true,
-      "people": ["self", "spouse"]
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "health-si-q1",
-      "name": "Health simplified issue question 1",
+      "name": "Health SI q1",
       "type": "radio",
       "label": "Are you now taking any prescribed medication or receiving or contemplating any medical attention or surgical treatment?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "labelVariant": "standard",
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "health-si-q2",
-      "name": "Health simplified issue question 2",
+      "name": "Health SI q2",
       "type": "radio",
       "label": "During the past five years, have you ever been medically diagnosed by a physician as having or been treated for: heart or circulatory trouble, elevated blood pressure, chest pain or pressure, gynecological or genitourinary disorders, ulcers, cancer, diabetes, mental or nervous disorder or psychotherapeutic treatment, epilepsy, respiratory disorder, kidney or liver disorder, including hepatitis, enlarged lymph nodes or immunodeficiency disorder, thyroid disorder, blood disorder, albumin, blood, pus or sugar in urine, back trouble/disorder, bone or joint disorder, arthritis, varicose veins, or unexplained weight loss?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "labelVariant": "standard",
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "health-si-q3",
-      "name": "Health simplified issue question 3",
+      "name": "Health SI q3",
       "type": "radio",
       "label": "During the past five years have you ever been counseled, treated or hospitalized for the use of alcohol or drugs?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "labelVariant": "standard",
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "health-si-q4",
-      "name": "Health simplified issue question 4",
+      "name": "Health SI q4",
       "type": "radio",
       "label": "Are you now pregnant?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "labelVariant": "standard",
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "health-si-q5",
-      "name": "Health simplified issue question 5",
+      "name": "Health SI q5",
       "type": "radio",
-      "label": "Are you now disabled, or applied or applying for, or receiving any disability or Workers’ Compensation benefits or a waiver of premium for life or health insurance?",
+      "label": "Are you now disabled, or applied or applying for, or receiving any disability or Workers\u2019 Compensation benefits or a waiver of premium for life or health insurance?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "labelVariant": "standard",
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "health-detail-onset",
@@ -1060,7 +1748,10 @@
       "type": "text",
       "label": "Month/Year of Onset",
       "required": true,
-      "people": ["self", "spouse"],
+      "people": [
+        "self",
+        "spouse"
+      ],
       "format": "month-year",
       "helperText": "mm/yyyy"
     },
@@ -1073,7 +1764,10 @@
         "health-di": "Conditions & Details"
       },
       "required": true,
-      "people": ["self", "spouse"],
+      "people": [
+        "self",
+        "spouse"
+      ],
       "multiline": true
     },
     {
@@ -1084,207 +1778,500 @@
         "default": "Name and Address of Each Physician, Practitioner, and Hospital",
         "health-di": "Name and address of each physician, practitioner, and hospital"
       },
-      "required": { "health-li": false, "health-si": true, "health-di": false },
-      "people": ["self", "spouse"],
+      "required": {
+        "health-li": false,
+        "health-si": true,
+        "health-di": false
+      },
+      "people": [
+        "self",
+        "spouse"
+      ],
       "multiline": true
     },
     {
       "id": "health-li-q1",
-      "name": "Health life question 1",
+      "name": "Health LI q1",
       "type": "radio",
       "label": "Are you currently confined to a hospital, nursing home, psychiatric facility, incarcerated in a prison/correctional facility, currently on parole or currently receiving home health care/assisted living care?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "labelVariant": "standard",
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "health-li-q2",
-      "name": "Health life question 2",
+      "name": "Health LI q2",
       "type": "radio",
       "label": "During the last five years, have you ever been declined, postponed, or offered rated life or health insurance or been denied a reinstatement, reissue or renewal for life or health insurance, or are you currently receiving disability benefits?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "labelVariant": "standard",
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "health-li-q3",
-      "name": "Health life question 3",
+      "name": "Health LI q3",
       "type": "radio",
       "label": "Are you currently undergoing a medical evaluation for any condition not yet given a diagnosis?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "labelVariant": "standard",
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "health-li-q4",
-      "name": "Health life question 4",
+      "name": "Health LI q4",
       "type": "radio",
       "label": "In the last five years, have you been convicted of a felony; been charged or convicted with assault; been charged with operating a vehicle while under the influence of alcohol or drugs; been charged three or more times with a moving violation; currently have a revoked or suspended license; or currently on parole or incarcerated in a correctional institution?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "labelVariant": "standard",
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "health-li-q5",
-      "name": "Health life question 5",
+      "name": "Health LI q5",
       "type": "radio",
       "label": "During the last five years, has any person to be insured been medically diagnosed by a licensed member of the medical profession with HIV or AIDS, or tested positive for Human Immunodeficiency Virus (HIV)?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "labelVariant": "standard",
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "health-li-q6",
-      "name": "Health life question 6",
+      "name": "Health LI q6",
       "type": "radio",
       "label": "During the last five years have you been medically diagnosed by a licensed member of the medical profession as having or been treated for heart disease, a heart attack, chest pains, irregular heartbeat, arrhythmia, open heart surgery, defibrillator or a pacemaker?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "labelVariant": "standard",
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "health-li-q7",
-      "name": "Health life question 7",
+      "name": "Health LI q7",
       "type": "radio",
       "label": "During the last five years have you been medically diagnosed by a licensed member of the medical profession as having or been treated for diabetes, a stroke (CVA), a transient ischemic attack (TIA), aneurysm or kidney disease?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "labelVariant": "standard",
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "health-li-q8",
-      "name": "Health life question 8",
+      "name": "Health LI q8",
       "type": "radio",
       "label": "During the last five years have you been medically diagnosed by a licensed member of the medical profession as having or been treated for depression, anxiety, mental disorder, suicide attempt(s), drug use or treatment, or alcohol abuse or treatment?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "labelVariant": "standard",
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "health-li-q9",
-      "name": "Health life question 9",
+      "name": "Health LI q9",
       "type": "radio",
-      "label": "During the last five years have you been medically diagnosed by a licensed member of the medical profession as having or been treated for cirrhosis, hepatitis, Lou Gehrig’s Disease/ALS or other neuro-muscular, paralysis or seizure disorder?",
+      "label": "During the last five years have you been medically diagnosed by a licensed member of the medical profession as having or been treated for cirrhosis, hepatitis, Lou Gehrig\u2019s Disease/ALS or other neuro-muscular, paralysis or seizure disorder?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "labelVariant": "standard",
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "health-li-q10",
-      "name": "Health life question 10",
+      "name": "Health LI q10",
       "type": "radio",
       "label": "During the last five years have you been medically diagnosed by a licensed member of the medical profession as having or been treated for cancer (except basal cell or squamous cell skin cancer), tumors, cysts, masses or growths of any type, lymphoma, any blood disorder, except HIV, or connective tissue disorder?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "labelVariant": "standard",
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "health-li-q11",
-      "name": "Health life question 11",
+      "name": "Health LI q11",
       "type": "radio",
-      "label": "During the last five years have you been medically diagnosed by a licensed member of the medical profession as having or been treated for Crohn’s disease, disorder of pancreas, disorder of the immune system, except HIV?",
+      "label": "During the last five years have you been medically diagnosed by a licensed member of the medical profession as having or been treated for Crohn\u2019s disease, disorder of pancreas, disorder of the immune system, except HIV?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "labelVariant": "standard",
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "health-li-q12",
-      "name": "Health life question 12",
+      "name": "Health LI q12",
       "type": "radio",
       "label": "During the last five years have you been medically diagnosed by a licensed member of the medical profession as having or been treated for hypertension, elevated cholesterol, respiratory disease or disorder, or sleep apnea?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "labelVariant": "standard",
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "health-li-q13",
-      "name": "Health life question 13",
+      "name": "Health LI q13",
       "type": "radio",
       "label": "During the last five years have you been medically diagnosed by a licensed member of the medical profession as having or been treated for anemia, colitis or arthritis?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "labelVariant": "standard",
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "health-li-q14",
-      "name": "Health life question 14",
+      "name": "Health LI q14",
       "type": "radio",
       "label": "During the past five years, have you flown an airplane (other than scheduled commercial or corporate aviation); engaged in any of the following: sky sports, underwater sports, climbing sports, motor sports, in any type vehicle, or any extreme sport (bungee jumping, cave exploration, heliskiing, rodeo riding, etc)?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "labelVariant": "standard",
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "health-li-q15",
-      "name": "Health life question 15",
+      "name": "Health LI q15",
       "type": "radio",
       "label": "Have any of your siblings or either of your parents been diagnosed with or died from cancer or cardiovascular disease prior to age 60?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "labelVariant": "standard",
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "health-di-q1",
-      "name": "Health disability question 1",
+      "name": "Health DI q1",
       "type": "radio",
-      "label": "Do you currently need or in the past 5 years have you needed human assistance or supervision to perform any of the following activities? Bathing, dressing, eating, walking, moving in/out of a bed or chair or wheel chair, toileting, bowel or bladder control. If “Yes,” please check all that apply.",
+      "label": "Do you currently need or in the past 5 years have you needed human assistance or supervision to perform any of the following activities? Bathing, dressing, eating, walking, moving in/out of a bed or chair or wheel chair, toileting, bowel or bladder control. If \u201cYes,\u201d please check all that apply.",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "labelVariant": "standard",
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "health-di-q2",
-      "name": "Health disability question 2",
+      "name": "Health DI q2",
       "type": "radio",
       "label": "Within the past 5 years, have you had a fall or been diagnosed or treated by a member of the medical profession for a fracture, paralysis, numbness, balance problems or skin ulcers?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "labelVariant": "standard",
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "health-di-q3",
-      "name": "Health disability question 3",
+      "name": "Health DI q3",
       "type": "radio",
       "label": "Do you currently or in the past 5 years, have you been wheelchair-dependent or required supportive equipment such as braces, crutches, walker, cane, back support, or splint?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "labelVariant": "standard",
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "health-di-q4",
-      "name": "Health disability question 4",
+      "name": "Health DI q4",
       "type": "radio",
       "label": "Within the past 6 months, have you had or been recommended by a member of the medical profession to have physical therapy?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "labelVariant": "standard",
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "health-di-q5",
-      "name": "Health disability question 5",
+      "name": "Health DI q5",
       "type": "radio",
       "label": "Within the past 5 years, have you been evaluated, counseled, treated by a member of the medical profession or hospitalized for any problems with memory or ability to think or reason?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "labelVariant": "standard",
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "health-di-q6",
-      "name": "Health disability question 6",
+      "name": "Health DI q6",
       "type": "radio",
       "label": "Within the past 5 years, have you been confined or had confinement been recommended by a member of the medical profession to a hospital, nursing home, rehabilitation facility, assisted living unit or extended care facility?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "labelVariant": "standard",
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "health-di-q7",
-      "name": "Health disability question 7",
+      "name": "Health DI q7",
       "type": "radio",
       "label": "Within the past 5 years, have you been declined for issue, reinstatement or renewal of any type of long-term care insurance?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "labelVariant": "standard",
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "health-di-assistance-type",
@@ -1292,16 +2279,40 @@
       "type": "dropdown",
       "label": "Assistance Type",
       "required": true,
-      "people": ["self", "spouse"],
+      "people": [
+        "self",
+        "spouse"
+      ],
       "placeholder": "Select",
       "options": [
-        { "value": "bathing", "label": "Bathing" },
-        { "value": "dressing", "label": "Dressing" },
-        { "value": "eating", "label": "Eating" },
-        { "value": "walking", "label": "Walking" },
-        { "value": "moving", "label": "Moving in/out of a bed or chair or wheel chair" },
-        { "value": "toileting", "label": "Toileting" },
-        { "value": "bowel-bladder", "label": "Bowel or bladder control" }
+        {
+          "value": "bathing",
+          "label": "Bathing"
+        },
+        {
+          "value": "dressing",
+          "label": "Dressing"
+        },
+        {
+          "value": "eating",
+          "label": "Eating"
+        },
+        {
+          "value": "walking",
+          "label": "Walking"
+        },
+        {
+          "value": "moving",
+          "label": "Moving in/out of a bed or chair or wheel chair"
+        },
+        {
+          "value": "toileting",
+          "label": "Toileting"
+        },
+        {
+          "value": "bowel-bladder",
+          "label": "Bowel or bladder control"
+        }
       ]
     },
     {
@@ -1310,7 +2321,10 @@
       "type": "text",
       "label": "Fall Type/Diagnosis",
       "required": true,
-      "people": ["self", "spouse"]
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "health-di-details",
@@ -1318,7 +2332,10 @@
       "type": "text",
       "label": "Details",
       "required": true,
-      "people": ["self", "spouse"],
+      "people": [
+        "self",
+        "spouse"
+      ],
       "multiline": true
     },
     {
@@ -1326,7 +2343,16 @@
       "name": "Rate frequency",
       "type": "radio",
       "label": "Toggle between monthly and annual",
-      "options": [{ "value": "monthly", "label": "Monthly" }, { "value": "annual", "label": "Annual" }]
+      "options": [
+        {
+          "value": "monthly",
+          "label": "Monthly"
+        },
+        {
+          "value": "annual",
+          "label": "Annual"
+        }
+      ]
     },
     {
       "id": "monthly-benefit-amount",
@@ -1340,32 +2366,48 @@
       "name": "Needs annual income",
       "type": "text",
       "label": "Annual household income",
+      "maxLength": 10,
+      "inputMode": "numeric",
       "format": "currency",
-      "inputMode": "numeric"
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "needs-years-to-replace",
       "name": "Needs years to replace",
       "type": "number",
       "label": "Years of income to replace",
+      "maxLength": 2,
       "inputMode": "numeric",
-      "helperText": "A common recommendation is 10–12 years"
+      "helperText": "A common recommendation is 10\u201312 years",
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "needs-outstanding-debts",
       "name": "Needs outstanding debts",
       "type": "text",
       "label": "Outstanding debts (mortgage, loans, etc.)",
+      "maxLength": 10,
+      "inputMode": "numeric",
       "format": "currency",
-      "inputMode": "numeric"
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "needs-existing-coverage",
       "name": "Needs existing coverage",
       "type": "text",
       "label": "Existing life insurance coverage",
+      "maxLength": 10,
+      "inputMode": "numeric",
       "format": "currency",
-      "inputMode": "numeric"
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "verification-method",
@@ -1374,48 +2416,76 @@
       "label": "Choose how to provide verification",
       "required": true,
       "options": [
-        { "value": "text", "label": "Send text code" },
-        { "value": "voice", "label": "Send voice code" },
-        { "value": "security-questions", "label": "Answer security questions" },
-        { "value": "skip", "label": "Skip member verification and apply" }
+        {
+          "value": "text",
+          "label": "Send text code"
+        },
+        {
+          "value": "voice",
+          "label": "Send voice code"
+        },
+        {
+          "value": "security-questions",
+          "label": "Answer security questions"
+        },
+        {
+          "value": "skip",
+          "label": "Skip member verification and apply"
+        }
       ]
     },
     {
       "id": "di-company-name",
-      "name": "Disability company name",
+      "name": "DI company name",
       "type": "text",
       "label": "Company",
+      "labelVariant": "floating",
       "required": true,
-      "people": ["self", "spouse"]
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "di-company-monthly-benefit",
-      "name": "Disability company monthly benefit",
+      "name": "DI company monthly benefit",
       "type": "text",
       "label": "Monthly Benefit Amount",
-      "required": true,
-      "people": ["self", "spouse"],
       "format": "currency",
       "inputMode": "numeric",
-      "helperText": "You can find your current coverage amount in your recent statement from your carrier."
+      "labelVariant": "floating",
+      "required": true,
+      "helperText": "You can find your current coverage amount in your recent statement from your carrier.",
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "di-company-benefit-period",
-      "name": "Disability company benefit period",
+      "name": "DI company benefit period",
       "type": "text",
       "label": "Benefit Period",
+      "placeholder": "Age 65 or older, 1-5 year, etc.",
+      "labelVariant": "floating",
       "required": true,
-      "people": ["self", "spouse"],
-      "placeholder": "Age 65 or older, 1-5 year, etc."
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "di-company-waiting-period",
-      "name": "Disability company waiting period",
+      "name": "DI company waiting period",
       "type": "text",
       "label": "Waiting Period",
+      "placeholder": "30 days, 60 days, etc",
+      "labelVariant": "floating",
       "required": true,
-      "people": ["self", "spouse"],
-      "placeholder": "30 days, 60 days, etc"
+      "people": [
+        "self",
+        "spouse"
+      ]
     },
     {
       "id": "dividend-acknowledgement",
@@ -1424,16 +2494,43 @@
       "label": "I attest to having read the above information",
       "required": true
     },
-    { "id": "dividend-first-name", "name": "Dividend first name", "type": "text", "label": "First Name" },
-    { "id": "dividend-last-name", "name": "Dividend last name", "type": "text", "label": "Last Name" },
-    { "id": "dividend-birth-date", "name": "Dividend birth date", "type": "date", "label": "Date of Birth" },
+    {
+      "id": "dividend-first-name",
+      "name": "Dividend first name",
+      "type": "text",
+      "label": "First Name"
+    },
+    {
+      "id": "dividend-last-name",
+      "name": "Dividend last name",
+      "type": "text",
+      "label": "Last Name"
+    },
+    {
+      "id": "dividend-birth-date",
+      "name": "Dividend birth date",
+      "type": "date",
+      "label": "Date of Birth"
+    },
     {
       "id": "payment-information-opt-in",
-      "name": "Payment information opt-in",
+      "name": "Payment information opt in",
       "type": "radio",
       "label": "Do you want to add payment information?",
       "required": true,
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "payment-method",
@@ -1441,9 +2538,21 @@
       "type": "radio",
       "label": "Payment Method",
       "options": [
-        { "value": "bill-me", "label": "Bill me" },
-        { "value": "bank-account", "label": "Bank account" },
-        { "value": "credit-card", "label": "Credit card" }
+        {
+          "value": "bill-me",
+          "label": "Bill me"
+        },
+        {
+          "value": "bank-account",
+          "label": "Bank account"
+        },
+        {
+          "value": "credit-card",
+          "label": "Credit card"
+        }
+      ],
+      "people": [
+        "self"
       ]
     },
     {
@@ -1453,74 +2562,131 @@
       "label": "Payment Frequency",
       "placeholder": "Select frequency",
       "options": [
-        { "value": "monthly", "label": "Monthly" },
-        { "value": "quarterly", "label": "Quarterly" },
-        { "value": "semiannually", "label": "Semiannually" },
-        { "value": "annually", "label": "Annually" }
+        {
+          "value": "monthly",
+          "label": "Monthly"
+        },
+        {
+          "value": "quarterly",
+          "label": "Quarterly"
+        },
+        {
+          "value": "semiannually",
+          "label": "Semiannually"
+        },
+        {
+          "value": "annually",
+          "label": "Annually"
+        }
+      ],
+      "people": [
+        "self"
       ]
     },
     {
       "id": "payment-shared-method",
-      "name": "Payment method for all products",
+      "name": "Payment shared method",
       "type": "radio",
       "label": "Payment method for all products",
       "required": true,
       "options": [
-        { "value": "bill-me", "label": "Bill me" },
-        { "value": "bank-account", "label": "Bank account" },
-        { "value": "credit-card", "label": "Credit card" }
+        {
+          "value": "bill-me",
+          "label": "Bill me"
+        },
+        {
+          "value": "bank-account",
+          "label": "Bank account"
+        },
+        {
+          "value": "credit-card",
+          "label": "Credit card"
+        }
+      ],
+      "people": [
+        "self"
       ]
     },
     {
       "id": "payment-shared-frequency",
-      "name": "Payment frequency for all products",
+      "name": "Payment shared frequency",
       "type": "dropdown",
       "label": "Payment frequency for all products",
       "required": true,
       "placeholder": "Select frequency",
       "options": [
-        { "value": "monthly", "label": "Monthly" },
-        { "value": "quarterly", "label": "Quarterly" },
-        { "value": "semiannually", "label": "Semiannually" },
-        { "value": "annually", "label": "Annually" }
+        {
+          "value": "monthly",
+          "label": "Monthly"
+        },
+        {
+          "value": "quarterly",
+          "label": "Quarterly"
+        },
+        {
+          "value": "semiannually",
+          "label": "Semiannually"
+        },
+        {
+          "value": "annually",
+          "label": "Annually"
+        }
+      ],
+      "people": [
+        "self"
       ]
     },
     {
       "id": "bank-name-on-account",
-      "name": "Name on account",
+      "name": "Bank name on account",
       "type": "text",
       "label": "Name on Account",
-      "required": true
+      "required": true,
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "bank-institution",
       "name": "Bank institution",
       "type": "text",
       "label": "Bank Institution",
-      "required": true
+      "required": true,
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "bank-routing-number",
-      "name": "Routing number",
+      "name": "Bank routing number",
       "type": "number",
       "label": "Routing Number",
       "required": true,
-      "inputMode": "numeric"
+      "inputMode": "numeric",
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "bank-account-number",
-      "name": "Account number",
+      "name": "Bank account number",
       "type": "number",
       "label": "Account Number",
       "required": true,
-      "inputMode": "numeric"
+      "inputMode": "numeric",
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "bank-authorization",
       "name": "Bank authorization",
       "type": "checkbox",
       "label": "I authorize recurring payments from this bank account.",
-      "required": true
+      "required": true,
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "resume-email",
@@ -1529,7 +2695,11 @@
       "label": "Email",
       "required": true,
       "format": "email",
-      "inputMode": "email"
+      "autoComplete": "email",
+      "inputMode": "email",
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "resume-delivery-method",
@@ -1537,7 +2707,19 @@
       "type": "radio",
       "label": "Choose how to get your verification code.",
       "required": true,
-      "options": [{ "value": "text", "label": "Text" }, { "value": "call", "label": "Call" }]
+      "options": [
+        {
+          "value": "text",
+          "label": "Text"
+        },
+        {
+          "value": "call",
+          "label": "Call"
+        }
+      ],
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "resume-security-code",
@@ -1545,13 +2727,21 @@
       "type": "text",
       "label": "Verification Code",
       "required": true,
-      "inputMode": "numeric"
+      "inputMode": "numeric",
+      "maxLength": 6,
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "advisor-flow-type",
-      "name": "Advisor application type",
+      "name": "Advisor flow type",
       "type": "text",
-      "label": "Application Type"
+      "label": "Application Type",
+      "defaultValue": "new",
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "advisor-email",
@@ -1560,7 +2750,11 @@
       "label": "Advisor email",
       "required": true,
       "format": "email",
-      "inputMode": "email"
+      "autoComplete": "email",
+      "inputMode": "email",
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "advisor-phone",
@@ -1569,14 +2763,22 @@
       "label": "Advisor phone number",
       "required": true,
       "format": "phone",
-      "inputMode": "tel"
+      "autoComplete": "tel",
+      "inputMode": "tel",
+      "showPhoneTypeSelector": false,
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "advisor-code",
       "name": "Advisor code",
       "type": "text",
       "label": "Advisor code",
-      "required": true
+      "required": true,
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "applicant-email",
@@ -1585,8 +2787,12 @@
       "label": "Applicant email",
       "required": true,
       "format": "email",
+      "autoComplete": "email",
       "inputMode": "email",
-      "helperText": "The applicant's email that was used to begin the application."
+      "helperText": "The applicant's email that was used to begin the application.",
+      "people": [
+        "self"
+      ]
     },
     {
       "id": "health-ci-q1",
@@ -1594,8 +2800,20 @@
       "type": "radio",
       "label": "Are you now ill, or receiving or contemplating any medical attention or surgical treatment?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "people": [
+        "self",
+        "spouse"
+      ],
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ]
     },
     {
       "id": "health-ci-q2",
@@ -1603,8 +2821,20 @@
       "type": "radio",
       "label": "Are you taking any kind of medication or, so far as you know, in impaired physical or mental health?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "people": [
+        "self",
+        "spouse"
+      ],
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ]
     },
     {
       "id": "health-ci-q3",
@@ -1612,8 +2842,20 @@
       "type": "radio",
       "label": "During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Heart attack, heart or circulatory trouble, high blood pressure, pain or pressure in chest?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "people": [
+        "self",
+        "spouse"
+      ],
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ]
     },
     {
       "id": "health-ci-q4",
@@ -1621,8 +2863,20 @@
       "type": "radio",
       "label": "During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Organ transplant?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "people": [
+        "self",
+        "spouse"
+      ],
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ]
     },
     {
       "id": "health-ci-q5",
@@ -1630,8 +2884,20 @@
       "type": "radio",
       "label": "During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Stroke?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "people": [
+        "self",
+        "spouse"
+      ],
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ]
     },
     {
       "id": "health-ci-q6",
@@ -1639,8 +2905,20 @@
       "type": "radio",
       "label": "During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Coma?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "people": [
+        "self",
+        "spouse"
+      ],
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ]
     },
     {
       "id": "health-ci-q7",
@@ -1648,8 +2926,20 @@
       "type": "radio",
       "label": "During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Cancer, carcinoma in situ, tumor or cyst?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "people": [
+        "self",
+        "spouse"
+      ],
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ]
     },
     {
       "id": "health-ci-q8",
@@ -1657,8 +2947,20 @@
       "type": "radio",
       "label": "During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Dementia or problems with memory or ability to think or reason?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "people": [
+        "self",
+        "spouse"
+      ],
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ]
     },
     {
       "id": "health-ci-q9",
@@ -1666,8 +2968,20 @@
       "type": "radio",
       "label": "During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Diabetes, kidney trouble, ulcers or digestive disorder?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "people": [
+        "self",
+        "spouse"
+      ],
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ]
     },
     {
       "id": "health-ci-q10",
@@ -1675,8 +2989,20 @@
       "type": "radio",
       "label": "During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Thyroid, liver or respiratory disorder?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "people": [
+        "self",
+        "spouse"
+      ],
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ]
     },
     {
       "id": "health-ci-q11",
@@ -1684,8 +3010,20 @@
       "type": "radio",
       "label": "During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Alcoholism or drug habit?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "people": [
+        "self",
+        "spouse"
+      ],
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ]
     },
     {
       "id": "health-ci-q12",
@@ -1693,8 +3031,20 @@
       "type": "radio",
       "label": "During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Disorder of the blood, except for HIV (Human Immunodeficiency Virus)?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "people": [
+        "self",
+        "spouse"
+      ],
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ]
     },
     {
       "id": "health-ci-q13",
@@ -1702,8 +3052,20 @@
       "type": "radio",
       "label": "During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Blindness or glaucoma or partial or total loss of hearing in one or both ears; partial or total loss of speech, motor neuron disease or paralysis?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "people": [
+        "self",
+        "spouse"
+      ],
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ]
     },
     {
       "id": "health-ci-q14",
@@ -1711,8 +3073,20 @@
       "type": "radio",
       "label": "During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Other health or physical impairment including: (i) Being medically diagnosed as having Acquired Immune Deficiency Syndrome (AIDS) or AIDS-related complex (ARC); immune system?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "people": [
+        "self",
+        "spouse"
+      ],
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ]
     },
     {
       "id": "health-ci-q15",
@@ -1720,8 +3094,20 @@
       "type": "radio",
       "label": "During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Other health or physical impairment including: (ii) Chronic cough, persistent diarrhea, enlarged lymph glands, chronic fatigue, in the past five years?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "people": [
+        "self",
+        "spouse"
+      ],
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ]
     },
     {
       "id": "health-ci-q16",
@@ -1729,8 +3115,20 @@
       "type": "radio",
       "label": "During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Other health or physical impairment including: (iii) Any other impairment?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "people": [
+        "self",
+        "spouse"
+      ],
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ]
     },
     {
       "id": "health-cir-q1",
@@ -1738,8 +3136,20 @@
       "type": "radio",
       "label": "Do you currently need or in the past 5 years have you needed human assistance or supervision to perform any of the following activities? Bathing, dressing, eating, walking, moving in/out of a bed or chair or wheel chair, toileting, bowel or bladder control (if \"Yes\", please circle all that apply.",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "people": [
+        "self",
+        "spouse"
+      ],
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ]
     },
     {
       "id": "health-cir-q2",
@@ -1747,8 +3157,20 @@
       "type": "radio",
       "label": "Within the past 5 years, have you been bed-ridden at your home or any other private residence for 2 weeks or more?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "people": [
+        "self",
+        "spouse"
+      ],
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ]
     },
     {
       "id": "health-cir-q3",
@@ -1756,8 +3178,20 @@
       "type": "radio",
       "label": "Within the past 5 years, have you had a fall or been diagnosed or treated by a member of the medical profession for a fracture, paralysis, numbness, balance problems or skin ulcers?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "people": [
+        "self",
+        "spouse"
+      ],
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ]
     },
     {
       "id": "health-cir-q4",
@@ -1765,8 +3199,20 @@
       "type": "radio",
       "label": "Within the past 5 years did you lose any part of your fingers, hands, feet or limbs due to amputation, accident, disease, or deformity; or been diagnosed or treated by a member of the medical profession for any conditions causing crippling or limited motion?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "people": [
+        "self",
+        "spouse"
+      ],
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ]
     },
     {
       "id": "health-cir-q5",
@@ -1774,8 +3220,20 @@
       "type": "radio",
       "label": "Are you now, or have you been in the past 5 years, in a wheelchair or dependent or required supportive equipment such as braces, crutches, walker, cane, back support, or splint?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "people": [
+        "self",
+        "spouse"
+      ],
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ]
     },
     {
       "id": "health-cir-q6",
@@ -1783,8 +3241,20 @@
       "type": "radio",
       "label": "Within the past 6 months, have you had or been recommended by a member of the medical profession to have physical therapy?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "people": [
+        "self",
+        "spouse"
+      ],
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ]
     },
     {
       "id": "health-cir-q7",
@@ -1792,8 +3262,20 @@
       "type": "radio",
       "label": "Within the past 5 years, have you been evaluated, counseled, treated by a member of the medical profession or hospitalized for any problems with memory or ability to think or reason?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "people": [
+        "self",
+        "spouse"
+      ],
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ]
     },
     {
       "id": "health-cir-q8",
@@ -1801,8 +3283,20 @@
       "type": "radio",
       "label": "Within the past 5 years, have you been confined or has confinement been recommended by a member of the medical profession, to a hospital, nursing home, rehabilitation facility or extended care facility?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "people": [
+        "self",
+        "spouse"
+      ],
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ]
     },
     {
       "id": "health-cir-q9",
@@ -1810,8 +3304,20 @@
       "type": "radio",
       "label": "Have you received Medicaid benefits or any similar federal or state financial assistance within the past 5 years? (Note: Medicaid is not the same as Medicare)",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "people": [
+        "self",
+        "spouse"
+      ],
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ]
     },
     {
       "id": "health-cir-q10",
@@ -1819,8 +3325,20 @@
       "type": "radio",
       "label": "Have you received Medicare disability benefits within the past 5 years?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "people": [
+        "self",
+        "spouse"
+      ],
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ]
     },
     {
       "id": "health-cir-q11",
@@ -1828,23 +3346,56 @@
       "type": "dropdown",
       "label": "In what type of dwelling do you reside?",
       "required": true,
-      "people": ["self", "spouse"],
+      "people": [
+        "self",
+        "spouse"
+      ],
       "placeholder": "Select",
       "options": [
-        { "value": "Private Home", "label": "Private Home" },
-        { "value": "Apartment", "label": "Apartment" },
-        { "value": "Retirement Home", "label": "Retirement Home" },
-        { "value": "Congregate Care Community", "label": "Congregate Care Community" },
-        { "value": "Nursing Care Facility", "label": "Nursing Care Facility" },
-        { "value": "Mobile Home", "label": "Mobile Home" },
-        { "value": "Continuing Care/Care Community", "label": "Continuing Care/Care Community" },
-        { "value": "Retirement Community", "label": "Retirement Community" },
-        { "value": "Assisted Living Unit", "label": "Assisted Living Unit" },
+        {
+          "value": "Private Home",
+          "label": "Private Home"
+        },
+        {
+          "value": "Apartment",
+          "label": "Apartment"
+        },
+        {
+          "value": "Retirement Home",
+          "label": "Retirement Home"
+        },
+        {
+          "value": "Congregate Care Community",
+          "label": "Congregate Care Community"
+        },
+        {
+          "value": "Nursing Care Facility",
+          "label": "Nursing Care Facility"
+        },
+        {
+          "value": "Mobile Home",
+          "label": "Mobile Home"
+        },
+        {
+          "value": "Continuing Care/Care Community",
+          "label": "Continuing Care/Care Community"
+        },
+        {
+          "value": "Retirement Community",
+          "label": "Retirement Community"
+        },
+        {
+          "value": "Assisted Living Unit",
+          "label": "Assisted Living Unit"
+        },
         {
           "value": "Personal Care Home or an Adult Care Home",
           "label": "Personal Care Home or an Adult Care Home"
         },
-        { "value": "other", "label": "Other" }
+        {
+          "value": "other",
+          "label": "Other"
+        }
       ]
     },
     {
@@ -1853,8 +3404,20 @@
       "type": "radio",
       "label": "Within the past 5 years, have you been declined for issue, reinstatement or renewal of any type of long-term care insurance?",
       "required": true,
-      "people": ["self", "spouse"],
-      "options": [{ "value": "yes", "label": "Yes" }, { "value": "no", "label": "No" }]
+      "people": [
+        "self",
+        "spouse"
+      ],
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ]
     },
     {
       "id": "health-cir-activities",
@@ -1862,18 +3425,39 @@
       "type": "multi-select",
       "label": "Activities requiring assistance or supervision",
       "required": true,
-      "people": ["self", "spouse"],
+      "people": [
+        "self",
+        "spouse"
+      ],
       "options": [
-        { "value": "Bathing", "label": "Bathing" },
-        { "value": "Dressing", "label": "Dressing" },
-        { "value": "Eating", "label": "Eating" },
-        { "value": "Walking", "label": "Walking" },
+        {
+          "value": "Bathing",
+          "label": "Bathing"
+        },
+        {
+          "value": "Dressing",
+          "label": "Dressing"
+        },
+        {
+          "value": "Eating",
+          "label": "Eating"
+        },
+        {
+          "value": "Walking",
+          "label": "Walking"
+        },
         {
           "value": "Moving in/out of a bed or chair or wheel chair",
           "label": "Moving in/out of a bed or chair or wheel chair"
         },
-        { "value": "Toileting", "label": "Toileting" },
-        { "value": "Bowel or bladder control", "label": "Bowel or bladder control" }
+        {
+          "value": "Toileting",
+          "label": "Toileting"
+        },
+        {
+          "value": "Bowel or bladder control",
+          "label": "Bowel or bladder control"
+        }
       ]
     },
     {
@@ -1882,7 +3466,1349 @@
       "type": "text",
       "label": "Please specify",
       "required": true,
-      "people": ["self", "spouse"]
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "id": "health-si-detail-onset",
+      "name": "Health SI detail onset",
+      "type": "text",
+      "label": "Month/Year of Onset",
+      "format": "month-year",
+      "required": true,
+      "helperText": "mm/yyyy",
+      "labelVariant": "standard",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "id": "health-si-detail-conditions-details",
+      "name": "Health SI detail conditions Details",
+      "type": "text",
+      "label": "Condition/Medication & Details (e.g. Medical Advice Given, Treatment, Results, Date Recovered)",
+      "required": true,
+      "multiline": true,
+      "minRows": 3,
+      "labelVariant": "standard",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "id": "health-si-detail-physician-address",
+      "name": "Health SI detail physician Address",
+      "type": "text",
+      "label": "Name and Address of Each Physician, Practitioner, and Hospital",
+      "required": true,
+      "multiline": true,
+      "minRows": 3,
+      "labelVariant": "standard",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "id": "health-li-detail-onset",
+      "name": "Health LI detail onset",
+      "type": "text",
+      "label": "Month/Year of Onset",
+      "format": "month-year",
+      "required": true,
+      "helperText": "mm/yyyy",
+      "labelVariant": "standard",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "id": "health-li-detail-conditions-details",
+      "name": "Health LI detail conditions Details",
+      "type": "text",
+      "label": "Condition/Medication & Details (Medical Advice Given, Treatment, Results, Date Recovered)",
+      "required": true,
+      "multiline": true,
+      "minRows": 3,
+      "labelVariant": "standard",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "id": "health-li-detail-physician-address",
+      "name": "Health LI detail physician Address",
+      "type": "text",
+      "label": "Name and Address of Each Physician, Practitioner, and Hospital",
+      "required": false,
+      "multiline": true,
+      "minRows": 3,
+      "labelVariant": "standard",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "id": "health-di-q1-detail-assistance-type",
+      "name": "Health DI q1 detail assistance Type",
+      "type": "dropdown",
+      "label": "Assistance Type",
+      "required": true,
+      "placeholder": "Select",
+      "options": [
+        {
+          "value": "bathing",
+          "label": "Bathing"
+        },
+        {
+          "value": "dressing",
+          "label": "Dressing"
+        },
+        {
+          "value": "eating",
+          "label": "Eating"
+        },
+        {
+          "value": "walking",
+          "label": "Walking"
+        },
+        {
+          "value": "moving",
+          "label": "Moving in/out of a bed or chair or wheel chair"
+        },
+        {
+          "value": "toileting",
+          "label": "Toileting"
+        },
+        {
+          "value": "bowel-bladder",
+          "label": "Bowel or bladder control"
+        }
+      ],
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "id": "health-di-q1-detail-onset",
+      "name": "Health DI q1 detail onset",
+      "type": "text",
+      "label": "Month/Year of Onset",
+      "format": "month-year",
+      "required": true,
+      "helperText": "mm/yyyy",
+      "labelVariant": "standard",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "id": "health-di-q1-detail-conditions-details",
+      "name": "Health DI q1 detail conditions Details",
+      "type": "text",
+      "label": "Conditions & Details",
+      "required": true,
+      "multiline": true,
+      "minRows": 3,
+      "labelVariant": "standard",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "id": "health-di-q1-detail-physician-address",
+      "name": "Health DI q1 detail physician Address",
+      "type": "text",
+      "label": "Name and address of each physician, practitioner, and hospital",
+      "required": false,
+      "multiline": true,
+      "minRows": 3,
+      "labelVariant": "standard",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "id": "health-di-q2-detail-fall-type",
+      "name": "Health DI q2 detail fall Type",
+      "type": "text",
+      "label": "Fall Type/Diagnosis",
+      "required": true,
+      "labelVariant": "standard",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "id": "health-di-q2-detail-onset",
+      "name": "Health DI q2 detail onset",
+      "type": "text",
+      "label": "Month/Year of Onset",
+      "format": "month-year",
+      "required": true,
+      "helperText": "mm/yyyy",
+      "labelVariant": "standard",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "id": "health-di-q2-detail-conditions-details",
+      "name": "Health DI q2 detail conditions Details",
+      "type": "text",
+      "label": "Conditions & Details",
+      "required": true,
+      "multiline": true,
+      "minRows": 3,
+      "labelVariant": "standard",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "id": "health-di-q2-detail-physician-address",
+      "name": "Health DI q2 detail physician Address",
+      "type": "text",
+      "label": "Name and address of each physician, practitioner, and hospital",
+      "required": false,
+      "multiline": true,
+      "minRows": 3,
+      "labelVariant": "standard",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "id": "health-di-q3-detail-onset",
+      "name": "Health DI q3 detail onset",
+      "type": "text",
+      "label": "Month/Year of Onset",
+      "format": "month-year",
+      "required": true,
+      "helperText": "mm/yyyy",
+      "labelVariant": "standard",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "id": "health-di-q3-detail-conditions-details",
+      "name": "Health DI q3 detail conditions Details",
+      "type": "text",
+      "label": "Conditions & Details",
+      "required": true,
+      "multiline": true,
+      "minRows": 3,
+      "labelVariant": "standard",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "id": "health-di-q3-detail-physician-address",
+      "name": "Health DI q3 detail physician Address",
+      "type": "text",
+      "label": "Name and address of each physician, practitioner, and hospital",
+      "required": false,
+      "multiline": true,
+      "minRows": 3,
+      "labelVariant": "standard",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "id": "health-di-q4-detail-onset",
+      "name": "Health DI q4 detail onset",
+      "type": "text",
+      "label": "Month/Year of Onset",
+      "format": "month-year",
+      "required": true,
+      "helperText": "mm/yyyy",
+      "labelVariant": "standard",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "id": "health-di-q4-detail-conditions-details",
+      "name": "Health DI q4 detail conditions Details",
+      "type": "text",
+      "label": "Conditions & Details",
+      "required": true,
+      "multiline": true,
+      "minRows": 3,
+      "labelVariant": "standard",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "id": "health-di-q4-detail-physician-address",
+      "name": "Health DI q4 detail physician Address",
+      "type": "text",
+      "label": "Name and address of each physician, practitioner, and hospital",
+      "required": false,
+      "multiline": true,
+      "minRows": 3,
+      "labelVariant": "standard",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "id": "health-di-q5-detail-onset",
+      "name": "Health DI q5 detail onset",
+      "type": "text",
+      "label": "Month/Year of Onset",
+      "format": "month-year",
+      "required": true,
+      "helperText": "mm/yyyy",
+      "labelVariant": "standard",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "id": "health-di-q5-detail-conditions-details",
+      "name": "Health DI q5 detail conditions Details",
+      "type": "text",
+      "label": "Conditions & Details",
+      "required": true,
+      "multiline": true,
+      "minRows": 3,
+      "labelVariant": "standard",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "id": "health-di-q5-detail-physician-address",
+      "name": "Health DI q5 detail physician Address",
+      "type": "text",
+      "label": "Name and address of each physician, practitioner, and hospital",
+      "required": false,
+      "multiline": true,
+      "minRows": 3,
+      "labelVariant": "standard",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "id": "health-di-q6-detail-onset",
+      "name": "Health DI q6 detail onset",
+      "type": "text",
+      "label": "Month/Year of Onset",
+      "format": "month-year",
+      "required": true,
+      "helperText": "mm/yyyy",
+      "labelVariant": "standard",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "id": "health-di-q6-detail-conditions-details",
+      "name": "Health DI q6 detail conditions Details",
+      "type": "text",
+      "label": "Conditions & Details",
+      "required": true,
+      "multiline": true,
+      "minRows": 3,
+      "labelVariant": "standard",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "id": "health-di-q6-detail-physician-address",
+      "name": "Health DI q6 detail physician Address",
+      "type": "text",
+      "label": "Name and address of each physician, practitioner, and hospital",
+      "required": false,
+      "multiline": true,
+      "minRows": 3,
+      "labelVariant": "standard",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "id": "health-di-q7-detail-details",
+      "name": "Health DI q7 detail details",
+      "type": "text",
+      "label": "Details",
+      "required": true,
+      "multiline": true,
+      "minRows": 3,
+      "labelVariant": "standard",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "id": "review-self-consent",
+      "name": "Review self consent",
+      "type": "checkbox",
+      "label": "I confirm that I have reviewed and understand the above material. I consent to the use of electronic signature and delivery of electronic records.",
+      "required": true,
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "id": "review-spouse-consent",
+      "name": "Review spouse consent",
+      "type": "checkbox",
+      "label": "I confirm that I have reviewed and understand the above material. I consent to the use of electronic signature and delivery of electronic records.",
+      "required": true,
+      "people": [
+        "self"
+      ]
     }
-  ]
+  ],
+  "bindings": {
+    "physician-first-name": {
+      "field": "physician-first-name",
+      "person": "self"
+    },
+    "physician-last-name": {
+      "field": "physician-last-name",
+      "person": "self"
+    },
+    "physician-phone": {
+      "field": "physician-phone",
+      "person": "self"
+    },
+    "medical-facility-name": {
+      "field": "medical-facility-name",
+      "person": "self"
+    },
+    "medical-facility-street-address": {
+      "field": "medical-facility-street-address",
+      "person": "self"
+    },
+    "medical-facility-apt-suite": {
+      "field": "medical-facility-apt-suite",
+      "person": "self"
+    },
+    "medical-city": {
+      "field": "medical-city",
+      "person": "self"
+    },
+    "medical-state": {
+      "field": "medical-state",
+      "person": "self"
+    },
+    "medical-zip-code": {
+      "field": "medical-zip-code",
+      "person": "self"
+    },
+    "height-feet": {
+      "field": "height-feet",
+      "person": "self"
+    },
+    "height-inches": {
+      "field": "height-inches",
+      "person": "self"
+    },
+    "weight-lbs": {
+      "field": "weight-lbs",
+      "person": "self"
+    },
+    "weight-12-months-ago-lbs": {
+      "field": "weight-12-months-ago-lbs",
+      "person": "self"
+    },
+    "social-security-number": {
+      "field": "social-security-number",
+      "person": "self"
+    },
+    "marital-status": {
+      "field": "marital-status",
+      "person": "self"
+    },
+    "has-drivers-license": {
+      "field": "has-drivers-license",
+      "person": "self"
+    },
+    "drivers-license-number": {
+      "field": "drivers-license-number",
+      "person": "self"
+    },
+    "drivers-license-state": {
+      "field": "drivers-license-state",
+      "person": "self"
+    },
+    "intend-live-outside-us": {
+      "field": "intend-live-outside-us",
+      "person": "self"
+    },
+    "outside-us-months": {
+      "field": "outside-us-months",
+      "person": "self"
+    },
+    "outside-us-country": {
+      "field": "outside-us-country",
+      "person": "self"
+    },
+    "travel-outside-us-six-months": {
+      "field": "travel-outside-us-six-months",
+      "person": "self"
+    },
+    "travel-outside-us-country": {
+      "field": "travel-outside-us-country",
+      "person": "self"
+    },
+    "spouse-height-feet": {
+      "field": "height-feet",
+      "person": "spouse",
+      "values": {
+        "displayName": "Spouse height feet"
+      }
+    },
+    "spouse-height-inches": {
+      "field": "height-inches",
+      "person": "spouse",
+      "values": {
+        "displayName": "Spouse height inches"
+      }
+    },
+    "spouse-weight-lbs": {
+      "field": "weight-lbs",
+      "person": "spouse",
+      "values": {
+        "displayName": "Spouse weight lbs"
+      }
+    },
+    "spouse-weight-12-months-ago-lbs": {
+      "field": "weight-12-months-ago-lbs",
+      "person": "spouse",
+      "values": {
+        "displayName": "Spouse weight 12 months ago lbs"
+      }
+    },
+    "spouse-social-security-number": {
+      "field": "social-security-number",
+      "person": "spouse",
+      "values": {
+        "displayName": "Spouse social security number"
+      }
+    },
+    "spouse-has-drivers-license": {
+      "field": "has-drivers-license",
+      "person": "spouse",
+      "values": {
+        "label": "Does your spouse have a valid driver's license?",
+        "displayName": "Spouse has drivers license"
+      }
+    },
+    "spouse-drivers-license-number": {
+      "field": "drivers-license-number",
+      "person": "spouse",
+      "values": {
+        "label": "Spouse Driver's License Number",
+        "displayName": "Spouse drivers license number"
+      }
+    },
+    "spouse-drivers-license-state": {
+      "field": "drivers-license-state",
+      "person": "spouse",
+      "values": {
+        "label": "Spouse Driver's License State",
+        "displayName": "Spouse drivers license state"
+      }
+    },
+    "spouse-intend-live-outside-us": {
+      "field": "intend-live-outside-us",
+      "person": "spouse",
+      "values": {
+        "label": "Does your spouse intend to reside outside the U.S. or Canada within the next 12 months?",
+        "displayName": "Spouse intend live outside us"
+      }
+    },
+    "spouse-outside-us-months": {
+      "field": "outside-us-months",
+      "person": "spouse",
+      "values": {
+        "displayName": "Spouse outside us months"
+      }
+    },
+    "spouse-outside-us-country": {
+      "field": "outside-us-country",
+      "person": "spouse",
+      "values": {
+        "displayName": "Spouse outside us country"
+      }
+    },
+    "spouse-travel-outside-us-six-months": {
+      "field": "travel-outside-us-six-months",
+      "person": "spouse",
+      "values": {
+        "label": "Does your spouse intend to travel outside the U.S. or Canada within the next 12 months?",
+        "displayName": "Spouse travel outside us six months"
+      }
+    },
+    "spouse-travel-outside-us-country": {
+      "field": "travel-outside-us-country",
+      "person": "spouse",
+      "values": {
+        "displayName": "Spouse travel outside us country"
+      }
+    },
+    "spouse-physician-first-name": {
+      "field": "physician-first-name",
+      "person": "spouse",
+      "values": {
+        "displayName": "Spouse physician first name"
+      }
+    },
+    "spouse-physician-last-name": {
+      "field": "physician-last-name",
+      "person": "spouse",
+      "values": {
+        "displayName": "Spouse physician last name"
+      }
+    },
+    "spouse-physician-phone": {
+      "field": "physician-phone",
+      "person": "spouse",
+      "values": {
+        "displayName": "Spouse physician phone"
+      }
+    },
+    "spouse-medical-facility-name": {
+      "field": "medical-facility-name",
+      "person": "spouse",
+      "values": {
+        "displayName": "Spouse medical facility name",
+        "autoComplete": "organization"
+      }
+    },
+    "spouse-medical-facility-street-address": {
+      "field": "medical-facility-street-address",
+      "person": "spouse",
+      "values": {
+        "displayName": "Spouse medical facility street address",
+        "autoComplete": "street-address"
+      }
+    },
+    "spouse-medical-facility-apt-suite": {
+      "field": "medical-facility-apt-suite",
+      "person": "spouse",
+      "values": {
+        "displayName": "Spouse medical facility apt suite",
+        "autoComplete": "address-line2"
+      }
+    },
+    "spouse-medical-city": {
+      "field": "medical-city",
+      "person": "spouse",
+      "values": {
+        "displayName": "Spouse medical city",
+        "autoComplete": "address-level2"
+      }
+    },
+    "spouse-medical-state": {
+      "field": "medical-state",
+      "person": "spouse",
+      "values": {
+        "displayName": "Spouse medical state"
+      }
+    },
+    "spouse-medical-zip-code": {
+      "field": "medical-zip-code",
+      "person": "spouse",
+      "values": {
+        "displayName": "Spouse medical zip code",
+        "autoComplete": "postal-code"
+      }
+    },
+    "has-other-life-insurance": {
+      "field": "has-other-life-insurance",
+      "person": "self"
+    },
+    "existing-life-insurance-amount": {
+      "field": "existing-life-insurance-amount",
+      "person": "self"
+    },
+    "is-replacing-life-insurance": {
+      "field": "is-replacing-life-insurance",
+      "person": "self"
+    },
+    "has-pending-life-insurance-applications": {
+      "field": "has-pending-life-insurance-applications",
+      "person": "self"
+    },
+    "pending-life-insurance-amount": {
+      "field": "pending-life-insurance-amount",
+      "person": "self"
+    },
+    "pending-life-insurance-company": {
+      "field": "pending-life-insurance-company",
+      "person": "self"
+    },
+    "has-disability-insurance": {
+      "field": "has-disability-insurance",
+      "person": "self"
+    },
+    "is-replacing-disability-insurance": {
+      "field": "is-replacing-disability-insurance",
+      "person": "self"
+    },
+    "disability-replacement-amount": {
+      "field": "disability-replacement-amount",
+      "person": "self"
+    },
+    "total-net-worth": {
+      "field": "total-net-worth",
+      "person": "self"
+    },
+    "total-annual-unearned-income": {
+      "field": "total-annual-unearned-income",
+      "person": "self"
+    },
+    "is-self-employed": {
+      "field": "is-self-employed",
+      "person": "self"
+    },
+    "is-sole-proprietor": {
+      "field": "is-sole-proprietor",
+      "person": "self"
+    },
+    "is-professional-corporation": {
+      "field": "is-professional-corporation",
+      "person": "self"
+    },
+    "sole-proprietor-gross-income": {
+      "field": "sole-proprietor-gross-income",
+      "person": "self"
+    },
+    "sole-proprietor-gross-earnings": {
+      "field": "sole-proprietor-gross-earnings",
+      "person": "self"
+    },
+    "sole-proprietor-business-expenses": {
+      "field": "sole-proprietor-business-expenses",
+      "person": "self"
+    },
+    "professional-corporation-annual-salary": {
+      "field": "professional-corporation-annual-salary",
+      "person": "self"
+    },
+    "professional-corporation-s-corp-distribution": {
+      "field": "professional-corporation-s-corp-distribution",
+      "person": "self"
+    },
+    "professional-corporation-dividends": {
+      "field": "professional-corporation-dividends",
+      "person": "self"
+    },
+    "professional-corporation-bonus": {
+      "field": "professional-corporation-bonus",
+      "person": "self"
+    },
+    "bonus-payment-frequency": {
+      "field": "bonus-payment-frequency",
+      "person": "self"
+    },
+    "professional-corporation-commission": {
+      "field": "professional-corporation-commission",
+      "person": "self"
+    },
+    "commission-payment-frequency": {
+      "field": "commission-payment-frequency",
+      "person": "self"
+    },
+    "professional-corporation-benefits-cost": {
+      "field": "professional-corporation-benefits-cost",
+      "person": "self"
+    },
+    "years-self-employed": {
+      "field": "years-self-employed",
+      "person": "self"
+    },
+    "work-from-home": {
+      "field": "work-from-home",
+      "person": "self"
+    },
+    "has-work-location-outside-home": {
+      "field": "has-work-location-outside-home",
+      "person": "self"
+    },
+    "work-location-details": {
+      "field": "work-location-details",
+      "person": "self"
+    },
+    "spouse-has-other-life-insurance": {
+      "field": "has-other-life-insurance",
+      "person": "spouse",
+      "values": {
+        "label": "Does your spouse have other life insurance in force?",
+        "displayName": "Spouse has other life insurance",
+        "helperText": "If your spouse has life insurance in-force with New York Life or another carrier, select \"Yes\""
+      }
+    },
+    "spouse-existing-life-insurance-amount": {
+      "field": "existing-life-insurance-amount",
+      "person": "spouse",
+      "values": {
+        "displayName": "Spouse existing life insurance amount"
+      }
+    },
+    "spouse-is-replacing-life-insurance": {
+      "field": "is-replacing-life-insurance",
+      "person": "spouse",
+      "values": {
+        "displayName": "Spouse is replacing life insurance"
+      }
+    },
+    "spouse-has-pending-life-insurance-applications": {
+      "field": "has-pending-life-insurance-applications",
+      "person": "spouse",
+      "values": {
+        "label": "Does your spouse have other life insurance applications pending?",
+        "displayName": "Spouse has pending life insurance applications"
+      }
+    },
+    "spouse-pending-life-insurance-amount": {
+      "field": "pending-life-insurance-amount",
+      "person": "spouse",
+      "values": {
+        "displayName": "Spouse pending life insurance amount"
+      }
+    },
+    "spouse-pending-life-insurance-company": {
+      "field": "pending-life-insurance-company",
+      "person": "spouse",
+      "values": {
+        "displayName": "Spouse pending life insurance company"
+      }
+    },
+    "spouse-has-disability-insurance": {
+      "field": "has-disability-insurance",
+      "person": "spouse",
+      "values": {
+        "label": "Does your spouse now have or is your spouse now applying for any other insurance which provides benefits if they are unable to work because of a disability?",
+        "displayName": "Spouse has disability insurance"
+      }
+    },
+    "spouse-is-replacing-disability-insurance": {
+      "field": "is-replacing-disability-insurance",
+      "person": "spouse",
+      "values": {
+        "displayName": "Spouse is replacing disability insurance"
+      }
+    },
+    "spouse-disability-replacement-amount": {
+      "field": "disability-replacement-amount",
+      "person": "spouse",
+      "values": {
+        "displayName": "Spouse disability replacement amount"
+      }
+    },
+    "di-company-name": {
+      "field": "di-company-name",
+      "person": "self"
+    },
+    "di-company-monthly-benefit": {
+      "field": "di-company-monthly-benefit",
+      "person": "self"
+    },
+    "di-company-benefit-period": {
+      "field": "di-company-benefit-period",
+      "person": "self"
+    },
+    "di-company-waiting-period": {
+      "field": "di-company-waiting-period",
+      "person": "self"
+    },
+    "health-si-q1": {
+      "field": "health-si-q1",
+      "person": "self"
+    },
+    "health-si-q2": {
+      "field": "health-si-q2",
+      "person": "self"
+    },
+    "health-si-q3": {
+      "field": "health-si-q3",
+      "person": "self"
+    },
+    "health-si-q4": {
+      "field": "health-si-q4",
+      "person": "self"
+    },
+    "health-si-q5": {
+      "field": "health-si-q5",
+      "person": "self"
+    },
+    "health-si-q1-spouse": {
+      "field": "health-si-q1",
+      "person": "spouse",
+      "values": {
+        "displayName": "Health SI q1 spouse"
+      }
+    },
+    "health-si-q2-spouse": {
+      "field": "health-si-q2",
+      "person": "spouse",
+      "values": {
+        "displayName": "Health SI q2 spouse"
+      }
+    },
+    "health-si-q3-spouse": {
+      "field": "health-si-q3",
+      "person": "spouse",
+      "values": {
+        "displayName": "Health SI q3 spouse"
+      }
+    },
+    "health-si-q4-spouse": {
+      "field": "health-si-q4",
+      "person": "spouse",
+      "values": {
+        "displayName": "Health SI q4 spouse"
+      }
+    },
+    "health-si-q5-spouse": {
+      "field": "health-si-q5",
+      "person": "spouse",
+      "values": {
+        "displayName": "Health SI q5 spouse"
+      }
+    },
+    "health-si-detail-onset": {
+      "field": "health-si-detail-onset",
+      "person": "self"
+    },
+    "health-si-detail-conditionsDetails": {
+      "field": "health-si-detail-conditions-details",
+      "person": "self"
+    },
+    "health-si-detail-physicianAddress": {
+      "field": "health-si-detail-physician-address",
+      "person": "self"
+    },
+    "health-li-q1": {
+      "field": "health-li-q1",
+      "person": "self"
+    },
+    "health-li-q2": {
+      "field": "health-li-q2",
+      "person": "self"
+    },
+    "health-li-q3": {
+      "field": "health-li-q3",
+      "person": "self"
+    },
+    "health-li-q4": {
+      "field": "health-li-q4",
+      "person": "self"
+    },
+    "health-li-q5": {
+      "field": "health-li-q5",
+      "person": "self"
+    },
+    "health-li-q6": {
+      "field": "health-li-q6",
+      "person": "self"
+    },
+    "health-li-q7": {
+      "field": "health-li-q7",
+      "person": "self"
+    },
+    "health-li-q8": {
+      "field": "health-li-q8",
+      "person": "self"
+    },
+    "health-li-q9": {
+      "field": "health-li-q9",
+      "person": "self"
+    },
+    "health-li-q10": {
+      "field": "health-li-q10",
+      "person": "self"
+    },
+    "health-li-q11": {
+      "field": "health-li-q11",
+      "person": "self"
+    },
+    "health-li-q12": {
+      "field": "health-li-q12",
+      "person": "self"
+    },
+    "health-li-q13": {
+      "field": "health-li-q13",
+      "person": "self"
+    },
+    "health-li-q14": {
+      "field": "health-li-q14",
+      "person": "self"
+    },
+    "health-li-q15": {
+      "field": "health-li-q15",
+      "person": "self"
+    },
+    "health-li-q1-spouse": {
+      "field": "health-li-q1",
+      "person": "spouse",
+      "values": {
+        "displayName": "Health LI q1 spouse"
+      }
+    },
+    "health-li-q2-spouse": {
+      "field": "health-li-q2",
+      "person": "spouse",
+      "values": {
+        "displayName": "Health LI q2 spouse"
+      }
+    },
+    "health-li-q3-spouse": {
+      "field": "health-li-q3",
+      "person": "spouse",
+      "values": {
+        "displayName": "Health LI q3 spouse"
+      }
+    },
+    "health-li-q4-spouse": {
+      "field": "health-li-q4",
+      "person": "spouse",
+      "values": {
+        "displayName": "Health LI q4 spouse"
+      }
+    },
+    "health-li-q5-spouse": {
+      "field": "health-li-q5",
+      "person": "spouse",
+      "values": {
+        "displayName": "Health LI q5 spouse"
+      }
+    },
+    "health-li-q6-spouse": {
+      "field": "health-li-q6",
+      "person": "spouse",
+      "values": {
+        "displayName": "Health LI q6 spouse"
+      }
+    },
+    "health-li-q7-spouse": {
+      "field": "health-li-q7",
+      "person": "spouse",
+      "values": {
+        "displayName": "Health LI q7 spouse"
+      }
+    },
+    "health-li-q8-spouse": {
+      "field": "health-li-q8",
+      "person": "spouse",
+      "values": {
+        "displayName": "Health LI q8 spouse"
+      }
+    },
+    "health-li-q9-spouse": {
+      "field": "health-li-q9",
+      "person": "spouse",
+      "values": {
+        "displayName": "Health LI q9 spouse"
+      }
+    },
+    "health-li-q10-spouse": {
+      "field": "health-li-q10",
+      "person": "spouse",
+      "values": {
+        "displayName": "Health LI q10 spouse"
+      }
+    },
+    "health-li-q11-spouse": {
+      "field": "health-li-q11",
+      "person": "spouse",
+      "values": {
+        "displayName": "Health LI q11 spouse"
+      }
+    },
+    "health-li-q12-spouse": {
+      "field": "health-li-q12",
+      "person": "spouse",
+      "values": {
+        "displayName": "Health LI q12 spouse"
+      }
+    },
+    "health-li-q13-spouse": {
+      "field": "health-li-q13",
+      "person": "spouse",
+      "values": {
+        "displayName": "Health LI q13 spouse"
+      }
+    },
+    "health-li-q14-spouse": {
+      "field": "health-li-q14",
+      "person": "spouse",
+      "values": {
+        "displayName": "Health LI q14 spouse"
+      }
+    },
+    "health-li-q15-spouse": {
+      "field": "health-li-q15",
+      "person": "spouse",
+      "values": {
+        "displayName": "Health LI q15 spouse"
+      }
+    },
+    "health-li-detail-onset": {
+      "field": "health-li-detail-onset",
+      "person": "self"
+    },
+    "health-li-detail-conditionsDetails": {
+      "field": "health-li-detail-conditions-details",
+      "person": "self"
+    },
+    "health-li-detail-physicianAddress": {
+      "field": "health-li-detail-physician-address",
+      "person": "self"
+    },
+    "health-di-q1": {
+      "field": "health-di-q1",
+      "person": "self"
+    },
+    "health-di-q2": {
+      "field": "health-di-q2",
+      "person": "self"
+    },
+    "health-di-q3": {
+      "field": "health-di-q3",
+      "person": "self"
+    },
+    "health-di-q4": {
+      "field": "health-di-q4",
+      "person": "self"
+    },
+    "health-di-q5": {
+      "field": "health-di-q5",
+      "person": "self"
+    },
+    "health-di-q6": {
+      "field": "health-di-q6",
+      "person": "self"
+    },
+    "health-di-q7": {
+      "field": "health-di-q7",
+      "person": "self"
+    },
+    "health-di-q1-spouse": {
+      "field": "health-di-q1",
+      "person": "spouse",
+      "values": {
+        "displayName": "Health DI q1 spouse"
+      }
+    },
+    "health-di-q2-spouse": {
+      "field": "health-di-q2",
+      "person": "spouse",
+      "values": {
+        "displayName": "Health DI q2 spouse"
+      }
+    },
+    "health-di-q3-spouse": {
+      "field": "health-di-q3",
+      "person": "spouse",
+      "values": {
+        "displayName": "Health DI q3 spouse"
+      }
+    },
+    "health-di-q4-spouse": {
+      "field": "health-di-q4",
+      "person": "spouse",
+      "values": {
+        "displayName": "Health DI q4 spouse"
+      }
+    },
+    "health-di-q5-spouse": {
+      "field": "health-di-q5",
+      "person": "spouse",
+      "values": {
+        "displayName": "Health DI q5 spouse"
+      }
+    },
+    "health-di-q6-spouse": {
+      "field": "health-di-q6",
+      "person": "spouse",
+      "values": {
+        "displayName": "Health DI q6 spouse"
+      }
+    },
+    "health-di-q7-spouse": {
+      "field": "health-di-q7",
+      "person": "spouse",
+      "values": {
+        "displayName": "Health DI q7 spouse"
+      }
+    },
+    "health-di-q1-detail-assistanceType": {
+      "field": "health-di-q1-detail-assistance-type",
+      "person": "self"
+    },
+    "health-di-q1-detail-onset": {
+      "field": "health-di-q1-detail-onset",
+      "person": "self"
+    },
+    "health-di-q1-detail-conditionsDetails": {
+      "field": "health-di-q1-detail-conditions-details",
+      "person": "self"
+    },
+    "health-di-q1-detail-physicianAddress": {
+      "field": "health-di-q1-detail-physician-address",
+      "person": "self"
+    },
+    "health-di-q2-detail-fallType": {
+      "field": "health-di-q2-detail-fall-type",
+      "person": "self"
+    },
+    "health-di-q2-detail-onset": {
+      "field": "health-di-q2-detail-onset",
+      "person": "self"
+    },
+    "health-di-q2-detail-conditionsDetails": {
+      "field": "health-di-q2-detail-conditions-details",
+      "person": "self"
+    },
+    "health-di-q2-detail-physicianAddress": {
+      "field": "health-di-q2-detail-physician-address",
+      "person": "self"
+    },
+    "health-di-q3-detail-onset": {
+      "field": "health-di-q3-detail-onset",
+      "person": "self"
+    },
+    "health-di-q3-detail-conditionsDetails": {
+      "field": "health-di-q3-detail-conditions-details",
+      "person": "self"
+    },
+    "health-di-q3-detail-physicianAddress": {
+      "field": "health-di-q3-detail-physician-address",
+      "person": "self"
+    },
+    "health-di-q4-detail-onset": {
+      "field": "health-di-q4-detail-onset",
+      "person": "self"
+    },
+    "health-di-q4-detail-conditionsDetails": {
+      "field": "health-di-q4-detail-conditions-details",
+      "person": "self"
+    },
+    "health-di-q4-detail-physicianAddress": {
+      "field": "health-di-q4-detail-physician-address",
+      "person": "self"
+    },
+    "health-di-q5-detail-onset": {
+      "field": "health-di-q5-detail-onset",
+      "person": "self"
+    },
+    "health-di-q5-detail-conditionsDetails": {
+      "field": "health-di-q5-detail-conditions-details",
+      "person": "self"
+    },
+    "health-di-q5-detail-physicianAddress": {
+      "field": "health-di-q5-detail-physician-address",
+      "person": "self"
+    },
+    "health-di-q6-detail-onset": {
+      "field": "health-di-q6-detail-onset",
+      "person": "self"
+    },
+    "health-di-q6-detail-conditionsDetails": {
+      "field": "health-di-q6-detail-conditions-details",
+      "person": "self"
+    },
+    "health-di-q6-detail-physicianAddress": {
+      "field": "health-di-q6-detail-physician-address",
+      "person": "self"
+    },
+    "health-di-q7-detail-details": {
+      "field": "health-di-q7-detail-details",
+      "person": "self"
+    },
+    "bank-name-on-account": {
+      "field": "bank-name-on-account",
+      "person": "self"
+    },
+    "bank-institution": {
+      "field": "bank-institution",
+      "person": "self"
+    },
+    "bank-routing-number": {
+      "field": "bank-routing-number",
+      "person": "self"
+    },
+    "bank-account-number": {
+      "field": "bank-account-number",
+      "person": "self"
+    },
+    "bank-authorization": {
+      "field": "bank-authorization",
+      "person": "self"
+    },
+    "payment-information-opt-in": {
+      "field": "payment-information-opt-in",
+      "person": "self"
+    },
+    "payment-method": {
+      "field": "payment-method",
+      "person": "self"
+    },
+    "payment-frequency": {
+      "field": "payment-frequency",
+      "person": "self"
+    },
+    "payment-shared-method": {
+      "field": "payment-shared-method",
+      "person": "self"
+    },
+    "payment-shared-frequency": {
+      "field": "payment-shared-frequency",
+      "person": "self"
+    },
+    "resume-email": {
+      "field": "resume-email",
+      "person": "self"
+    },
+    "resume-delivery-method": {
+      "field": "resume-delivery-method",
+      "person": "self"
+    },
+    "resume-security-code": {
+      "field": "resume-security-code",
+      "person": "self"
+    },
+    "advisor-flow-type": {
+      "field": "advisor-flow-type",
+      "person": "self"
+    },
+    "advisor-email": {
+      "field": "advisor-email",
+      "person": "self"
+    },
+    "advisor-phone": {
+      "field": "advisor-phone",
+      "person": "self"
+    },
+    "advisor-code": {
+      "field": "advisor-code",
+      "person": "self"
+    },
+    "applicant-email": {
+      "field": "applicant-email",
+      "person": "self"
+    },
+    "review-self-consent": {
+      "field": "review-self-consent",
+      "person": "self"
+    },
+    "review-spouse-consent": {
+      "field": "review-spouse-consent",
+      "person": "self"
+    }
+  }
 }

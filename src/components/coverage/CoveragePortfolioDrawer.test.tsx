@@ -1,4 +1,4 @@
-import { act } from 'react';
+import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { expect, it, vi } from 'vitest';
 import CoveragePortfolioDrawer from './CoveragePortfolioDrawer';

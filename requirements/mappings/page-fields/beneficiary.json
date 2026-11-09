@@ -1,14 +1,54 @@
 {
   "page": "beneficiary",
   "fields": [
-    {"field":"first-name","people":["beneficiary"]},
-    {"field":"last-name","people":["beneficiary"]},
-    {"field":"beneficiary-information-opt-in","people":["self"]},
-    {"field":"beneficiary-designation","people":["beneficiary"]},
-    {"field":"beneficiary-type","people":["beneficiary"]},
-    {"field":"beneficiary-relationship","people":["beneficiary"]},
-    {"field":"beneficiary-share","people":["beneficiary"]},
-    {"field":"beneficiary-trust-name","people":["beneficiary"]},
-    {"field":"beneficiary-trust-date","people":["beneficiary"]}
+    {
+      "field": "first-name",
+      "people": [
+        "beneficiary"
+      ]
+    },
+    {
+      "field": "last-name",
+      "people": [
+        "beneficiary"
+      ]
+    },
+    {
+      "field": "beneficiary-information-opt-in",
+      "people": [
+        "self",
+        "beneficiary"
+      ]
+    },
+    {
+      "field": "beneficiary-type",
+      "people": [
+        "beneficiary"
+      ]
+    },
+    {
+      "field": "beneficiary-relationship",
+      "people": [
+        "beneficiary"
+      ]
+    },
+    {
+      "field": "beneficiary-share",
+      "people": [
+        "beneficiary"
+      ]
+    },
+    {
+      "field": "beneficiary-trust-name",
+      "people": [
+        "beneficiary"
+      ]
+    },
+    {
+      "field": "beneficiary-trust-date",
+      "people": [
+        "beneficiary"
+      ]
+    }
   ]
 }

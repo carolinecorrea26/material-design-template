@@ -45,7 +45,6 @@ import {
   BACK_MESSAGE,
   MESSAGE_DURATION,
 } from "../config/transitionMessages";
-import { sendAutosaveMockEmail } from "../utils/mockEmail";
 import { useApplicationSession } from "./ApplicationSessionContext";
 import { useSinglePageFlow } from "./SinglePageFlowContext";
 
@@ -53,6 +52,7 @@ import PageTransitionSkeleton from "../components/feedback/PageTransitionSkeleto
 import ProgressSavedSnackbar from "../components/feedback/ProgressSavedSnackbar";
 import PageAlert from "../components/feedback/PageAlert";
 import { applicationRecovery } from '../content/applicationRecovery';
+import { requirementValidationMessage } from '../domain/requirementValidations';
 
 type FormRouteFieldValue = string | boolean | string[];
 type FormRoutePageFormValues = Record<string, FormRouteFieldValue>;
@@ -507,19 +507,13 @@ export default function FormRoutePage({
     analyticsEvent("submit");
     setPageError(undefined);
     try {
-      await saveApplication?.(nextNavigationValues, pageId === 'coverage' || pageId === 'review' ? pageId : undefined);
+      await saveApplication?.(nextNavigationValues, pageId === 'membership' || pageId === 'coverage' || pageId === 'review' ? pageId : undefined);
     } catch {
       setPageError(`${applicationRecovery['save-failed'].message} ${applicationRecovery['save-failed'].guidance}`);
       return;
     }
     setPageValues(formValues);
     hasExplicitlySavedRef.current = true;
-
-    if (pageId === "membership") {
-      void sendAutosaveMockEmail(nextNavigationValues).catch((error) => {
-        console.warn("Autosave mock email failed", error);
-      });
-    }
 
     if (pageId === "review") {
       markReviewSubmitted();
@@ -539,7 +533,7 @@ export default function FormRoutePage({
 
   function onFormError(fieldErrors: FieldErrors<FormRoutePageValues>) {
     analyticsEvent("validation-failed");
-    setPageError(applicationRecovery.validation.message);
+    setPageError(requirementValidationMessage('form-validation-summary'));
 
     if (Object.keys(fieldErrors).length > 0) {
       scrollToFirstError();

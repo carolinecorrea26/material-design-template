@@ -4,6 +4,7 @@ import FieldRenderer from '../forms/FieldRenderer';
 import AddressFields, { addressFieldNames, type AddressFieldsProps } from '../forms/AddressFields';
 import SectionDivider from '../layout/SectionDivider';
 import type { FormRouteRenderProps } from '../../app/RoutePage';
+import { requirementText } from '../../domain/requirementContent';
 
 export type BusinessInformationProps = Omit<AddressFieldsProps, 'prefix'> & Pick<FormRouteRenderProps, 'watchedValues' | 'setValue'> & {
   sameAsHome: boolean;
@@ -11,7 +12,7 @@ export type BusinessInformationProps = Omit<AddressFieldsProps, 'prefix'> & Pick
   title?: string;
 };
 /** Local same-as-home interaction; product eligibility/participation is decided by the caller. */
-export default function BusinessInformation({ fields, control, errors, watchedValues, setValue, sameAsHome, showEmployerDetails, title = 'Business / Employer Information' }: BusinessInformationProps) {
+export default function BusinessInformation({ fields, control, errors, watchedValues, setValue, sameAsHome, showEmployerDetails, title = requirementText('contact.section.business') }: BusinessInformationProps) {
   useEffect(() => {
     if (!sameAsHome) return;
     for (const id of addressFieldNames) {

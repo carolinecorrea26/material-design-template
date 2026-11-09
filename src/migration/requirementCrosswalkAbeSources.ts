@@ -4,7 +4,7 @@ import type { DatabaseSchema } from "../persistence/types";
 import { requirementClauses } from "./requirementCrosswalk";
 import { sharedTobaccoOptionsDecisionKey } from "./sharedTobaccoOptionsDecision";
 import type { buildRequirementCrosswalk, CrosswalkRow } from "./requirementCrosswalk";
-import { resolveEffectiveSite } from "../domain/effectiveSite";
+import { resolveSnapshotSite as resolveEffectiveSite } from "../domain/effectiveSite";
 import { activeSiteMainRows } from "./activeSiteIdentity";
 import { currentMcrSource } from "./currentMcr";
 import { standardizedPlacementDecisionKey } from "./standardizedPlacementDecision";

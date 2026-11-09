@@ -1,7 +1,7 @@
 {
   "component": "home",
-  "configurations": ["home-variant", "applying-steps-presentation", "form-template", "eligible-states-only", "eligible-states"],
-  "rules": ["state-province-from-postal-code", "quote-entry-location-feedback"],
+  "configurations": ["category-order", "product-order", "home-variant", "applying-steps-presentation", "form-template", "eligible-states-only", "eligible-states"],
+  "rules": ["category-product-presentation-order", "state-province-from-postal-code", "quote-entry-location-feedback", "browser-autofill-self-only"],
   "presentation": ["eligible-state-options"],
   "workflows": ["home-quote-entry-handoff", "quote-entry-open-calculator", "form-template-selection", "home-start-and-resume"],
   "validations": [

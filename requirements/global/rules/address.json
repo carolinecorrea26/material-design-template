@@ -3,16 +3,19 @@
     {
       "id": "state-province-from-postal-code",
       "name": "Derive state or province from location",
-      "status": "draft",
-      "fields": ["zip-postal-code", "state-province"],
-      "statement": "When the ZIP or postal code changes and a matching state or province can be determined from the available options, select it. The applicant can change the selection.",
+      "status": "confirmed",
+      "fields": [
+        "zip-postal-code",
+        "state-province"
+      ],
+      "statement": "When a complete ZIP or postal code changes and a matching state or province can be determined from the available options, select it. The applicant may change the selection manually; that manual choice persists until the ZIP or postal code changes again. US ZIP+4 and Canadian postal formatting are supported. If no match is found, leave the current state unchanged and allow manual selection.",
       "source": "src/components/forms/EligibilityFields.tsx"
     },
     {
       "id": "quote-entry-location-feedback",
-      "name": "Handle location derivation against eligible-only options",
-      "status": "draft",
-      "statement": "When eligible-only presentation is enabled and a ZIP/postal code of at least five trimmed characters cannot be resolved against current options, clear the selected state and show location feedback.",
+      "name": "Keep location lookup optional",
+      "status": "confirmed",
+      "statement": "Location lookup uses the currently available state/province options. A missing match must not clear a manual selection, block submission, or act as an eligibility failure. The selected state/province is validated against its effective options independently of ZIP/postal inference.",
       "source": "src/components/forms/EligibilityFields.tsx; src/app/sections/ConfiguredEligibilityFields.tsx"
     }
   ]

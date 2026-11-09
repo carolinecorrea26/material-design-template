@@ -1,10 +1,48 @@
 {
   "page": "review",
   "fields": [
-    {"field":"review-consent","people":["self","spouse"]},
-    {"field":"dividend-acknowledgement","people":["self"]},
-    {"field":"dividend-first-name","people":["self"]},
-    {"field":"dividend-last-name","people":["self"]},
-    {"field":"dividend-birth-date","people":["self"]}
+    {
+      "field": "review-consent",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "dividend-acknowledgement",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "dividend-first-name",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "dividend-last-name",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "dividend-birth-date",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "review-self-consent",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "review-spouse-consent",
+      "people": [
+        "self"
+      ]
+    }
   ]
 }

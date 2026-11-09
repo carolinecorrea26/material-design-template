@@ -23,6 +23,7 @@ type CoverageQuestionsProps = Pick<
   coverageQuestions?: ClientCoverageQuestions;
   factFields?: import("../../config/fields/types").FieldDefinition[];
   applicantLabels?: import("../../config/clients/types").ClientApplicantLabels;
+  sectionNotes?: Partial<Record<string, string>>;
 };
 
 type CoverageQuestionSectionProps = CoverageQuestionsProps & {
@@ -123,7 +124,7 @@ function CoverageFollowupQuestions(props: CoverageQuestionsProps) {
             <Stack spacing={2}>{renderSections(selfSections)}</Stack>
           </ApplicantSectionDivider>
           {hasVisibleSpouseSections && (
-            <ApplicantSectionDivider applicant="spouse" labels={props.applicantLabels} showLabel>
+            <ApplicantSectionDivider applicant="spouse" labels={props.applicantLabels} note={props.sectionNotes?.spouseSection} showLabel>
               <Stack spacing={2}>{renderSections(spouseSections)}</Stack>
             </ApplicantSectionDivider>
           )}

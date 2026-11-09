@@ -16,6 +16,8 @@ import {
   getApplicantName,
 } from "../utils/applicantIdentity";
 import DetailsTable from "../components/layout/DetailsTable";
+import { requirementText } from "../domain/requirementContent";
+import { requirementConfigurationValue } from "../domain/requirementConfiguration";
 
 function formatDateTime(date: Date) {
   return new Intl.DateTimeFormat("en-US", {
@@ -37,30 +39,26 @@ export default function AdvisorSendConfirmation() {
   const { sentDate, purgeDate } = useMemo(() => {
     const now = new Date();
     const purge = new Date(now);
-    purge.setDate(purge.getDate() + 9);
+    purge.setDate(purge.getDate() + Number(requirementConfigurationValue('signature-confirmation-retention-days')));
     return { sentDate: now, purgeDate: purge };
   }, []);
 
   const details = [
-    { label: "Applicant name", value: applicantName },
-    { label: "Applicant email", value: applicantEmail },
-    { label: "Sent for signature", value: formatDateTime(sentDate) },
-    { label: "Scheduled for deletion", value: formatDateTime(purgeDate) },
+    { label: requirementText('confirmation.advisor.applicant-name'), value: applicantName },
+    { label: requirementText('confirmation.advisor.applicant-email'), value: applicantEmail },
+    { label: requirementText('confirmation.advisor.sent'), value: formatDateTime(sentDate) },
+    { label: requirementText('confirmation.advisor.deletion'), value: formatDateTime(purgeDate) },
   ];
 
   return (
     <FormRoutePage
       pageId="advisor-send-confirmation"
       hideActions
-      // title="Sent for signature"
-      // subhead="The application has successfully been sent to the applicant. They will receive an email with instructions to review and complete their electronic signature. Please see more details below."
     >
       {() => (
         <Stack spacing={3}>
           <Alert severity="success" icon={<SendRoundedIcon fontSize="small" />}>
-            The application has been sent to the following applicant for review.
-            You will be notified when the application is signed or if any edits
-            are needed.
+            {requirementText('confirmation.advisor.message')}
           </Alert>
 
           <DetailsTable rows={details} />
@@ -71,7 +69,7 @@ export default function AdvisorSendConfirmation() {
               startIcon={<AddCircleOutlineRoundedIcon />}
               onClick={() => navigate(getPagePath("advisor-login"))}
             >
-              Start new application
+              {requirementText('confirmation.advisor.start')}
             </Button>
           </Box>
         </Stack>

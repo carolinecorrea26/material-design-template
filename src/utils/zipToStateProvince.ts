@@ -113,7 +113,13 @@ export function formatZipOrPostalCode(value: string): string {
     return `${postalRaw.slice(0, 3)} ${postalRaw.slice(3)}`;
   }
 
-  return cleaned.replace(/\D/g, "").slice(0, 5);
+  const digits = cleaned.replace(/\D/g, "").slice(0, 9);
+  return digits.length > 5 ? `${digits.slice(0, 5)}-${digits.slice(5)}` : digits;
+}
+
+/** Format validation only; an unrecognized location may still be selected manually. */
+export function isValidZipOrPostalCode(value: string): boolean {
+  return /^\d{5}(-?\d{4})?$/.test(value.trim()) || isCanadianPostalCode(value);
 }
 
 function isCanadianPostalCode(value: string): boolean {

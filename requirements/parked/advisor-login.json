@@ -1,6 +1,66 @@
 {
   "page": "advisor-login",
   "components": [
-    { "type": "advisor-login" }
-  ]
+    {
+      "type": "advisor-login"
+    }
+  ],
+  "definition": {
+    "id": "advisor-login",
+    "path": "/advisor-login",
+    "type": "form",
+    "flow": "advisor",
+    "healthGate": false,
+    "displayName": "Advisor Login"
+  },
+  "position": 20,
+  "fieldBindings": [
+    "advisor-flow-type",
+    "advisor-email",
+    "advisor-phone",
+    "advisor-code",
+    "applicant-email"
+  ],
+  "looseFields": [
+    "advisor-flow-type",
+    "advisor-email",
+    "advisor-phone",
+    "advisor-code",
+    "applicant-email"
+  ],
+  "layout": {
+    "sections": {
+      "advisor-login-new": {
+        "id": "advisorLoginNew",
+        "fields": [
+          "advisor-email",
+          "advisor-phone",
+          "advisor-code"
+        ],
+        "visibilityConditionId": "condition-advisor-new-application"
+      },
+      "advisor-login-saved": {
+        "id": "advisorLoginSaved",
+        "fields": [
+          "applicant-email"
+        ],
+        "visibilityConditionId": "condition-advisor-saved-application"
+      }
+    }
+  },
+  "content": {
+    "wording": [
+      "page.advisor-login.title",
+      "page.advisor-login.subhead",
+      "page.advisor-login.nav-title",
+      "page.advisor-login.section-notes.advisor-login-new",
+      "page.advisor-login.section-notes.advisor-login-saved"
+    ],
+    "runtime": [
+      "application.ui.advisor-login-type",
+      "application.ui.start",
+      "home.landing-notice.continue",
+      "application.ui.log-in"
+    ]
+  }
 }

@@ -1,6 +1,43 @@
 {
   "page": "unconfirmed-result",
   "components": [
-    { "type": "unconfirmed-result" }
-  ]
+    {
+      "type": "ApplicationErrorState"
+    }
+  ],
+  "definition": {
+    "id": "outcome-unknown",
+    "path": "/outcome-unknown",
+    "type": "error",
+    "displayName": "Unconfirmed payment/submission result",
+    "flow": "utility",
+    "healthGate": false
+  },
+  "position": 37,
+  "consumerKey": "outcome-unknown",
+  "layout": {
+    "sections": {}
+  },
+  "content": {
+    "wording": [
+      "recovery.outcome-unknown.title",
+      "recovery.outcome-unknown.message",
+      "recovery.outcome-unknown.guidance"
+    ],
+    "actions": [
+      "recovery.action.home",
+      "recovery.action.resume",
+      "recovery.action.start-new",
+      "recovery.action.retry",
+      "recovery.action.payment"
+    ],
+    "contextual": [
+      "recovery.payment.failed",
+      "recovery.submission.failed",
+      "recovery.payment.guidance",
+      "recovery.submission.guidance",
+      "recovery.operation.unknown",
+      "recovery.page.failed"
+    ]
+  }
 }

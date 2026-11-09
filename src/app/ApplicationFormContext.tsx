@@ -2,7 +2,7 @@ import { requirementAnswerKey } from "../domain/requirementFields";
 import { FieldDefinitionsContext } from "../components/forms/FieldDefinitionsContext";
 import { getPrototypeLibrary } from "../domain/prototypeLibrary";
 import { activeCoverageCategoryRestriction } from "../config/client/coverageCategoryScope";
-import { activeFeaturedProduct, activeCoverageProductRestriction, withCapturedCoverageEntryScope, restoreCoverageEntryScope } from "../config/client/coverageProductScope";
+import { captureCoverageAmountParameters, activeFeaturedProduct, activeCoverageProductRestriction, withCapturedCoverageEntryScope, restoreCoverageEntryScope } from "../config/client/coverageProductScope";
 import {
   createContext,
   useContext,
@@ -18,10 +18,9 @@ import type { PageId } from "../types";
 import type { AssociationId } from "../data/model";
 import { resolveSiteId } from "../data/activeSite";
 import { resolveActiveAssociationFromApplication } from "../data/activeAssociation";
-import { createApplicantSaveClient, forgetSavedApplication, readSavedApplication, rememberSavedApplication, type RecoveredApplication, type SavedApplication } from '../services/applicantSaveService';
+import { createApplicantSaveClient, forgetSavedApplication, readSavedApplication, rememberSavedApplication, type ApplicationSavePage, type RecoveredApplication, type SavedApplication } from '../services/applicantSaveService';
 import { Alert } from '@mui/material';
-import { isApplicationSessionExpired, resetApplicationTimeout } from './applicationTimeout';
-import { applicationRecovery } from '../content/applicationRecovery';
+import { resetApplicationTimeout } from './applicationTimeout';
 
 const AUTOFILL_QUERY_PARAM = "autofill";
 
@@ -43,7 +42,7 @@ type ApplicationFormContextValue = {
   resetValues: () => void;
   activeAssociationId?: AssociationId | null;
   setActiveAssociationId?: (associationId: AssociationId | null) => void;
-  saveApplication?: (values: ApplicationFormValues, validatedPage?: 'coverage' | 'review') => Promise<SavedApplication | null>;
+  saveApplication?: (values: ApplicationFormValues, submittedPage?: ApplicationSavePage) => Promise<SavedApplication | null>;
   restoreApplication?: (application: RecoveredApplication) => void;
   requiresRevalidation?: boolean;
 };
@@ -103,6 +102,7 @@ function loadStoredValues(): ApplicationFormValues {
     restoreCoverageEntryScope(siteKey, parsedValues.coverageEntryScope);
     if (entryParams.has("featured_prod")) activeFeaturedProduct(siteKey);
   }
+  captureCoverageAmountParameters(siteKey);
   parsedValues = withCapturedCoverageEntryScope(siteKey, normalizeChildValues(parsedValues));
 
   // Some links (e.g. the Information Architecture "Pages" table) need to
@@ -149,13 +149,8 @@ export function ApplicationFormProvider({
   useEffect(() => {
     try { window.sessionStorage.setItem(applicationStorageKey(siteKey), JSON.stringify(values)); }
     catch { setSaveError('Application changes could not be cached in this browser.'); }
-    if (!values.email || isApplicationSessionExpired(siteKey)) return;
-    let current = true;
-    void saveClient.save(values).then(application => {
-      if (current && application) { setSavedApplication(application); setSaveError(''); }
-    }).catch(() => { if (current) setSaveError(`${applicationRecovery['save-failed'].message} ${applicationRecovery['save-failed'].guidance}`); });
-    return () => { current = false; };
-  }, [values, siteKey, saveClient]);
+    // This cache preserves local drafts only. Application saves run on successful page submission.
+  }, [values, siteKey]);
 
   const setPageValues = useCallback((pageValues: ApplicationFormValues) => {
     if (Object.hasOwn(pageValues, "membership")) {
@@ -194,9 +189,9 @@ export function ApplicationFormProvider({
       activeAssociationId,
       setActiveAssociationId,
       requiresRevalidation: savedApplication?.requiresRevalidation ?? false,
-      saveApplication: async (nextValues, validatedPage) => {
+      saveApplication: async (nextValues, submittedPage) => {
         try {
-          const saved = await saveClient.save(nextValues, validatedPage);
+          const saved = await saveClient.save(nextValues, submittedPage);
           if (saved) setSavedApplication(saved);
           setSaveError('');
           return saved;

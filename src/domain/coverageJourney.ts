@@ -181,7 +181,7 @@ export async function evaluateCoverageJourney(site: EffectiveSite, input: Covera
       if (dependent.status === "unresolved") errors.push("Dependent policy is unresolved");
       if (dependent.derivedAmount !== null) finalAmount = dependent.derivedAmount;
     } else {
-      const amount = validateNormalizedCoverageAmount(site, input.productKey, input.applicantKey, input.amount, input.applicantClass, input.associationKey);
+      const amount = validateNormalizedCoverageAmount(site, input.productKey, input.applicantKey, input.amount, input.applicantClass, input.associationKey, input.mode);
       if (!amount.allowed) (amount.status === "needs-information" ? missingFacts : errors).push(amount.reason);
     }
   }

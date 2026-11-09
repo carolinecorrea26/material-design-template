@@ -1,4 +1,3 @@
-import { withRequirementPageFields } from "../../../domain/requirementFields";
 import { describe, expect, it } from "vitest";
 import { createReviewedMigrationDatabase } from "../../../migration/fixtures";
 import { childCollection, storedApplicationPageRows, storedFieldRows, storedLibraryRows, storedPageFieldGroups, storedFieldVisibility } from "./storedLibraryModel";
@@ -69,7 +68,7 @@ describe("stored Library collection and scope", () => {
       const resolved = resolveEffectiveSite(catalog.data, site.key);
       const collection = childCollection(catalog, site.key);
       for (const page of resolved.configuration.pages.filter(page => page.requirement !== "none" && page.definition?.value.type !== "internal")) {
-        for (const field of withRequirementPageFields(page.key, page.fields, site.key)) {
+        for (const field of page.fields) {
           const listed = fields.find(row => row.key === field.key && row.placements[0]?.page === page.key);
           const collectionField = catalog.data.pageSectionFields.some(row => row.fieldKey === field.key && row.sectionKey === collection.section?.key);
           const included = field.included && (!collectionField || collection.collects && collection.fields.some(row => row.key === field.key));

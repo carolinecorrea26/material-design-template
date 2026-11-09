@@ -32,7 +32,7 @@ const submit = async () => act(async () => { container.querySelector('form')!.di
 function LocationProbe() { const location = useLocation(); return <output>{location.pathname}:{JSON.stringify(location.state)}</output>; }
 
 describe('restored resume flow', () => {
-  it('renders saved Resume labels and choices from the same field records as the Library', async () => {
+  it('uses fresh Resume fields in both the page and Library despite stale saved records', async () => {
     const data = createReviewedMigrationDatabase();
     const email = data.fields.find(field => field.key === 'resume-email')!;
     const method = data.fields.find(field => field.key === 'resume-delivery-method')!;
@@ -47,13 +47,13 @@ describe('restored resume flow', () => {
       await act(async () => root.render(<MemoryRouter><Component /></MemoryRouter>));
       expect(container.textContent).toContain(catalog.find(field => field.key === saved.key)!.field.label);
       if (saved === method) {
-        expect(container.textContent).toContain('Saved phone call');
+        expect(container.textContent).not.toContain('Saved phone call');
         const radios = container.querySelectorAll<HTMLInputElement>('input[type="radio"]');
-        expect(radios).toHaveLength(1);
+        expect(radios).toHaveLength(2);
         await act(async () => radios[0].click());
         expect(radios[0].checked).toBe(true);
       }
-      if (saved === code) expect(container.querySelector('input')?.maxLength).toBe(8);
+      if (saved === code) expect(container.querySelector('input')?.maxLength).toBe(6);
     }
   });
   it('keeps email-only entry, back navigation, and a disabled loading button', async () => {

@@ -1,26 +1,125 @@
 {
   "component": "quote-calculator",
   "fields": [
-    {"field":"coverage-categories","people":["self"]},
-    {"field":"zip-postal-code","people":["self"]},
-    {"field":"state-province","people":["self"]},
-    {"field":"birth-date","people":["self"]},
-    {"field":"gender","people":["self"]},
-    {"field":"smoker","people":["self"]},
-    {"field":"tobacco-last-used","people":["self"]},
-    {"field":"tobacco-products","people":["self"]},
-    {"field":"average-monthly-income","people":["self"]},
-    {"field":"hours-worked-per-week","people":["self"]},
-    {"field":"actively-at-work","people":["self"]},
-    {"field":"monthly-business-expenses","people":["self"]},
-    {"field":"business-expense-responsibility","people":["self"]},
-    {"field":"is-self-employed","people":["self"]},
-    {"field":"years-self-employed","people":["self"]},
-    {"field":"add-coverage","people":["self"]},
-    {"field":"rider","people":["self"]},
-    {"field":"rider-amount","people":["self"]},
-    {"field":"coverage-amount","people":["self"]},
-    {"field":"monthly-benefit-amount","people":["self"]},
-    {"field":"rate-frequency","people":["self"]}
+    {
+      "field": "coverage-categories",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "zip-postal-code",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "state-province",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "birth-date",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "gender",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "smoker",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "tobacco-last-used",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "tobacco-products",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "average-monthly-income",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "hours-worked-per-week",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "actively-at-work",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "monthly-business-expenses",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "business-expense-responsibility",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "add-coverage",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "rider",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "rider-amount",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "coverage-amount",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "monthly-benefit-amount",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "rate-frequency",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "self-employed-under-one-year",
+      "people": [
+        "self"
+      ]
+    }
   ]
 }

@@ -19,7 +19,7 @@ export function fieldSurfaceLabel(catalog: LibraryCatalog, pageId: string, secti
     const parentTitle = parent?.title && !libraryApplicantLabel(parent.title) ? parent.title : undefined;
     const label = section.description ?? title ?? parent?.description ?? parentTitle;
     if (label) return `${page} page · ${applicant} · ${libraryApplicantText(label)}`;
-    if (section.title && libraryApplicantLabel(section.title)) return `${page} page · ${applicant}`;
+    return `${page} page · ${applicant}`;
   }
   const label = storedSectionLabel(catalog, { key: fieldKey, placements: [{ page: pageId, section: sectionId, order: 0, collection: "" }] } as Parameters<typeof storedSectionLabel>[1]);
   return `${page} page${label === "Page fields" ? "" : ` · ${libraryApplicantText(label)}`}`;

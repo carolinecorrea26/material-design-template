@@ -168,7 +168,7 @@ export function getSiteFieldInventory(siteId: string, library?: PrototypeLibrary
     if (client.tpaIntegration?.requireAddressBeforeVerification) {
       const addressIds = new Set(["street-address", "apt-suite", "city", "state", "zip-code"]);
       const addressFields = library
-        ? library.site.configuration.pages.find(page => page.key === "contact")?.fields.filter(field => field.included).map(field => field.definition) ?? []
+        ? resolveMappedFields({ component: "verification-address" }, { siteId, page: "eligibility" })
         : Object.values(catalog);
       for (const field of addressFields.filter(field => addressIds.has(field.id))) add("eligibility", field, "Verification address", "TPA match triggers address collection before member verification", field.id, "site-configured");
     }

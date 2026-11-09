@@ -1,3 +1,4 @@
+import { withFreshStartCatalog } from "../../../domain/freshStartCatalog";
 import { ruleAuthority } from "../../../domain/ruleAuthority";
 import { organizeRule } from "../../../domain/ruleOrganization";
 import type { LibraryCatalog } from '../../../services/libraryCatalogService';
@@ -7,10 +8,13 @@ import { resolveEffectiveSite } from '../../../domain/effectiveSite';
 import { configurationOwner, configurationPath, flagOwner, primaryConfigurationDefinitions } from '../../../domain/libraryOwnership';
 import { storedLibraryRows, type StoredRow } from './storedLibraryModel';
 import { humanize, readableValue } from './libraryRecordColumns';
+import { confirmedRequirementBehaviors } from '../../../domain/requirementBehaviors';
+import { requirementPages, siteUsesRequirementFields } from '../../../domain/requirementFields';
+import { coverageConfigurationDefinitions, coverageRequirementAssignments } from '../../../domain/requirementCoveragePolicy';
 
 export type LibraryRequirementRow = {
   id: string; key: string; dataset: SnapshotTable; name: string; behavior: string; categories: string[];
-  sequence: number; dependsOn: string[]; source: string; site: string; product: string; applicant: string; status: string; implementation?: string; hierarchy?: string[];
+  sequence: number; dependsOn: string[]; source: string; site: string; product: string; applicant: string; status: string; implementation?: string; hierarchy?: string[]; requirementsJson?: boolean;
 };
 
 export const businessDatasets = [
@@ -45,6 +49,7 @@ export function configurationCategory(row: ConfigurationDefinitionRow): string {
 }
 
 export function libraryRequirementRows(catalog: LibraryCatalog, siteKey: string): LibraryRequirementRow[] {
+  catalog = { ...catalog, data: withFreshStartCatalog(catalog.data, siteKey === "all" ? undefined : siteKey) };
   const { data } = catalog;
   const site = siteKey === 'all' ? null : data.sites.find(row => row.key === siteKey);
   if (siteKey !== 'all' && !site) return [];
@@ -63,6 +68,10 @@ export function libraryRequirementRows(catalog: LibraryCatalog, siteKey: string)
     rows.push({ id: `siteProducts:${assignment.id}`, key: assignment.key ?? assignment.id, dataset: 'siteProducts', name: `${product?.definition.name ?? assignment.productKey} · Site availability`, behavior: `Offered on this site: ${assignment.enabled ? 'Yes' : 'No'}\nAssigned applicant roles: ${applicants.map(row => row.applicantKey).join(', ') || 'None recorded'}\nApplicant eligibility and coverage limits apply separately.`, categories: ['Availability'], sequence: 2000, dependsOn: [], source: assignment.sourceReference ?? 'Source not recorded', site: assignedSite?.key ?? assignment.siteId, product: assignment.productKey, applicant: '', status: assignment.enabled ? 'Enabled assignment' : 'Disabled assignment' });
   }
   const visible = new Set(storedLibraryRows(catalog, 'rules', siteKey).map(row => row.key));
+  // The fresh-start email requirement replaces the retired automatic preview behavior.
+  if (site ? siteUsesRequirementFields(siteKey) : data.sites.every(site => siteUsesRequirementFields(site.key))) {
+    visible.delete('rule-persistence-membership-starts-autosave-mock-communication');
+  }
   for (const row of data.rules.filter(row => visible.has(row.key) && (row.definition.documentedIn ?? 'rules') === 'rules')) {
     const rule = row.definition;
     const authority = ruleAuthority(row);
@@ -97,6 +106,8 @@ export function libraryRequirementRows(catalog: LibraryCatalog, siteKey: string)
       if (row.conditionKey) criteria.condition = data.conditions.find(item => item.key === row.conditionKey)?.definition ?? 'Condition definition not recorded';
       const product = String(row.productKey ?? row.baseProductKey ?? '');
       const subject = data.products.find(item => item.key === product)?.definition.name ?? data.riders.find(item => item.key === row.riderKey)?.definition.name ?? (row.variantKey ? data.coveragePlanVariants.find(item => item.key === row.variantKey)?.name : null) ?? (product || 'Site');
+      const overrides = ['productAmountRules', 'aggregateLimits', 'residencyRules'].includes(dataset) && site ? coverageRequirementAssignments(siteKey).filter(assignment => assignment.product === product) : [];
+      if (overrides.length) criteria.reviewedSiteOverrides = `Apply the confirmed Coverage requirements from requirements/parked/sites/${siteKey}/coverage.json after this base policy.`;
       rows.push({ id: `${dataset}:${row.key}`, key: String(row.key), dataset, name: `${subject} · ${category}`, behavior: requirementValue(criteria), categories: [category], sequence: 5000, dependsOn: [], source: source({ sourceReference: row.sourceReference as string | null }), site: scope(row), product, applicant: String(row.applicantTypeKey ?? row.applicantKey ?? ''), status: String(row.status ?? 'Stored policy') });
     }
   }
@@ -129,5 +140,25 @@ export function libraryRequirementRows(catalog: LibraryCatalog, siteKey: string)
   for (const flag of data.flagDefinitions.filter(row => flagOwner(row.persistence) === 'rules')) {
     rows.push({ id: `flagDefinitions:${flag.key}`, key: flag.key, dataset: 'flagDefinitions', name: flag.name, behavior: [flag.description, `Derivation: ${flag.derivation ?? 'Not recorded'}`, `Allowed values: ${requirementValue(flag.allowedValues ?? (flag.valueType === 'boolean' ? [true, false] : null))}`, ...data.flagRules.filter(row => row.flagKey === flag.key).map(row => `When ${row.conditionKey}: ${requirementValue(row.value)} (priority ${row.priority})`)].join('\n'), categories: ['Conditions & decision outputs'], sequence: 8000, dependsOn: [], source: source(flag), site: `${flag.level} · shared definition`, product: '', applicant: '', status: 'Definition; evaluated during the journey' });
   }
+  const requirementSites = site ? [site] : data.sites;
+  for (const currentSite of requirementSites.filter(site => siteUsesRequirementFields(site.key))) {
+    const current = site ? resolved! : resolveEffectiveSite(data, currentSite.key);
+    for (const [index, assignment] of current.configuration.coverageRequirements.filter(assignment => current.products.some(product => product.productKey === assignment.product)).entries()) {
+      const definition = coverageConfigurationDefinitions.find(row => row.id === assignment.configuration)!;
+      rows.push({ id: `requirements:${currentSite.key}:coverage:${index}`, key: assignment.configuration, dataset: 'configurationValues', name: definition.name,
+        behavior: requirementValue({ value: assignment.value, ...(assignment.minimumAgeYears === undefined ? {} : { minimumAgeYears: assignment.minimumAgeYears, maximumAgeYears: assignment.maximumAgeYears }) }),
+        categories: ['Coverage requirements'], hierarchy: ['requirements', 'coverage'], sequence: 1000, dependsOn: [], source: assignment.source,
+        site: currentSite.key, product: assignment.product, applicant: assignment.applicants.join(', '), status: 'Confirmed requirement; active',
+        implementation: `requirements/parked/sites/${currentSite.key}/coverage.json`, requirementsJson: true });
+    }
+  }
+  // Reusable behavior definitions belong to the template once. The loop above
+  // owns effective-Site values; it must not relabel shared rules as Site rules.
+  for (const record of confirmedRequirementBehaviors(Object.keys(requirementPages))) rows.push({
+      id: `requirements:global:${record.id}`, key: record.id, dataset: 'rules', name: record.name,
+      behavior: record.statement, categories: ['Application behavior'], hierarchy: ['requirements', ...record.pages],
+      sequence: 1000, dependsOn: [], source: record.source, site: 'Global template', product: '', applicant: '',
+      status: 'Confirmed requirement; declarative', implementation: record.path, requirementsJson: true,
+    });
   return rows.sort((a, b) => a.sequence - b.sequence || a.id.localeCompare(b.id));
 }
