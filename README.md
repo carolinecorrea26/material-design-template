@@ -46,8 +46,9 @@ Edit the owning requirements source, retaining stable IDs and relationships:
 
 Then run
 `npm run catalog:build`, `npm run docs:abe`, `npm run docs:handoff` and
-`npm run build`. Do not edit `portal.json` directly. The build runs the fresh-start
-ownership/inheritance gate, checks that generated requirements tables match, and copies the same file
+`npm run build`. Do not edit `portal.json` directly. Run `npm run test:fresh-start`
+explicitly when testing ownership/inheritance changes; neither prototype nor
+Storybook builds run test suites. The prototype build checks that generated requirements tables match and copies the same file
 into `dist/catalog/portal.json` for Netlify. Deploy the resulting `dist` folder
 through the existing site deployment workflow. Reload the site after deploying.
 

@@ -1728,9 +1728,7 @@ describe("fresh-start reviewed page ownership", () => {
       for (const id of ['docusign-shared-handoff', 'docusign-shared-document-content', 'signing-evidence-integrity', 'docusign-required-signers', 'docusign-completion-submits']) expect(rules.filter(row => row.key === id)).toHaveLength(1);
     }
     expect(confirmedRequirementBehaviors(['docusign']).some(rule => rule.id === 'docusign-shared-document-content')).toBe(true);
-    // Reconstructs the catalog for three consumers and both Library scopes;
-    // allow slower hosted build workers without relaxing the other tests.
-  }, 60_000);
+  });
   it('keeps prototype handoff defaults global and supplied image selections with the effective Site', () => {
     const source = structuredClone(freshStartSource());
     for (const page of ['health-qd', 'docusign']) {

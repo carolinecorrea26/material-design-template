@@ -7,7 +7,7 @@ import type { ConfigurationDefinitionRow } from '../../../persistence/types';
 import type { SnapshotTable } from '../../../persistence/snapshot';
 import { resolveCompiledEffectiveSite } from '../../../domain/effectiveSite';
 import { configurationOwner, configurationPath, flagOwner, primaryConfigurationDefinitions } from '../../../domain/libraryOwnership';
-import { storedLibraryRows, type StoredRow } from './storedLibraryModel';
+import { compiledStoredLibraryRows, type StoredRow } from './storedLibraryModel';
 import { humanize, readableValue, libraryEvidenceKeys } from './libraryRecordColumns';
 import { confirmedRequirementBehaviors } from '../../../domain/requirementBehaviors';
 import { siteUsesRequirementFields } from '../../../domain/requirementFields';
@@ -56,7 +56,7 @@ export function libraryRequirementRows(catalog: LibraryCatalog, siteKey: string,
   if (siteKey !== 'all' && !site) return [];
   const resolved = site ? resolveCompiledEffectiveSite(data, siteKey) : null;
   const products = new Set(resolved ? resolved.products.map(row => row.productKey) : data.products.map(row => row.key));
-  const riders = new Set(storedLibraryRows(catalog, 'riders', siteKey).map(row => String(row.key)));
+  const riders = new Set(compiledStoredLibraryRows(catalog, 'riders', siteKey).map(row => String(row.key)));
   const plans = new Set(data.productCoveragePlans.filter(row => products.has(row.productKey)).map(row => row.planKey));
   const variants = new Set(data.coveragePlanVariants.filter(row => plans.has(row.planKey)).map(row => row.key));
   const source = (row: { sourceReference?: string | null }) => row.sourceReference ?? 'Source not recorded';
@@ -68,7 +68,7 @@ export function libraryRequirementRows(catalog: LibraryCatalog, siteKey: string,
     const product = data.products.find(row => row.key === assignment.productKey);
     rows.push({ id: `siteProducts:${assignment.id}`, key: assignment.key ?? assignment.id, dataset: 'siteProducts', name: `${product?.definition.name ?? assignment.productKey} · Site availability`, behavior: `Offered on this site: ${assignment.enabled ? 'Yes' : 'No'}\nAssigned applicant roles: ${applicants.map(row => row.applicantKey).join(', ') || 'None recorded'}\nApplicant eligibility and coverage limits apply separately.`, categories: ['Availability'], sequence: 2000, dependsOn: [], source: assignment.sourceReference ?? 'Source not recorded', site: assignedSite?.key ?? assignment.siteId, product: assignment.productKey, applicant: '', status: assignment.enabled ? 'Enabled assignment' : 'Disabled assignment' });
   }
-  const visible = new Set(storedLibraryRows(catalog, 'rules', siteKey).map(row => row.key));
+  const visible = new Set(compiledStoredLibraryRows(catalog, 'rules', siteKey).map(row => row.key));
   for (const row of data.rules.filter(row => visible.has(row.key) && (row.definition.documentedIn ?? 'rules') === 'rules')) {
     const rule = row.definition;
     const authority = ruleAuthority(row);
@@ -85,7 +85,7 @@ export function libraryRequirementRows(catalog: LibraryCatalog, siteKey: string,
   }
   for (const [dataset, category] of businessDatasets) {
     // Site coverage sets are explicit in the resolver. Catalog rows are not inherited policies.
-    let records = storedLibraryRows(catalog, dataset, siteKey);
+    let records = compiledStoredLibraryRows(catalog, dataset, siteKey);
     if (site && !['sitePolicies', 'riderAmountRules', 'planAmountRules', 'planBenefitPeriods', 'residencyRules'].includes(dataset)) records = records.filter(row => row.siteKey === siteKey);
     if (site && dataset === 'riderAmountRules') records = records.filter(row => riders.has(String(row.riderKey)) && (!row.baseProductKey || products.has(String(row.baseProductKey))));
     if (site && (dataset === 'planAmountRules' || dataset === 'planBenefitPeriods')) records = records.filter(row => variants.has(String(row.variantKey)));

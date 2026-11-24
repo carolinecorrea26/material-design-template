@@ -1,4 +1,5 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+import * as requirementCompiler from '../../../domain/requirementCatalog.mjs';
 import { readFileSync } from 'node:fs';
 import { normalizedSnapshotTables } from '../../../persistence/snapshot';
 import { configurationOwner, flagOwner, libraryOwners } from '../../../domain/libraryOwnership';
@@ -10,6 +11,15 @@ import { urlParameterRows } from './UrlParametersLibrary';
 const catalog: LibraryCatalog = { ...JSON.parse(readFileSync('public/catalog/portal.json', 'utf8')), revision: 'test' };
 
 describe('Library requirements ownership and relationships', () => {
+  it('builds all Rules tables from one fresh-start projection', () => {
+    const compile = vi.spyOn(requirementCompiler, 'compileRequirementCatalog');
+    try {
+      const rows = libraryRequirementRows(catalog, 'asce');
+      expect(rows.some(row => row.dataset === 'productAmountRules')).toBe(true);
+      expect(rows.some(row => row.key === 'recovery-offline-feedback')).toBe(true);
+      expect(compile).toHaveBeenCalledTimes(1);
+    } finally { compile.mockRestore(); }
+  });
   it('inherits message show/hide conditions from one global rule under Site filters', () => {
     const recovery = JSON.parse(readFileSync('requirements/global/rules/recovery.json', 'utf8')).rules as Array<{ id: string; statement: string }>;
     const ids = ['recovery-offline-feedback', 'recovery-inline-feedback', 'recovery-transient-notifications', 'recovery-operation-status-boundary', 'application-session-warning'];

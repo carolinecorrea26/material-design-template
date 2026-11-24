@@ -40,7 +40,9 @@ This is an established architecture, not an open design question.
 ## Checks and reporting
 
 - Run `npm run test:fresh-start` when changing ownership, inheritance, shared
-  configuration, Library scope or the fresh-start compiler. It is also a build gate.
+  configuration, Library scope or the fresh-start compiler. Run tests explicitly
+  during testing; prototype and Storybook builds must not run test suites
+  (user instruction November 24, 2026).
 - Run focused tests for other affected behavior. Do not run every suite for every edit.
 - Before calling a reviewed surface complete, verify it works without superseded
   authored records, that its consumers agree on the fresh-start projection, and

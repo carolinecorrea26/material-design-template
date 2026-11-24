@@ -41,7 +41,8 @@ export function storedApplicationPageRows(catalog: LibraryCatalog, siteKey: stri
 export function storedLibraryRows(catalog: LibraryCatalog, table: SnapshotTable, siteKey: string): StoredRow[] {
   return compiledStoredLibraryRows({ ...catalog, data: withFreshStartCatalog(catalog.data, siteKey === "all" ? undefined : siteKey, catalog.siteScope) }, table, siteKey);
 }
-function compiledStoredLibraryRows(catalog: LibraryCatalog, table: SnapshotTable, siteKey: string): StoredRow[] {
+/** Reuse the caller's fresh-start projection across related Library tables. */
+export function compiledStoredLibraryRows(catalog: LibraryCatalog, table: SnapshotTable, siteKey: string): StoredRow[] {
   const data = catalog.data;
   const site = data.sites.find(site => site.key === siteKey);
   let rows = data[table] as unknown as StoredRow[];
