@@ -1,0 +1,4664 @@
+{
+  "products": {},
+  "catalog": {
+    "configurationValues": [
+      {
+        "id": "{{site}}.di-ltd.reviewed-benefit-policy",
+        "key": "{{site}}.di-ltd.reviewed-benefit-policy",
+        "sourceReference": "Main!H321; Main!I321; Main!J321; Disability!A35; Disability!D35; Disability!F35; Disability!G35",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "configurationKey": "template.di-ltd.reviewed-benefit-policy",
+        "value": {
+          "version": 2,
+          "applicants": [
+            {
+              "applicantKey": "member",
+              "waitingPeriods": [
+                {
+                  "key": "30-days",
+                  "accidentDays": 30,
+                  "sicknessDays": 30
+                },
+                {
+                  "key": "60-days",
+                  "accidentDays": 60,
+                  "sicknessDays": 60
+                },
+                {
+                  "key": "90-days",
+                  "accidentDays": 90,
+                  "sicknessDays": 90
+                }
+              ],
+              "benefitPeriods": [
+                "2-years",
+                "5-years"
+              ],
+              "ageBands": [
+                {
+                  "minimumAge": 17,
+                  "maximumAge": 59,
+                  "maximum": 5000
+                }
+              ],
+              "income": {
+                "fraction": 0.6,
+                "subtractExisting": false
+              },
+              "amountRuleKey": "{{site}}.di-ltd.reviewed-numeric.member.amount"
+            }
+          ],
+          "exclusiveProducts": [],
+          "provisional": true,
+          "revisit": [
+            "Maximum entry age 59 follows the user-authorized provisional O321 decision."
+          ],
+          "amountSource": "product-amount-rules"
+        },
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-add.reviewed-dependent-policy",
+        "key": "{{site}}.li-add.reviewed-dependent-policy",
+        "sourceReference": "Main!H320; Main!I320; Main!J320",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "configurationKey": "template.li-add.reviewed-dependent-policy",
+        "value": {
+          "version": 1,
+          "rules": [
+            {
+              "applicantKey": "spouse",
+              "applicationRole": "included-benefit",
+              "requires": {
+                "applicantKeys": [
+                  "member"
+                ],
+                "mode": "selected"
+              },
+              "derived": {
+                "baseApplicantKey": "member",
+                "multiplier": 0.5,
+                "siblingApplicantKey": "child",
+                "withSiblingMultiplier": 0.4
+              }
+            },
+            {
+              "applicantKey": "child",
+              "applicationRole": "included-benefit",
+              "requires": {
+                "applicantKeys": [
+                  "member"
+                ],
+                "mode": "selected"
+              },
+              "derived": {
+                "baseApplicantKey": "member",
+                "multiplier": 0.15,
+                "siblingApplicantKey": "spouse",
+                "withSiblingMultiplier": 0.1
+              }
+            }
+          ],
+          "provisional": true,
+          "revisit": [
+            "Main320 establishes family coverage without dependent percentage amounts. Use spouse50%/40% and child15%/10% as provisional working values; revisit the NSO coverage-detail schedule."
+          ]
+        },
+        "position": 0
+      },
+      {
+        "id": "{{site}}.reviewed-life-aggregate",
+        "key": "{{site}}.reviewed-life-aggregate",
+        "sourceReference": "Main!K318; Main!K319; Main!K322; Main!K323",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "configurationKey": "template.coveragePolicy.lifeAggregate",
+        "value": {
+          "version": 1,
+          "groups": [
+            {
+              "key": "{{site}}.life-per-person",
+              "applicantKeys": [
+                "member",
+                "spouse",
+                "child"
+              ],
+              "productKeys": [
+                "li-term",
+                "li-50plus",
+                "li-10yr",
+                "li-20yr"
+              ],
+              "maximum": 800000
+            }
+          ]
+        },
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-term.provisional-billing-fee",
+        "key": "{{site}}.li-term.provisional-billing-fee",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "configurationKey": "template.product-rating-adjustments.li-term",
+        "value": {
+          "billMeFee": 0,
+          "provisional": true,
+          "revisit": true
+        },
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-50plus.provisional-billing-fee",
+        "key": "{{site}}.li-50plus.provisional-billing-fee",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "configurationKey": "template.li-50plus.provisional-billing-fee",
+        "value": {
+          "billMeFee": 0,
+          "provisional": true,
+          "revisit": true
+        },
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-add.provisional-billing-fee",
+        "key": "{{site}}.li-add.provisional-billing-fee",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "configurationKey": "template.li-add.provisional-billing-fee",
+        "value": {
+          "billMeFee": 0,
+          "provisional": true,
+          "revisit": true
+        },
+        "position": 0
+      },
+      {
+        "id": "{{site}}.di-ltd.provisional-billing-fee",
+        "key": "{{site}}.di-ltd.provisional-billing-fee",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "configurationKey": "template.di-ltd.provisional-billing-fee",
+        "value": {
+          "billMeFee": 0,
+          "provisional": true,
+          "revisit": true
+        },
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-10yr.provisional-billing-fee",
+        "key": "{{site}}.li-10yr.provisional-billing-fee",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "configurationKey": "template.li-10yr.provisional-billing-fee",
+        "value": {
+          "billMeFee": 0,
+          "provisional": true,
+          "revisit": true
+        },
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-20yr.provisional-billing-fee",
+        "key": "{{site}}.li-20yr.provisional-billing-fee",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "configurationKey": "template.li-20yr.provisional-billing-fee",
+        "value": {
+          "billMeFee": 0,
+          "provisional": true,
+          "revisit": true
+        },
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-term.provisional-rate-outcome",
+        "key": "{{site}}.li-term.provisional-rate-outcome",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "configurationKey": "template.li-term.provisional-rate-outcome",
+        "value": {
+          "status": "unavailable",
+          "reason": "Authoritative base premiums are not supplied",
+          "provisional": true,
+          "revisit": true
+        },
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-10yr.provisional-rate-outcome",
+        "key": "{{site}}.li-10yr.provisional-rate-outcome",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "configurationKey": "template.li-10yr.provisional-rate-outcome",
+        "value": {
+          "status": "unavailable",
+          "reason": "Authoritative base premiums are not supplied",
+          "provisional": true,
+          "revisit": true
+        },
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-20yr.provisional-rate-outcome",
+        "key": "{{site}}.li-20yr.provisional-rate-outcome",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "configurationKey": "template.li-20yr.provisional-rate-outcome",
+        "value": {
+          "status": "unavailable",
+          "reason": "Authoritative base premiums are not supplied",
+          "provisional": true,
+          "revisit": true
+        },
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-50plus.provisional-rate-outcome",
+        "key": "{{site}}.li-50plus.provisional-rate-outcome",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "configurationKey": "template.li-50plus.provisional-rate-outcome",
+        "value": {
+          "status": "unavailable",
+          "reason": "Authoritative base premiums are not supplied",
+          "provisional": true,
+          "revisit": true
+        },
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-add.provisional-rate-outcome",
+        "key": "{{site}}.li-add.provisional-rate-outcome",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "configurationKey": "template.li-add.provisional-rate-outcome",
+        "value": {
+          "status": "unavailable",
+          "reason": "Authoritative base premiums are not supplied",
+          "provisional": true,
+          "revisit": true
+        },
+        "position": 0
+      },
+      {
+        "id": "{{site}}.di-ltd.provisional-rate-outcome",
+        "key": "{{site}}.di-ltd.provisional-rate-outcome",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "configurationKey": "template.di-ltd.provisional-rate-outcome",
+        "value": {
+          "status": "unavailable",
+          "reason": "Authoritative base premiums are not supplied",
+          "provisional": true,
+          "revisit": true
+        },
+        "position": 0
+      },
+      {
+        "id": "rates.reviewed-presentation.{{site}}",
+        "key": "rates.reviewed-presentation.{{site}}",
+        "sourceReference": "docs/archive/step3-major-outstanding-items.md",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "configurationKey": "rates.reviewed-presentation",
+        "value": {
+          "version": 1,
+          "praseConfigured": true,
+          "quoteToolEnabled": true,
+          "coverageQuoteEnabled": true
+        },
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-term.selection-policy",
+        "key": "{{site}}.li-term.selection-policy",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.li-term.selection-policy",
+        "value": {
+          "version": 1,
+          "modes": [
+            "new",
+            "increase"
+          ],
+          "amountMeaning": "resulting-total",
+          "existingPolicyRequired": true,
+          "riderOnlyApplicants": [],
+          "riders": [],
+          "childSchedule": null,
+          "skipPaymentForExisting": false,
+          "skipPaymentForChildOnly": false,
+          "healthForRiderOnly": false,
+          "provisional": true,
+          "revisit": [
+            "Existing-policy verification requires a service; a supplied verification fact is candidate input only. Resulting-total amount semantics are provisional for increase mode.",
+            "Preserve current rider assignments provisionally. Unspecified rider caps, dependencies and incompatibilities require product document review; empty lists are explicit working choices.",
+            "Mock verification replaces the caller boolean at the journey boundary. Real policy lookup and effective-date/billing acceptance await integration.",
+            "Added source-linked CIR, WOP, AD&D, CAT and AVMA FPO caps are candidate rules; unresolved rider definitions remain explicitly provisional."
+          ]
+        }
+      },
+      {
+        "id": "{{site}}.li-term.journey-policy",
+        "key": "{{site}}.li-term.journey-policy",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.li-term.journey-policy",
+        "value": {
+          "underwritingByApplicant": {},
+          "version": 1,
+          "applicants": [
+            "member",
+            "spouse"
+          ],
+          "associationChoices": [],
+          "defaultUnderwritingPathway": "QD",
+          "membershipRequired": true,
+          "ageBasis": "age-last-birthday-on-application-date",
+          "payment": {
+            "collection": "required",
+            "defaultMethod": "bank-account",
+            "defaultFrequency": "monthly",
+            "frequencyLocked": false,
+            "synchronizeAcrossProducts": true,
+            "methods": [
+              {
+                "method": "bank-account",
+                "frequencies": [
+                  "monthly",
+                  "quarterly",
+                  "semiannual",
+                  "annual"
+                ]
+              },
+              {
+                "method": "bill-me",
+                "frequencies": [
+                  "quarterly",
+                  "semiannual",
+                  "annual"
+                ]
+              }
+            ]
+          },
+          "billing": {
+            "annualFactors": {
+              "annual": 1,
+              "semiannual": 0.5,
+              "quarterly": 0.25,
+              "monthly": 0.08333333333333333
+            },
+            "feePerCollection": {
+              "bank-account": 0,
+              "credit-card": 0,
+              "bill-me": 0
+            },
+            "annualCredit": 0,
+            "currency": "USD"
+          },
+          "dependentElections": [],
+          "questions": [
+            {
+              "applicantKey": "member",
+              "modes": [
+                "new"
+              ],
+              "healthPage": "health-qd",
+              "financialFields": [],
+              "tobaccoFields": [
+                "smoker",
+                "tobacco-last-used",
+                "tobacco-products"
+              ],
+              "attestationKey": "{{site}}.li-term.member.new.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            },
+            {
+              "applicantKey": "member",
+              "modes": [
+                "increase"
+              ],
+              "healthPage": "health-qd",
+              "financialFields": [],
+              "tobaccoFields": [
+                "smoker",
+                "tobacco-last-used",
+                "tobacco-products"
+              ],
+              "attestationKey": "{{site}}.li-term.member.increase.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            },
+            {
+              "applicantKey": "spouse",
+              "modes": [
+                "new"
+              ],
+              "healthPage": "health-qd",
+              "financialFields": [],
+              "tobaccoFields": [
+                "spouse-smoker",
+                "spouse-tobacco-last-used",
+                "spouse-tobacco-products"
+              ],
+              "attestationKey": "{{site}}.li-term.spouse.new.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            },
+            {
+              "applicantKey": "spouse",
+              "modes": [
+                "increase"
+              ],
+              "healthPage": "health-qd",
+              "financialFields": [],
+              "tobaccoFields": [
+                "spouse-smoker",
+                "spouse-tobacco-last-used",
+                "spouse-tobacco-products"
+              ],
+              "attestationKey": "{{site}}.li-term.spouse.increase.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            }
+          ],
+          "mappings": [
+            {
+              "when": {
+                "applicantKey": "member",
+                "mode": "new"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30330-0",
+                  "rating": "G-30330-0",
+                  "issue": "G-30330-0",
+                  "xml": "G-30330-0",
+                  "pdf": "G-30330-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "101",
+                  "rating": "101",
+                  "issue": "101",
+                  "xml": "101",
+                  "pdf": "101",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            },
+            {
+              "when": {
+                "applicantKey": "member",
+                "mode": "increase"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30330-0",
+                  "rating": "G-30330-0",
+                  "issue": "G-30330-0",
+                  "xml": "G-30330-0",
+                  "pdf": "G-30330-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "101",
+                  "rating": "101",
+                  "issue": "101",
+                  "xml": "101",
+                  "pdf": "101",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            },
+            {
+              "when": {
+                "applicantKey": "spouse",
+                "mode": "new"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30330-0",
+                  "rating": "G-30330-0",
+                  "issue": "G-30330-0",
+                  "xml": "G-30330-0",
+                  "pdf": "G-30330-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "101",
+                  "rating": "101",
+                  "issue": "101",
+                  "xml": "101",
+                  "pdf": "101",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            },
+            {
+              "when": {
+                "applicantKey": "spouse",
+                "mode": "increase"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30330-0",
+                  "rating": "G-30330-0",
+                  "issue": "G-30330-0",
+                  "xml": "G-30330-0",
+                  "pdf": "G-30330-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "101",
+                  "rating": "101",
+                  "issue": "101",
+                  "xml": "101",
+                  "pdf": "101",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            }
+          ],
+          "provisional": true,
+          "revisit": [
+            "Use current ISI association list, all enabled plans for each association and common identifiers provisionally. ATPE is not enabled; no ATPE exception is silently applied.",
+            "Membership is an explicit applicant declaration for candidate acceptance, not a verified external membership service. Age is last birthday on application date; revisit source-specific age conventions.",
+            "Reuse current health fields without adding medical rejection criteria. Health pathway, financial/tobacco triggers and synthetic attestation require current product-specific question/document review.",
+            "PRASE unavailable remains a null premium. Non-AMA modal factors use pro rata annual fractions, fees and credits are zero; WAEPA card conflict uses the agreed mock card option. Existing billing remains unchanged only after policy verification.",
+            "Submission is a mock-coverage-v1 role mapping, not insurer XML/PDF service certification. Unspecified roles use the primary identifier provisionally; portal dummy identifiers never enter issue/rating/XML/PDF by default."
+          ],
+          "healthPageForPortfolio": {
+            "when": "qd-life-with-fuw-disability",
+            "pageId": "health-tele"
+          }
+        }
+      },
+      {
+        "id": "{{site}}.li-term.journey-residency",
+        "key": "{{site}}.li-term.journey-residency",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.li-term.journey-residency",
+        "value": {
+          "version": 1,
+          "allowedJurisdictions": [
+            "US-AZ",
+            "US-CA",
+            "US-DC",
+            "US-GA",
+            "US-HI",
+            "US-IL",
+            "US-IN",
+            "US-IA",
+            "US-KS",
+            "US-MI",
+            "US-NE",
+            "US-NV",
+            "US-NJ",
+            "US-OK",
+            "US-PA",
+            "US-RI",
+            "US-TN"
+          ],
+          "excludeActiveMilitary": false,
+          "provisional": true,
+          "revisit": [
+            "Mainland US plus DC only provisionally; Canadian/territory/foreign address behavior needs source review. Main N exclusions parsed after explicit spelling repairs: VTVA \u2192 VT/VA, MV \u2192 MT, TE \u2192 TN, YT \u2192 UT, Louisisana \u2192 Louisiana. Revisit those repairs.",
+            "ASCE spouse-only NH restriction is persisted in applicantExcludedJurisdictions; no source country or military status is inferred."
+          ]
+        }
+      },
+      {
+        "id": "{{site}}.li-10yr.selection-policy",
+        "key": "{{site}}.li-10yr.selection-policy",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.li-10yr.selection-policy",
+        "value": {
+          "version": 1,
+          "modes": [
+            "new",
+            "increase"
+          ],
+          "amountMeaning": "resulting-total",
+          "existingPolicyRequired": true,
+          "riderOnlyApplicants": [],
+          "riders": [],
+          "childSchedule": null,
+          "skipPaymentForExisting": false,
+          "skipPaymentForChildOnly": false,
+          "healthForRiderOnly": false,
+          "provisional": true,
+          "revisit": [
+            "Existing-policy verification requires a service; a supplied verification fact is candidate input only. Resulting-total amount semantics are provisional for increase mode.",
+            "Preserve current rider assignments provisionally. Unspecified rider caps, dependencies and incompatibilities require product document review; empty lists are explicit working choices.",
+            "Mock verification replaces the caller boolean at the journey boundary. Real policy lookup and effective-date/billing acceptance await integration.",
+            "Added source-linked CIR, WOP, AD&D, CAT and AVMA FPO caps are candidate rules; unresolved rider definitions remain explicitly provisional."
+          ]
+        }
+      },
+      {
+        "id": "{{site}}.li-10yr.journey-policy",
+        "key": "{{site}}.li-10yr.journey-policy",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.li-10yr.journey-policy",
+        "value": {
+          "underwritingByApplicant": {
+            "child": "NA"
+          },
+          "version": 1,
+          "applicants": [
+            "member",
+            "spouse",
+            "child"
+          ],
+          "associationChoices": [],
+          "defaultUnderwritingPathway": "QD",
+          "membershipRequired": true,
+          "ageBasis": "age-last-birthday-on-application-date",
+          "payment": {
+            "collection": "required",
+            "defaultMethod": "bank-account",
+            "defaultFrequency": "monthly",
+            "frequencyLocked": false,
+            "synchronizeAcrossProducts": true,
+            "methods": [
+              {
+                "method": "bank-account",
+                "frequencies": [
+                  "monthly",
+                  "quarterly",
+                  "semiannual",
+                  "annual"
+                ]
+              },
+              {
+                "method": "bill-me",
+                "frequencies": [
+                  "quarterly",
+                  "semiannual",
+                  "annual"
+                ]
+              }
+            ]
+          },
+          "billing": {
+            "annualFactors": {
+              "annual": 1,
+              "semiannual": 0.5,
+              "quarterly": 0.25,
+              "monthly": 0.08333333333333333
+            },
+            "feePerCollection": {
+              "bank-account": 0,
+              "credit-card": 0,
+              "bill-me": 0
+            },
+            "annualCredit": 0,
+            "currency": "USD"
+          },
+          "dependentElections": [],
+          "questions": [
+            {
+              "applicantKey": "member",
+              "modes": [
+                "new"
+              ],
+              "healthPage": "health-qd",
+              "financialFields": [],
+              "tobaccoFields": [
+                "smoker",
+                "tobacco-last-used",
+                "tobacco-products"
+              ],
+              "attestationKey": "{{site}}.li-10yr.member.new.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            },
+            {
+              "applicantKey": "member",
+              "modes": [
+                "increase"
+              ],
+              "healthPage": "health-qd",
+              "financialFields": [],
+              "tobaccoFields": [
+                "smoker",
+                "tobacco-last-used",
+                "tobacco-products"
+              ],
+              "attestationKey": "{{site}}.li-10yr.member.increase.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            },
+            {
+              "applicantKey": "spouse",
+              "modes": [
+                "new"
+              ],
+              "healthPage": "health-qd",
+              "financialFields": [],
+              "tobaccoFields": [
+                "spouse-smoker",
+                "spouse-tobacco-last-used",
+                "spouse-tobacco-products"
+              ],
+              "attestationKey": "{{site}}.li-10yr.spouse.new.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            },
+            {
+              "applicantKey": "spouse",
+              "modes": [
+                "increase"
+              ],
+              "healthPage": "health-qd",
+              "financialFields": [],
+              "tobaccoFields": [
+                "spouse-smoker",
+                "spouse-tobacco-last-used",
+                "spouse-tobacco-products"
+              ],
+              "attestationKey": "{{site}}.li-10yr.spouse.increase.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            },
+            {
+              "applicantKey": "child",
+              "modes": [
+                "new"
+              ],
+              "healthPage": null,
+              "financialFields": [],
+              "tobaccoFields": [],
+              "attestationKey": "{{site}}.li-10yr.child.new.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            },
+            {
+              "applicantKey": "child",
+              "modes": [
+                "increase"
+              ],
+              "healthPage": null,
+              "financialFields": [],
+              "tobaccoFields": [],
+              "attestationKey": "{{site}}.li-10yr.child.increase.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            }
+          ],
+          "mappings": [
+            {
+              "when": {
+                "applicantKey": "member",
+                "mode": "new"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30332-0",
+                  "rating": "G-30332-0",
+                  "issue": "G-30332-0",
+                  "xml": "G-30332-0",
+                  "pdf": "G-30332-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "102",
+                  "rating": "102",
+                  "issue": "102",
+                  "xml": "102",
+                  "pdf": "102",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            },
+            {
+              "when": {
+                "applicantKey": "member",
+                "mode": "increase"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30332-0",
+                  "rating": "G-30332-0",
+                  "issue": "G-30332-0",
+                  "xml": "G-30332-0",
+                  "pdf": "G-30332-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "102",
+                  "rating": "102",
+                  "issue": "102",
+                  "xml": "102",
+                  "pdf": "102",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            },
+            {
+              "when": {
+                "applicantKey": "spouse",
+                "mode": "new"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30332-0",
+                  "rating": "G-30332-0",
+                  "issue": "G-30332-0",
+                  "xml": "G-30332-0",
+                  "pdf": "G-30332-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "102",
+                  "rating": "102",
+                  "issue": "102",
+                  "xml": "102",
+                  "pdf": "102",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            },
+            {
+              "when": {
+                "applicantKey": "spouse",
+                "mode": "increase"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30332-0",
+                  "rating": "G-30332-0",
+                  "issue": "G-30332-0",
+                  "xml": "G-30332-0",
+                  "pdf": "G-30332-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "102",
+                  "rating": "102",
+                  "issue": "102",
+                  "xml": "102",
+                  "pdf": "102",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            },
+            {
+              "when": {
+                "applicantKey": "child",
+                "mode": "new"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30332-0",
+                  "rating": "G-30332-0",
+                  "issue": "G-30332-0",
+                  "xml": "G-30332-0",
+                  "pdf": "G-30332-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "102",
+                  "rating": "102",
+                  "issue": "102",
+                  "xml": "102",
+                  "pdf": "102",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            },
+            {
+              "when": {
+                "applicantKey": "child",
+                "mode": "increase"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30332-0",
+                  "rating": "G-30332-0",
+                  "issue": "G-30332-0",
+                  "xml": "G-30332-0",
+                  "pdf": "G-30332-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "102",
+                  "rating": "102",
+                  "issue": "102",
+                  "xml": "102",
+                  "pdf": "102",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            }
+          ],
+          "provisional": true,
+          "revisit": [
+            "Use current ISI association list, all enabled plans for each association and common identifiers provisionally. ATPE is not enabled; no ATPE exception is silently applied.",
+            "Membership is an explicit applicant declaration for candidate acceptance, not a verified external membership service. Age is last birthday on application date; revisit source-specific age conventions.",
+            "Reuse current health fields without adding medical rejection criteria. Health pathway, financial/tobacco triggers and synthetic attestation require current product-specific question/document review.",
+            "PRASE unavailable remains a null premium. Non-AMA modal factors use pro rata annual fractions, fees and credits are zero; WAEPA card conflict uses the agreed mock card option. Existing billing remains unchanged only after policy verification.",
+            "Submission is a mock-coverage-v1 role mapping, not insurer XML/PDF service certification. Unspecified roles use the primary identifier provisionally; portal dummy identifiers never enter issue/rating/XML/PDF by default."
+          ],
+          "healthPageForPortfolio": {
+            "when": "qd-life-with-fuw-disability",
+            "pageId": "health-tele"
+          }
+        }
+      },
+      {
+        "id": "{{site}}.li-10yr.journey-residency",
+        "key": "{{site}}.li-10yr.journey-residency",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.li-10yr.journey-residency",
+        "value": {
+          "version": 1,
+          "allowedJurisdictions": [
+            "US-AZ",
+            "US-CA",
+            "US-DC",
+            "US-GA",
+            "US-HI",
+            "US-IL",
+            "US-IN",
+            "US-IA",
+            "US-KS",
+            "US-MI",
+            "US-NE",
+            "US-NV",
+            "US-NJ",
+            "US-OK",
+            "US-PA",
+            "US-RI",
+            "US-TN"
+          ],
+          "excludeActiveMilitary": false,
+          "provisional": true,
+          "revisit": [
+            "Mainland US plus DC only provisionally; Canadian/territory/foreign address behavior needs source review. Main N exclusions parsed after explicit spelling repairs: VTVA \u2192 VT/VA, MV \u2192 MT, TE \u2192 TN, YT \u2192 UT, Louisisana \u2192 Louisiana. Revisit those repairs.",
+            "ASCE spouse-only NH restriction is persisted in applicantExcludedJurisdictions; no source country or military status is inferred."
+          ]
+        }
+      },
+      {
+        "id": "{{site}}.li-20yr.selection-policy",
+        "key": "{{site}}.li-20yr.selection-policy",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.li-20yr.selection-policy",
+        "value": {
+          "version": 1,
+          "modes": [
+            "new",
+            "increase"
+          ],
+          "amountMeaning": "resulting-total",
+          "existingPolicyRequired": true,
+          "riderOnlyApplicants": [],
+          "riders": [],
+          "childSchedule": null,
+          "skipPaymentForExisting": false,
+          "skipPaymentForChildOnly": false,
+          "healthForRiderOnly": false,
+          "provisional": true,
+          "revisit": [
+            "Existing-policy verification requires a service; a supplied verification fact is candidate input only. Resulting-total amount semantics are provisional for increase mode.",
+            "Preserve current rider assignments provisionally. Unspecified rider caps, dependencies and incompatibilities require product document review; empty lists are explicit working choices.",
+            "Mock verification replaces the caller boolean at the journey boundary. Real policy lookup and effective-date/billing acceptance await integration.",
+            "Added source-linked CIR, WOP, AD&D, CAT and AVMA FPO caps are candidate rules; unresolved rider definitions remain explicitly provisional."
+          ]
+        }
+      },
+      {
+        "id": "{{site}}.li-20yr.journey-policy",
+        "key": "{{site}}.li-20yr.journey-policy",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.li-20yr.journey-policy",
+        "value": {
+          "underwritingByApplicant": {
+            "child": "NA"
+          },
+          "version": 1,
+          "applicants": [
+            "member",
+            "spouse",
+            "child"
+          ],
+          "associationChoices": [],
+          "defaultUnderwritingPathway": "QD",
+          "membershipRequired": true,
+          "ageBasis": "age-last-birthday-on-application-date",
+          "payment": {
+            "collection": "required",
+            "defaultMethod": "bank-account",
+            "defaultFrequency": "monthly",
+            "frequencyLocked": false,
+            "synchronizeAcrossProducts": true,
+            "methods": [
+              {
+                "method": "bank-account",
+                "frequencies": [
+                  "monthly",
+                  "quarterly",
+                  "semiannual",
+                  "annual"
+                ]
+              },
+              {
+                "method": "bill-me",
+                "frequencies": [
+                  "quarterly",
+                  "semiannual",
+                  "annual"
+                ]
+              }
+            ]
+          },
+          "billing": {
+            "annualFactors": {
+              "annual": 1,
+              "semiannual": 0.5,
+              "quarterly": 0.25,
+              "monthly": 0.08333333333333333
+            },
+            "feePerCollection": {
+              "bank-account": 0,
+              "credit-card": 0,
+              "bill-me": 0
+            },
+            "annualCredit": 0,
+            "currency": "USD"
+          },
+          "dependentElections": [],
+          "questions": [
+            {
+              "applicantKey": "member",
+              "modes": [
+                "new"
+              ],
+              "healthPage": "health-qd",
+              "financialFields": [],
+              "tobaccoFields": [
+                "smoker",
+                "tobacco-last-used",
+                "tobacco-products"
+              ],
+              "attestationKey": "{{site}}.li-20yr.member.new.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            },
+            {
+              "applicantKey": "member",
+              "modes": [
+                "increase"
+              ],
+              "healthPage": "health-qd",
+              "financialFields": [],
+              "tobaccoFields": [
+                "smoker",
+                "tobacco-last-used",
+                "tobacco-products"
+              ],
+              "attestationKey": "{{site}}.li-20yr.member.increase.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            },
+            {
+              "applicantKey": "spouse",
+              "modes": [
+                "new"
+              ],
+              "healthPage": "health-qd",
+              "financialFields": [],
+              "tobaccoFields": [
+                "spouse-smoker",
+                "spouse-tobacco-last-used",
+                "spouse-tobacco-products"
+              ],
+              "attestationKey": "{{site}}.li-20yr.spouse.new.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            },
+            {
+              "applicantKey": "spouse",
+              "modes": [
+                "increase"
+              ],
+              "healthPage": "health-qd",
+              "financialFields": [],
+              "tobaccoFields": [
+                "spouse-smoker",
+                "spouse-tobacco-last-used",
+                "spouse-tobacco-products"
+              ],
+              "attestationKey": "{{site}}.li-20yr.spouse.increase.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            },
+            {
+              "applicantKey": "child",
+              "modes": [
+                "new"
+              ],
+              "healthPage": null,
+              "financialFields": [],
+              "tobaccoFields": [],
+              "attestationKey": "{{site}}.li-20yr.child.new.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            },
+            {
+              "applicantKey": "child",
+              "modes": [
+                "increase"
+              ],
+              "healthPage": null,
+              "financialFields": [],
+              "tobaccoFields": [],
+              "attestationKey": "{{site}}.li-20yr.child.increase.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            }
+          ],
+          "mappings": [
+            {
+              "when": {
+                "applicantKey": "member",
+                "mode": "new"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30333-0",
+                  "rating": "G-30333-0",
+                  "issue": "G-30333-0",
+                  "xml": "G-30333-0",
+                  "pdf": "G-30333-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "121",
+                  "rating": "121",
+                  "issue": "121",
+                  "xml": "121",
+                  "pdf": "121",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            },
+            {
+              "when": {
+                "applicantKey": "member",
+                "mode": "increase"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30333-0",
+                  "rating": "G-30333-0",
+                  "issue": "G-30333-0",
+                  "xml": "G-30333-0",
+                  "pdf": "G-30333-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "121",
+                  "rating": "121",
+                  "issue": "121",
+                  "xml": "121",
+                  "pdf": "121",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            },
+            {
+              "when": {
+                "applicantKey": "spouse",
+                "mode": "new"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30333-0",
+                  "rating": "G-30333-0",
+                  "issue": "G-30333-0",
+                  "xml": "G-30333-0",
+                  "pdf": "G-30333-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "121",
+                  "rating": "121",
+                  "issue": "121",
+                  "xml": "121",
+                  "pdf": "121",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            },
+            {
+              "when": {
+                "applicantKey": "spouse",
+                "mode": "increase"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30333-0",
+                  "rating": "G-30333-0",
+                  "issue": "G-30333-0",
+                  "xml": "G-30333-0",
+                  "pdf": "G-30333-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "121",
+                  "rating": "121",
+                  "issue": "121",
+                  "xml": "121",
+                  "pdf": "121",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            },
+            {
+              "when": {
+                "applicantKey": "child",
+                "mode": "new"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30333-0",
+                  "rating": "G-30333-0",
+                  "issue": "G-30333-0",
+                  "xml": "G-30333-0",
+                  "pdf": "G-30333-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "121",
+                  "rating": "121",
+                  "issue": "121",
+                  "xml": "121",
+                  "pdf": "121",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            },
+            {
+              "when": {
+                "applicantKey": "child",
+                "mode": "increase"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30333-0",
+                  "rating": "G-30333-0",
+                  "issue": "G-30333-0",
+                  "xml": "G-30333-0",
+                  "pdf": "G-30333-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "121",
+                  "rating": "121",
+                  "issue": "121",
+                  "xml": "121",
+                  "pdf": "121",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            }
+          ],
+          "provisional": true,
+          "revisit": [
+            "Use current ISI association list, all enabled plans for each association and common identifiers provisionally. ATPE is not enabled; no ATPE exception is silently applied.",
+            "Membership is an explicit applicant declaration for candidate acceptance, not a verified external membership service. Age is last birthday on application date; revisit source-specific age conventions.",
+            "Reuse current health fields without adding medical rejection criteria. Health pathway, financial/tobacco triggers and synthetic attestation require current product-specific question/document review.",
+            "PRASE unavailable remains a null premium. Non-AMA modal factors use pro rata annual fractions, fees and credits are zero; WAEPA card conflict uses the agreed mock card option. Existing billing remains unchanged only after policy verification.",
+            "Submission is a mock-coverage-v1 role mapping, not insurer XML/PDF service certification. Unspecified roles use the primary identifier provisionally; portal dummy identifiers never enter issue/rating/XML/PDF by default."
+          ],
+          "healthPageForPortfolio": {
+            "when": "qd-life-with-fuw-disability",
+            "pageId": "health-tele"
+          }
+        }
+      },
+      {
+        "id": "{{site}}.li-20yr.journey-residency",
+        "key": "{{site}}.li-20yr.journey-residency",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.li-20yr.journey-residency",
+        "value": {
+          "version": 1,
+          "allowedJurisdictions": [
+            "US-AZ",
+            "US-CA",
+            "US-DC",
+            "US-GA",
+            "US-HI",
+            "US-IL",
+            "US-IN",
+            "US-IA",
+            "US-KS",
+            "US-MI",
+            "US-NE",
+            "US-NV",
+            "US-NJ",
+            "US-OK",
+            "US-PA",
+            "US-RI",
+            "US-TN"
+          ],
+          "excludeActiveMilitary": false,
+          "provisional": true,
+          "revisit": [
+            "Mainland US plus DC only provisionally; Canadian/territory/foreign address behavior needs source review. Main N exclusions parsed after explicit spelling repairs: VTVA \u2192 VT/VA, MV \u2192 MT, TE \u2192 TN, YT \u2192 UT, Louisisana \u2192 Louisiana. Revisit those repairs.",
+            "ASCE spouse-only NH restriction is persisted in applicantExcludedJurisdictions; no source country or military status is inferred."
+          ]
+        }
+      },
+      {
+        "id": "{{site}}.li-50plus.selection-policy",
+        "key": "{{site}}.li-50plus.selection-policy",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.li-50plus.selection-policy",
+        "value": {
+          "version": 1,
+          "modes": [
+            "new",
+            "increase"
+          ],
+          "amountMeaning": "resulting-total",
+          "existingPolicyRequired": true,
+          "riderOnlyApplicants": [],
+          "riders": [],
+          "childSchedule": null,
+          "skipPaymentForExisting": false,
+          "skipPaymentForChildOnly": false,
+          "healthForRiderOnly": false,
+          "provisional": true,
+          "revisit": [
+            "Existing-policy verification requires a service; a supplied verification fact is candidate input only. Resulting-total amount semantics are provisional for increase mode.",
+            "Preserve current rider assignments provisionally. Unspecified rider caps, dependencies and incompatibilities require product document review; empty lists are explicit working choices.",
+            "Mock verification replaces the caller boolean at the journey boundary. Real policy lookup and effective-date/billing acceptance await integration.",
+            "Added source-linked CIR, WOP, AD&D, CAT and AVMA FPO caps are candidate rules; unresolved rider definitions remain explicitly provisional."
+          ]
+        }
+      },
+      {
+        "id": "{{site}}.li-50plus.journey-policy",
+        "key": "{{site}}.li-50plus.journey-policy",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.li-50plus.journey-policy",
+        "value": {
+          "underwritingByApplicant": {},
+          "version": 1,
+          "applicants": [
+            "member",
+            "spouse"
+          ],
+          "associationChoices": [],
+          "defaultUnderwritingPathway": "GI",
+          "membershipRequired": true,
+          "ageBasis": "age-last-birthday-on-application-date",
+          "payment": {
+            "collection": "required",
+            "defaultMethod": "bank-account",
+            "defaultFrequency": "monthly",
+            "frequencyLocked": false,
+            "synchronizeAcrossProducts": true,
+            "methods": [
+              {
+                "method": "bank-account",
+                "frequencies": [
+                  "monthly",
+                  "quarterly",
+                  "semiannual",
+                  "annual"
+                ]
+              },
+              {
+                "method": "bill-me",
+                "frequencies": [
+                  "quarterly",
+                  "semiannual",
+                  "annual"
+                ]
+              }
+            ]
+          },
+          "billing": {
+            "annualFactors": {
+              "annual": 1,
+              "semiannual": 0.5,
+              "quarterly": 0.25,
+              "monthly": 0.08333333333333333
+            },
+            "feePerCollection": {
+              "bank-account": 0,
+              "credit-card": 0,
+              "bill-me": 0
+            },
+            "annualCredit": 0,
+            "currency": "USD"
+          },
+          "dependentElections": [],
+          "questions": [
+            {
+              "applicantKey": "member",
+              "modes": [
+                "new"
+              ],
+              "healthPage": null,
+              "financialFields": [],
+              "tobaccoFields": [
+                "smoker",
+                "tobacco-last-used",
+                "tobacco-products"
+              ],
+              "attestationKey": "{{site}}.li-50plus.member.new.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            },
+            {
+              "applicantKey": "member",
+              "modes": [
+                "increase"
+              ],
+              "healthPage": null,
+              "financialFields": [],
+              "tobaccoFields": [
+                "smoker",
+                "tobacco-last-used",
+                "tobacco-products"
+              ],
+              "attestationKey": "{{site}}.li-50plus.member.increase.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            },
+            {
+              "applicantKey": "spouse",
+              "modes": [
+                "new"
+              ],
+              "healthPage": null,
+              "financialFields": [],
+              "tobaccoFields": [
+                "spouse-smoker",
+                "spouse-tobacco-last-used",
+                "spouse-tobacco-products"
+              ],
+              "attestationKey": "{{site}}.li-50plus.spouse.new.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            },
+            {
+              "applicantKey": "spouse",
+              "modes": [
+                "increase"
+              ],
+              "healthPage": null,
+              "financialFields": [],
+              "tobaccoFields": [
+                "spouse-smoker",
+                "spouse-tobacco-last-used",
+                "spouse-tobacco-products"
+              ],
+              "attestationKey": "{{site}}.li-50plus.spouse.increase.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            }
+          ],
+          "mappings": [
+            {
+              "when": {
+                "applicantKey": "member",
+                "mode": "new"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30334-0",
+                  "rating": "G-30334-0",
+                  "issue": "G-30334-0",
+                  "xml": "G-30334-0",
+                  "pdf": "G-30334-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "153",
+                  "rating": "153",
+                  "issue": "153",
+                  "xml": "153",
+                  "pdf": "153",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            },
+            {
+              "when": {
+                "applicantKey": "member",
+                "mode": "increase"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30334-0",
+                  "rating": "G-30334-0",
+                  "issue": "G-30334-0",
+                  "xml": "G-30334-0",
+                  "pdf": "G-30334-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "153",
+                  "rating": "153",
+                  "issue": "153",
+                  "xml": "153",
+                  "pdf": "153",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            },
+            {
+              "when": {
+                "applicantKey": "spouse",
+                "mode": "new"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30334-0",
+                  "rating": "G-30334-0",
+                  "issue": "G-30334-0",
+                  "xml": "G-30334-0",
+                  "pdf": "G-30334-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "153",
+                  "rating": "153",
+                  "issue": "153",
+                  "xml": "153",
+                  "pdf": "153",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            },
+            {
+              "when": {
+                "applicantKey": "spouse",
+                "mode": "increase"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30334-0",
+                  "rating": "G-30334-0",
+                  "issue": "G-30334-0",
+                  "xml": "G-30334-0",
+                  "pdf": "G-30334-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "153",
+                  "rating": "153",
+                  "issue": "153",
+                  "xml": "153",
+                  "pdf": "153",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            }
+          ],
+          "provisional": true,
+          "revisit": [
+            "Use current ISI association list, all enabled plans for each association and common identifiers provisionally. ATPE is not enabled; no ATPE exception is silently applied.",
+            "Membership is an explicit applicant declaration for candidate acceptance, not a verified external membership service. Age is last birthday on application date; revisit source-specific age conventions.",
+            "Reuse current health fields without adding medical rejection criteria. Health pathway, financial/tobacco triggers and synthetic attestation require current product-specific question/document review.",
+            "PRASE unavailable remains a null premium. Non-AMA modal factors use pro rata annual fractions, fees and credits are zero; WAEPA card conflict uses the agreed mock card option. Existing billing remains unchanged only after policy verification.",
+            "Submission is a mock-coverage-v1 role mapping, not insurer XML/PDF service certification. Unspecified roles use the primary identifier provisionally; portal dummy identifiers never enter issue/rating/XML/PDF by default."
+          ]
+        }
+      },
+      {
+        "id": "{{site}}.li-50plus.journey-residency",
+        "key": "{{site}}.li-50plus.journey-residency",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.li-50plus.journey-residency",
+        "value": {
+          "version": 1,
+          "allowedJurisdictions": [
+            "US-AZ",
+            "US-CA",
+            "US-DC",
+            "US-GA",
+            "US-HI",
+            "US-IL",
+            "US-IN",
+            "US-IA",
+            "US-KS",
+            "US-MI",
+            "US-NE",
+            "US-NV",
+            "US-NJ",
+            "US-OK",
+            "US-PA",
+            "US-RI",
+            "US-TN"
+          ],
+          "excludeActiveMilitary": false,
+          "provisional": true,
+          "revisit": [
+            "Mainland US plus DC only provisionally; Canadian/territory/foreign address behavior needs source review. Main N exclusions parsed after explicit spelling repairs: VTVA \u2192 VT/VA, MV \u2192 MT, TE \u2192 TN, YT \u2192 UT, Louisisana \u2192 Louisiana. Revisit those repairs.",
+            "ASCE spouse-only NH restriction is persisted in applicantExcludedJurisdictions; no source country or military status is inferred."
+          ]
+        }
+      },
+      {
+        "id": "{{site}}.li-add.selection-policy",
+        "key": "{{site}}.li-add.selection-policy",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.li-add.selection-policy",
+        "value": {
+          "version": 1,
+          "modes": [
+            "new",
+            "increase"
+          ],
+          "amountMeaning": "resulting-total",
+          "existingPolicyRequired": true,
+          "riderOnlyApplicants": [],
+          "riders": [],
+          "childSchedule": null,
+          "skipPaymentForExisting": false,
+          "skipPaymentForChildOnly": false,
+          "healthForRiderOnly": false,
+          "provisional": true,
+          "revisit": [
+            "Existing-policy verification requires a service; a supplied verification fact is candidate input only. Resulting-total amount semantics are provisional for increase mode.",
+            "Preserve current rider assignments provisionally. Unspecified rider caps, dependencies and incompatibilities require product document review; empty lists are explicit working choices.",
+            "Mock verification replaces the caller boolean at the journey boundary. Real policy lookup and effective-date/billing acceptance await integration.",
+            "Added source-linked CIR, WOP, AD&D, CAT and AVMA FPO caps are candidate rules; unresolved rider definitions remain explicitly provisional."
+          ]
+        }
+      },
+      {
+        "id": "{{site}}.li-add.journey-policy",
+        "key": "{{site}}.li-add.journey-policy",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.li-add.journey-policy",
+        "value": {
+          "underwritingByApplicant": {
+            "member": "NA",
+            "spouse": "NA",
+            "child": "NA"
+          },
+          "version": 1,
+          "applicants": [
+            "member",
+            "spouse",
+            "child"
+          ],
+          "associationChoices": [],
+          "defaultUnderwritingPathway": "NA",
+          "membershipRequired": true,
+          "ageBasis": "age-last-birthday-on-application-date",
+          "payment": {
+            "collection": "required",
+            "defaultMethod": "bank-account",
+            "defaultFrequency": "monthly",
+            "frequencyLocked": false,
+            "synchronizeAcrossProducts": true,
+            "methods": [
+              {
+                "method": "bank-account",
+                "frequencies": [
+                  "monthly",
+                  "quarterly",
+                  "semiannual",
+                  "annual"
+                ]
+              },
+              {
+                "method": "bill-me",
+                "frequencies": [
+                  "quarterly",
+                  "semiannual",
+                  "annual"
+                ]
+              }
+            ]
+          },
+          "billing": {
+            "annualFactors": {
+              "annual": 1,
+              "semiannual": 0.5,
+              "quarterly": 0.25,
+              "monthly": 0.08333333333333333
+            },
+            "feePerCollection": {
+              "bank-account": 0,
+              "credit-card": 0,
+              "bill-me": 0
+            },
+            "annualCredit": 0,
+            "currency": "USD"
+          },
+          "dependentElections": [],
+          "questions": [
+            {
+              "applicantKey": "member",
+              "modes": [
+                "new"
+              ],
+              "healthPage": null,
+              "financialFields": [],
+              "tobaccoFields": [],
+              "attestationKey": "{{site}}.li-add.member.new.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            },
+            {
+              "applicantKey": "member",
+              "modes": [
+                "increase"
+              ],
+              "healthPage": null,
+              "financialFields": [],
+              "tobaccoFields": [],
+              "attestationKey": "{{site}}.li-add.member.increase.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            },
+            {
+              "applicantKey": "spouse",
+              "modes": [
+                "new"
+              ],
+              "healthPage": null,
+              "financialFields": [],
+              "tobaccoFields": [],
+              "attestationKey": "{{site}}.li-add.spouse.new.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            },
+            {
+              "applicantKey": "spouse",
+              "modes": [
+                "increase"
+              ],
+              "healthPage": null,
+              "financialFields": [],
+              "tobaccoFields": [],
+              "attestationKey": "{{site}}.li-add.spouse.increase.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            },
+            {
+              "applicantKey": "child",
+              "modes": [
+                "new"
+              ],
+              "healthPage": null,
+              "financialFields": [],
+              "tobaccoFields": [],
+              "attestationKey": "{{site}}.li-add.child.new.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            },
+            {
+              "applicantKey": "child",
+              "modes": [
+                "increase"
+              ],
+              "healthPage": null,
+              "financialFields": [],
+              "tobaccoFields": [],
+              "attestationKey": "{{site}}.li-add.child.increase.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            }
+          ],
+          "mappings": [
+            {
+              "when": {
+                "applicantKey": "member",
+                "mode": "new"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30331-0",
+                  "rating": "G-30331-0",
+                  "issue": "G-30331-0",
+                  "xml": "G-30331-0",
+                  "pdf": "G-30331-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "999",
+                  "rating": "999",
+                  "issue": "999",
+                  "xml": "999",
+                  "pdf": "999",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            },
+            {
+              "when": {
+                "applicantKey": "member",
+                "mode": "increase"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30331-0",
+                  "rating": "G-30331-0",
+                  "issue": "G-30331-0",
+                  "xml": "G-30331-0",
+                  "pdf": "G-30331-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "999",
+                  "rating": "999",
+                  "issue": "999",
+                  "xml": "999",
+                  "pdf": "999",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            },
+            {
+              "when": {
+                "applicantKey": "spouse",
+                "mode": "new"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30331-0",
+                  "rating": "G-30331-0",
+                  "issue": "G-30331-0",
+                  "xml": "G-30331-0",
+                  "pdf": "G-30331-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "999",
+                  "rating": "999",
+                  "issue": "999",
+                  "xml": "999",
+                  "pdf": "999",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            },
+            {
+              "when": {
+                "applicantKey": "spouse",
+                "mode": "increase"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30331-0",
+                  "rating": "G-30331-0",
+                  "issue": "G-30331-0",
+                  "xml": "G-30331-0",
+                  "pdf": "G-30331-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "999",
+                  "rating": "999",
+                  "issue": "999",
+                  "xml": "999",
+                  "pdf": "999",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            },
+            {
+              "when": {
+                "applicantKey": "child",
+                "mode": "new"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30331-0",
+                  "rating": "G-30331-0",
+                  "issue": "G-30331-0",
+                  "xml": "G-30331-0",
+                  "pdf": "G-30331-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "999",
+                  "rating": "999",
+                  "issue": "999",
+                  "xml": "999",
+                  "pdf": "999",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            },
+            {
+              "when": {
+                "applicantKey": "child",
+                "mode": "increase"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30331-0",
+                  "rating": "G-30331-0",
+                  "issue": "G-30331-0",
+                  "xml": "G-30331-0",
+                  "pdf": "G-30331-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "999",
+                  "rating": "999",
+                  "issue": "999",
+                  "xml": "999",
+                  "pdf": "999",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            }
+          ],
+          "provisional": true,
+          "revisit": [
+            "Use current ISI association list, all enabled plans for each association and common identifiers provisionally. ATPE is not enabled; no ATPE exception is silently applied.",
+            "Membership is an explicit applicant declaration for candidate acceptance, not a verified external membership service. Age is last birthday on application date; revisit source-specific age conventions.",
+            "Reuse current health fields without adding medical rejection criteria. Health pathway, financial/tobacco triggers and synthetic attestation require current product-specific question/document review.",
+            "PRASE unavailable remains a null premium. Non-AMA modal factors use pro rata annual fractions, fees and credits are zero; WAEPA card conflict uses the agreed mock card option. Existing billing remains unchanged only after policy verification.",
+            "Submission is a mock-coverage-v1 role mapping, not insurer XML/PDF service certification. Unspecified roles use the primary identifier provisionally; portal dummy identifiers never enter issue/rating/XML/PDF by default."
+          ]
+        }
+      },
+      {
+        "id": "{{site}}.li-add.journey-residency",
+        "key": "{{site}}.li-add.journey-residency",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.li-add.journey-residency",
+        "value": {
+          "version": 1,
+          "allowedJurisdictions": [
+            "US-AZ",
+            "US-CA",
+            "US-DC",
+            "US-GA",
+            "US-HI",
+            "US-IL",
+            "US-IN",
+            "US-IA",
+            "US-KS",
+            "US-MI",
+            "US-NE",
+            "US-NV",
+            "US-NJ",
+            "US-OK",
+            "US-PA",
+            "US-RI",
+            "US-TN"
+          ],
+          "excludeActiveMilitary": false,
+          "provisional": true,
+          "revisit": [
+            "Mainland US plus DC only provisionally; Canadian/territory/foreign address behavior needs source review. Main N exclusions parsed after explicit spelling repairs: VTVA \u2192 VT/VA, MV \u2192 MT, TE \u2192 TN, YT \u2192 UT, Louisisana \u2192 Louisiana. Revisit those repairs.",
+            "ASCE spouse-only NH restriction is persisted in applicantExcludedJurisdictions; no source country or military status is inferred."
+          ]
+        }
+      },
+      {
+        "id": "{{site}}.di-ltd.selection-policy",
+        "key": "{{site}}.di-ltd.selection-policy",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.di-ltd.selection-policy",
+        "value": {
+          "version": 1,
+          "modes": [
+            "new",
+            "increase"
+          ],
+          "amountMeaning": "resulting-total",
+          "existingPolicyRequired": true,
+          "riderOnlyApplicants": [],
+          "riders": [],
+          "childSchedule": null,
+          "skipPaymentForExisting": false,
+          "skipPaymentForChildOnly": false,
+          "healthForRiderOnly": false,
+          "provisional": true,
+          "revisit": [
+            "Existing-policy verification requires a service; a supplied verification fact is candidate input only. Resulting-total amount semantics are provisional for increase mode.",
+            "Preserve current rider assignments provisionally. Unspecified rider caps, dependencies and incompatibilities require product document review; empty lists are explicit working choices.",
+            "Mock verification replaces the caller boolean at the journey boundary. Real policy lookup and effective-date/billing acceptance await integration.",
+            "Added source-linked CIR, WOP, AD&D, CAT and AVMA FPO caps are candidate rules; unresolved rider definitions remain explicitly provisional."
+          ]
+        }
+      },
+      {
+        "id": "{{site}}.di-ltd.journey-policy",
+        "key": "{{site}}.di-ltd.journey-policy",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.di-ltd.journey-policy",
+        "value": {
+          "underwritingByApplicant": {},
+          "version": 1,
+          "applicants": [
+            "member"
+          ],
+          "associationChoices": [],
+          "defaultUnderwritingPathway": "FUW",
+          "membershipRequired": true,
+          "ageBasis": "age-last-birthday-on-application-date",
+          "payment": {
+            "collection": "required",
+            "defaultMethod": "bank-account",
+            "defaultFrequency": "monthly",
+            "frequencyLocked": false,
+            "synchronizeAcrossProducts": true,
+            "methods": [
+              {
+                "method": "bank-account",
+                "frequencies": [
+                  "monthly",
+                  "quarterly",
+                  "semiannual",
+                  "annual"
+                ]
+              },
+              {
+                "method": "bill-me",
+                "frequencies": [
+                  "quarterly",
+                  "semiannual",
+                  "annual"
+                ]
+              }
+            ]
+          },
+          "billing": {
+            "annualFactors": {
+              "annual": 1,
+              "semiannual": 0.5,
+              "quarterly": 0.25,
+              "monthly": 0.08333333333333333
+            },
+            "feePerCollection": {
+              "bank-account": 0,
+              "credit-card": 0,
+              "bill-me": 0
+            },
+            "annualCredit": 0,
+            "currency": "USD"
+          },
+          "dependentElections": [],
+          "questions": [
+            {
+              "applicantKey": "member",
+              "modes": [
+                "new"
+              ],
+              "healthPage": "health-di-supp",
+              "financialFields": [
+                "average-monthly-income",
+                "hours-worked-per-week"
+              ],
+              "tobaccoFields": [],
+              "attestationKey": "{{site}}.di-ltd.member.new.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            },
+            {
+              "applicantKey": "member",
+              "modes": [
+                "increase"
+              ],
+              "healthPage": "health-di-supp",
+              "financialFields": [
+                "average-monthly-income",
+                "hours-worked-per-week"
+              ],
+              "tobaccoFields": [],
+              "attestationKey": "{{site}}.di-ltd.member.increase.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            }
+          ],
+          "mappings": [
+            {
+              "when": {
+                "applicantKey": "member",
+                "mode": "new",
+                "waitingPeriod": "30-days",
+                "benefitPeriod": "2-years"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30336-0",
+                  "rating": "G-30336-0",
+                  "issue": "G-30336-0",
+                  "xml": "G-30336-0",
+                  "pdf": "G-30336-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "601",
+                  "rating": "601",
+                  "issue": "601",
+                  "xml": "601",
+                  "pdf": "601",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            },
+            {
+              "when": {
+                "applicantKey": "member",
+                "mode": "new",
+                "waitingPeriod": "30-days",
+                "benefitPeriod": "5-years"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30336-0",
+                  "rating": "G-30336-0",
+                  "issue": "G-30336-0",
+                  "xml": "G-30336-0",
+                  "pdf": "G-30336-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "601",
+                  "rating": "601",
+                  "issue": "601",
+                  "xml": "601",
+                  "pdf": "601",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            },
+            {
+              "when": {
+                "applicantKey": "member",
+                "mode": "new",
+                "waitingPeriod": "60-days",
+                "benefitPeriod": "2-years"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30336-0",
+                  "rating": "G-30336-0",
+                  "issue": "G-30336-0",
+                  "xml": "G-30336-0",
+                  "pdf": "G-30336-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "601",
+                  "rating": "601",
+                  "issue": "601",
+                  "xml": "601",
+                  "pdf": "601",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            },
+            {
+              "when": {
+                "applicantKey": "member",
+                "mode": "new",
+                "waitingPeriod": "60-days",
+                "benefitPeriod": "5-years"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30336-0",
+                  "rating": "G-30336-0",
+                  "issue": "G-30336-0",
+                  "xml": "G-30336-0",
+                  "pdf": "G-30336-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "601",
+                  "rating": "601",
+                  "issue": "601",
+                  "xml": "601",
+                  "pdf": "601",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            },
+            {
+              "when": {
+                "applicantKey": "member",
+                "mode": "new",
+                "waitingPeriod": "90-days",
+                "benefitPeriod": "2-years"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30336-0",
+                  "rating": "G-30336-0",
+                  "issue": "G-30336-0",
+                  "xml": "G-30336-0",
+                  "pdf": "G-30336-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "601",
+                  "rating": "601",
+                  "issue": "601",
+                  "xml": "601",
+                  "pdf": "601",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            },
+            {
+              "when": {
+                "applicantKey": "member",
+                "mode": "new",
+                "waitingPeriod": "90-days",
+                "benefitPeriod": "5-years"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30336-0",
+                  "rating": "G-30336-0",
+                  "issue": "G-30336-0",
+                  "xml": "G-30336-0",
+                  "pdf": "G-30336-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "601",
+                  "rating": "601",
+                  "issue": "601",
+                  "xml": "601",
+                  "pdf": "601",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            },
+            {
+              "when": {
+                "applicantKey": "member",
+                "mode": "increase",
+                "waitingPeriod": "30-days",
+                "benefitPeriod": "2-years"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30336-0",
+                  "rating": "G-30336-0",
+                  "issue": "G-30336-0",
+                  "xml": "G-30336-0",
+                  "pdf": "G-30336-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "601",
+                  "rating": "601",
+                  "issue": "601",
+                  "xml": "601",
+                  "pdf": "601",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            },
+            {
+              "when": {
+                "applicantKey": "member",
+                "mode": "increase",
+                "waitingPeriod": "30-days",
+                "benefitPeriod": "5-years"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30336-0",
+                  "rating": "G-30336-0",
+                  "issue": "G-30336-0",
+                  "xml": "G-30336-0",
+                  "pdf": "G-30336-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "601",
+                  "rating": "601",
+                  "issue": "601",
+                  "xml": "601",
+                  "pdf": "601",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            },
+            {
+              "when": {
+                "applicantKey": "member",
+                "mode": "increase",
+                "waitingPeriod": "60-days",
+                "benefitPeriod": "2-years"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30336-0",
+                  "rating": "G-30336-0",
+                  "issue": "G-30336-0",
+                  "xml": "G-30336-0",
+                  "pdf": "G-30336-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "601",
+                  "rating": "601",
+                  "issue": "601",
+                  "xml": "601",
+                  "pdf": "601",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            },
+            {
+              "when": {
+                "applicantKey": "member",
+                "mode": "increase",
+                "waitingPeriod": "60-days",
+                "benefitPeriod": "5-years"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30336-0",
+                  "rating": "G-30336-0",
+                  "issue": "G-30336-0",
+                  "xml": "G-30336-0",
+                  "pdf": "G-30336-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "601",
+                  "rating": "601",
+                  "issue": "601",
+                  "xml": "601",
+                  "pdf": "601",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            },
+            {
+              "when": {
+                "applicantKey": "member",
+                "mode": "increase",
+                "waitingPeriod": "90-days",
+                "benefitPeriod": "2-years"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30336-0",
+                  "rating": "G-30336-0",
+                  "issue": "G-30336-0",
+                  "xml": "G-30336-0",
+                  "pdf": "G-30336-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "601",
+                  "rating": "601",
+                  "issue": "601",
+                  "xml": "601",
+                  "pdf": "601",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            },
+            {
+              "when": {
+                "applicantKey": "member",
+                "mode": "increase",
+                "waitingPeriod": "90-days",
+                "benefitPeriod": "5-years"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30336-0",
+                  "rating": "G-30336-0",
+                  "issue": "G-30336-0",
+                  "xml": "G-30336-0",
+                  "pdf": "G-30336-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "601",
+                  "rating": "601",
+                  "issue": "601",
+                  "xml": "601",
+                  "pdf": "601",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            }
+          ],
+          "provisional": true,
+          "revisit": [
+            "Use current ISI association list, all enabled plans for each association and common identifiers provisionally. ATPE is not enabled; no ATPE exception is silently applied.",
+            "Membership is an explicit applicant declaration for candidate acceptance, not a verified external membership service. Age is last birthday on application date; revisit source-specific age conventions.",
+            "Reuse current health fields without adding medical rejection criteria. Health pathway, financial/tobacco triggers and synthetic attestation require current product-specific question/document review.",
+            "PRASE unavailable remains a null premium. Non-AMA modal factors use pro rata annual fractions, fees and credits are zero; WAEPA card conflict uses the agreed mock card option. Existing billing remains unchanged only after policy verification.",
+            "Submission is a mock-coverage-v1 role mapping, not insurer XML/PDF service certification. Unspecified roles use the primary identifier provisionally; portal dummy identifiers never enter issue/rating/XML/PDF by default."
+          ],
+          "healthPageForPortfolio": {
+            "when": "qd-life-with-disability",
+            "pageId": "health-di-supp"
+          }
+        }
+      },
+      {
+        "id": "{{site}}.di-ltd.journey-residency",
+        "key": "{{site}}.di-ltd.journey-residency",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.coveragePolicy.residency.di-ltd",
+        "value": {
+          "version": 1,
+          "allowedJurisdictions": [
+            "US-AZ",
+            "US-CA",
+            "US-DC",
+            "US-GA",
+            "US-HI",
+            "US-IN",
+            "US-IA",
+            "US-MA",
+            "US-MI",
+            "US-NE",
+            "US-NJ",
+            "US-OK",
+            "US-PA",
+            "US-RI",
+            "US-TN"
+          ],
+          "excludeActiveMilitary": false,
+          "provisional": true,
+          "revisit": [
+            "Mainland US plus DC only provisionally; Canadian/territory/foreign address behavior needs source review. Main N exclusions parsed after explicit spelling repairs: VTVA \u2192 VT/VA, MV \u2192 MT, TE \u2192 TN, YT \u2192 UT, Louisisana \u2192 Louisiana. Revisit those repairs.",
+            "ASCE spouse-only NH restriction is persisted in applicantExcludedJurisdictions; no source country or military status is inferred."
+          ]
+        }
+      },
+      {
+        "id": "{{site}}.life-aggregate-participation",
+        "key": "{{site}}.life-aggregate-participation",
+        "sourceReference": "docs/archive/step3-review-and-rating.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.coveragePolicy.lifeAggregateParticipation",
+        "value": {
+          "version": 1,
+          "mode": "configured",
+          "provisional": false,
+          "reason": "Captured aggregate rules are required",
+          "authority": "User, October 2, 2026: \"these can all be ignored for now (take whatever value if a value is needed and note in docs it needs to be revisited)\""
+        }
+      },
+      {
+        "id": "{{site}}.li-term.rate-modifier-policy",
+        "key": "{{site}}.li-term.rate-modifier-policy",
+        "sourceReference": "docs/archive/step3-review-and-rating.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.li-term.rate-modifier-policy",
+        "value": {
+          "version": 1,
+          "rules": [],
+          "provisional": true,
+          "revisit": [
+            "Synthetic base prices; volume discounts without supplied percentages remain zero; child flat premiums and modifier ordering require source reconciliation before publication"
+          ]
+        }
+      },
+      {
+        "id": "{{site}}.li-term.rate-input-policy",
+        "key": "{{site}}.li-term.rate-input-policy",
+        "sourceReference": "docs/archive/step3-review-and-rating.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.li-term.rate-input-policy",
+        "value": {
+          "version": 1,
+          "rateClass": {
+            "sourceReferences": [
+              "Main!AO318",
+              "Main!AP318",
+              "Main!AR318"
+            ],
+            "sourceText": "Preferred/Smoker\nIf \"No\" to Smoker Question - Preferred Rate;\nIf \"Yes\" to Smoker Question - Smoker Rate\nMale/Female and Tobacco\nMontanta residents get Female Rates",
+            "classes": [
+              "Smoker",
+              "Preferred"
+            ],
+            "selection": "tobacco",
+            "byTobacco": {
+              "yes": "Smoker",
+              "no": "Preferred"
+            },
+            "provisional": false,
+            "revisit": "Full underwriting quote mapping; QD, age/amount exceptions and tobacco lookback must be reconciled separately."
+          },
+          "dimensions": {
+            "amount": "required",
+            "applicant": "required",
+            "age": "provisional",
+            "jurisdiction": "provisional",
+            "gender": "required",
+            "tobacco": "required",
+            "rateClass": "required"
+          },
+          "sourceReferences": [
+            "Main!AO318",
+            "Main!AP318",
+            "Main!AR318"
+          ],
+          "authority": "provisional"
+        }
+      },
+      {
+        "id": "{{site}}.li-10yr.rate-modifier-policy",
+        "key": "{{site}}.li-10yr.rate-modifier-policy",
+        "sourceReference": "docs/archive/step3-review-and-rating.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.li-10yr.rate-modifier-policy",
+        "value": {
+          "version": 1,
+          "rules": [],
+          "provisional": true,
+          "revisit": [
+            "Synthetic base prices; volume discounts without supplied percentages remain zero; child flat premiums and modifier ordering require source reconciliation before publication"
+          ]
+        }
+      },
+      {
+        "id": "{{site}}.li-10yr.rate-input-policy",
+        "key": "{{site}}.li-10yr.rate-input-policy",
+        "sourceReference": "docs/archive/step3-review-and-rating.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.li-10yr.rate-input-policy",
+        "value": {
+          "version": 1,
+          "rateClass": {
+            "sourceReferences": [
+              "Main!AO322",
+              "Main!AP322",
+              "Main!AR322"
+            ],
+            "sourceText": "Preferred/Select/Standard\nIf \"No\" to Smoker Question - Preferred Rate;\nIf \"Yes\" to Smoker Question - Standard Rate\nMale/Female\nMontanta residents get Female Rates",
+            "classes": [
+              "Preferred",
+              "Select",
+              "Standard"
+            ],
+            "selection": "tobacco",
+            "byTobacco": {
+              "yes": "Standard",
+              "no": "Preferred"
+            },
+            "provisional": false,
+            "revisit": "Full underwriting quote mapping; QD, age/amount exceptions and tobacco lookback must be reconciled separately."
+          },
+          "dimensions": {
+            "amount": "required",
+            "applicant": "required",
+            "age": "provisional",
+            "jurisdiction": "provisional",
+            "gender": "required",
+            "tobacco": "required",
+            "rateClass": "required"
+          },
+          "sourceReferences": [
+            "Main!AO322",
+            "Main!AP322",
+            "Main!AR322"
+          ],
+          "authority": "provisional"
+        }
+      },
+      {
+        "id": "{{site}}.li-20yr.rate-modifier-policy",
+        "key": "{{site}}.li-20yr.rate-modifier-policy",
+        "sourceReference": "docs/archive/step3-review-and-rating.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.li-20yr.rate-modifier-policy",
+        "value": {
+          "version": 1,
+          "rules": [],
+          "provisional": true,
+          "revisit": [
+            "Synthetic base prices; volume discounts without supplied percentages remain zero; child flat premiums and modifier ordering require source reconciliation before publication"
+          ]
+        }
+      },
+      {
+        "id": "{{site}}.li-20yr.rate-input-policy",
+        "key": "{{site}}.li-20yr.rate-input-policy",
+        "sourceReference": "docs/archive/step3-review-and-rating.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.li-20yr.rate-input-policy",
+        "value": {
+          "version": 1,
+          "rateClass": {
+            "sourceReferences": [
+              "Main!AO323",
+              "Main!AP323",
+              "Main!AR323"
+            ],
+            "sourceText": "Preferred/Select/Standard\nIf \"No\" to Smoker Question - Preferred Rate;\nIf \"Yes\" to Smoker Question - Standard Rate\nMale/Female\nMontanta residents get Female Rates",
+            "classes": [
+              "Preferred",
+              "Select",
+              "Standard"
+            ],
+            "selection": "tobacco",
+            "byTobacco": {
+              "yes": "Standard",
+              "no": "Preferred"
+            },
+            "provisional": false,
+            "revisit": "Full underwriting quote mapping; QD, age/amount exceptions and tobacco lookback must be reconciled separately."
+          },
+          "dimensions": {
+            "amount": "required",
+            "applicant": "required",
+            "age": "provisional",
+            "jurisdiction": "provisional",
+            "gender": "required",
+            "tobacco": "required",
+            "rateClass": "required"
+          },
+          "sourceReferences": [
+            "Main!AO323",
+            "Main!AP323",
+            "Main!AR323"
+          ],
+          "authority": "provisional"
+        }
+      },
+      {
+        "id": "{{site}}.li-50plus.rate-modifier-policy",
+        "key": "{{site}}.li-50plus.rate-modifier-policy",
+        "sourceReference": "docs/archive/step3-review-and-rating.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.li-50plus.rate-modifier-policy",
+        "value": {
+          "version": 1,
+          "rules": [],
+          "provisional": true,
+          "revisit": [
+            "Synthetic base prices; volume discounts without supplied percentages remain zero; child flat premiums and modifier ordering require source reconciliation before publication"
+          ]
+        }
+      },
+      {
+        "id": "{{site}}.li-50plus.rate-input-policy",
+        "key": "{{site}}.li-50plus.rate-input-policy",
+        "sourceReference": "docs/archive/step3-review-and-rating.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.li-50plus.rate-input-policy",
+        "value": {
+          "version": 1,
+          "rateClass": {
+            "sourceReferences": [
+              "Main!AO319",
+              "Main!AP319",
+              "Main!AR319"
+            ],
+            "sourceText": "N/A\nN/A\nMale/Female\nMontanta residents get Female Rates",
+            "classes": [
+              "Prototype default"
+            ],
+            "selection": "single",
+            "provisional": true,
+            "revisit": "No complete quote-class mapping adopted; synthetic mock assumption only. Source text retained for reconciliation."
+          },
+          "dimensions": {
+            "amount": "required",
+            "applicant": "required",
+            "age": "provisional",
+            "jurisdiction": "provisional",
+            "gender": "required",
+            "tobacco": "ignored",
+            "rateClass": "required"
+          },
+          "sourceReferences": [
+            "Main!AO319",
+            "Main!AP319",
+            "Main!AR319"
+          ],
+          "authority": "provisional"
+        }
+      },
+      {
+        "id": "{{site}}.li-add.rate-modifier-policy",
+        "key": "{{site}}.li-add.rate-modifier-policy",
+        "sourceReference": "docs/archive/step3-review-and-rating.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.li-add.rate-modifier-policy",
+        "value": {
+          "version": 1,
+          "rules": [],
+          "provisional": true,
+          "revisit": [
+            "Synthetic base prices; volume discounts without supplied percentages remain zero; child flat premiums and modifier ordering require source reconciliation before publication"
+          ]
+        }
+      },
+      {
+        "id": "{{site}}.li-add.rate-input-policy",
+        "key": "{{site}}.li-add.rate-input-policy",
+        "sourceReference": "docs/archive/step3-review-and-rating.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.li-add.rate-input-policy",
+        "value": {
+          "version": 1,
+          "rateClass": {
+            "sourceReferences": [
+              "Main!AO320",
+              "Main!AP320",
+              "Main!AR320"
+            ],
+            "sourceText": "N/A\nN/A\nMember Only\nFamily Coverage",
+            "classes": [
+              "Prototype default"
+            ],
+            "selection": "single",
+            "provisional": true,
+            "revisit": "No complete quote-class mapping adopted; synthetic mock assumption only. Source text retained for reconciliation."
+          },
+          "dimensions": {
+            "amount": "required",
+            "applicant": "required",
+            "age": "provisional",
+            "jurisdiction": "provisional",
+            "gender": "provisional",
+            "tobacco": "ignored",
+            "rateClass": "required"
+          },
+          "sourceReferences": [
+            "Main!AO320",
+            "Main!AP320",
+            "Main!AR320"
+          ],
+          "authority": "provisional"
+        }
+      },
+      {
+        "id": "{{site}}.di-ltd.rate-modifier-policy",
+        "key": "{{site}}.di-ltd.rate-modifier-policy",
+        "sourceReference": "docs/archive/step3-review-and-rating.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.di-ltd.rate-modifier-policy",
+        "value": {
+          "version": 1,
+          "rules": [],
+          "provisional": true,
+          "revisit": [
+            "Synthetic base prices; volume discounts without supplied percentages remain zero; child flat premiums and modifier ordering require source reconciliation before publication"
+          ]
+        }
+      },
+      {
+        "id": "{{site}}.di-ltd.rate-input-policy",
+        "key": "{{site}}.di-ltd.rate-input-policy",
+        "sourceReference": "docs/archive/step3-review-and-rating.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.di-ltd.rate-input-policy",
+        "value": {
+          "version": 1,
+          "rateClass": {
+            "sourceReferences": [
+              "Main!AO321",
+              "Main!AP321",
+              "Main!AR321"
+            ],
+            "sourceText": "N/A\nN/A\nWaiting Period and Benefit Period",
+            "classes": [
+              "Prototype default"
+            ],
+            "selection": "single",
+            "provisional": true,
+            "revisit": "No complete quote-class mapping adopted; synthetic mock assumption only. Source text retained for reconciliation."
+          },
+          "dimensions": {
+            "amount": "required",
+            "applicant": "required",
+            "age": "provisional",
+            "jurisdiction": "provisional",
+            "gender": "provisional",
+            "tobacco": "ignored",
+            "waitingPeriod": "provisional",
+            "benefitPeriod": "provisional",
+            "rateClass": "required"
+          },
+          "sourceReferences": [
+            "Main!AO321",
+            "Main!AP321",
+            "Main!AR321"
+          ],
+          "authority": "provisional"
+        }
+      },
+      {
+        "id": "ownership.{{site}}.di-ltd.rider-set",
+        "key": "ownership.{{site}}.di-ltd.rider-set",
+        "sourceReference": "User-confirmed relational rider ownership, October 19, 2026",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "position": 0,
+        "configurationKey": "template.di-ltd.rider-set",
+        "value": {
+          "version": 2,
+          "source": "productRiders"
+        }
+      },
+      {
+        "id": "ownership.{{site}}.li-10yr.rider-set",
+        "key": "ownership.{{site}}.li-10yr.rider-set",
+        "sourceReference": "User-confirmed relational rider ownership, October 19, 2026",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "position": 0,
+        "configurationKey": "template.li-10yr.rider-set",
+        "value": {
+          "version": 2,
+          "source": "productRiders"
+        }
+      },
+      {
+        "id": "ownership.{{site}}.li-20yr.rider-set",
+        "key": "ownership.{{site}}.li-20yr.rider-set",
+        "sourceReference": "User-confirmed relational rider ownership, October 19, 2026",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "position": 0,
+        "configurationKey": "template.li-20yr.rider-set",
+        "value": {
+          "version": 2,
+          "source": "productRiders"
+        }
+      },
+      {
+        "id": "ownership.{{site}}.li-50plus.rider-set",
+        "key": "ownership.{{site}}.li-50plus.rider-set",
+        "sourceReference": "User-confirmed relational rider ownership, October 19, 2026",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "position": 0,
+        "configurationKey": "template.ownership.abe.li-50plus.rider-set",
+        "value": {
+          "version": 2,
+          "source": "productRiders"
+        }
+      },
+      {
+        "id": "ownership.{{site}}.li-add.rider-set",
+        "key": "ownership.{{site}}.li-add.rider-set",
+        "sourceReference": "User-confirmed relational rider ownership, October 19, 2026",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "position": 0,
+        "configurationKey": "template.li-add.rider-set",
+        "value": {
+          "version": 2,
+          "source": "productRiders"
+        }
+      },
+      {
+        "id": "ownership.{{site}}.li-term.rider-set",
+        "key": "ownership.{{site}}.li-term.rider-set",
+        "sourceReference": "User-confirmed relational rider ownership, October 19, 2026",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "position": 0,
+        "configurationKey": "template.li-term.rider-set",
+        "value": {
+          "version": 2,
+          "source": "productRiders"
+        }
+      },
+      {
+        "id": "ownership.{{site}}.page-participation",
+        "key": "ownership.{{site}}.page-participation",
+        "sourceReference": "Site page participation ownership, October 19, 2026",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.page-participation",
+        "value": {
+          "version": 2,
+          "source": "sitePages"
+        }
+      },
+      {
+        "id": "ownership.{{site}}.product-availability",
+        "key": "ownership.{{site}}.product-availability",
+        "sourceReference": "Site product availability ownership, October 19, 2026",
+        "position": 0,
+        "configurationKey": "template.product-availability",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "value": {
+          "version": 2,
+          "source": "siteProducts"
+        }
+      },
+      {
+        "id": "ownership.{{site}}.site-structure",
+        "key": "ownership.{{site}}.site-structure",
+        "sourceReference": "Stored field placement and template mode ownership, October 19, 2026",
+        "position": 0,
+        "configurationKey": "template.site-structure",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "value": {
+          "version": 2,
+          "source": "stored-structure"
+        }
+      },
+      {
+        "id": "{{site}}.combined.supplemental-di-questionnaires",
+        "key": "{{site}}.combined.supplemental-di-questionnaires",
+        "sourceReference": "User decision October 21, 2026; Health Questions!A101:B104; SUP DI Health questions!A1:A4: source supplemental DI for WAEPA/NSO QD Life + FUW Disability",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.shared.abe-source-forms.health-tele",
+        "value": {
+          "version": 1,
+          "applicability": "site",
+          "associationKeys": [],
+          "pageId": "health-di-supp",
+          "whenProcessing": "qd-life-with-fuw-disability",
+          "variants": [
+            {
+              "key": "combined-supplemental-di",
+              "when": {
+                "any": [
+                  "di-ltd"
+                ]
+              },
+              "items": [
+                {
+                  "key": "health-source-supp-di-contemplated-treatment",
+                  "questionFieldKey": "health-source-supp-di-contemplated-treatment",
+                  "fieldKeys": [
+                    "health-source-detail-month",
+                    "health-source-detail-treatment",
+                    "health-source-detail-condition",
+                    "health-source-detail-physician-hospital"
+                  ],
+                  "repeated": true,
+                  "sourceReferences": [
+                    "Health Questions!B101"
+                  ]
+                },
+                {
+                  "key": "health-source-supp-di-current-treatment",
+                  "questionFieldKey": "health-source-supp-di-current-treatment",
+                  "fieldKeys": [
+                    "health-source-supp-di-detail-medication-treatment",
+                    "health-source-detail-dosage",
+                    "health-source-detail-frequency",
+                    "health-source-detail-reason-for-use",
+                    "health-source-detail-physician-hospital"
+                  ],
+                  "repeated": true,
+                  "sourceReferences": [
+                    "Health Questions!B101"
+                  ]
+                },
+                {
+                  "key": "health-source-supp-di-condition-1",
+                  "questionFieldKey": "health-source-supp-di-condition-1",
+                  "fieldKeys": [
+                    "health-source-detail-onset",
+                    "health-source-detail-illness",
+                    "health-source-detail-symptoms",
+                    "health-source-detail-last-treatment",
+                    "health-source-supp-di-detail-episodes",
+                    "health-source-detail-treatment-results",
+                    "health-source-detail-physician-hospital"
+                  ],
+                  "repeated": true,
+                  "sourceReferences": [
+                    "Health Questions!B102"
+                  ]
+                },
+                {
+                  "key": "health-source-supp-di-condition-2",
+                  "questionFieldKey": "health-source-supp-di-condition-2",
+                  "fieldKeys": [
+                    "health-source-detail-onset",
+                    "health-source-detail-illness",
+                    "health-source-detail-symptoms",
+                    "health-source-detail-last-treatment",
+                    "health-source-supp-di-detail-episodes",
+                    "health-source-detail-treatment-results",
+                    "health-source-detail-physician-hospital"
+                  ],
+                  "repeated": true,
+                  "sourceReferences": [
+                    "Health Questions!B102"
+                  ]
+                },
+                {
+                  "key": "health-source-supp-di-condition-3",
+                  "questionFieldKey": "health-source-supp-di-condition-3",
+                  "fieldKeys": [
+                    "health-source-detail-onset",
+                    "health-source-detail-illness",
+                    "health-source-detail-symptoms",
+                    "health-source-detail-last-treatment",
+                    "health-source-supp-di-detail-episodes",
+                    "health-source-detail-treatment-results",
+                    "health-source-detail-physician-hospital"
+                  ],
+                  "repeated": true,
+                  "sourceReferences": [
+                    "Health Questions!B102"
+                  ]
+                },
+                {
+                  "key": "health-source-supp-di-condition-4",
+                  "questionFieldKey": "health-source-supp-di-condition-4",
+                  "fieldKeys": [
+                    "health-source-detail-onset",
+                    "health-source-detail-illness",
+                    "health-source-detail-symptoms",
+                    "health-source-detail-last-treatment",
+                    "health-source-supp-di-detail-episodes",
+                    "health-source-detail-treatment-results",
+                    "health-source-detail-physician-hospital"
+                  ],
+                  "repeated": true,
+                  "sourceReferences": [
+                    "Health Questions!B102"
+                  ]
+                },
+                {
+                  "key": "health-source-supp-di-drugs",
+                  "questionFieldKey": "health-source-supp-di-drugs",
+                  "fieldKeys": [
+                    "health-source-supp-di-detail-last-use",
+                    "health-source-detail-frequency",
+                    "health-source-detail-drug",
+                    "health-source-detail-drug-details"
+                  ],
+                  "repeated": true,
+                  "sourceReferences": [
+                    "Health Questions!B103"
+                  ]
+                },
+                {
+                  "key": "health-source-supp-di-benefits",
+                  "questionFieldKey": "health-source-supp-di-benefits",
+                  "fieldKeys": [
+                    "health-source-detail-details"
+                  ],
+                  "repeated": false,
+                  "sourceReferences": [
+                    "Health Questions!B104"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "siteProducts": [
+      {
+        "id": "{{site}}--li-term--product",
+        "siteId": "{{siteId}}",
+        "productKey": "li-term",
+        "enabled": true,
+        "key": "{{site}}.li-term",
+        "sourceReference": "prototype:siteProducts/nso.li-term"
+      },
+      {
+        "id": "{{site}}--li-10yr--product",
+        "siteId": "{{siteId}}",
+        "productKey": "li-10yr",
+        "enabled": true,
+        "key": "{{site}}.li-10yr",
+        "sourceReference": "prototype:siteProducts/nso.li-10yr"
+      },
+      {
+        "id": "{{site}}--li-20yr--product",
+        "siteId": "{{siteId}}",
+        "productKey": "li-20yr",
+        "enabled": true,
+        "key": "{{site}}.li-20yr",
+        "sourceReference": "prototype:siteProducts/nso.li-20yr"
+      },
+      {
+        "id": "{{site}}--li-50plus--product",
+        "siteId": "{{siteId}}",
+        "productKey": "li-50plus",
+        "enabled": true,
+        "key": "{{site}}.li-50plus",
+        "sourceReference": "prototype:siteProducts/nso.li-50plus"
+      },
+      {
+        "id": "{{site}}--li-add--product",
+        "siteId": "{{siteId}}",
+        "productKey": "li-add",
+        "enabled": true,
+        "key": "{{site}}.li-add",
+        "sourceReference": "prototype:siteProducts/nso.li-add"
+      },
+      {
+        "id": "{{site}}--di-ltd--product",
+        "siteId": "{{siteId}}",
+        "productKey": "di-ltd",
+        "enabled": true,
+        "key": "{{site}}.di-ltd",
+        "sourceReference": "prototype:siteProducts/nso.di-ltd"
+      }
+    ],
+    "siteProductApplicants": [
+      {
+        "id": "{{site}}.li-term.mcr.member",
+        "key": "{{site}}.li-term.mcr.member",
+        "sourceReference": "Main!H318",
+        "siteKey": "{{site}}",
+        "productKey": "li-term",
+        "applicantKey": "member",
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-term.mcr.spouse",
+        "key": "{{site}}.li-term.mcr.spouse",
+        "sourceReference": "Main!I318",
+        "siteKey": "{{site}}",
+        "productKey": "li-term",
+        "applicantKey": "spouse",
+        "position": 1
+      },
+      {
+        "id": "{{site}}.li-50plus.mcr.member",
+        "key": "{{site}}.li-50plus.mcr.member",
+        "sourceReference": "Main!H319",
+        "siteKey": "{{site}}",
+        "productKey": "li-50plus",
+        "applicantKey": "member",
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-50plus.mcr.spouse",
+        "key": "{{site}}.li-50plus.mcr.spouse",
+        "sourceReference": "Main!I319",
+        "siteKey": "{{site}}",
+        "productKey": "li-50plus",
+        "applicantKey": "spouse",
+        "position": 1
+      },
+      {
+        "id": "{{site}}.li-10yr.mcr.member",
+        "key": "{{site}}.li-10yr.mcr.member",
+        "sourceReference": "Main!H322",
+        "siteKey": "{{site}}",
+        "productKey": "li-10yr",
+        "applicantKey": "member",
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-10yr.mcr.spouse",
+        "key": "{{site}}.li-10yr.mcr.spouse",
+        "sourceReference": "Main!I322",
+        "siteKey": "{{site}}",
+        "productKey": "li-10yr",
+        "applicantKey": "spouse",
+        "position": 1
+      },
+      {
+        "id": "{{site}}.li-10yr.mcr.child",
+        "key": "{{site}}.li-10yr.mcr.child",
+        "sourceReference": "Main!J322",
+        "siteKey": "{{site}}",
+        "productKey": "li-10yr",
+        "applicantKey": "child",
+        "position": 2
+      },
+      {
+        "id": "{{site}}.li-20yr.mcr.member",
+        "key": "{{site}}.li-20yr.mcr.member",
+        "sourceReference": "Main!H323",
+        "siteKey": "{{site}}",
+        "productKey": "li-20yr",
+        "applicantKey": "member",
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-20yr.mcr.spouse",
+        "key": "{{site}}.li-20yr.mcr.spouse",
+        "sourceReference": "Main!I323",
+        "siteKey": "{{site}}",
+        "productKey": "li-20yr",
+        "applicantKey": "spouse",
+        "position": 1
+      },
+      {
+        "id": "{{site}}.li-20yr.mcr.child",
+        "key": "{{site}}.li-20yr.mcr.child",
+        "sourceReference": "Main!J323",
+        "siteKey": "{{site}}",
+        "productKey": "li-20yr",
+        "applicantKey": "child",
+        "position": 2
+      },
+      {
+        "id": "{{site}}.di-ltd.reviewed-numeric.member",
+        "key": "{{site}}.di-ltd.reviewed-numeric.member",
+        "sourceReference": "Main!H321",
+        "siteKey": "{{site}}",
+        "productKey": "di-ltd",
+        "applicantKey": "member",
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-add.reviewed-numeric.member",
+        "key": "{{site}}.li-add.reviewed-numeric.member",
+        "sourceReference": "Main!H320",
+        "siteKey": "{{site}}",
+        "productKey": "li-add",
+        "applicantKey": "member",
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-add.reviewed-numeric.spouse",
+        "key": "{{site}}.li-add.reviewed-numeric.spouse",
+        "sourceReference": "Main!I320",
+        "siteKey": "{{site}}",
+        "productKey": "li-add",
+        "applicantKey": "spouse",
+        "position": 1
+      },
+      {
+        "id": "{{site}}.li-add.reviewed-numeric.child",
+        "key": "{{site}}.li-add.reviewed-numeric.child",
+        "sourceReference": "Main!J320",
+        "siteKey": "{{site}}",
+        "productKey": "li-add",
+        "applicantKey": "child",
+        "position": 2
+      }
+    ],
+    "productApplicantEligibility": [
+      {
+        "id": "{{site}}.li-term.mcr.member",
+        "key": "{{site}}.li-term.mcr.member",
+        "sourceReference": "Main!H318",
+        "siteKey": "{{site}}",
+        "productKey": "li-term",
+        "applicantTypeKey": "member",
+        "eligible": true,
+        "conditionKey": null
+      },
+      {
+        "id": "{{site}}.li-term.mcr.spouse",
+        "key": "{{site}}.li-term.mcr.spouse",
+        "sourceReference": "Main!I318",
+        "siteKey": "{{site}}",
+        "productKey": "li-term",
+        "applicantTypeKey": "spouse",
+        "eligible": true,
+        "conditionKey": null
+      },
+      {
+        "id": "{{site}}.li-term.mcr.child",
+        "key": "{{site}}.li-term.mcr.child",
+        "sourceReference": "Main!J318",
+        "siteKey": "{{site}}",
+        "productKey": "li-term",
+        "applicantTypeKey": "child",
+        "eligible": false,
+        "conditionKey": null
+      },
+      {
+        "id": "{{site}}.li-50plus.mcr.member",
+        "key": "{{site}}.li-50plus.mcr.member",
+        "sourceReference": "Main!H319",
+        "siteKey": "{{site}}",
+        "productKey": "li-50plus",
+        "applicantTypeKey": "member",
+        "eligible": true,
+        "conditionKey": null
+      },
+      {
+        "id": "{{site}}.li-50plus.mcr.spouse",
+        "key": "{{site}}.li-50plus.mcr.spouse",
+        "sourceReference": "Main!I319",
+        "siteKey": "{{site}}",
+        "productKey": "li-50plus",
+        "applicantTypeKey": "spouse",
+        "eligible": true,
+        "conditionKey": null
+      },
+      {
+        "id": "{{site}}.li-50plus.mcr.child",
+        "key": "{{site}}.li-50plus.mcr.child",
+        "sourceReference": "Main!J319",
+        "siteKey": "{{site}}",
+        "productKey": "li-50plus",
+        "applicantTypeKey": "child",
+        "eligible": false,
+        "conditionKey": null
+      },
+      {
+        "id": "{{site}}.li-10yr.mcr.member",
+        "key": "{{site}}.li-10yr.mcr.member",
+        "sourceReference": "Main!H322",
+        "siteKey": "{{site}}",
+        "productKey": "li-10yr",
+        "applicantTypeKey": "member",
+        "eligible": true,
+        "conditionKey": null
+      },
+      {
+        "id": "{{site}}.li-10yr.mcr.spouse",
+        "key": "{{site}}.li-10yr.mcr.spouse",
+        "sourceReference": "Main!I322",
+        "siteKey": "{{site}}",
+        "productKey": "li-10yr",
+        "applicantTypeKey": "spouse",
+        "eligible": true,
+        "conditionKey": null
+      },
+      {
+        "id": "{{site}}.li-10yr.mcr.child",
+        "key": "{{site}}.li-10yr.mcr.child",
+        "sourceReference": "Main!J322",
+        "siteKey": "{{site}}",
+        "productKey": "li-10yr",
+        "applicantTypeKey": "child",
+        "eligible": true,
+        "conditionKey": null
+      },
+      {
+        "id": "{{site}}.li-20yr.mcr.member",
+        "key": "{{site}}.li-20yr.mcr.member",
+        "sourceReference": "Main!H323",
+        "siteKey": "{{site}}",
+        "productKey": "li-20yr",
+        "applicantTypeKey": "member",
+        "eligible": true,
+        "conditionKey": null
+      },
+      {
+        "id": "{{site}}.li-20yr.mcr.spouse",
+        "key": "{{site}}.li-20yr.mcr.spouse",
+        "sourceReference": "Main!I323",
+        "siteKey": "{{site}}",
+        "productKey": "li-20yr",
+        "applicantTypeKey": "spouse",
+        "eligible": true,
+        "conditionKey": null
+      },
+      {
+        "id": "{{site}}.li-20yr.mcr.child",
+        "key": "{{site}}.li-20yr.mcr.child",
+        "sourceReference": "Main!J323",
+        "siteKey": "{{site}}",
+        "productKey": "li-20yr",
+        "applicantTypeKey": "child",
+        "eligible": true,
+        "conditionKey": null
+      },
+      {
+        "id": "{{site}}.di-ltd.reviewed-numeric.member",
+        "key": "{{site}}.di-ltd.reviewed-numeric.member",
+        "sourceReference": "Main!H321",
+        "siteKey": "{{site}}",
+        "productKey": "di-ltd",
+        "applicantTypeKey": "member",
+        "eligible": true,
+        "conditionKey": null
+      },
+      {
+        "id": "{{site}}.di-ltd.reviewed-numeric.spouse",
+        "key": "{{site}}.di-ltd.reviewed-numeric.spouse",
+        "sourceReference": "Main!I321",
+        "siteKey": "{{site}}",
+        "productKey": "di-ltd",
+        "applicantTypeKey": "spouse",
+        "eligible": false,
+        "conditionKey": null
+      },
+      {
+        "id": "{{site}}.di-ltd.reviewed-numeric.child",
+        "key": "{{site}}.di-ltd.reviewed-numeric.child",
+        "sourceReference": "Main!J321",
+        "siteKey": "{{site}}",
+        "productKey": "di-ltd",
+        "applicantTypeKey": "child",
+        "eligible": false,
+        "conditionKey": null
+      },
+      {
+        "id": "{{site}}.li-add.reviewed-numeric.member",
+        "key": "{{site}}.li-add.reviewed-numeric.member",
+        "sourceReference": "Main!H320",
+        "siteKey": "{{site}}",
+        "productKey": "li-add",
+        "applicantTypeKey": "member",
+        "eligible": true,
+        "conditionKey": null
+      },
+      {
+        "id": "{{site}}.li-add.reviewed-numeric.spouse",
+        "key": "{{site}}.li-add.reviewed-numeric.spouse",
+        "sourceReference": "Main!I320",
+        "siteKey": "{{site}}",
+        "productKey": "li-add",
+        "applicantTypeKey": "spouse",
+        "eligible": true,
+        "conditionKey": null
+      },
+      {
+        "id": "{{site}}.li-add.reviewed-numeric.child",
+        "key": "{{site}}.li-add.reviewed-numeric.child",
+        "sourceReference": "Main!J320",
+        "siteKey": "{{site}}",
+        "productKey": "li-add",
+        "applicantTypeKey": "child",
+        "eligible": true,
+        "conditionKey": null
+      }
+    ],
+    "underwritingBands": [],
+    "coverageDependencies": [],
+    "maximumPlanRules": [],
+    "aggregateLimits": [
+      {
+        "id": "{{site}}.life.mcr-aggregate.member",
+        "key": "{{site}}.life.mcr-aggregate.member",
+        "sourceReference": "Main!H318:I318/H322:I323",
+        "siteKey": "{{site}}",
+        "categoryKey": "LI",
+        "productKey": null,
+        "applicantTypeKey": "member",
+        "maximum": 800000,
+        "formula": null,
+        "conditionKey": null
+      },
+      {
+        "id": "{{site}}.life.mcr-aggregate.spouse",
+        "key": "{{site}}.life.mcr-aggregate.spouse",
+        "sourceReference": "Main!H318:I318/H322:I323",
+        "siteKey": "{{site}}",
+        "categoryKey": "LI",
+        "productKey": null,
+        "applicantTypeKey": "spouse",
+        "maximum": 800000,
+        "formula": null,
+        "conditionKey": null
+      },
+      {
+        "id": "{{site}}.life.mcr-aggregate.child",
+        "key": "{{site}}.life.mcr-aggregate.child",
+        "sourceReference": "Main!H318:I318/H322:I323",
+        "siteKey": "{{site}}",
+        "categoryKey": "LI",
+        "productKey": null,
+        "applicantTypeKey": "child",
+        "maximum": 800000,
+        "formula": null,
+        "conditionKey": null
+      }
+    ],
+    "benefitPeriodOptions": [
+      {
+        "id": "{{site}}.di-ltd.waiting.all.0",
+        "key": "{{site}}.di-ltd.waiting.all.0",
+        "sourceReference": "prototype:nso.di-ltd",
+        "productKey": "di-ltd",
+        "siteKey": "{{site}}",
+        "applicantTypeKey": null,
+        "kind": "waiting",
+        "label": "90 days",
+        "value": "90",
+        "days": 90,
+        "position": 0
+      },
+      {
+        "id": "{{site}}.di-ltd.waiting.all.1",
+        "key": "{{site}}.di-ltd.waiting.all.1",
+        "sourceReference": "prototype:nso.di-ltd",
+        "productKey": "di-ltd",
+        "siteKey": "{{site}}",
+        "applicantTypeKey": null,
+        "kind": "waiting",
+        "label": "180 days",
+        "value": "180",
+        "days": 180,
+        "position": 1
+      }
+    ],
+    "productAmountRules": [
+      {
+        "id": "{{site}}.li-term.mcr.member.amount-rule",
+        "key": "{{site}}.li-term.mcr.member.amount-rule",
+        "sourceReference": "Main!H318",
+        "productKey": "li-term",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "applicantTypeKey": "member",
+        "applicantClass": null,
+        "amountPatternKey": "{{site}}.li-term.mcr.member.amount-pattern",
+        "conditionKey": null,
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-term.mcr.spouse.amount-rule",
+        "key": "{{site}}.li-term.mcr.spouse.amount-rule",
+        "sourceReference": "Main!I318",
+        "productKey": "li-term",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "applicantTypeKey": "spouse",
+        "applicantClass": null,
+        "amountPatternKey": "{{site}}.li-term.mcr.spouse.amount-pattern",
+        "conditionKey": null,
+        "position": 1
+      },
+      {
+        "id": "{{site}}.li-50plus.mcr.member.amount-rule",
+        "key": "{{site}}.li-50plus.mcr.member.amount-rule",
+        "sourceReference": "Main!H319",
+        "productKey": "li-50plus",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "applicantTypeKey": "member",
+        "applicantClass": null,
+        "amountPatternKey": "{{site}}.li-50plus.mcr.member.amount-pattern",
+        "conditionKey": null,
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-50plus.mcr.spouse.amount-rule",
+        "key": "{{site}}.li-50plus.mcr.spouse.amount-rule",
+        "sourceReference": "Main!I319",
+        "productKey": "li-50plus",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "applicantTypeKey": "spouse",
+        "applicantClass": null,
+        "amountPatternKey": "{{site}}.li-50plus.mcr.spouse.amount-pattern",
+        "conditionKey": null,
+        "position": 1
+      },
+      {
+        "id": "{{site}}.li-10yr.mcr.member.amount-rule",
+        "key": "{{site}}.li-10yr.mcr.member.amount-rule",
+        "sourceReference": "Main!H322",
+        "productKey": "li-10yr",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "applicantTypeKey": "member",
+        "applicantClass": null,
+        "amountPatternKey": "{{site}}.li-10yr.mcr.member.amount-pattern",
+        "conditionKey": null,
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-10yr.mcr.spouse.amount-rule",
+        "key": "{{site}}.li-10yr.mcr.spouse.amount-rule",
+        "sourceReference": "Main!I322",
+        "productKey": "li-10yr",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "applicantTypeKey": "spouse",
+        "applicantClass": null,
+        "amountPatternKey": "{{site}}.li-10yr.mcr.spouse.amount-pattern",
+        "conditionKey": null,
+        "position": 1
+      },
+      {
+        "id": "{{site}}.li-10yr.mcr.child.amount-rule",
+        "key": "{{site}}.li-10yr.mcr.child.amount-rule",
+        "sourceReference": "Main!J322",
+        "productKey": "li-10yr",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "applicantTypeKey": "child",
+        "applicantClass": null,
+        "amountPatternKey": "{{site}}.li-10yr.mcr.child.amount-pattern",
+        "conditionKey": null,
+        "position": 2
+      },
+      {
+        "id": "{{site}}.li-20yr.mcr.member.amount-rule",
+        "key": "{{site}}.li-20yr.mcr.member.amount-rule",
+        "sourceReference": "Main!H323",
+        "productKey": "li-20yr",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "applicantTypeKey": "member",
+        "applicantClass": null,
+        "amountPatternKey": "{{site}}.li-20yr.mcr.member.amount-pattern",
+        "conditionKey": null,
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-20yr.mcr.spouse.amount-rule",
+        "key": "{{site}}.li-20yr.mcr.spouse.amount-rule",
+        "sourceReference": "Main!I323",
+        "productKey": "li-20yr",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "applicantTypeKey": "spouse",
+        "applicantClass": null,
+        "amountPatternKey": "{{site}}.li-20yr.mcr.spouse.amount-pattern",
+        "conditionKey": null,
+        "position": 1
+      },
+      {
+        "id": "{{site}}.li-20yr.mcr.child.amount-rule",
+        "key": "{{site}}.li-20yr.mcr.child.amount-rule",
+        "sourceReference": "Main!J323",
+        "productKey": "li-20yr",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "applicantTypeKey": "child",
+        "applicantClass": null,
+        "amountPatternKey": "{{site}}.li-20yr.mcr.child.amount-pattern",
+        "conditionKey": null,
+        "position": 2
+      },
+      {
+        "id": "{{site}}.li-add.reviewed-numeric.member.amount",
+        "key": "{{site}}.li-add.reviewed-numeric.member.amount",
+        "sourceReference": "Main!H320",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "productKey": "li-add",
+        "applicantTypeKey": "member",
+        "applicantClass": null,
+        "amountPatternKey": "{{site}}.li-add.reviewed-numeric.member.pattern",
+        "conditionKey": null,
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-add.reviewed-numeric.spouse.amount",
+        "key": "{{site}}.li-add.reviewed-numeric.spouse.amount",
+        "sourceReference": "Main!I320",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "productKey": "li-add",
+        "applicantTypeKey": "spouse",
+        "applicantClass": null,
+        "amountPatternKey": "{{site}}.li-add.reviewed-numeric.spouse.pattern",
+        "conditionKey": null,
+        "position": 1
+      },
+      {
+        "id": "{{site}}.li-add.reviewed-numeric.child.amount",
+        "key": "{{site}}.li-add.reviewed-numeric.child.amount",
+        "sourceReference": "Main!J320",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "productKey": "li-add",
+        "applicantTypeKey": "child",
+        "applicantClass": null,
+        "amountPatternKey": "{{site}}.li-add.reviewed-numeric.child.pattern",
+        "conditionKey": null,
+        "position": 2
+      },
+      {
+        "id": "{{site}}.di-ltd.reviewed-numeric.member.amount",
+        "key": "{{site}}.di-ltd.reviewed-numeric.member.amount",
+        "sourceReference": "Main!H321",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "productKey": "di-ltd",
+        "applicantTypeKey": "member",
+        "applicantClass": null,
+        "amountPatternKey": "{{site}}.di-ltd.benefit-amount.member.pattern",
+        "conditionKey": null,
+        "position": 0
+      }
+    ],
+    "productIdentifiers": [
+      {
+        "id": "{{site}}.li-term.mcr.gNumber",
+        "key": "{{site}}.li-term.mcr.gNumber",
+        "sourceReference": "Main!E318",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "productKey": "li-term",
+        "kind": "gNumber",
+        "definition": {
+          "primary": "G-30330-0"
+        },
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-term.mcr.planCode",
+        "key": "{{site}}.li-term.mcr.planCode",
+        "sourceReference": "Main!G318",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "productKey": "li-term",
+        "kind": "planCode",
+        "definition": {
+          "primary": "101"
+        },
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-50plus.mcr.gNumber",
+        "key": "{{site}}.li-50plus.mcr.gNumber",
+        "sourceReference": "Main!E319",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "productKey": "li-50plus",
+        "kind": "gNumber",
+        "definition": {
+          "primary": "G-30334-0"
+        },
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-50plus.mcr.planCode",
+        "key": "{{site}}.li-50plus.mcr.planCode",
+        "sourceReference": "Main!G319",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "productKey": "li-50plus",
+        "kind": "planCode",
+        "definition": {
+          "primary": "153"
+        },
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-10yr.mcr.gNumber",
+        "key": "{{site}}.li-10yr.mcr.gNumber",
+        "sourceReference": "Main!E322",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "productKey": "li-10yr",
+        "kind": "gNumber",
+        "definition": {
+          "primary": "G-30332-0"
+        },
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-10yr.mcr.planCode",
+        "key": "{{site}}.li-10yr.mcr.planCode",
+        "sourceReference": "Main!G322",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "productKey": "li-10yr",
+        "kind": "planCode",
+        "definition": {
+          "primary": "102"
+        },
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-20yr.mcr.gNumber",
+        "key": "{{site}}.li-20yr.mcr.gNumber",
+        "sourceReference": "Main!E323",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "productKey": "li-20yr",
+        "kind": "gNumber",
+        "definition": {
+          "primary": "G-30333-0"
+        },
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-20yr.mcr.planCode",
+        "key": "{{site}}.li-20yr.mcr.planCode",
+        "sourceReference": "Main!G323",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "productKey": "li-20yr",
+        "kind": "planCode",
+        "definition": {
+          "primary": "121"
+        },
+        "position": 0
+      }
+    ],
+    "productRiders": [],
+    "siteRiders": [],
+    "riderAmountRules": [],
+    "benefitCaps": [],
+    "coverageAmountPatterns": [
+      {
+        "id": "{{site}}.li-50plus.mcr.spouse.amount-pattern",
+        "key": "{{site}}.li-50plus.mcr.spouse.amount-pattern",
+        "sourceReference": "Main!I319",
+        "patternKey": "coverage-amount-options",
+        "amountType": "range",
+        "minimum": null,
+        "maximum": null,
+        "increment": null,
+        "formula": null,
+        "baseProductKey": null,
+        "baseApplicantKey": null,
+        "baseApplicantClass": null,
+        "multiplier": null
+      },
+      {
+        "id": "{{site}}.li-20yr.mcr.spouse.amount-pattern",
+        "key": "{{site}}.li-20yr.mcr.spouse.amount-pattern",
+        "sourceReference": "Main!I323",
+        "patternKey": "coverage-amount-options",
+        "amountType": "range",
+        "minimum": null,
+        "maximum": null,
+        "increment": null,
+        "formula": null,
+        "baseProductKey": null,
+        "baseApplicantKey": null,
+        "baseApplicantClass": null,
+        "multiplier": null
+      },
+      {
+        "id": "{{site}}.li-term.mcr.member.amount-pattern",
+        "key": "{{site}}.li-term.mcr.member.amount-pattern",
+        "sourceReference": "Main!H318",
+        "patternKey": "coverage-amount-options",
+        "amountType": "range",
+        "minimum": null,
+        "maximum": null,
+        "increment": null,
+        "formula": null,
+        "baseProductKey": null,
+        "baseApplicantKey": null,
+        "baseApplicantClass": null,
+        "multiplier": null
+      },
+      {
+        "id": "{{site}}.li-add.reviewed-numeric.spouse.pattern",
+        "key": "{{site}}.li-add.reviewed-numeric.spouse.pattern",
+        "sourceReference": "Main!I320",
+        "patternKey": "coverage-amount-options",
+        "amountType": "set",
+        "minimum": 40000,
+        "maximum": 125000,
+        "increment": null,
+        "formula": null,
+        "baseProductKey": null,
+        "baseApplicantKey": null,
+        "baseApplicantClass": null,
+        "multiplier": null
+      },
+      {
+        "id": "{{site}}.li-term.mcr.spouse.amount-pattern",
+        "key": "{{site}}.li-term.mcr.spouse.amount-pattern",
+        "sourceReference": "Main!I318",
+        "patternKey": "coverage-amount-options",
+        "amountType": "range",
+        "minimum": null,
+        "maximum": null,
+        "increment": null,
+        "formula": null,
+        "baseProductKey": null,
+        "baseApplicantKey": null,
+        "baseApplicantClass": null,
+        "multiplier": null
+      },
+      {
+        "id": "{{site}}.li-add.reviewed-numeric.child.pattern",
+        "key": "{{site}}.li-add.reviewed-numeric.child.pattern",
+        "sourceReference": "Main!J320",
+        "patternKey": "coverage-amount-options",
+        "amountType": "set",
+        "minimum": 10000,
+        "maximum": 37500,
+        "increment": null,
+        "formula": null,
+        "baseProductKey": null,
+        "baseApplicantKey": null,
+        "baseApplicantClass": null,
+        "multiplier": null
+      },
+      {
+        "id": "{{site}}.li-20yr.mcr.member.amount-pattern",
+        "key": "{{site}}.li-20yr.mcr.member.amount-pattern",
+        "sourceReference": "Main!H323",
+        "patternKey": "coverage-amount-options",
+        "amountType": "range",
+        "minimum": null,
+        "maximum": null,
+        "increment": null,
+        "formula": null,
+        "baseProductKey": null,
+        "baseApplicantKey": null,
+        "baseApplicantClass": null,
+        "multiplier": null
+      },
+      {
+        "id": "{{site}}.li-10yr.mcr.spouse.amount-pattern",
+        "key": "{{site}}.li-10yr.mcr.spouse.amount-pattern",
+        "sourceReference": "Main!I322",
+        "patternKey": "coverage-amount-options",
+        "amountType": "range",
+        "minimum": null,
+        "maximum": null,
+        "increment": null,
+        "formula": null,
+        "baseProductKey": null,
+        "baseApplicantKey": null,
+        "baseApplicantClass": null,
+        "multiplier": null
+      },
+      {
+        "id": "{{site}}.li-50plus.mcr.member.amount-pattern",
+        "key": "{{site}}.li-50plus.mcr.member.amount-pattern",
+        "sourceReference": "Main!H319",
+        "patternKey": "coverage-amount-options",
+        "amountType": "range",
+        "minimum": null,
+        "maximum": null,
+        "increment": null,
+        "formula": null,
+        "baseProductKey": null,
+        "baseApplicantKey": null,
+        "baseApplicantClass": null,
+        "multiplier": null
+      },
+      {
+        "id": "{{site}}.li-20yr.mcr.child.amount-pattern",
+        "key": "{{site}}.li-20yr.mcr.child.amount-pattern",
+        "sourceReference": "Main!J323",
+        "patternKey": "coverage-amount-options",
+        "amountType": "fixed",
+        "minimum": 5000,
+        "maximum": 5000,
+        "increment": null,
+        "formula": null,
+        "baseProductKey": null,
+        "baseApplicantKey": null,
+        "baseApplicantClass": null,
+        "multiplier": null
+      },
+      {
+        "id": "{{site}}.li-10yr.mcr.child.amount-pattern",
+        "key": "{{site}}.li-10yr.mcr.child.amount-pattern",
+        "sourceReference": "Main!J322",
+        "patternKey": "coverage-amount-options",
+        "amountType": "fixed",
+        "minimum": 5000,
+        "maximum": 5000,
+        "increment": null,
+        "formula": null,
+        "baseProductKey": null,
+        "baseApplicantKey": null,
+        "baseApplicantClass": null,
+        "multiplier": null
+      },
+      {
+        "id": "{{site}}.li-add.reviewed-numeric.member.pattern",
+        "key": "{{site}}.li-add.reviewed-numeric.member.pattern",
+        "sourceReference": "Main!H320",
+        "patternKey": "coverage-amount-options",
+        "amountType": "set",
+        "minimum": 100000,
+        "maximum": 250000,
+        "increment": null,
+        "formula": null,
+        "baseProductKey": null,
+        "baseApplicantKey": null,
+        "baseApplicantClass": null,
+        "multiplier": null
+      },
+      {
+        "id": "{{site}}.li-10yr.mcr.member.amount-pattern",
+        "key": "{{site}}.li-10yr.mcr.member.amount-pattern",
+        "sourceReference": "Main!H322",
+        "patternKey": "coverage-amount-options",
+        "amountType": "range",
+        "minimum": null,
+        "maximum": null,
+        "increment": null,
+        "formula": null,
+        "baseProductKey": null,
+        "baseApplicantKey": null,
+        "baseApplicantClass": null,
+        "multiplier": null
+      },
+      {
+        "id": "{{site}}.di-ltd.benefit-amount.member.pattern",
+        "key": "{{site}}.di-ltd.benefit-amount.member.pattern",
+        "sourceReference": "Main!H321; Main!I321; Main!J321; Disability!A35; Disability!D35; Disability!F35; Disability!G35",
+        "patternKey": "coverage-amount-options",
+        "amountType": "range",
+        "minimum": null,
+        "maximum": null,
+        "increment": null,
+        "formula": null,
+        "baseProductKey": null,
+        "baseApplicantKey": null,
+        "baseApplicantClass": null,
+        "multiplier": null
+      }
+    ],
+    "amountBands": [
+      {
+        "id": "{{site}}.li-50plus.mcr.spouse.amount-pattern.band",
+        "key": "{{site}}.li-50plus.mcr.spouse.amount-pattern.band",
+        "sourceReference": "Main!I319",
+        "amountPatternKey": "{{site}}.li-50plus.mcr.spouse.amount-pattern",
+        "minimum": 10000,
+        "maximum": 100000,
+        "increment": 10000,
+        "conditionKey": null,
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-20yr.mcr.spouse.amount-pattern.band",
+        "key": "{{site}}.li-20yr.mcr.spouse.amount-pattern.band",
+        "sourceReference": "Main!I323",
+        "amountPatternKey": "{{site}}.li-20yr.mcr.spouse.amount-pattern",
+        "minimum": 50000,
+        "maximum": 200000,
+        "increment": 50000,
+        "conditionKey": null,
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-term.mcr.member.amount-pattern.band",
+        "key": "{{site}}.li-term.mcr.member.amount-pattern.band",
+        "sourceReference": "Main!H318",
+        "amountPatternKey": "{{site}}.li-term.mcr.member.amount-pattern",
+        "minimum": 25000,
+        "maximum": 500000,
+        "increment": 25000,
+        "conditionKey": null,
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-term.mcr.spouse.amount-pattern.band",
+        "key": "{{site}}.li-term.mcr.spouse.amount-pattern.band",
+        "sourceReference": "Main!I318",
+        "amountPatternKey": "{{site}}.li-term.mcr.spouse.amount-pattern",
+        "minimum": 25000,
+        "maximum": 500000,
+        "increment": 25000,
+        "conditionKey": null,
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-20yr.mcr.member.amount-pattern.band",
+        "key": "{{site}}.li-20yr.mcr.member.amount-pattern.band",
+        "sourceReference": "Main!H323",
+        "amountPatternKey": "{{site}}.li-20yr.mcr.member.amount-pattern",
+        "minimum": 50000,
+        "maximum": 200000,
+        "increment": 50000,
+        "conditionKey": null,
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-10yr.mcr.spouse.amount-pattern.band",
+        "key": "{{site}}.li-10yr.mcr.spouse.amount-pattern.band",
+        "sourceReference": "Main!I322",
+        "amountPatternKey": "{{site}}.li-10yr.mcr.spouse.amount-pattern",
+        "minimum": 50000,
+        "maximum": 200000,
+        "increment": 50000,
+        "conditionKey": null,
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-50plus.mcr.member.amount-pattern.band",
+        "key": "{{site}}.li-50plus.mcr.member.amount-pattern.band",
+        "sourceReference": "Main!H319",
+        "amountPatternKey": "{{site}}.li-50plus.mcr.member.amount-pattern",
+        "minimum": 10000,
+        "maximum": 100000,
+        "increment": 10000,
+        "conditionKey": null,
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-10yr.mcr.member.amount-pattern.band",
+        "key": "{{site}}.li-10yr.mcr.member.amount-pattern.band",
+        "sourceReference": "Main!H322",
+        "amountPatternKey": "{{site}}.li-10yr.mcr.member.amount-pattern",
+        "minimum": 50000,
+        "maximum": 200000,
+        "increment": 50000,
+        "conditionKey": null,
+        "position": 0
+      },
+      {
+        "id": "{{site}}.di-ltd.benefit-amount.member.pattern.band",
+        "key": "{{site}}.di-ltd.benefit-amount.member.pattern.band",
+        "sourceReference": "Main!H321; Main!I321; Main!J321; Disability!A35; Disability!D35; Disability!F35; Disability!G35",
+        "amountPatternKey": "{{site}}.di-ltd.benefit-amount.member.pattern",
+        "minimum": 500,
+        "maximum": 5000,
+        "increment": 100,
+        "conditionKey": null,
+        "position": 0
+      }
+    ],
+    "amountOptions": [
+      {
+        "id": "{{site}}.li-add.reviewed-numeric.spouse.pattern.0",
+        "key": "{{site}}.li-add.reviewed-numeric.spouse.pattern.0",
+        "sourceReference": "Main!I320",
+        "amountPatternKey": "{{site}}.li-add.reviewed-numeric.spouse.pattern",
+        "value": "40000",
+        "label": "40000",
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-add.reviewed-numeric.spouse.pattern.1",
+        "key": "{{site}}.li-add.reviewed-numeric.spouse.pattern.1",
+        "sourceReference": "Main!I320",
+        "amountPatternKey": "{{site}}.li-add.reviewed-numeric.spouse.pattern",
+        "value": "50000",
+        "label": "50000",
+        "position": 1
+      },
+      {
+        "id": "{{site}}.li-add.reviewed-numeric.spouse.pattern.2",
+        "key": "{{site}}.li-add.reviewed-numeric.spouse.pattern.2",
+        "sourceReference": "Main!I320",
+        "amountPatternKey": "{{site}}.li-add.reviewed-numeric.spouse.pattern",
+        "value": "60000",
+        "label": "60000",
+        "position": 2
+      },
+      {
+        "id": "{{site}}.li-add.reviewed-numeric.spouse.pattern.3",
+        "key": "{{site}}.li-add.reviewed-numeric.spouse.pattern.3",
+        "sourceReference": "Main!I320",
+        "amountPatternKey": "{{site}}.li-add.reviewed-numeric.spouse.pattern",
+        "value": "75000",
+        "label": "75000",
+        "position": 3
+      },
+      {
+        "id": "{{site}}.li-add.reviewed-numeric.spouse.pattern.4",
+        "key": "{{site}}.li-add.reviewed-numeric.spouse.pattern.4",
+        "sourceReference": "Main!I320",
+        "amountPatternKey": "{{site}}.li-add.reviewed-numeric.spouse.pattern",
+        "value": "80000",
+        "label": "80000",
+        "position": 4
+      },
+      {
+        "id": "{{site}}.li-add.reviewed-numeric.spouse.pattern.5",
+        "key": "{{site}}.li-add.reviewed-numeric.spouse.pattern.5",
+        "sourceReference": "Main!I320",
+        "amountPatternKey": "{{site}}.li-add.reviewed-numeric.spouse.pattern",
+        "value": "100000",
+        "label": "100000",
+        "position": 5
+      },
+      {
+        "id": "{{site}}.li-add.reviewed-numeric.spouse.pattern.6",
+        "key": "{{site}}.li-add.reviewed-numeric.spouse.pattern.6",
+        "sourceReference": "Main!I320",
+        "amountPatternKey": "{{site}}.li-add.reviewed-numeric.spouse.pattern",
+        "value": "125000",
+        "label": "125000",
+        "position": 6
+      },
+      {
+        "id": "{{site}}.li-add.reviewed-numeric.child.pattern.0",
+        "key": "{{site}}.li-add.reviewed-numeric.child.pattern.0",
+        "sourceReference": "Main!J320",
+        "amountPatternKey": "{{site}}.li-add.reviewed-numeric.child.pattern",
+        "value": "10000",
+        "label": "10000",
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-add.reviewed-numeric.child.pattern.1",
+        "key": "{{site}}.li-add.reviewed-numeric.child.pattern.1",
+        "sourceReference": "Main!J320",
+        "amountPatternKey": "{{site}}.li-add.reviewed-numeric.child.pattern",
+        "value": "15000",
+        "label": "15000",
+        "position": 1
+      },
+      {
+        "id": "{{site}}.li-add.reviewed-numeric.child.pattern.2",
+        "key": "{{site}}.li-add.reviewed-numeric.child.pattern.2",
+        "sourceReference": "Main!J320",
+        "amountPatternKey": "{{site}}.li-add.reviewed-numeric.child.pattern",
+        "value": "20000",
+        "label": "20000",
+        "position": 2
+      },
+      {
+        "id": "{{site}}.li-add.reviewed-numeric.child.pattern.3",
+        "key": "{{site}}.li-add.reviewed-numeric.child.pattern.3",
+        "sourceReference": "Main!J320",
+        "amountPatternKey": "{{site}}.li-add.reviewed-numeric.child.pattern",
+        "value": "22500",
+        "label": "22500",
+        "position": 3
+      },
+      {
+        "id": "{{site}}.li-add.reviewed-numeric.child.pattern.4",
+        "key": "{{site}}.li-add.reviewed-numeric.child.pattern.4",
+        "sourceReference": "Main!J320",
+        "amountPatternKey": "{{site}}.li-add.reviewed-numeric.child.pattern",
+        "value": "25000",
+        "label": "25000",
+        "position": 4
+      },
+      {
+        "id": "{{site}}.li-add.reviewed-numeric.child.pattern.5",
+        "key": "{{site}}.li-add.reviewed-numeric.child.pattern.5",
+        "sourceReference": "Main!J320",
+        "amountPatternKey": "{{site}}.li-add.reviewed-numeric.child.pattern",
+        "value": "30000",
+        "label": "30000",
+        "position": 5
+      },
+      {
+        "id": "{{site}}.li-add.reviewed-numeric.child.pattern.6",
+        "key": "{{site}}.li-add.reviewed-numeric.child.pattern.6",
+        "sourceReference": "Main!J320",
+        "amountPatternKey": "{{site}}.li-add.reviewed-numeric.child.pattern",
+        "value": "37500",
+        "label": "37500",
+        "position": 6
+      },
+      {
+        "id": "{{site}}.li-add.reviewed-numeric.member.pattern.0",
+        "key": "{{site}}.li-add.reviewed-numeric.member.pattern.0",
+        "sourceReference": "Main!H320",
+        "amountPatternKey": "{{site}}.li-add.reviewed-numeric.member.pattern",
+        "value": "100000",
+        "label": "100000",
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-add.reviewed-numeric.member.pattern.1",
+        "key": "{{site}}.li-add.reviewed-numeric.member.pattern.1",
+        "sourceReference": "Main!H320",
+        "amountPatternKey": "{{site}}.li-add.reviewed-numeric.member.pattern",
+        "value": "150000",
+        "label": "150000",
+        "position": 1
+      },
+      {
+        "id": "{{site}}.li-add.reviewed-numeric.member.pattern.2",
+        "key": "{{site}}.li-add.reviewed-numeric.member.pattern.2",
+        "sourceReference": "Main!H320",
+        "amountPatternKey": "{{site}}.li-add.reviewed-numeric.member.pattern",
+        "value": "200000",
+        "label": "200000",
+        "position": 2
+      },
+      {
+        "id": "{{site}}.li-add.reviewed-numeric.member.pattern.3",
+        "key": "{{site}}.li-add.reviewed-numeric.member.pattern.3",
+        "sourceReference": "Main!H320",
+        "amountPatternKey": "{{site}}.li-add.reviewed-numeric.member.pattern",
+        "value": "250000",
+        "label": "250000",
+        "position": 3
+      }
+    ],
+    "siteFeatures": [
+      {
+        "id": "{{site}}.feature-health-flows",
+        "key": "{{site}}.feature-health-flows",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-health-flows",
+        "enabled": true,
+        "position": 0,
+        "sourceReference": "prototype:siteFeatures/nso.feature-health-flows"
+      },
+      {
+        "id": "{{site}}.feature-instant-quote",
+        "key": "{{site}}.feature-instant-quote",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-instant-quote",
+        "enabled": true,
+        "position": 1,
+        "sourceReference": "prototype:siteFeatures/nso.feature-instant-quote"
+      },
+      {
+        "id": "{{site}}.feature-ecart",
+        "key": "{{site}}.feature-ecart",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-ecart",
+        "enabled": true,
+        "position": 2,
+        "sourceReference": "prototype:siteFeatures/nso.feature-ecart"
+      },
+      {
+        "id": "{{site}}.feature-rate-toggle",
+        "key": "{{site}}.feature-rate-toggle",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-rate-toggle",
+        "enabled": true,
+        "position": 3,
+        "sourceReference": "prototype:siteFeatures/nso.feature-rate-toggle"
+      },
+      {
+        "id": "{{site}}.feature-coverage-brochure",
+        "key": "{{site}}.feature-coverage-brochure",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-coverage-brochure",
+        "enabled": true,
+        "position": 4,
+        "sourceReference": "prototype:siteFeatures/nso.feature-coverage-brochure"
+      },
+      {
+        "id": "{{site}}.feature-coverage-portfolio",
+        "key": "{{site}}.feature-coverage-portfolio",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-coverage-portfolio",
+        "enabled": true,
+        "position": 5,
+        "sourceReference": "prototype:siteFeatures/nso.feature-coverage-portfolio"
+      },
+      {
+        "id": "{{site}}.feature-page-helpers",
+        "key": "{{site}}.feature-page-helpers",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-page-helpers",
+        "enabled": true,
+        "position": 6,
+        "sourceReference": "prototype:siteFeatures/nso.feature-page-helpers"
+      },
+      {
+        "id": "{{site}}.feature-advisor-flow",
+        "key": "{{site}}.feature-advisor-flow",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-advisor-flow",
+        "enabled": true,
+        "position": 7,
+        "sourceReference": "prototype:siteFeatures/nso.feature-advisor-flow"
+      },
+      {
+        "id": "{{site}}.feature-abandoned-leads",
+        "key": "{{site}}.feature-abandoned-leads",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-abandoned-leads",
+        "enabled": true,
+        "position": 8,
+        "sourceReference": "prototype:siteFeatures/nso.feature-abandoned-leads"
+      },
+      {
+        "id": "{{site}}.feature-autosave",
+        "key": "{{site}}.feature-autosave",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-autosave",
+        "enabled": true,
+        "position": 9,
+        "sourceReference": "prototype:siteFeatures/nso.feature-autosave"
+      },
+      {
+        "id": "{{site}}.feature-reminder-emails",
+        "key": "{{site}}.feature-reminder-emails",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-reminder-emails",
+        "enabled": true,
+        "position": 10,
+        "sourceReference": "prototype:siteFeatures/nso.feature-reminder-emails"
+      },
+      {
+        "id": "{{site}}.feature-resume",
+        "key": "{{site}}.feature-resume",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-resume",
+        "enabled": true,
+        "position": 11,
+        "sourceReference": "prototype:siteFeatures/nso.feature-resume"
+      },
+      {
+        "id": "{{site}}.feature-tpa-integration",
+        "key": "{{site}}.feature-tpa-integration",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-tpa-integration",
+        "enabled": true,
+        "position": 12,
+        "sourceReference": "prototype:siteFeatures/nso.feature-tpa-integration"
+      },
+      {
+        "id": "{{site}}.feature-financial-questionnaire",
+        "key": "{{site}}.feature-financial-questionnaire",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-financial-questionnaire",
+        "enabled": true,
+        "position": 13,
+        "sourceReference": "prototype:siteFeatures/nso.feature-financial-questionnaire"
+      },
+      {
+        "id": "{{site}}.feature-online-payment",
+        "key": "{{site}}.feature-online-payment",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-online-payment",
+        "enabled": true,
+        "position": 14,
+        "sourceReference": "prototype:siteFeatures/nso.feature-online-payment"
+      },
+      {
+        "id": "{{site}}.feature-online-beneficiary",
+        "key": "{{site}}.feature-online-beneficiary",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-online-beneficiary",
+        "enabled": true,
+        "position": 15,
+        "sourceReference": "prototype:siteFeatures/nso.feature-online-beneficiary"
+      }
+    ],
+    "siteUrlParameters": [],
+    "sitePolicies": [
+      {
+        "id": "{{site}}",
+        "key": "{{site}}",
+        "definition": {
+          "payment": {
+            "collection": "required",
+            "methods": [
+              {
+                "method": "bill-me",
+                "frequencies": [
+                  "quarterly",
+                  "semiannual",
+                  "annual"
+                ]
+              },
+              {
+                "method": "bank-account",
+                "frequencies": [
+                  "monthly",
+                  "quarterly",
+                  "semiannual",
+                  "annual"
+                ]
+              }
+            ],
+            "defaultMethod": "bill-me",
+            "defaultFrequency": null,
+            "frequencyLocked": false,
+            "synchronizeAcrossProducts": true
+          }
+        },
+        "position": 0,
+        "siteKey": "{{site}}",
+        "sourceReference": "prototype:sitePolicies/nso"
+      }
+    ]
+  }
+}

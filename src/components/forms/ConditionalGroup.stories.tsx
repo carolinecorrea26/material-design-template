@@ -3,7 +3,8 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Box } from '@mui/material';
 import ConditionalGroup from './ConditionalGroup';
 import FieldRenderer from './FieldRenderer';
-import { fieldCatalog } from '../../config/fields';
+import { resolveMappedFields } from '../../domain/requirementFields';
+const fields = resolveMappedFields({ page: 'profile' });
 
 const meta = {
   id: 'forms-conditionalgroup', title: 'Components/Forms/Conditional groups', component: ConditionalGroup,
@@ -17,9 +18,9 @@ function LicenseExample({ expanded = false }: { expanded?: boolean }) {
   } });
   const answer = useWatch({ control, name: 'has-drivers-license' });
   return <Box sx={{ maxWidth: 460 }}>
-    <FieldRenderer field={fieldCatalog['has-drivers-license']} control={control} errors={errors} />
+    <FieldRenderer field={fields.find(field => field.id === 'has-drivers-license')!} control={control} errors={errors} />
     {answer === 'yes' && <ConditionalGroup>
-      {(['drivers-license-number', 'drivers-license-state'] as const).map(id => <FieldRenderer key={id} field={fieldCatalog[id]} control={control} errors={errors} />)}
+      {(['drivers-license-number', 'drivers-license-state'] as const).map(id => <FieldRenderer key={id} field={fields.find(field => field.id === id)!} control={control} errors={errors} />)}
     </ConditionalGroup>}
   </Box>;
 }

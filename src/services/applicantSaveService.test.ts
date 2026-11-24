@@ -1,5 +1,5 @@
 import { afterEach, expect, it, vi } from 'vitest';
-import { createApplicantSaveClient, readSavedApplication, rememberSavedApplication, recoveryFromSearch } from './applicantSaveService';
+import { applicantRecovery, createApplicantSaveClient, readAdvisorRecoveryLookup, forgetAdvisorRecoveryLookup, readSavedApplication, rememberSavedApplication, recoveryFromSearch, rememberResumeSession, resumeSessionFromSearch, resumeSessionQuery, forgetResumeSession, mfaDetails } from './applicantSaveService';
 import { mockRequest } from '../mock/client';
 
 vi.mock('../mock/client', () => ({ mockRequest: vi.fn() }));
@@ -66,4 +66,43 @@ it('requires an explicit matching Site and every recovery parameter', () => {
   expect(recoveryFromSearch(search, saved.siteKey)).not.toBeNull();
   expect(recoveryFromSearch(search, 'other-site')).toBeNull();
   search.delete('token'); expect(recoveryFromSearch(search, saved.siteKey)).toBeNull();
+});
+
+
+it('keeps MFA proof separate from application answers and code URLs across reload', () => {
+  const session = { applicationId: saved.applicationId, siteKey: saved.siteKey, recipient: saved.recipient, sessionId: 'mfa-1', mfaToken: 'private-mfa-proof', sessionExpiresAt: Date.now() + 1800000, codeExpiresAt: Date.now() + 600000, method: 'text' as const, deliveryTarget: '(•••)•••1234', advisorFlow: true };
+  rememberResumeSession(session);
+  const query = resumeSessionQuery(session);
+  expect(query.toString()).not.toContain(session.mfaToken);
+  expect(query.has('token')).toBe(false);
+  expect(query.has('recipient')).toBe(false);
+  expect(resumeSessionFromSearch(query, saved.siteKey)).toEqual(session);
+  expect(resumeSessionFromSearch(query, 'other-site')).toBeNull();
+  query.set('mfaSessionId', 'other-session'); expect(resumeSessionFromSearch(query, saved.siteKey)).toBeNull();
+  expect(mfaDetails(session)).toEqual({ applicationId: saved.applicationId, siteKey: saved.siteKey, recipient: saved.recipient, sessionId: 'mfa-1', mfaToken: session.mfaToken });
+  forgetResumeSession(saved.siteKey); expect(resumeSessionFromSearch(resumeSessionQuery(session), saved.siteKey)).toBeNull();
+});
+
+it('keeps the advisor lookup context through MFA expiry without storing it in applicant answers', () => {
+  const session = { ...saved, sessionId: 'advisor-mfa', mfaToken: 'proof', sessionExpiresAt: Date.now() + 1800000, codeExpiresAt: Date.now() + 600000, method: 'text' as const, deliveryTarget: '(•••)•••0987', advisorFlow: false, advisorLookupEmail: saved.recipient };
+  rememberResumeSession(session); forgetResumeSession(saved.siteKey);
+  expect(readAdvisorRecoveryLookup(saved.siteKey)).toBe(saved.recipient);
+  expect(readAdvisorRecoveryLookup('different-site')).toBe('');
+  forgetAdvisorRecoveryLookup(saved.siteKey); expect(readAdvisorRecoveryLookup(saved.siteKey)).toBe('');
+});
+it('rejects recovery responses with missing destination/actor or a mismatched application', async () => {
+  const details = { applicationId: saved.applicationId, siteKey: saved.siteKey, recipient: saved.recipient, sessionId: 'session', mfaToken: 'proof' };
+  for (const result of [saved, { ...saved, resumePage: 'review', advisorFlow: true, recoveryActor: 'advisor' }, { ...saved, applicationId: 'other', resumePage: 'review', advisorFlow: true, recoveryActor: 'applicant' }]) {
+    vi.mocked(mockRequest).mockResolvedValue(result);
+    await expect(applicantRecovery.verify(details, '123456')).rejects.toThrow('Invalid recovery result');
+  }
+});
+
+it('persists successful workflow transitions for recovery and navigation consumers', async () => {
+  const { advanceApplicationWorkflow } = await import('./applicantSaveService');
+  vi.stubEnv('VITE_MOCK_PLATFORM_ENABLED', 'true');
+  rememberSavedApplication(saved);
+  vi.mocked(mockRequest).mockResolvedValue({ stage: 'signing' });
+  await advanceApplicationWorkflow(saved.siteKey, 'start-signing');
+  expect(readSavedApplication(saved.siteKey)?.workflowStage).toBe('signing');
 });

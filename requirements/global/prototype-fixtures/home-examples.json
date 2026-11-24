@@ -1,0 +1,15 @@
+{
+  "associationIntroduction": {
+    "clientSection": {
+      "tagline": "Coverage for association members",
+      "paragraphs": ["Learn about the benefits and coverage available through this example association."]
+    }
+  },
+  "entryNotice": {
+    "showLandingNotice": true,
+    "landingNotice": {
+      "title": "Example entry information",
+      "text": "Example notice for inspecting the optional entry step."
+    }
+  }
+}

@@ -14,6 +14,9 @@ export default function PageFlowNode({ data }: FlowNodeComponentProps) {
 
   return (
     <FlowNodeShell
+      onInspect={data.onInspect}
+      onMeasure={data.onMeasure}
+      active={data.active}
       layoutHeight={data.layoutHeight as number | undefined}
       label={label}
       description={description}

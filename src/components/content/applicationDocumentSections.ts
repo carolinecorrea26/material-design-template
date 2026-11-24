@@ -1,9 +1,27 @@
+import { booleanAnswerLabel } from '../../domain/answerLabels';
+import { getResolvedApplicantLabels } from '../../config/formSectionTitle';
+import { shouldShowApplicantLabel } from '../../utils/applicantVisibility';
+import { getClientPageRequirement } from '../../config/client/getClientPageRequirement';
+import { resolvePageParticipation } from '../../config/flowGates';
+import { beneficiaryQuestionsEnabled, collectsBeneficiaries } from '../../domain/beneficiaryParticipation';
+import { orderCoveragePresentation } from '../../domain/coveragePresentation';
+import { getActiveClient } from '../../config/client/getActiveClient';
+import { activeFeaturedProduct, activeFirstCoverageCategory } from '../../config/client/coverageProductScope';
+import { resolveSiteId } from '../../data/activeSite';
+import { applicantParticipatesInPage } from '../../config/flowGates';
+import { profileFinancialTotal, profileCalculationApplies } from '../../domain/profileFinancialCalculations';
+import { requirementText } from "../../domain/requirementContent";
+import { getContent } from "../../content";
+import { getPageSections } from '../../config/pageSections';
+import { getClientPageFields } from '../../config/clientFields/getClientPageFields';
+import { getPrototypeLibrary } from '../../domain/prototypeLibrary';
+import { financialQuestionnaireForApplication } from '../../domain/financialQuestionnaire';
+import { buildSelectedCoverageEntries } from '../../utils/coverageDecisions';
+import { reconcileApplicationRiders } from '../../domain/applicationRiders';
 import { getActiveClientCoverages } from "../../config/client/getActiveClientCoverages";
 import { fieldCatalog } from "../../config/fields";
 import type { FieldDefinition, FieldId } from "../../config/fields/types";
-import type { CoverageApplicantId } from "../../config/coverages/types";
 import {
-  pageSections,
   sectionLabels,
 } from "../../config/pageSections/pageSections";
 import { isSectionVisible } from "../../app/RoutePage";
@@ -39,14 +57,18 @@ type BeneficiaryItem = {
 
 const PLACEHOLDER = "\u2014";
 
-export const documentPages: Array<{ pageId: PageId; title: string }> = [
-  { pageId: "membership", title: "Membership" },
-  { pageId: "eligibility", title: "Eligibility" },
-  { pageId: "coverage", title: "Coverage" },
-  { pageId: "beneficiary", title: "Beneficiary" },
-  { pageId: "contact", title: "Contact" },
-  { pageId: "profile", title: "Profile" },
-];
+function documentPageTitle(pageId: PageId) {
+  const page = getContent().pages[pageId];
+  if (!page) throw new Error(`Missing document page content: ${pageId}`);
+  return page.navTitle ?? page.title;
+}
+
+export function getDocumentPages(): Array<{ pageId: PageId; title: string }> {
+  const library = getPrototypeLibrary();
+  const ids = library?.pages.find(page => page.key === 'review')?.definition.previewPageIds;
+  if (!ids) throw new Error('Missing fresh-start Review preview page definitions');
+  return library!.pages.filter(page => page.enabled && ids.includes(page.definition.id)).map(page => ({ pageId: page.definition.id, title: documentPageTitle(page.definition.id) }));
+}
 
 function formatLabel(value: string) {
   return value
@@ -124,7 +146,7 @@ function formatFieldValue(fieldId: string, rawValue: unknown) {
   const field = fieldCatalog[fieldId as keyof typeof fieldCatalog];
 
   if (typeof rawValue === "boolean") {
-    return rawValue ? "Yes" : "No";
+    return field?.options?.find(option => option.value === (rawValue ? 'yes' : 'no'))?.label ?? booleanAnswerLabel(rawValue);
   }
 
   if (Array.isArray(rawValue)) {
@@ -144,6 +166,10 @@ function formatFieldValue(fieldId: string, rawValue: unknown) {
   }
 
   if (typeof rawValue === "string") {
+    if (field?.format === 'ssn') {
+      const digits = rawValue.replace(/\D/g, '');
+      return `***-**-${digits.length === 9 ? digits.slice(-4) : '****'}`;
+    }
     if (field?.inputType === "date") {
       return formatDate(rawValue);
     }
@@ -220,15 +246,15 @@ function buildNameValue(
 }
 
 function getApplicantLabel(applicant: string) {
-  if (applicant === "member") return "Self";
-  if (applicant === "spouse") return "Spouse";
-  if (applicant === "child") return "Child";
+  if (applicant === "member") return getResolvedApplicantLabels(getActiveClient().applicantLabels).member;
+  if (applicant === "spouse") return getResolvedApplicantLabels(getActiveClient().applicantLabels).spouse;
+  if (applicant === "child") return getResolvedApplicantLabels(getActiveClient().applicantLabels).child;
   return formatLabel(applicant);
 }
 
 function resolveProfileGroupTitle(sectionId: string) {
   if (sectionId.includes("Physician")) {
-    return "Physician information";
+    return requirementText("application.document-preview.physician");
   }
 
   if (sectionId.includes("Financial")) {
@@ -236,15 +262,15 @@ function resolveProfileGroupTitle(sectionId: string) {
   }
 
   if (sectionId.includes("DriversLicense")) {
-    return "Driver's license";
+    return requirementText("application.document-preview.drivers-license");
   }
 
   if (sectionId.includes("TravelOutsideUs")) {
-    return "Outside U.S. travel";
+    return requirementText("application.document-preview.outside-us-travel");
   }
 
   if (sectionId.includes("OutsideUs")) {
-    return "Outside U.S. residence";
+    return requirementText("application.document-preview.outside-us-residence");
   }
 
   if (sectionId.includes("Personal")) {
@@ -278,10 +304,10 @@ function resolveSectionGroupTitle(
 }
 
 const previewLabelOverrides: Record<string, string> = {
-  "outside-us-country": "Country (Residence outside U.S.)",
-  "travel-outside-us-country": "Country (Travel destination)",
-  "spouse-outside-us-country": "Country (Spouse residence outside U.S.)",
-  "spouse-travel-outside-us-country": "Country (Spouse travel destination)",
+  "outside-us-country": requirementText("application.document-preview.country-residence"),
+  "travel-outside-us-country": requirementText("application.document-preview.country-travel"),
+  "spouse-outside-us-country": requirementText("application.document-preview.spouse-country-residence"),
+  "spouse-travel-outside-us-country": requirementText("application.document-preview.spouse-country-travel"),
 };
 
 function dedupeAndFormatLabels(entries: DisplayEntry[]) {
@@ -347,41 +373,34 @@ function getRecordValue<T>(
   return out;
 }
 
-function getVisibleCoverageApplicants(
-  coverage: { applicants: CoverageApplicantId[]; id: string },
-  productApplicants: Record<string, CoverageApplicantId[]>,
-  selectedDependents: CoverageApplicantId[],
-): CoverageApplicantId[] {
-  if (Object.prototype.hasOwnProperty.call(productApplicants, coverage.id)) {
-    const selected = Array.isArray(productApplicants[coverage.id])
-      ? productApplicants[coverage.id]
-      : [];
-
-    return coverage.applicants.filter((applicant) =>
-      selected.includes(applicant),
-    );
-  }
-
-  if (selectedDependents.length > 0) {
-    return coverage.applicants.filter((applicant) => {
-      if (applicant === "member") return true;
-      return selectedDependents.includes(applicant);
-    });
-  }
-
-  return coverage.applicants.includes("member") ? ["member"] : [];
-}
-
 function isNonNullable<T>(value: T | null | undefined): value is T {
   return value != null;
 }
 
 function buildSectionEntries(values: ApplicationFormValues, pageId: PageId) {
-  const sections = pageSections[pageId] ?? [];
-
+  const sections = getPageSections(pageId);
+  const fields = getClientPageFields(pageId, values);
+  const visibleIds = new Set(fields.map(field => field.id));
+  const library = getPrototypeLibrary();
+  const selections = buildSelectedCoverageEntries(values, getActiveClientCoverages());
+  const riders = reconcileApplicationRiders(getActiveClientCoverages(), values).coverageRiders;
+  const childApplied = selections.some(entry => entry.applicant === 'child' || entry.coverage.riders?.some(rider => rider.dependentApplicant === 'child' && riders[`${entry.coverageId}:${rider.id}:${entry.applicant}`]));
   const groups = sections
-    .filter((section) => isSectionVisible(section, values))
-    .map((section) => {
+    .filter(section => isSectionVisible(section, values) && (pageId !== 'profile' || !section.applicant || applicantParticipatesInPage('profile', section.applicant, values)) && (section.applicant !== 'child' || childApplied) && (section.id !== 'profileFinancialQuestionnaireSelf' || financialQuestionnaireForApplication(library?.site.configuration, selections, values)))
+    .flatMap((section) => {
+      const collections = Object.values(library?.fieldCollections ?? {}).filter(collection => collection.pageKey === pageId && collection.sectionId === section.id);
+      const collectionGroups = collections.flatMap(collection => {
+        if (collection.libraryGroup?.afterFieldKey && (!visibleIds.has(collection.libraryGroup.afterFieldKey) || pageId === 'profile' && values[collection.libraryGroup.afterFieldKey] !== 'yes')) return [];
+        const items = values[collection.name];
+        return Array.isArray(items) ? items.flatMap((item, index) => {
+          if (!item || typeof item !== 'object') return [];
+          const entries = collection.mapping.fields.flatMap(field => {
+            const value = (item as Record<string, unknown>)[collection.mapping.fieldToKey[field.id]];
+            return hasFilledValue(value) ? [{ label: field.label, value: formatFieldValue(field.id, value), fieldId: field.id }] : [];
+          });
+          return entries.length ? [{ title: `${collection.label} ${index + 1}`, entries }] : [];
+        }) : [];
+      });
       const processed = new Set<string>();
       const entries: DisplayEntry[] = [];
 
@@ -390,6 +409,7 @@ function buildSectionEntries(values: ApplicationFormValues, pageId: PageId) {
           continue;
         }
 
+        if (!visibleIds.has(fieldId)) continue;
         const rawValue = values[fieldId];
         const groupKey = getNameGroupKey(fieldId);
         if (groupKey) {
@@ -399,13 +419,13 @@ function buildSectionEntries(values: ApplicationFormValues, pageId: PageId) {
             groupFieldIds[0] === fieldId ||
             !groupFieldIds
               .slice(0, groupFieldIds.indexOf(fieldId))
-              .some((id) => section.fieldIds.includes(id as FieldId));
+              .some((id) => visibleIds.has(id) && section.fieldIds.includes(id as FieldId));
 
           if (isFirstInGroup) {
             const nameValue = buildNameValue(groupKey, values);
             if (nameValue !== PLACEHOLDER) {
               entries.push({
-                label: "Name",
+                label: requirementText("application.document-preview.name"),
                 value: nameValue,
                 fieldId,
               });
@@ -424,7 +444,7 @@ function buildSectionEntries(values: ApplicationFormValues, pageId: PageId) {
           continue;
         }
 
-        const field = fieldCatalog[fieldId as keyof typeof fieldCatalog];
+        const field = fields.find(field => field.id === fieldId);
         const value = formatFieldValue(fieldId, rawValue);
         if (value === PLACEHOLDER) {
           processed.add(fieldId);
@@ -439,15 +459,15 @@ function buildSectionEntries(values: ApplicationFormValues, pageId: PageId) {
         processed.add(fieldId);
       }
 
-      const sectionEntries = dedupeAndFormatLabels(entries);
-      if (sectionEntries.length === 0) {
-        return null;
+      if (pageId === 'profile' && section.id === 'profileFinancialQuestionnaireSelf' && values['is-self-employed'] === 'yes') {
+        const policy = library?.client.applicantExperience?.profile?.financialCalculations;
+        if (!policy) throw new Error('Missing fresh-start Profile financial calculations');
+        for (const calculation of policy.calculations) {
+          if (profileCalculationApplies(calculation, values)) entries.push({ label: requirementText(calculation.label), value: new Intl.NumberFormat('en-US', { style: 'currency', currency: policy.currency }).format(profileFinancialTotal(policy, calculation.id, values)), fieldId: calculation.id });
+        }
       }
-
-      return {
-        title: resolveSectionGroupTitle(pageId, section),
-        entries: sectionEntries,
-      } satisfies DisplayGroup;
+      const sectionEntries = dedupeAndFormatLabels(entries);
+      return [...(sectionEntries.length ? [{ title: resolveSectionGroupTitle(pageId, section), entries: sectionEntries } satisfies DisplayGroup] : []), ...collectionGroups];
     })
     .filter(isNonNullable);
 
@@ -455,27 +475,9 @@ function buildSectionEntries(values: ApplicationFormValues, pageId: PageId) {
 }
 
 function buildCoverageSection(values: ApplicationFormValues): DisplaySection {
-  const selectedIds = Array.isArray(values.coverageSelections)
-    ? values.coverageSelections.map(String)
-    : [];
-
-  const selectedDependents: CoverageApplicantId[] = Array.isArray(
-    values.dependents,
-  )
-    ? values.dependents.filter(
-        (applicant): applicant is CoverageApplicantId =>
-          applicant === "spouse" || applicant === "child",
-      )
-    : [];
-
-  const productApplicants = getRecordValue<CoverageApplicantId[]>(
-    values.productApplicants,
-    (candidate): candidate is CoverageApplicantId[] =>
-      Array.isArray(candidate) &&
-      candidate.every(
-        (item) => item === "member" || item === "spouse" || item === "child",
-      ),
-  );
+  const coverages = getActiveClientCoverages();
+  const activeEntries = buildSelectedCoverageEntries(values, coverages);
+  const selectedIds = orderCoveragePresentation(coverages.filter(coverage => activeEntries.some(entry => entry.coverageId === coverage.id)), getActiveClient().coverages, activeFeaturedProduct(resolveSiteId()), activeFirstCoverageCategory(resolveSiteId())).products.map(product => product.id);
 
   const coverageAmounts = getRecordValue<number>(
     values.coverageAmounts,
@@ -483,10 +485,7 @@ function buildCoverageSection(values: ApplicationFormValues): DisplaySection {
       typeof candidate === "number" && Number.isFinite(candidate),
   );
 
-  const coverageRiders = getRecordValue<boolean>(
-    values.coverageRiders,
-    (candidate): candidate is boolean => typeof candidate === "boolean",
-  );
+  const coverageRiders = reconcileApplicationRiders(coverages, values).coverageRiders;
 
   const coverageRiderAmounts = getRecordValue<number>(
     values.coverageRiderAmounts,
@@ -504,7 +503,6 @@ function buildCoverageSection(values: ApplicationFormValues): DisplaySection {
     (candidate): candidate is string => typeof candidate === "string",
   );
 
-  const coverages = getActiveClientCoverages();
   const coverageById = new Map(
     coverages.map((coverage) => [coverage.id, coverage]),
   );
@@ -514,11 +512,7 @@ function buildCoverageSection(values: ApplicationFormValues): DisplaySection {
       const coverage = coverageById.get(coverageId);
       if (!coverage) return [];
 
-      const visibleApplicants = getVisibleCoverageApplicants(
-        coverage,
-        productApplicants,
-        selectedDependents,
-      );
+      const visibleApplicants = activeEntries.filter(entry => entry.coverageId === coverageId).map(entry => entry.applicant);
 
       return visibleApplicants.map(applicant => {
         const entries: DisplayEntry[] = [];
@@ -528,7 +522,7 @@ function buildCoverageSection(values: ApplicationFormValues): DisplaySection {
 
         if (amount) {
           entries.push({
-            label: "Amount",
+            label: requirementText("application.document-preview.amount"),
             value: amount,
           });
         }
@@ -539,7 +533,7 @@ function buildCoverageSection(values: ApplicationFormValues): DisplaySection {
               coverageRiders[`${coverage.id}:${rider.id}:${applicant}`],
           )
           .map((rider) => {
-            const label = rider.dependentApplicant ? `${rider.dependentApplicant === "spouse" ? "Spouse" : "Child"}: ${rider.name}` : rider.name;
+            const label = rider.dependentApplicant ? `${rider.dependentApplicant === "spouse" ? getResolvedApplicantLabels(getActiveClient().applicantLabels).spouse : getResolvedApplicantLabels(getActiveClient().applicantLabels).child}: ${rider.name}` : rider.name;
             if (!rider.hasAmount) return label;
             const riderAmount = formatCoverageAmount(
               coverageRiderAmounts[`${coverage.id}:${rider.id}:${applicant}`],
@@ -549,7 +543,7 @@ function buildCoverageSection(values: ApplicationFormValues): DisplaySection {
 
         if (selectedRiders.length > 0) {
           entries.push({
-            label: "Riders",
+            label: requirementText("application.document-preview.riders"),
             value: selectedRiders.join(", "),
           });
         }
@@ -565,7 +559,7 @@ function buildCoverageSection(values: ApplicationFormValues): DisplaySection {
               (option) => option.value === selectedValue,
             )?.label ?? selectedValue;
           entries.push({
-            label: "Waiting period",
+            label: requirementText("application.document-preview.waiting-period"),
             value: selectedLabel,
           });
         }
@@ -581,7 +575,7 @@ function buildCoverageSection(values: ApplicationFormValues): DisplaySection {
               (option) => option.value === selectedValue,
             )?.label ?? selectedValue;
           entries.push({
-            label: "Benefit option",
+            label: requirementText("application.document-preview.benefit-option"),
             value: selectedLabel,
           });
         }
@@ -598,7 +592,7 @@ function buildCoverageSection(values: ApplicationFormValues): DisplaySection {
           )?.label ?? selectedWaitingPeriod;
         if (waitingPeriodLabel) {
           entries.push({
-            label: "Waiting period",
+            label: requirementText("application.document-preview.waiting-period"),
             value: waitingPeriodLabel,
           });
         }
@@ -617,7 +611,7 @@ function buildCoverageSection(values: ApplicationFormValues): DisplaySection {
           )?.label ?? selectedMaxBenefitPeriod;
         if (maxBenefitPeriodLabel) {
           entries.push({
-            label: "Max benefit period",
+            label: requirementText("application.document-preview.max-benefit-period"),
             value: maxBenefitPeriodLabel,
           });
         }
@@ -625,13 +619,13 @@ function buildCoverageSection(values: ApplicationFormValues): DisplaySection {
 
       if (entries.length === 0) {
         entries.push({
-          label: "Selected",
-          value: "Yes",
+          label: requirementText("application.document-preview.selected"),
+          value: booleanAnswerLabel(true),
         });
       }
 
       return {
-        title: `${coverage.name} - ${getApplicantLabel(applicant)}`,
+        title: shouldShowApplicantLabel(applicant, values, coverages) ? `${coverage.name} - ${getApplicantLabel(applicant)}` : coverage.name,
         coverageKey: `${coverage.id}:${applicant}`,
         entries,
       } satisfies DisplayGroup;
@@ -640,15 +634,8 @@ function buildCoverageSection(values: ApplicationFormValues): DisplaySection {
     .filter(isNonNullable);
 
   return {
-    title: "Coverage",
-    groups:
-      groups.length > 0
-        ? groups
-        : [
-            {
-              entries: [{ label: "Selected products", value: PLACEHOLDER }],
-            },
-          ],
+    title: documentPageTitle('coverage'),
+    groups,
   };
 }
 
@@ -663,7 +650,13 @@ function buildBeneficiariesSection(
       ? (values.beneficiaries as Record<string, BeneficiaryItem[]>)
       : {};
 
-  const entries = Object.entries(beneficiaries).map(([productKey, items]) => {
+  if (!beneficiaryQuestionsEnabled(getClientPageRequirement('beneficiary'), values)) return { title: documentPageTitle('beneficiary'), groups: [] };
+  const applicable = new Set(buildSelectedCoverageEntries(values, coverages).filter(entry =>
+    Number((values.coverageAmounts as Record<string, unknown> | undefined)?.[`${entry.coverageId}:${entry.applicant}`] ?? 0) > 0 &&
+    collectsBeneficiaries(getPrototypeLibrary()?.site, entry.coverageId, entry.coverage.categoryId, entry.applicant, typeof values.membership === 'string' ? values.membership : undefined)
+  ).map(entry => `${entry.coverageId}:${entry.applicant}`));
+  const order = orderCoveragePresentation(coverages, getActiveClient().coverages, activeFeaturedProduct(resolveSiteId()), activeFirstCoverageCategory(resolveSiteId())).products.map(product => product.id);
+  const entries = Object.entries(beneficiaries).filter(([key]) => applicable.has(key)).sort(([a], [b]) => order.indexOf(a.split(':')[0]) - order.indexOf(b.split(':')[0]) || Number(a.endsWith(':spouse')) - Number(b.endsWith(':spouse'))).map(([productKey, items]) => {
     const [coverageId, applicant] = productKey.split(":");
     const coverage = coverages.find((item) => item.id === coverageId);
     const label = coverage
@@ -680,8 +673,8 @@ function buildBeneficiariesSection(
                   : `${item.firstName} ${item.lastName}`.trim();
               const relationship =
                 item.beneficiaryType === "trust"
-                  ? "Trust"
-                  : item.relationship || "Relationship not provided";
+                  ? requirementText("application.document-preview.trust")
+                  : item.relationship || requirementText("application.document-preview.relationship-missing");
 
               return `${formatLabel(item.designation)}: ${name || PLACEHOLDER} (${relationship}, ${item.share}%)`;
             })
@@ -692,19 +685,14 @@ function buildBeneficiariesSection(
   });
 
   return {
-    title: "Beneficiary",
-    groups: [
-      {
-        entries: entries.length
-          ? entries
-          : [{ label: "Beneficiaries", value: PLACEHOLDER }],
-      },
-    ],
+    title: documentPageTitle('beneficiary'),
+    groups: entries.filter(entry => entry.value !== PLACEHOLDER).length ? [{ entries: entries.filter(entry => entry.value !== PLACEHOLDER) }] : [],
   };
 }
 
 export function buildDocumentSections(values: ApplicationFormValues) {
-  return documentPages
+  return getDocumentPages()
+    .filter(entry => resolvePageParticipation(entry.pageId, values))
     .map((entry) => {
       if (entry.pageId === "coverage") {
         return buildCoverageSection(values);

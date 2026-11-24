@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { Button, FormControlLabel, MenuItem, Paper, Stack, Switch, TextField, Typography } from '@mui/material';
-import { editDraftParticipation, editDraftProfile, type LibraryDraft } from '../../domain/libraryDraft';
+import { editDraftParticipation, editDraftPageRequirement, sitePageRequirementOptions, editDraftProfile, type LibraryDraft } from '../../domain/libraryDraft';
 export default function LibraryCompositionEditor({ draft, update }: { draft: LibraryDraft; update: (fn: () => LibraryDraft) => void }) {
   const [kind, setKind] = useState<'brandingProfiles' | 'supportProfiles'>('brandingProfiles'), [id, setId] = useState(''), [json, setJson] = useState('');
   const site = draft.data.sites.find(s => s.key === draft.siteKey)!;
   const client = draft.data.clients.find(c => c.id === site.clientId)!;
   return <Paper variant="outlined" sx={{ p: 2 }}><Stack gap={1}><Typography variant="h6">Site composition and branding</Typography>
     <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
-      <Stack><Typography variant="subtitle1">Pages</Typography>{draft.data.sitePages.filter(r => r.siteKey === draft.siteKey && draft.data.pages.find(p => p.key === r.pageKey)?.definition.type !== 'internal').map(r => <FormControlLabel key={r.id} label={r.pageKey} control={<Switch checked={r.requirement !== 'none'} onChange={(_, enabled) => update(() => editDraftParticipation(draft, 'page', r.pageKey, enabled))} />} />)}</Stack>
+      <Stack gap={1}><Typography variant="subtitle1">Pages</Typography><Typography variant="caption">Page list and order are global.</Typography>{draft.data.sitePages.filter(r => r.siteKey === draft.siteKey && sitePageRequirementOptions(r.pageKey).length).map(r => <TextField select key={r.id} label={draft.data.pages.find(page => page.key === r.pageKey)?.definition.displayName ?? r.pageKey} value={r.requirement} onChange={event => update(() => editDraftPageRequirement(draft, r.pageKey, event.target.value as 'required' | 'optional' | 'none'))}>{sitePageRequirementOptions(r.pageKey).map(value => <MenuItem key={value} value={value}>{value === 'none' ? 'Disabled' : value === 'optional' ? 'Optional' : 'Required'}</MenuItem>)}</TextField>)}</Stack>
       <Stack><Typography variant="subtitle1">Products</Typography>{draft.data.siteProducts.filter(r => r.siteId === site.id).map(r => <FormControlLabel key={r.id} label={r.productKey} control={<Switch checked={r.enabled} onChange={(_, enabled) => update(() => editDraftParticipation(draft, 'product', r.productKey, enabled))} />} />)}</Stack>
       <Stack><Typography variant="subtitle1">Feature inventory</Typography><Typography variant="caption">Runtime settings are edited in configuration controls.</Typography>{draft.data.siteFeatures.filter(r => r.siteKey === draft.siteKey).map(r => <FormControlLabel key={r.id} label={r.featureKey} control={<Switch checked={r.enabled} disabled />} />)}</Stack>
     </Stack>

@@ -1,0 +1,111 @@
+{
+  "rules": [
+    {
+      "id": "recovery-offline-feedback",
+      "name": "Show and clear the shared connection warning",
+      "status": "confirmed",
+      "appliesTo": "all-pages",
+      "statement": "Show OfflineBanner when the browser reports offline on initial mount, emits an offline event, or an application:technical-error incident explicitly has code OFFLINE. Hide it on the next browser online event or when its shell unmounts. A non-OFFLINE technical incident does not open or clear this warning. Display one full-width warning above the Site help bar/header across shell variants, with the global recovery.offline content, no dismiss action and no support reference. Preserve current answers, focus and navigation. Browser connectivity does not establish service reachability or save success; reconnection neither retries saving nor confirms pending changes were saved. Storybook may supply an explicit offline preview value; that local override does not listen to browser/service events. Runtime ownership remains OfflineBanner within AppShell, with no Site-specific trigger or timer.",
+      "source": "User message-condition documentation request November 23, 2026; src/components/feedback/OfflineBanner.tsx; src/components/layout/AppShell.tsx; src/components/feedback/OfflineBanner.test.tsx"
+    },
+    {
+      "id": "recovery-inline-feedback",
+      "name": "Show inline feedback only while its owning page supplies a message",
+      "status": "confirmed",
+      "appliesTo": "all-pages",
+      "statement": "PageAlert renders only while its owner supplies a nonempty message and hides when that owner clears it or unmounts; replacing the message updates the same alert. It has no automatic expiry; offer dismissal only when the owner supplies onDismiss. Error/warning messages use an assertive alert; info/success messages use a polite status. FormRoutePage sets its summary for registered-field or page-validation failure and keeps the applicant on that page. Merely editing an answer does not clear that page summary; a submission that passes those checks clears it before the configured save. A rejected local save supplies shared technical-error wording without successful-save feedback; service incidents retain the existing shared recovery routing. Page-specific validation, eligibility and Resume incident resolution remain with their existing owners rather than being inferred from message text. Offline feedback belongs only to OfflineBanner and is not repeated as a page alert.",
+      "source": "User message-condition documentation request November 23, 2026; src/components/feedback/PageAlert.tsx; src/app/RoutePage.tsx; src/app/RoutePage.navigation.test.tsx; src/app/RoutePage.persistence.test.tsx"
+    },
+    {
+      "id": "recovery-transient-notifications",
+      "name": "Show transient success notices for completed application transitions",
+      "status": "confirmed",
+      "appliesTo": "all-pages",
+      "statement": "Show Progress saved only when successful forward continuation reaches the next route or embedded section after the existing validation/save/callback sequence; not for typing, Back alone, pending submission, failed validation, rejected saving or a callback that still holds navigation. Routed FormRoutePage consumes showProgressSaved navigation state once and uses ProgressSavedSnackbar for 2000ms. Embedded SinglePageSections opens the existing AppSnackbar when completeSection advances the checkpoint, using its 2500ms default. These prototype transition notices do not establish service persistence when no save callback is configured or saving is disabled. Show the separate Application loaded notice only after Resume verification restores an application and navigation supplies resumeLoaded; AppShell consumes that navigation flag once and uses a 4000ms success snackbar. Hide each notice on its AppSnackbar close callback (including elapsed auto-hide or dismissal) or owner unmount; do not replay a consumed navigation flag. Other snackbar messages remain caller-owned open/message state. AppSnackbar owns the shared anchor: bottom-center on small screens and top-center otherwise.",
+      "uses": ["resume-verification-and-return"],
+      "source": "User message-condition documentation request November 23, 2026; src/app/RoutePage.tsx; src/components/layout/SinglePageSections.tsx; src/components/layout/AppShell.tsx; src/pages/ResumeCode.tsx; src/components/feedback/ProgressSavedSnackbar.tsx; src/components/feedback/AppSnackbar.tsx; src/app/RoutePage.persistence.test.tsx; src/components/feedback/AppSnackbar.test.tsx"
+    },
+    {
+      "id": "recovery-operation-status-boundary",
+      "name": "Distinguish operation-status definitions from active prototype messages",
+      "status": "confirmed",
+      "statement": "The global recovery definition maps OPERATION_PENDING and OPERATION_COMPLETE to processing-pending and processing-complete content/status cases. These are presentation definitions, not an implemented operation tracker: no active prototype owner automatically shows or clears these cases for a save, payment or submission. Runtime forward/back transition feedback remains owned by FormRoutePage and its transition state, and must not imply a confirmed external operation outcome. Automatic operation-status lifecycle integration remains unimplemented; no duration, retry, completion detection or success policy is introduced by these reference definitions.",
+      "source": "User message-condition documentation request November 23, 2026; requirements/global/recovery.json; src/content/applicationRecovery.ts; src/domain/recoveryIncident.test.ts; src/app/RoutePage.tsx"
+    },
+    {
+      "id": "recovery-shared-layout",
+      "name": "One shared redirect-page component",
+      "status": "confirmed",
+      "statement": "Use one global ApplicationErrorState redirect-page component with source-defined content cases for HTTP errors, a generic technical error, Maintenance, Session expired. Error, Maintenance and Expired access are content groups, not separate page components. Ordered slots are a 48px code/icon indicator, title, message, optional guidance, configured actions and shared SiteSupport, within the minimal recovery header and shared footer. A document icon appears beside a known HTTP code, without an X overlay. Generic technical errors use the document icon without a code; session expiry uses its clock icon. Magic-link expiry is a page error within Resume, not a redirect-page case.",
+      "source": "User decisions November 13, 2026; requirements/global/recovery.json; src/components/feedback/ApplicationErrorState.tsx"
+    },
+    {
+      "id": "recovery-technical-failure",
+      "name": "Use specific error-code content before generic technical content",
+      "status": "confirmed",
+      "statement": "When a technical failure occurs, use its specific error-code mapping when one is defined. Use the generic technical-error content case only when an error exists but no specific error-code mapping applies. An ordinary correctable field or business issue stays within its current page. Session countdown expiry uses the shared Session expired page. Expired or invalid magic links land on Resume with an inline page error and the email link-request form available. This selection rule is documented; this template review does not add automatic routing or service integrations.",
+      "source": "User decisions November 13, 2026; requirements/global/recovery.json; src/components/feedback/ApplicationErrorState.tsx",
+      "replaces": [
+        "rule-application-technical-error"
+      ]
+    },
+    {
+      "id": "recovery-resume-privacy",
+      "name": "Do not disclose saved application existence",
+      "status": "confirmed",
+      "statement": "Resume must never disclose whether a saved application exists before successful verification. Show the same public link-request confirmation regardless of a matching record and send only when appropriate. Never display saved-application-unavailable as a lookup result. Technical errors use the shared error-code/generic Error selection rule. Normal application inactivity uses the session-timeout page; the separate fixed MFA deadline uses the same shared Session expired page. Request-limit feedback is identical for matching and missing emails.",
+      "source": "User decisions November 13, 2026; requirements/global/recovery.json; src/components/feedback/ApplicationErrorState.tsx"
+    },
+    {
+      "id": "recovery-expired-access",
+      "name": "Separate session redirects from link and verification-code page errors",
+      "status": "confirmed",
+      "statement": "When the application inactivity warning countdown reaches zero, the session expires and redirects to the shared Session expired content case. Keep the existing session timer and redirect behavior. Expired or invalid magic links land directly on Resume, where an inline error explains that the link is no longer valid and the user can enter their email to request another link. Phone verification-code expiry remains an inline page error on the code-entry page, with verification disabled until a new code is requested. Neither magic-link nor phone-code expiry uses the Session expired page or a separate expiry page. No lookup or delivery is triggered automatically by showing the page error. Never disclose saved application existence from a link request; public confirmation remains uniform. The fixed MFA verification deadline warns inline without extension and opens the same shared Session expired page at zero. Link and phone-code expiration remain inline on their respective pages.",
+      "source": "User session-expiry destination update November 15, 2026; User decisions November 13, 2026; requirements/global/recovery.json; src/components/feedback/ApplicationErrorState.tsx"
+    },
+    {
+      "id": "recovery-maintenance",
+      "name": "Show Maintenance with effective Site support",
+      "status": "confirmed",
+      "statement": "Show Maintenance with the effective Site identity and shared support, without navigation into the unavailable flow. Do not invent a return time or claim unsaved data was saved. Host availability and fallback handling must also cover an application that cannot load.",
+      "source": "User decisions November 13, 2026; requirements/global/recovery.json; src/components/feedback/ApplicationErrorState.tsx",
+      "replaces": [
+        "rule-application-maintenance"
+      ]
+    },
+    {
+      "id": "recovery-shared-support",
+      "name": "Use effective Site support consistently",
+      "status": "confirmed",
+      "statement": "Every preview variant uses the same SiteSupport content inside a standard MUI info Alert with AlertTitle and no leading alert icon, using effective Site contact resolution. The recovery support section has no separate card or table container. Shared labels and technical support remain global. The header uses the effective Site logo without application navigation. The layout never requires operation-specific support or payment recovery controls.",
+      "source": "User decisions November 13, 2026; requirements/global/recovery.json; src/components/feedback/ApplicationErrorState.tsx",
+      "replaces": [
+        "rule-application-recovery-support"
+      ]
+    },
+    {
+      "id": "application-session-warning",
+      "name": "Warn before the global application inactivity deadline",
+      "status": "confirmed",
+      "statement": "The global application-session configuration owns the confirmed inactivity limit and warning lead time; no Site override is supported. Before the warning opens, application form activity renews the inactivity deadline. At the warning threshold, show the shared countdown. Once the warning is open, ordinary activity, Escape, navigation and reload cannot extend the deadline; only its explicit Keep session active action can renew an unexpired session. Preserve absolute deadlines across routes and reloads and recheck after background pauses. Show the countdown only on an active application shell while the remaining absolute deadline is positive and within the configured warning lead time. Hide it when Keep session active renews that unexpired deadline, the guard becomes inactive, or expiry leaves the application for the shared expired page. No auto-dismiss or ordinary activity closes an open warning.",
+      "replaces": [
+        "rule-application-session-warning"
+      ],
+      "source": "User timing confirmation November 17, 2026; requirements/global/configurations/application-session.json; src/app/ApplicationSessionGuard.tsx"
+    },
+    {
+      "id": "application-session-expired",
+      "name": "Use the shared expiration page when the application session ends",
+      "status": "confirmed",
+      "statement": "At the application inactivity deadline, or an application-service expired-session report, stop the form flow and open the shared Session expired page once. Utility pages remain usable. Resume uses secure recovery and starts a new application session after successful verification; Start new application clears local answers and session state. Do not promise retention of unsaved changes. This application inactivity deadline is separate from the fixed Resume MFA deadline, which uses the same expired page. Link/code expiry remains inline.",
+      "replaces": [
+        "rule-application-session-expired"
+      ],
+      "uses": [
+        "recovery-expired-access",
+        "recovery-resume-privacy"
+      ],
+      "source": "User timing confirmation November 17, 2026; src/app/ApplicationSessionGuard.tsx; src/pages/ErrorPage.tsx; src/app/ApplicationFormContext.tsx"
+    }
+  ]
+}

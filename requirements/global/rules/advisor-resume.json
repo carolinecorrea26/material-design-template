@@ -1,0 +1,119 @@
+{
+  "rules": [
+    {
+      "id": "advisor-entry-and-identity",
+      "name": "Validate the active advisor entry mode and fields",
+      "status": "confirmed",
+      "statement": "Advisor Login uses the shared Start/Continue mode. Start requires advisor email, ten-digit phone and advisor code; Continue requires applicant email and carries it into Resume. Validate only the active branch and authorize the advisor’s access before restoring application data. Entry does not save an application or overwrite an existing household. Starting or continuing clears prior applicant state and submitted-session flags while retaining the applicable advisor identity and selected mode. Required text rejects whitespace-only values through shared validation.",
+      "uses": [
+        "effective-site-configuration-resolution"
+      ],
+      "source": "User Advisor configuration decision November 17, 2026; User Advisor copy decision November 15, 2026; Advisor final audit November 13, 2026; requirements/parked/advisor-login.json"
+    },
+    {
+      "id": "advisor-handoff-and-return",
+      "name": "Send prepared applications to the applicant and return edits to their advisor",
+      "status": "confirmed",
+      "statement": "After Profile validation in an advisor-prepared flow, the shared SendApplicationDialog shows the applicant recipient. Cancel stays on Profile; Send proceeds to Advisor Send Confirmation. The applicant receives an invitation to Resume, then requests a separate secure email link and completes phone verification for the advisor-prepared Review context. Only successful verification restores answers, then opens Review with earlier advisor-completed steps locked. Review edit requests use the saved advisor email; missing identity displays no invented recipient. Cancel stays on Review; confirm opens Application Edit Confirmation. Both confirmation pages keep all page copy global, including titles, introductions, success messages, detail labels, deadline wording and actions; neither declares Site page-copy slots. Effective contact/identity and retention values remain independently configured data. delivery and authorization are system requirements; no real email delivery or authentication is executed. Review retains applicant-facing advisor guidance and the request-edit action, but does not display the redundant Getting Started/Coverage/Profile locked-steps banner. The shared SendApplicationDialog default title/introduction, action labels, recipient labels and missing-value wording are global Fresh-start content; standalone examples and the default adapter read the same definitions. Requesting an advisor correction is an optional branch from Review, not a required application step. Applicants needing no correction continue after required acknowledgements.",
+      "source": "User confirmation copy decision November 15, 2026; Existing Profile/Review decisions; advisor/resume final audit November 13, 2026",
+      "replaces": [
+        "rule-advisor-flow-send-to-applicant-dialog",
+        "rule-advisor-flow-advisor-mode-review-edit-dialog",
+        "rule-progress-navigation-advisor-applicant-steps-locked"
+      ]
+    },
+    {
+      "id": "advisor-new-application",
+      "name": "Clear applicant state while retaining advisor details",
+      "status": "confirmed",
+      "statement": "Start new application clears prior applicant answers, records, payment/coverage elections, saved application handle/deadline, receipt reference and submitted/advisor-applicant session flags. Retain advisor email, phone and code, select Start, and return to Advisor Login. Cancel any pending save so the prior household cannot return after reset. The existing Site/entry restrictions remain browsing context. Do not delete the previously saved server application as part of this action.",
+      "source": "User decision November 13, 2026"
+    },
+    {
+      "id": "resume-entry-and-privacy",
+      "name": "Use a uniform public resume confirmation",
+      "status": "confirmed",
+      "statement": "Applicant Resume collects applicant email; Advisor Continue identifies the applicant first, then Resume collects advisor email and phone. Resume returns the same confirmation for matching, missing, expired or recovery-locked applications, sending only when appropriate. Link-request limits count by Site plus normalized entered email, whether or not an application exists. A limit response and its cooldown are identical for matching and missing records, never an existence signal. No application ID, matching flag, answers or raw diagnostics appear in the public response. Session/advisor email may prefill without a lookup. Requests and resends are explicit, not triggered on mount or by displaying an error.",
+      "source": "portal_inventory.xlsx, Rules - Resume!C2:D19; user clarifications November 13, 2026; fresh-start global model",
+      "uses": [
+        "recovery-resume-privacy"
+      ]
+    },
+    {
+      "id": "resume-verification-and-return",
+      "name": "Verify before restoring and apply the correct return context",
+      "status": "confirmed",
+      "statement": "Resume requires an email magic link followed by a six-digit phone code, delivered only by Text or Call to the saved phone; Call maps to transport phone. Display only masked phone information with its last four digits. There is no email-code alternative,  or standard examples. Link and MFA proof, Site, recipient, application, expiry and locks are validated by the service. An invalid, expired, consumed or revoked link returns to initial Resume with its configured inline error. Incorrect, expired or replaced codes remain inline on code entry with appropriate feedback and resend. Successful verification consumes the MFA session, rotates writes, restores that application and entry scope, resets application-session flags and uses the service-authorized actor and lifecycle destination: advisor recovery returns to Eligibility; prepared-application applicant recovery returns to Review before signing or unfinished DocuSign after signing starts. Submitted applications cannot recover. UI flow context cannot grant actor identity or choose an authoritative destination. URL flow context is never authorization. Busy and successful states disable duplicate actions.",
+      "source": "portal_inventory.xlsx, Rules - Resume!C2:D19; user clarifications November 13, 2026; fresh-start global model"
+    },
+    {
+      "id": "resume-retention-and-limits",
+      "name": "Use confirmed production retention and recovery defaults",
+      "status": "confirmed",
+      "statement": "Use the shared recovery-policy values for application retention, email-link validity, MFA and phone-code deadlines, request windows, attempt limits, cooldowns and recovery locks. Measure retention from initial application saving. Save updates, recovery requests, verification and advisor sending never extend that deadline. Advisor confirmations display the application’s actual deadline. Service deadlines are authoritative; delayed callbacks, navigation, reload and changed query values cannot extend them.",
+      "source": "portal_inventory.xlsx, Rules - Resume!C2:D19; user clarifications November 13, 2026; fresh-start global model; user decision November 17, 2026: all recovery timings and limits, including retention, fixed globally",
+      "replaces": [
+        "rule-persistence-resume-verification"
+      ]
+    },
+    {
+      "id": "advisor-resume-content-and-storage",
+      "name": "Keep advisor and recovery content and storage in fresh start",
+      "status": "confirmed",
+      "statement": "Keep advisor identity and applicant-email bindings separate. Saved applicant answers must not contain email-link tokens, MFA proofs or phone codes. Store recovery proofs, request history, absolute session/code deadlines and cooldown/lock state separately from application answers. Preserve the original verification deadline across reload and back navigation; clear the recovery context on success, terminal errors and new-application reset. Code-page URLs contain only an opaque MFA session identifier, Site and supported flow context; remove consumed email tokens from the URL. Confirmation metadata does not form another editable application.",
+      "source": "User Resume copy decision November 15, 2026; non-copy configuration review November 17, 2026; portal_inventory.xlsx, Rules - Resume!C2:D19; user clarifications November 13, 2026; fresh-start global model"
+    },
+    {
+      "id": "resume-mfa-lifecycle",
+      "name": "Consume the email link once and keep MFA expiry independent",
+      "status": "confirmed",
+      "statement": "Opening a link or rendering its landing page performs no challenge or token consumption. The existing delivery-method Next action atomically consumes a valid ten-minute link and starts a separate, fixed thirty-minute MFA session with the first phone code. Reusing the consumed link cannot create another session. A new MFA session replaces an earlier session for that application, while application-scoped counters and locks persist. The original link expiry no longer controls an established MFA session. Resend, method changes, activity, Back and reload do not renew MFA time. Warn inline with two minutes remaining without a Keep active action. At zero, clear recovery context and open the shared Session expired page, also used for application inactivity. This supersedes the earlier inline MFA-expired landing decision. Link and phone-code expiry remain inline. Code expiry cannot exceed MFA expiry or the original application retention deadline. ResumeSessionWarning is visible only on an active method/code verification page with a known positive remaining MFA time at or below the shared warning threshold. It is hidden before that threshold, without a deadline, after successful verification, or when expiry/navigation leaves the page. Link/code expiry feedback uses ExpiringCodeAlert: zero remaining lifetime takes precedence over success/resend confirmation; a successful resend replaces the expired state with the new deadline. On code entry, editing clears the resend confirmation and inline input error; only a successful resend sets a new confirmation, while rejected requests use the existing failure handling. The configured shared deadlines, not local display timers or Site values, determine these states.",
+      "source": "User shared Session expired destination decision November 15, 2026; portal_inventory.xlsx, Rules - Resume!C2:D19; user-confirmed edge cases November 13, 2026"
+    },
+    {
+      "id": "resume-request-cooldowns",
+      "name": "Enforce shared request budgets and fixed cooldowns",
+      "status": "confirmed",
+      "statement": "Allow five link requests per rolling fifteen minutes by Site and normalized email, including unmatched emails; issuing, replacing, using or expiring links does not reset this budget. The sixth request starts a fixed ten-minute cooldown. Allow five total phone-code requests per rolling fifteen minutes per application, including initial issuance, shared across Text, Call, links and MFA sessions; the sixth starts a fixed thirty-minute cooldown. Blocked retries neither add requests nor extend cooldowns. At cooldown expiry, reset that request counter. Switching method/browser/link does not bypass a stored application code budget or lock. Preserve uniform public link confirmation except for the same email-request limit response for all emails. Only the latest unconsumed email link is usable; resend replaces the current code. Previously issued still-valid codes remain subject to MFA expiry and application locks. No automatic retry or real delivery is implied. On initial Resume, show a returned cooldown/lock issue only while its absolute retryAt deadline is still in the future and its recipient matches the normalized entered email, or the issue has no recipient restriction. Hide that timed issue when the deadline elapses or the entered recipient no longer matches; this only clears visible blocking for that entry and does not reset service budgets or locks. An issue without retryAt stays visible until the owning request clears/replaces it or the page is left. Starting an allowed request clears the previous page issue; a rejected request may replace it through the shared incident-to-feedback resolver. These visibility conditions do not reveal whether a saved application exists.",
+      "source": "portal_inventory.xlsx, Rules - Resume!C2:D19; user-confirmed edge cases November 13, 2026"
+    },
+    {
+      "id": "resume-phone-code-attempts",
+      "name": "Keep the MFA attempt budget through resends and enforce application locks",
+      "status": "confirmed",
+      "statement": "Only a well-formed six-digit value that is incorrect for the current unexpired code spends an attempt. Malformed, expired and recognized replaced codes are rejected without spending an attempt. A resend or Text/Call switch does not reset the MFA-session attempt count. The third incorrect attempt immediately starts a fixed thirty-minute application recovery lock, invalidates existing recovery sessions and returns to initial Resume with its attempt-limit error. Every browser, new link and MFA session honors the application lock; retries do not extend it. Public email requests never reveal that lock or saved-application existence. After unlock a fresh valid link and verification are required. Concurrent consumption or verification can succeed only once; a consumed MFA session cannot restore answers again.",
+      "source": "portal_inventory.xlsx, Rules - Resume!C2:D19; user-confirmed edge cases November 13, 2026"
+    },
+    {
+      "id": "advisor-recovery-identity",
+      "name": "Authenticate the advisor against the identified applicant application",
+      "status": "confirmed",
+      "statement": "Advisor Continue collects applicant email solely to identify the application. Resume then requires the advisor’s own email and ten-digit phone and matches both to that application’s saved advisor identity. Issue the secure link only to that saved advisor email and the Text/Call code only to that saved advisor phone. Never substitute applicant contacts or authorize by a URL role/flow value. Bind link/MFA proofs to the actual actor, entered identity, application and Site; recheck access stage and saved advisor identity when issuing codes or restoring answers. Mismatch, missing, expired, submitted or disallowed applications use the same public confirmation; no existence or stored-contact disclosure. Existing Site-plus-entered-email budgets and application-wide code budgets/locks remain unchanged. Recovery identity fields and guidance are global, reuse shared field components and are not stored as applicant answers.",
+      "source": "User Advisor Continue clarification November 17, 2026"
+    },
+    {
+      "id": "advisor-access-stages",
+      "name": "Apply advisor and applicant access by lifecycle stage",
+      "status": "confirmed",
+      "statement": "During preparation or requested revision, only the saved advisor may recover an advisor-prepared application. After Send, the applicant may recover and the saved advisor may authenticate to take over before DocuSign starts. Successful advisor takeover returns to Eligibility, ends the prior active session and requires a new Send before applicant access resumes. Sending and edit requests invalidate prior recovery proofs. Starting DocuSign ends advisor access; only the applicant may resume unfinished signing. Active-session ownership is distinct from eligibility to authenticate. All submitted, expired or deleted applications are unavailable to both actors through saved-application recovery. enforces these authorization transitions.",
+      "source": "Tutorials Advisor model (new template), application-access; user decisions November 17, 2026"
+    },
+    {
+      "id": "resume-signing-and-submission",
+      "name": "Resume unfinished signing and end recovery at submission",
+      "status": "confirmed",
+      "statement": "After successful applicant email-link and phone-code verification, return an advisor-prepared application to Review if signing has not started or to DocuSign when signing is unfinished. Once all required signatures complete and submission succeeds, stop issuing saved-application recovery links; retain the same privacy-safe public confirmation. Existing proofs must no longer restore a submitted application. Do not introduce a read-only Receipt recovery path or another underwriting/error outcome.",
+      "source": "User recovery decisions November 17, 2026"
+    },
+    {
+      "id": "advisor-deletion-notifications",
+      "name": "Notify the advisor and applicant when an advisor-prepared application is deleted",
+      "status": "confirmed",
+      "statement": "At the original global retention deadline, an incomplete advisor-prepared application is expired/deleted and cannot be resumed. Notify both the saved advisor and the applicant. The advisor email uses the shared advisor status/details format with a Deleted timestamp and the Site-scoped Advisor login link. The applicant email reuses the consumer deletion wording and shared salutation/footer, directs them to their advisor for assistance, and has no Apply, start-application or Resume action. Its contact destination is the saved advisor; do not invent an advisor contact when unavailable. The consumer deletion email retains its existing new-application action. Templates and flow/tutorial references share canonical global definitions. deletion/delivery remain service requirements; local previews do not send messages.",
+      "uses": [
+        "resume-retention-and-limits"
+      ],
+      "source": "User advisor/applicant purge-notification instruction November 18, 2026; requirements/global/application.json; requirements/global/content/emails.json"
+    }
+  ]
+}

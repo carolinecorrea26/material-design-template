@@ -10,22 +10,17 @@
   "eligibility.note.children": "Only unmarried children are eligible for coverage.",
   "eligibility.error.child-required": "Please add at least one child or remove child from dependents.",
   "eligibility.error.spouse-details": "Please add spouse details or remove spouse from dependents.",
-  "eligibility.children.item": "Child",
   "eligibility.verification.address.title": "Confirm your address",
   "eligibility.verification.address.message": "Please provide your full residential address before continuing to member verification.",
   "eligibility.verification.address.continue": "Continue to member verification",
-  "eligibility.verification.cancel": "Cancel",
   "eligibility.verification.title": "Member verification",
-  "eligibility.verification.close": "Close",
   "eligibility.verification.method-intro": "We need to verify your identity before proceeding. Please choose how you would like to complete verification.",
   "eligibility.verification.code-notice": "Code will be sent to {{phone}}.",
-  "eligibility.verification.next": "Next",
   "eligibility.verification.questions-intro": "Please answer the following questions to verify your identity.",
   "eligibility.verification.success.title": "Member verification successful",
   "eligibility.verification.success.body": "Your identity has been verified. You can now continue with your application.",
   "eligibility.verification.failure.title": "Member verification unsuccessful",
   "eligibility.verification.failure.body": "We were unable to verify your identity based on the answers provided. You may continue your application without verification.",
-  "eligibility.verification.continue": "Continue",
   "eligibility.verification.steps": [
     "Choose method",
     "Answer questions",
@@ -35,5 +30,7 @@
   "eligibility.verification.methods-label": "Member verification",
   "eligibility.verification.questions-label": "Security questions",
   "eligibility.verification.library-label": "Member verification modal",
-  "eligibility.inferred-state": "Based on your ZIP / postal code"
+  "eligibility.inferred-state": "Based on your ZIP / postal code",
+  "eligibility.note.self": "",
+  "eligibility.no-eligible-products": "Unfortunately, you are not eligible for any products. For questions, contact: {{contact}}"
 }

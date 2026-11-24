@@ -1,6 +1,8 @@
+import FieldGrid from '../layout/FieldGrid';
+import { requirementText } from '../../domain/requirementContent';
 import type { FieldDefinition } from "../../config/fields/types";
 import { useEffect } from "react";
-import { Alert, Stack } from "@mui/material";
+import { Alert } from "@mui/material";
 import type { FormRouteRenderProps } from "../../app/RoutePage";
 import { SHARED_FREQUENCY_FIELD, type sharedPaymentState } from "../../domain/sharedPaymentChoices";
 import FieldRenderer from "./FieldRenderer";
@@ -12,14 +14,14 @@ export default function SharedPaymentControls({ control, errors, setValue, state
     const updates = JSON.parse(serializedUpdates) as Record<string, string>;
     for (const [key, value] of Object.entries(updates)) setValue(key, value, { shouldDirty: true, shouldValidate: true });
   }, [serializedUpdates, setValue]);
-  return <Stack spacing={2}>
+  return <FieldGrid>
     {state.shareMethod && methodField && <>
       <FieldRenderer control={control} errors={errors} field={methodField} />
-      {!state.methodOptions.length && <Alert severity="warning">These products do not have a payment method in common. Contact us for help with payment options.</Alert>}
+      {!state.methodOptions.length && <Alert severity="warning">{requirementText('payment.shared.no-common-method')}</Alert>}
     </>}
     {state.shareFrequency && state.updates[SHARED_FREQUENCY_FIELD] === undefined && frequencyField && <>
       <FieldRenderer control={control} errors={errors} field={{ ...frequencyField, disabled: !state.frequencyOptions.length }} />
-      {!state.frequencyOptions.length && <Alert severity="info">Select payment methods with a frequency available for every product.</Alert>}
+      {!state.frequencyOptions.length && <Alert severity="info">{requirementText('payment.shared.no-common-frequency')}</Alert>}
     </>}
-  </Stack>;
+  </FieldGrid>;
 }

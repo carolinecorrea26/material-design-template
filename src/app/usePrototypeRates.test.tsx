@@ -1,3 +1,4 @@
+import { freshStartSource } from '../domain/freshStartCatalog';
 import { readFileSync } from 'node:fs';
 import { act, useEffect, useState } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
@@ -28,7 +29,8 @@ function CoverageForm() {
 }
 beforeEach(() => {
   vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
-  installPrototypeLibrary(resolvePrototypeLibrary(data, 'abe', 'test:rates'));
+  window.history.replaceState(null, '', '/?site=asce');
+  installPrototypeLibrary(resolvePrototypeLibrary(data, 'asce', 'test:rates'));
   quote.mockReset().mockResolvedValue(response());
   container = document.createElement('div'); document.body.append(container); root = createRoot(container);
 });
@@ -78,9 +80,12 @@ it('quotes displayed eligible products before any are added to the cart', async 
   expect(coverage.getRateDisplay('li-term', 'member').status).toBe('available');
 });
 it('uses configured reference or hidden presentation without requesting a calculated rate', async () => {
-  installPrototypeLibrary(resolvePrototypeLibrary(data, 'csea', 'test:reference'));
-  await act(async () => root.render(<Consumer productKey="di-ltd" amount={1000} />));
+  const source = structuredClone(freshStartSource());
+  const policy = source.siteProducts.asce.catalog!.configurationValues.find(row => typeof row.value === 'object' && row.value !== null && 'praseConfigured' in row.value)!;
+  policy.value = { version: 1, praseConfigured: false, quoteToolEnabled: false, coverageQuoteEnabled: false };
+  installPrototypeLibrary(resolvePrototypeLibrary(data, 'asce', 'test:hidden', source));
+  await act(async () => root.render(<Consumer />));
   expect(quote).not.toHaveBeenCalled();
-  expect(['reference-table', 'hidden']).toContain(rates.display('di-ltd:member').status);
+  expect(rates.display('li-term:member').status).toBe('hidden');
   expect(container.textContent).not.toContain('Estimate unavailable');
 });

@@ -1,7 +1,7 @@
 import { applicationSupportId, type ApplicationSupportIds } from './applicationSupportReference';
 
-/** Local presentation contract for prototype scenarios. Service integration is deferred to the rules review. */
-export const recoveryCodes = ['PAGE_NOT_FOUND', 'PAGE_LOAD_FAILED', 'SESSION_EXPIRED', 'TECHNICAL_ERROR', 'MAINTENANCE', 'VALIDATION_FAILED', 'OFFLINE', 'SAVE_FAILED', 'SAVE_CONFLICT', 'APPLICATION_UNAVAILABLE', 'OPERATION_PENDING', 'OPERATION_TIMED_OUT', 'OUTCOME_UNKNOWN', 'OPERATION_COMPLETE'] as const;
+/** Public recovery contract. The prototype uses local service simulations. */
+export const recoveryCodes = ['PAGE_NOT_FOUND', 'PAGE_LOAD_FAILED', 'SESSION_EXPIRED', 'TECHNICAL_ERROR', 'MAINTENANCE', 'VALIDATION_FAILED', 'OFFLINE', 'OPERATION_PENDING', 'OPERATION_TIMED_OUT', 'OUTCOME_UNKNOWN', 'OPERATION_COMPLETE'] as const;
 export const recoveryOperations = ['page', 'save', 'resume', 'rating', 'signature', 'decision', 'payment', 'submission'] as const;
 export const recoveryOutcomes = ['not-started', 'pending', 'failed', 'succeeded', 'unknown'] as const;
 export type RecoveryCode = typeof recoveryCodes[number];

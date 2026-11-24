@@ -1,7 +1,9 @@
+// Historical captured-record regression; live source parity is tested by test:fresh-start.
 import { afterEach, beforeAll, expect, it } from 'vitest';
 import { createReviewedMigrationDatabase } from '../migration/fixtures';
 import { getPageSections } from '../config/pageSections/getPageSections';
-import { installPrototypeLibrary, resolvePrototypeLibrary } from './prototypeLibrary';
+import { installPrototypeLibrary } from "./prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "../migration/snapshotTestLibrary";
 import type { DatabaseSchema } from '../persistence/types';
 
 let baseline: DatabaseSchema;

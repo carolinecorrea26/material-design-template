@@ -1,4 +1,4 @@
-import { requirementHelpChips, requirementText } from "../domain/requirementContent";
+import { requirementPageHelpChips, requirementText } from "../domain/requirementContent";
 
 /** Shared by rendered controls and Library inspection. These are element labels,
  * not analytics action descriptions. */
@@ -9,26 +9,6 @@ export const menuTools = {
   "coverage-needs": { label: "Needs Calculator", title: "How much coverage do I need?" },
 } as const;
 
-export const helpChipDefinitions = {
-  coverageOptions: { id: "coverage-options-available", label: requirementText("membership.help.coverage-options") },
-  applying: { id: "application-process", label: requirementText("membership.help.how-applying-works") },
-  beneficiaryBasics: { id: "beneficiary-basics", label: "What is a beneficiary?" },
-  beneficiaryShare: { id: "beneficiary-share", label: "What is the % share?" },
-  payment: { id: "payment-handling", label: "How is my payment information handled?" },
-  health: { id: "health-info-use", label: "How is my health information used?" },
-} as const;
-
-export const pageHelpChips: Record<string, readonly { id: string; label: string }[]> = {
-  membership: requirementHelpChips("membership"),
-  coverage: [],
-  beneficiary: [helpChipDefinitions.beneficiaryBasics, helpChipDefinitions.beneficiaryShare],
-  payment: [helpChipDefinitions.payment],
-  "health-si": [helpChipDefinitions.health],
-  "health-di": [helpChipDefinitions.health],
-  "health-li": [helpChipDefinitions.health],
-  "health-ci": [helpChipDefinitions.health],
-  "health-cir": [helpChipDefinitions.health],
-  "health-qd": [helpChipDefinitions.health],
-};
+export const pageHelpChips = requirementPageHelpChips();
 
 export const coverageLinkUnavailableMessage = requirementText("coverage.no-coverage");

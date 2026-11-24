@@ -3,23 +3,44 @@
     {
       "id": "coverage-category-availability",
       "name": "Determine available coverage categories",
-      "status": "draft",
-      "statement": "A category is available when it has available products and passes the configured category eligibility decision.",
+      "status": "confirmed",
+      "statement": "In the application, a category is available when it has available products and passes the configured category eligibility decision. The quote tool offers categories with assigned products without applying application eligibility decisions.",
       "source": "src/app/workflows/QuoteCalculator.tsx; src/app/useCoverageState.ts"
     },
     {
       "id": "coverage-question-participation",
       "name": "Select questions for the selected coverage",
-      "status": "draft",
+      "status": "confirmed",
       "statement": "Include questions applicable to selected categories and participating applicants, subject to configured additions and exclusions.",
       "source": "src/config/fields/homeQuoteFields.ts; src/app/workflows/QuoteCalculator.tsx; src/app/useCoverageState.ts"
     },
     {
       "id": "coverage-selection-policy",
       "name": "Resolve shared coverage eligibility and amount choices",
-      "status": "draft",
-      "statement": "Restrict product/applicant elections and amount choices according to current facts and configured product policies.",
+      "status": "confirmed",
+      "statement": "In the application, restrict product/applicant elections and amount choices according to current facts and configured product policies. The quote tool validates only its presented fields and selections, offers configured estimate amounts and riders subject to the selected base amount, rider amount limits and rider dependencies, and does not require or enforce application-only eligibility, residency, military, classification, verification or underwriting answers. Missing application facts must not disable quote selections or produce eligibility diagnostics. Apply carries the quote into Membership; the application collects and validates its own requirements.",
       "source": "src/domain/coverageRuntime.ts; src/app/workflows/QuoteCalculator.tsx; src/app/useCoverageState.ts; src/pages/Coverage.tsx"
+    },
+    {
+      "id": "coverage-rider-applicant-wording",
+      "name": "Scope rider notes to their applicant election",
+      "status": "confirmed",
+      "statement": "A rider definition may author applicantDescriptions keyed by member, spouse or child. Coverage election controls show only the current applicant’s wording; member-only quote controls use the member wording. Generic rider description remains for shared offering overviews and riders with no scoped copy. Do not display another applicant’s amount limits inside an applicant-specific rider control.",
+      "source": "User correction November 14, 2026; src/domain/riderDescription.ts; requirements/global/products.json"
+    },
+    {
+      "id": "coverage-product-copy-and-verified-spouse-cap",
+      "name": "Shared product wording and verified member/spouse caps",
+      "status": "confirmed",
+      "statement": "Product definitions declare shared presentation slots for names, descriptions, separate bold description notices and applicant-specific notes. Effective Sites assign their wording through product presentation, reused by Coverage, quotes, offering overviews and Library. A dependent policy may enable memberCapRequiresVerifiedCoverage alongside memberCapMultiplier for spouse coverage. Only positive TPA-verified matching member coverage activates this cap; without it, display configured applicant guidance without applying that cap. When active, compare each person’s verified existing plus currently selected requested amount for the same product. Existing spouse coverage consumes capacity; never borrow another product’s member coverage. Choices and validation use the same result, and unselected/removed amounts do not participate. Source definitions and rules are global; effective values belong to Sites.",
+      "source": "User Coverage confirmation November 17, 2026; src/domain/dependentPolicy.ts; src/domain/prototypeCoverageDecision.ts; src/domain/coverageHousehold.ts; requirements/global/products.json; requirements/parked/sites/asce/products.json"
+    },
+    {
+      "id": "coverage-rider-controls-after-selection",
+      "name": "Show rider controls after selecting coverage",
+      "status": "confirmed",
+      "statement": "Quote and Coverage product cards show rider controls only after coverage is selected with a positive base amount, or for an explicitly configured standalone rider election. Changing the amount applies the configured rider minimum/maximum base and amount rules through the shared selection evaluator.",
+      "source": "User WAEPA correction November 19, 2026; src/components/coverage/ProductCatalog.tsx; src/components/coverage/EstimatorProductCard.tsx; src/domain/applicationRiders.ts"
     }
   ]
 }

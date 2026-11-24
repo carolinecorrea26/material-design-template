@@ -1,4 +1,5 @@
-import { orderCoveragePresentation } from "../../domain/coveragePresentation";
+import { getCoverageOfferingRanges, orderCoveragePresentation } from "../../domain/coveragePresentation";
+import { formatCoverageRange } from '../../utils/formatCoverageRange';
 import { useEffect, useMemo, useState } from "react";
 import {
   Alert,
@@ -12,7 +13,7 @@ import {
 import QuickDecisionIndicator from "./QuickDecisionIndicator";
 import QuickDecisionInfoBox from "../content/QuickDecisionInfoBox";
 import {
-  coverageCategories,
+  getCoverageCategories,
   getCoverageCategorySectionLabel,
 } from "../../config/coverageCategories";
 import type {
@@ -20,55 +21,35 @@ import type {
   CoverageCategoryId,
   CoverageDefinition,
 } from "../../config/coverages/types";
-import { formatUSD } from "../../utils/formatUSD";
 import { SURFACE_SX } from "../../config/constants";
-import { getCoverageAmountRange } from "../../utils/coverageAmounts";
 
 
 const PAGE_GRADIENT =
   "linear-gradient(135deg, #f4f8ff 0%, #ffffff 52%, #f7fbff 100%)";
 
-function formatCoverageRange(coverage: CoverageDefinition) {
-  const { minAmount, maxAmount } = getCoverageAmountRange(coverage);
-  if (minAmount == null && maxAmount == null) {
-    return "Coverage amount varies by selection.";
-  }
-
-  if (minAmount != null && maxAmount != null) {
-    return `${formatUSD(minAmount, 0)} - ${formatUSD(
-      maxAmount,
-      0,
-    )}`;
-  }
-
-  if (minAmount != null) {
-    return `Starting at ${formatUSD(minAmount, 0)}`;
-  }
-
-  return `Up to ${formatUSD(maxAmount ?? 0, 0)}`;
-}
-
-
 export type CoverageOptionsPanelProps = {
+  animateQuickDecision?: boolean;
   variant: "page" | "drawer";
   content: import("../../content/types").SiteContent;
   coverages: CoverageDefinition[];
   coverageConfig: import("../../config/clients/types").ClientCoverages;
+  firstCategory?: string | null;
   featuredProduct?: string | null;
   initialCategory?: CoverageCategoryId;
 };
 
 export default function CoverageOptionsPanel({
+  animateQuickDecision = false,
   variant,
-  initialCategory, content, coverages, coverageConfig, featuredProduct = null,
+  initialCategory, content, coverages, coverageConfig, featuredProduct = null, firstCategory = null,
 }: CoverageOptionsPanelProps) {
   const getApplicantLabel = (applicant: CoverageApplicantId) => content.shared.applicantLabels[applicant];
 
   const coverageGroups = useMemo(
     () => {
-      const ordered = orderCoveragePresentation(coverages, coverageConfig, featuredProduct);
+      const ordered = orderCoveragePresentation(coverages, coverageConfig, featuredProduct, firstCategory);
       return ordered.categories
-        .map(id => coverageCategories.find(category => category.id === id)!)
+        .map(id => getCoverageCategories(coverageConfig.categoryNames).find(category => category.id === id)!)
         .map((category) => ({
           category,
           products: ordered.products
@@ -76,7 +57,7 @@ export default function CoverageOptionsPanel({
         }))
         .filter((group) => group.products.length > 0);
     },
-    [coverages, coverageConfig, featuredProduct],
+    [coverages, coverageConfig, featuredProduct, firstCategory],
   );
 
   const [activeCategory, setActiveCategory] = useState<CoverageCategoryId>(
@@ -125,7 +106,7 @@ export default function CoverageOptionsPanel({
 
   return (
     <Stack spacing={variant === "page" ? 2.5 : 0}>
-      <QuickDecisionInfoBox />
+      {coverages.some(product => product.underwritingType === 'QD') && <QuickDecisionInfoBox animateOnReveal={animateQuickDecision} />}
 
       <Box sx={boxSx}>
         {coverageGroups.length === 0 ? (
@@ -273,7 +254,7 @@ export default function CoverageOptionsPanel({
 
                   <Stack spacing={1.5}>
                     {activeGroup.products.map((product) => (
-                      <Box key={product.id}>
+                      <Box key={product.id} data-coverage-summary={product.id}>
                         <Stack spacing={0.4}>
                           <Typography
                             component="span"
@@ -291,13 +272,15 @@ export default function CoverageOptionsPanel({
                           <Typography variant="body2" color="text.secondary">
                             {product.description ?? product.definition}
                           </Typography>
-                          <Typography variant="caption" color="text.secondary">
-                            {formatCoverageRange(product)} ·{" "}
-                            {content.home.availableForLabel}{" "}
-                            {product.applicants
-                              .map(getApplicantLabel)
-                              .join(", ")}
-                          </Typography>
+                          {product.descriptionNotice && <Typography variant="body2" color="text.secondary" component="strong" sx={{ display: 'block', fontWeight: 700 }}>{product.descriptionNotice}</Typography>}
+                          <Typography variant="caption" color="text.secondary">{content.home.availableForLabel}</Typography>
+                          <Box component="dl" sx={{ m: 0, display: 'grid', rowGap: 0.5 }}>
+                            {getCoverageOfferingRanges(product).map(range => <Box component="div" key={range.applicant} data-coverage-applicant={range.applicant}
+                              sx={{ display: 'grid', gridTemplateColumns: { xs: 'minmax(0, 1fr)', sm: 'max-content minmax(0, 1fr)' }, columnGap: 1 }}>
+                              <Typography component="dt" variant="caption" color="text.secondary">{getApplicantLabel(range.applicant)}</Typography>
+                              <Typography component="dd" variant="caption" color="text.secondary" sx={{ m: 0, minWidth: 0 }}>{formatCoverageRange(range)}</Typography>
+                            </Box>)}
+                          </Box>
                         </Stack>
                       </Box>
                     ))}

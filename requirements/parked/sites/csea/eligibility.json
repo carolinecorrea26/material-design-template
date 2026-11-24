@@ -1,0 +1,12 @@
+{
+  "configurations": {
+    "eligible-states-only": true,
+    "eligible-states": [
+      "NY",
+      "NJ",
+      "VT",
+      "PA",
+      "CT"
+    ]
+  }
+}

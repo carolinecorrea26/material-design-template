@@ -43,7 +43,9 @@ export function resolveBenefitLimit(requirements: CoverageRequirements | undefin
   return { maximum: facts.averageMonthlyIncome === undefined || maximum === undefined ? undefined : Math.min(facts.averageMonthlyIncome * rule.incomeFraction, maximum), applicableCap: maximum, requiredWaitingPeriod: cap?.requiredWaitingPeriod, requiredBenefitPeriod: cap?.requiredBenefitPeriod };
 }
 
-export function coverageRelationshipErrors(products: CoverageDefinition[], selections: Record<string, CoverageApplicantId[]>): string[] {
+export type ExistingCoverage = { productKey: string; categoryId: CoverageDefinition["categoryId"]; applicant: CoverageApplicantId; amount: number };
+
+export function coverageRelationshipErrors(products: CoverageDefinition[], selections: Record<string, CoverageApplicantId[]>, existing: ExistingCoverage[] = []): string[] {
   const errors = new Set<string>();
   for (const product of products) {
     if (!selections[product.id]?.length) continue;
@@ -56,7 +58,7 @@ export function coverageRelationshipErrors(products: CoverageDefinition[], selec
   }
   for (const product of products) for (const applicant of selections[product.id] ?? []) {
     for (const rule of product.requirements?.dependencies ?? []) {
-      if (rule.applicantType === applicant && !products.some((candidate) => candidate.categoryId === rule.categoryId && (!rule.sameProduct || candidate.id === product.id) && selections[candidate.id]?.includes(rule.requiresApplicant))) errors.add(`${applicant} ${product.categoryId} coverage requires ${rule.requiresApplicant} ${rule.categoryId} coverage.`);
+      if (rule.applicantType === applicant && !products.some((candidate) => candidate.categoryId === rule.categoryId && (!rule.sameProduct || candidate.id === product.id) && selections[candidate.id]?.includes(rule.requiresApplicant)) && !existing.some(candidate => candidate.amount > 0 && candidate.applicant === rule.requiresApplicant && candidate.categoryId === rule.categoryId && (!rule.sameProduct || candidate.productKey === product.id))) errors.add(`${applicant} ${product.categoryId} coverage requires ${rule.requiresApplicant} ${rule.categoryId} coverage.`);
     }
     for (const rule of product.requirements?.maximumPlans ?? []) {
       if (rule.applicantType === applicant && products.filter((candidate) => candidate.categoryId === rule.categoryId && selections[candidate.id]?.includes(applicant)).length > rule.count) errors.add(`${applicant} may be covered under only ${rule.count} ${rule.categoryId} plan.`);

@@ -17,14 +17,16 @@ export function fieldValidationChecks(field: FieldDefinition): FieldValidationCh
     if (field.options?.length) add("Select available options", requirementValidationMessage("available-selections", { label: field.label }), value => value === undefined || value === null || Array.isArray(value) && new Set(value).size === value.length && value.every(item => typeof item === "string" && field.options!.some(option => option.value === item)));
     return checks;
   }
-  if (field.required) add("Required", requirementValidationMessage("required-fields", { label: field.label }), value => !!value, "required");
+  if (field.required) add("Required", requirementValidationMessage("required-fields", { label: field.label }), value => typeof value === 'string' ? value.trim().length > 0 : !!value, "required");
   if (field.minLength !== undefined) add(`At least ${field.minLength} characters`, requirementValidationMessage('field-minimum-length', { label: field.label, minimumLength: String(field.minLength) }), value => !value || String(value).length >= field.minLength!);
   if (["radio", "dropdown", "searchable-select"].includes(field.inputType) && field.options?.length) add("Select an available option", requirementValidationMessage("available-selection", { label: field.label }), value => value === undefined || value === null || value === "" || typeof value === "string" && field.options!.some(option => option.value === value));
   if (field.maxLength !== undefined) add(`At most ${field.maxLength} characters`, requirementValidationMessage("field-maximum-length", { label: field.label, maximumLength: String(field.maxLength) }), value => !value || (field.format === 'currency' || field.format === 'percent' ? String(value).replace(/[^0-9]/g, '').length : String(value).length) <= field.maxLength!);
+  for (const bound of ['minimum', 'maximum'] as const) if (field[bound] !== undefined) add(`${bound === 'minimum' ? 'At least' : 'At most'} ${field[bound]}`, requirementValidationMessage('field-numeric-range', { label: field.label, bound: bound === 'minimum' ? 'at least' : 'at most', limit: String(field[bound]) }), value => !value || (bound === 'minimum' ? Number(value) >= field[bound]! : Number(value) <= field[bound]!));
   let valueCheck: FieldValidationCheck | undefined;
   const format = (rule: string, message: string, validate: FieldValidationCheck["validate"]) => { valueCheck = { kind: "value", rule, message, validate: value => !value || validate(value) }; };
   const digits = (value: unknown) => String(value).replace(/\D/g, "");
   if (field.format === 'postal-code' || field.autoComplete === "postal-code") format("US ZIP (5 or 9 digits) or Canadian postal code", requirementValidationMessage("postal-code-format"), value => isValidZipOrPostalCode(String(value)));
+  if (field.format === 'alphanumeric') format('Letters and digits only', requirementValidationMessage('field-alphanumeric', { label: field.label }), value => /^[a-z0-9]+$/i.test(String(value)));
   if (field.format === 'digits') format('Digits only', requirementValidationMessage('field-digits', { label: field.label }), value => /^\d+$/.test(String(value)));
   if (field.format === "email") format("Valid email address", requirementValidationMessage("field-email"), value => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value)));
   if (field.format === "phone") format("Phone number: exactly 10 digits", requirementValidationMessage("field-phone"), value => digits(value).length === 10);
@@ -43,6 +45,7 @@ export function getFieldValidationRules(field: FieldDefinition) {
   const required = checks.find(check => check.kind === 'required');
   if (required) rules.required = required.message;
   const valueChecks = checks.filter(check => check.kind !== 'required');
+  if (required && field.inputType === 'text') valueChecks.unshift({ ...required, validate: value => typeof value !== 'string' || required.validate(value) });
   if (valueChecks.length) rules.validate = value => valueChecks.find(check => !check.validate(value))?.message ?? true;
   return rules;
 }

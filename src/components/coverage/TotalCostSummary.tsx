@@ -26,6 +26,7 @@ type TotalCostPanelProps = {
   disclaimer?: ReactNode;
   title?: string;
   display?: RateDisplayState;
+  showItems?: boolean;
   rateAppearance?: EstimatedRateProps['appearance'];
 };
 
@@ -34,7 +35,7 @@ type TotalCostPanelProps = {
  * and CoverageSummary (ECart drawer).
  *
  * Styling: bg #f8fafd, border 2px solid primary, borderRadius 16px.
- * Prices use EstimatedRate’s shared bold, primary-color presentation.
+ * Prices use EstimatedRate’s shared 1rem normal text color; only the total amount uses primary color.
  */
 export default function TotalCostSummary({
   items,
@@ -45,6 +46,7 @@ export default function TotalCostSummary({
   title = "Total Estimated Cost",
   display,
   rateAppearance = 'product',
+  showItems = true,
 }: TotalCostPanelProps) {
   if (display?.status === 'hidden') return null;
   const displays = items.map((item): RateDisplayState => {
@@ -70,7 +72,7 @@ export default function TotalCostSummary({
           {title}<sup>1</sup>
         </Typography>
 
-        {items.map((item, index) => (
+        {showItems && items.map((item, index) => (
           <Stack
             key={item.id}
             direction="row"
@@ -94,7 +96,7 @@ export default function TotalCostSummary({
         >
           <Typography variant="subtitle2" fontWeight={700}>{requirementText("coverage.total-cost-summary.total")}<sup>1</sup>
           </Typography>
-          <EstimatedRate appearance={rateAppearance} display={totalDisplay} amount={total} suffix={totalSuffix} isCalculating={isCalculating} />
+          <EstimatedRate appearance={rateAppearance} sx={{ color: "primary.main" }} display={totalDisplay} amount={total} suffix={totalSuffix} isCalculating={isCalculating} />
         </Stack>}
 
         {disclaimer && (

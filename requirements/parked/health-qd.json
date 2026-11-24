@@ -2,7 +2,15 @@
   "page": "health-qd",
   "components": [
     {
-      "type": "health-qd"
+      "type": "PrototypeHandoffPage",
+      "purpose": "shared full-screen prototype sequence; delegates saving and transition lifecycle to FormRoutePage",
+      "components": [
+        {
+          "type": "FormRoutePage",
+          "mapping": "form-route-page"
+        }
+      ],
+      "mapping": "health-qd"
     }
   ],
   "definition": {
@@ -15,8 +23,6 @@
     "displayName": "Health QD"
   },
   "position": 10,
-  "fieldBindings": [],
-  "looseFields": [],
   "layout": {
     "sections": {}
   },
@@ -27,8 +33,19 @@
       "page.health-qd.nav-title"
     ],
     "runtime": [
-      "application.ui.sm",
-      "application.ui.support-reference"
+      "handoff.continue",
+      "handoff.image-unavailable"
     ]
+  },
+  "retiredDecisionKeys": [
+    "business-decision.rules-review.external-qd-questionnaire"
+  ],
+  "contentSlots": {
+    "page.health-qd.title": {
+      "name": "Page title (underlying image-handoff page)"
+    },
+    "page.health-qd.subhead": {
+      "name": "Page introduction (underlying image-handoff page)"
+    }
   }
 }

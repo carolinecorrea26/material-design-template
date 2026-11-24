@@ -1,7 +1,6 @@
 {
   "page": "beneficiary",
-  "requirement": "required",
-  "position": 4,
+  "requirement": "optional",
   "productNotes": {
     "li-term": {
       "content": "beneficiary.note.replaces-prior",

@@ -3,6 +3,8 @@ import { createRoot } from "react-dom/client";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, beforeAll, expect, it, vi } from "vitest";
 import dayjs from "dayjs";
+import { freshStartSource } from "../domain/freshStartCatalog";
+import { journeyAssignment, journeyLibrary } from "./freshStartJourneyFixtures";
 import { createReviewedMigrationDatabase } from "./fixtures";
 import { applyAmaActiveWorkAdoption } from "./amaActiveWorkAdoption";
 import { installPrototypeLibrary, resolvePrototypeLibrary } from "../domain/prototypeLibrary";
@@ -38,7 +40,7 @@ it("executes the stored AMA answer with no hours threshold in both eligibility A
 it("scopes the replacement to AMA DI and uses the same quote field", () => {
   const library = resolvePrototypeLibrary(db, "ama", "test:questions");
   installPrototypeLibrary(library);
-  expect(getCategoryQuestionFieldIds(["DI"])).toEqual(["gender", "actively-at-work", "average-monthly-income"]);
+  expect(getCategoryQuestionFieldIds(["DI"])).toEqual(expect.arrayContaining(["gender", "actively-at-work", "average-monthly-income", "applicant-class", "existing-step-rated-monthly-benefit", "existing-level-rated-monthly-benefit"]));
   expect(getCategoryQuestionFieldIds(["DI", "LI"])).not.toContain("hours-worked-per-week");
   expect(getCategoryQuestionFieldIds(["LI"])).not.toContain("actively-at-work");
   expect(getCategoryQuestionFieldIds(["DI", "OO"])).toContain("hours-worked-per-week");
@@ -50,10 +52,10 @@ it("scopes the replacement to AMA DI and uses the same quote field", () => {
 });
 
 it("preserves the decision on serialization and follows edited Library policy values", () => {
-  const changed = JSON.parse(JSON.stringify(db)) as DatabaseSchema;
-  const policy = changed.configurationValues.find(row => row.key === "ama.di-step-rated.active-work")!;
-  policy.value = [{ fact: "activelyAtWork", equals: false }];
-  const library = resolvePrototypeLibrary(changed, "ama", "test:edited-policy");
+  const source = structuredClone(freshStartSource());
+  const policy = journeyAssignment<Array<{ fact: string; equals: boolean }>>(source, 'ama', 'di-step-rated', 'product-eligibility-facts');
+  policy[0].equals = false;
+  const library = journeyLibrary('ama', source);
   installPrototypeLibrary(library);
   expect(resolveEffectiveEligibility(library.site, "di-step-rated", "member", { membershipType: "physician", ageYears: 35, activelyAtWork: false })).toMatchObject({ eligible: true });
   expect(resolveApplicationCoverage(library.products.find(product => product.id === "di-step-rated")!, "member", values("no"), library.products).eligibility).toBe("eligible");
@@ -80,7 +82,9 @@ it.each([{ categories: ["DI"] }, { categories: ["DI", "LI"] }])("renders the sta
     expect(container.textContent).toContain("Are you actively at work performing the normal duties of your occupation?");
     expect(container.querySelector('[name="hours-worked-per-week"]')).toBeNull();
     expect([...container.querySelectorAll('[role="alert"]')].some(alert => /Based on your answers, you are not eligible for .*coverage at this time/.test(alert.textContent ?? ""))).toBe(true);
-    expect(container.textContent).not.toContain("Disability Insurance with Step Rated Premiums");
+    // Retained selected coverage remains editable; the shared warning and
+    // submit validator prevent continuing with an ineligible election.
+    expect(validateApplicationCoverages(journeyLibrary("ama").products, { ...values("no"), coverageSelections: ["di-step-rated"], productApplicants: { "di-step-rated": ["member"] }, coverageAmounts: { "di-step-rated:member": 100 } })).toContain("eligibility");
     if (categories.includes("LI")) expect(container.textContent).toContain("20-Year Level Term Life Insurance");
   } finally {
     await act(async () => root.unmount()); container.remove();

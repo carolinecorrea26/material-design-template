@@ -182,7 +182,7 @@ export default function ConfigReferenceList({
                   <TableCell
                     sx={{
                       verticalAlign: "top",
-                      fontSize: "0.8125rem",
+                      fontSize: "caption.fontSize",
                       whiteSpace: "normal !important",
                     }}
                   >

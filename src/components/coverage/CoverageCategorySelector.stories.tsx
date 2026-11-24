@@ -1,7 +1,8 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import CoverageCategorySelector from "./CoverageCategorySelector";
-import { coverageCategories } from "../../config/coverageCategories";
+import ComponentFixture from "../../../.storybook/fixtures/ComponentFixture";
+import { getCoverageCategories } from "../../config/coverageCategories";
 import type { CoverageCategoryId } from "../../config/coverageCategories";
 
 /** Coverage categories rendered with FieldRenderer's standard checkbox group. */
@@ -27,8 +28,9 @@ function SelectorDemo({
 }) {
   const [selectedIds, setSelectedIds] = useState<CoverageCategoryId[]>(initialSelectedIds);
   return (
-    <CoverageCategorySelector
-      categories={coverageCategories}
+    <ComponentFixture>{fixture => <CoverageCategorySelector
+      field={fixture.fieldSurfaces.coverageControls.mapping.fields.find(field => field.id === "coverage-categories")}
+      categories={getCoverageCategories(fixture.client.coverages.categoryNames).filter(category => fixture.products.some(product => product.categoryId === category.id))}
       selectedIds={selectedIds}
       onToggle={(id) =>
         setSelectedIds((current) =>
@@ -38,7 +40,7 @@ function SelectorDemo({
       legend={legend}
       error={error}
       errorMessage={errorMessage}
-    />
+    />}</ComponentFixture>
   );
 }
 
@@ -54,14 +56,5 @@ export const RequiredError: StoryObj = {
   name: "error (nothing selected, required)",
   render: () => (
     <SelectorDemo error errorMessage="Select at least one coverage type." />
-  ),
-};
-
-export const CustomLegend: StoryObj = {
-  render: () => (
-    <SelectorDemo
-      initialSelectedIds={["DI"]}
-      legend="Which coverage would you like a quote for?"
-    />
   ),
 };

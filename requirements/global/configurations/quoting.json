@@ -22,15 +22,26 @@
     },
     {
       "id": "coverage-increase-note",
-      "name": "Coverage increase wording",
-      "status": "draft",
+      "name": "Additional/total coverage message",
+      "status": "confirmed",
       "type": "enum",
       "default": "applyForAdditional",
       "options": [
         "applyForAdditional",
         "applyForTotal"
       ],
-      "source": "Existing Coverage presentation; behavior unchanged pending increase rule review"
+      "source": "Global shared message selection only. Effective Sites select the additional-coverage or total-coverage message; the default is applyForAdditional. This setting does not affect calculations, eligibility, amount choices, validation or in-force deductions. User decision November 16, 2026; src/components/coverage/ProductCatalog.tsx"
+    },
+    {
+      "id": "coverage-cost-breakdown",
+      "name": "Show itemized product cost breakdown",
+      "type": "boolean",
+      "status": "confirmed",
+      "default": false,
+      "source": "Shared Coverage presentation; itemize only reconciled quote components. Pricing policies own fees, credits and rider values; the display setting never adds charges. User decision November 15, 2026.",
+      "replaces": [
+        "coverages.productEstimatedCostBreakdown"
+      ]
     }
   ]
 }

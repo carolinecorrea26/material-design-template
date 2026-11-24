@@ -1,17 +1,17 @@
+// Historical adoption: resolve the captured input, never today's application source.
+// Historical normalization: assertions resolve the captured snapshot explicitly.
 import { afterEach, describe, expect, it } from "vitest";
 import { createReviewedMigrationDatabase } from "./fixtures";
 import { consolidateAmountOwnership } from "./amountOwnership";
 import { validateMigrationDatabase } from "./integrity";
-import { resolveEffectiveSite } from "../domain/effectiveSite";
+import { resolveSnapshotSite as resolveEffectiveSite } from "../domain/effectiveSite";
 import { isBenefitPolicy, resolveNormalizedBenefit } from "../domain/benefitPolicy";
 import { buildPrototypeAmounts } from "../domain/prototypeProductProjection";
 import { buildPrototypeClient } from "../domain/prototypeConfigurationProjection";
-import { installPrototypeLibrary, resolvePrototypeLibrary } from "../domain/prototypeLibrary";
+import { installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import { resolveApplicationCoverage } from "../domain/coverageRuntime";
 import { validateNormalizedCoverageAmount } from "../domain/normalizedCoverageAmounts";
-import { createLibraryDraft, editDraftBenefitPolicy } from "../domain/libraryDraft";
-import { LocalStorageAdapter } from "../persistence/localAdapter";
-import { createPortalDataRepository } from "../repositories/portalDataRepository";
 
 const db = createReviewedMigrationDatabase();
 const business = new Set(["abe", "ama", "asce", "avma", "csea", "nso", "isitrust", "waepa", "waepa-gi"]);
@@ -111,16 +111,6 @@ describe("single structured amount owner", () => {
     expect(JSON.stringify(copy)).toBe(before);
   });
 
-  it("writes draft amount edits into structured rows while preserving linked policy modifiers", async () => {
-    const draft = createLibraryDraft(await createPortalDataRepository(new LocalStorageAdapter(db)).open(), "waepa");
-    const before = JSON.stringify(draft);
-    const policy = resolveEffectiveSite(draft.data, draft.siteKey).configuration.products.find(product => product.productKey === "di-short-term")!.benefitPolicies[0].value;
-    if (!isBenefitPolicy(policy)) throw new Error("Missing policy fixture");
-    const edited = editDraftBenefitPolicy(draft, "di-short-term", { ...policy, applicants: policy.applicants.map(row => ({ ...row, increment: 50 })) });
-    const row = edited.data.configurationValues.find(row => row.key === "waepa.di-short-term.reviewed-benefit-policy")!;
-    expect(row.value).toMatchObject({ version: 2, amountSource: "product-amount-rules" });
-    expect(resolveNormalizedBenefit(resolveEffectiveSite(edited.data, edited.siteKey), "di-short-term", "member", { ageYears: 40, monthlyIncome: 100000, amount: 150 })).toMatchObject({ allowed: true, increment: 50 });
-    expect(edited.editVersion).toBe(1);
-    expect(JSON.stringify(draft)).toBe(before);
-  }, 15000);
+  // Structured amount edits and linked policy preservation are checked above.
+  // The superseded Site Builder writer is outside the fresh-start runtime.
 });

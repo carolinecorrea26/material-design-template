@@ -7,7 +7,7 @@ import type { CoverageAmountAssignment } from "../coverages/types";
 import type { CoverageDefinition } from "../coverages/types";
 import { coverages } from "../coverages";
 import { getClientCoverages } from "../client/getActiveClientCoverages";
-import { coverageUnlocksPage } from "../flowGates";
+import { coverageUnlocksPage, flowGateDefinitions, type FlowInspectionContext } from "../flowGates";
 import { HEALTH_PAGE_IDS } from "../progressSteps";
 import type { ResolutionStatus } from "./types";
 
@@ -34,9 +34,9 @@ export type ResolvedCoverage = {
  * so it's reused here for the merge arithmetic and combined with the full
  * catalog to also surface what's excluded.
  */
-export function resolveClientCoverage(client: ClientConfig): ResolvedCoverage[] {
+export function resolveClientCoverage(client: ClientConfig, context?: FlowInspectionContext, products: CoverageDefinition[] = getClientCoverages(client)): ResolvedCoverage[] {
   const effectiveById = new Map(
-    getClientCoverages(client).map((coverage) => [coverage.id, coverage]),
+    products.map((coverage) => [coverage.id, coverage]),
   );
   const enabledIds = new Set(client.coverages.enabled ?? []);
 
@@ -64,7 +64,7 @@ export function resolveClientCoverage(client: ClientConfig): ResolvedCoverage[] 
     ) clientDiffs.push("coverageAmounts");
     if (description && description !== base.description) clientDiffs.push("description");
     const healthPagesUnlocked = HEALTH_PAGE_IDS.filter((pageId) =>
-      coverageUnlocksPage(pageId, effective),
+      coverageUnlocksPage(pageId, effective, context ?? { definitions: client.routingGates ?? flowGateDefinitions, template: client.features?.defaultTemplate ?? 'multi' }),
     );
 
     return {

@@ -1,3 +1,4 @@
+import { receiptConfirmationStorageKey } from '../domain/receiptConfirmation';
 import { readFileSync } from "node:fs";
 import { act, createElement, useEffect } from "react";
 import { createRoot, type Root } from "react-dom/client";
@@ -64,7 +65,15 @@ it("keeps cached email drafts local until Membership submission, then saves only
   await render();
   expect(mockRequest).toHaveBeenCalledTimes(2);
   expect(context.values["first-name"]).toBe("Later edit");
+  expect(context.savedApplicationExpiresAt).toBe(saved.expiresAt);
+  sessionStorage.setItem("receiptConfirmationNumber", "previous-receipt");
+  sessionStorage.setItem(receiptConfirmationStorageKey("asce"), "current-site-receipt");
+  sessionStorage.setItem(receiptConfirmationStorageKey("synthetic"), "other-site-receipt");
   await act(async () => context.resetValues());
+  expect(context.savedApplicationExpiresAt).toBeUndefined();
+  expect(sessionStorage.getItem("receiptConfirmationNumber")).toBeNull();
+  expect(sessionStorage.getItem(receiptConfirmationStorageKey("asce"))).toBeNull();
+  expect(sessionStorage.getItem(receiptConfirmationStorageKey("synthetic"))).toBe("other-site-receipt");
   await act(async () => { await context.saveApplication!({ email: saved.recipient }); });
   expect(mockRequest).toHaveBeenCalledTimes(2);
   expect(readSavedApplication("asce")).toBeNull();

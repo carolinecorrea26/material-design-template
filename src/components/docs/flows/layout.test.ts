@@ -60,3 +60,28 @@ it("advisor edge routes avoid unrelated cards, including cancel loops", () => {
     }
   }
 });
+
+import { intersects, segmentCrossesRect } from './routing';
+import { FLOW_NODE_WIDTH } from './layout';
+
+function assertClear(flow: typeof allFlows[number], measured = false) {
+  const sizes = measured ? { nodes: Object.fromEntries(flow.nodes.map((node, i) => [node.id, { width: FLOW_NODE_WIDTH, height: 70 + i % 4 * 35 }])), labels: Object.fromEntries(flow.edges.filter(edge => edge.condition).map((edge, i) => [edge.id, { width: 180, height: 45 + i % 3 * 24 }])) } : {};
+  const layout = computeFlowLayout(flow, sizes);
+  const boxes = layout.nodes.map(node => ({ ...node.position, width: FLOW_NODE_WIDTH, height: node.layoutHeight }));
+  const labels = Object.values(layout.edgeLabels);
+  for (let i = 0; i < boxes.length; i++) for (let j = i + 1; j < boxes.length; j++) expect(intersects(boxes[i], boxes[j]), `${flow.id}: nodes overlap`).toBe(false);
+  for (let i = 0; i < labels.length; i++) {
+    for (const box of boxes) expect(intersects(labels[i], box), `${flow.id}: label covers node`).toBe(false);
+    for (let j = i + 1; j < labels.length; j++) expect(intersects(labels[i], labels[j]), `${flow.id}: labels overlap`).toBe(false);
+  }
+  for (const edge of flow.edges) {
+    const points = layout.edgeRoutes[edge.id];
+    for (let i = 1; i < points.length; i++) for (const box of [...boxes, ...labels]) expect(segmentCrossesRect(points[i - 1], points[i], box), `${flow.id}: ${edge.id} crosses content`).toBe(false);
+  }
+}
+for (const flow of allFlows) it(`${flow.id}: routes around every node and label before and after browser remeasurement`, () => { assertClear(flow); assertClear(flow, true); });
+it('preserves branching with long labels, unbroken titles, parallel transitions and return loops', () => {
+  const source = allFlows.find(flow => flow.id === 'advisor')!;
+  const flow = { ...source, nodes: source.nodes.map(node => ({ ...node, label: node.label.repeat(5) })), edges: source.edges.map(edge => ({ ...edge, condition: `${edge.condition ?? 'Continue'} — a long branch explanation that must wrap without obscuring another branch` })) };
+  assertClear(flow, true);
+});

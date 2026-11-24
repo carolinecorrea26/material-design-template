@@ -1,0 +1,7 @@
+{
+  "page": "coverage",
+  "configurations": {
+    "estimated-rate-frequency": "annual",
+    "estimated-rate-frequency-toggle": false
+  }
+}

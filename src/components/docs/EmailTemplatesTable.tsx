@@ -1,3 +1,5 @@
+import type { PrototypeLibrary } from '../../domain/prototypeLibrary';
+import { useSearchParams } from 'react-router-dom';
 import Chip from "./LibraryTag";
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -23,7 +25,7 @@ import AppModal from "../layout/AppModal";
 import ClientNote, { CLIENT_HIGHLIGHT_BG } from "./ClientNote";
 import ResponsiveTableContainer from "./ResponsiveTableContainer";
 import {
-  readMockEmailPreviews,
+  getMockEmailSamples,
   subscribeToMockEmailPreviews,
   type MockEmailPreview as MockEmailPreviewData,
 } from "../../utils/mockEmail";
@@ -51,10 +53,12 @@ const FLOW_CHIP_COLOR = {
  */
 export default function EmailTemplatesTable({
   siteId,
+  library,
   highlightedIds,
   overrideNote,
 }: {
   siteId: SiteId;
+  library?: PrototypeLibrary;
   /** Row ids to render with the client-override yellow highlight. */
   highlightedIds?: Set<string>;
   /** Chip label shown under the email name for highlighted rows. */
@@ -62,13 +66,17 @@ export default function EmailTemplatesTable({
 }) {
   const [openRow, setOpenRow] = useState<EmailTemplateRow | null>(null);
   const [modalView, setModalView] = useState<ModalView>("mockup");
-  const [search, setSearch] = useState("");
+  const [urlSearch] = useSearchParams();
+  const linkedQuery = urlSearch.get('q') ?? '';
+  const [search, setSearch] = useState(linkedQuery);
+  useEffect(() => setSearch(linkedQuery), [linkedQuery]);
   const [emailType, setEmailType] = useState<EmailTypeFilter>(ALL_EMAIL_TYPES);
   const [previews, setPreviews] = useState<MockEmailPreviewData[]>(() =>
-    readMockEmailPreviews(siteId),
+    getMockEmailSamples(siteId, library ? { library } : undefined),
   );
   const { widths, resize } = useResizableColumns({
     flow: 120,
+    recipient: 130,
     email: 230,
     description: 320,
     whenSent: 360,
@@ -80,21 +88,21 @@ export default function EmailTemplatesTable({
     return emailTemplateRows.filter((row) => {
       if (emailType !== ALL_EMAIL_TYPES && row.flow !== emailType) return false;
       if (!query) return true;
-      return `${row.flow} ${row.title} ${row.description} ${row.whenSent} ${row.notes}`
+      return `${row.id} ${row.type} ${row.flow} ${row.recipient} ${row.title} ${row.description} ${row.whenSent} ${row.notes}`
         .toLowerCase()
         .includes(query);
     });
   }, [emailType, search]);
 
   useEffect(() => {
-    setPreviews(readMockEmailPreviews(siteId));
-  }, [siteId]);
+    setPreviews(getMockEmailSamples(siteId, library ? { library } : undefined));
+  }, [siteId, library]);
 
   useEffect(() => {
     return subscribeToMockEmailPreviews(() => {
-      setPreviews(readMockEmailPreviews(siteId));
+      setPreviews(getMockEmailSamples(siteId, library ? { library } : undefined));
     });
-  }, [siteId]);
+  }, [siteId, library]);
 
   const openPreview = useMemo(
     () =>
@@ -140,6 +148,7 @@ export default function EmailTemplatesTable({
           >
             <colgroup>
               <col style={{ width: widths.flow }} />
+              <col style={{ width: widths.recipient }} />
               <col style={{ width: widths.email }} />
               <col style={{ width: widths.description }} />
               <col style={{ width: widths.whenSent }} />
@@ -152,6 +161,10 @@ export default function EmailTemplatesTable({
                   onResize={(value) => resize("flow", value)}
                 >
                   Type
+                </ResizableHeaderCell>
+
+                <ResizableHeaderCell width={widths.recipient} onResize={value => resize('recipient', value)}>
+                  Recipient
                 </ResizableHeaderCell>
                 <ResizableHeaderCell
                   width={widths.email}
@@ -200,12 +213,14 @@ export default function EmailTemplatesTable({
                     />
                   </TableCell>
 
+                  <TableCell sx={{ verticalAlign: 'top' }}>{row.recipient}</TableCell>
+
                   <TableCell sx={{ whiteSpace: "normal !important", verticalAlign: "top" }}>
                     <Link
                       component="button"
                       type="button"
                       onClick={() => handleOpenRow(row)}
-                      sx={{ fontWeight: 700, textAlign: "left" }}
+                      sx={{ textAlign: "left" }}
                     >
                       {row.title}
                     </Link>
@@ -238,7 +253,7 @@ export default function EmailTemplatesTable({
               })}
               {filteredRows.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={5}>
+                  <TableCell colSpan={6}>
                     <Typography variant="body2" color="text.secondary" sx={{ py: 2 }}>
                       No email templates match these filters.
                     </Typography>
@@ -308,7 +323,7 @@ export default function EmailTemplatesTable({
                   bgcolor: "#f5f5f5",
                   color: "#111827",
                   fontFamily: "monospace",
-                  fontSize: "0.75rem",
+                  fontSize: "caption.fontSize",
                   lineHeight: 1.6,
                   whiteSpace: "pre-wrap",
                   wordBreak: "break-word",

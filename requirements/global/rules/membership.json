@@ -4,16 +4,25 @@
       "id": "membership-attestation-inline-stop",
       "name": "Stop inline for a disqualifying membership attestation",
       "status": "confirmed",
-      "fields": ["membership"],
-      "statement": "On the Membership page, a disqualifying answer to the applicant's yes/no membership attestation (No for ASCE) immediately shows the non-member feedback, hides the follow-up fields and disables Next. An accepted answer restores the follow-up fields and enables Next. This attestation is the only field allowed to stop a page inline. An unanswered attestation, other fields and other page-level business checks use normal submission validation and the page error alert. The spouse membership question on Eligibility does not inherit this exception.",
+      "fields": [
+        "membership"
+      ],
+      "statement": "On the Membership page, a disqualifying answer to the applicant's yes/no membership attestation immediately shows the non-member feedback, hides the follow-up fields and disables Next. An accepted answer restores the follow-up fields and enables Next. This attestation is the only field allowed to stop a page inline. An unanswered attestation, other fields and other page-level business checks use normal submission validation and the page error alert. The spouse membership question on Eligibility does not inherit this exception. Other configurations’ not-eligible outcomes use the page error on submission rather than the yes/no inline exception.",
       "source": "docs/requirements-spec/page-review.md; src/pages/Membership.tsx; src/components/membership/MembershipStatus.tsx"
     },
     {
       "id": "membership-follow-up-fields",
       "name": "Configure additional membership fields per site",
       "status": "confirmed",
-      "statement": "Additional Membership Information contains the site's enabled follow-up fields and appears only after an accepted membership answer. Field definitions and available configurations are shared; the component mapping marks default-off fields and the site's Membership page file includes or hides fields. Labels, options and requiredness are overridden in the site's field file.",
-      "source": "docs/requirements-spec/page-review.md; requirements/mappings/components/membership.json; requirements/parked/sites/asce/pages/membership.json"
+      "statement": "Additional Membership Information contains the site's enabled follow-up fields and appears only after an accepted membership answer. Field definitions and available configurations are shared; the component mapping marks default-off fields and the site's Membership page file includes or hides fields. Labels, options and supported requiredness are overridden in the site's field file. Shared outcome predicates resolve the selected effective option’s authored outcome (member or new-member), not a list of hardcoded answer values. The same predicates govern name/contact fields, the Phone Type companion and the additional section. Nested component placements and section order are compiled from the shared page definition. Custom category option values and labels belong to the Site, but their outcome must match a semantic outcome declared by the global field configurations (member, new-member or not-eligible). Missing or unknown outcomes are rejected before a page can render or save.",
+      "source": "docs/requirements-spec/page-review.md; requirements/mappings/components/membership.json; requirements/parked/sites/asce/pages/membership.json; Membership configuration audit November 15, 2026; src/domain/requirementFieldDefinitions.mjs"
+    },
+    {
+      "id": "membership-core-configuration-constraints",
+      "name": "Collect member identity before saving and recovery",
+      "status": "confirmed",
+      "statement": "Membership is the first required application form. Collect the membership answer and the applicant’s first name, last name, email, phone and phone type when applicable before saving the application or enabling recovery. Accepted-answer predicates control follow-up visibility. Validate the collected identity through the shared field definitions.",
+      "source": "User Membership configuration decisions November 15, 2026; requirements/mappings/components/membership.json#constraints; requirements/parked/pages.json; global-page-configuration-boundary"
     }
   ]
 }

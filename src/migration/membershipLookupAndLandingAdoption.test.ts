@@ -1,8 +1,10 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import { expect, it } from "vitest";
 import { createReviewedMigrationDatabase } from "./fixtures";
 import { applyMembershipLookupAndLandingAdoption } from "./membershipLookupAndLandingAdoption";
 import { prototypeRateRequest } from "../app/usePrototypeRates";
-import { installPrototypeLibrary, resolvePrototypeLibrary } from "../domain/prototypeLibrary";
+import { installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import { isApplicantExperience } from "../domain/applicantExperience";
 import { validateMigrationDatabase } from "./integrity";
 it("assigns reusable lookup/viewer definitions explicitly, preserving ABE Review and source evidence", () => {

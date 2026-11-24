@@ -127,14 +127,14 @@ export default function RuleReferenceList({
                 const showArea = i === 0 || rows[i - 1].area !== row.area;
                 return (
                   <TableRow key={row.id} sx={highlightAll ? { bgcolor: CLIENT_HIGHLIGHT_BG } : undefined}>
-                    <TableCell sx={{ verticalAlign: "top", fontFamily: "monospace", fontSize: "0.75rem" }}>
+                    <TableCell sx={{ verticalAlign: "top", fontFamily: "monospace", fontSize: "caption.fontSize" }}>
                       {row.id}
                     </TableCell>
                     <TableCell
                       sx={{
                         verticalAlign: "top",
                         fontWeight: 600,
-                        fontSize: "0.8125rem",
+                        fontSize: "caption.fontSize",
                         color: showArea ? "text.primary" : "transparent",
                         whiteSpace: "normal !important",
                         borderTop: showArea && i !== 0 ? "2px solid" : undefined,
@@ -147,7 +147,7 @@ export default function RuleReferenceList({
                       sx={{
                         verticalAlign: "top",
                         fontWeight: 600,
-                        fontSize: "0.8125rem",
+                        fontSize: "caption.fontSize",
                         whiteSpace: "normal !important",
                         borderTop: showArea && i !== 0 ? "2px solid" : undefined,
                         borderTopColor: showArea && i !== 0 ? "divider" : undefined,
@@ -158,7 +158,7 @@ export default function RuleReferenceList({
                     <TableCell
                       sx={{
                         verticalAlign: "top",
-                        fontSize: "0.8125rem",
+                        fontSize: "caption.fontSize",
                         whiteSpace: "normal !important",
                         borderTop: showArea && i !== 0 ? "2px solid" : undefined,
                         borderTopColor: showArea && i !== 0 ? "divider" : undefined,
@@ -258,7 +258,7 @@ export default function RuleReferenceList({
                   <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
                     {area}
                   </Typography>
-                  <Chip label={grouped[area].length} size="small" sx={{ height: 18, fontSize: "0.7rem" }} />
+                  <Chip label={grouped[area].length} size="small" sx={{ height: 18, fontSize: "caption.fontSize" }} />
                 </Stack>
               </AccordionSummary>
               <AccordionDetails sx={{ p: 0 }}>
@@ -292,16 +292,16 @@ export default function RuleReferenceList({
                     <TableBody>
                       {grouped[area].map((row) => (
                         <TableRow key={row.id}>
-                          <TableCell sx={{ verticalAlign: "top", fontFamily: "monospace", fontSize: "0.75rem" }}>
+                          <TableCell sx={{ verticalAlign: "top", fontFamily: "monospace", fontSize: "caption.fontSize" }}>
                             {row.id}
                           </TableCell>
                           <TableCell
-                            sx={{ verticalAlign: "top", fontWeight: 600, fontSize: "0.8125rem", whiteSpace: "normal !important" }}
+                            sx={{ verticalAlign: "top", fontWeight: 600, fontSize: "caption.fontSize", whiteSpace: "normal !important" }}
                           >
                             {row.rule}
                           </TableCell>
                           <TableCell
-                            sx={{ verticalAlign: "top", fontSize: "0.8125rem", whiteSpace: "normal !important" }}
+                            sx={{ verticalAlign: "top", fontSize: "caption.fontSize", whiteSpace: "normal !important" }}
                           >
                             {row.behavior}
                           </TableCell>

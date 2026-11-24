@@ -12,15 +12,15 @@ export function applySharedLifeQuestionnaireAdoption(db: DatabaseSchema) {
   const selected = ["waepa", "nso"].map(siteKey => {
     const site = db.sites.find(site => site.key === siteKey)!;
     const products = db.siteProducts.filter(link => link.siteId === site.id && link.enabled && db.products.some(product => product.key === link.productKey && product.categoryKey === "LI")).map(link => link.productKey);
-    const policy: HealthQuestionnairePolicy = { version: 1, applicability: "site", associationKeys: [], pageId: "health-li", variants: [{ key: "life", when: { any: products }, items: structuredClone(life.items) }] };
+    const policy: HealthQuestionnairePolicy = { version: 1, applicability: "site", associationKeys: [], pageId: "health-tele", variants: [{ key: "life", when: { any: products }, items: structuredClone(life.items) }] };
     const key = `${siteKey}.general.health-questionnaires`, value = { ...meta("configurationValues", key), configurationKey: base.configurationKey, position: 0, scope: "site" as const, siteKey, clientKey: null, value: policy as unknown as Json };
     const index = db.configurationValues.findIndex(row => row.key === key); if (index < 0) db.configurationValues.push(value); else db.configurationValues[index] = value;
     return { siteKey, key, policy, fields: healthQuestionnaireFieldKeys(policy).map(key => ({ key, definition: structuredClone(db.fields.find(field => field.key === key)!.definition) })) };
   });
   const journey = db.configurationValues.find(row => row.key === "waepa.li-group-term.journey-policy");
   if (!journey || !isCoverageJourneyPolicy(journey.value)) throw new Error("Missing WAEPA Life journey");
-  journey.value.healthPageByUnderwriting = { ...journey.value.healthPageByUnderwriting, QD: "health-li", FUW: "health-li", SI: "health-li", TELE: "health-li" };
-  journey.value.questions = journey.value.questions.map(question => question.applicantKey === "child" ? question : { ...question, healthPage: "health-li" });
+  journey.value.healthPageByUnderwriting = { ...journey.value.healthPageByUnderwriting, QD: "health-tele", FUW: "health-tele", SI: "health-tele", TELE: "health-tele" };
+  journey.value.questions = journey.value.questions.map(question => question.applicantKey === "child" ? question : { ...question, healthPage: "health-tele" });
   const key = sharedLifeQuestionnaireDecisionKey;
   const record = { ...meta("semanticRequirements", key), domain: "approved-business-decision", subjectTable: "sites", subjectKey: "waepa", predicate: "shared-source-life-questionnaires", status: "documented", value: {
     authority, approvalStatus: "approved", sourceReconciliation: "approved-new-template-interpretation", runtimeActivation: "reviewed-seed", sourceReferences: ["Health Questions!A62:B75", "Main!AA379", "Main!W379"], selected,

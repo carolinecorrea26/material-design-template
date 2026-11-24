@@ -1,14 +1,14 @@
 import { beforeAll, describe, expect, it, vi } from "vitest";
 import { webcrypto } from "node:crypto";
 import { LocalStorageAdapter } from "./localAdapter";
-import { createMigrationDatabase } from "../migration/fixtures";
+import { createReviewedMigrationDatabase } from "../migration/fixtures";
 import { createPortalDataRepository } from "../repositories/portalDataRepository";
 import { localSnapshotRevision, validateSnapshotRequest, type SnapshotTable } from "./snapshot";
 import { queryRows } from "./query";
 import type { DatabaseSchema } from "./types";
 
 let db: DatabaseSchema;
-beforeAll(() => { vi.stubGlobal("crypto", webcrypto); db = createMigrationDatabase(); });
+beforeAll(() => { vi.stubGlobal("crypto", webcrypto); db = createReviewedMigrationDatabase(); });
 describe("normalized revision boundary", () => {
   it("captures storage once before awaiting hashing and detaches rows", async () => {
     let stored = JSON.stringify(db);
@@ -41,7 +41,7 @@ describe("normalized revision boundary", () => {
     expect(() => old.resolveSite("asce")).not.toThrow();
     expect(() => fresh.resolveSite("asce")).not.toThrow();
     const changed = await repository.open();
-    expect(() => changed.resolveSite("asce")).toThrow("Unapproved");
+    expect(() => changed.resolveSite("asce")).not.toThrow(); // Historical approval receipts do not own fresh-start behavior.
   });
   it("hashes content independently of table, row and object key order", async () => {
     const first = await localSnapshotRevision({ sites: db.sites, clients: db.clients });

@@ -1,13 +1,15 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import { afterEach, beforeAll, expect, it } from "vitest";
 import { createReviewedMigrationDatabase } from "./fixtures";
 import { applyIsitrustResidencyAdoption, approvedIsitrustResidency } from "./isitrustResidencyAdoption";
 import { currentMcrSource } from "./currentMcr";
 import { isResidencyPolicy, resolveNormalizedResidency, usJurisdictions } from "../domain/residencyPolicy";
-import { resolveEffectiveSite } from "../domain/effectiveSite";
+import { resolveEffectiveSite as resolveFreshEffectiveSite, resolveSnapshotSite as resolveEffectiveSite } from "../domain/effectiveSite";
 import { validateMigrationDatabase } from "./integrity";
 import { LocalStorageAdapter } from "../persistence/localAdapter";
 import { createPortalDataRepository } from "../repositories/portalDataRepository";
-import { installPrototypeLibrary, resolvePrototypeLibrary } from "../domain/prototypeLibrary";
+import { installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import type { DatabaseSchema } from "../persistence/types";
 import { prototypeCoverageDecision } from "../domain/prototypeCoverageDecision";
 import { evaluateCoverageJourney } from "../domain/coverageJourney";
@@ -90,7 +92,7 @@ it("uses an explicit association override in applicant and submission consumers 
 
 it("preserves captured revisions, stored edits, reload and unrelated Sites", async () => {
   const captured = resolvePrototypeLibrary(db, "isitrust", "before-edit");
-  const unrelated = resolveEffectiveSite(db, "asce");
+  const unrelated = resolveFreshEffectiveSite(db, "asce").configuration;
   const edited = structuredClone(db);
   const row = edited.configurationValues.find(row => row.key === "isitrust.oo-professional.journey-residency")!;
   if (!isResidencyPolicy(row.value)) throw new Error("Missing residency policy");
@@ -101,5 +103,5 @@ it("preserves captured revisions, stored edits, reload and unrelated Sites", asy
   const reloaded = await createPortalDataRepository(adapter).open();
   expect(resolveNormalizedResidency(reloaded.resolveSite("isitrust").site, "oo-professional", "member", { jurisdiction: "US-UT" }).allowed).toBe(false);
   expect(resolveNormalizedResidency(captured.site, "oo-professional", "member", { jurisdiction: "US-UT" }).allowed).toBe(true);
-  expect(reloaded.resolveSite("asce").site).toEqual(unrelated);
+  expect(reloaded.resolveSite("asce").site.configuration).toEqual(unrelated);
 });

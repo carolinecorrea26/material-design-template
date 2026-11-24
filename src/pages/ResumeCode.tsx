@@ -1,78 +1,97 @@
+import StandaloneFormPage from "../components/layout/StandaloneFormPage";
+import { isAdvisorReviewQuery } from '../config/reviewExperience';
+import { resumeFailure, resumeFailureMessage, resumePageIssue, type ResumePageIssue } from '../domain/resumeFeedback';
 import { requirementText } from "../domain/requirementContent";
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import FieldRenderer from '../components/forms/FieldRenderer';
 import { getPageFieldDefinition } from '../config/fields/resolvedFieldRegistry';
-import { Alert, Box, Button, CircularProgress, Stack } from '@mui/material';
+import { Button, CircularProgress, Stack } from '@mui/material';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import PageHeader from '../components/layout/PageHeader';
-import PageShell from '../components/layout/PageShell';
-import FormShell from '../components/layout/FormShell';
-import { getPagePath, getPageTitle } from '../config/pages';
+import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
+import { getPagePath, getPageTitle, getPageSubhead } from '../config/pages';
 import { resolveSiteId } from '../data/activeSite';
-import { applicantRecovery, recoveryFromSearch } from '../services/applicantSaveService';
+import { applicantRecovery, forgetAdvisorRecoveryLookup, resumeSessionFromSearch, resumeMfaParameter, rememberResumeSession, forgetResumeSession, mfaDetails, resumeSessionQuery, resumeSessionForChallenge, resumeEntryQuery, type ResumeSession } from '../services/applicantSaveService';
 import { useApplicationForm } from '../app/ApplicationFormContext';
 import { useApplicationSession } from '../app/ApplicationSessionContext';
 import ApplicantMockOutbox from '../components/demo/ApplicantMockOutbox';
-import useCountdown from '../hooks/useCountdown';
+import useDeadline from '../hooks/useDeadline';
+import useResumeMfaDeadline from '../hooks/useResumeMfaDeadline';
+import ResumeSessionWarning from '../components/feedback/ResumeSessionWarning';
 import ExpiringCodeAlert from '../components/feedback/ExpiringCodeAlert';
 import ResendCountdownRow from '../components/feedback/ResendCountdownRow';
 import prototypeDefaults from '../../requirements/global/prototype-fixtures/application.json';
 
 export default function ResumeCode() {
   const navigate = useNavigate();
+  const mounted = useRef(true);
+  useEffect(() => { mounted.current = true; return () => { mounted.current = false; }; }, []);
   const [search] = useSearchParams();
   const siteKey = resolveSiteId();
-  const details = recoveryFromSearch(search, siteKey);
+  const [verifiedSession, setVerifiedSession] = useState<ResumeSession | null>(null);
+  const session = resumeSessionFromSearch(search, siteKey) ?? verifiedSession;
+  const details = session ? mfaDetails(session) : null;
   const { restoreApplication } = useApplicationForm();
-  const { resetApplicationSession } = useApplicationSession();
+  const { resetApplicationSession, setAdvisorApplicantFlow } = useApplicationSession();
   const field = getPageFieldDefinition('resume-code', siteKey, 'resume-security-code');
   const form = useForm<Record<string, string | boolean | string[]>>({ defaultValues: { [field.id]: '' } });
   const code = String(form.watch(field.id) ?? '');
   const [error, setError] = useState('');
+  const [terminalIssue, setTerminalIssue] = useState<ResumePageIssue | null>(null);
   const [busy, setBusy] = useState(false);
+  const [returnPage, setReturnPage] = useState<'eligibility' | 'review' | 'docusign'>('eligibility');
   const [success, setSuccess] = useState(false);
   const [resent, setResent] = useState(false);
-  const expiresAt = Number(search.get('codeExpiresAt'));
-  const codeDuration = prototypeDefaults.resumeCodeValidityMs / 1000;
-  const duration = expiresAt > 0 ? Math.max(0, Math.min(codeDuration, Math.ceil((expiresAt - Date.now()) / 1000))) : codeDuration;
-  const { secondsLeft, start, restart } = useCountdown(duration);
-  useEffect(() => { start(); }, [start]);
+  const remaining = useResumeMfaDeadline(session, !success);
+  const codeSeconds = useDeadline(session?.codeExpiresAt);
+  const [codeExpired, setCodeExpired] = useState(false);
+  const secondsLeft = codeExpired ? 0 : codeSeconds ?? 0;
   useEffect(() => {
     if (!success) return;
-    const timer = window.setTimeout(() => navigate(`${getPagePath('eligibility')}?site=${encodeURIComponent(siteKey)}`, { replace: true, state: { resumeLoaded: true } }), prototypeDefaults.resumeTransitionMs);
+    const timer = window.setTimeout(() => navigate(`${getPagePath(returnPage)}?site=${encodeURIComponent(siteKey)}`, { replace: true, state: { resumeLoaded: true } }), prototypeDefaults.resumeTransitionMs);
     return () => window.clearTimeout(timer);
-  }, [success, navigate, siteKey]);
+  }, [success, navigate, siteKey, returnPage]);
+  function failure(reason: unknown) {
+    const kind = resumeFailure(reason);
+    const issue = resumePageIssue(reason, session?.recipient);
+    if (issue) { setTerminalIssue(issue); forgetResumeSession(siteKey); }
+    else { if (kind === 'code-expired') setCodeExpired(true); setError(kind === 'code-expired' ? '' : resumeFailureMessage(reason)); }
+  }
+
   async function resend() {
-    if (!details || busy || success || !import.meta.env.VITE_MOCK_PLATFORM_ENABLED) return;
+    if (!details || !session || remaining === 0 || busy || success || !import.meta.env.VITE_MOCK_PLATFORM_ENABLED) return;
     setBusy(true); setError('');
     try {
-      const challenge = await applicantRecovery.challenge(details, search.get('method') ?? 'email');
-      restart(Math.max(0, Math.ceil((challenge.expiresAt - Date.now()) / 1000)));
+      const challenge = await applicantRecovery.challenge(details, session.method);
+      if (!mounted.current) return;
+      if (!resumeSessionFromSearch(search, siteKey) || challenge.sessionExpiresAt <= Date.now()) throw Object.assign(new Error('MFA expired'), { code: 'RESUME_MFA_EXPIRED' });
+      rememberResumeSession(resumeSessionForChallenge(details, challenge, session.advisorFlow));
+      setCodeExpired(false);
       form.setValue(field.id, ''); setResent(true);
-    } catch (reason) { setError(reason instanceof Error ? reason.message : requirementText("application.ui.resend-failed")); }
+    } catch (reason) { failure(reason); }
     finally { setBusy(false); }
   }
   async function verify() {
-    if (!details || !restoreApplication || busy || success || secondsLeft === 0 || !import.meta.env.VITE_MOCK_PLATFORM_ENABLED) return;
-    if (!/^\d{6}$/.test(code.trim())) { setError(requirementText("application.ui.enter-your-six-digit-verification-code")); return; }
+    if (!details || !session || remaining === 0 || !restoreApplication || busy || success || secondsLeft === 0 || !import.meta.env.VITE_MOCK_PLATFORM_ENABLED) return;
+
     setBusy(true); setError('');
     try {
       const application = await applicantRecovery.verify(details, code.trim());
-      restoreApplication(application); resetApplicationSession(); setSuccess(true);
-    } catch (reason) { setError(reason instanceof Error ? reason.message : requirementText("application.ui.recovery-failed")); }
+      if (!mounted.current) return;
+      if (!resumeSessionFromSearch(search, siteKey) || session.sessionExpiresAt <= Date.now()) throw Object.assign(new Error('MFA expired'), { code: 'RESUME_MFA_EXPIRED' });
+      restoreApplication(application); forgetAdvisorRecoveryLookup(siteKey); resetApplicationSession(); setAdvisorApplicantFlow?.(application.advisorFlow); setReturnPage(application.resumePage); setVerifiedSession(session); forgetResumeSession(siteKey); setSuccess(true);
+    } catch (reason) { failure(reason); }
     finally { setBusy(false); }
   }
   const unavailable = !details || !import.meta.env.VITE_MOCK_PLATFORM_ENABLED;
-  const method = search.get('method') ?? 'email';
-  const subhead = method === 'email' ? <>{requirementText("application.ui.please-enter-the-verification-code-sent-to")}<strong>{details?.recipient ?? requirementText("application.ui.your-email-address")}</strong>{"."}</> : search.get('deliveryTarget') ? <>{requirementText("application.ui.please-enter-the-verification-code-sent-to-the-phone-number")}<strong>{search.get('deliveryTarget')}</strong>{"."}</> : 'Please enter the verification code sent to your saved phone number.';
-  return <Box sx={{ flex: 1, px: { xs: 2, sm: 3 }, py: { xs: 4, sm: 6 } }}>
-    <PageShell title={getPageTitle('resume-code')} maxWidth={600} noTitle><FormShell sx={{ px: { xs: 2, sm: 4 }, py: 6 }}>
-      <PageHeader title={getPageTitle('resume-code')} subhead={subhead} onBack={() => navigate(`${getPagePath('resume-method')}?${search}`)} />
+  const subhead = session?.deliveryTarget ? <>{requirementText('application.ui.please-enter-the-verification-code-sent-to-the-phone-number')}<strong>{session.deliveryTarget}</strong>{'.'}</> : getPageSubhead('resume-code');
+  if (terminalIssue) return <Navigate replace to={`${getPagePath(terminalIssue.kind === 'mfa-expired' ? 'session-expired' : 'resume')}?${resumeEntryQuery(siteKey, session?.advisorFlow ?? isAdvisorReviewQuery(search))}`} state={terminalIssue.kind === 'mfa-expired' ? undefined : { resumeIssue: terminalIssue }} />;
+  if (!details || !session) return <Navigate replace to={`${getPagePath(search.has(resumeMfaParameter) ? 'session-expired' : 'resume')}?${resumeEntryQuery(siteKey, session?.advisorFlow ?? isAdvisorReviewQuery(search))}`} state={{ resumeIssue: { kind: search.has(resumeMfaParameter) ? 'mfa-expired' : 'link' } }} />;
+  return <StandaloneFormPage title={getPageTitle('resume-code')} subhead={subhead} onBack={() => navigate(`${getPagePath('resume-method')}?${resumeSessionQuery(session)}`)}>
+
+      {!success && <ResumeSessionWarning secondsLeft={remaining} />}
       <Stack component="form" spacing={2} onSubmit={form.handleSubmit(() => void verify())} noValidate sx={{ py: 1 }}>
-        {!details && <Alert severity="error">{requirementText("application.ui.open-a-valid-resume-link-to-continue")}</Alert>}
-        <ExpiringCodeAlert secondsLeft={secondsLeft} kind="code" onResend={() => void resend()} showConfirmation={resent} confirmationMessage={requirementText("application.ui.a-new-verification-code-has-been-sent")} />
+        <ExpiringCodeAlert secondsLeft={secondsLeft} kind="code" disabled={busy || success || !details || !import.meta.env.VITE_MOCK_PLATFORM_ENABLED} onResend={() => void resend()} showConfirmation={resent} confirmationMessage={requirementText("application.ui.a-new-verification-code-has-been-sent")} />
         <FieldRenderer field={{ ...field, disabled: field.disabled || busy || success || secondsLeft === 0 }} control={form.control} errors={error ? { ...form.formState.errors, [field.id]: { type: 'manual', message: error } } : form.formState.errors} onValueChange={() => { setError(''); setResent(false); }} />
         <ResendCountdownRow secondsLeft={secondsLeft} kind="code" disabled={busy || success || unavailable} onResend={() => void resend()} />
         <Button type="submit" fullWidth size="large" variant="contained" disabled={busy || success || unavailable || secondsLeft === 0} sx={{ mt: '24px !important', ...(success ? { '&.Mui-disabled': { bgcolor: 'success.main', color: 'common.white' } } : {}) }}>
@@ -80,6 +99,5 @@ export default function ResumeCode() {
         </Button>
         {details && <ApplicantMockOutbox applicationId={details.applicationId} siteKey={siteKey} recipient={details.recipient} />}
       </Stack>
-    </FormShell></PageShell>
-  </Box>;
+  </StandaloneFormPage>;
 }

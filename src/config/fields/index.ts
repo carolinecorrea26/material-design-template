@@ -1,3 +1,5 @@
+import { paymentFieldDefinitions } from "./paymentFields";
+import { reviewFieldDefinitions } from "./reviewFields";
 import { activeFieldDefinitions } from "../../domain/fields";
 import { tobaccoProductOptions } from "./tobaccoProductOptions";
 import type { FieldDefinition, FieldId } from "./types";
@@ -96,7 +98,7 @@ const paymentFrequencyOptions = [
   { value: "monthly", label: "Monthly" },
 ];
 
-export const legacyFieldCatalog: Record<FieldId, FieldDefinition> = {
+export const legacyFieldCatalog: Record<Exclude<FieldId, "resume-phone">, FieldDefinition> = {
   "membership-status": { id: "membership-status", label: "Membership status", inputType: "radio", required: true, options: [{ value: "new", label: "New Member" }, { value: "current", label: "Current Member" }] },
   "child-full-time-student": { id: "child-full-time-student", label: "Is the child a full-time student?", inputType: "radio", options: yesNoOptions, required: true },
   membership: {
@@ -1545,62 +1547,9 @@ export const legacyFieldCatalog: Record<FieldId, FieldDefinition> = {
     required: true,
   },
 
-  "bank-name-on-account": {
-    id: "bank-name-on-account",
-    label: "Name on Account",
-    inputType: "text",
-    required: true,
-  },
+  ...paymentFieldDefinitions,
 
-  "bank-institution": {
-    id: "bank-institution",
-    label: "Bank Institution",
-    inputType: "text",
-    required: true,
-  },
-
-  "bank-routing-number": {
-    id: "bank-routing-number",
-    label: "Routing Number",
-    inputType: "number",
-    required: true,
-    inputMode: "numeric",
-  },
-
-  "bank-account-number": {
-    id: "bank-account-number",
-    label: "Account Number",
-    inputType: "number",
-    required: true,
-    inputMode: "numeric",
-  },
-
-  "bank-authorization": {
-    id: "bank-authorization",
-    label: "I authorize recurring payments from this bank account.",
-    inputType: "checkbox",
-    required: true,
-  },
-
-  "dividend-acknowledgement": { id: "dividend-acknowledgement", label: "I attest to having read the above information", inputType: "checkbox", required: true },
-  "dividend-first-name": { id: "dividend-first-name", label: "First Name", inputType: "text" },
-  "dividend-last-name": { id: "dividend-last-name", label: "Last Name", inputType: "text" },
-  "dividend-birth-date": { id: "dividend-birth-date", label: "Date of Birth", inputType: "date" },
-  "review-self-consent": {
-    id: "review-self-consent",
-    label:
-      "I confirm that I have reviewed and understand the above material. I consent to the use of electronic signature and delivery of electronic records.",
-    inputType: "checkbox",
-    required: true,
-  },
-
-  "review-spouse-consent": {
-    id: "review-spouse-consent",
-    label:
-      "I confirm that I have reviewed and understand the above material. I consent to the use of electronic signature and delivery of electronic records.",
-    inputType: "checkbox",
-    required: true,
-  },
+  ...reviewFieldDefinitions,
 
   "advisor-flow-type": {
     id: "advisor-flow-type",
@@ -1788,4 +1737,4 @@ export const fieldCatalog = new Proxy(legacyFieldCatalog, {
     if (fields && typeof key === 'string' && fields.has(key)) return { configurable: true, enumerable: true, writable: false, value: fields.get(key) };
     return Reflect.getOwnPropertyDescriptor(target, key);
   },
-});
+}) as Record<FieldId, FieldDefinition>;

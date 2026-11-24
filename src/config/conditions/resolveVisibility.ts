@@ -13,9 +13,10 @@ export type VisibilityConditionTarget = {
 export function resolveVisibilityCondition(
   target: VisibilityConditionTarget,
   values: ApplicationFormValues,
+  fields?: FieldDefinition[],
 ): boolean {
   return target.visibilityConditionId
-    ? evaluateConditionDefinition(target.visibilityConditionId, values)
+    ? evaluateConditionDefinition(target.visibilityConditionId, values, fields)
     : true;
 }
 
@@ -32,8 +33,19 @@ export function resolveVisibleFields<T extends FieldDefinition>(
   fields: T[],
   values: ApplicationFormValues,
 ): T[] {
-  return fields.filter((field) => resolveVisibilityCondition(field, values)).map(field => {
-    const excluded = new Set((field.optionExclusions ?? []).filter(rule => evaluateConditionDefinition(rule.conditionId, values)).flatMap(rule => rule.values));
+  return filterFieldsByVisibilityDependencies(fields.filter((field) => resolveVisibilityCondition(field, values, fields))).map(field => {
+    const excluded = new Set((field.optionExclusions ?? []).filter(rule => evaluateConditionDefinition(rule.conditionId, values, fields)).flatMap(rule => rule.values));
     return excluded.size === 0 ? field : { ...field, options: field.options?.filter(option => !excluded.has(option.value)) };
   });
+}
+
+/** Resolve transitive availability without changing retained saved answers. */
+export function filterFieldsByVisibilityDependencies<T extends FieldDefinition>(fields: T[]): T[] {
+  let available = fields;
+  while (true) {
+    const ids = new Set(available.map(field => field.id));
+    const next = available.filter(field => !field.visibilityDependencies?.some(id => !ids.has(id)));
+    if (next.length === available.length) return available;
+    available = next;
+  }
 }

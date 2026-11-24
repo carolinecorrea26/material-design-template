@@ -1,3 +1,4 @@
+import { getPrototypeLibrary, type PrototypeLibrary } from '../domain/prototypeLibrary';
 import { getClientForSite, getEffectiveSiteConfig, getTpaForClient } from '../repositories/sites';
 import type { SiteId } from '../domain/sites';
 import { applicationSupportReference, type ApplicationSupportIds } from '../domain/applicationSupportReference';
@@ -11,14 +12,6 @@ export function resolveApplicationSupportReference(siteId: SiteId, ids: Applicat
     ?? applicationSupportReference({ applicationId: readSavedApplication(siteId)?.applicationId });
 }
 
-export const siteSupportCopy = {
-  title: 'Questions? We’re here to help.',
-  administratorSuffix: 'Insurance Administrator',
-  callLabel: 'Call:',
-  emailLabel: 'Email:',
-  websiteLabel: 'Website:',
-};
-
 export type SiteSupportContact = {
   name: string;
   acronym: string;
@@ -29,10 +22,10 @@ export type SiteSupportContact = {
 };
 
 /** One contact resolution for site cards and email HTML. Email visibility stays email-specific. */
-export function resolveSiteSupportContact(siteId: SiteId): SiteSupportContact {
-  const client = getClientForSite(siteId);
+export function resolveSiteSupportContact(siteId: SiteId, library: PrototypeLibrary | null = getPrototypeLibrary(siteId)): SiteSupportContact {
+  const client = library?.clientIdentity ?? getClientForSite(siteId);
   if (!client) throw new Error(`Unknown support Site: ${siteId}`);
-  const configuration = getEffectiveSiteConfig(siteId);
+  const configuration = library?.client ?? getEffectiveSiteConfig(siteId);
   const support = configuration.support;
   const email = configuration.emailSupport;
   const administrator = getTpaForClient(client.id);

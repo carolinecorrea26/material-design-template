@@ -1,0 +1,11 @@
+{
+  "rules": [
+    {
+      "id": "shared-page-help",
+      "name": "Use shared page-help chips and drawers",
+      "status": "confirmed",
+      "statement": "Membership, Beneficiary and Payment use the global PageHelp composition: PageHelpChips selects a source-authored topic and PageHelpDrawer displays its supplied title/content through AppDrawer. Page help topics, order, labels and titles come from each global page definition; shared topic renderers use the current effective content. Empty selections render no help. No page-specific wrapper owns chip selection or drawer state. All Health pages and supplied Health source-form previews show no page help chips. Menu tools and task drawers retain their shared AppDrawer shell and domain content.",
+      "source": "User request November 13, 2026; requirements/parked/{membership,beneficiary,payment}.json; src/components/content/{PageHelp,PageHelpChips,PageHelpDrawer}.tsx"
+    }
+  ]
+}

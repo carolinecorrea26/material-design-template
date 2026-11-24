@@ -13,7 +13,7 @@ export default function FeaturedBadge() {
       color="primary"
       sx={{
         flexShrink: 0,
-        "& .MuiChip-label": { fontSize: "0.675rem", fontWeight: 700 },
+        "& .MuiChip-label": { fontWeight: 700 },
         "& .MuiChip-icon": { fontSize: "0.875rem" },
       }}
     />

@@ -1,6 +1,8 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import { afterEach, beforeAll, expect, it } from "vitest";
 import { createReviewedMigrationDatabase } from "./fixtures";
-import { installPrototypeLibrary, resolvePrototypeLibrary } from "../domain/prototypeLibrary";
+import { installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import { applicationUnderwriting } from "../domain/coverageRuntime";
 import { composeReadAndSign, resolveReviewExperience } from "../config/reviewExperience";
 import { reviewDefaults } from "../content/defaults/review";
@@ -17,7 +19,7 @@ it.each([["nso", "li-term"], ["asce", "li-10yr"], ["waepa", "di-short-term"]])("
   const result = resolveReviewExperience(library.client, site, library.products, values);
   expect(result.authorizationVisible).toBe(true);
   expect(result.blocks.some(block => block.key === "connecticut-underwritten-notice")).toBe(true);
-  const text = composeReadAndSign(reviewDefaults.readAndSignContent, result.fraudNotice, result.consent.text, result.authorizationVisible, result.medicalAuthorization);
+  const text = composeReadAndSign(reviewDefaults.readAndSignContent, result.fraudNotice, result.consent.text, result.authorizationVisible, result.medicalAuthorization, result.premiumContributionStatement);
   expect(text).toContain("AUTHORIZATION:"); expect(text).toContain("right to require additional information");
   if (site !== "waepa") expect(result.consent.text).toContain("MIB");
   expect(Object.keys(values).some(key => key.startsWith("health-qd-q"))).toBe(false);

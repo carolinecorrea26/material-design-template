@@ -11,6 +11,7 @@ import {
 import ProductCardSurface from "../layout/ProductCard";
 import FeaturedBadge from "./FeaturedBadge";
 import ControlledFieldRenderer from "../forms/ControlledFieldRenderer";
+import FieldGrid from '../layout/FieldGrid';
 import type { CoverageCategoryId } from "../../config/coverages/types";
 import { formatUSD } from "../../utils/formatUSD";
 
@@ -23,6 +24,7 @@ type EstimatorProductCardProps = {
     id: string;
     name: string;
     description?: string;
+    descriptionNotice?: string;
     definition?: string;
     categoryId: CoverageCategoryId;
     underwritingType?: string;
@@ -87,9 +89,11 @@ export default function EstimatorProductCard({
       selected={selected}
       productName={product.name}
       description={product.description ?? product.definition}
+      descriptionNotice={product.descriptionNotice}
       quickDecision={product.underwritingType === "QD"}
       headerAction={product.featured && <FeaturedBadge />}
     >
+      <FieldGrid>
       {/* Select for myself row */}
       {unavailableReason && unavailableReason !== residencyExclusionDiagnostic && <Alert severity="warning">{unavailableReason}</Alert>}
       {selectionField && <ControlledFieldRenderer
@@ -118,14 +122,14 @@ export default function EstimatorProductCard({
         )}
       </Box>}
 
-      {riders.length > 0 && (
+      {selected && currentAmount > 0 && riders.length > 0 && (
         <Box>
           <Typography variant="body2" sx={{ fontWeight: 700, mb: 1 }}>
             Optional Benefit(s)
           </Typography>
-          <Stack spacing={1}>
+          <FieldGrid>
             {riders.map(rider => (
-              <Box key={rider.id}>
+              <FieldGrid key={rider.id}>
                 <ControlledFieldRenderer
                   field={{ id: `${product.id}-${rider.id}-member-selected`, label: rider.name, inputType: "checkbox", helperText: rider.description, disabled: rider.disabled }}
                   value={rider.checked}
@@ -138,11 +142,12 @@ export default function EstimatorProductCard({
                     onChange={value => onRiderAmountChange?.(rider.id, Number(value))}
                   />
                 )}
-              </Box>
+              </FieldGrid>
             ))}
-          </Stack>
+          </FieldGrid>
         </Box>
       )}
+      </FieldGrid>
     </ProductCardSurface>
   );
 }

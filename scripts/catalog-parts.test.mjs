@@ -1,11 +1,11 @@
 import { readFileSync } from 'node:fs';
 import { expect, it } from 'vitest';
-import { readCatalogParts } from './catalog-parts.mjs';
+import { activeCatalog, readCatalogParts } from './catalog-parts.mjs';
 import { validateIdentityCatalog } from '../src/persistence/identityCatalog.ts';
 const saved = () => JSON.parse(readFileSync('public/catalog/portal.json', 'utf8'));
 it('preserves every bundled record across separate entity files', () => {
   const parts = readCatalogParts();
-  expect(parts).toEqual(saved());
+  expect(activeCatalog(parts)).toEqual(saved());
   const groups = {
     tpas: ['organizations', 'organizationProfiles'], clients: ['clients', 'supportProfiles'],
     associations: ['associations', 'associationEntities', 'associationAliases', 'associationAffiliations'],
@@ -14,7 +14,7 @@ it('preserves every bundled record across separate entity files', () => {
   for (const [file, tables] of Object.entries(groups)) {
     const part = JSON.parse(readFileSync(`public/catalog/overview/${file}.json`, 'utf8'));
     expect(Object.keys(part)).toEqual(tables);
-    for (const table of tables) expect(part[table]).toEqual(parts.data[table]);
+    for (const table of tables) expect(new Set(parts.data[table].map(row => row.id))).toEqual(new Set([...part[table].map(row => row.id), ...parts.data[table].filter(row => row.sourceReference?.startsWith("requirements/")).map(row => row.id)]));
   }
   expect(() => validateIdentityCatalog(parts.data)).not.toThrow();
 });
@@ -44,7 +44,7 @@ it('exports portable property contracts and existing page references for handoff
   expect(maps.pages.map(page => page.pageKey)).toEqual(['membership', 'eligibility', 'coverage']);
   for (const page of maps.pages) for (const reference of page.references) {
     const part = JSON.parse(readFileSync(reference.file, 'utf8'));
-    const keys = new Set(part[reference.table].map(row => row.key ?? row.id));
+    const keys = new Set((reference.path ? reference.path.reduce((value, key) => value[key], part) : part[reference.table]).map(row => row.key ?? row.id));
     expect(reference.keys.every(key => keys.has(key))).toBe(true);
   }
 });

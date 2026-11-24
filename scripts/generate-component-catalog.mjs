@@ -5,30 +5,18 @@ import { libraryMetadata } from '../src/domain/provenance.ts';
 import { createComponentAnalyzer, storyForComponent } from './storybook-component-analysis.mjs';
 import { catalogPartPath, readCatalogParts, writeCatalogBundle } from './catalog-parts.mjs';
 import { componentStructure } from './component-structure.mjs';
+import { configuredComponent } from '../src/domain/componentDisplayNames.ts';
 import { validateComponentStructure } from '../src/domain/componentCatalog.ts';
 const analyzer = createComponentAnalyzer();
-const descriptions = {
- VerificationAddress: "Collects and validates the full residential address before configured member verification, using the shared Contact address fields.",
- EligibilitySections: "Configured Eligibility sections for personal information, covered applicants, spouse details and repeated child records.",
- HomeHero: "Homepage introduction, application and resume actions, with a configured quote card or association image.",
- HomeCoverageSection: "Homepage coverage section with its heading, description, category choices and product information.",
- AssociationIntroduction: "Association logo, tagline and introductory paragraphs on the homepage.",
- UnderwriterCredentials: "Insurer logo, name, ratings, supporting description and footnote.",
- Button: "Standard action button with pill shape by default; supports contained, outlined, text, disabled and loading states.",
- FormRoutePage: "Application frame composing page surfaces, steps, breadcrumbs, heading/Back, help, form validation, transitions, saved values and Next; pages supply their sections.",
- CoverageCategorySelector: "Lets applicants choose the coverage categories they want to explore.", CoveragePortfolioDrawer: "Shows existing member and spouse coverage in a drawer.", EligibilityFields: "Collects and validates applicant eligibility details.", EstimatorProductCard: "Displays a product, applicant selections, coverage amounts, and estimated cost.", MemberVerification: "Collects a verification method and security answers using the standard form fields, then reports the prototype verification result.", AppSnackbar: "Shows a temporary feedback message with an optional action.", EmptyState: "Explains why a section has no items and offers a next action.", PageAlert: "Displays page-level errors, warnings, or informational messages.", PageTransitionSkeleton: "Shows loading placeholders while the next application page opens.", AppHeader: "Displays the portal brand, help actions, application menu, cart, and progress.", ApplicantSectionDivider: "Labels an applicant section with an optional supporting note.", ProgressStep: "Main application steps (Getting started, Choose your coverage and later stages), with Breadcrumbs exported from the same module for pages within the current main step; visibility follows the active flow and template.", PageHeader: "Displays the page title, supporting copy, back action, and contextual help.", ProductCard: "Shared product container with a weight-800 title, optional brochure link, QD indicator, description and page-specific content.", SectionDivider: "Labels field-group sections with uppercase, letter-spaced text. Titled and untitled groups share a rounded FieldGroup surface matching the page background, with white inputs and increased section spacing.", PageNav: "Provides the application page's Next or submit action.", AppDrawer: "Displays supporting content in a drawer with a close action.", AppModal: "Displays a focused dialog with primary and secondary actions.", SendApplicationDialog: "Lets advisors send an application or request an edit from an applicant.", QuoteCalculator: "Collects eligibility and coverage choices to estimate an applicant's cost.",
-
- ApplicationDocumentPreview:"Displays application data grouped into readable document sections.", HelpChips:"Opens contextual help and reference content from labeled chips.", QuickDecisionExplainer:"Explains the QuickDecision process and possible outcomes.",
- DynamicList:"Collects repeated records through add, edit and remove actions in a dialog.", DynamicListItem:"Displays one repeated record with its edit and remove controls.", SelectionGroup:"Provides a selectable row or card with the shared selection styling.",
- DetailsTable:"Presents labeled values in a compact details table.", LegalDocList:"Lists application documents and legal disclosures with links.", QuickDecisionIndicator:"Marks coverages that support QuickDecision with the configured client icon.", CoverageNeedsCalculator:"Estimates life insurance needs from financial obligations and available resources.", CoverageOptionsPanel:"Explains available coverage categories and products on the homepage or in a drawer.", CoverageQuestions:"Category question with its configured member/spouse follow-ups and additional product eligibility facts.", HowApplyingWorksPanel:"Explains the three application steps using images or a configured animated preview.", PhysicianInformation:"Collects physician name, phone and facility details from supplied member or spouse fields.", ProductCatalog:"Product boxes with coverage and rider notes/options for each applicant, plus the combined cost of all selected products.", ProductCostBreakdown:"Displays premium details and supplemental fees for a product.", ProgressSavedSnackbar:"Confirms that application progress has been saved.", ResendCountdownRow:"Shows the resend countdown and action for a verification message.", FieldRenderer:"Renders a configured field with its input, validation and conditional behavior.", ApplicationPreview:"Decorative homepage illustration of coverage, health, and receipt scenes; its drawn controls do not collect application answers.", AppBody:"Provides the main application content container and responsive spacing.", AppFooter:"Displays administrator, insurer, support and legal details.", AppMenu:"Provides application navigation and informational drawers.", ClientHelpBanner:"Provides client-configured phone, chat and other support actions.", FormShell:"Provides the visual form surface; FormRoutePage owns form state and navigation.", PageShell:"Provides a shared page container and layout.", PageTitle:"Displays the page heading, subtitle and supporting actions.", ConfirmationDialog:"Requests confirmation before continuing a consequential application action.", CookieDialog:"Displays cookie information and consent controls."
-};
 const rows = new Map();
 const saved = readCatalogParts();
 const usage = createComponentUsage(analyzer, saved.data.pages);
 const modules = readStoryInventory().filter(story => story.file.startsWith('src/components/') && !/\/(admin|docs)\//.test(story.file) || story.file === 'src/app/RoutePage.stories.tsx');
 const storyExamples = new Map();
+const storyIds = new Map();
 for (const story of modules) {
  const renderedStories = analyzer.stories(story.file);
+ for (const example of renderedStories) storyIds.set(example.id, example);
  const components = [...story.components, ...story.packageComponents];
  if (story.file === 'src/app/RoutePage.stories.tsx') components.push({ name: 'FormRoutePage', source: 'src/app/RoutePage.tsx', ownsStory: true });
  for (const component of components) {
@@ -49,9 +37,7 @@ for (const story of modules) {
   }
   storyExamples.set(source, examples);
   if (rows.has(name) && !ownsStory) continue;
-  const text = packageImport ? '' : fs.readFileSync(source, 'utf8');
-  const doc = text.match(/\/\*\*([\s\S]*?)\*\//)?.[1]?.replace(/\*/g,'').replace(/@\w+[\s\S]*/,'').trim().replace(/\s+/g,' ');
-  rows.set(name, { id: 'component-'+name.replace(/([a-z0-9])([A-Z])/g,'$1-$2').toLowerCase(), name, section: story.section, description: descriptions[name] || doc || name.replace(/([a-z])([A-Z])/g,'$1 $2')+' component used by the portal.', storyId: example.id, source, ...(packageImport ? { packageImport } : {}) });
+  rows.set(name, { id: 'component-'+name.replace(/([a-z0-9])([A-Z])/g,'$1-$2').toLowerCase(), name, section: story.section, description: configuredComponent(name).description, displayName: configuredComponent(name).displayName, storyId: example.id, source, ...(packageImport ? { packageImport } : {}) });
  }
 }
 const sectionOrder = ['Components', 'Reference'];
@@ -60,9 +46,12 @@ const catalog = [...rows.values()].map(row => ({ ...row, ...componentStructure(r
 // Page-only story modules compose existing registered components through their
 // actual controllers. Link their explicit page examples without inventing a
 // component identity for a page or its Storybook harness.
-for (const module of modules.filter(module => !module.components.length && Object.keys(module.pageStories).length)) {
+for (const module of modules.filter(module => Object.keys(module.pageStories).length || module.title.endsWith('/Whole page'))) {
  const rendered = analyzer.stories(module.file);
- for (const [exportName, pageKey] of Object.entries(module.pageStories)) {
+ const page = saved.data.pages.find(page => module.title === `Components/Pages/${page.definition.displayName}/Whole page`);
+ const selections = Object.entries(module.pageStories);
+ if (!selections.length && page && rendered[0]) selections.push([rendered[0].export, page.key]);
+ for (const [exportName, pageKey] of selections) {
   const page = saved.data.pages.find(page => page.key === pageKey);
   const example = rendered.find(story => story.export === exportName);
   if (!page || !example) throw new Error(`Invalid page story: ${module.file} ${exportName} ${pageKey}`);
@@ -70,8 +59,15 @@ for (const module of modules.filter(module => !module.components.length && Objec
   for (const source of reachable) for (const child of analyzer.trace(source, analyzer.module(source).ast).components) reachable.add(child.source);
   const owners = catalog.filter(component => reachable.has(component.source));
   if (!owners.length) throw new Error(`Page story has no registered production components: ${example.id}`);
-  for (const owner of owners) owner.examples.push({ label: page.definition.displayName, storyId: example.id, section: `Components / Pages / ${page.definition.displayName} / Whole page`, pageKey, position: 0 });
+  for (const owner of owners) {
+    owner.examples = owner.examples.filter(prior => prior.storyId !== example.id || prior.pageKey && prior.pageKey !== pageKey);
+    owner.examples.push({ label: page.definition.displayName, storyId: example.id, section: `Components / Pages / ${page.definition.displayName} / Whole page`, pageKey, position: 0 });
+  }
  }
+}
+for (const row of catalog) for (const example of configuredComponent(row.name).registration.examples ?? []) {
+ if (!storyIds.has(example.storyId) || !storyForComponent([storyIds.get(example.storyId)], row.source)) throw new Error(`Missing actual component render for example: ${example.storyId}`);
+ row.examples = [...row.examples.filter(prior => prior.storyId !== example.storyId), { ...example, section: row.section }];
 }
 for (const row of catalog) if (row.usages.length === 0) throw new Error(`Component has no production usage: ${row.name}. Remove its implementation and story instead of keeping a reference-only component.`);
 validateComponentStructure(catalog.map(row => ({ key: row.id, definition: row })));
@@ -85,7 +81,8 @@ if (process.argv.includes('--check')) {
 if (process.argv.includes('--write-catalog')) {
  const additions = catalog.filter(row => !saved.data.components.some(saved => saved.key === row.id));
  const removed = saved.data.components.filter(row => !catalog.some(next => next.id === row.key));
- if (removed.length || additions.length && !process.argv.includes('--add-records')) throw new Error(`Component identities changed; additions: ${additions.map(row => row.id).join(', ') || 'none'}; removals: ${removed.map(row => row.key).join(', ') || 'none'}. Reconcile new records explicitly with --add-records.`);
+ if (removed.length && !process.argv.includes('--remove-records') || additions.length && !process.argv.includes('--add-records')) throw new Error(`Component identities changed; additions: ${additions.map(row => row.id).join(', ') || 'none'}; removals: ${removed.map(row => row.key).join(', ') || 'none'}. Reconcile explicitly with --add-records or --remove-records.`);
+ if (removed.length) saved.data.components = saved.data.components.filter(row => catalog.some(next => next.id === row.key));
  for (const row of catalog) {
   let target = saved.data.components.find(saved => saved.key === row.id);
   if (!target) {

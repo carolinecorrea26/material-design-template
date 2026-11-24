@@ -1,8 +1,9 @@
-import { readFileSync } from "node:fs";
+// Historical adoption: resolve the captured input, never today's application source.
 import { afterEach, expect, it } from "vitest";
 import { createReviewedMigrationDatabase } from "./fixtures";
 import { applyAbeBenefitQuestionCleanup } from "./abeBenefitQuestionCleanup";
-import { installPrototypeLibrary, resolvePrototypeLibrary } from "../domain/prototypeLibrary";
+import { installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import { resolveApplicationCoverage } from "../domain/coverageRuntime";
 import { coverageFactFieldIds } from "../config/fields/coverageFactFields";
 import { getClientPageFields } from "../config/clientFields/getClientPageFields";
@@ -10,8 +11,9 @@ import type { DatabaseSchema } from "../persistence/types";
 
 afterEach(() => installPrototypeLibrary(null));
 const removed = /prototype-fact:.*:(existingMonthlyBenefit|retirement|eligibleExpenseFraction)$/;
-it.each(["seed", "saved"])("removes generated ABE questions and keeps benefit selection working in the %s catalog", source => {
-  const db: DatabaseSchema = source === "seed" ? createReviewedMigrationDatabase() : JSON.parse(readFileSync("public/catalog/portal.json", "utf8")).data;
+it.each(["capture", "serialized capture"])("removes generated ABE questions and keeps benefit selection working in the %s", source => {
+  const captured = createReviewedMigrationDatabase();
+  const db: DatabaseSchema = source === "capture" ? captured : JSON.parse(JSON.stringify(captured));
   const library = resolvePrototypeLibrary(db, "abe", "question-cleanup");
   installPrototypeLibrary(library);
   window.history.replaceState(null, "", "/coverage?site=abe");

@@ -1,0 +1,2168 @@
+{
+  "products": {
+    "li-group-term": {
+      "description": "Coverage designed to provide protection for both you and your family.",
+      "name": "Group Term Life Insurance"
+    },
+    "di-short-term": {
+      "description": "This coverage can help safeguard against the potentially devastating consequences an illness or injury could have on your life.",
+      "name": "Group Short-Term Disability Income Insurance"
+    }
+  },
+  "catalog": {
+    "configurationValues": [
+      {
+        "id": "client:{{site}}.coverages.categories",
+        "key": "client:{{site}}.coverages.categories",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "configurationKey": "coverages.categories",
+        "value": [
+          "LI",
+          "DI"
+        ],
+        "position": 7,
+        "sourceReference": "prototype:configurationValues/client:waepa.coverages.categories"
+      },
+      {
+        "id": "client:{{site}}.coverages.overrides.li-group-term.underwritingType",
+        "key": "client:{{site}}.coverages.overrides.li-group-term.underwritingType",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "configurationKey": "products.presentation.li-group-term.underwritingType",
+        "value": "QD",
+        "position": 14,
+        "sourceReference": "prototype:configurationValues/client:waepa.coverages.overrides.li-group-term.underwritingType"
+      },
+      {
+        "id": "client:{{site}}.coverages.overrides.li-group-term.productWarning.severity",
+        "key": "client:{{site}}.coverages.overrides.li-group-term.productWarning.severity",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "configurationKey": "coverages.overrides.li-group-term.productWarning.severity",
+        "value": "info",
+        "position": 15,
+        "sourceReference": "prototype:configurationValues/client:waepa.coverages.overrides.li-group-term.productWarning.severity"
+      },
+      {
+        "id": "client:{{site}}.coverages.overrides.li-group-term.productWarning.title",
+        "key": "client:{{site}}.coverages.overrides.li-group-term.productWarning.title",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "configurationKey": "coverages.overrides.li-group-term.productWarning.title",
+        "value": "",
+        "position": 16,
+        "sourceReference": "prototype:configurationValues/client:waepa.coverages.overrides.li-group-term.productWarning.title"
+      },
+      {
+        "id": "client:{{site}}.coverages.overrides.li-group-term.productWarning.message",
+        "key": "client:{{site}}.coverages.overrides.li-group-term.productWarning.message",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "configurationKey": "coverages.overrides.li-group-term.productWarning.message",
+        "value": "Optional Chronic Illness Rider available.",
+        "position": 17,
+        "sourceReference": "prototype:configurationValues/client:waepa.coverages.overrides.li-group-term.productWarning.message"
+      },
+      {
+        "id": "client:{{site}}.coverages.overrides.di-short-term.underwritingType",
+        "key": "client:{{site}}.coverages.overrides.di-short-term.underwritingType",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "configurationKey": "products.presentation.di-short-term.underwritingType",
+        "value": "QD",
+        "position": 19,
+        "sourceReference": "prototype:configurationValues/client:waepa.coverages.overrides.di-short-term.underwritingType"
+      },
+      {
+        "id": "rates.reviewed-presentation.{{site}}",
+        "key": "rates.reviewed-presentation.{{site}}",
+        "sourceReference": "docs/archive/step3-major-outstanding-items.md",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "configurationKey": "rates.reviewed-presentation",
+        "value": {
+          "version": 1,
+          "praseConfigured": true,
+          "quoteToolEnabled": true,
+          "coverageQuoteEnabled": true
+        },
+        "position": 0
+      },
+      {
+        "id": "site:{{site}}.coverages.hideSmokerQuestion",
+        "key": "site:{{site}}.coverages.hideSmokerQuestion",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "configurationKey": "coverages.hideSmokerQuestion",
+        "value": true,
+        "position": 6,
+        "sourceReference": "prototype:configurationValues/site:waepa.coverages.hideSmokerQuestion"
+      },
+      {
+        "id": "site:{{site}}.coveragePolicy.aggregateNotes.LI",
+        "key": "site:{{site}}.coveragePolicy.aggregateNotes.LI",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "configurationKey": "coveragePolicy.aggregateNotes.LI",
+        "value": {
+          "member": "The maximum available for a member is $2,000,000.",
+          "spouse": "The maximum available for a spouse is $2,000,000."
+        },
+        "position": 0,
+        "sourceReference": "prototype:configurationValues/site:waepa.coveragePolicy.aggregateNotes.LI"
+      },
+      {
+        "id": "{{site}}.di-short-term.reviewed-benefit-policy",
+        "key": "{{site}}.di-short-term.reviewed-benefit-policy",
+        "sourceReference": "Main!H380; Main!I380; Main!J380; Main!O380; Disability!A58; Disability!D58; Disability!E58; Disability!F58",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "configurationKey": "template.product-benefit-policy.di-short-term",
+        "value": {
+          "version": 2,
+          "applicants": [
+            {
+              "applicantKey": "member",
+              "waitingPeriods": [
+                {
+                  "key": "14-days",
+                  "accidentDays": 14,
+                  "sicknessDays": 14
+                },
+                {
+                  "key": "30-days",
+                  "accidentDays": 30,
+                  "sicknessDays": 30
+                }
+              ],
+              "benefitPeriods": [],
+              "ageBands": [
+                {
+                  "minimumAge": 18,
+                  "maximumAge": 64,
+                  "maximum": 6500
+                }
+              ],
+              "income": {
+                "fraction": 0.6,
+                "subtractExisting": false
+              },
+              "amountRuleKey": "waepa.di-short-term.reviewed-numeric.member.amount"
+            }
+          ],
+          "exclusiveProducts": [],
+          "provisional": true,
+          "revisit": [
+            "MainO380 allows entry through64 while DisabilityD58 describes benefits through69. Apply the Main entry-age limit; revisit existing-policy increase mode."
+          ],
+          "amountSource": "product-amount-rules"
+        },
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-group-term.reviewed-dependent-policy",
+        "key": "{{site}}.li-group-term.reviewed-dependent-policy",
+        "sourceReference": "Main!I379; Main!J379",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "configurationKey": "template.product-dependent-policy.li-group-term",
+        "value": {
+          "version": 1,
+          "rules": [
+            {
+              "applicantKey": "spouse",
+              "requires": {
+                "applicantKeys": [
+                  "member"
+                ],
+                "mode": "covered"
+              },
+              "memberCapMultiplier": 0.5
+            },
+            {
+              "applicantKey": "child",
+              "requires": {
+                "applicantKeys": [
+                  "member"
+                ],
+                "mode": "covered"
+              }
+            }
+          ],
+          "provisional": false,
+          "revisit": []
+        },
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-group-term.provisional-rate-outcome",
+        "key": "{{site}}.li-group-term.provisional-rate-outcome",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "configurationKey": "template.product-rate-outcome.li-group-term",
+        "value": {
+          "status": "unavailable",
+          "reason": "Authoritative base premiums are not supplied",
+          "provisional": true,
+          "revisit": true
+        },
+        "position": 0
+      },
+      {
+        "id": "{{site}}.di-short-term.provisional-rate-outcome",
+        "key": "{{site}}.di-short-term.provisional-rate-outcome",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "configurationKey": "template.product-rate-outcome.di-short-term",
+        "value": {
+          "status": "unavailable",
+          "reason": "Authoritative base premiums are not supplied",
+          "provisional": true,
+          "revisit": true
+        },
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-group-term.amount-cap-policy",
+        "key": "{{site}}.li-group-term.amount-cap-policy",
+        "sourceReference": "Main!H379; Main!I379",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.product-amount-cap-policy.li-group-term",
+        "value": {
+          "version": 1,
+          "limitKeys": [
+            "waepa.li-group-term.mcr-amount.member.age-cap",
+            "waepa.li-group-term.mcr-amount.spouse.age-cap"
+          ]
+        }
+      },
+      {
+        "id": "{{site}}.li-group-term.reviewed-residency",
+        "key": "{{site}}.li-group-term.reviewed-residency",
+        "sourceReference": "Main!M379; Main!N379",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.product-residency-policy.li-group-term",
+        "value": {
+          "version": 1,
+          "allowedJurisdictions": [
+            "US-AL",
+            "US-AK",
+            "US-AZ",
+            "US-AR",
+            "US-CA",
+            "US-CO",
+            "US-CT",
+            "US-DC",
+            "US-FL",
+            "US-GA",
+            "US-HI",
+            "US-ID",
+            "US-IL",
+            "US-IN",
+            "US-IA",
+            "US-KS",
+            "US-KY",
+            "US-ME",
+            "US-MD",
+            "US-MA",
+            "US-MI",
+            "US-MN",
+            "US-MS",
+            "US-MO",
+            "US-NE",
+            "US-NV",
+            "US-NH",
+            "US-NJ",
+            "US-NM",
+            "US-ND",
+            "US-OK",
+            "US-PA",
+            "US-RI",
+            "US-SC",
+            "US-SD",
+            "US-TN",
+            "US-TX",
+            "US-UT",
+            "US-VT",
+            "US-VA",
+            "US-WA",
+            "US-WV",
+            "US-WI",
+            "US-WY",
+            "US-AS",
+            "US-GU",
+            "US-MP",
+            "US-PR",
+            "US-AA",
+            "US-AE",
+            "US-AP"
+          ],
+          "excludeActiveMilitary": true,
+          "provisional": true,
+          "revisit": [
+            "Use the pinned workbook's current restrictions provisionally. Revisit WAEPA filing approvals before publication; no future approval is inferred."
+          ]
+        },
+        "position": 0
+      },
+      {
+        "id": "{{site}}.di-short-term.reviewed-residency",
+        "key": "{{site}}.di-short-term.reviewed-residency",
+        "sourceReference": "Main!M380; Main!N380",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.product-residency-policy.di-short-term",
+        "value": {
+          "version": 1,
+          "allowedJurisdictions": [
+            "US-AL",
+            "US-AK",
+            "US-AZ",
+            "US-AR",
+            "US-CA",
+            "US-CO",
+            "US-CT",
+            "US-DE",
+            "US-DC",
+            "US-FL",
+            "US-GA",
+            "US-HI",
+            "US-ID",
+            "US-IL",
+            "US-IN",
+            "US-IA",
+            "US-KS",
+            "US-KY",
+            "US-ME",
+            "US-MD",
+            "US-MA",
+            "US-MI",
+            "US-MN",
+            "US-MS",
+            "US-MO",
+            "US-MT",
+            "US-NE",
+            "US-NJ",
+            "US-NM",
+            "US-NY",
+            "US-NC",
+            "US-ND",
+            "US-OH",
+            "US-OK",
+            "US-PA",
+            "US-RI",
+            "US-SC",
+            "US-SD",
+            "US-TN",
+            "US-TX",
+            "US-UT",
+            "US-VA",
+            "US-WA",
+            "US-WV",
+            "US-WI",
+            "US-WY",
+            "US-AA",
+            "US-AE",
+            "US-AP"
+          ],
+          "excludeActiveMilitary": true,
+          "provisional": true,
+          "revisit": [
+            "Use the pinned workbook's current restrictions provisionally. Revisit WAEPA filing approvals before publication; no future approval is inferred."
+          ]
+        },
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-group-term.selection-policy",
+        "key": "{{site}}.li-group-term.selection-policy",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.product-selection-policy.li-group-term",
+        "value": {
+          "version": 1,
+          "modes": [
+            "new",
+            "increase"
+          ],
+          "amountMeaning": "resulting-total",
+          "existingPolicyRequired": true,
+          "riderOnlyApplicants": [],
+          "riders": [
+            {
+              "key": "rider.waepa.r34",
+              "applicants": [
+                "member",
+                "spouse"
+              ],
+              "included": false,
+              "minimumBase": 50000,
+              "maximumAge": 64,
+              "requires": [],
+              "incompatible": [],
+              "amount": {
+                "kind": "none"
+              },
+              "excludedJurisdictions": [
+                "US-CT",
+                "US-ID",
+                "US-LA",
+                "US-MA",
+                "US-MN",
+                "US-MO",
+                "US-MT",
+                "US-NC",
+                "US-NY",
+                "US-OH",
+                "US-SD",
+                "US-UT",
+                "US-WA",
+                "US-AS",
+                "US-GU",
+                "US-MP",
+                "US-PR",
+                "US-VI"
+              ]
+            },
+            {
+              "key": "rider.waepa.r16a",
+              "applicants": [
+                "member",
+                "spouse"
+              ],
+              "included": false,
+              "minimumBase": 100000,
+              "maximumBase": 1750000,
+              "maximumAge": 49,
+              "requires": [],
+              "incompatible": [],
+              "amount": {
+                "kind": "none"
+              },
+              "excludedJurisdictions": []
+            }
+          ],
+          "childSchedule": {
+            "bands": [
+              {
+                "minimumAgeDays": 0,
+                "maximumAgeDays": 182,
+                "amount": 1000
+              },
+              {
+                "minimumAgeDays": 183,
+                "maximumAgeDays": 9496,
+                "amount": 10000
+              }
+            ],
+            "memberMaximumFraction": 0.5,
+            "primaryCoverageBasis": "member-or-spouse",
+            "maximumAgeYears": 25
+          },
+          "skipPaymentForExisting": true,
+          "skipPaymentForChildOnly": true,
+          "healthForRiderOnly": true,
+          "provisional": true,
+          "revisit": [
+            "Existing-policy verification requires a service; a supplied verification fact is candidate input only. Resulting-total amount semantics are provisional for increase mode.",
+            "Preserve current rider assignments provisionally. Unspecified rider caps, dependencies and incompatibilities require product document review; empty lists are explicit working choices.",
+            "WAEPA child attachment is missing: use $1,000 for 0\u2013182 days, $10,000 thereafter through 25, capped at 50% of member coverage provisionally. Replace with age/spouse schedule when provided.",
+            "WAEPA CIR filing restriction note says no offering until VA approval. Treat listed current jurisdiction exclusions as provisional; filing currency and approval need review.",
+            "Rider-only is restricted to existing member/spouse coverage; no separate Site added. Payment skip and verification must be reconciled with existing-policy service.",
+            "Child schedules use each child's calendar age and 50% of the higher explicit member/spouse life amount provisionally. Spouse-only attachment supersedes the prior member-only candidate dependency for scheduled child amounts; revisit the authoritative attachment schedule.",
+            "Mock verification replaces the caller boolean at the journey boundary. Real policy lookup and effective-date/billing acceptance await integration.",
+            "Added source-linked CIR, WOP, AD&D, CAT and AVMA FPO caps are candidate rules; unresolved rider definitions remain explicitly provisional."
+          ]
+        }
+      },
+      {
+        "id": "{{site}}.li-group-term.journey-policy",
+        "key": "{{site}}.li-group-term.journey-policy",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.product-journey-policy.li-group-term",
+        "value": {
+          "underwritingByApplicant": {
+            "child": "NA"
+          },
+          "version": 1,
+          "applicants": [
+            "member",
+            "spouse",
+            "child"
+          ],
+          "associationChoices": [],
+          "defaultUnderwritingPathway": "QD",
+          "membershipRequired": true,
+          "ageBasis": "age-last-birthday-on-application-date",
+          "payment": {
+            "collection": "required",
+            "defaultMethod": "bank-account",
+            "defaultFrequency": "monthly",
+            "frequencyLocked": true,
+            "synchronizeAcrossProducts": true,
+            "methods": [
+              {
+                "method": "bank-account",
+                "frequencies": [
+                  "monthly"
+                ]
+              },
+              {
+                "method": "credit-card",
+                "frequencies": [
+                  "monthly"
+                ]
+              }
+            ]
+          },
+          "billing": {
+            "annualFactors": {
+              "annual": 1,
+              "semiannual": 0.5,
+              "quarterly": 0.25,
+              "monthly": 0.08333333333333333
+            },
+            "feePerCollection": {
+              "bank-account": 0,
+              "credit-card": 0,
+              "bill-me": 0
+            },
+            "annualCredit": 0,
+            "currency": "USD"
+          },
+          "dependentElections": [],
+          "questions": [
+            {
+              "applicantKey": "member",
+              "modes": [
+                "new"
+              ],
+              "healthPage": "health-tele",
+              "financialFields": [],
+              "tobaccoFields": [
+                "smoker",
+                "tobacco-last-used",
+                "tobacco-products"
+              ],
+              "attestationKey": "waepa.li-group-term.member.new.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            },
+            {
+              "applicantKey": "member",
+              "modes": [
+                "increase"
+              ],
+              "healthPage": "health-tele",
+              "financialFields": [],
+              "tobaccoFields": [
+                "smoker",
+                "tobacco-last-used",
+                "tobacco-products"
+              ],
+              "attestationKey": "waepa.li-group-term.member.increase.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            },
+            {
+              "applicantKey": "member",
+              "modes": [
+                "rider-only"
+              ],
+              "healthPage": "health-tele",
+              "financialFields": [],
+              "tobaccoFields": [
+                "smoker",
+                "tobacco-last-used",
+                "tobacco-products"
+              ],
+              "attestationKey": "waepa.li-group-term.member.rider-only.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            },
+            {
+              "applicantKey": "spouse",
+              "modes": [
+                "new"
+              ],
+              "healthPage": "health-tele",
+              "financialFields": [],
+              "tobaccoFields": [
+                "spouse-smoker",
+                "spouse-tobacco-last-used",
+                "spouse-tobacco-products"
+              ],
+              "attestationKey": "waepa.li-group-term.spouse.new.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            },
+            {
+              "applicantKey": "spouse",
+              "modes": [
+                "increase"
+              ],
+              "healthPage": "health-tele",
+              "financialFields": [],
+              "tobaccoFields": [
+                "spouse-smoker",
+                "spouse-tobacco-last-used",
+                "spouse-tobacco-products"
+              ],
+              "attestationKey": "waepa.li-group-term.spouse.increase.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            },
+            {
+              "applicantKey": "spouse",
+              "modes": [
+                "rider-only"
+              ],
+              "healthPage": "health-tele",
+              "financialFields": [],
+              "tobaccoFields": [
+                "spouse-smoker",
+                "spouse-tobacco-last-used",
+                "spouse-tobacco-products"
+              ],
+              "attestationKey": "waepa.li-group-term.spouse.rider-only.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            },
+            {
+              "applicantKey": "child",
+              "modes": [
+                "new"
+              ],
+              "healthPage": null,
+              "financialFields": [],
+              "tobaccoFields": [],
+              "attestationKey": "waepa.li-group-term.child.new.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            },
+            {
+              "applicantKey": "child",
+              "modes": [
+                "increase"
+              ],
+              "healthPage": null,
+              "financialFields": [],
+              "tobaccoFields": [],
+              "attestationKey": "waepa.li-group-term.child.increase.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            },
+            {
+              "applicantKey": "child",
+              "modes": [
+                "rider-only"
+              ],
+              "healthPage": null,
+              "financialFields": [],
+              "tobaccoFields": [],
+              "attestationKey": "waepa.li-group-term.child.rider-only.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            }
+          ],
+          "mappings": [
+            {
+              "when": {
+                "applicantKey": "member",
+                "mode": "new"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30280-0",
+                  "rating": "G-30280-0",
+                  "issue": "G-30280-0",
+                  "xml": "G-30280-0",
+                  "pdf": "G-30280-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "101",
+                  "rating": "101",
+                  "issue": "101",
+                  "xml": "101",
+                  "pdf": "101",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {
+                "rider.waepa.r34": "R34",
+                "rider.waepa.r16a": "R16a"
+              }
+            },
+            {
+              "when": {
+                "applicantKey": "member",
+                "mode": "increase"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30280-0",
+                  "rating": "G-30280-0",
+                  "issue": "G-30280-0",
+                  "xml": "G-30280-0",
+                  "pdf": "G-30280-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "101",
+                  "rating": "101",
+                  "issue": "101",
+                  "xml": "101",
+                  "pdf": "101",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {
+                "rider.waepa.r34": "R34",
+                "rider.waepa.r16a": "R16a"
+              }
+            },
+            {
+              "when": {
+                "applicantKey": "member",
+                "mode": "rider-only"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30280-0",
+                  "rating": "G-30280-0",
+                  "issue": "G-30280-0",
+                  "xml": "G-30280-0",
+                  "pdf": "G-30280-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "101",
+                  "rating": "101",
+                  "issue": "101",
+                  "xml": "101",
+                  "pdf": "101",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {
+                "rider.waepa.r34": "R34",
+                "rider.waepa.r16a": "R16a"
+              }
+            },
+            {
+              "when": {
+                "applicantKey": "spouse",
+                "mode": "new"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30280-0",
+                  "rating": "G-30280-0",
+                  "issue": "G-30280-0",
+                  "xml": "G-30280-0",
+                  "pdf": "G-30280-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "101",
+                  "rating": "101",
+                  "issue": "101",
+                  "xml": "101",
+                  "pdf": "101",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {
+                "rider.waepa.r34": "R34",
+                "rider.waepa.r16a": "R16a"
+              }
+            },
+            {
+              "when": {
+                "applicantKey": "spouse",
+                "mode": "increase"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30280-0",
+                  "rating": "G-30280-0",
+                  "issue": "G-30280-0",
+                  "xml": "G-30280-0",
+                  "pdf": "G-30280-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "101",
+                  "rating": "101",
+                  "issue": "101",
+                  "xml": "101",
+                  "pdf": "101",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {
+                "rider.waepa.r34": "R34",
+                "rider.waepa.r16a": "R16a"
+              }
+            },
+            {
+              "when": {
+                "applicantKey": "spouse",
+                "mode": "rider-only"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30280-0",
+                  "rating": "G-30280-0",
+                  "issue": "G-30280-0",
+                  "xml": "G-30280-0",
+                  "pdf": "G-30280-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "101",
+                  "rating": "101",
+                  "issue": "101",
+                  "xml": "101",
+                  "pdf": "101",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {
+                "rider.waepa.r34": "R34",
+                "rider.waepa.r16a": "R16a"
+              }
+            },
+            {
+              "when": {
+                "applicantKey": "child",
+                "mode": "new"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30280-0",
+                  "rating": "G-30280-0",
+                  "issue": "G-30280-0",
+                  "xml": "G-30280-0",
+                  "pdf": "G-30280-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "101",
+                  "rating": "101",
+                  "issue": "101",
+                  "xml": "101",
+                  "pdf": "101",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {
+                "rider.waepa.r34": "R34",
+                "rider.waepa.r16a": "R16a"
+              }
+            },
+            {
+              "when": {
+                "applicantKey": "child",
+                "mode": "increase"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30280-0",
+                  "rating": "G-30280-0",
+                  "issue": "G-30280-0",
+                  "xml": "G-30280-0",
+                  "pdf": "G-30280-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "101",
+                  "rating": "101",
+                  "issue": "101",
+                  "xml": "101",
+                  "pdf": "101",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {
+                "rider.waepa.r34": "R34",
+                "rider.waepa.r16a": "R16a"
+              }
+            }
+          ],
+          "provisional": true,
+          "revisit": [
+            "Use current ISI association list, all enabled plans for each association and common identifiers provisionally. ATPE is not enabled; no ATPE exception is silently applied.",
+            "Membership is an explicit applicant declaration for candidate acceptance, not a verified external membership service. Age is last birthday on application date; revisit source-specific age conventions.",
+            "Reuse current health fields without adding medical rejection criteria. Health pathway, financial/tobacco triggers and synthetic attestation require current product-specific question/document review.",
+            "PRASE unavailable remains a null premium. Non-AMA modal factors use pro rata annual fractions, fees and credits are zero; WAEPA card conflict uses the agreed mock card option. Existing billing remains unchanged only after policy verification.",
+            "Submission is a mock-coverage-v1 role mapping, not insurer XML/PDF service certification. Unspecified roles use the primary identifier provisionally; portal dummy identifiers never enter issue/rating/XML/PDF by default."
+          ],
+          "healthPageByUnderwriting": {
+            "QD": "health-tele",
+            "FUW": "health-tele",
+            "SI": "health-tele",
+            "TELE": "health-tele"
+          }
+        }
+      },
+      {
+        "id": "{{site}}.di-short-term.selection-policy",
+        "key": "{{site}}.di-short-term.selection-policy",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.product-selection-policy.di-short-term",
+        "value": {
+          "version": 1,
+          "modes": [
+            "new",
+            "increase"
+          ],
+          "amountMeaning": "resulting-total",
+          "existingPolicyRequired": true,
+          "riderOnlyApplicants": [],
+          "riders": [],
+          "childSchedule": null,
+          "skipPaymentForExisting": false,
+          "skipPaymentForChildOnly": false,
+          "healthForRiderOnly": false,
+          "provisional": true,
+          "revisit": [
+            "Existing-policy verification requires a service; a supplied verification fact is candidate input only. Resulting-total amount semantics are provisional for increase mode.",
+            "Preserve current rider assignments provisionally. Unspecified rider caps, dependencies and incompatibilities require product document review; empty lists are explicit working choices.",
+            "Mock verification replaces the caller boolean at the journey boundary. Real policy lookup and effective-date/billing acceptance await integration.",
+            "Added source-linked CIR, WOP, AD&D, CAT and AVMA FPO caps are candidate rules; unresolved rider definitions remain explicitly provisional."
+          ]
+        }
+      },
+      {
+        "id": "{{site}}.di-short-term.journey-policy",
+        "key": "{{site}}.di-short-term.journey-policy",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.product-journey-policy.di-short-term",
+        "value": {
+          "underwritingByApplicant": {},
+          "version": 1,
+          "applicants": [
+            "member"
+          ],
+          "associationChoices": [],
+          "defaultUnderwritingPathway": "QD",
+          "membershipRequired": true,
+          "ageBasis": "age-last-birthday-on-application-date",
+          "payment": {
+            "collection": "required",
+            "defaultMethod": "bank-account",
+            "defaultFrequency": "monthly",
+            "frequencyLocked": true,
+            "synchronizeAcrossProducts": true,
+            "methods": [
+              {
+                "method": "bank-account",
+                "frequencies": [
+                  "monthly"
+                ]
+              },
+              {
+                "method": "credit-card",
+                "frequencies": [
+                  "monthly"
+                ]
+              }
+            ]
+          },
+          "billing": {
+            "annualFactors": {
+              "annual": 1,
+              "semiannual": 0.5,
+              "quarterly": 0.25,
+              "monthly": 0.08333333333333333
+            },
+            "feePerCollection": {
+              "bank-account": 0,
+              "credit-card": 0,
+              "bill-me": 0
+            },
+            "annualCredit": 0,
+            "currency": "USD"
+          },
+          "dependentElections": [],
+          "questions": [
+            {
+              "applicantKey": "member",
+              "modes": [
+                "new"
+              ],
+              "healthPage": "health-qd",
+              "financialFields": [
+                "average-monthly-income",
+                "hours-worked-per-week"
+              ],
+              "tobaccoFields": [],
+              "attestationKey": "waepa.di-short-term.member.new.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            },
+            {
+              "applicantKey": "member",
+              "modes": [
+                "increase"
+              ],
+              "healthPage": "health-qd",
+              "financialFields": [
+                "average-monthly-income",
+                "hours-worked-per-week"
+              ],
+              "tobaccoFields": [],
+              "attestationKey": "waepa.di-short-term.member.increase.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            }
+          ],
+          "mappings": [
+            {
+              "when": {
+                "applicantKey": "member",
+                "mode": "new"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30281-0",
+                  "rating": "G-30281-0",
+                  "issue": "G-30281-0",
+                  "xml": "G-30281-0",
+                  "pdf": "G-30281-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "401",
+                  "rating": "401",
+                  "issue": "401",
+                  "xml": "401",
+                  "pdf": "401",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            },
+            {
+              "when": {
+                "applicantKey": "member",
+                "mode": "increase"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30281-0",
+                  "rating": "G-30281-0",
+                  "issue": "G-30281-0",
+                  "xml": "G-30281-0",
+                  "pdf": "G-30281-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "401",
+                  "rating": "401",
+                  "issue": "401",
+                  "xml": "401",
+                  "pdf": "401",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            }
+          ],
+          "provisional": true,
+          "revisit": [
+            "Use current ISI association list, all enabled plans for each association and common identifiers provisionally. ATPE is not enabled; no ATPE exception is silently applied.",
+            "Membership is an explicit applicant declaration for candidate acceptance, not a verified external membership service. Age is last birthday on application date; revisit source-specific age conventions.",
+            "Reuse current health fields without adding medical rejection criteria. Health pathway, financial/tobacco triggers and synthetic attestation require current product-specific question/document review.",
+            "PRASE unavailable remains a null premium. Non-AMA modal factors use pro rata annual fractions, fees and credits are zero; WAEPA card conflict uses the agreed mock card option. Existing billing remains unchanged only after policy verification.",
+            "Submission is a mock-coverage-v1 role mapping, not insurer XML/PDF service certification. Unspecified roles use the primary identifier provisionally; portal dummy identifiers never enter issue/rating/XML/PDF by default."
+          ],
+          "healthPageByUnderwriting": {
+            "QD": "health-qd",
+            "FUW": "health-di-supp"
+          }
+        }
+      },
+      {
+        "id": "{{site}}.life-aggregate-participation",
+        "key": "{{site}}.life-aggregate-participation",
+        "sourceReference": "docs/archive/step3-review-and-rating.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.coveragePolicy.lifeAggregateParticipation",
+        "value": {
+          "version": 1,
+          "mode": "individual-only",
+          "provisional": true,
+          "reason": "No joint life cap established in candidate: retain individual product limits provisionally; source reconciliation required before publication",
+          "authority": "User, October 2, 2026: \"these can all be ignored for now (take whatever value if a value is needed and note in docs it needs to be revisited)\""
+        }
+      },
+      {
+        "id": "{{site}}.li-group-term.rate-modifier-policy",
+        "key": "{{site}}.li-group-term.rate-modifier-policy",
+        "sourceReference": "docs/archive/step3-review-and-rating.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.product-rate-modifier-policy.li-group-term",
+        "value": {
+          "version": 1,
+          "rules": [],
+          "provisional": true,
+          "revisit": [
+            "Synthetic base prices; volume discounts without supplied percentages remain zero; child flat premiums and modifier ordering require source reconciliation before publication"
+          ]
+        }
+      },
+      {
+        "id": "{{site}}.li-group-term.rate-input-policy",
+        "key": "{{site}}.li-group-term.rate-input-policy",
+        "sourceReference": "docs/archive/step3-review-and-rating.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.product-rate-input-policy.li-group-term",
+        "value": {
+          "version": 1,
+          "rateClass": {
+            "sourceReferences": [
+              "Main!AO379",
+              "Main!AP379",
+              "Main!AR379",
+              "User-provided WAEPA documentation: G-30280-0, Std only rateclass (2026-10-05)"
+            ],
+            "sourceText": "\n\n\nUser documentation clarification: G-30280-0 is Std only rateclass; not Preferred/Standard.",
+            "classes": [
+              "Standard"
+            ],
+            "selection": "single"
+          },
+          "dimensions": {
+            "amount": "required",
+            "applicant": "required",
+            "age": "provisional",
+            "jurisdiction": "provisional",
+            "gender": "provisional",
+            "tobacco": "ignored",
+            "rateClass": "required"
+          },
+          "sourceReferences": [
+            "Main!AO379",
+            "Main!AP379",
+            "Main!AR379"
+          ],
+          "authority": "provisional"
+        }
+      },
+      {
+        "id": "{{site}}.di-short-term.rate-modifier-policy",
+        "key": "{{site}}.di-short-term.rate-modifier-policy",
+        "sourceReference": "docs/archive/step3-review-and-rating.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.product-rate-modifier-policy.di-short-term",
+        "value": {
+          "version": 1,
+          "rules": [],
+          "provisional": true,
+          "revisit": [
+            "Synthetic base prices; volume discounts without supplied percentages remain zero; child flat premiums and modifier ordering require source reconciliation before publication"
+          ]
+        }
+      },
+      {
+        "id": "{{site}}.di-short-term.rate-input-policy",
+        "key": "{{site}}.di-short-term.rate-input-policy",
+        "sourceReference": "docs/archive/step3-review-and-rating.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.product-rate-input-policy.di-short-term",
+        "value": {
+          "version": 1,
+          "rateClass": {
+            "sourceReferences": [
+              "Main!AO380",
+              "Main!AP380",
+              "Main!AR380"
+            ],
+            "sourceText": "Only one rate class\nn/a\nRates are Male / Female",
+            "classes": [
+              "Single class"
+            ],
+            "selection": "single"
+          },
+          "dimensions": {
+            "amount": "required",
+            "applicant": "required",
+            "age": "provisional",
+            "jurisdiction": "provisional",
+            "gender": "required",
+            "tobacco": "ignored",
+            "waitingPeriod": "provisional",
+            "benefitPeriod": "provisional",
+            "rateClass": "required"
+          },
+          "sourceReferences": [
+            "Main!AO380",
+            "Main!AP380",
+            "Main!AR380"
+          ],
+          "authority": "provisional"
+        }
+      },
+      {
+        "id": "ownership.{{site}}.di-short-term.rider-set",
+        "key": "ownership.{{site}}.di-short-term.rider-set",
+        "sourceReference": "User-confirmed relational rider ownership, October 19, 2026",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "position": 0,
+        "configurationKey": "template.product-rider-set.di-short-term",
+        "value": {
+          "version": 2,
+          "source": "productRiders"
+        }
+      },
+      {
+        "id": "ownership.{{site}}.li-group-term.rider-set",
+        "key": "ownership.{{site}}.li-group-term.rider-set",
+        "sourceReference": "User-confirmed relational rider ownership, October 19, 2026",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "position": 0,
+        "configurationKey": "template.product-rider-set.li-group-term",
+        "value": {
+          "version": 2,
+          "source": "productRiders"
+        }
+      },
+      {
+        "id": "ownership.{{site}}.page-participation",
+        "key": "ownership.{{site}}.page-participation",
+        "sourceReference": "Site page participation ownership, October 19, 2026",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.page-participation",
+        "value": {
+          "version": 2,
+          "source": "sitePages"
+        }
+      },
+      {
+        "id": "ownership.{{site}}.product-availability",
+        "key": "ownership.{{site}}.product-availability",
+        "sourceReference": "Site product availability ownership, October 19, 2026",
+        "position": 0,
+        "configurationKey": "template.product-availability",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "value": {
+          "version": 2,
+          "source": "siteProducts"
+        }
+      },
+      {
+        "id": "ownership.{{site}}.site-structure",
+        "key": "ownership.{{site}}.site-structure",
+        "sourceReference": "Stored field placement and template mode ownership, October 19, 2026",
+        "position": 0,
+        "configurationKey": "template.site-structure",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "value": {
+          "version": 2,
+          "source": "stored-structure"
+        }
+      },
+      {
+        "id": "{{site}}.li-group-term.spouse.member-eligibility",
+        "key": "{{site}}.li-group-term.spouse.member-eligibility",
+        "sourceReference": "Attestation Online and PDF!C122; user decision October 20, 2026: restrict dependent-spouse coverage when spouse is already or becoming a WAEPA member; preserve separate member/Associate Member applications",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.product-eligibility-facts.li-group-term.spouse",
+        "value": [
+          {
+            "fact": "associationMember",
+            "equals": false
+          }
+        ]
+      },
+      {
+        "id": "{{site}}.products.riders.li-group-term.rider.waepa.r34.riderOnlyApplicants",
+        "key": "{{site}}.products.riders.li-group-term.rider.waepa.r34.riderOnlyApplicants",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "products.riders.li-group-term.rider.waepa.r34.riderOnlyApplicants",
+        "value": [],
+        "position": 0,
+        "sourceReference": "User WAEPA correction November 19, 2026"
+      },
+      {
+        "id": "{{site}}.shared.profile-financial-questionnaire",
+        "key": "{{site}}.shared.profile-financial-questionnaire",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "shared.profile-financial-questionnaire",
+        "value": {
+          "version": 1,
+          "enabled": true,
+          "applicant": "member",
+          "rules": [
+            {
+              "productKeys": [
+                "di-short-term"
+              ],
+              "minimumAmount": 5000,
+              "inclusive": false
+            }
+          ],
+          "sourceReferences": [
+            "User WAEPA correction November 19, 2026"
+          ]
+        },
+        "position": 0,
+        "sourceReference": "User WAEPA correction November 19, 2026"
+      }
+    ],
+    "siteProducts": [
+      {
+        "id": "{{site}}--li-group-term--product",
+        "siteId": "{{siteId}}",
+        "productKey": "li-group-term",
+        "enabled": true,
+        "key": "{{site}}.li-group-term",
+        "sourceReference": "prototype:siteProducts/waepa.li-group-term"
+      },
+      {
+        "id": "{{site}}--di-short-term--product",
+        "siteId": "{{siteId}}",
+        "productKey": "di-short-term",
+        "enabled": true,
+        "key": "{{site}}.di-short-term",
+        "sourceReference": "prototype:siteProducts/waepa.di-short-term"
+      }
+    ],
+    "siteProductApplicants": [
+      {
+        "id": "{{site}}.li-group-term.member",
+        "key": "{{site}}.li-group-term.member",
+        "siteKey": "{{site}}",
+        "productKey": "li-group-term",
+        "applicantKey": "member",
+        "position": 0,
+        "sourceReference": "prototype:siteProductApplicants/waepa.li-group-term.member"
+      },
+      {
+        "id": "{{site}}.li-group-term.spouse",
+        "key": "{{site}}.li-group-term.spouse",
+        "siteKey": "{{site}}",
+        "productKey": "li-group-term",
+        "applicantKey": "spouse",
+        "position": 1,
+        "sourceReference": "prototype:siteProductApplicants/waepa.li-group-term.spouse"
+      },
+      {
+        "id": "{{site}}.li-group-term.child",
+        "key": "{{site}}.li-group-term.child",
+        "siteKey": "{{site}}",
+        "productKey": "li-group-term",
+        "applicantKey": "child",
+        "position": 2,
+        "sourceReference": "prototype:siteProductApplicants/waepa.li-group-term.child"
+      },
+      {
+        "id": "{{site}}.di-short-term.reviewed-numeric.member",
+        "key": "{{site}}.di-short-term.reviewed-numeric.member",
+        "sourceReference": "Main!H380",
+        "siteKey": "{{site}}",
+        "productKey": "di-short-term",
+        "applicantKey": "member",
+        "position": 0
+      }
+    ],
+    "productApplicantEligibility": [
+      {
+        "id": "{{site}}.li-group-term.member",
+        "key": "{{site}}.li-group-term.member",
+        "sourceReference": "prototype:waepa.li-group-term",
+        "productKey": "li-group-term",
+        "applicantTypeKey": "member",
+        "siteKey": "{{site}}",
+        "eligible": true,
+        "conditionKey": null
+      },
+      {
+        "id": "{{site}}.li-group-term.spouse",
+        "key": "{{site}}.li-group-term.spouse",
+        "sourceReference": "prototype:waepa.li-group-term",
+        "productKey": "li-group-term",
+        "applicantTypeKey": "spouse",
+        "siteKey": "{{site}}",
+        "eligible": true,
+        "conditionKey": null
+      },
+      {
+        "id": "{{site}}.li-group-term.child",
+        "key": "{{site}}.li-group-term.child",
+        "sourceReference": "prototype:waepa.li-group-term",
+        "productKey": "li-group-term",
+        "applicantTypeKey": "child",
+        "siteKey": "{{site}}",
+        "eligible": true,
+        "conditionKey": null
+      },
+      {
+        "id": "{{site}}.di-short-term.reviewed-numeric.member",
+        "key": "{{site}}.di-short-term.reviewed-numeric.member",
+        "sourceReference": "Main!H380",
+        "siteKey": "{{site}}",
+        "productKey": "di-short-term",
+        "applicantTypeKey": "member",
+        "eligible": true,
+        "conditionKey": null
+      },
+      {
+        "id": "{{site}}.di-short-term.reviewed-numeric.spouse",
+        "key": "{{site}}.di-short-term.reviewed-numeric.spouse",
+        "sourceReference": "Main!I380",
+        "siteKey": "{{site}}",
+        "productKey": "di-short-term",
+        "applicantTypeKey": "spouse",
+        "eligible": false,
+        "conditionKey": null
+      },
+      {
+        "id": "{{site}}.di-short-term.reviewed-numeric.child",
+        "key": "{{site}}.di-short-term.reviewed-numeric.child",
+        "sourceReference": "Main!J380",
+        "siteKey": "{{site}}",
+        "productKey": "di-short-term",
+        "applicantTypeKey": "child",
+        "eligible": false,
+        "conditionKey": null
+      }
+    ],
+    "underwritingBands": [
+      {
+        "id": "{{site}}.di-short-term.member.reviewed-qd",
+        "key": "{{site}}.di-short-term.member.reviewed-qd",
+        "sourceReference": "User decision October 20, 2026; QD DI!J15/O15; Main!U380/Z380/AA380: WAEPA STD QD ages 17\u201349, FUW ages 50\u201369; existing DI questions provisional for longer flow",
+        "siteKey": "{{site}}",
+        "productKey": "di-short-term",
+        "applicantTypeKey": "member",
+        "minimumAge": 17,
+        "maximumAge": 49,
+        "pathway": "QD",
+        "minimumAmount": 100,
+        "maximumAmount": 6500,
+        "minimumAmountExclusive": false,
+        "applicantClass": null,
+        "mortalityMorbidity": null,
+        "conditionKey": null,
+        "status": "documented"
+      },
+      {
+        "id": "{{site}}.di-short-term.member.reviewed-fuw",
+        "key": "{{site}}.di-short-term.member.reviewed-fuw",
+        "sourceReference": "User decision October 20, 2026; QD DI!J15/O15; Main!U380/Z380/AA380: WAEPA STD QD ages 17\u201349, FUW ages 50\u201369; existing DI questions provisional for longer flow",
+        "siteKey": "{{site}}",
+        "productKey": "di-short-term",
+        "applicantTypeKey": "member",
+        "minimumAge": 50,
+        "maximumAge": 69,
+        "pathway": "FUW",
+        "minimumAmount": 100,
+        "maximumAmount": 6500,
+        "minimumAmountExclusive": false,
+        "applicantClass": null,
+        "mortalityMorbidity": null,
+        "conditionKey": null,
+        "status": "documented"
+      },
+      {
+        "id": "{{site}}.li-group-term.member.reviewed-source-1",
+        "key": "{{site}}.li-group-term.member.reviewed-source-1",
+        "sourceReference": "User decision October 20, 2026; QD LI!J92/O92: WAEPA adult Life QD through age 49 up to $1 million, ages 50\u201359 up to $500,000; FUW otherwise within approved eligibility",
+        "siteKey": "{{site}}",
+        "productKey": "li-group-term",
+        "applicantTypeKey": "member",
+        "minimumAge": 18,
+        "maximumAge": 49,
+        "minimumAmount": 0,
+        "maximumAmount": 1000000,
+        "minimumAmountExclusive": false,
+        "pathway": "QD",
+        "applicantClass": null,
+        "mortalityMorbidity": null,
+        "conditionKey": null,
+        "status": "documented"
+      },
+      {
+        "id": "{{site}}.li-group-term.member.reviewed-source-2",
+        "key": "{{site}}.li-group-term.member.reviewed-source-2",
+        "sourceReference": "User decision October 20, 2026; QD LI!J92/O92: WAEPA adult Life QD through age 49 up to $1 million, ages 50\u201359 up to $500,000; FUW otherwise within approved eligibility",
+        "siteKey": "{{site}}",
+        "productKey": "li-group-term",
+        "applicantTypeKey": "member",
+        "minimumAge": 18,
+        "maximumAge": 49,
+        "minimumAmount": 1000000,
+        "maximumAmount": 9007199254740991,
+        "minimumAmountExclusive": true,
+        "pathway": "FUW",
+        "applicantClass": null,
+        "mortalityMorbidity": null,
+        "conditionKey": null,
+        "status": "documented"
+      },
+      {
+        "id": "{{site}}.li-group-term.member.reviewed-source-3",
+        "key": "{{site}}.li-group-term.member.reviewed-source-3",
+        "sourceReference": "User decision October 20, 2026; QD LI!J92/O92: WAEPA adult Life QD through age 49 up to $1 million, ages 50\u201359 up to $500,000; FUW otherwise within approved eligibility",
+        "siteKey": "{{site}}",
+        "productKey": "li-group-term",
+        "applicantTypeKey": "member",
+        "minimumAge": 50,
+        "maximumAge": 59,
+        "minimumAmount": 0,
+        "maximumAmount": 500000,
+        "minimumAmountExclusive": false,
+        "pathway": "QD",
+        "applicantClass": null,
+        "mortalityMorbidity": null,
+        "conditionKey": null,
+        "status": "documented"
+      },
+      {
+        "id": "{{site}}.li-group-term.member.reviewed-source-4",
+        "key": "{{site}}.li-group-term.member.reviewed-source-4",
+        "sourceReference": "User decision October 20, 2026; QD LI!J92/O92: WAEPA adult Life QD through age 49 up to $1 million, ages 50\u201359 up to $500,000; FUW otherwise within approved eligibility",
+        "siteKey": "{{site}}",
+        "productKey": "li-group-term",
+        "applicantTypeKey": "member",
+        "minimumAge": 50,
+        "maximumAge": 59,
+        "minimumAmount": 500000,
+        "maximumAmount": 9007199254740991,
+        "minimumAmountExclusive": true,
+        "pathway": "FUW",
+        "applicantClass": null,
+        "mortalityMorbidity": null,
+        "conditionKey": null,
+        "status": "documented"
+      },
+      {
+        "id": "{{site}}.li-group-term.member.reviewed-source-5",
+        "key": "{{site}}.li-group-term.member.reviewed-source-5",
+        "sourceReference": "User decision October 20, 2026; QD LI!J92/O92: WAEPA adult Life QD through age 49 up to $1 million, ages 50\u201359 up to $500,000; FUW otherwise within approved eligibility",
+        "siteKey": "{{site}}",
+        "productKey": "li-group-term",
+        "applicantTypeKey": "member",
+        "minimumAge": 60,
+        "maximumAge": 69,
+        "minimumAmount": 0,
+        "maximumAmount": 9007199254740991,
+        "minimumAmountExclusive": false,
+        "pathway": "FUW",
+        "applicantClass": null,
+        "mortalityMorbidity": null,
+        "conditionKey": null,
+        "status": "documented"
+      },
+      {
+        "id": "{{site}}.li-group-term.spouse.reviewed-source-1",
+        "key": "{{site}}.li-group-term.spouse.reviewed-source-1",
+        "sourceReference": "User decision October 20, 2026; QD LI!J92/O92: WAEPA adult Life QD through age 49 up to $1 million, ages 50\u201359 up to $500,000; FUW otherwise within approved eligibility",
+        "siteKey": "{{site}}",
+        "productKey": "li-group-term",
+        "applicantTypeKey": "spouse",
+        "minimumAge": 18,
+        "maximumAge": 49,
+        "minimumAmount": 0,
+        "maximumAmount": 1000000,
+        "minimumAmountExclusive": false,
+        "pathway": "QD",
+        "applicantClass": null,
+        "mortalityMorbidity": null,
+        "conditionKey": null,
+        "status": "documented"
+      },
+      {
+        "id": "{{site}}.li-group-term.spouse.reviewed-source-2",
+        "key": "{{site}}.li-group-term.spouse.reviewed-source-2",
+        "sourceReference": "User decision October 20, 2026; QD LI!J92/O92: WAEPA adult Life QD through age 49 up to $1 million, ages 50\u201359 up to $500,000; FUW otherwise within approved eligibility",
+        "siteKey": "{{site}}",
+        "productKey": "li-group-term",
+        "applicantTypeKey": "spouse",
+        "minimumAge": 18,
+        "maximumAge": 49,
+        "minimumAmount": 1000000,
+        "maximumAmount": 9007199254740991,
+        "minimumAmountExclusive": true,
+        "pathway": "FUW",
+        "applicantClass": null,
+        "mortalityMorbidity": null,
+        "conditionKey": null,
+        "status": "documented"
+      },
+      {
+        "id": "{{site}}.li-group-term.spouse.reviewed-source-3",
+        "key": "{{site}}.li-group-term.spouse.reviewed-source-3",
+        "sourceReference": "User decision October 20, 2026; QD LI!J92/O92: WAEPA adult Life QD through age 49 up to $1 million, ages 50\u201359 up to $500,000; FUW otherwise within approved eligibility",
+        "siteKey": "{{site}}",
+        "productKey": "li-group-term",
+        "applicantTypeKey": "spouse",
+        "minimumAge": 50,
+        "maximumAge": 59,
+        "minimumAmount": 0,
+        "maximumAmount": 500000,
+        "minimumAmountExclusive": false,
+        "pathway": "QD",
+        "applicantClass": null,
+        "mortalityMorbidity": null,
+        "conditionKey": null,
+        "status": "documented"
+      },
+      {
+        "id": "{{site}}.li-group-term.spouse.reviewed-source-4",
+        "key": "{{site}}.li-group-term.spouse.reviewed-source-4",
+        "sourceReference": "User decision October 20, 2026; QD LI!J92/O92: WAEPA adult Life QD through age 49 up to $1 million, ages 50\u201359 up to $500,000; FUW otherwise within approved eligibility",
+        "siteKey": "{{site}}",
+        "productKey": "li-group-term",
+        "applicantTypeKey": "spouse",
+        "minimumAge": 50,
+        "maximumAge": 59,
+        "minimumAmount": 500000,
+        "maximumAmount": 9007199254740991,
+        "minimumAmountExclusive": true,
+        "pathway": "FUW",
+        "applicantClass": null,
+        "mortalityMorbidity": null,
+        "conditionKey": null,
+        "status": "documented"
+      },
+      {
+        "id": "{{site}}.li-group-term.spouse.reviewed-source-5",
+        "key": "{{site}}.li-group-term.spouse.reviewed-source-5",
+        "sourceReference": "User decision October 20, 2026; QD LI!J92/O92: WAEPA adult Life QD through age 49 up to $1 million, ages 50\u201359 up to $500,000; FUW otherwise within approved eligibility",
+        "siteKey": "{{site}}",
+        "productKey": "li-group-term",
+        "applicantTypeKey": "spouse",
+        "minimumAge": 60,
+        "maximumAge": 69,
+        "minimumAmount": 0,
+        "maximumAmount": 9007199254740991,
+        "minimumAmountExclusive": false,
+        "pathway": "FUW",
+        "applicantClass": null,
+        "mortalityMorbidity": null,
+        "conditionKey": null,
+        "status": "documented"
+      }
+    ],
+    "coverageDependencies": [],
+    "maximumPlanRules": [],
+    "aggregateLimits": [
+      {
+        "id": "{{site}}.li-group-term.mcr-amount.member.age-cap",
+        "key": "{{site}}.li-group-term.mcr-amount.member.age-cap",
+        "sourceReference": "Main!H379",
+        "siteKey": "{{site}}",
+        "productKey": "li-group-term",
+        "categoryKey": "LI",
+        "applicantTypeKey": "member",
+        "maximum": null,
+        "formula": null,
+        "conditionKey": null
+      },
+      {
+        "id": "{{site}}.li-group-term.mcr-amount.spouse.age-cap",
+        "key": "{{site}}.li-group-term.mcr-amount.spouse.age-cap",
+        "sourceReference": "Main!I379",
+        "siteKey": "{{site}}",
+        "productKey": "li-group-term",
+        "categoryKey": "LI",
+        "applicantTypeKey": "spouse",
+        "maximum": null,
+        "formula": null,
+        "conditionKey": null
+      }
+    ],
+    "benefitPeriodOptions": [],
+    "productAmountRules": [
+      {
+        "id": "{{site}}.li-group-term.amount.0",
+        "key": "{{site}}.li-group-term.amount.0",
+        "sourceReference": "Main!I379",
+        "productKey": "li-group-term",
+        "applicantTypeKey": "spouse",
+        "applicantClass": null,
+        "amountPatternKey": "waepa.li-group-term.mcr-amount.spouse.pattern",
+        "conditionKey": null,
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-group-term.amount.1",
+        "key": "{{site}}.li-group-term.amount.1",
+        "sourceReference": "prototype:waepa.li-group-term.amount.1",
+        "productKey": "li-group-term",
+        "applicantTypeKey": "child",
+        "applicantClass": null,
+        "amountPatternKey": "waepa.li-group-term.amount.1",
+        "conditionKey": null,
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "position": 1
+      },
+      {
+        "id": "{{site}}.li-group-term.amount.2",
+        "key": "{{site}}.li-group-term.amount.2",
+        "sourceReference": "Main!H379",
+        "productKey": "li-group-term",
+        "applicantTypeKey": "member",
+        "applicantClass": null,
+        "amountPatternKey": "waepa.li-group-term.mcr-amount.member.pattern",
+        "conditionKey": null,
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "position": 2
+      },
+      {
+        "id": "{{site}}.di-short-term.reviewed-numeric.member.amount",
+        "key": "{{site}}.di-short-term.reviewed-numeric.member.amount",
+        "sourceReference": "Main!H380",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "productKey": "di-short-term",
+        "applicantTypeKey": "member",
+        "applicantClass": null,
+        "amountPatternKey": "waepa.di-short-term.benefit-amount.member.pattern",
+        "conditionKey": null,
+        "position": 0
+      }
+    ],
+    "productIdentifiers": [
+      {
+        "id": "{{site}}.li-group-term.reviewed-identifier.gNumber",
+        "key": "{{site}}.li-group-term.reviewed-identifier.gNumber",
+        "sourceReference": "Main!E379",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "productKey": "li-group-term",
+        "kind": "gNumber",
+        "definition": {
+          "primary": "G-30280-0"
+        },
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-group-term.reviewed-identifier.planCode",
+        "key": "{{site}}.li-group-term.reviewed-identifier.planCode",
+        "sourceReference": "Main!G379",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "productKey": "li-group-term",
+        "kind": "planCode",
+        "definition": {
+          "primary": "101"
+        },
+        "position": 0
+      },
+      {
+        "id": "{{site}}.di-short-term.reviewed-identifier.gNumber",
+        "key": "{{site}}.di-short-term.reviewed-identifier.gNumber",
+        "sourceReference": "Main!E380",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "productKey": "di-short-term",
+        "kind": "gNumber",
+        "definition": {
+          "primary": "G-30281-0"
+        },
+        "position": 0
+      },
+      {
+        "id": "{{site}}.di-short-term.reviewed-identifier.planCode",
+        "key": "{{site}}.di-short-term.reviewed-identifier.planCode",
+        "sourceReference": "Main!G380",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "productKey": "di-short-term",
+        "kind": "planCode",
+        "definition": {
+          "primary": "401"
+        },
+        "position": 0
+      }
+    ],
+    "productRiders": [
+      {
+        "id": "ownership.{{site}}.li-group-term.rider.{{site}}.r34",
+        "key": "ownership.{{site}}.li-group-term.rider.{{site}}.r34",
+        "sourceReference": "Main!L379",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "productKey": "li-group-term",
+        "riderKey": "rider.waepa.r34",
+        "position": 0
+      },
+      {
+        "id": "ownership.{{site}}.li-group-term.rider.{{site}}.r16a",
+        "key": "ownership.{{site}}.li-group-term.rider.{{site}}.r16a",
+        "sourceReference": "Main!L379",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "productKey": "li-group-term",
+        "riderKey": "rider.waepa.r16a",
+        "position": 1
+      }
+    ],
+    "siteRiders": [
+      {
+        "id": "ownership.{{site}}.rider.{{site}}.r34",
+        "key": "ownership.{{site}}.rider.{{site}}.r34",
+        "sourceReference": "Main!L379",
+        "siteId": "{{siteId}}",
+        "riderKey": "rider.waepa.r34",
+        "enabled": true
+      },
+      {
+        "id": "ownership.{{site}}.rider.{{site}}.r16a",
+        "key": "ownership.{{site}}.rider.{{site}}.r16a",
+        "sourceReference": "Main!L379",
+        "siteId": "{{siteId}}",
+        "riderKey": "rider.waepa.r16a",
+        "enabled": true
+      }
+    ],
+    "riderAmountRules": [],
+    "benefitCaps": [],
+    "coverageAmountPatterns": [
+      {
+        "id": "waepa.li-group-term.amount.1",
+        "key": "waepa.li-group-term.amount.1",
+        "sourceReference": "prototype:waepa.li-group-term.amount.1",
+        "patternKey": "coverage-amount-options",
+        "amountType": "range",
+        "minimum": null,
+        "maximum": null,
+        "increment": null,
+        "formula": null,
+        "baseProductKey": null,
+        "baseApplicantKey": null,
+        "baseApplicantClass": null,
+        "multiplier": null
+      },
+      {
+        "id": "waepa.li-group-term.mcr-amount.member.pattern",
+        "key": "waepa.li-group-term.mcr-amount.member.pattern",
+        "sourceReference": "Main!H379",
+        "patternKey": "coverage-amount-options",
+        "amountType": "range",
+        "minimum": null,
+        "maximum": null,
+        "increment": null,
+        "formula": null,
+        "baseProductKey": null,
+        "baseApplicantKey": null,
+        "baseApplicantClass": null,
+        "multiplier": null
+      },
+      {
+        "id": "waepa.li-group-term.mcr-amount.spouse.pattern",
+        "key": "waepa.li-group-term.mcr-amount.spouse.pattern",
+        "sourceReference": "Main!I379",
+        "patternKey": "coverage-amount-options",
+        "amountType": "range",
+        "minimum": null,
+        "maximum": null,
+        "increment": null,
+        "formula": null,
+        "baseProductKey": null,
+        "baseApplicantKey": null,
+        "baseApplicantClass": null,
+        "multiplier": null
+      },
+      {
+        "id": "waepa.di-short-term.benefit-amount.member.pattern",
+        "key": "waepa.di-short-term.benefit-amount.member.pattern",
+        "sourceReference": "Main!H380; Main!I380; Main!J380; Main!O380; Disability!A58; Disability!D58; Disability!E58; Disability!F58",
+        "patternKey": "coverage-amount-options",
+        "amountType": "range",
+        "minimum": null,
+        "maximum": null,
+        "increment": null,
+        "formula": null,
+        "baseProductKey": null,
+        "baseApplicantKey": null,
+        "baseApplicantClass": null,
+        "multiplier": null
+      }
+    ],
+    "amountBands": [
+      {
+        "id": "waepa.li-group-term.amount.1.0",
+        "key": "waepa.li-group-term.amount.1.0",
+        "sourceReference": "prototype:waepa.li-group-term.amount.1",
+        "amountPatternKey": "waepa.li-group-term.amount.1",
+        "minimum": 2000,
+        "maximum": 25000,
+        "increment": 1000,
+        "conditionKey": null,
+        "position": 0
+      },
+      {
+        "id": "waepa.li-group-term.mcr-amount.member.pattern.band",
+        "key": "waepa.li-group-term.mcr-amount.member.pattern.band",
+        "sourceReference": "Main!H379",
+        "amountPatternKey": "waepa.li-group-term.mcr-amount.member.pattern",
+        "minimum": 25000,
+        "maximum": 2000000,
+        "increment": 25000,
+        "conditionKey": null,
+        "position": 0
+      },
+      {
+        "id": "waepa.li-group-term.mcr-amount.spouse.pattern.band",
+        "key": "waepa.li-group-term.mcr-amount.spouse.pattern.band",
+        "sourceReference": "Main!I379",
+        "amountPatternKey": "waepa.li-group-term.mcr-amount.spouse.pattern",
+        "minimum": 10000,
+        "maximum": 800000,
+        "increment": 10000,
+        "conditionKey": null,
+        "position": 0
+      },
+      {
+        "id": "waepa.di-short-term.benefit-amount.member.pattern.band",
+        "key": "waepa.di-short-term.benefit-amount.member.pattern.band",
+        "sourceReference": "Main!H380; Main!I380; Main!J380; Main!O380; Disability!A58; Disability!D58; Disability!E58; Disability!F58",
+        "amountPatternKey": "waepa.di-short-term.benefit-amount.member.pattern",
+        "minimum": 100,
+        "maximum": 6500,
+        "increment": 100,
+        "conditionKey": null,
+        "position": 0
+      }
+    ],
+    "amountOptions": [],
+    "siteFeatures": [
+      {
+        "id": "{{site}}.feature-health-flows",
+        "key": "{{site}}.feature-health-flows",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-health-flows",
+        "enabled": true,
+        "position": 0,
+        "sourceReference": "prototype:siteFeatures/waepa.feature-health-flows"
+      },
+      {
+        "id": "{{site}}.feature-instant-quote",
+        "key": "{{site}}.feature-instant-quote",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-instant-quote",
+        "enabled": true,
+        "position": 1,
+        "sourceReference": "prototype:siteFeatures/waepa.feature-instant-quote"
+      },
+      {
+        "id": "{{site}}.feature-ecart",
+        "key": "{{site}}.feature-ecart",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-ecart",
+        "enabled": true,
+        "position": 2,
+        "sourceReference": "prototype:siteFeatures/waepa.feature-ecart"
+      },
+      {
+        "id": "{{site}}.feature-rate-toggle",
+        "key": "{{site}}.feature-rate-toggle",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-rate-toggle",
+        "enabled": true,
+        "position": 3,
+        "sourceReference": "prototype:siteFeatures/waepa.feature-rate-toggle"
+      },
+      {
+        "id": "{{site}}.feature-coverage-brochure",
+        "key": "{{site}}.feature-coverage-brochure",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-coverage-brochure",
+        "enabled": true,
+        "position": 4,
+        "sourceReference": "prototype:siteFeatures/waepa.feature-coverage-brochure"
+      },
+      {
+        "id": "{{site}}.feature-coverage-portfolio",
+        "key": "{{site}}.feature-coverage-portfolio",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-coverage-portfolio",
+        "enabled": true,
+        "position": 5,
+        "sourceReference": "prototype:siteFeatures/waepa.feature-coverage-portfolio"
+      },
+      {
+        "id": "{{site}}.feature-page-helpers",
+        "key": "{{site}}.feature-page-helpers",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-page-helpers",
+        "enabled": true,
+        "position": 6,
+        "sourceReference": "prototype:siteFeatures/waepa.feature-page-helpers"
+      },
+      {
+        "id": "{{site}}.feature-advisor-flow",
+        "key": "{{site}}.feature-advisor-flow",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-advisor-flow",
+        "enabled": true,
+        "position": 7,
+        "sourceReference": "prototype:siteFeatures/waepa.feature-advisor-flow"
+      },
+      {
+        "id": "{{site}}.feature-abandoned-leads",
+        "key": "{{site}}.feature-abandoned-leads",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-abandoned-leads",
+        "enabled": true,
+        "position": 8,
+        "sourceReference": "prototype:siteFeatures/waepa.feature-abandoned-leads"
+      },
+      {
+        "id": "{{site}}.feature-autosave",
+        "key": "{{site}}.feature-autosave",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-autosave",
+        "enabled": true,
+        "position": 9,
+        "sourceReference": "prototype:siteFeatures/waepa.feature-autosave"
+      },
+      {
+        "id": "{{site}}.feature-reminder-emails",
+        "key": "{{site}}.feature-reminder-emails",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-reminder-emails",
+        "enabled": true,
+        "position": 10,
+        "sourceReference": "prototype:siteFeatures/waepa.feature-reminder-emails"
+      },
+      {
+        "id": "{{site}}.feature-resume",
+        "key": "{{site}}.feature-resume",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-resume",
+        "enabled": true,
+        "position": 11,
+        "sourceReference": "prototype:siteFeatures/waepa.feature-resume"
+      },
+      {
+        "id": "{{site}}.feature-tpa-integration",
+        "key": "{{site}}.feature-tpa-integration",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-tpa-integration",
+        "enabled": true,
+        "position": 12,
+        "sourceReference": "prototype:siteFeatures/waepa.feature-tpa-integration"
+      },
+      {
+        "id": "{{site}}.feature-financial-questionnaire",
+        "key": "{{site}}.feature-financial-questionnaire",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-financial-questionnaire",
+        "enabled": true,
+        "position": 13,
+        "sourceReference": "prototype:siteFeatures/waepa.feature-financial-questionnaire"
+      },
+      {
+        "id": "{{site}}.feature-online-payment",
+        "key": "{{site}}.feature-online-payment",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-online-payment",
+        "enabled": true,
+        "position": 14,
+        "sourceReference": "prototype:siteFeatures/waepa.feature-online-payment"
+      },
+      {
+        "id": "{{site}}.feature-online-beneficiary",
+        "key": "{{site}}.feature-online-beneficiary",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-online-beneficiary",
+        "enabled": true,
+        "position": 15,
+        "sourceReference": "prototype:siteFeatures/waepa.feature-online-beneficiary"
+      }
+    ],
+    "siteUrlParameters": [],
+    "sitePolicies": [
+      {
+        "id": "{{site}}",
+        "key": "{{site}}",
+        "definition": {
+          "associationSelection": {
+            "mode": "fixed",
+            "fixedAssociationId": "waepa"
+          }
+        },
+        "position": 0,
+        "siteKey": "{{site}}",
+        "sourceReference": "prototype:sitePolicies/waepa"
+      }
+    ]
+  }
+}

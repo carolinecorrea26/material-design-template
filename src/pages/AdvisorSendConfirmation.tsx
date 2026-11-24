@@ -17,7 +17,8 @@ import {
 } from "../utils/applicantIdentity";
 import DetailsTable from "../components/layout/DetailsTable";
 import { requirementText } from "../domain/requirementContent";
-import { requirementConfigurationValue } from "../domain/requirementConfiguration";
+import { advisorEntryValues } from '../domain/advisorFlow';
+import { useApplicationSession } from '../app/ApplicationSessionContext';
 
 function formatDateTime(date: Date) {
   return new Intl.DateTimeFormat("en-US", {
@@ -30,24 +31,21 @@ function formatDateTime(date: Date) {
 }
 
 export default function AdvisorSendConfirmation() {
-  const { values } = useApplicationForm();
+  const { values, savedApplicationExpiresAt, resetValues, setPageValues } = useApplicationForm();
+  const { resetApplicationSession } = useApplicationSession();
   const navigate = useNavigate();
 
   const applicantName = getApplicantName(values) || "\u2014";
   const applicantEmail = getApplicantEmail(values) || "\u2014";
 
-  const { sentDate, purgeDate } = useMemo(() => {
-    const now = new Date();
-    const purge = new Date(now);
-    purge.setDate(purge.getDate() + Number(requirementConfigurationValue('signature-confirmation-retention-days')));
-    return { sentDate: now, purgeDate: purge };
-  }, []);
+  const sentDate = useMemo(() => new Date(), []);
+  const deletionDate = typeof savedApplicationExpiresAt === 'number' && Number.isFinite(savedApplicationExpiresAt) ? formatDateTime(new Date(savedApplicationExpiresAt)) : requirementText('confirmation.advisor.deadline-unavailable');
 
   const details = [
     { label: requirementText('confirmation.advisor.applicant-name'), value: applicantName },
     { label: requirementText('confirmation.advisor.applicant-email'), value: applicantEmail },
     { label: requirementText('confirmation.advisor.sent'), value: formatDateTime(sentDate) },
-    { label: requirementText('confirmation.advisor.deletion'), value: formatDateTime(purgeDate) },
+    { label: requirementText('confirmation.advisor.deletion'), value: deletionDate },
   ];
 
   return (
@@ -67,7 +65,11 @@ export default function AdvisorSendConfirmation() {
             <Button
               variant="contained"
               startIcon={<AddCircleOutlineRoundedIcon />}
-              onClick={() => navigate(getPagePath("advisor-login"))}
+              onClick={() => {
+                const advisor = advisorEntryValues(values);
+                resetValues(); resetApplicationSession(); setPageValues(advisor);
+                navigate(getPagePath("advisor-login"));
+              }}
             >
               {requirementText('confirmation.advisor.start')}
             </Button>

@@ -1,17 +1,18 @@
+import { selectedSiteApplicants } from './applicantParticipation';
 import type { EffectiveSite } from "./effectiveSite";
 import { resolveJourneyUnderwriting } from "./coverageJourneyUnderwriting";
 import { resolveCoverageJourneyPolicy } from "./coverageJourneyPolicy";
 import { applicationApplicantFacts, numericFact } from "../utils/applicantFacts";
 import { applicationUnderwritingContext } from "./quickDecisionPolicy";
 export type PortfolioProcessing = Array<{ productKey: string; pathway?: string; status: string }>;
-export function applicantPortfolioProducts(applicant: string, values: Record<string, unknown>) {
+export function applicantPortfolioProducts(site: EffectiveSite, applicant: string, values: Record<string, unknown>) {
   const role = applicant === "self" ? "member" : applicant;
-  const applicants = values.productApplicants as Record<string, string[]> | undefined;
-  return (Array.isArray(values.coverageSelections) ? values.coverageSelections.map(String) : []).filter(key => applicants?.[key]?.includes(role) && numericFact((values.coverageAmounts as Record<string, unknown> | undefined)?.[`${key}:${role}`]) !== 0);
+  const applicants = selectedSiteApplicants(site, values);
+  return (Array.isArray(values.coverageSelections) ? values.coverageSelections.map(String) : []).filter(key => applicants?.[key]?.some(applicant => applicant === role) && numericFact((values.coverageAmounts as Record<string, unknown> | undefined)?.[`${key}:${role}`]) !== 0);
 }
 export function applicantPortfolioProcessing(site: EffectiveSite, applicant: string, values: Record<string, unknown>): PortfolioProcessing {
   const role = applicant === "self" ? "member" : applicant, facts = applicationApplicantFacts(values, role === "spouse" ? "spouse" : "member");
-  return applicantPortfolioProducts(role, values).map(productKey => ({ productKey, ...resolveJourneyUnderwriting(site, productKey, role, facts.ageYears, numericFact((values.coverageAmounts as Record<string, unknown> | undefined)?.[`${productKey}:${role}`]), typeof values.applicantClass === "string" ? values.applicantClass : undefined, facts.associationKey, applicationUnderwritingContext(site, productKey, role, values)) }));
+  return applicantPortfolioProducts(site, role, values).map(productKey => ({ productKey, ...resolveJourneyUnderwriting(site, productKey, role, facts.ageYears, numericFact((values.coverageAmounts as Record<string, unknown> | undefined)?.[`${productKey}:${role}`]), typeof values.applicantClass === "string" ? values.applicantClass : undefined, facts.associationKey, applicationUnderwritingContext(site, productKey, role, values)) }));
 }
 export function qdLifeWithFuwDisability(site: EffectiveSite, products: string[], processing: PortfolioProcessing) {
   const category = (key: string) => site.configuration.products.find(product => product.productKey === key)?.catalog?.value.categoryKey;

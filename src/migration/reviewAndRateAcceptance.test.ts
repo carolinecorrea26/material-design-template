@@ -1,14 +1,17 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import { resolveRatePresentation } from "../domain/ratePresentation";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { applyRateModifiers, isRateModifierPolicy } from "../domain/rateModifiers";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 import { createReviewedMigrationDatabase } from "./fixtures";
-import { resolveEffectiveSite } from "../domain/effectiveSite";
+import { resolveSnapshotSite as resolveEffectiveSite } from "../domain/effectiveSite";
 import { activeReviewBlocks, isReviewPolicy, resolveFraudNotice, validateCapturedReview } from "../domain/reviewPolicy";
 import { collectRateInputs, isRateInputPolicy } from "../domain/rateInputPolicy";
 import { quoteCandidateWithMock } from "../domain/mockRating";
-import { getClientCoverages } from "../config/client/getActiveClientCoverages";
+import { installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary } from "./snapshotTestLibrary";
+afterEach(() => installPrototypeLibrary(null));
 import { getEffectiveSiteConfig } from "../data/registry";
 import { coverageRelationshipErrors } from "../domain/coverageRequirements";
 import { getQuoteRequirements } from "../config/fields/homeQuoteFields";
@@ -82,19 +85,23 @@ describe("captured review and rate participation acceptance", () => {
     expect(activeReviewBlocks(policy, selections).flatMap(block => block.fields)).toContain("dividend-birth-date");
   });
   it("supports scoped review fields and application-wide ABE exclusions in the live compatibility renderer", () => {
-    const client = getEffectiveSiteConfig("abe"), products = getClientCoverages(client);
+    const library = resolveSnapshotTestLibrary(db, "abe", "captured-review"); installPrototypeLibrary(library);
+    const { client, products } = library;
     const values = { coverageSelections: ["li-term"], productApplicants: { "li-term": ["member"] }, coverageAmounts: { "li-term:member": 50000 }, "state-province": "CA" };
     const review = resolveReviewExperience(client, "abe", products, values);
     expect(review.blocks.flatMap(block => block.fields.map(field => field.id))).toContain("dividend-first-name");
     expect(review.fraudNotice).toContain("California law");
-    expect(composeReadAndSign("Authorization\n\nCONSENT: Confirm", "FRAUD NOTICE")).toBe("Authorization\n\nFRAUD NOTICE\n\nCONSENT: Confirm");
+    expect(composeReadAndSign("Authorization", "FRAUD NOTICE", "CONSENT: Confirm")).toBe("Authorization\n\nFRAUD NOTICE\n\nCONSENT: Confirm");
     expect(composeReadAndSign("Custom read-and-sign copy", "FRAUD NOTICE")).toContain("FRAUD NOTICE");
     expect(composeReadAndSign("Custom read-and-sign copy", null)).toBe("Custom read-and-sign copy");
     expect(coverageRelationshipErrors(products, { "di-ltd": ["member"], "di-ltd-plus": ["spouse"] }).length).toBeGreaterThan(0);
     expect(coverageRelationshipErrors(products, { "di-ltd": ["member"] })).toEqual([]);
-    expect(products.find(product => product.id === "di-ltd")!.requirements!.eligibility).toContainEqual({ applicantType: "member", minimumWorkHoursPerWeek: 40 });
-    const hidden = { ...client, fields: { ...client.fields, review: { hidden: ["dividend-birth-date"] } } };
-    expect(resolveReviewExperience(hidden, "abe", products, values).blocks.flatMap(block => block.fields.map(field => field.id))).not.toContain("dividend-birth-date");
+    const changed = structuredClone(db);
+    const policy = changed.configurationValues.find(row => row.key === 'abe.review-policy')!.value;
+    if (!isReviewPolicy(policy)) throw new Error('Invalid captured Review policy');
+    policy.blocks = policy.blocks.map(block => ({ ...block, fields: block.fields.filter(key => key !== 'dividend-birth-date') }));
+    const hidden = resolveSnapshotTestLibrary(changed, "abe", "hidden-review-date"); installPrototypeLibrary(hidden);
+    expect(resolveReviewExperience(hidden.client, "abe", hidden.products, values).blocks.flatMap(block => block.fields.map(field => field.id))).not.toContain("dividend-birth-date");
   });
   it("separates quote visibility and rate dimensions, with explicit unisex/unismoker inputs", () => {
     const client = getEffectiveSiteConfig("asce");

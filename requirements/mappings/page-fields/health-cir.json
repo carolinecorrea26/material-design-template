@@ -99,5 +99,189 @@
         "spouse"
       ]
     }
-  ]
+  ],
+  "constraints": {
+    "health-cir-q1": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "health-cir-activities": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "health-cir-q2": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "health-cir-q3": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "health-cir-q4": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "health-cir-q5": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "health-cir-q6": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "health-cir-q7": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "health-cir-q8": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "health-cir-q9": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "health-cir-q10": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "health-cir-q11": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "health-cir-dwelling-other": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "health-cir-q12": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    }
+  }
 }

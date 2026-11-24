@@ -8,7 +8,7 @@ const rows = componentCatalog.map((row, position) => ({ id: row.id, key: row.id,
 const localStoryUrl = (storyId: string) => `./?path=/story/${storyId}`;
 
 const meta = {
-  title: 'Reference/Component inventory',
+  title: 'Foundations/Component inventory',
   id: 'component-reuse',
   parameters: { layout: 'fullscreen' },
 } satisfies Meta;

@@ -1,13 +1,14 @@
 // @vitest-environment node
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { Button, FormHelperText, FormLabel, Link, TextField, ThemeProvider } from "@mui/material";
-import { describe, expect, it } from "vitest";
+import { Badge, Breadcrumbs, Button, Chip, FormHelperText, FormLabel, Link, TextField, ThemeProvider, ToggleButton, Typography } from "@mui/material";
+import { describe, expect, it, vi } from "vitest";
 import { createTheme } from "@mui/material/styles";
 import { createAppTheme } from "./theme";
 import type { ThemeColorId } from "../config/clients/types";
 import SectionDivider from "../components/layout/SectionDivider";
 import FormShell from "../components/layout/FormShell";
+import PageTitle from "../components/layout/PageTitle";
 
 const presetPrimaryColors: Record<
   ThemeColorId,
@@ -20,6 +21,46 @@ const presetPrimaryColors: Record<
 };
 
 describe("createAppTheme", () => {
+  it("keeps shared page titles at 1.5rem and the text scale at or above 0.875rem", () => {
+    const theme = createAppTheme();
+    expect(theme.typography.h3.fontSize).toBe("1.5rem");
+    expect(Object.keys(theme.typography.h3).some(key => key.startsWith('@media'))).toBe(false);
+    expect(createAppTheme('default', { forceMobileLayout: true }).typography.h3.fontSize).toBe('1.5rem');
+    for (const variant of ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'body1', 'body2', 'subtitle1', 'subtitle2', 'caption', 'overline', 'button'] as const) {
+      expect(parseFloat(String(theme.typography[variant].fontSize)), variant).toBeGreaterThanOrEqual(0.875);
+    }
+    const html = renderToStaticMarkup(createElement(ThemeProvider, { theme },
+      createElement(PageTitle, { title: 'Your application' }),
+      createElement(FormHelperText, null, 'Required information'),
+      createElement(TextField, { label: 'Name', defaultValue: 'Jordan' }),
+      createElement(Button, { size: 'small' }, 'Continue'),
+      createElement(ToggleButton, { size: 'small', value: 'view' }, 'View'),
+      createElement(Chip, { label: 'Coverage', size: 'small' }),
+      createElement(Badge, { badgeContent: 2 }, 'Products'),
+      createElement(SectionDivider, { label: 'Additional information', variant: 'subsection' }),
+    ));
+    expect(html).toMatch(/<h2 class="[^"]*MuiTypography-h3/);
+    expect(html).toContain('font-size:0.875rem');
+    expect(html).toContain('font-size:calc(0.875rem / 0.75)');
+    // Emotion can retain MUI's earlier declarations; the final declaration wins.
+    const controlRules = [...html.matchAll(/\.css-[^{} >:]+-Mui(?:Button-root|Chip-root|Badge-badge|ToggleButton-root|FormHelperText-root)\{([^}]+)\}/g)];
+    expect(controlRules.length).toBeGreaterThanOrEqual(5);
+    const finalSizes = controlRules.map(([, declarations]) => [...declarations.matchAll(/font-size:([^;]+);/g)].at(-1)?.[1]).filter(Boolean);
+    expect(finalSizes.length).toBeGreaterThanOrEqual(5);
+    expect(new Set(finalSizes)).toEqual(new Set(['0.875rem']));
+  });
+  it("owns active and completed breadcrumb emphasis separately from normal link weight", () => {
+    const html = renderToStaticMarkup(createElement(ThemeProvider, { theme: createAppTheme() },
+      createElement(Breadcrumbs, null,
+        createElement(Link, { href: '#', variant: 'inherit', 'data-completed': 'true' }, 'Membership'),
+        createElement(Typography, { variant: 'inherit', 'aria-current': 'page' }, 'Eligibility'),
+        createElement(Typography, { variant: 'inherit' }, 'Coverage'),
+      ),
+    ));
+    expect(html).toMatch(/\[aria-current="page"\][^{]*\[data-completed="true"\]\{font-weight:500;\}/);
+    expect(html).toContain('font-size:0.875rem');
+    expect(html).toContain('font-weight:600');
+  });
   it.each(["default", "teal"] as const)("styles field groups with uppercase labels, a light %s surface and white inputs", preset => {
     const theme = createAppTheme(preset);
     const html = renderToStaticMarkup(createElement(ThemeProvider, { theme },
@@ -54,9 +95,9 @@ describe("createAppTheme", () => {
       createElement(Button, { loading: true }, "Saving"),
     ));
     expect(html).toContain("line-height:1.2");
-    expect(html).toContain("margin-bottom:14px");
+    expect(html).not.toContain("margin-bottom:14px");
     expect(html).toContain("font-weight:500");
-    expect(html).toContain("font-weight:700");
+    expect(html).toContain("font-weight:600");
     expect(html).toContain("text-decoration:none");
     expect(html).toMatch(/<button[^>]*disabled=""/);
   });
@@ -130,4 +171,25 @@ it.each(['default', 'teal', 'purple', 'dark-blue'] as const)('uses standard MUI 
   expect(theme.palette.action).toEqual(mui.palette.action);
   expect(theme.palette.grey).toEqual(mui.palette.grey);
   expect(theme.palette.background.paper).toBe('#fff');
+});
+
+it('documents every active component theme override and distinguishes shared selection-row styling', async () => {
+  const { MuiThemeOverrides } = await import('../docs/foundations/ThemeOverrides');
+  const theme = createAppTheme();
+  // FieldRenderer reads the browser-only completion-icon query parameter.
+  vi.stubGlobal('window', { location: { search: '' } });
+  let html: string;
+  try {
+    html = renderToStaticMarkup(createElement(ThemeProvider, { theme }, createElement(MuiThemeOverrides)));
+  } finally { vi.unstubAllGlobals(); }
+  const documented = new Set([...html.matchAll(/data-theme-components="([^"]+)"/g)].flatMap(match => match[1].split(' ')));
+  expect(documented).toEqual(new Set(Object.keys(theme.components ?? {})));
+  expect(html).toContain('SelectionGroup adds full-width rounded rows');
+  expect(html).toContain('name="app-gender"');
+  expect(html).toContain('name="app-dependents"');
+  expect(html).not.toContain('Theme foundations');
+  expect(html.match(/data-theme-example="mui-default"/g)).toHaveLength(18);
+  expect(html.match(/data-theme-example="application-override"/g)).toHaveLength(18);
+  expect(html).not.toContain('Default chip');
+  expect(html).not.toContain('MuiAppBar');
 });

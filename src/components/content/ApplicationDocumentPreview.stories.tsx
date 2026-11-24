@@ -23,7 +23,7 @@ function PreviewExample({ hideSignature = false, editable = false }: { hideSigna
   return <Box sx={{ maxWidth: 800 }}>
     <ApplicationDocumentPreview sections={exampleDocumentSections} associationName="Example Association"
       sectionPages={[{ title: 'Membership', pageId: 'membership' }, { title: 'Coverage', pageId: 'coverage' }, { title: 'Contact', pageId: 'contact' }, { title: 'Profile', pageId: 'profile' }]}
-      signatureName="Jordan Morgan" signedDate="2026-10-28" currentDate="10/28/2026" hideSignature={hideSignature}
+      signatureName="Jordan Morgan" signedDate="2026-10-28" hideSignature={hideSignature}
       onEditSection={editable ? pageId => setEdited(pageId) : undefined} />
     <Typography role="status">{edited ? `Edit requested: ${edited}` : ''}</Typography>
   </Box>;

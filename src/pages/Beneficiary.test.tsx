@@ -18,13 +18,26 @@ const person = (id: string, share = 50) => ({ id, designation: "primary", benefi
 function prepare() {
   vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true);
   window.history.replaceState(null, "", "/?site=asce"); installPrototypeLibrary(resolvePrototypeLibrary(db, "asce", "Beneficiary-review"));
-  form.values = { membership: "yes", coverageSelections: ["li-10yr", "li-20yr"], productApplicants: { "li-10yr": ["member"], "li-20yr": ["member"] }, coverageAmounts: { "li-10yr:member": 100000, "li-20yr:member": 100000 }, beneficiaries: { "li-10yr:member": [person("a")] } };
+  form.values = { membership: "yes", "beneficiary-information-opt-in": "yes", coverageSelections: ["li-10yr", "li-20yr"], productApplicants: { "li-10yr": ["member"], "li-20yr": ["member"] }, coverageAmounts: { "li-10yr:member": 100000, "li-20yr:member": 100000 }, beneficiaries: { "li-10yr:member": [person("a")] } };
   form.setPageValues.mockReset(); form.setPageValues.mockImplementation(patch => { form.values = { ...form.values, ...patch }; });
   container = document.createElement("div"); document.body.append(container); root = createRoot(container);
 }
 async function render(key = "initial") { await act(async () => root!.render(<MemoryRouter><Beneficiary key={key} /></MemoryRouter>)); }
 const button = (label: string, scope: ParentNode = document) => [...scope.querySelectorAll("button")].find(button => button.textContent?.trim() === label)!;
 const dialog = () => [...document.querySelectorAll('[role="dialog"]')].at(-1)!;
+it('allows ASCE optional No to continue without validating retained beneficiary records', async () => {
+  prepare(); form.saveApplication.mockReset();
+  form.values = { ...form.values, 'beneficiary-information-opt-in': 'no' };
+  const scroll = vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
+  try {
+    await render();
+    expect(container.textContent).toContain('Do you want to add beneficiary information?');
+    expect(button('Add Beneficiary', container)).toBeUndefined();
+    await act(async () => container.querySelector('#beneficiary-form')!.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })));
+    expect(form.saveApplication).toHaveBeenCalledOnce();
+    expect(form.saveApplication.mock.calls[0][0]).toHaveProperty('beneficiary-information-opt-in', 'no');
+  } finally { scroll.mockRestore(); }
+});
 it("restores Edit fields, changes allocations and preserves independent saved products", async () => {
   prepare(); await render();
   await act(async () => button("Edit", container).click());
@@ -50,7 +63,47 @@ it("submits saved beneficiary collections without adding dialog inputs as page a
     expect(form.saveApplication).toHaveBeenCalledOnce();
     const answers = form.saveApplication.mock.calls[0][0] as Record<string, unknown>;
     expect(answers.beneficiaries).toEqual(form.values.beneficiaries);
-    expect(Object.keys(answers).filter(key => key.startsWith('beneficiary-') || key === 'beneficiaryType')).toEqual([]);
+    expect(Object.keys(answers).filter(key => (key.startsWith('beneficiary-') && key !== 'beneficiary-information-opt-in') || key === 'beneficiaryType')).toEqual([]);
+  } finally { scroll.mockRestore(); }
+});
+it.each([
+  { rows: [person('a', 50)], message: 'Individual shares must total 100%' },
+  { rows: [{ ...person('a', 50), designation: 'contingent' }], message: 'at least one Primary' },
+  { rows: [person('a', 100), { ...person('b', 50), designation: 'contingent' }], message: 'Individual shares must total 100%' },
+  { rows: [person('a', 50), { ...person('b', 100), designation: 'contingent' }], message: 'Individual shares must total 100%' },
+])('blocks Next for incomplete beneficiary designations: %j', async ({ rows, message }) => {
+  prepare(); form.saveApplication.mockReset();
+  form.values = { ...form.values, beneficiaries: { 'li-10yr:member': rows, 'li-20yr:member': [person('other', 100)] } };
+  const scroll = vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
+  try {
+    await render();
+    await act(async () => container.querySelector('#beneficiary-form')!.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })));
+    expect(form.saveApplication).not.toHaveBeenCalled();
+    expect(container.textContent).toContain(message);
+  } finally { scroll.mockRestore(); }
+});
+
+it('requires a primary for each participating product before accepting contingent records', async () => {
+  prepare(); form.saveApplication.mockReset();
+  form.values = { ...form.values, beneficiaries: {
+    'li-10yr:member': [{ ...person('a', 100), designation: 'contingent' }],
+    'li-20yr:member': [{ ...person('b', 100), designation: 'contingent' }],
+    'li-term:member': [person('inactive', 25)],
+  } };
+  const scroll = vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
+  try {
+    await render();
+    await act(async () => container.querySelector('#beneficiary-form')!.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })));
+    expect(form.saveApplication).not.toHaveBeenCalled();
+    expect(container.textContent).toContain('at least one Primary');
+    for (const key of ['li-10yr:member', 'li-20yr:member']) {
+      const records = form.values.beneficiaries as Record<string, Array<Record<string, unknown>>>;
+      form.values = { ...form.values, beneficiaries: { ...records, [key]: [...records[key], person(`primary-${key}`, 100)] } };
+      await render();
+      await act(async () => container.querySelector('#beneficiary-form')!.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })));
+      if (key === 'li-10yr:member') expect(form.saveApplication).not.toHaveBeenCalled();
+    }
+    expect(form.saveApplication).toHaveBeenCalledOnce();
   } finally { scroll.mockRestore(); }
 });
 it("shows both designation limits and restores the trust form independently", async () => {
@@ -113,14 +166,14 @@ it("does not offer reuse when only the current coverage remains", async () => {
   await act(async () => dialog().querySelector("form")!.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true })));
   expect(document.querySelector('[role="dialog"]')?.textContent).not.toContain("Apply to Other Coverages");
 });
-it("keeps fresh participation and field bindings despite stale saved configuration", async () => {
+it("keeps fresh optional participation and field bindings despite stale saved configuration", async () => {
   prepare(); const edited = structuredClone(db);
-  edited.sitePages.find(row => row.siteKey === "asce" && row.pageKey === "beneficiary")!.requirement = "optional";
+  edited.sitePages.find(row => row.siteKey === "asce" && row.pageKey === "beneficiary")!.requirement = "required";
   const surfaces = edited.configurationValues.find(row => row.key === "global.field-surfaces")!.value as unknown as { beneficiaryIndividual: { fields: Array<{ fieldKey: string; valueKey: string }> } };
   surfaces.beneficiaryIndividual.fields.find(row => row.fieldKey === "beneficiary-firstName")!.valueKey = "givenName";
   installPrototypeLibrary(resolvePrototypeLibrary(edited, "asce", "optional-renamed-beneficiary"));
-  form.values = { ...form.values, "beneficiary-information-opt-in": "no", beneficiaries: { "li-10yr:member": [{ ...person("renamed"), firstName: "Captured", givenName: "Stale" }] } }; await render();
-  expect(container.textContent).not.toContain("Do you want to add beneficiary information?");
+  form.values = { ...form.values, "beneficiary-information-opt-in": "yes", beneficiaries: { "li-10yr:member": [{ ...person("renamed"), firstName: "Captured", givenName: "Stale" }] } }; await render();
+  expect(container.textContent).toContain("Do you want to add beneficiary information?");
   expect(container.textContent).toContain("CAPTURED BENEFICIARY");
   await act(async () => button("Edit", container).click());
   expect((dialog().querySelector('[name="firstName"]') as HTMLInputElement).value).toBe("Captured");

@@ -1,9 +1,16 @@
+import examples from '../../../requirements/global/prototype-fixtures/home-examples.json';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import Home from '../../pages/Home';
-import ApplicationPageExample from '../../../.storybook/applicationPageExample';
+import ApplicationPageExample, { type ApplicationPageScenario } from '../../../.storybook/applicationPageExample';
 import { readSharedCatalog, type SharedCatalog } from '../../persistence/sharedCatalog';
-const scenario = { capability: 'optionalBeneficiaries' as const, description: 'Global template entry notice. Choose Start my application to review the notice, Cancel to remain here, or Continue to proceed within this local example.', values: {} };
+const standard: ApplicationPageScenario = { capability: 'multipleTerms', description: 'The real Home page using fresh-start template content, quote-entry fields, coverage presentation and entry actions. Answers stay local to this example.', values: {} };
+const notice: ApplicationPageScenario = { ...standard,
+  description: 'Detached configuration enables the optional entry notice. Start my application opens it; Cancel remains on Home and Continue proceeds locally. Saved Site settings are unchanged.',
+  home: examples.entryNotice,
+};
 const meta = { id: "pages-home-whole-page",
   title: "Components/Pages/Home/Whole page", component: Home, loaders: [async () => ({ catalog: await readSharedCatalog() })], parameters: { layout: 'fullscreen' } } satisfies Meta<typeof Home>;
 export default meta;
-export const EntryNotice: StoryObj = { render: (_args, context) => <ApplicationPageExample catalog={context.loaded.catalog as SharedCatalog} scenario={scenario}><Home /></ApplicationPageExample> };
+const example = (scenario: ApplicationPageScenario): StoryObj => ({ render: (_args, context) => <ApplicationPageExample key={context.id} catalog={context.loaded.catalog as SharedCatalog} scenario={scenario}><Home /></ApplicationPageExample> });
+export const Default = example(standard);
+export const EntryNotice = example(notice);

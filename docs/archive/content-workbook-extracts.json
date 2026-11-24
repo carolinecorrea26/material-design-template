@@ -1,0 +1,2071 @@
+{
+  "purpose": "Internal workbook extraction evidence only. Superseded by functional Fresh-start content and legal/document definitions; not an active Library or applicant source.",
+  "contentEntries": [
+    {
+      "id": "mcr.legal-disclosures.A2",
+      "key": "mcr.legal-disclosures.A2",
+      "displayId": 37658772050147,
+      "providedBy": null,
+      "sourceReference": "Legal Disclosures!A2",
+      "position": 266,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.legal-disclosures.A3",
+      "key": "mcr.legal-disclosures.A3",
+      "displayId": 36559260421936,
+      "providedBy": null,
+      "sourceReference": "Legal Disclosures!A3",
+      "position": 267,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.legal-disclosures.A4",
+      "key": "mcr.legal-disclosures.A4",
+      "displayId": 44255841819413,
+      "providedBy": null,
+      "sourceReference": "Legal Disclosures!A4",
+      "position": 268,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.legal-disclosures.A5",
+      "key": "mcr.legal-disclosures.A5",
+      "displayId": 43156330191202,
+      "providedBy": null,
+      "sourceReference": "Legal Disclosures!A5",
+      "position": 269,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.legal-disclosures.A6",
+      "key": "mcr.legal-disclosures.A6",
+      "displayId": 42056818562991,
+      "providedBy": null,
+      "sourceReference": "Legal Disclosures!A6",
+      "position": 270,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.legal-disclosures.A7",
+      "key": "mcr.legal-disclosures.A7",
+      "displayId": 40957306934780,
+      "providedBy": null,
+      "sourceReference": "Legal Disclosures!A7",
+      "position": 271,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.legal-disclosures.A8",
+      "key": "mcr.legal-disclosures.A8",
+      "displayId": 48653888332257,
+      "providedBy": null,
+      "sourceReference": "Legal Disclosures!A8",
+      "position": 272,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.legal-disclosures.A9",
+      "key": "mcr.legal-disclosures.A9",
+      "displayId": 47554376704046,
+      "providedBy": null,
+      "sourceReference": "Legal Disclosures!A9",
+      "position": 273,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.legal-disclosures.A10",
+      "key": "mcr.legal-disclosures.A10",
+      "displayId": 153873727664146,
+      "providedBy": null,
+      "sourceReference": "Legal Disclosures!A10",
+      "position": 274,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.legal-disclosures.A11",
+      "key": "mcr.legal-disclosures.A11",
+      "displayId": 154973239292357,
+      "providedBy": null,
+      "sourceReference": "Legal Disclosures!A11",
+      "position": 275,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.legal-disclosures.A14",
+      "key": "mcr.legal-disclosures.A14",
+      "displayId": 149475681151302,
+      "providedBy": null,
+      "sourceReference": "Legal Disclosures!A14",
+      "position": 276,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.legal-disclosures.A16",
+      "key": "mcr.legal-disclosures.A16",
+      "displayId": 147276657894880,
+      "providedBy": null,
+      "sourceReference": "Legal Disclosures!A16",
+      "position": 277,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.beneficiary-note.C2",
+      "key": "mcr.beneficiary-note.C2",
+      "displayId": 51486030206431,
+      "providedBy": null,
+      "sourceReference": "Beneficiary Note!C2",
+      "position": 278,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.beneficiary-note.D2",
+      "key": "mcr.beneficiary-note.D2",
+      "displayId": 207616680755108,
+      "providedBy": null,
+      "sourceReference": "Beneficiary Note!D2",
+      "position": 279,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.beneficiary-note.C3",
+      "key": "mcr.beneficiary-note.C3",
+      "displayId": 50386518578220,
+      "providedBy": null,
+      "sourceReference": "Beneficiary Note!C3",
+      "position": 280,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.beneficiary-note.D3",
+      "key": "mcr.beneficiary-note.D3",
+      "displayId": 208716192383319,
+      "providedBy": null,
+      "sourceReference": "Beneficiary Note!D3",
+      "position": 281,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.beneficiary-note.C4",
+      "key": "mcr.beneficiary-note.C4",
+      "displayId": 49287006950009,
+      "providedBy": null,
+      "sourceReference": "Beneficiary Note!C4",
+      "position": 282,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.beneficiary-note.D4",
+      "key": "mcr.beneficiary-note.D4",
+      "displayId": 205417657498686,
+      "providedBy": null,
+      "sourceReference": "Beneficiary Note!D4",
+      "position": 283,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.beneficiary-note.C5",
+      "key": "mcr.beneficiary-note.C5",
+      "displayId": 48187495321798,
+      "providedBy": null,
+      "sourceReference": "Beneficiary Note!C5",
+      "position": 284,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.beneficiary-note.D5",
+      "key": "mcr.beneficiary-note.D5",
+      "displayId": 206517169126897,
+      "providedBy": null,
+      "sourceReference": "Beneficiary Note!D5",
+      "position": 285,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.beneficiary-note.C6",
+      "key": "mcr.beneficiary-note.C6",
+      "displayId": 47087983693587,
+      "providedBy": null,
+      "sourceReference": "Beneficiary Note!C6",
+      "position": 286,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.beneficiary-note.D6",
+      "key": "mcr.beneficiary-note.D6",
+      "displayId": 203218634242264,
+      "providedBy": null,
+      "sourceReference": "Beneficiary Note!D6",
+      "position": 287,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.beneficiary-note.C7",
+      "key": "mcr.beneficiary-note.C7",
+      "displayId": 45988472065376,
+      "providedBy": null,
+      "sourceReference": "Beneficiary Note!C7",
+      "position": 288,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.beneficiary-note.C8",
+      "key": "mcr.beneficiary-note.C8",
+      "displayId": 62481146488541,
+      "providedBy": null,
+      "sourceReference": "Beneficiary Note!C8",
+      "position": 289,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.beneficiary-note.D8",
+      "key": "mcr.beneficiary-note.D8",
+      "displayId": 201019610985842,
+      "providedBy": null,
+      "sourceReference": "Beneficiary Note!D8",
+      "position": 290,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.beneficiary-note.C9",
+      "key": "mcr.beneficiary-note.C9",
+      "displayId": 61381634860330,
+      "providedBy": null,
+      "sourceReference": "Beneficiary Note!C9",
+      "position": 291,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.beneficiary-note.D9",
+      "key": "mcr.beneficiary-note.D9",
+      "displayId": 202119122614053,
+      "providedBy": null,
+      "sourceReference": "Beneficiary Note!D9",
+      "position": 292,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.beneficiary-note.C10",
+      "key": "mcr.beneficiary-note.C10",
+      "displayId": 253358468212806,
+      "providedBy": null,
+      "sourceReference": "Beneficiary Note!C10",
+      "position": 293,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.beneficiary-note.D10",
+      "key": "mcr.beneficiary-note.D10",
+      "displayId": 142307535109015,
+      "providedBy": null,
+      "sourceReference": "Beneficiary Note!D10",
+      "position": 294,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.beneficiary-note.C11",
+      "key": "mcr.beneficiary-note.C11",
+      "displayId": 254457979841017,
+      "providedBy": null,
+      "sourceReference": "Beneficiary Note!C11",
+      "position": 295,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.beneficiary-note.D11",
+      "key": "mcr.beneficiary-note.D11",
+      "displayId": 141208023480804,
+      "providedBy": null,
+      "sourceReference": "Beneficiary Note!D11",
+      "position": 296,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.standard-decision-wording.B2",
+      "key": "mcr.standard-decision-wording.B2",
+      "displayId": 169038434819911,
+      "providedBy": null,
+      "sourceReference": "Standard Decision Wording !B2",
+      "position": 297,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.standard-decision-wording.B3",
+      "key": "mcr.standard-decision-wording.B3",
+      "displayId": 167938923191700,
+      "providedBy": null,
+      "sourceReference": "Standard Decision Wording !B3",
+      "position": 298,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.standard-decision-wording.B4",
+      "key": "mcr.standard-decision-wording.B4",
+      "displayId": 166839411563489,
+      "providedBy": null,
+      "sourceReference": "Standard Decision Wording !B4",
+      "position": 299,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.standard-decision-wording.B5",
+      "key": "mcr.standard-decision-wording.B5",
+      "displayId": 165739899935278,
+      "providedBy": null,
+      "sourceReference": "Standard Decision Wording !B5",
+      "position": 300,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.standard-decision-wording.B7",
+      "key": "mcr.standard-decision-wording.B7",
+      "displayId": 163540876678856,
+      "providedBy": null,
+      "sourceReference": "Standard Decision Wording !B7",
+      "position": 301,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.standard-decision-wording.B8",
+      "key": "mcr.standard-decision-wording.B8",
+      "displayId": 162441365050645,
+      "providedBy": null,
+      "sourceReference": "Standard Decision Wording !B8",
+      "position": 302,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.standard-decision-wording.B9",
+      "key": "mcr.standard-decision-wording.B9",
+      "displayId": 161341853422434,
+      "providedBy": null,
+      "sourceReference": "Standard Decision Wording !B9",
+      "position": 303,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.standard-decision-wording.B10",
+      "key": "mcr.standard-decision-wording.B10",
+      "displayId": 204189178820414,
+      "providedBy": null,
+      "sourceReference": "Standard Decision Wording !B10",
+      "position": 304,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.standard-decision-wording.B12",
+      "key": "mcr.standard-decision-wording.B12",
+      "displayId": 201990155563992,
+      "providedBy": null,
+      "sourceReference": "Standard Decision Wording !B12",
+      "position": 305,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.standard-decision-wording.B13",
+      "key": "mcr.standard-decision-wording.B13",
+      "displayId": 203089667192203,
+      "providedBy": null,
+      "sourceReference": "Standard Decision Wording !B13",
+      "position": 306,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.standard-decision-wording.B14",
+      "key": "mcr.standard-decision-wording.B14",
+      "displayId": 208587225333258,
+      "providedBy": null,
+      "sourceReference": "Standard Decision Wording !B14",
+      "position": 307,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.standard-decision-wording.B15",
+      "key": "mcr.standard-decision-wording.B15",
+      "displayId": 209686736961469,
+      "providedBy": null,
+      "sourceReference": "Standard Decision Wording !B15",
+      "position": 308,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.standard-decision-wording.B16",
+      "key": "mcr.standard-decision-wording.B16",
+      "displayId": 206388202076836,
+      "providedBy": null,
+      "sourceReference": "Standard Decision Wording !B16",
+      "position": 309,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.standard-decision-wording.B17",
+      "key": "mcr.standard-decision-wording.B17",
+      "displayId": 207487713705047,
+      "providedBy": null,
+      "sourceReference": "Standard Decision Wording !B17",
+      "position": 310,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.standard-decision-wording.B19",
+      "key": "mcr.standard-decision-wording.B19",
+      "displayId": 196492597422937,
+      "providedBy": null,
+      "sourceReference": "Standard Decision Wording !B19",
+      "position": 311,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.standard-decision-wording.B20",
+      "key": "mcr.standard-decision-wording.B20",
+      "displayId": 197592108906293,
+      "providedBy": null,
+      "sourceReference": "Standard Decision Wording !B20",
+      "position": 312,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.electrconsent.A2",
+      "key": "mcr.electrconsent.A2",
+      "displayId": 37509367471620,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A2",
+      "position": 313,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.electrconsent.A4",
+      "key": "mcr.electrconsent.A4",
+      "displayId": 35310344215198,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A4",
+      "position": 314,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.electrconsent.A6",
+      "key": "mcr.electrconsent.A6",
+      "displayId": 33111320958776,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A6",
+      "position": 315,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.electrconsent.A7",
+      "key": "mcr.electrconsent.A7",
+      "displayId": 34210832586987,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A7",
+      "position": 316,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.electrconsent.A9",
+      "key": "mcr.electrconsent.A9",
+      "displayId": 32011809330565,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A9",
+      "position": 317,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.electrconsent.A11",
+      "key": "mcr.electrconsent.A11",
+      "displayId": 66892503827396,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A11",
+      "position": 318,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.electrconsent.A13",
+      "key": "mcr.electrconsent.A13",
+      "displayId": 69091527083818,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A13",
+      "position": 319,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.electrconsent.A15",
+      "key": "mcr.electrconsent.A15",
+      "displayId": 62494457314552,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A15",
+      "position": 320,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.electrconsent.A17",
+      "key": "mcr.electrconsent.A17",
+      "displayId": 64693480570974,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A17",
+      "position": 321,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.electrconsent.A19",
+      "key": "mcr.electrconsent.A19",
+      "displayId": 58096410801708,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A19",
+      "position": 322,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.electrconsent.A21",
+      "key": "mcr.electrconsent.A21",
+      "displayId": 49300317230095,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A21",
+      "position": 323,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.electrconsent.A23",
+      "key": "mcr.electrconsent.A23",
+      "displayId": 51499340486517,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A23",
+      "position": 324,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.electrconsent.A25",
+      "key": "mcr.electrconsent.A25",
+      "displayId": 44902270717251,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A25",
+      "position": 325,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.electrconsent.A27",
+      "key": "mcr.electrconsent.A27",
+      "displayId": 47101293973673,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A27",
+      "position": 326,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.electrconsent.A29",
+      "key": "mcr.electrconsent.A29",
+      "displayId": 58096410255783,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A29",
+      "position": 327,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.electrconsent.A31",
+      "key": "mcr.electrconsent.A31",
+      "displayId": 53698363887794,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A31",
+      "position": 328,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.electrconsent.A33",
+      "key": "mcr.electrconsent.A33",
+      "displayId": 51499340631372,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A33",
+      "position": 329,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.electrconsent.A35",
+      "key": "mcr.electrconsent.A35",
+      "displayId": 49300317374950,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A35",
+      "position": 330,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.electrconsent.A37",
+      "key": "mcr.electrconsent.A37",
+      "displayId": 47101294118528,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A37",
+      "position": 331,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.electrconsent.A40",
+      "key": "mcr.electrconsent.A40",
+      "displayId": 70191037765034,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A40",
+      "position": 332,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.electrconsent.A42",
+      "key": "mcr.electrconsent.A42",
+      "displayId": 67992014508612,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A42",
+      "position": 333,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.electrconsent.A44",
+      "key": "mcr.electrconsent.A44",
+      "displayId": 65792991252190,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A44",
+      "position": 334,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.electrconsent.A46",
+      "key": "mcr.electrconsent.A46",
+      "displayId": 63593967995768,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A46",
+      "position": 335,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.electrconsent.A48",
+      "key": "mcr.electrconsent.A48",
+      "displayId": 61394944739346,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A48",
+      "position": 336,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.electrconsent.A50",
+      "key": "mcr.electrconsent.A50",
+      "displayId": 182341223987411,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A50",
+      "position": 337,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.electrconsent.A51",
+      "key": "mcr.electrconsent.A51",
+      "displayId": 181241712359200,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A51",
+      "position": 338,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.electrconsent.A52",
+      "key": "mcr.electrconsent.A52",
+      "displayId": 184540247243833,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A52",
+      "position": 339,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.electrconsent.A53",
+      "key": "mcr.electrconsent.A53",
+      "displayId": 183440735615622,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A53",
+      "position": 340,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.electrconsent.A55",
+      "key": "mcr.electrconsent.A55",
+      "displayId": 185639758872044,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A55",
+      "position": 341,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.electrconsent.A57",
+      "key": "mcr.electrconsent.A57",
+      "displayId": 187838782128466,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A57",
+      "position": 342,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.electrconsent.A59",
+      "key": "mcr.electrconsent.A59",
+      "displayId": 190037805384888,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A59",
+      "position": 343,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.electrconsent.A61",
+      "key": "mcr.electrconsent.A61",
+      "displayId": 58096409453643,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A61",
+      "position": 344,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.electrconsent.A63",
+      "key": "mcr.electrconsent.A63",
+      "displayId": 60295432710065,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A63",
+      "position": 345,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.electrconsent.A65",
+      "key": "mcr.electrconsent.A65",
+      "displayId": 62494455966487,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A65",
+      "position": 346,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.electrconsent.A67",
+      "key": "mcr.electrconsent.A67",
+      "displayId": 64693479222909,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A67",
+      "position": 347,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.electrconsent.A69",
+      "key": "mcr.electrconsent.A69",
+      "displayId": 49300316427955,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A69",
+      "position": 348,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.electrconsent.A71",
+      "key": "mcr.electrconsent.A71",
+      "displayId": 203231944522350,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A71",
+      "position": 349,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.electrconsent.A72",
+      "key": "mcr.electrconsent.A72",
+      "displayId": 202132432894139,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A72",
+      "position": 350,
+      "definition": {
+        "path": null
+      }
+    },
+    {
+      "id": "mcr.electronic-consent.standard",
+      "key": "mcr.electronic-consent.standard",
+      "displayId": 132635441395648,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A2:A69",
+      "position": 351,
+      "definition": {
+        "path": null
+      }
+    }
+  ],
+  "contentValues": [
+    {
+      "id": "mcr.legal-disclosures.A2",
+      "key": "mcr.legal-disclosures.A2",
+      "displayId": 171537149936977,
+      "providedBy": null,
+      "sourceReference": "Legal Disclosures!A2",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.legal-disclosures.A2",
+      "value": "I understand that payment of a premium contribution for insurance does not mean that there is any coverage in force before the effective date as specified by New York Life.",
+      "position": 0
+    },
+    {
+      "id": "mcr.legal-disclosures.A3",
+      "key": "mcr.legal-disclosures.A3",
+      "displayId": 170437638308766,
+      "providedBy": null,
+      "sourceReference": "Legal Disclosures!A3",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.legal-disclosures.A3",
+      "value": "I understand that New York Life has the right to require additional information and, if necessary, an examination by a physician. I ask New York Life to rely on all such statements made on this form, and any supplements to it, while considering this request. I also understand that the coverage afforded will be in consideration of the answers and statements set forth above.\n\nAUTHORIZATION: I authorize any licensed physician, medical practitioner, hospital, pharmacy, clinic or other medical or medically related facility, laboratory, insurance company, MIB, Inc. (\"MIB\"), or other organization, institution or person, that has any records or knowledge of me or my health to release information, including prescription drug records, maintained by physicians, pharmacy benefit managers, and other sources of information to New York Life Insurance Company, its reinsurers, its subsidiaries or the plan administrator about the physical and mental health of any persons proposed for insurance, including significant history, findings, diagnosis and treatment, but excluding psychotherapy notes for the purpose of evaluating my application for insurance. Health information obtained will not be re-disclosed without my authorization unless permitted by law, in which case it may not be protected under federal privacy rules. For example, New York Life may be required to provide it to insurance, regulatory, or other government agencies.  In this case, the information may no longer be protected by the rules governing your AUTHORIZATION.\n\nA photocopy of this AUTHORIZATION and request form shall be as valid as the original. In all circumstances, my authorized agent, representative, or I may request a copy of this AUTHORIZATION. This AUTHORIZATION may be used for a period of 24 months from the date signed, unless sooner revoked as stated in the {Link to IMPORTANT NOTICE} The AUTHORIZATION may be revoked at any time by sending written notice to New York Life Insurance Company. My revocation will not be effective to the extent that New York Life or any other person already has disclosed or collected information or taken other action in reliance on it, or to the extent that New York Life has a legal right to contest a claim under an insurance certificate or the certificate itself. \n\nConsent\nBy signing and dating this application, I request the insurance applied for (for myself and/or my dependents); I attest that the information provided in my application is true and complete to the best of my knowledge and belief and that I, and any other person proposed for insurance, has read the Fraud Notice (if any) and the IMPORTANT NOTICE above, including how my/our information is exchanged with MIB; and I, and any other person proposed for insurance, consents to authorize the disclosure of information, to and from the providers noted in the IMPORTANT NOTICE, including making a brief report of my/our protected health information to MIB.",
+      "position": 0
+    },
+    {
+      "id": "mcr.legal-disclosures.A4",
+      "key": "mcr.legal-disclosures.A4",
+      "displayId": 173736173193399,
+      "providedBy": null,
+      "sourceReference": "Legal Disclosures!A4",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.legal-disclosures.A4",
+      "value": "I understand that New York Life has the right to require additional information and, if necessary, an examination by a physician. I ask New York Life to rely on all such statements made on this form, and any supplements to it, while considering this request. I also understand that the coverage afforded will be in consideration of the answers and statements set forth above.\n\nI hereby authorize any licensed physician, medical practitioner, hospital, pharmacy, clinic or other medical or medically related facility, laboratory, insurance company, or other organization, institution or person, that has any records or knowledge of me or my health to release information, including prescription drug records, maintained by physicians, pharmacy benefit managers, and other sources of information to New York Life Insurance Company, its reinsurers, its subsidiaries or the plan administrator about the physical and mental health of any persons proposed for insurance, including significant history, findings, diagnosis and treatment, but excluding psychotherapy notes.\n\nA photocopy of this AUTHORIZATION and request form shall be as valid as the original. In all circumstances, my authorized agent, representative, or I may request a copy of this AUTHORIZATION. This AUTHORIZATION may be used for a period of 24 months from the date signed, unless sooner revoked as stated in the IMPORTANT NOTICE\n\nConsent\nBy signing and dating this application, I request the insurance indicated (for myself and/or my spouse); I (the employee and spouse if proposed for Supplemental Spouse insurance) attest that the information provided in this application is true and complete to the best of my(our) knowledge and belief and attest that I (we) have read the Fraud Notice and IMPORTANT NOTICE above; and I (we) consent to authorize the disclosure of information, to and from the providers noted in the IMPORTANT NOTICE.",
+      "position": 0
+    },
+    {
+      "id": "mcr.legal-disclosures.A5",
+      "key": "mcr.legal-disclosures.A5",
+      "displayId": 172636661565188,
+      "providedBy": null,
+      "sourceReference": "Legal Disclosures!A5",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.legal-disclosures.A5",
+      "value": "Consent\nBy signing and dating this application, I request the insurance applied for (for myself and/or my dependents); and I attest that the information provided in my application is true and complete to the best of my knowledge and belief and that I, and any other person proposed for insurance, has read the Fraud Notice (if any).",
+      "position": 0
+    },
+    {
+      "id": "mcr.legal-disclosures.A6",
+      "key": "mcr.legal-disclosures.A6",
+      "displayId": 175935196449821,
+      "providedBy": null,
+      "sourceReference": "Legal Disclosures!A6",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.legal-disclosures.A6",
+      "value": "Consent (unique)",
+      "position": 0
+    },
+    {
+      "id": "mcr.legal-disclosures.A7",
+      "key": "mcr.legal-disclosures.A7",
+      "displayId": 174835684821610,
+      "providedBy": null,
+      "sourceReference": "Legal Disclosures!A7",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.legal-disclosures.A7",
+      "value": "Fraud Notice (see fraud notice tab)",
+      "position": 0
+    },
+    {
+      "id": "mcr.legal-disclosures.A8",
+      "key": "mcr.legal-disclosures.A8",
+      "displayId": 160542033654867,
+      "providedBy": null,
+      "sourceReference": "Legal Disclosures!A8",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.legal-disclosures.A8",
+      "value": "For All Supplemental Health Products Applied For:\nI HEREBY ATTEST THAT I AM PURCHASING THIS POLICY AS A SUPPLEMENT TO MY HEALTH COVERAGE, WHICH MEETS THE FEDERAL REQUIREMENT OF MINIMUM ESSENTIAL COVERAGE.",
+      "position": 0
+    },
+    {
+      "id": "mcr.legal-disclosures.A9",
+      "key": "mcr.legal-disclosures.A9",
+      "displayId": 159442522026656,
+      "providedBy": null,
+      "sourceReference": "Legal Disclosures!A9",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.legal-disclosures.A9",
+      "value": "\u201cREVIEW THE ANSWERS ON THIS APPLICATION CAREFULLY. IF ANY OF YOUR ANSWERS ARE INCORRECT OR UNTRUE, EVEN IF UNINTENTIONAL, THE COMPANY MAY HAVE THE RIGHT TO DENY BENEFITS OR RESCIND YOUR COVERAGE IF THE MISREPRESENTATION IS DEEMED TO BE MATERIAL.\u201d",
+      "position": 0
+    },
+    {
+      "id": "mcr.legal-disclosures.A10",
+      "key": "mcr.legal-disclosures.A10",
+      "displayId": 9099696000408,
+      "providedBy": null,
+      "sourceReference": "Legal Disclosures!A10",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.legal-disclosures.A10",
+      "value": "I (or the certificate owner, if different) understand and agree that any dividend apportioned to the group policy may be retained by the American Bar Endowment to support its charitable work in the field of law unless such dividends are claimed by me (or the certificate owner) pursuant to the procedures described in the the plan brochures, on the back of the ABE premium notices, in each November issue of the ABA Journal, and in the plan description material on the ABE website (http://abendowment.org/forms/assignment.asp). (Notice of the approximate percentage premium available, if any, for contribution or refund will be published in the November issue of the ABA Journal.) The Internal Revenue Service has ruled that members who donate their dividends to ABE are eligible for a charitable contribution deduction on their individual income tax returns.",
+      "position": 0
+    },
+    {
+      "id": "mcr.legal-disclosures.A11",
+      "key": "mcr.legal-disclosures.A11",
+      "displayId": 10199207628619,
+      "providedBy": null,
+      "sourceReference": "Legal Disclosures!A11",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.legal-disclosures.A11",
+      "value": "Founded by the ABA in 1942, the American Bar Endowment is a \u00a7501(c) (3) not-for-profit organization composed of members of the American Bar Association.\u00a0ABE fulfills its charitable purpose of improving the administration of justice, one of our profession\u2019s highest obligations, by making annual grants to support legal research, public service and educational projects in the field of law, including those conducted by ABA\u2019s Fund for Justice and Education (FJE) and the American Bar Foundation (ABF).\u00a0ABE also maintains a Legal Legacy Fund for the permanent support of its grantees. By participating in the Endowment's group insurance programs, designed for and available only to ABA members, members can contribute to these efforts.Members who enroll in ABE-sponsored insurance programs agree that their share of any dividends payable on the group policies may be retained by ABE for its charitable purposes unless reclaimed as outlined below. The Internal Revenue Service has ruled that members who donate their dividends to ABE are eligible for a charitable contribution deduction on+A16 their individual income tax returns. Contributions to ABE are tax deductible under Section 170(c) of the U.S. Internal Revenue Code, in accordance with IRS regulations and the March 1987 ruling provided to ABE by the IRS.\n\nMembers who donate dividends to ABE make a difference.\u00a0These funds, after administrative expenses, are the primary source of ABE's charitable grants and additions to the Legal Legacy Fund. Insured members who donate their dividends help meet their professional and public responsibilities, as well as obtaining valuable coverage for their families. About 85% of members donate their dividends; these members are notified each year by late January of the amount, if any, of their dividend donation for the prior year. (Dividends are not guaranteed, and in any given year, a given plan may not pay a dividend; dividends will vary from year to year.)\n\nMembers who wish to request a refund of their dividends may do so.\u00a0The approximate percentage of premium available for refund (if any) on each plan will be published in each\u00a0November issue of the\u00a0ABA Journal.\u00a0You do not need to wait for this information as refund requests are accepted beginning January 1.\u00a0To request that dividends be paid to you rather than donated to ABE:\u00a0After the first policy year of your participation, a written request for refund (by mail, fax, or email to\u00a0dividends@abendowment.org)\u00a0must be made each year and must reach the Endowment by December 15. When ABE receives your refund request, it will send a confirmation. Retain this for your records as proof your request was timely received. If you do not receive a confirmation within 3 weeks, contact the ABE promptly to obtain another copy. (Special instructions for new applicants\u00a0are contained in the application and apply to dividends, if any, during the first policy year only.)\n\nDividend checks and/or contribution notices for your tax return are mailed by late January. If you receive a contribution notice and you did not intend to make a contribution, you may request a\u00a0one-time\u00a0waiver of the December 15 deadline by asking for a refund, if you have not previously requested such a waiver.\n\nPlease note:\u00a0Members who do not want to contribute dividends to ABE must make a written request for refund each year, using the procedures above. When members sign the application, they are agreeing to make\u00a0an annual decision\u00a0whether to contribute.\u00a0Do not sign the application if you do not agree with these procedures.",
+      "position": 0
+    },
+    {
+      "id": "mcr.legal-disclosures.A14",
+      "key": "mcr.legal-disclosures.A14",
+      "displayId": 13497742513252,
+      "providedBy": null,
+      "sourceReference": "Legal Disclosures!A14",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.legal-disclosures.A14",
+      "value": "It may not be in your best interest to replace existing life insurance policies or annuity contracts in connection with the purchase of a new life insurance policy, whether issued by the same or different insurance company. A replacement will occur if, as part of your purchase of a new life insurance policy, existing coverage has been, or is likely to be, lapsed, surrendered, forfeited, assigned, terminated, changed or modified into paid-up insurance or other forms of benefits, loaned against or withdrawn from, reduced in value, by use of cash values or other policy values, changed in the length of time or in the amount of insurance that would continue or continued with a stoppage or reduction in the amount of premium paid. Prior to completing a replacement transaction, you may want to contact the insurance company or agent who sold you the life insurance or annuity contract that will be replaced to help you decide whether the replacement is in your best interest.",
+      "position": 0
+    },
+    {
+      "id": "mcr.legal-disclosures.A16",
+      "key": "mcr.legal-disclosures.A16",
+      "displayId": 15696765769674,
+      "providedBy": null,
+      "sourceReference": "Legal Disclosures!A16",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.legal-disclosures.A16",
+      "value": "Add HI & CI Notice 14pt Font",
+      "position": 0
+    },
+    {
+      "id": "mcr.beneficiary-note.C2",
+      "key": "mcr.beneficiary-note.C2",
+      "displayId": 163467333808957,
+      "providedBy": null,
+      "sourceReference": "Beneficiary Note!C2",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.beneficiary-note.C2",
+      "value": "I make the following beneficiary designation with respect to new insurance issued on the basis of this application. If you currently have insurance and wish to change your beneficiary, contact the Plan Administrator for the proper form",
+      "position": 0
+    },
+    {
+      "id": "mcr.beneficiary-note.D2",
+      "key": "mcr.beneficiary-note.D2",
+      "displayId": 11734727879134,
+      "providedBy": null,
+      "sourceReference": "Beneficiary Note!D2",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.beneficiary-note.D2",
+      "value": "I make the following beneficiary designation with respect to new insurance issued on the basis of this application.",
+      "position": 0
+    },
+    {
+      "id": "mcr.beneficiary-note.C3",
+      "key": "mcr.beneficiary-note.C3",
+      "displayId": 162367822180746,
+      "providedBy": null,
+      "sourceReference": "Beneficiary Note!C3",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.beneficiary-note.C3",
+      "value": "   For First-to-Die, add the following \" Unless otherwise designated, the beneficiary for the Member  is the spouse and the beneficiary for the Spouse is the member.\" \nI make the following beneficiary designation with respect to all life insurance under this insurance plan and, if I am already covered under the plan, I hereby revoke any prior beneficiary designation.                                     ",
+      "position": 0
+    },
+    {
+      "id": "mcr.beneficiary-note.D3",
+      "key": "mcr.beneficiary-note.D3",
+      "displayId": 12834239507345,
+      "providedBy": null,
+      "sourceReference": "Beneficiary Note!D3",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.beneficiary-note.D3",
+      "value": " For First-to-Die, add the following \" Unless otherwise designated, the beneficiary for the Member  is the spouse and the beneficiary for the Spouse is the member.\" \n\nI make the following beneficiary designation with respect to all life insurance under this insurance plan and, if I am already covered under the plan, I hereby revoke any prior beneficiary designation.   \n ",
+      "position": 0
+    },
+    {
+      "id": "mcr.beneficiary-note.C4",
+      "key": "mcr.beneficiary-note.C4",
+      "displayId": 156870264039691,
+      "providedBy": null,
+      "sourceReference": "Beneficiary Note!C4",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.beneficiary-note.C4",
+      "value": " NO bene Note for dependent Child on Bene page",
+      "position": 0
+    },
+    {
+      "id": "mcr.beneficiary-note.D4",
+      "key": "mcr.beneficiary-note.D4",
+      "displayId": 13933751135556,
+      "providedBy": null,
+      "sourceReference": "Beneficiary Note!D4",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.beneficiary-note.D4",
+      "value": "Spouse Note: The beneficiary for dependent Spouse coverage is the insured employee. The above amount includes the automatic $10,000 in basic life coverage provided at no additional cost.\n\nChild Note: The beneficiary for dependent Child(ren) coverage is the insured employee. The above amount includes the automatic $10,000 in basic life coverage provided at no additional cost.",
+      "position": 0
+    },
+    {
+      "id": "mcr.beneficiary-note.C5",
+      "key": "mcr.beneficiary-note.C5",
+      "displayId": 155770752411480,
+      "providedBy": null,
+      "sourceReference": "Beneficiary Note!C5",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.beneficiary-note.C5",
+      "value": "I make the following beneficiary designation with respect to all Accidental Death insurance under this insurance plan and, if I am already covered under the plan, I hereby revoke any prior beneficiary designation.",
+      "position": 0
+    },
+    {
+      "id": "mcr.beneficiary-note.D5",
+      "key": "mcr.beneficiary-note.D5",
+      "displayId": 15033262763767,
+      "providedBy": null,
+      "sourceReference": "Beneficiary Note!D5",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.beneficiary-note.D5",
+      "value": "I make the following beneficiary designation with respect to all Accidental Death insurance under this insurance plan and, if I am already covered under the plan, I hereby revoke any prior beneficiary designation.",
+      "position": 0
+    },
+    {
+      "id": "mcr.beneficiary-note.C6",
+      "key": "mcr.beneficiary-note.C6",
+      "displayId": 159069287296113,
+      "providedBy": null,
+      "sourceReference": "Beneficiary Note!C6",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.beneficiary-note.C6",
+      "value": "I make the following beneficiary designation with respect to this AD&D insurance coverage and, if I am already covered under the plan, I hereby revoke any prior beneficiary designation.",
+      "position": 0
+    },
+    {
+      "id": "mcr.beneficiary-note.D6",
+      "key": "mcr.beneficiary-note.D6",
+      "displayId": 16132774391978,
+      "providedBy": null,
+      "sourceReference": "Beneficiary Note!D6",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.beneficiary-note.D6",
+      "value": "I make the following beneficiary designation with respect to this AD&D insurance coverage and, if I am already covered under the plan, I hereby revoke any prior beneficiary designation.",
+      "position": 0
+    },
+    {
+      "id": "mcr.beneficiary-note.C7",
+      "key": "mcr.beneficiary-note.C7",
+      "displayId": 157969775667902,
+      "providedBy": null,
+      "sourceReference": "Beneficiary Note!C7",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.beneficiary-note.C7",
+      "value": "Beneficiary note is a part of the Consent in Read and Sign",
+      "position": 0
+    },
+    {
+      "id": "mcr.beneficiary-note.C8",
+      "key": "mcr.beneficiary-note.C8",
+      "displayId": 152472217526847,
+      "providedBy": null,
+      "sourceReference": "Beneficiary Note!C8",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.beneficiary-note.C8",
+      "value": "Unless otherwise requested, your spouse, if living, will be the beneficiary of your death benefit.  Otherwise the death benefit will be paid to your surviving relative(s) in the following order of survival:  spouse, children equally, parents equally or brothers and sisters equally; estate.If I am already covered under the plan, I hereby revoke any prior beneficiary designation.",
+      "position": 0
+    },
+    {
+      "id": "mcr.beneficiary-note.D8",
+      "key": "mcr.beneficiary-note.D8",
+      "displayId": 739611597024,
+      "providedBy": null,
+      "sourceReference": "Beneficiary Note!D8",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.beneficiary-note.D8",
+      "value": "Unless otherwise requested, your spouse, if living, will be the beneficiary of your death benefit.  Otherwise the death benefit will be paid to your surviving relative(s) in the following order of survival:  spouse, children equally, parents equally or brothers and sisters equally; estate.If I am already covered under the plan, I hereby revoke any prior beneficiary designation.",
+      "position": 0
+    },
+    {
+      "id": "mcr.beneficiary-note.C9",
+      "key": "mcr.beneficiary-note.C9",
+      "displayId": 151372705898636,
+      "providedBy": null,
+      "sourceReference": "Beneficiary Note!C9",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.beneficiary-note.C9",
+      "value": "The automatic beneficiary for  child coverage is the insured member.  ",
+      "position": 0
+    },
+    {
+      "id": "mcr.beneficiary-note.D9",
+      "key": "mcr.beneficiary-note.D9",
+      "displayId": 1839123225235,
+      "providedBy": null,
+      "sourceReference": "Beneficiary Note!D9",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.beneficiary-note.D9",
+      "value": "Child Note: The beneficiary for dependent Child(ren) coverage is the insured member. ",
+      "position": 0
+    },
+    {
+      "id": "mcr.beneficiary-note.C10",
+      "key": "mcr.beneficiary-note.C10",
+      "displayId": 171098517097468,
+      "providedBy": null,
+      "sourceReference": "Beneficiary Note!C10",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.beneficiary-note.C10",
+      "value": "The automatic beneficiary for  child coverage is the insured member.  ",
+      "position": 0
+    },
+    {
+      "id": "mcr.beneficiary-note.D10",
+      "key": "mcr.beneficiary-note.D10",
+      "displayId": 152406255724001,
+      "providedBy": null,
+      "sourceReference": "Beneficiary Note!D10",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.beneficiary-note.D10",
+      "value": "Child Note: The beneficiary for dependent Child(ren) coverage is the insured member. ",
+      "position": 0
+    },
+    {
+      "id": "mcr.beneficiary-note.C11",
+      "key": "mcr.beneficiary-note.C11",
+      "displayId": 172198028725679,
+      "providedBy": null,
+      "sourceReference": "Beneficiary Note!C11",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.beneficiary-note.C11",
+      "value": "I make the following beneficiary designation with respect to all life insurance under this insurance plan and I hereby revoke any prior beneficiary designation.\n",
+      "position": 0
+    },
+    {
+      "id": "mcr.beneficiary-note.D11",
+      "key": "mcr.beneficiary-note.D11",
+      "displayId": 151306744095790,
+      "providedBy": null,
+      "sourceReference": "Beneficiary Note!D11",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.beneficiary-note.D11",
+      "value": "I make the following beneficiary designation with respect to all life insurance under this insurance plan and I hereby revoke any prior beneficiary designation.\n",
+      "position": 0
+    },
+    {
+      "id": "mcr.standard-decision-wording.B2",
+      "key": "mcr.standard-decision-wording.B2",
+      "displayId": 22690161070029,
+      "providedBy": null,
+      "sourceReference": "Standard Decision Wording !B2",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.standard-decision-wording.B2",
+      "value": "Congratulations! Based upon the information provided and our verification with vendors, you have been conditionally approved for ($amount) in life insurance coverage. Your group plan administrator needs to review your application to confirm your eligibility for this product. You will be sent details about your coverage once this is completed, typically within just a few days.\nYour next step: Provide payment information. We gather this information now to speed processing, however you will not be charged until and unless your coverage is approved. \n",
+      "position": 0
+    },
+    {
+      "id": "mcr.standard-decision-wording.B3",
+      "key": "mcr.standard-decision-wording.B3",
+      "displayId": 21590649441818,
+      "providedBy": null,
+      "sourceReference": "Standard Decision Wording !B3",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.standard-decision-wording.B3",
+      "value": "We will review your details and be in touch soon. Based upon your responses and information from background databases about you, a representative may need to call you to verify your medical details in order to process your application. You will be sent details about your coverage request once this is completed.\nYour next step: Provide payment information. We gather this information now to speed processing, however you will not be charged until and unless your coverage is approved. \n",
+      "position": 0
+    },
+    {
+      "id": "mcr.standard-decision-wording.B4",
+      "key": "mcr.standard-decision-wording.B4",
+      "displayId": 16093091300763,
+      "providedBy": null,
+      "sourceReference": "Standard Decision Wording !B4",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.standard-decision-wording.B4",
+      "value": "Based on the medical or other history you provided and/or information from databases about you we are unable to approve your request for coverage. Please continue to the final page to download your completed application for your records. You may contact the Plan Administrator if you have questions about this decision.\nThere are products which may better suit your current needs. Consider the guaranteed coverage offered through Accidental Death and Dismemberment Insurance. If you are an eligible member, your coverage for these products is guaranteed. Continue to the next step to apply for these coverages after you have downloaded your current application for your records. \n",
+      "position": 0
+    },
+    {
+      "id": "mcr.standard-decision-wording.B5",
+      "key": "mcr.standard-decision-wording.B5",
+      "displayId": 14993579672552,
+      "providedBy": null,
+      "sourceReference": "Standard Decision Wording !B5",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.standard-decision-wording.B5",
+      "value": "One of the databases we use to verify background information did not respond to our request in time. This is typically a result of scheduled maintenance. Our team will contact the vendor within the next business day to complete your application processing. If additional information is needed from you, a representative will call you within just a few days. Otherwise, you will be sent details about your coverage request once our confirmation is complete.\nYour next step: Provide payment information. We gather this information now to speed processing, however you will not be charged until and unless your coverage is approved. \n",
+      "position": 0
+    },
+    {
+      "id": "mcr.standard-decision-wording.B7",
+      "key": "mcr.standard-decision-wording.B7",
+      "displayId": 17192602928974,
+      "providedBy": null,
+      "sourceReference": "Standard Decision Wording !B7",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.standard-decision-wording.B7",
+      "value": "Congratulations! Based upon the information provided and our verification with vendors, you have been conditionally approved for ($amount) in life insurance coverage. Your group plan administrator needs to review your application to confirm your eligibility for this product. You will be sent details about your coverage once this is completed, typically within just a few days.\n\n",
+      "position": 0
+    },
+    {
+      "id": "mcr.standard-decision-wording.B8",
+      "key": "mcr.standard-decision-wording.B8",
+      "displayId": 11695044787919,
+      "providedBy": null,
+      "sourceReference": "Standard Decision Wording !B8",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.standard-decision-wording.B8",
+      "value": "We will review your details and be in touch soon. Based upon your responses and information from background databases about you, a representative may need to call you to verify your medical details in order to process your application. You will be sent details about your coverage request once this is completed.\n",
+      "position": 0
+    },
+    {
+      "id": "mcr.standard-decision-wording.B9",
+      "key": "mcr.standard-decision-wording.B9",
+      "displayId": 10595533159708,
+      "providedBy": null,
+      "sourceReference": "Standard Decision Wording !B9",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.standard-decision-wording.B9",
+      "value": "Based on the medical or other history you provided and/or information from database checks about you, we are unable to approve your request for this insurance coverage. Please contact AAFP Insurance Services to discuss other insurance options at (800) 325-8166 or email us at insurance@aafpins.com. Please continue to the final page to download your completed application for your records.",
+      "position": 0
+    },
+    {
+      "id": "mcr.standard-decision-wording.B10",
+      "key": "mcr.standard-decision-wording.B10",
+      "displayId": 136243624173132,
+      "providedBy": null,
+      "sourceReference": "Standard Decision Wording !B10",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.standard-decision-wording.B10",
+      "value": "One of the databases we use to verify background information did not respond to our request in time. This is typically a result of scheduled maintenance. Our team will contact the vendor within the next business day to complete your application processing. If additional information is needed from you, a representative will call you within just a few days. Otherwise, you will be sent details about your coverage request once our confirmation is complete.\n\n",
+      "position": 0
+    },
+    {
+      "id": "mcr.standard-decision-wording.B12",
+      "key": "mcr.standard-decision-wording.B12",
+      "displayId": 138442647429554,
+      "providedBy": null,
+      "sourceReference": "Standard Decision Wording !B12",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.standard-decision-wording.B12",
+      "value": "Congratulations! You have been approved for [$amount] coverage under the AMA-sponsored PureTerm Life Insurance Plan, underwritten by New York Life Insurance Company. \nYou will receive a Certificate of Insurance outlining the details of this Plan within the next 7 \u2013 10 business days.  \n",
+      "position": 0
+    },
+    {
+      "id": "mcr.standard-decision-wording.B13",
+      "key": "mcr.standard-decision-wording.B13",
+      "displayId": 139542159057765,
+      "providedBy": null,
+      "sourceReference": "Standard Decision Wording !B13",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.standard-decision-wording.B13",
+      "value": "Congratulations! Based upon the information you provided, along with information collected from background databases, you have been conditionally approved for [$amount] in life insurance coverage. We need to review your application to confirm your eligibility and additional details will be sent to you once this is completed, typically within 7-10 business days. ",
+      "position": 0
+    },
+    {
+      "id": "mcr.standard-decision-wording.B14",
+      "key": "mcr.standard-decision-wording.B14",
+      "displayId": 131845577660288,
+      "providedBy": null,
+      "sourceReference": "Standard Decision Wording !B14",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.standard-decision-wording.B14",
+      "value": "New York Life Insurance Company will review your application. Based upon the information you provided along with  information collected from background databases, a representative from New York Life or ExamOne, our paramed vendor, may need to call you to verify your medical history. No further action by you is required at this time. ",
+      "position": 0
+    },
+    {
+      "id": "mcr.standard-decision-wording.B15",
+      "key": "mcr.standard-decision-wording.B15",
+      "displayId": 132945089288499,
+      "providedBy": null,
+      "sourceReference": "Standard Decision Wording !B15",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.standard-decision-wording.B15",
+      "value": "Based on the medical or other history you provided and/or information collected from background databases we are unable to approve your request for coverage. You may contact the Underwriter at New York Life  at (XXX) XXX-XXXX if you have questions about this decision. \nAs an alternative, we may have other life insurance plans available that might suit your needs. Please contact us at 888-627-5883 for more information. \n",
+      "position": 0
+    },
+    {
+      "id": "mcr.standard-decision-wording.B16",
+      "key": "mcr.standard-decision-wording.B16",
+      "displayId": 134044600916710,
+      "providedBy": null,
+      "sourceReference": "Standard Decision Wording !B16",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.standard-decision-wording.B16",
+      "value": "One of the databases used to verify background information did not respond to our request in time. This is typically a result of scheduled maintenance. Our New York Life underwriting team will contact the vendor within the next business day to obtain the necessary information. If additional information is needed from you, a New York Life representative will call you. ",
+      "position": 0
+    },
+    {
+      "id": "mcr.standard-decision-wording.B17",
+      "key": "mcr.standard-decision-wording.B17",
+      "displayId": 135144112544921,
+      "providedBy": null,
+      "sourceReference": "Standard Decision Wording !B17",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.standard-decision-wording.B17",
+      "value": "Some products require additional medical information before we can provide a decision about your request. If a medical exam is required, a representative from ExamOne, our paramed vendor, will be in touch to schedule a time convenient for you. To learn more about how medical underwriting works, you can download our Underwriting Guide.",
+      "position": 0
+    },
+    {
+      "id": "mcr.standard-decision-wording.B19",
+      "key": "mcr.standard-decision-wording.B19",
+      "displayId": 146139228827031,
+      "providedBy": null,
+      "sourceReference": "Standard Decision Wording !B19",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.standard-decision-wording.B19",
+      "value": "Based on the medical or other history you provided and/or information from databases about you we are unable to approve your request for coverage. Please continue to the final page to download your completed application for your records. New York Life will be providing you with details regarding their underwriting decision. You may also contact the Plan Administrator if you have any questions.",
+      "position": 0
+    },
+    {
+      "id": "mcr.standard-decision-wording.B20",
+      "key": "mcr.standard-decision-wording.B20",
+      "displayId": 15297345727207,
+      "providedBy": null,
+      "sourceReference": "Standard Decision Wording !B20",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.standard-decision-wording.B20",
+      "value": "We will review your details and be in touch soon. Based upon your responses and information from background databases about you, a representative may need to call you to verify your medical details in order to process your application. You will be sent details about your coverage request once this is completed.\n\nYour next step: Provide payment information. We gather this information now to speed processing, however you will not be charged until and unless your coverage is approved.",
+      "position": 0
+    },
+    {
+      "id": "mcr.electrconsent.A2",
+      "key": "mcr.electrconsent.A2",
+      "displayId": 111121033842410,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A2",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.electrconsent.A2",
+      "value": "ELECTRONIC CONSENT",
+      "position": 0
+    },
+    {
+      "id": "mcr.electrconsent.A4",
+      "key": "mcr.electrconsent.A4",
+      "displayId": 104523964073144,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A4",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.electrconsent.A4",
+      "value": "NEW YORK LIFE INSURANCE COMPANY",
+      "position": 0
+    },
+    {
+      "id": "mcr.electrconsent.A6",
+      "key": "mcr.electrconsent.A6",
+      "displayId": 106722987329566,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A6",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.electrconsent.A6",
+      "value": "Customer Electronic Consent and Disclosure",
+      "position": 0
+    },
+    {
+      "id": "mcr.electrconsent.A7",
+      "key": "mcr.electrconsent.A7",
+      "displayId": 107822498957777,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A7",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.electrconsent.A7",
+      "value": "(the \u201cConsent\u201d)",
+      "position": 0
+    },
+    {
+      "id": "mcr.electrconsent.A9",
+      "key": "mcr.electrconsent.A9",
+      "displayId": 101225429188511,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A9",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.electrconsent.A9",
+      "value": "IMPORTANT NOTICE - PLEASE READ CAREFULLY",
+      "position": 0
+    },
+    {
+      "id": "mcr.electrconsent.A11",
+      "key": "mcr.electrconsent.A11",
+      "displayId": 15213192110386,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A11",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.electrconsent.A11",
+      "value": "What is the purpose of this Consent?",
+      "position": 0
+    },
+    {
+      "id": "mcr.electrconsent.A13",
+      "key": "mcr.electrconsent.A13",
+      "displayId": 13014168853964,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A13",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.electrconsent.A13",
+      "value": "You are applying for insurance coverage from New York Life Insurance Company (\u201cNew York Life\u201d) and have expressed your desire to electronically sign the Application Forms for the insurance certificate (the \u201cInsurance Certificate\u201d) and electronically receive communications related to the application for the Insurance Certificate. To conduct this business electronically, you must provide New York Life and its authorized designees with your consent.  By clicking the \u201cSubmit\u201d button below, and applying your electronic signature, you will be providing New York Life and its authorized designees, with your consent:",
+      "position": 0
+    },
+    {
+      "id": "mcr.electrconsent.A15",
+      "key": "mcr.electrconsent.A15",
+      "displayId": 10815145597542,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A15",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.electrconsent.A15",
+      "value": "(a)  to have the Required Documents described in this Consent delivered to you electronically;",
+      "position": 0
+    },
+    {
+      "id": "mcr.electrconsent.A17",
+      "key": "mcr.electrconsent.A17",
+      "displayId": 8616122341120,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A17",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.electrconsent.A17",
+      "value": "(b)  to execute via electronic means the Application Forms that are described in this Consent; and",
+      "position": 0
+    },
+    {
+      "id": "mcr.electrconsent.A19",
+      "key": "mcr.electrconsent.A19",
+      "displayId": 24009285136074,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A19",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.electrconsent.A19",
+      "value": "(c)  to agree to all of the terms and conditions set forth below in this Consent.",
+      "position": 0
+    },
+    {
+      "id": "mcr.electrconsent.A21",
+      "key": "mcr.electrconsent.A21",
+      "displayId": 164746773691937,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A21",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.electrconsent.A21",
+      "value": "If you do not want to have the Required Documents delivered to you electronically, if you do not want to execute via electronic means the Application Forms, and/or if you do not agree with all of the terms and conditions of this Consent, you may not conduct business electronically with New York Life, and you must not click the submit link below.   In this event you may contact the Administrator below to request a paper application.",
+      "position": 0
+    },
+    {
+      "id": "mcr.electrconsent.A23",
+      "key": "mcr.electrconsent.A23",
+      "displayId": 162547750435515,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A23",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.electrconsent.A23",
+      "value": "What does the Consent cover once I click \u201cSign\u201d and apply my electronic signature?",
+      "position": 0
+    },
+    {
+      "id": "mcr.electrconsent.A25",
+      "key": "mcr.electrconsent.A25",
+      "displayId": 169144820204781,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A25",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.electrconsent.A25",
+      "value": "The Consent covers your agreement to all of the terms and conditions of the Consent, including your agreement to:",
+      "position": 0
+    },
+    {
+      "id": "mcr.electrconsent.A27",
+      "key": "mcr.electrconsent.A27",
+      "displayId": 166945796948359,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A27",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.electrconsent.A27",
+      "value": "1.    execute via electronic means any documents that New York Life requires to be signed in connection with the application process for this Insurance Certificate (the \u201cApplication Forms\u201d);",
+      "position": 0
+    },
+    {
+      "id": "mcr.electrconsent.A29",
+      "key": "mcr.electrconsent.A29",
+      "displayId": 155950680666249,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A29",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.electrconsent.A29",
+      "value": "2.    be bound with the same force and effect as if you had affixed your signature on paper, by hand, when you click \u201cSubmit\u201d and apply your electronic signature or otherwise apply your electronic signature to the Application Forms;",
+      "position": 0
+    },
+    {
+      "id": "mcr.electrconsent.A31",
+      "key": "mcr.electrconsent.A31",
+      "displayId": 28407332049988,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A31",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.electrconsent.A31",
+      "value": "3.    receive via electronic means the Application Forms, Important Notice And New York Life Online Privacy Policy That New York Life Is Required To Deliver And/Or Make Available To You, In Writing, In Connection With The Insurance Certificate (The \u201cRequired Documents\u201d).",
+      "position": 0
+    },
+    {
+      "id": "mcr.electrconsent.A33",
+      "key": "mcr.electrconsent.A33",
+      "displayId": 30606355306410,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A33",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.electrconsent.A33",
+      "value": "Even though you have provided New York Life with the Consent, New York Life may, at its option, deliver the Required Documents to you on paper.",
+      "position": 0
+    },
+    {
+      "id": "mcr.electrconsent.A35",
+      "key": "mcr.electrconsent.A35",
+      "displayId": 24009285537144,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A35",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.electrconsent.A35",
+      "value": "May I obtain paper copies of the Required Documents and the Consent?",
+      "position": 0
+    },
+    {
+      "id": "mcr.electrconsent.A37",
+      "key": "mcr.electrconsent.A37",
+      "displayId": 26208308793566,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A37",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.electrconsent.A37",
+      "value": "Yes. You may obtain paper copies of any of the Required Documents and/or the Consent at any time and without charge by contacting New York Life at GMAD_DocumentRequest@newyorklife.com or (914) 846-3017.",
+      "position": 0
+    },
+    {
+      "id": "mcr.electrconsent.A40",
+      "key": "mcr.electrconsent.A40",
+      "displayId": 18511726048024,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A40",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.electrconsent.A40",
+      "value": "Should I maintain copies of the Required Documents received by electronic means?",
+      "position": 0
+    },
+    {
+      "id": "mcr.electrconsent.A42",
+      "key": "mcr.electrconsent.A42",
+      "displayId": 20710749304446,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A42",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.electrconsent.A42",
+      "value": "Yes. You agree to print or save the Required Documents and to keep printed or electronic copies of them for your records. If you have any trouble with printing or saving, you should contact New York Life at GMAD_DocumentRequest@newyorklife.com or (914) 846-3017.",
+      "position": 0
+    },
+    {
+      "id": "mcr.electrconsent.A44",
+      "key": "mcr.electrconsent.A44",
+      "displayId": 22909772560868,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A44",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.electrconsent.A44",
+      "value": "In what form will I receive Required Documents by electronic means?",
+      "position": 0
+    },
+    {
+      "id": "mcr.electrconsent.A46",
+      "key": "mcr.electrconsent.A46",
+      "displayId": 25108795817290,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A46",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.electrconsent.A46",
+      "value": "Required Documents will be provided in Portable Document Format (PDF).  I agree that I must have Adobe\u00ae Acrobat\u00ae viewer software installed on my personal computer in order to view these Required Documents.  I agree that if I do not have the ability to access and retain PDF documents, I should not click the \u201cSubmit\u201d button.  By clicking the \u201cSubmit\u201d button, I acknowledge that I can access the Required Documents on my personal computer in PDF Form. ",
+      "position": 0
+    },
+    {
+      "id": "mcr.electrconsent.A48",
+      "key": "mcr.electrconsent.A48",
+      "displayId": 9715633022336,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A48",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.electrconsent.A48",
+      "value": "How will I receive Required Documents by electronic means?",
+      "position": 0
+    },
+    {
+      "id": "mcr.electrconsent.A50",
+      "key": "mcr.electrconsent.A50",
+      "displayId": 165846284373153,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A50",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.electrconsent.A50",
+      "value": "There are links to the notices and documents on this website and in this notice. Click on the linked text to open the document. Upon selecting the link, you will be able to view, download, and/or print all the Required Documents pertaining to your application. For reference, these required documents are:",
+      "position": 0
+    },
+    {
+      "id": "mcr.electrconsent.A51",
+      "key": "mcr.electrconsent.A51",
+      "displayId": 164746772744942,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A51",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.electrconsent.A51",
+      "value": "(each below should be linked)",
+      "position": 0
+    },
+    {
+      "id": "mcr.electrconsent.A52",
+      "key": "mcr.electrconsent.A52",
+      "displayId": 163647261116731,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A52",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.electrconsent.A52",
+      "value": "Important Notice",
+      "position": 0
+    },
+    {
+      "id": "mcr.electrconsent.A53",
+      "key": "mcr.electrconsent.A53",
+      "displayId": 162547749488520,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A53",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.electrconsent.A53",
+      "value": "New York Life Online Privacy Policy",
+      "position": 0
+    },
+    {
+      "id": "mcr.electrconsent.A55",
+      "key": "mcr.electrconsent.A55",
+      "displayId": 169144819257786,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A55",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.electrconsent.A55",
+      "value": "How long will this Consent remain in effect?",
+      "position": 0
+    },
+    {
+      "id": "mcr.electrconsent.A57",
+      "key": "mcr.electrconsent.A57",
+      "displayId": 166945796001364,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A57",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.electrconsent.A57",
+      "value": "This Consent shall become effective once you click the \u201cSubmit\u201d button below and shall remain in effect until you withdraw your consent (as described in the next section) or the Insurance Certificate is issued. ",
+      "position": 0
+    },
+    {
+      "id": "mcr.electrconsent.A59",
+      "key": "mcr.electrconsent.A59",
+      "displayId": 155950679719254,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A59",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.electrconsent.A59",
+      "value": "What if I change my mind?",
+      "position": 0
+    },
+    {
+      "id": "mcr.electrconsent.A61",
+      "key": "mcr.electrconsent.A61",
+      "displayId": 32805377615837,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A61",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.electrconsent.A61",
+      "value": "You may only withdraw your consent to do business electronically before the Insurance Certificate is issued.  If you would like to do so, you must provide New York Life with a written withdrawal of your consent to do business electronically. This will terminate the Consent and your Insurance Certificate application as of the date you sign your withdrawal, subject to any action New York Life took before recording the withdrawal.  If we issue the Insurance Certificate before we record your withdrawal, and you wish to cancel this Insurance Certificate thereafter, you must exercise your right to surrender the Insurance Certificate according to its terms.  There is no charge to withdraw your consent.",
+      "position": 0
+    },
+    {
+      "id": "mcr.electrconsent.A63",
+      "key": "mcr.electrconsent.A63",
+      "displayId": 30606354359415,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A63",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.electrconsent.A63",
+      "value": "What if my contact information changes?",
+      "position": 0
+    },
+    {
+      "id": "mcr.electrconsent.A65",
+      "key": "mcr.electrconsent.A65",
+      "displayId": 28407331102993,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A65",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.electrconsent.A65",
+      "value": "You must keep New York Life informed of any changes to your e-mail address. You may inform New York Life of any such changes by contacting New York Life at GMAD_DocumentRequest@newyorklife.com or (914) 846-3017.",
+      "position": 0
+    },
+    {
+      "id": "mcr.electrconsent.A67",
+      "key": "mcr.electrconsent.A67",
+      "displayId": 26208307846571,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A67",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.electrconsent.A67",
+      "value": "Are there any hardware or software requirements to do business electronically with New York Life?",
+      "position": 0
+    },
+    {
+      "id": "mcr.electrconsent.A69",
+      "key": "mcr.electrconsent.A69",
+      "displayId": 24009284590149,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A69",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.electrconsent.A69",
+      "value": "Yes.  To do business electronically with New York Life and to access and retain the Required Documents sent or made available to you electronically by New York Life requires that you have a personal computer or mobile device with appropriate browser software, such as Microsoft Internet Explorer\u00ae, Mozilla\u00ae Firefox\u00ae, or equivalent, and email software as well as communications access to the Internet. You must ensure that the mobile device that you are using to view or electronically sign the Application Forms allows you to access all associated content.  This access may incur charges from Internet Service Providers and telephone or cable companies.  These costs are your responsibility.  In order to view certain Required Documents in the Portable Document Format (PDF), you must have Adobe\u00ae Acrobat\u00ae viewer software. This software is available for download, free of charge, from the Adobe Web site (www.adobe.com).  You must have the ability to save the Required Documents to a storage device for later reference or have a connection between your computer or mobile device and a printer so you can print out the Required Documents.  \n\nGMA-EC                                                                                                                                                                                                       1/1/18 ed.",
+      "position": 0
+    },
+    {
+      "id": "mcr.electrconsent.A71",
+      "key": "mcr.electrconsent.A71",
+      "displayId": 142756540581792,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A71",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.electrconsent.A71",
+      "value": "CAT custom consent (NYL-12945)",
+      "position": 0
+    },
+    {
+      "id": "mcr.electrconsent.A72",
+      "key": "mcr.electrconsent.A72",
+      "displayId": 146055075466425,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A72",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.electrconsent.A72",
+      "value": "WAEPAWL - custom consent (NYL-22272)",
+      "position": 0
+    },
+    {
+      "id": "mcr.electronic-consent.standard",
+      "key": "mcr.electronic-consent.standard",
+      "displayId": 172100316432214,
+      "providedBy": null,
+      "sourceReference": "ElectrConsent!A2:A69",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "contentKey": "mcr.electronic-consent.standard",
+      "value": "ELECTRONIC CONSENT\n\nNEW YORK LIFE INSURANCE COMPANY\n\nCustomer Electronic Consent and Disclosure\n\n(the \u201cConsent\u201d)\n\nIMPORTANT NOTICE - PLEASE READ CAREFULLY\n\nWhat is the purpose of this Consent?\n\nYou are applying for insurance coverage from New York Life Insurance Company (\u201cNew York Life\u201d) and have expressed your desire to electronically sign the Application Forms for the insurance certificate (the \u201cInsurance Certificate\u201d) and electronically receive communications related to the application for the Insurance Certificate. To conduct this business electronically, you must provide New York Life and its authorized designees with your consent.  By clicking the \u201cSubmit\u201d button below, and applying your electronic signature, you will be providing New York Life and its authorized designees, with your consent:\n\n(a)  to have the Required Documents described in this Consent delivered to you electronically;\n\n(b)  to execute via electronic means the Application Forms that are described in this Consent; and\n\n(c)  to agree to all of the terms and conditions set forth below in this Consent.\n\nIf you do not want to have the Required Documents delivered to you electronically, if you do not want to execute via electronic means the Application Forms, and/or if you do not agree with all of the terms and conditions of this Consent, you may not conduct business electronically with New York Life, and you must not click the submit link below.   In this event you may contact the Administrator below to request a paper application.\n\nWhat does the Consent cover once I click \u201cSign\u201d and apply my electronic signature?\n\nThe Consent covers your agreement to all of the terms and conditions of the Consent, including your agreement to:\n\n1.    execute via electronic means any documents that New York Life requires to be signed in connection with the application process for this Insurance Certificate (the \u201cApplication Forms\u201d);\n\n2.    be bound with the same force and effect as if you had affixed your signature on paper, by hand, when you click \u201cSubmit\u201d and apply your electronic signature or otherwise apply your electronic signature to the Application Forms;\n\n3.    receive via electronic means the Application Forms, Important Notice And New York Life Online Privacy Policy That New York Life Is Required To Deliver And/Or Make Available To You, In Writing, In Connection With The Insurance Certificate (The \u201cRequired Documents\u201d).\n\nEven though you have provided New York Life with the Consent, New York Life may, at its option, deliver the Required Documents to you on paper.\n\nMay I obtain paper copies of the Required Documents and the Consent?\n\nYes. You may obtain paper copies of any of the Required Documents and/or the Consent at any time and without charge by contacting New York Life at GMAD_DocumentRequest@newyorklife.com or (914) 846-3017.\n\nShould I maintain copies of the Required Documents received by electronic means?\n\nYes. You agree to print or save the Required Documents and to keep printed or electronic copies of them for your records. If you have any trouble with printing or saving, you should contact New York Life at GMAD_DocumentRequest@newyorklife.com or (914) 846-3017.\n\nIn what form will I receive Required Documents by electronic means?\n\nRequired Documents will be provided in Portable Document Format (PDF).  I agree that I must have Adobe\u00ae Acrobat\u00ae viewer software installed on my personal computer in order to view these Required Documents.  I agree that if I do not have the ability to access and retain PDF documents, I should not click the \u201cSubmit\u201d button.  By clicking the \u201cSubmit\u201d button, I acknowledge that I can access the Required Documents on my personal computer in PDF Form. \n\nHow will I receive Required Documents by electronic means?\n\nThere are links to the notices and documents on this website and in this notice. Click on the linked text to open the document. Upon selecting the link, you will be able to view, download, and/or print all the Required Documents pertaining to your application. For reference, these required documents are:\n\n(each below should be linked)\n\nImportant Notice\n\nNew York Life Online Privacy Policy\n\nHow long will this Consent remain in effect?\n\nThis Consent shall become effective once you click the \u201cSubmit\u201d button below and shall remain in effect until you withdraw your consent (as described in the next section) or the Insurance Certificate is issued. \n\nWhat if I change my mind?\n\nYou may only withdraw your consent to do business electronically before the Insurance Certificate is issued.  If you would like to do so, you must provide New York Life with a written withdrawal of your consent to do business electronically. This will terminate the Consent and your Insurance Certificate application as of the date you sign your withdrawal, subject to any action New York Life took before recording the withdrawal.  If we issue the Insurance Certificate before we record your withdrawal, and you wish to cancel this Insurance Certificate thereafter, you must exercise your right to surrender the Insurance Certificate according to its terms.  There is no charge to withdraw your consent.\n\nWhat if my contact information changes?\n\nYou must keep New York Life informed of any changes to your e-mail address. You may inform New York Life of any such changes by contacting New York Life at GMAD_DocumentRequest@newyorklife.com or (914) 846-3017.\n\nAre there any hardware or software requirements to do business electronically with New York Life?\n\nYes.  To do business electronically with New York Life and to access and retain the Required Documents sent or made available to you electronically by New York Life requires that you have a personal computer or mobile device with appropriate browser software, such as Microsoft Internet Explorer\u00ae, Mozilla\u00ae Firefox\u00ae, or equivalent, and email software as well as communications access to the Internet. You must ensure that the mobile device that you are using to view or electronically sign the Application Forms allows you to access all associated content.  This access may incur charges from Internet Service Providers and telephone or cable companies.  These costs are your responsibility.  In order to view certain Required Documents in the Portable Document Format (PDF), you must have Adobe\u00ae Acrobat\u00ae viewer software. This software is available for download, free of charge, from the Adobe Web site (www.adobe.com).  You must have the ability to save the Required Documents to a storage device for later reference or have a connection between your computer or mobile device and a printer so you can print out the Required Documents.  \n\nGMA-EC                                                                                                                                                                                                       1/1/18 ed.",
+      "position": 0
+    }
+  ]
+}

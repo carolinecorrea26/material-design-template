@@ -1,3 +1,4 @@
+import { coverageMinimumAmount } from "./coverageMinimumAmount";
 import definitions from "../../requirements/global/configurations/coverage-policy.json";
 import amountControls from "../../requirements/global/configurations/coverage-amount-controls.json";
 import { parseCoverageAssignments, type CoverageAssignment } from "./requirementCoverageValidation.mjs";
@@ -5,8 +6,10 @@ import type { CoverageApplicantId, CoverageDefinition, CoverageRequirements } fr
 import type { ApplicantFacts, RequirementResult } from "./coverageRequirements";
 import { numericFact } from "../utils/applicantFacts";
 import { requirementText } from "./requirementContent";
+import { selectedApplicationApplicants } from './applicantParticipation';
 
-export const coverageConfigurationDefinitions = [...definitions.configurations, ...amountControls.configurations];
+export const coveragePolicyConfigurationDefinitions = definitions.configurations;
+export const coverageConfigurationDefinitions = [...coveragePolicyConfigurationDefinitions, ...amountControls.configurations];
 export type { CoverageAssignment };
 const documents = import.meta.glob("../../requirements/parked/sites/*/coverage.json", { eager: true });
 
@@ -70,13 +73,18 @@ export function requirementCoverageEligibility(product: CoverageDefinition, appl
   return facts.averageMonthlyIncome === undefined ? "needs-information" : facts.averageMonthlyIncome * 12 >= minimum ? "eligible" : "ineligible";
 }
 
+/** Shared minimum selection; general summaries have no verified TPA context. */
+export function requirementCoverageMinimumAmounts(product: CoverageDefinition, applicant: CoverageApplicantId, amounts: number[], mode: "new" | "increase" | "rider-only" = "new", verifiedExistingAmount = 0) {
+  const minimum = coverageMinimumAmount(product.requirementPolicy, product.id, applicant, verifiedExistingAmount);
+  return amounts.filter(amount => mode !== "new" || typeof minimum !== "number" || amount >= minimum);
+}
+
 /** Filters normalized choices last, so legacy and normalized amount sources cannot bypass reviewed limits. */
-export function requirementCoverageAmounts(product: CoverageDefinition, applicant: CoverageApplicantId, age: number | undefined, amounts: number[], mode: "new" | "increase" | "rider-only" = "new") {
-  const minimum = coverageRequirementValue(product, applicant, "coverage-new-application-minimum-amount");
+export function requirementCoverageAmounts(product: CoverageDefinition, applicant: CoverageApplicantId, age: number | undefined, amounts: number[], mode: "new" | "increase" | "rider-only" = "new", verifiedExistingAmount = 0) {
   const bands = product.requirementPolicy?.filter(row => row.configuration === "coverage-age-maximum-amount" && row.applicants.includes(applicant)) ?? [];
   if (bands.length && age === undefined) return [];
   const maximum = bands.find(row => age! >= row.minimumAgeYears! && age! <= row.maximumAgeYears!)?.value;
-  return amounts.filter(amount => (mode !== "new" || typeof minimum !== "number" || amount >= minimum) && (typeof maximum !== "number" || amount <= maximum));
+  return requirementCoverageMinimumAmounts(product, applicant, amounts, mode, verifiedExistingAmount).filter(amount => typeof maximum !== "number" || amount <= maximum);
 }
 
 export function requirementCoverageResidencyMessage(product: CoverageDefinition, applicant: CoverageApplicantId, values: Record<string, unknown>) {
@@ -88,7 +96,7 @@ export function requirementCoverageResidencyMessage(product: CoverageDefinition,
 /** Called only by page submission validation. Selection and reveal do not run this joint-election check. */
 export function requirementCoverageSubmitAlert(products: CoverageDefinition[], values: Record<string, unknown>) {
   const selected = Array.isArray(values.coverageSelections) ? values.coverageSelections : [];
-  const people = values.productApplicants as Record<string, CoverageApplicantId[]> | undefined;
+  const people = selectedApplicationApplicants(values, products);
   const amounts = values.coverageAmounts as Record<string, unknown> | undefined;
   for (const product of products.filter(product => selected.includes(product.id))) {
     const minimum = coverageRequirementValue(product, "spouse", "coverage-member-benefit-submit-minimum");

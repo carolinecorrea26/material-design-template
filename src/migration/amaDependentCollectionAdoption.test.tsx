@@ -1,10 +1,13 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import { act } from "react";
 import { createRoot } from "react-dom/client";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, beforeAll, expect, it, vi } from "vitest";
 import { createReviewedMigrationDatabase } from "./fixtures";
 import { applyAmaDependentCollectionAdoption } from "./amaDependentCollectionAdoption";
-import { installPrototypeLibrary, resolvePrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolvePrototypeLibrary as resolveFreshPrototypeLibrary } from "../domain/prototypeLibrary";
+import { installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import { getClientPageFields } from "../config/clientFields/getClientPageFields";
 import type { DatabaseSchema } from "../persistence/types";
 import Eligibility from "../pages/Eligibility";
@@ -32,19 +35,20 @@ it("assigns source spouse wording and optional role choices without duplicating 
 });
 it("renders scoped dependent wording and About Physician collection for spouse applicants", async () => {
   vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true); window.history.replaceState(null, "", "/eligibility?site=ama");
-  installPrototypeLibrary(resolvePrototypeLibrary(db, "ama", "render"));
+  installPrototypeLibrary(resolveFreshPrototypeLibrary(db, "ama", "render"));
   const container = document.createElement("div"), root = createRoot(container); document.body.append(container);
   try {
     form.values.membership = "physician";
     await act(async () => root.render(<MemoryRouter><Eligibility /></MemoryRouter>));
-    expect(container.textContent).toContain("Spouse Coverage (Premier Accident or Hospital Income)");
+    const spouse = getClientPageFields("eligibility", form.values).find(field => field.id === "dependents")!.options!.find(option => option.value === "spouse")!;
+    expect(container.textContent).toContain(spouse.label);
     expect(container.textContent).not.toContain("This insurance is for");
     form.values.membership = "spouse";
     await act(async () => root.render(<MemoryRouter><Membership /></MemoryRouter>));
-    expect(container.textContent).toContain("Physician Information");
+    expect(container.textContent).toMatch(/Physician [Ii]nformation/);
     for (const key of ["ama-physician-first-name", "ama-physician-last-name", "ama-physician-email"]) expect(container.querySelector(`[name="${key}"]`)).not.toBeNull();
     form.values.membership = "resident";
     await act(async () => root.render(<MemoryRouter><Membership key="resident" /></MemoryRouter>));
-    expect(container.textContent).not.toContain("Physician Information");
+    expect(container.textContent).not.toMatch(/Physician [Ii]nformation/);
   } finally { await act(async () => root.unmount()); container.remove(); form.values.membership = "physician"; }
 });

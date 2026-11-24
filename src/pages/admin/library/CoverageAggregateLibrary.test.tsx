@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { resolveSnapshotSite } from "../../../domain/effectiveSite";
 import { act } from "react";
 import { createRoot } from "react-dom/client";
 import { beforeAll, expect, it, vi } from "vitest";
@@ -35,7 +37,7 @@ it("loads stored aggregate edits without regenerating migration fixtures and pro
 });
 
 it("changes client limits with the selected Site and compares all Sites without a universal default", async () => {
-  const repository = createPortalDataRepository(new LocalStorageAdapter(db));
+  const repository = createPortalDataRepository(new LocalStorageAdapter(JSON.parse(readFileSync("public/catalog/portal.json", "utf8")).data));
   const revision = await repository.open();
   const captured = { open: async () => revision };
   const node = document.createElement("div"), root = createRoot(node);
@@ -44,15 +46,14 @@ it("changes client limits with the selected Site and compares all Sites without 
     expect(node.textContent).toContain("$4,000,000");
     expect(node.textContent).toContain("$15,000/month");
     expect(node.textContent).not.toContain("$800,000");
-    await act(async () => root.render(<CoverageAggregateLibrary siteKey="nso" repository={captured} />));
-    expect(node.textContent).toContain("$800,000");
+    await act(async () => root.render(<CoverageAggregateLibrary siteKey="ama-gi" repository={captured} />));
+    expect(node.textContent).toContain("Individual product limits only");
     expect(node.textContent).not.toContain("$4,000,000");
     await act(async () => root.render(<CoverageAggregateLibrary siteKey={null} repository={captured} />));
     expect(node.textContent).toContain("$4,000,000");
     expect(node.textContent).toContain("$2,000,000");
-    expect(node.textContent).toContain("$800,000");
+    expect(node.textContent).toContain("Individual product limits only");
     expect(node.textContent).toContain("unpublished");
-    expect(node.textContent).toContain("Retirement benefits are excluded");
   } finally { await act(async () => root.unmount()); }
 });
 
@@ -60,15 +61,14 @@ it("reads changed persisted policies and makes missing or invalid migration data
   const copy = structuredClone(db);
   const policy = copy.configurationValues.find(row => row.key === "nso.reviewed-life-aggregate")!;
   policy.value = { version: 1, groups: [{ key: "updated", applicantKeys: ["member"], productKeys: ["li-term"], maximum: 750000 }] };
-  const revision = await createPortalDataRepository(new LocalStorageAdapter(copy)).open();
-  const changed = revision.resolveSite("nso").site;
+  const changed = resolveSnapshotSite(copy, "nso");
   expect(inspectSiteAggregates(changed).find(row => row.category === "LI")?.maximum).toBe("$750,000");
   expect(validateNormalizedLifeAggregate(changed, "member", [{ productKey: "li-term", amount: 100000 }], 650001)).toMatchObject({ allowed: false, maximum: 750000, total: 750001 });
-  const avma = inspectSiteAggregates(resolveEffectiveSite(db, "avma")).find(row => row.category === "LI")!;
+  const avma = inspectSiteAggregates(resolveSnapshotSite(db, "avma")).find(row => row.category === "LI")!;
   expect(avma.excluded.some(label => label.includes("li-50plus"))).toBe(true);
   expect(avma.excluded.some(label => label.includes("(li-term)"))).toBe(true);
-  expect(inspectSiteAggregates(resolveEffectiveSite(db, "waepa")).find(row => row.category === "LI")?.maximum).toBe("Not yet migrated");
-  const invalid = revision.resolveSite("nso").site;
+  expect(inspectSiteAggregates(resolveSnapshotSite(db, "waepa")).find(row => row.category === "LI")?.maximum).toBe("Individual product limits only");
+  const invalid = resolveSnapshotSite(copy, "nso");
   invalid.configuration.lifeAggregates[0].value = { version: 2 };
   expect(() => inspectSiteAggregates(invalid)).toThrow("Invalid life aggregate");
 });
@@ -80,4 +80,13 @@ it("reports snapshot failures without displaying stale or default limits", async
     expect(node.textContent).toContain("Snapshot unavailable");
     expect(node.textContent).not.toContain("$2,000,000");
   } finally { await act(async () => root.unmount()); }
+});
+
+it.each(["ama-gi", "waepa-gi"])("shows the same explicit individual-only participation used by %s validation", siteKey => {
+  const site = resolveEffectiveSite(JSON.parse(readFileSync("public/catalog/portal.json", "utf8")).data, siteKey);
+  expect(inspectSiteAggregates(site).find(row => row.category === "LI")?.maximum).toBe("Individual product limits only");
+  const product = site.configuration.products.find(row => row.catalog?.value.categoryKey === "LI")!;
+  expect(validateNormalizedLifeAggregate(site, "member", [{ productKey: product.productKey, amount: 50000 }], 99999999)).toMatchObject({ allowed: true });
+  site.configuration.lifeAggregateParticipation[0].value = { version: 1, mode: "invalid", provisional: false };
+  expect(() => inspectSiteAggregates(site)).toThrow("Invalid life aggregate participation");
 });

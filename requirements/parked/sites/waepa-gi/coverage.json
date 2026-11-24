@@ -1,0 +1,23 @@
+{
+  "site": "waepa-gi",
+  "assignments": [
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-group-term",
+      "applicants": [
+        "member"
+      ],
+      "value": 18,
+      "source": "Main!O386"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-group-term",
+      "applicants": [
+        "member"
+      ],
+      "value": 39,
+      "source": "Main!O386"
+    }
+  ]
+}

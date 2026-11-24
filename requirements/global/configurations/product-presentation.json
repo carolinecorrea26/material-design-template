@@ -6,7 +6,13 @@
       "status": "confirmed",
       "type": "string-list",
       "format": "category-code",
-      "default": ["LI", "AD", "DI", "OO", "SH"],
+      "default": [
+        "LI",
+        "AD",
+        "DI",
+        "OO",
+        "SH"
+      ],
       "source": "Global template configuration coverages.categoryOrder; effective Sites may override. Shared across every category/product listing; featured_prod takes precedence. src/domain/coveragePresentation.ts"
     },
     {
@@ -16,13 +22,78 @@
       "type": "string-list",
       "format": "product-id",
       "default": [
-        "li-term", "li-group-term", "li-10yr", "li-15yr", "li-20yr", "li-50plus", "li-preferred",
-        "li-add", "li-premier-accident",
-        "di-ltd", "di-ltd-plus", "di-mtd", "di-short-term", "di-step-rated", "di-level-rated",
-        "oo-professional", "oo-office-overhead",
-        "sh-critical-illness", "sh-hospital-money", "sh-hospital-income"
+        "li-term",
+        "li-group-term",
+        "li-10yr",
+        "li-15yr",
+        "li-20yr",
+        "li-50plus",
+        "li-preferred",
+        "li-add",
+        "li-premier-accident",
+        "di-ltd",
+        "di-ltd-plus",
+        "di-mtd",
+        "di-short-term",
+        "di-step-rated",
+        "di-level-rated",
+        "oo-professional",
+        "oo-office-overhead",
+        "sh-critical-illness",
+        "sh-hospital-money",
+        "sh-hospital-income"
       ],
       "source": "Established global template order from src/domain/coveragePresentation.ts and src/config/coverages/index.ts; preserved registered-product sequence, now explicit rather than inferred from display names. Effective-site productOrder overrides this list within categories; featured_prod takes precedence. Unlisted products retain their incoming order."
+    },
+    {
+      "id": "category-names",
+      "name": "Category names",
+      "status": "confirmed",
+      "type": "content-map",
+      "default": {},
+      "source": "Global shared presentation, inherited from requirements/global/option-lists.json#coverage-categories; Site products.json#categories.<category>.name. Home, Coverage and About Coverage use the same effective values. Empty overrides inherit canonical content."
+    },
+    {
+      "id": "category-descriptions",
+      "name": "Category descriptions",
+      "status": "confirmed",
+      "type": "content-map",
+      "default": {},
+      "source": "Global shared presentation, inherited from requirements/global/content/coverage.json#coverage.category; Site products.json#categories.<category>.description. Home, Coverage and About Coverage use the same effective values. Empty overrides inherit canonical content."
+    },
+    {
+      "id": "product-names",
+      "name": "Product names",
+      "status": "confirmed",
+      "type": "content-map",
+      "default": {},
+      "source": "Global shared presentation, inherited from requirements/global/products.json#products.content.name; Site products.json#products.<product>.name. Home, Coverage and About Coverage use the same effective values. Empty overrides inherit canonical content."
+    },
+    {
+      "id": "product-descriptions",
+      "name": "Product descriptions",
+      "status": "confirmed",
+      "type": "content-map",
+      "default": {},
+      "source": "Global shared presentation, inherited from requirements/global/products.json#products.content.description; Site products.json#products.<product>.description. Home, Coverage and About Coverage use the same effective values. Empty overrides inherit canonical content."
+    },
+    {
+      "id": "product-description-notices",
+      "name": "Product description notices",
+      "status": "confirmed",
+      "type": "content-map",
+      "contentProperty": "descriptionNotice",
+      "default": {},
+      "source": "Global optional plain-text notice slot. Effective Site products.json#products.<product>.descriptionNotice renders in bold on a separate line after the shared product description in Coverage, quotes and offering overviews; omitted values inherit global content."
+    },
+    {
+      "id": "product-applicant-notes",
+      "name": "Applicant-specific product notes",
+      "status": "confirmed",
+      "type": "content-map",
+      "contentProperty": "applicantNotes",
+      "default": {},
+      "source": "Global optional notes keyed by member/spouse/child. Effective Site products.json#products.<product>.applicantNotes supplies the wording displayed above the applicable applicant controls. Wording does not itself enable a coverage rule."
     }
   ]
 }

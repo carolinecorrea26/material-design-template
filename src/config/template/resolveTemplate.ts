@@ -1,16 +1,18 @@
 import { getPrototypeLibrary } from "../../domain/prototypeLibrary";
-import { resolveSiteFeatures } from "../../data/resolvers";
+import { getEffectiveSiteConfig } from "../../repositories/sites";
 import { resolveSiteId } from "../../data/activeSite";
 import presentation from '../../../requirements/global/configurations/presentation.json';
+import { requirementUrlValues } from '../../domain/requirementUrlParameters';
 
 export type FormTemplate = "single" | "multi";
 
 const TEMPLATE_QUERY_PARAM = "template";
 const TEMPLATE_STORAGE_KEY = "activeFormTemplate";
+const templateValues = requirementUrlValues(TEMPLATE_QUERY_PARAM);
 export const DEFAULT_TEMPLATE = presentation.configurations.find(configuration => configuration.id === 'form-template')!.default as FormTemplate;
 
 function isTemplate(v: string | null): v is FormTemplate {
-  return v === "single" || v === "multi";
+  return v !== null && templateValues.includes(v);
 }
 
 export function resolveFormTemplate(): FormTemplate {
@@ -22,7 +24,7 @@ export function resolveFormTemplate(): FormTemplate {
   }
   const stored = window.sessionStorage.getItem(TEMPLATE_STORAGE_KEY);
   if (isTemplate(stored)) return stored;
-  const clientDefault = getPrototypeLibrary()?.client.features?.defaultTemplate ?? resolveSiteFeatures(resolveSiteId())?.defaultTemplate;
+  const clientDefault = getPrototypeLibrary()?.client.features?.defaultTemplate ?? getEffectiveSiteConfig(resolveSiteId())?.features?.defaultTemplate;
   if (clientDefault) return clientDefault;
   return DEFAULT_TEMPLATE;
 }

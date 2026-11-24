@@ -2,17 +2,15 @@
   "configurations": [
     {
       "id": "home-variant",
-      "name": "Home presentation",
+      "name": "Hero quote or image",
       "status": "confirmed",
       "type": "enum",
       "options": [
         "default",
-        "hero-image",
-        "welcome-back",
-        "quoteFirst"
+        "hero-image"
       ],
       "default": "default",
-      "source": "Existing Home behavior; requirements/global/configuration-bindings.json; runtime supported"
+      "source": "Global Home presentation: default shows the quote tool when the effective Site has rates and quoting enabled, otherwise the hero image. A Site may select hero-image even when rates are available. requirements/global/configuration-bindings.json; runtime supported"
     },
     {
       "id": "applying-steps-presentation",
@@ -29,7 +27,7 @@
     {
       "id": "form-template",
       "name": "Application form template",
-      "status": "draft",
+      "status": "confirmed",
       "type": "enum",
       "options": [
         "multi",
@@ -39,12 +37,27 @@
       "source": "src/config/template/resolveTemplate.ts"
     },
     {
-      "id": "signature-confirmation-retention-days",
-      "name": "Sent-for-signature confirmation retention days",
+      "id": "home-landing-notice",
+      "name": "Show entry notice before starting",
       "status": "confirmed",
-      "type": "number",
-      "default": 9,
-      "source": "Existing AdvisorSendConfirmation behavior; runtime supported; prototype display only"
+      "type": "boolean",
+      "default": false,
+      "replaces": [
+        "shared.applicantExperience.landingNotice"
+      ],
+      "source": "Global optional Home entry notice. Effective Sites select home.landing-notice content and enable this setting; Cancel stays on Home and Continue starts the application. ASCE inherits disabled."
+    },
+    {
+      "id": "single-page-artwork",
+      "name": "Single-page decorative artwork",
+      "status": "draft",
+      "type": "enum",
+      "options": [
+        "none",
+        "clouds-cat-umbrella"
+      ],
+      "default": "none",
+      "source": "Existing shared Home/single-page decorative scene; src/config/homepagePresentation.ts. Global definition/default, optional effective-Site assignment. ASCE inherits none; source transfer does not approve new artwork behavior."
     }
   ]
 }

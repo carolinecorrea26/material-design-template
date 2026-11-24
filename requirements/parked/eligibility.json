@@ -20,27 +20,75 @@
           "components": [
             {
               "type": "SectionNote",
-              "section": "self"
+              "section": "self",
+              "partOf": "EligibilitySections"
             },
             {
               "type": "FieldGroup",
-              "section": "self"
+              "section": "self",
+              "components": [
+                {
+                  "type": "EligibilityFields",
+                  "fields": [
+                    "zip-postal-code",
+                    "state-province",
+                    "birth-date"
+                  ]
+                },
+                {
+                  "type": "FieldRenderer",
+                  "fields": [
+                    "dependents"
+                  ]
+                }
+              ],
+              "partOf": "SectionDivider"
             },
             {
               "type": "SectionNote",
-              "section": "spouse"
+              "section": "spouse",
+              "partOf": "EligibilitySections"
             },
             {
               "type": "FieldGroup",
-              "section": "spouse"
+              "section": "spouse",
+              "components": [
+                {
+                  "type": "FieldRenderer",
+                  "fields": [
+                    "membership"
+                  ]
+                },
+                {
+                  "type": "FieldGrid",
+                  "fields": [
+                    "first-name",
+                    "last-name"
+                  ]
+                },
+                {
+                  "type": "FieldRenderer",
+                  "fields": [
+                    "birth-date"
+                  ]
+                }
+              ],
+              "partOf": "SectionDivider"
             },
             {
               "type": "SectionNote",
-              "section": "children"
+              "section": "children",
+              "partOf": "EligibilitySections"
             },
             {
-              "type": "DynamicList",
-              "section": "children"
+              "type": "FieldGroup",
+              "section": "children",
+              "components": [
+                {
+                  "type": "DynamicList"
+                }
+              ],
+              "partOf": "SectionDivider"
             }
           ]
         },
@@ -51,15 +99,19 @@
     },
     {
       "type": "MemberVerification",
-      "mapping": "member-verification"
+      "mapping": "member-verification",
+      "dialog": "member-verification"
     },
     {
-      "type": "VerificationAddress"
+      "type": "VerificationAddress",
+      "dialog": "verification-address",
+      "mapping": "verification-address"
     }
   ],
   "sections": {
     "self": {
-      "title": "people.self"
+      "title": "people.self",
+      "note": "eligibility.note.self"
     },
     "spouse": {
       "title": "people.spouse",
@@ -131,32 +183,41 @@
       "navigation.submitting",
       "navigation.back"
     ],
-    "eligibility-failure": "validation.page.ineligible"
+    "eligibility-failure": "validation.page.ineligible",
+    "wording": [
+      "eligibility.title",
+      "eligibility.subhead",
+      "eligibility.note.self",
+      "eligibility.note.spouse",
+      "eligibility.note.children"
+    ]
   },
   "layout": {
     "sections": {
       "self": {
         "id": "selfEligibility",
         "for": "self",
-        "fields": [
-          "zip-postal-code",
-          "state-province",
-          "birth-date",
-          "dependents"
-        ]
+        "display": {
+          "label": "Your information",
+          "templates": [
+            "multi",
+            "single"
+          ]
+        }
       },
       "spouse": {
         "id": "spouseSection",
         "for": "spouse",
-        "fields": [
-          "membership",
-          "first-name",
-          "last-name",
-          "birth-date"
-        ],
         "when": {
           "field": "dependents",
           "includes": "spouse"
+        },
+        "display": {
+          "label": "Spouse information",
+          "templates": [
+            "multi",
+            "single"
+          ]
         }
       },
       "children": {
@@ -174,22 +235,121 @@
           "grid": [
             "first-name",
             "last-name"
+          ],
+          "libraryLabel": "eligibility.children.library"
+        },
+        "display": {
+          "label": "Children information",
+          "templates": [
+            "multi",
+            "single"
           ]
+        }
+      }
+    },
+    "sectionOrder": "eligibility",
+    "dialogs": {
+      "member-verification": {},
+      "verification-address": {}
+    }
+  },
+  "surfaces": {
+    "verificationControls": {
+      "mapping": {
+        "component": "member-verification"
+      },
+      "dialog": "member-verification",
+      "definition": {
+        "label": "eligibility.verification.methods-label",
+        "fields": [
+          {
+            "fieldKey": "verification-method",
+            "valueKey": "verification-method"
+          }
+        ],
+        "libraryGroup": {
+          "label": "eligibility.verification.library-label"
+        }
+      }
+    },
+    "verificationQuestions": {
+      "fixture": "verification",
+      "dialog": "member-verification",
+      "definition": {
+        "label": "eligibility.verification.questions-label",
+        "fields": [
+          {
+            "fieldKey": "sq-1",
+            "valueKey": "sq-1"
+          },
+          {
+            "fieldKey": "sq-2",
+            "valueKey": "sq-2"
+          },
+          {
+            "fieldKey": "sq-3",
+            "valueKey": "sq-3"
+          }
+        ],
+        "libraryGroup": {
+          "label": "eligibility.verification.library-label"
+        }
+      }
+    },
+    "verificationAddress": {
+      "mapping": {
+        "component": "verification-address"
+      },
+      "dialog": "verification-address",
+      "definition": {
+        "label": "eligibility.verification.address.title",
+        "fields": [
+          {
+            "fieldKey": "street-address",
+            "valueKey": "street-address"
+          },
+          {
+            "fieldKey": "apt-suite",
+            "valueKey": "apt-suite"
+          },
+          {
+            "fieldKey": "city",
+            "valueKey": "city"
+          },
+          {
+            "fieldKey": "state",
+            "valueKey": "state"
+          },
+          {
+            "fieldKey": "zip-code",
+            "valueKey": "zip-code"
+          }
+        ],
+        "libraryGroup": {
+          "label": "eligibility.verification.address.title"
         }
       }
     }
   },
-  "shownWhen": {
-    "sections": {
-      "spouse": {
-        "field": "dependents",
-        "of": "self",
-        "includes": "spouse"
-      },
-      "children": {
-        "field": "dependents",
-        "of": "self",
-        "includes": "child"
+  "contentSlots": {
+    "eligibility.title": {
+      "name": "Eligibility page title"
+    },
+    "eligibility.subhead": {
+      "name": "Eligibility page introduction"
+    },
+    "eligibility.note.self": {
+      "name": "Member eligibility note",
+      "optional": true
+    },
+    "eligibility.note.spouse": {
+      "name": "Spouse eligibility note"
+    },
+    "eligibility.note.children": {
+      "name": "Child eligibility note",
+      "requiredWhen": {
+        "configuration": "child-collection-mode",
+        "equals": "notice-only"
       }
     }
   }

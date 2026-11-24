@@ -1,0 +1,16 @@
+{
+  "fields": {
+    "coverage-categories": {
+      "options": [
+        "LI",
+        "AD",
+        "DI",
+        "OO",
+        "SH"
+      ]
+    },
+    "membership": {
+      "configuration": "association"
+    }
+  }
+}

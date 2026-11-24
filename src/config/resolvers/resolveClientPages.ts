@@ -1,3 +1,4 @@
+import navigation from '../../../requirements/global/navigation.json';
 import type { PageId } from "../../types";
 import type { ClientConfig, ClientPageRequirement } from "../clients/types";
 import { getPageDefinitions, getPageTitle, getPageNavTitle } from "../pages";
@@ -23,13 +24,7 @@ const siteDetailsCategoryOrder: PageCategory[] = ["application", "resume", "advi
  * progressSteps' real labels are prose meant for the applicant-facing
  * progress bar, not a dense table column.
  */
-const STEP_DISPLAY_LABELS: Record<string, string> = {
-  "getting-started": "Getting Started",
-  "coverage-options": "Coverage",
-  profile: "Profile",
-  "application-review": "Review & Sign",
-  "esign-submit": "E-sign",
-};
+const STEP_DISPLAY_LABELS = Object.fromEntries(navigation.progressSteps.map(step => [step.id, step.libraryLabel]));
 
 function findProgressStep(pageId: PageId) {
   return progressSteps.find((step) => step.pageIds.includes(pageId));

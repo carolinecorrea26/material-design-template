@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Typography } from '@mui/material';
 import LegalReviewSection from './LegalReviewSection';
 import { getContent } from '../../content';
+import reviewDefinition from '../../../requirements/parked/review.json';
 const meta = {
   id: "forms-legal-review-section",
   title: "Components/Pages/Review/Sections/Disclosures and consent", component: LegalReviewSection,
@@ -16,4 +17,4 @@ function SectionExample({ maxHeight, onPrint = fn() }: { maxHeight?: number; onP
   </LegalReviewSection>;
 }
 export const Default: StoryObj<{ onPrint: () => void }> = { args: { onPrint: fn() }, render: args => <SectionExample onPrint={args.onPrint} /> };
-export const Scrollable: StoryObj = { render: () => <SectionExample maxHeight={100} /> };
+export const Scrollable: StoryObj = { render: () => <SectionExample maxHeight={reviewDefinition.definition.legalSections['electronic-consent'].maxHeight} /> };

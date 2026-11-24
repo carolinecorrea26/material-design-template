@@ -9,7 +9,7 @@ export type TextLikeFieldProps = {
   type?: string; placeholder?: string; inputProps?: Record<string, unknown>; inputAdornmentProps?: TextFieldProps['InputProps'];
 };
 /** Internal shared text presentation used by FieldRenderer and PhoneField. */
-export function TextLikeField({ field, value, onChange, onBlur, hideLabel = false, margin = 'normal', hasError = false, helperText, type = 'text', placeholder, inputProps, inputAdornmentProps }: TextLikeFieldProps) {
+export function TextLikeField({ field, value, onChange, onBlur, hideLabel = false, margin = 'none', hasError = false, helperText, type = 'text', placeholder, inputProps, inputAdornmentProps }: TextLikeFieldProps) {
   const labelVariant = getLabelVariant(field), status = { hasError };
   const complete = !field.multiline && isFieldComplete(field, value, status);
   const showError = !field.multiline && isFieldInError(status);

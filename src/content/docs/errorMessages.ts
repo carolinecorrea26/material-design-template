@@ -1,3 +1,4 @@
+import { applicationRecovery } from "../applicationRecovery";
 import { requirementValidationMessage } from "../../domain/requirementValidations";
 // ---------------------------------------------------------------------------
 // Error messages data
@@ -202,8 +203,8 @@ export const errorMessages: ErrorMessageEntry[] = [
     page: "resume",
     level: "Page",
     trigger:
-      "The magic-link countdown reaches zero before the emailed secure link is used. Shown with a resend-link action.",
-    message: "Your secure link has expired.",
+      "An expired or invalid magic link lands on Resume with a page error and the email link-request form available; no separate expiry page.",
+    message: applicationRecovery['link-expired'].message,
   },
   {
     page: "resume",

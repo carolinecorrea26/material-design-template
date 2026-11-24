@@ -1,0 +1,16 @@
+{
+  "configurations": [
+    {
+      "id": "beneficiary-categories",
+      "name": "Default categories collecting adult beneficiaries",
+      "status": "confirmed",
+      "type": "string-list",
+      "format": "category-code",
+      "default": [
+        "LI",
+        "AD"
+      ],
+      "source": "Shared Beneficiary participation default. Product/applicant/association assignments may explicitly include or exclude participation. No records are collected for child coverage. src/domain/beneficiaryParticipation.ts"
+    }
+  ]
+}

@@ -36,6 +36,6 @@ export type ConfigurationTarget =
   | { kind: "site-beneficiary-notes" }
   | { kind: "site-beneficiary-participation" };
 export type ConfigurationDefinitionRow = LibraryRow<{ path: string[] | null; metadata: Json; target?: ConfigurationTarget | null }>;
-export type ContentEntryRow = LibraryRow<{ path: string[] | null }>;
-export type EmailTemplateRow = LibraryRow<{ rendererKey: string; source: string }>;
+export type ContentEntryRow = LibraryRow<{ path: string[] | null; sourceKey?: string }>;
+export type EmailTemplateRow = LibraryRow<{ rendererKey: string; source: string; supportComponent?: string }>;
 export type DocumentDefinitionRow = LibraryRow<{ contentKey: string | null; productKey: string | null; source: string }>;

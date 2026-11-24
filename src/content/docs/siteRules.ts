@@ -1,8 +1,13 @@
+import advisorResumeRequirements from '../../../requirements/global/rules/advisor-resume.json';
+import applicantRequirements from '../../../requirements/global/rules/applicants.json';
+import reviewRequirements from '../../../requirements/global/rules/review.json';
+import profileRequirements from '../../../requirements/global/rules/profile.json';
+import applicationRequirements from '../../../requirements/global/rules/application.json';
+import contactRequirements from '../../../requirements/global/rules/contact.json';
 import { waepaQualifications } from "../../domain/membershipQualifications";
 import { applicationRecoveryRules } from './applicationRecoveryRules';
 import type { RuleDefinition, SiteId } from "../../data";
 import {
-  contactCarryForwardTransition,
   describeApplicationTransition,
   quoteApplyTransition,
 } from "../../config/applicationTransitions";
@@ -15,6 +20,8 @@ import {
 
 const siteRuleInventory: (Omit<RuleDefinition, "id"> & { id?: RuleDefinition["id"] })[] = [
   ...applicationRecoveryRules,
+  ...advisorResumeRequirements.rules.map(rule => ({ id: `rule-${rule.id}` as const, area: 'Advisor and Resume', rule: rule.name, behavior: rule.statement, ref: rule.source })),
+  ...contactRequirements.rules.map(rule => ({ id: `rule-${rule.id}` as const, area: 'Contact', rule: rule.name, behavior: rule.statement, ref: rule.source })),
   {
     area: "Application flow",
     rule: "Resolved next/back navigation",
@@ -177,34 +184,7 @@ const siteRuleInventory: (Omit<RuleDefinition, "id"> & { id?: RuleDefinition["id
       "Submitting Membership triggers the current prototype autosave mock-email behavior.",
     ref: "src/app/RoutePage.tsx",
   },
-  {
-    area: "Applicant display",
-    rule: "Member section title hidden for member-only flow",
-    behavior:
-      "The Member/Self applicant section label is hidden when no spouse/child is actually selected for any product. It is shown when another applicant is applying.",
-    ref: "src/utils/applicantVisibility.ts",
-  },
-  {
-    area: "Applicant display",
-    rule: "Dependent section shown only when applying",
-    behavior:
-      "Spouse/child applicant labels and post-Coverage applicant sections are shown only when that applicant is actually selected for an applicable product.",
-    ref: "src/utils/applicantVisibility.ts; src/app/RoutePage.tsx",
-  },
-  {
-    area: "Applicant display",
-    rule: "Eligibility selection alone is not enough after Coverage",
-    behavior:
-      "A spouse/child selected on Eligibility does not count as applying if that dependent is not selected for any product on Coverage.",
-    ref: "src/utils/applicantVisibility.ts",
-  },
-  {
-    area: "Applicant display",
-    rule: "Member-only fallback",
-    behavior:
-      "When no dependents are selected, the member is treated as the applicant by default.",
-    ref: "src/utils/applicantsApplying.ts",
-  },
+  ...applicantRequirements.rules.map(rule => ({ id: `rule-${rule.id}` as const, area: 'Applicant display', rule: rule.name, behavior: rule.statement, ref: rule.source })),
   {
     area: "Eligibility",
     rule: "Child records via DynamicList",
@@ -328,12 +308,6 @@ const siteRuleInventory: (Omit<RuleDefinition, "id"> & { id?: RuleDefinition["id
     ref: "src/config/applicationTransitions/applicationTransitions.ts (quoteApplyTransition)",
   },
   {
-    area: "Contact",
-    rule: "Eligibility address carry-forward",
-    behavior: `When Contact is entered, existing Eligibility location values preset empty Contact location fields without overwriting user-entered Contact values. Targets: ${describeApplicationTransition(contactCarryForwardTransition)}.`,
-    ref: "src/config/applicationTransitions/applicationTransitions.ts (contactCarryForwardTransition)",
-  },
-  {
     area: "Feedback",
     rule: "Snackbar positioning",
     behavior:
@@ -417,53 +391,7 @@ const siteRuleInventory: (Omit<RuleDefinition, "id"> & { id?: RuleDefinition["id
       "After saving a new (not edited) beneficiary, if the same applicant has other eligible products, a second AppModal opens listing those products as checkboxes. The user can select one or more and click 'Apply to Selected', or click Skip. When applied, each target product receives a separate beneficiary record with a new unique ID — not a shared reference.",
     ref: "src/pages/Beneficiary.tsx",
   },
-  {
-    area: "Contact",
-    rule: "Business address same as home",
-    behavior:
-      "The captured Contact configuration scopes business fields to selected products when a product list is assigned. Standard WAEPA shows the Business/Employer section with STD and hides it for Life-only; GI retains its separate hiding policy. For visible business addresses, marking the address the same as home reuses the home address. Other DI/OO and correspondence rules retain their configured behavior.",
-    ref: "src/pages/Contact.tsx",
-  },
-  {
-    area: "Profile",
-    rule: "Conditional follow-up fields",
-    behavior:
-      "Answers to controlling fields reveal follow-up fields inline within a left-bordered ConditionalGroup container. Changing the controlling answer back collapses the group. Examples: driver license Yes reveals license number/state; is-self-employed Yes reveals self-employment sub-questions; existing life insurance Yes reveals amount and replacement fields. Some follow-ups are themselves controls for deeper nested groups.",
-    ref: "src/pages/Profile.tsx; src/components/forms/ConditionalGroup.tsx",
-    type: "conditional",
-    conditionIds: [
-      "condition-member-has-drivers-license",
-      "condition-spouse-has-drivers-license",
-    ],
-  },
-  {
-    area: "Profile",
-    rule: "Repeatable insurance company records",
-    behavior:
-      "When the user indicates existing disability coverage, insurance company records are added through the DynamicList pattern: existing records show as bordered cards; Add opens an AppModal with company name, monthly benefit amount, benefit period, and waiting period fields; Edit pre-populates the modal; Remove requires a confirmation modal.",
-    ref: "src/pages/Profile.tsx; src/components/forms/DynamicList.tsx",
-  },
-  {
-    area: "Profile",
-    rule: "Outside-U.S. follow-up",
-    behavior:
-      "Member and spouse outside-U.S. residence/travel questions reveal country/month follow-ups only for affirmative responses.",
-    ref: "src/pages/Profile.tsx",
-    type: "conditional",
-    conditionIds: [
-      "condition-member-lives-outside-us",
-      "condition-member-travels-outside-us",
-      "condition-spouse-lives-outside-us",
-      "condition-spouse-travels-outside-us",
-    ],
-  },
-  {
-    area: "Profile",
-    rule: "Financial questionnaire visibility",
-    behavior:
-      "Financial questionnaire visibility follows the active site’s MCR product-question-set assignments (Main column Y), for a selected member product with a positive amount. Sites without an assigned financial questionnaire omit this section. The former DI amount greater than $2,000 trigger was prototype demo behavior, not a general rule. Self-employment details appear when is-self-employed = Yes.",
-    ref: "src/pages/Profile.tsx; src/config/pageSections/pageSections.ts",
-  },
+  ...[...applicationRequirements.rules.filter(rule => rule.id.startsWith('profile-')), ...profileRequirements.rules].map(rule => ({ id: `rule-${rule.id}` as const, area: 'Profile', rule: rule.name, behavior: rule.statement, ref: rule.source })),
   {
     area: "Health",
     rule: "Applicant health sections",
@@ -476,7 +404,7 @@ const siteRuleInventory: (Omit<RuleDefinition, "id"> & { id?: RuleDefinition["id
     rule: "Yes/No with inline DynamicList",
     behavior:
       "Each health question is a required Yes/No radio. Selecting Yes reveals a DynamicList inline below that question where the user can add one or more detail records (onset date, condition/medication details, physician/hospital address) via the standard Add/Edit/Remove modal pattern. Selecting No collapses and clears the list for that question.",
-    ref: "src/pages/HealthLi.tsx; src/pages/HealthDi.tsx; src/pages/HealthSi.tsx; src/components/forms/DynamicList.tsx",
+    ref: "src/pages/HealthTele.tsx; src/pages/HealthDiSupp.tsx; src/pages/HealthSi.tsx; src/components/forms/DynamicList.tsx",
   },
   {
     area: "Payment",
@@ -499,18 +427,12 @@ const siteRuleInventory: (Omit<RuleDefinition, "id"> & { id?: RuleDefinition["id
       "Bank-account details (name on account, institution, routing number, account number, authorization checkbox) are displayed when Bank account is selected as the payment method for any product.",
     ref: "src/pages/Payment.tsx",
   },
-  {
-    area: "Review",
-    rule: "Edit confirmation (consumer flow)",
-    behavior:
-      "Clicking an edit icon opens a ConfirmationDialog. Confirming navigates back to the page that owns that information. In advisor-applicant flow the same action instead opens a SendApplicationDialog ('Request edit to application') showing the advisor email; sending navigates to Application Edit Confirmation.",
-    ref: "src/pages/Review.tsx; src/components/layout/ConfirmationDialog.tsx; src/components/layout/SendApplicationDialog.tsx",
-  },
+  ...reviewRequirements.rules.map(rule => ({ id: `rule-${rule.id}` as const, area: 'Review', rule: rule.name, behavior: rule.statement, ref: rule.source })),
   {
     area: "Drawers",
     rule: "Help and reference drawers",
     behavior:
-      "AppDrawer slides in from the right on desktop (420–480px wide) or up from the bottom on mobile (75vh). Used for contextual help topics (HelpChips → AppDrawer), the QuickDecision℠ explainer, the Coverage Portfolio (TPA-verified users on Coverage), and the application menu sub-drawers (coverage options, needs calculator, QD explainer). Drawers are read-only and do not block page submission.",
+      "AppDrawer slides in from the right on desktop (420–480px wide) or up from the bottom on mobile (75vh). Used for contextual help topics (PageHelpChips → AppDrawer), the QuickDecision℠ explainer, the Coverage Portfolio (TPA-verified users on Coverage), and the application menu sub-drawers (coverage options, needs calculator, QD explainer). Drawers are read-only and do not block page submission.",
     ref: "src/components/layout/AppDrawer.tsx; src/components/coverage/CoveragePortfolioDrawer.tsx; src/components/layout/AppMenu.tsx",
   },
   {
@@ -527,24 +449,8 @@ const siteRuleInventory: (Omit<RuleDefinition, "id"> & { id?: RuleDefinition["id
       "DynamicList is the shared component for any repeatable record set (children, insurance companies, health detail records). Existing records render as bordered DynamicListItem cards with Edit and Remove buttons. Add opens an AppModal titled 'Add [Label]' with a blank form. Edit opens the same modal pre-filled with the selected record. Save appends or updates the record. Remove shows a confirmation AppModal ('Remove [Label]?') and deletes on confirm. Fields inside the modal are defined per record type via a mapping prop and rendered by FieldRenderer. The Add button is hidden once maxItems is reached (default 10).",
     ref: "src/components/forms/DynamicList.tsx; src/components/forms/DynamicListItem.tsx",
   },
-  {
-    area: "Advisor flow",
-    rule: "Send-to-applicant dialog",
-    behavior:
-      "New Application mode displays advisor credential fields on Advisor Login. When the advisor later clicks Next on Profile, the onBeforeNext hook opens a SendApplicationDialog titled 'Send to applicant for review' showing the applicant name and email. Clicking Send navigates to Advisor Send Confirmation; Cancel stays on Profile.",
-    ref: "src/pages/AdvisorLogin.tsx; src/pages/Profile.tsx; src/components/layout/SendApplicationDialog.tsx",
-    type: "conditional",
-    conditionIds: ["condition-advisor-new-application"],
-  },
-  {
-    area: "Advisor flow",
-    rule: "Advisor-mode Review edit dialog",
-    behavior:
-      "Saved Application mode displays applicant email on Advisor Login. In advisor-applicant flow, clicking an edit icon on Review opens a SendApplicationDialog titled 'Request edit to application' showing the advisor email only. Clicking Send navigates to Application Edit Confirmation; Cancel stays on Review.",
-    ref: "src/pages/AdvisorLogin.tsx; src/pages/Review.tsx; src/components/layout/SendApplicationDialog.tsx",
-    type: "conditional",
-    conditionIds: ["condition-advisor-saved-application"],
-  },
+
+
   {
     area: "Landing Page",
     rule: "Variant behavior",
@@ -593,13 +499,6 @@ const siteRuleInventory: (Omit<RuleDefinition, "id"> & { id?: RuleDefinition["id
     behavior:
       "AppBody patches window.history.pushState/replaceState and listens for popstate to track the current pathname, then scrolls the window to top on every route change.",
     ref: "src/components/layout/AppBody.tsx",
-  },
-  {
-    area: "Progress/navigation",
-    rule: "Advisor-applicant steps locked",
-    behavior:
-      "When ApplicationSessionContext is in advisor-applicant mode (the applicant entered via resume?flow=advisor), the stepper/breadcrumb progress UI locks navigation to all steps except application-review and esign-submit, regardless of completed state.",
-    ref: "src/components/navigation/ProgressStep.tsx",
   },
   {
     area: "Fields",

@@ -1,3 +1,4 @@
+import type { ExistingCoverage } from "./coverageRequirements";
 import portfolioFixture from "../../requirements/global/prototype-fixtures/portfolio.json";
 import type { ClientConfig } from "./configuration";
 import type { CoverageApplicantId, CoverageDefinition } from "./coverage";
@@ -31,4 +32,13 @@ export function coverageInForceLife(site: EffectiveSite, client: ClientConfig | 
   const group = isLifeAggregatePolicy(policy) ? policy.groups.find(group => group.applicantKeys.includes(applicant)) : undefined;
   if (!group || !products.some(product => group.productKeys.includes(product.id) && coverageRequirementValue(product, applicant, "coverage-deduct-inforce-amount") === true)) return undefined;
   return { maximum: group.maximum, productKeys: group.productKeys, amount: verifiedPortfolioAmount(client, values, applicant, group.productKeys) };
+}
+
+/** Verified base coverage can satisfy covered-person prerequisites independently
+ * of whether that product has an amount-deduction assignment. */
+export function verifiedCoverageElections(client: ClientConfig, products: CoverageDefinition[], values: Record<string, unknown>): ExistingCoverage[] {
+  return products.flatMap(product => product.applicants.flatMap(applicant => {
+    const amount = verifiedPortfolioAmount(client, values, applicant, [product.id]);
+    return amount > 0 ? [{ productKey: product.id, categoryId: product.categoryId, applicant, amount }] : [];
+  }));
 }

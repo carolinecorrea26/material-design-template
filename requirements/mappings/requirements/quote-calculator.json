@@ -14,7 +14,9 @@
     "quote-entry-location-feedback",
     "coverage-category-availability",
     "coverage-question-participation",
-    "coverage-selection-policy"
+    "coverage-selection-policy",
+    "coverage-rider-applicant-wording",
+    "eligibility-shared-feedback-spacing"
   ],
   "presentation": [
     "eligible-state-options",

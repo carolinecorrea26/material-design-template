@@ -1,0 +1,3515 @@
+{
+  "reviewedAt": "2026-11-13",
+  "scope": "Global template and ASCE; applicant pages, chrome, shared pieces and binding adapters. Other real-Site rollouts, Admin/reference/demo UI and dependency internals are excluded.",
+  "method": "Source inventory, JSX shape comparison and manual review recorded in component-reuse-audit.md. Shapes ignore literal values and most local variable names; candidates do not prove interchangeable behavior. Placements include conditional source branches, not mounted instances.",
+  "applicationSourceChanged": true,
+  "completedFindings": [
+    "R1",
+    "R2",
+    "R3",
+    "R4",
+    "R5",
+    "R6",
+    "R7"
+  ],
+  "pendingFindings": [],
+  "catalogSha256": "06b780090d0504853954281e1c2a3d83b507eb699e4af0d55b7319c4c3103e54",
+  "pageIds": [
+    "advisor-login",
+    "advisor-send-confirmation",
+    "application-edit-confirmation",
+    "beneficiary",
+    "contact",
+    "coverage",
+    "docusign",
+    "eligibility",
+    "error-400",
+    "error-404",
+    "error-500",
+    "health-cir",
+    "health-di-supp",
+    "health-qd",
+    "health-si",
+    "health-tele",
+    "home",
+    "maintenance",
+    "membership",
+    "payment",
+    "profile",
+    "receipt",
+    "resume",
+    "resume-code",
+    "resume-method",
+    "review",
+    "session-expired",
+    "technical-error"
+  ],
+  "summary": {
+    "pages": 28,
+    "canonicalComponents": 110,
+    "localUiModules": 161,
+    "multiplePlacementRecords": 76,
+    "multipleDirectConsumerFiles": 51,
+    "uncoveredCanonicalSources": 0
+  },
+  "declarationsWithoutCanonicalRecords": [],
+  "components": [
+    {
+      "key": "component-app-shell",
+      "name": "AppShell",
+      "role": "application-frame",
+      "source": "src/components/layout/AppShell.tsx",
+      "placements": 28,
+      "directConsumerFiles": [
+        "src/app/router.tsx"
+      ]
+    },
+    {
+      "key": "component-app-header",
+      "name": "AppHeader",
+      "role": "application-frame",
+      "source": "src/components/layout/AppHeader.tsx",
+      "placements": 28,
+      "directConsumerFiles": [
+        "src/components/layout/AppShell.tsx"
+      ]
+    },
+    {
+      "key": "component-app-menu",
+      "name": "AppMenu",
+      "role": "application-frame",
+      "source": "src/components/layout/AppMenu.tsx",
+      "placements": 28,
+      "directConsumerFiles": [
+        "src/components/layout/AppHeader.tsx"
+      ]
+    },
+    {
+      "key": "component-app-body",
+      "name": "AppBody",
+      "role": "application-frame",
+      "source": "src/components/layout/AppBody.tsx",
+      "placements": 28,
+      "directConsumerFiles": [
+        "src/components/layout/AppShell.tsx"
+      ]
+    },
+    {
+      "key": "component-app-footer",
+      "name": "AppFooter",
+      "role": "application-frame",
+      "source": "src/components/layout/AppFooter.tsx",
+      "placements": 28,
+      "directConsumerFiles": [
+        "src/components/layout/AppShell.tsx"
+      ]
+    },
+    {
+      "key": "component-client-help-banner",
+      "name": "ClientHelpBanner",
+      "role": "application-frame",
+      "source": "src/components/layout/ClientHelpBanner.tsx",
+      "placements": 28,
+      "directConsumerFiles": [
+        "src/components/layout/AppHeader.tsx"
+      ]
+    },
+    {
+      "key": "component-offline-banner",
+      "name": "OfflineBanner",
+      "role": "application-frame",
+      "source": "src/components/feedback/OfflineBanner.tsx",
+      "placements": 28,
+      "directConsumerFiles": [
+        "src/components/layout/AppShell.tsx"
+      ]
+    },
+    {
+      "key": "component-progress-step",
+      "name": "ProgressStep",
+      "role": "application-frame",
+      "source": "src/components/navigation/ProgressStep.tsx",
+      "placements": 17,
+      "directConsumerFiles": [
+        "src/app/RoutePage.tsx"
+      ]
+    },
+    {
+      "key": "component-form-route-page",
+      "name": "FormRoutePage",
+      "role": "application-frame",
+      "source": "src/app/RoutePage.tsx",
+      "placements": 17,
+      "directConsumerFiles": [
+        "src/app/sections/ConfiguredHealthPage.tsx",
+        "src/components/feedback/PrototypeHandoffPage.tsx",
+        "src/pages/AdvisorLogin.tsx",
+        "src/pages/AdvisorSendConfirmation.tsx",
+        "src/pages/ApplicationEditConfirmation.tsx",
+        "src/pages/Beneficiary.tsx",
+        "src/pages/Contact.tsx",
+        "src/pages/Coverage.tsx",
+        "src/pages/Eligibility.tsx",
+        "src/pages/HealthCir.tsx",
+        "src/pages/Membership.tsx",
+        "src/pages/Payment.tsx",
+        "src/pages/Profile.tsx",
+        "src/pages/Review.tsx"
+      ]
+    },
+    {
+      "key": "component-form-shell",
+      "name": "FormShell",
+      "role": "application-frame",
+      "source": "src/components/layout/FormShell.tsx",
+      "placements": 28,
+      "directConsumerFiles": [
+        "src/app/RoutePage.tsx",
+        "src/components/feedback/ApplicationErrorState.tsx",
+        "src/components/layout/StandaloneFormPage.tsx",
+        "src/pages/Receipt.tsx"
+      ]
+    },
+    {
+      "key": "component-page-shell",
+      "name": "PageShell",
+      "role": "application-frame",
+      "source": "src/components/layout/PageShell.tsx",
+      "placements": 28,
+      "directConsumerFiles": [
+        "src/app/RoutePage.tsx",
+        "src/components/feedback/ApplicationErrorState.tsx",
+        "src/components/layout/StandaloneFormPage.tsx",
+        "src/pages/Receipt.tsx"
+      ]
+    },
+    {
+      "key": "component-page-header",
+      "name": "PageHeader",
+      "role": "application-frame",
+      "source": "src/components/layout/PageHeader.tsx",
+      "placements": 48,
+      "directConsumerFiles": [
+        "src/app/RoutePage.tsx",
+        "src/app/workflows/QuoteCalculator.tsx",
+        "src/components/layout/PageShell.tsx",
+        "src/components/layout/StandaloneFormPage.tsx"
+      ]
+    },
+    {
+      "key": "component-page-title",
+      "name": "PageTitle",
+      "role": "application-frame",
+      "source": "src/components/layout/PageTitle.tsx",
+      "placements": 28,
+      "directConsumerFiles": [
+        "src/components/layout/PageHeader.tsx"
+      ]
+    },
+    {
+      "key": "component-page-nav",
+      "name": "PageNav",
+      "role": "application-frame",
+      "source": "src/components/navigation/PageNav.tsx",
+      "placements": 17,
+      "directConsumerFiles": [
+        "src/app/RoutePage.tsx"
+      ]
+    },
+    {
+      "key": "component-prototype-handoff-page",
+      "name": "PrototypeHandoffPage",
+      "role": "shared-piece",
+      "source": "src/components/feedback/PrototypeHandoffPage.tsx",
+      "placements": 2,
+      "directConsumerFiles": [
+        "src/pages/DocuSign.tsx",
+        "src/pages/HealthQd.tsx"
+      ]
+    },
+    {
+      "key": "component-print-action",
+      "name": "PrintAction",
+      "role": "shared-piece",
+      "source": "src/components/content/PrintAction.tsx",
+      "placements": 30,
+      "directConsumerFiles": [
+        "src/components/content/LegalReviewSection.tsx",
+        "src/components/layout/AppFooter.tsx",
+        "src/components/review/ReviewSections.tsx"
+      ]
+    },
+    {
+      "key": "component-standalone-form-page",
+      "name": "StandaloneFormPage",
+      "role": "application-frame",
+      "source": "src/components/layout/StandaloneFormPage.tsx",
+      "placements": 3,
+      "directConsumerFiles": [
+        "src/pages/Resume.tsx",
+        "src/pages/ResumeCode.tsx",
+        "src/pages/ResumeMethod.tsx"
+      ]
+    },
+    {
+      "key": "component-home-hero",
+      "name": "HomeHero",
+      "role": "page-section",
+      "source": "src/components/home/HomeHero.tsx",
+      "placements": 1,
+      "directConsumerFiles": [
+        "src/app/sections/ConfiguredHomeHero.tsx"
+      ]
+    },
+    {
+      "key": "component-association-introduction",
+      "name": "AssociationIntroduction",
+      "role": "page-section",
+      "source": "src/components/home/AssociationIntroduction.tsx",
+      "placements": 1,
+      "directConsumerFiles": [
+        "src/pages/Home.tsx"
+      ]
+    },
+    {
+      "key": "component-home-coverage-section",
+      "name": "HomeCoverageSection",
+      "role": "page-section",
+      "source": "src/components/home/HomeCoverageSection.tsx",
+      "placements": 1,
+      "directConsumerFiles": [
+        "src/app/sections/ConfiguredHomeCoverageSection.tsx"
+      ]
+    },
+    {
+      "key": "component-underwriter-credentials",
+      "name": "UnderwriterCredentials",
+      "role": "page-section",
+      "source": "src/components/home/UnderwriterCredentials.tsx",
+      "placements": 1,
+      "directConsumerFiles": [
+        "src/pages/Home.tsx"
+      ]
+    },
+    {
+      "key": "component-membership-status",
+      "name": "MembershipStatus",
+      "role": "page-section",
+      "source": "src/components/membership/MembershipStatus.tsx",
+      "placements": 1,
+      "directConsumerFiles": [
+        "src/pages/Membership.tsx"
+      ]
+    },
+    {
+      "key": "component-member-information",
+      "name": "MemberInformation",
+      "role": "page-section",
+      "source": "src/components/membership/MemberInformation.tsx",
+      "placements": 1,
+      "directConsumerFiles": [
+        "src/pages/Membership.tsx"
+      ]
+    },
+    {
+      "key": "component-additional-membership-information",
+      "name": "AdditionalMembershipInformation",
+      "role": "page-section",
+      "source": "src/components/membership/AdditionalMembershipInformation.tsx",
+      "placements": 1,
+      "directConsumerFiles": [
+        "src/pages/Membership.tsx"
+      ]
+    },
+    {
+      "key": "component-eligibility-sections",
+      "name": "EligibilitySections",
+      "role": "page-section",
+      "source": "src/components/eligibility/EligibilitySections.tsx",
+      "placements": 1,
+      "directConsumerFiles": [
+        "src/app/sections/ConfiguredEligibilitySections.tsx"
+      ]
+    },
+    {
+      "key": "component-coverage-questions",
+      "name": "CoverageQuestions",
+      "role": "page-section",
+      "source": "src/components/coverage/CoverageQuestions.tsx",
+      "placements": 1,
+      "directConsumerFiles": [
+        "src/app/sections/ConfiguredCoverageQuestions.tsx"
+      ]
+    },
+    {
+      "key": "component-product-catalog",
+      "name": "ProductCatalog",
+      "role": "page-section",
+      "source": "src/components/coverage/ProductCatalog.tsx",
+      "placements": 1,
+      "directConsumerFiles": [
+        "src/app/sections/ConfiguredProductCatalog.tsx"
+      ]
+    },
+    {
+      "key": "component-coverage-category-selector",
+      "name": "CoverageCategorySelector",
+      "role": "shared-piece",
+      "source": "src/components/coverage/CoverageCategorySelector.tsx",
+      "placements": 2,
+      "directConsumerFiles": [
+        "src/app/workflows/QuoteCalculator.tsx",
+        "src/components/coverage/CoverageQuestions.tsx"
+      ]
+    },
+    {
+      "key": "component-coverage-cart",
+      "name": "CoverageCart",
+      "role": "shared-piece",
+      "source": "src/components/coverage/CoverageCart.tsx",
+      "placements": 29,
+      "directConsumerFiles": [
+        "src/app/sections/ConfiguredCoverageCart.tsx",
+        "src/components/coverage/ProductCatalog.tsx"
+      ]
+    },
+    {
+      "key": "component-coverage-portfolio-drawer",
+      "name": "CoveragePortfolioDrawer",
+      "role": "shared-piece",
+      "source": "src/components/coverage/CoveragePortfolioDrawer.tsx",
+      "placements": 1,
+      "directConsumerFiles": [
+        "src/pages/Coverage.tsx"
+      ]
+    },
+    {
+      "key": "component-coverage-selection-feedback",
+      "name": "CoverageSelectionFeedback",
+      "role": "shared-piece",
+      "source": "src/components/coverage/CoverageSelectionFeedback.tsx",
+      "placements": 1,
+      "directConsumerFiles": [
+        "src/pages/Coverage.tsx"
+      ]
+    },
+    {
+      "key": "component-beneficiary-product-records",
+      "name": "BeneficiaryProductRecords",
+      "role": "page-section",
+      "source": "src/components/beneficiary/BeneficiaryProductRecords.tsx",
+      "placements": 1,
+      "directConsumerFiles": [
+        "src/pages/Beneficiary.tsx"
+      ]
+    },
+    {
+      "key": "component-contact-sections",
+      "name": "ContactSections",
+      "role": "page-section",
+      "source": "src/components/contact/ContactSections.tsx",
+      "placements": 1,
+      "directConsumerFiles": [
+        "src/app/sections/ConfiguredContactSections.tsx"
+      ]
+    },
+    {
+      "key": "component-residential-address",
+      "name": "ResidentialAddress",
+      "role": "page-section",
+      "source": "src/components/contact/ResidentialAddress.tsx",
+      "placements": 1,
+      "directConsumerFiles": [
+        "src/components/contact/ContactSections.tsx"
+      ]
+    },
+    {
+      "key": "component-business-information",
+      "name": "BusinessInformation",
+      "role": "page-section",
+      "source": "src/components/contact/BusinessInformation.tsx",
+      "placements": 1,
+      "directConsumerFiles": [
+        "src/components/contact/ContactSections.tsx"
+      ]
+    },
+    {
+      "key": "component-profile-sections",
+      "name": "ProfileSections",
+      "role": "page-section",
+      "source": "src/components/profile/ProfileSections.tsx",
+      "placements": 1,
+      "directConsumerFiles": [
+        "src/pages/Profile.tsx"
+      ]
+    },
+    {
+      "key": "component-review-sections",
+      "name": "ReviewSections",
+      "role": "page-section",
+      "source": "src/components/review/ReviewSections.tsx",
+      "placements": 1,
+      "directConsumerFiles": [
+        "src/pages/Review.tsx"
+      ]
+    },
+    {
+      "key": "component-payment-sections",
+      "name": "PaymentSections",
+      "role": "page-section",
+      "source": "src/components/payment/PaymentSections.tsx",
+      "placements": 1,
+      "directConsumerFiles": [
+        "src/pages/Payment.tsx"
+      ]
+    },
+    {
+      "key": "component-health-question-list",
+      "name": "HealthQuestionList",
+      "role": "shared-piece",
+      "source": "src/components/forms/HealthQuestionList.tsx",
+      "placements": 4,
+      "directConsumerFiles": [
+        "src/app/sections/ConfiguredHealthQuestionList.tsx"
+      ]
+    },
+    {
+      "key": "component-receipt-confirmation",
+      "name": "ReceiptConfirmation",
+      "role": "page-section",
+      "source": "src/components/receipt/ReceiptConfirmation.tsx",
+      "placements": 1,
+      "directConsumerFiles": [
+        "src/pages/Receipt.tsx"
+      ]
+    },
+    {
+      "key": "component-receipt-decisions",
+      "name": "ReceiptDecisions",
+      "role": "page-section",
+      "source": "src/components/receipt/ReceiptDecisions.tsx",
+      "placements": 1,
+      "directConsumerFiles": [
+        "src/pages/Receipt.tsx"
+      ]
+    },
+    {
+      "key": "component-expiring-code-alert",
+      "name": "ExpiringCodeAlert",
+      "role": "shared-piece",
+      "source": "src/components/feedback/ExpiringCodeAlert.tsx",
+      "placements": 2,
+      "directConsumerFiles": [
+        "src/pages/Resume.tsx",
+        "src/pages/ResumeCode.tsx"
+      ]
+    },
+    {
+      "key": "component-resend-countdown-row",
+      "name": "ResendCountdownRow",
+      "role": "shared-piece",
+      "source": "src/components/feedback/ResendCountdownRow.tsx",
+      "placements": 2,
+      "directConsumerFiles": [
+        "src/pages/Resume.tsx",
+        "src/pages/ResumeCode.tsx"
+      ]
+    },
+    {
+      "key": "component-details-table",
+      "name": "DetailsTable",
+      "role": "shared-piece",
+      "source": "src/components/layout/DetailsTable.tsx",
+      "placements": 2,
+      "directConsumerFiles": [
+        "src/pages/AdvisorSendConfirmation.tsx",
+        "src/pages/ApplicationEditConfirmation.tsx"
+      ]
+    },
+    {
+      "key": "component-application-error-state",
+      "name": "ApplicationErrorState",
+      "role": "page-section",
+      "source": "src/components/feedback/ApplicationErrorState.tsx",
+      "placements": 7,
+      "directConsumerFiles": [
+        "src/pages/ErrorPage.tsx",
+        "src/pages/Receipt.tsx"
+      ]
+    },
+    {
+      "key": "component-how-applying-works-panel",
+      "name": "HowApplyingWorksPanel",
+      "role": "shared-piece",
+      "source": "src/components/home/HowApplyingWorksPanel.tsx",
+      "placements": 29,
+      "directConsumerFiles": [
+        "src/components/layout/AppMenu.tsx",
+        "src/pages/Home.tsx"
+      ]
+    },
+    {
+      "key": "component-quote-calculator",
+      "name": "QuoteCalculator",
+      "role": "shared-piece",
+      "source": "src/app/workflows/QuoteCalculator.tsx",
+      "placements": 1,
+      "directConsumerFiles": [
+        "src/pages/Home.tsx"
+      ]
+    },
+    {
+      "key": "component-coverage-needs-calculator",
+      "name": "CoverageNeedsCalculator",
+      "role": "shared-piece",
+      "source": "src/components/coverage/CoverageNeedsCalculator.tsx",
+      "placements": 28,
+      "directConsumerFiles": [
+        "src/app/sections/ConfiguredCoverageNeedsCalculator.tsx"
+      ]
+    },
+    {
+      "key": "component-resume-session-warning",
+      "name": "ResumeSessionWarning",
+      "role": "shared-piece",
+      "source": "src/components/feedback/ResumeSessionWarning.tsx",
+      "placements": 2,
+      "directConsumerFiles": [
+        "src/pages/ResumeCode.tsx",
+        "src/pages/ResumeMethod.tsx"
+      ]
+    },
+    {
+      "key": "component-button",
+      "name": "Button",
+      "role": "shared-piece",
+      "source": "@mui/material/Button",
+      "placements": 167,
+      "directConsumerFiles": [
+        "src/app/workflows/QuoteCalculator.tsx",
+        "src/components/beneficiary/BeneficiaryProductRecords.tsx",
+        "src/components/content/PrintAction.tsx",
+        "src/components/demo/ApplicantMockOutbox.tsx",
+        "src/components/feedback/ApplicationRecoveryActions.tsx",
+        "src/components/feedback/ResendCountdownRow.tsx",
+        "src/components/forms/DynamicList.tsx",
+        "src/components/forms/DynamicListItem.tsx",
+        "src/components/home/HomeHero.tsx",
+        "src/components/layout/AppMenu.tsx",
+        "src/components/layout/AppModal.tsx",
+        "src/components/layout/ClientHelpBanner.tsx",
+        "src/components/navigation/PageNav.tsx",
+        "src/components/receipt/ReceiptConfirmation.tsx",
+        "src/components/verification/MemberVerification.tsx",
+        "src/pages/AdvisorLogin.tsx",
+        "src/pages/AdvisorSendConfirmation.tsx",
+        "src/pages/ApplicationEditConfirmation.tsx",
+        "src/pages/Beneficiary.tsx",
+        "src/pages/Coverage.tsx",
+        "src/pages/Home.tsx",
+        "src/pages/Resume.tsx",
+        "src/pages/ResumeCode.tsx",
+        "src/pages/ResumeMethod.tsx"
+      ]
+    },
+    {
+      "key": "component-confirmation-dialog",
+      "name": "ConfirmationDialog",
+      "role": "shared-piece",
+      "source": "src/components/layout/ConfirmationDialog.tsx",
+      "placements": 2,
+      "directConsumerFiles": [
+        "src/pages/Coverage.tsx",
+        "src/pages/Review.tsx"
+      ]
+    },
+    {
+      "key": "component-page-alert",
+      "name": "PageAlert",
+      "role": "shared-piece",
+      "source": "src/components/feedback/PageAlert.tsx",
+      "placements": 52,
+      "directConsumerFiles": [
+        "src/app/RoutePage.tsx",
+        "src/components/feedback/ResumeSessionWarning.tsx",
+        "src/components/layout/PageShell.tsx",
+        "src/components/layout/SendApplicationDialog.tsx",
+        "src/pages/Coverage.tsx",
+        "src/pages/HealthCir.tsx",
+        "src/pages/Resume.tsx",
+        "src/pages/ResumeMethod.tsx"
+      ]
+    },
+    {
+      "key": "component-dynamic-list",
+      "name": "DynamicList",
+      "role": "shared-piece",
+      "source": "src/components/forms/DynamicList.tsx",
+      "placements": 6,
+      "directConsumerFiles": [
+        "src/components/eligibility/EligibilitySections.tsx",
+        "src/components/forms/HealthQuestion.tsx",
+        "src/components/profile/ProfileSections.tsx"
+      ]
+    },
+    {
+      "key": "component-member-verification",
+      "name": "MemberVerification",
+      "role": "shared-piece",
+      "source": "src/components/verification/MemberVerification.tsx",
+      "placements": 1,
+      "directConsumerFiles": [
+        "src/pages/Eligibility.tsx"
+      ]
+    },
+    {
+      "key": "component-verification-address",
+      "name": "VerificationAddress",
+      "role": "shared-piece",
+      "source": "src/components/verification/VerificationAddress.tsx",
+      "placements": 1,
+      "directConsumerFiles": [
+        "src/pages/Eligibility.tsx"
+      ]
+    },
+    {
+      "key": "component-estimated-rate",
+      "name": "EstimatedRate",
+      "role": "shared-piece",
+      "source": "src/components/coverage/EstimatedRate.tsx",
+      "placements": 61,
+      "directConsumerFiles": [
+        "src/app/sections/ConfiguredApplicationDocumentPreview.tsx",
+        "src/components/coverage/CoverageCart.tsx",
+        "src/components/coverage/EstimatorProductCard.tsx",
+        "src/components/coverage/ProductCatalog.tsx",
+        "src/components/coverage/ProductCostBreakdown.tsx",
+        "src/components/coverage/TotalCostSummary.tsx",
+        "src/pages/Receipt.tsx"
+      ]
+    },
+    {
+      "key": "component-application-document-preview",
+      "name": "ApplicationDocumentPreview",
+      "role": "shared-piece",
+      "source": "src/components/content/ApplicationDocumentPreview.tsx",
+      "placements": 1,
+      "directConsumerFiles": [
+        "src/app/sections/ConfiguredApplicationDocumentPreview.tsx"
+      ]
+    },
+    {
+      "key": "component-page-help-chips",
+      "name": "PageHelpChips",
+      "role": "shared-piece",
+      "source": "src/components/content/PageHelpChips.tsx",
+      "placements": 3,
+      "directConsumerFiles": [
+        "src/components/content/PageHelp.tsx"
+      ]
+    },
+    {
+      "key": "component-legal-doc-list",
+      "name": "LegalDocList",
+      "role": "shared-piece",
+      "source": "src/components/content/LegalDocList.tsx",
+      "placements": 29,
+      "directConsumerFiles": [
+        "src/components/layout/AppFooter.tsx",
+        "src/components/review/ReviewSections.tsx"
+      ]
+    },
+    {
+      "key": "component-quick-decision-explainer",
+      "name": "QuickDecisionExplainer",
+      "role": "shared-piece",
+      "source": "src/components/content/QuickDecisionExplainer.tsx",
+      "placements": 113,
+      "directConsumerFiles": [
+        "src/components/content/ApplicationReviewDrawerContent.tsx",
+        "src/components/content/QuickDecisionInfoBox.tsx",
+        "src/components/home/HowApplyingWorksPanel.tsx",
+        "src/components/layout/AppMenu.tsx",
+        "src/pages/Home.tsx"
+      ]
+    },
+    {
+      "key": "component-quick-decision-indicator",
+      "name": "QuickDecisionIndicator",
+      "role": "shared-piece",
+      "source": "src/components/coverage/QuickDecisionIndicator.tsx",
+      "placements": 56,
+      "directConsumerFiles": [
+        "src/components/coverage/CoverageOptionsPanel.tsx",
+        "src/components/layout/ProductCard.tsx"
+      ]
+    },
+    {
+      "key": "component-quick-decision-info-box",
+      "name": "QuickDecisionInfoBox",
+      "role": "shared-piece",
+      "source": "src/components/content/QuickDecisionInfoBox.tsx",
+      "placements": 29,
+      "directConsumerFiles": [
+        "src/components/coverage/CoverageOptionsPanel.tsx",
+        "src/components/coverage/ProductCatalog.tsx"
+      ]
+    },
+    {
+      "key": "component-coverage-options-panel",
+      "name": "CoverageOptionsPanel",
+      "role": "shared-piece",
+      "source": "src/components/coverage/CoverageOptionsPanel.tsx",
+      "placements": 29,
+      "directConsumerFiles": [
+        "src/app/sections/ConfiguredCoverageOptionsPanel.tsx",
+        "src/components/home/HomeCoverageSection.tsx"
+      ]
+    },
+    {
+      "key": "component-eligibility-fields",
+      "name": "EligibilityFields",
+      "role": "shared-piece",
+      "source": "src/components/forms/EligibilityFields.tsx",
+      "placements": 3,
+      "directConsumerFiles": [
+        "src/app/sections/ConfiguredEligibilityFields.tsx",
+        "src/components/eligibility/EligibilitySections.tsx",
+        "src/components/home/HomeHero.tsx"
+      ]
+    },
+    {
+      "key": "component-estimator-product-card",
+      "name": "EstimatorProductCard",
+      "role": "shared-piece",
+      "source": "src/components/coverage/EstimatorProductCard.tsx",
+      "placements": 1,
+      "directConsumerFiles": [
+        "src/app/sections/ConfiguredEstimatorProductCard.tsx"
+      ]
+    },
+    {
+      "key": "component-featured-badge",
+      "name": "FeaturedBadge",
+      "role": "shared-piece",
+      "source": "src/components/coverage/FeaturedBadge.tsx",
+      "placements": 2,
+      "directConsumerFiles": [
+        "src/components/coverage/EstimatorProductCard.tsx",
+        "src/components/coverage/ProductCatalog.tsx"
+      ]
+    },
+    {
+      "key": "component-physician-information",
+      "name": "PhysicianInformation",
+      "role": "shared-piece",
+      "source": "src/components/forms/PhysicianInformation.tsx",
+      "placements": 1,
+      "directConsumerFiles": [
+        "src/components/profile/ProfileSections.tsx"
+      ]
+    },
+    {
+      "key": "component-product-cost-breakdown",
+      "name": "ProductCostBreakdown",
+      "role": "shared-piece",
+      "source": "src/components/coverage/ProductCostBreakdown.tsx",
+      "placements": 1,
+      "directConsumerFiles": [
+        "src/components/coverage/ProductCatalog.tsx"
+      ]
+    },
+    {
+      "key": "component-rate-frequency-control",
+      "name": "RateFrequencyControl",
+      "role": "shared-piece",
+      "source": "src/components/coverage/RateFrequencyControl.tsx",
+      "placements": 29,
+      "directConsumerFiles": [
+        "src/app/workflows/QuoteCalculator.tsx",
+        "src/components/coverage/CoverageCart.tsx"
+      ]
+    },
+    {
+      "key": "component-rate-frequency-toggle",
+      "name": "RateFrequencyToggle",
+      "role": "shared-piece",
+      "source": "src/components/coverage/RateFrequencyToggle.tsx",
+      "placements": 28,
+      "directConsumerFiles": [
+        "src/components/coverage/RateFrequencyControl.tsx"
+      ]
+    },
+    {
+      "key": "component-total-cost-summary",
+      "name": "TotalCostSummary",
+      "role": "shared-piece",
+      "source": "src/components/coverage/TotalCostSummary.tsx",
+      "placements": 30,
+      "directConsumerFiles": [
+        "src/app/sections/ConfiguredTotalCostSummary.tsx",
+        "src/components/coverage/CoverageCart.tsx"
+      ]
+    },
+    {
+      "key": "component-app-snackbar",
+      "name": "AppSnackbar",
+      "role": "shared-piece",
+      "source": "src/components/feedback/AppSnackbar.tsx",
+      "placements": 48,
+      "directConsumerFiles": [
+        "src/components/coverage/CoverageSelectionFeedback.tsx",
+        "src/components/feedback/ProgressSavedSnackbar.tsx",
+        "src/components/layout/AppShell.tsx",
+        "src/components/layout/SinglePageSections.tsx",
+        "src/pages/Receipt.tsx"
+      ]
+    },
+    {
+      "key": "component-empty-state",
+      "name": "EmptyState",
+      "role": "shared-piece",
+      "source": "src/components/feedback/EmptyState.tsx",
+      "placements": 29,
+      "directConsumerFiles": [
+        "src/app/workflows/QuoteCalculator.tsx",
+        "src/components/coverage/CoverageCart.tsx"
+      ]
+    },
+    {
+      "key": "component-page-transition-skeleton",
+      "name": "PageTransitionSkeleton",
+      "role": "shared-piece",
+      "source": "src/components/feedback/PageTransitionSkeleton.tsx",
+      "placements": 17,
+      "directConsumerFiles": [
+        "src/app/RoutePage.tsx"
+      ]
+    },
+    {
+      "key": "component-progress-saved-snackbar",
+      "name": "ProgressSavedSnackbar",
+      "role": "shared-piece",
+      "source": "src/components/feedback/ProgressSavedSnackbar.tsx",
+      "placements": 17,
+      "directConsumerFiles": [
+        "src/app/RoutePage.tsx"
+      ]
+    },
+    {
+      "key": "component-conditional-group",
+      "name": "ConditionalGroup",
+      "role": "shared-piece",
+      "source": "src/components/forms/ConditionalGroup.tsx",
+      "placements": 3,
+      "directConsumerFiles": [
+        "src/components/coverage/CoverageQuestions.tsx",
+        "src/components/profile/ProfilePersonalInformation.tsx",
+        "src/components/profile/ProfileSections.tsx"
+      ]
+    },
+    {
+      "key": "component-dynamic-list-item",
+      "name": "DynamicListItem",
+      "role": "shared-piece",
+      "source": "src/components/forms/DynamicListItem.tsx",
+      "placements": 7,
+      "directConsumerFiles": [
+        "src/components/beneficiary/BeneficiaryProductRecords.tsx",
+        "src/components/forms/DynamicList.tsx"
+      ]
+    },
+    {
+      "key": "component-field-renderer",
+      "name": "FieldRenderer",
+      "role": "shared-piece",
+      "source": "src/components/forms/FieldRenderer.tsx",
+      "placements": 68,
+      "directConsumerFiles": [
+        "src/app/workflows/QuoteCalculator.tsx",
+        "src/components/contact/BusinessInformation.tsx",
+        "src/components/contact/ContactSections.tsx",
+        "src/components/contact/ResidentialAddress.tsx",
+        "src/components/coverage/CoverageNeedsCalculator.tsx",
+        "src/components/coverage/CoverageQuestions.tsx",
+        "src/components/eligibility/EligibilitySections.tsx",
+        "src/components/forms/AddressFields.tsx",
+        "src/components/forms/ControlledFieldRenderer.tsx",
+        "src/components/forms/DynamicList.tsx",
+        "src/components/forms/EligibilityFields.tsx",
+        "src/components/forms/HealthQuestion.tsx",
+        "src/components/forms/PhysicianInformation.tsx",
+        "src/components/forms/SharedPaymentControls.tsx",
+        "src/components/membership/AdditionalMembershipInformation.tsx",
+        "src/components/membership/MemberInformation.tsx",
+        "src/components/membership/MembershipStatus.tsx",
+        "src/components/payment/PaymentSections.tsx",
+        "src/components/profile/ProfilePersonalInformation.tsx",
+        "src/components/profile/ProfileSections.tsx",
+        "src/components/review/ReviewSections.tsx",
+        "src/components/verification/MemberVerification.tsx",
+        "src/pages/AdvisorLogin.tsx",
+        "src/pages/Beneficiary.tsx",
+        "src/pages/Resume.tsx",
+        "src/pages/ResumeCode.tsx",
+        "src/pages/ResumeMethod.tsx"
+      ]
+    },
+    {
+      "key": "component-radio-selection-group",
+      "name": "RadioSelectionGroup",
+      "role": "shared-piece",
+      "source": "src/components/forms/RadioSelectionGroup.tsx",
+      "placements": 28,
+      "directConsumerFiles": [
+        "src/components/forms/FieldRenderer.tsx"
+      ]
+    },
+    {
+      "key": "component-selection-group",
+      "name": "SelectionGroup",
+      "role": "shared-piece",
+      "source": "src/components/forms/SelectionGroup.tsx",
+      "placements": 56,
+      "directConsumerFiles": [
+        "src/components/forms/FieldRenderer.tsx",
+        "src/components/forms/RadioSelectionGroup.tsx"
+      ]
+    },
+    {
+      "key": "component-application-preview",
+      "name": "ApplicationPreview",
+      "role": "shared-piece",
+      "source": "src/components/home/ApplicationPreview.tsx",
+      "placements": 28,
+      "directConsumerFiles": [
+        "src/components/home/HowApplyingWorksPanel.tsx"
+      ]
+    },
+    {
+      "key": "component-applicant-section-divider",
+      "name": "ApplicantSectionDivider",
+      "role": "shared-piece",
+      "source": "src/components/layout/ApplicantSectionDivider.tsx",
+      "placements": 13,
+      "directConsumerFiles": [
+        "src/app/sections/ConfiguredApplicantSectionDivider.tsx",
+        "src/components/contact/ContactSections.tsx",
+        "src/components/coverage/CoverageQuestions.tsx",
+        "src/components/coverage/ProductCatalog.tsx",
+        "src/components/eligibility/EligibilitySections.tsx",
+        "src/components/forms/HealthQuestionList.tsx",
+        "src/components/profile/ProfileSections.tsx",
+        "src/components/receipt/ReceiptCoverageDecision.tsx",
+        "src/components/review/ReviewSections.tsx"
+      ]
+    },
+    {
+      "key": "component-category-card",
+      "name": "CategoryCard",
+      "role": "shared-piece",
+      "source": "src/components/layout/CategoryCard.tsx",
+      "placements": 3,
+      "directConsumerFiles": [
+        "src/components/coverage/ProductCatalog.tsx",
+        "src/components/payment/PaymentSections.tsx",
+        "src/pages/Beneficiary.tsx"
+      ]
+    },
+    {
+      "key": "component-category-header",
+      "name": "CategoryHeader",
+      "role": "shared-piece",
+      "source": "src/components/layout/CategoryHeader.tsx",
+      "placements": 5,
+      "directConsumerFiles": [
+        "src/app/workflows/QuoteCalculator.tsx",
+        "src/components/coverage/ProductCatalog.tsx",
+        "src/components/layout/CategoryCard.tsx"
+      ]
+    },
+    {
+      "key": "component-field-grid",
+      "name": "FieldGrid",
+      "role": "shared-piece",
+      "source": "src/components/layout/FieldGrid.tsx",
+      "placements": 57,
+      "directConsumerFiles": [
+        "src/app/workflows/QuoteCalculator.tsx",
+        "src/components/coverage/CoverageNeedsCalculator.tsx",
+        "src/components/coverage/CoverageQuestions.tsx",
+        "src/components/coverage/EstimatorProductCard.tsx",
+        "src/components/coverage/ProductCatalog.tsx",
+        "src/components/eligibility/EligibilitySections.tsx",
+        "src/components/forms/AddressFields.tsx",
+        "src/components/forms/DynamicList.tsx",
+        "src/components/forms/EligibilityFields.tsx",
+        "src/components/forms/HealthQuestion.tsx",
+        "src/components/forms/PhysicianInformation.tsx",
+        "src/components/forms/SharedPaymentControls.tsx",
+        "src/components/membership/AdditionalMembershipInformation.tsx",
+        "src/components/membership/MemberInformation.tsx",
+        "src/components/payment/PaymentSections.tsx",
+        "src/components/profile/ProfilePersonalInformation.tsx",
+        "src/components/review/ReviewSections.tsx",
+        "src/pages/AdvisorLogin.tsx",
+        "src/pages/Beneficiary.tsx"
+      ]
+    },
+    {
+      "key": "component-mobile-preview-frame",
+      "name": "MobilePreviewFrame",
+      "role": "shared-piece",
+      "source": "src/components/layout/MobilePreviewFrame.tsx",
+      "placements": 28,
+      "directConsumerFiles": [
+        "src/components/home/ApplicationPreview.tsx"
+      ]
+    },
+    {
+      "key": "component-product-card",
+      "name": "ProductCard",
+      "role": "shared-piece",
+      "source": "src/components/layout/ProductCard.tsx",
+      "placements": 34,
+      "directConsumerFiles": [
+        "src/components/beneficiary/BeneficiaryProductRecords.tsx",
+        "src/components/coverage/CoverageCart.tsx",
+        "src/components/coverage/EstimatorProductCard.tsx",
+        "src/components/coverage/ProductCatalog.tsx",
+        "src/components/payment/PaymentSections.tsx",
+        "src/components/receipt/ReceiptCoverageDecision.tsx",
+        "src/pages/Receipt.tsx"
+      ]
+    },
+    {
+      "key": "component-section-divider",
+      "name": "SectionDivider",
+      "role": "shared-piece",
+      "source": "src/components/layout/SectionDivider.tsx",
+      "placements": 17,
+      "directConsumerFiles": [
+        "src/app/workflows/QuoteCalculator.tsx",
+        "src/components/contact/BusinessInformation.tsx",
+        "src/components/contact/ContactSections.tsx",
+        "src/components/contact/ResidentialAddress.tsx",
+        "src/components/coverage/CoverageCategorySelector.tsx",
+        "src/components/coverage/CoverageQuestions.tsx",
+        "src/components/eligibility/EligibilitySections.tsx",
+        "src/components/forms/HealthQuestionList.tsx",
+        "src/components/forms/PhysicianInformation.tsx",
+        "src/components/membership/AdditionalMembershipInformation.tsx",
+        "src/components/payment/PaymentSections.tsx",
+        "src/components/profile/ProfileSections.tsx",
+        "src/pages/Membership.tsx"
+      ]
+    },
+    {
+      "key": "component-app-drawer",
+      "name": "AppDrawer",
+      "role": "shared-piece",
+      "source": "src/components/layout/AppDrawer.tsx",
+      "placements": 119,
+      "directConsumerFiles": [
+        "src/app/workflows/QuoteCalculator.tsx",
+        "src/components/content/PageHelpDrawer.tsx",
+        "src/components/coverage/CoveragePortfolioDrawer.tsx",
+        "src/components/coverage/CoverageSelectionFeedback.tsx",
+        "src/components/coverage/ReferenceRateTableLink.tsx",
+        "src/components/home/HowApplyingWorksPanel.tsx",
+        "src/components/layout/AppHeader.tsx",
+        "src/components/layout/AppMenu.tsx",
+        "src/pages/Home.tsx"
+      ]
+    },
+    {
+      "key": "component-app-modal",
+      "name": "AppModal",
+      "role": "shared-piece",
+      "source": "src/components/layout/AppModal.tsx",
+      "placements": 127,
+      "directConsumerFiles": [
+        "src/components/coverage/CoverageCart.tsx",
+        "src/components/feedback/SessionExpiryAlert.tsx",
+        "src/components/forms/DynamicList.tsx",
+        "src/components/layout/AppFooter.tsx",
+        "src/components/layout/ClientHelpBanner.tsx",
+        "src/components/layout/ConfirmationDialog.tsx",
+        "src/components/layout/SendApplicationDialog.tsx",
+        "src/components/review/ReviewSections.tsx",
+        "src/components/verification/MemberVerification.tsx",
+        "src/components/verification/VerificationAddress.tsx",
+        "src/pages/Beneficiary.tsx",
+        "src/pages/Home.tsx"
+      ]
+    },
+    {
+      "key": "component-cookie-dialog",
+      "name": "CookieDialog",
+      "role": "shared-piece",
+      "source": "src/components/layout/CookieDialog.tsx",
+      "placements": 28,
+      "directConsumerFiles": [
+        "src/components/layout/AppShell.tsx"
+      ]
+    },
+    {
+      "key": "component-send-application-dialog",
+      "name": "SendApplicationDialog",
+      "role": "shared-piece",
+      "source": "src/components/layout/SendApplicationDialog.tsx",
+      "placements": 2,
+      "directConsumerFiles": [
+        "src/pages/Profile.tsx",
+        "src/pages/Review.tsx"
+      ]
+    },
+    {
+      "key": "component-controlled-field-renderer",
+      "name": "ControlledFieldRenderer",
+      "role": "shared-piece",
+      "source": "src/components/forms/ControlledFieldRenderer.tsx",
+      "placements": 7,
+      "directConsumerFiles": [
+        "src/components/coverage/CoverageCategorySelector.tsx",
+        "src/components/coverage/EstimatorProductCard.tsx",
+        "src/components/coverage/ProductCatalog.tsx",
+        "src/components/forms/EligibilityFields.tsx",
+        "src/pages/Beneficiary.tsx"
+      ]
+    },
+    {
+      "key": "component-application-recovery-actions",
+      "name": "ApplicationRecoveryActions",
+      "role": "shared-piece",
+      "source": "src/components/feedback/ApplicationRecoveryActions.tsx",
+      "placements": 7,
+      "directConsumerFiles": [
+        "src/components/feedback/ApplicationErrorState.tsx"
+      ]
+    },
+    {
+      "key": "component-session-expiry-alert",
+      "name": "SessionExpiryAlert",
+      "role": "shared-piece",
+      "source": "src/components/feedback/SessionExpiryAlert.tsx",
+      "placements": 28,
+      "directConsumerFiles": [
+        "src/app/ApplicationSessionGuard.tsx"
+      ]
+    },
+    {
+      "key": "component-site-support",
+      "name": "SiteSupport",
+      "role": "shared-piece",
+      "source": "src/components/layout/SiteSupport.tsx",
+      "placements": 8,
+      "directConsumerFiles": [
+        "src/components/feedback/ApplicationErrorState.tsx",
+        "src/pages/Receipt.tsx"
+      ]
+    },
+    {
+      "key": "component-reference-rate-table-link",
+      "name": "ReferenceRateTableLink",
+      "role": "shared-piece",
+      "source": "src/components/coverage/ReferenceRateTableLink.tsx",
+      "placements": 29,
+      "directConsumerFiles": [
+        "src/components/coverage/EstimatedRate.tsx",
+        "src/pages/Payment.tsx"
+      ]
+    },
+    {
+      "key": "component-address-fields",
+      "name": "AddressFields",
+      "role": "shared-piece",
+      "source": "src/components/forms/AddressFields.tsx",
+      "placements": 4,
+      "directConsumerFiles": [
+        "src/components/contact/BusinessInformation.tsx",
+        "src/components/contact/ResidentialAddress.tsx",
+        "src/components/forms/PhysicianInformation.tsx",
+        "src/components/verification/VerificationAddress.tsx"
+      ]
+    },
+    {
+      "key": "component-application-review-drawer-content",
+      "name": "ApplicationReviewDrawerContent",
+      "role": "shared-piece",
+      "source": "src/components/content/ApplicationReviewDrawerContent.tsx",
+      "placements": 28,
+      "directConsumerFiles": [
+        "src/components/home/HowApplyingWorksPanel.tsx"
+      ]
+    },
+    {
+      "key": "component-phone-field",
+      "name": "PhoneField",
+      "role": "shared-piece",
+      "source": "src/components/forms/PhoneField.tsx",
+      "placements": 28,
+      "directConsumerFiles": [
+        "src/components/forms/FieldRenderer.tsx"
+      ]
+    },
+    {
+      "key": "component-profile-personal-information",
+      "name": "ProfilePersonalInformation",
+      "role": "shared-piece",
+      "source": "src/components/profile/ProfilePersonalInformation.tsx",
+      "placements": 1,
+      "directConsumerFiles": [
+        "src/components/profile/ProfileSections.tsx"
+      ]
+    },
+    {
+      "key": "component-legal-review-section",
+      "name": "LegalReviewSection",
+      "role": "shared-piece",
+      "source": "src/components/content/LegalReviewSection.tsx",
+      "placements": 1,
+      "directConsumerFiles": [
+        "src/components/review/ReviewSections.tsx"
+      ]
+    },
+    {
+      "key": "component-review-statement",
+      "name": "ReviewStatement",
+      "role": "shared-piece",
+      "source": "src/components/forms/ReviewStatement.tsx",
+      "placements": 1,
+      "directConsumerFiles": [
+        "src/components/review/ReviewSections.tsx"
+      ]
+    },
+    {
+      "key": "component-health-question",
+      "name": "HealthQuestion",
+      "role": "shared-piece",
+      "source": "src/components/forms/HealthQuestion.tsx",
+      "placements": 7,
+      "directConsumerFiles": [
+        "src/app/sections/ConfiguredHealthPage.tsx",
+        "src/app/sections/ConfiguredHealthQuestions.tsx"
+      ]
+    },
+    {
+      "key": "component-shared-payment-controls",
+      "name": "SharedPaymentControls",
+      "role": "shared-piece",
+      "source": "src/components/forms/SharedPaymentControls.tsx",
+      "placements": 1,
+      "directConsumerFiles": [
+        "src/pages/Payment.tsx"
+      ]
+    },
+    {
+      "key": "component-receipt-coverage-decision",
+      "name": "ReceiptCoverageDecision",
+      "role": "shared-piece",
+      "source": "src/components/receipt/ReceiptCoverageDecision.tsx",
+      "placements": 1,
+      "directConsumerFiles": [
+        "src/pages/Receipt.tsx"
+      ]
+    },
+    {
+      "key": "component-link",
+      "name": "Link",
+      "role": "shared-piece",
+      "source": "@mui/material/Link",
+      "placements": 218,
+      "directConsumerFiles": [
+        "src/components/content/QuickDecisionExplainer.tsx",
+        "src/components/coverage/ReferenceRateTableLink.tsx",
+        "src/components/demo/ApplicantMockOutbox.tsx",
+        "src/components/feedback/ApplicationRecoveryActions.tsx",
+        "src/components/feedback/ExpiringCodeAlert.tsx",
+        "src/components/forms/FieldRenderer.tsx",
+        "src/components/home/HomeHero.tsx",
+        "src/components/layout/AppFooter.tsx",
+        "src/components/layout/AppMenu.tsx",
+        "src/components/layout/CookieDialog.tsx",
+        "src/components/layout/ProductCard.tsx",
+        "src/components/layout/SiteSupport.tsx",
+        "src/components/membership/MembershipStatus.tsx",
+        "src/components/review/ReviewSections.tsx",
+        "src/pages/Home.tsx"
+      ]
+    },
+    {
+      "key": "component-page-help",
+      "name": "PageHelp",
+      "role": "shared-piece",
+      "source": "src/components/content/PageHelp.tsx",
+      "placements": 3,
+      "directConsumerFiles": [
+        "src/pages/Beneficiary.tsx",
+        "src/pages/Membership.tsx",
+        "src/pages/Payment.tsx"
+      ]
+    },
+    {
+      "key": "component-page-help-drawer",
+      "name": "PageHelpDrawer",
+      "role": "shared-piece",
+      "source": "src/components/content/PageHelpDrawer.tsx",
+      "placements": 3,
+      "directConsumerFiles": [
+        "src/components/content/PageHelp.tsx"
+      ]
+    },
+    {
+      "key": "component-information-alert",
+      "name": "InformationAlert",
+      "role": "shared-piece",
+      "source": "src/components/feedback/InformationAlert.tsx",
+      "placements": 1,
+      "directConsumerFiles": [
+        "src/components/receipt/ReceiptConfirmation.tsx"
+      ]
+    }
+  ],
+  "modules": [
+    {
+      "file": "src/app/RoutePage.tsx",
+      "sha256": "a8de22cbac64df2af634eea5f7d580a85ce00e6b1e649dfa95399fb55d032e04",
+      "lines": 714,
+      "jsx": [
+        "PageShell",
+        "FormFieldDefinitions",
+        "Box",
+        "FormShell",
+        "Breadcrumbs",
+        "PageTransitionSkeleton",
+        "PageHeader",
+        "Alert",
+        "PageAlert",
+        "form",
+        "PageNav",
+        "ProgressSavedSnackbar",
+        "ProgressStep"
+      ]
+    },
+    {
+      "file": "src/app/sections/ConfiguredApplicantSectionDivider.tsx",
+      "sha256": "3f7d056d15de4f43d1a562bb92011bfedc8b26a5c65e7bb12b8d1f326d491c55",
+      "lines": 7,
+      "jsx": [
+        "ApplicantSectionDivider"
+      ]
+    },
+    {
+      "file": "src/app/sections/ConfiguredApplicationDocumentPreview.tsx",
+      "sha256": "fa7e5738f3473dcda097704b2be5419039ea18d3d977b4868c34f36ccac30d44",
+      "lines": 23,
+      "jsx": [
+        "EstimatedRate",
+        "ApplicationDocumentPreview"
+      ]
+    },
+    {
+      "file": "src/app/sections/ConfiguredContactSections.tsx",
+      "sha256": "2c96b887b43499fb86c3cc72aaeb0c7a3a7539695a934c0252eaa29e47e4a0ec",
+      "lines": 17,
+      "jsx": [
+        "ContactSections"
+      ]
+    },
+    {
+      "file": "src/app/sections/ConfiguredCoverageCart.tsx",
+      "sha256": "1d10e6cbb912a218bdbca3671a660aaaaf95c7eae7d13e742a031da4e35164df",
+      "lines": 163,
+      "jsx": [
+        "CoverageCart",
+        "ConfiguredDrawer"
+      ]
+    },
+    {
+      "file": "src/app/sections/ConfiguredCoverageNeedsCalculator.tsx",
+      "sha256": "17c8b075b322d5ee1441d02376903aab91be383e78aa56b94a5817b7907a164b",
+      "lines": 6,
+      "jsx": [
+        "CoverageNeedsCalculator"
+      ]
+    },
+    {
+      "file": "src/app/sections/ConfiguredCoverageOptionsPanel.tsx",
+      "sha256": "2f02648cacfce4b1a5fbe6e869ac2d2bde6180a9a85c9cbf85ff20b6c12432a2",
+      "lines": 11,
+      "jsx": [
+        "CoverageOptionsPanel"
+      ]
+    },
+    {
+      "file": "src/app/sections/ConfiguredCoverageQuestions.tsx",
+      "sha256": "96b7b4f43dc880d61c2fb8135dcaa0282640d5797d4a37a88fc2483eb5fbcefc",
+      "lines": 14,
+      "jsx": [
+        "CoverageQuestions"
+      ]
+    },
+    {
+      "file": "src/app/sections/ConfiguredEligibilityFields.tsx",
+      "sha256": "ea4aee4f97a9ce19454d59b084aa37f151f98f6235b7ec9258bed48b613e64f0",
+      "lines": 25,
+      "jsx": [
+        "EligibilityFields"
+      ]
+    },
+    {
+      "file": "src/app/sections/ConfiguredEligibilitySections.tsx",
+      "sha256": "d091ccd1a12836d2c804d26a82c7b402cbe479d12341f092ad8a5aafcd761340",
+      "lines": 19,
+      "jsx": [
+        "EligibilitySections"
+      ]
+    },
+    {
+      "file": "src/app/sections/ConfiguredEstimatedRate.tsx",
+      "sha256": "c513373ab2f83b586def1705ef731e3e9420cb9206a3f088c3f87802b5e8019f",
+      "lines": 10,
+      "jsx": [
+        "EstimatedRate"
+      ]
+    },
+    {
+      "file": "src/app/sections/ConfiguredEstimatorProductCard.tsx",
+      "sha256": "5d2240d050ca0cbba2035017b879ffdc15d89cd50dd65493ca17c7fd7c8a3c78",
+      "lines": 12,
+      "jsx": [
+        "EstimatorProductCard"
+      ]
+    },
+    {
+      "file": "src/app/sections/ConfiguredHealthPage.tsx",
+      "sha256": "d13298e30020323f59f881895592175412ab65a672daf05b8aa6087c4b92444c",
+      "lines": 56,
+      "jsx": [
+        "HealthQuestion",
+        "HealthDetailSummary",
+        "FormRoutePage",
+        "HealthQuestionList"
+      ]
+    },
+    {
+      "file": "src/app/sections/ConfiguredHealthQuestionList.tsx",
+      "sha256": "c0b11c1723ea99594f9733e68673387bf8257a21e874720c2f8357d02d7e685a",
+      "lines": 10,
+      "jsx": [
+        "HealthQuestionList"
+      ]
+    },
+    {
+      "file": "src/app/sections/ConfiguredHealthQuestions.tsx",
+      "sha256": "7e687713c29f12ee30bb27fe7ec0ff59ef57084e1134ce6e33d8da0ae5aca6b1",
+      "lines": 16,
+      "jsx": [
+        "HealthQuestion"
+      ]
+    },
+    {
+      "file": "src/app/sections/ConfiguredHomeCoverageSection.tsx",
+      "sha256": "0e6a5daa787618ab16dd7e44f17bd24fb01222319b2290b051042d65d4ce07f7",
+      "lines": 10,
+      "jsx": [
+        "HomeCoverageSection"
+      ]
+    },
+    {
+      "file": "src/app/sections/ConfiguredHomeHero.tsx",
+      "sha256": "908e1d6a7002836c461a1c66077c338ddb9576675b475e0868356ad01a17fa48",
+      "lines": 9,
+      "jsx": [
+        "HomeHero"
+      ]
+    },
+    {
+      "file": "src/app/sections/ConfiguredProductCatalog.tsx",
+      "sha256": "902267160771ef2ae735700773ccfa49c1e4301db50a04cce92f3051752c511c",
+      "lines": 30,
+      "jsx": [
+        "ProductCatalog",
+        "ProductCardView"
+      ]
+    },
+    {
+      "file": "src/app/sections/ConfiguredTotalCostSummary.tsx",
+      "sha256": "3a9fac7bd0a7b67f0d26b9fc4319a9f9f8d30939b9b667503ef6e69c87172359",
+      "lines": 17,
+      "jsx": [
+        "TotalCostSummary"
+      ]
+    },
+    {
+      "file": "src/app/workflows/QuoteCalculator.tsx",
+      "sha256": "96e73c370c6c74014eaae7a901b414fdfcc1959e2ecbc67f4bf1239d04151abc",
+      "lines": 852,
+      "jsx": [
+        "Stack",
+        "Alert",
+        "PageHeader",
+        "EligibilityFields",
+        "CoverageCategorySelector",
+        "FieldGrid",
+        "SectionDivider",
+        "FieldRenderer",
+        "Button",
+        "EmptyState",
+        "Divider",
+        "CircularProgress",
+        "Typography",
+        "CategoryHeader",
+        "EstimatorProductCard",
+        "Box",
+        "TotalCostSummary",
+        "sup",
+        "RateFrequencyControl",
+        "ArrowForwardRoundedIcon",
+        "AppDrawer"
+      ]
+    },
+    {
+      "file": "src/components/beneficiary/BeneficiaryProductRecords.tsx",
+      "sha256": "df3a11336a3a9f17cc444a7690d888012c49af7a3f8867010b6238beb00ca1ef",
+      "lines": 36,
+      "jsx": [
+        "ProductCard",
+        "Stack",
+        "Alert",
+        "Typography",
+        "DynamicListItem",
+        "Button",
+        "AddCircleOutlineRoundedIcon"
+      ]
+    },
+    {
+      "file": "src/components/contact/BusinessInformation.tsx",
+      "sha256": "c9c04a82bb9d368e66979bc623e2b90502a65b1fbe903de36c3b630af8b007ef",
+      "lines": 39,
+      "jsx": [
+        "FieldRenderer",
+        "Box",
+        "SectionDivider",
+        "AddressFields"
+      ]
+    },
+    {
+      "file": "src/components/contact/ContactSections.tsx",
+      "sha256": "47bcd7df5288af500a9232fb7e84bb6f34fba4edfe72d4f3d7918e435150e5e8",
+      "lines": 38,
+      "jsx": [
+        "ApplicantSectionDivider",
+        "ResidentialAddress",
+        "BusinessInformation",
+        "FieldRenderer",
+        "SectionDivider",
+        "FieldGroup",
+        "div"
+      ]
+    },
+    {
+      "file": "src/components/contact/ResidentialAddress.tsx",
+      "sha256": "726b1edf0e2ebd8c6e9816fb0fe22ee3fc6148b08266a7cace5fad0a97278ba1",
+      "lines": 13,
+      "jsx": [
+        "FieldGroup",
+        "AddressFields",
+        "FieldRenderer"
+      ]
+    },
+    {
+      "file": "src/components/content/ApplicationDocumentPreview.tsx",
+      "sha256": "b48a0328e8201a4ef71dbaec3e437a9b3aaabc62fb279e9a8a3b9e4b0f78c65d",
+      "lines": 217,
+      "jsx": [
+        "Box",
+        "Stack",
+        "Typography",
+        "div",
+        "Divider",
+        "IconButton",
+        "EditRoundedIcon"
+      ]
+    },
+    {
+      "file": "src/components/content/ApplicationReviewDrawerContent.tsx",
+      "sha256": "64b78c6401e3dd27a7f0ef4a1c7b7f1cc1db2478b4531d0dc388a4ab9c135b1f",
+      "lines": 48,
+      "jsx": [
+        "Stack",
+        "Typography",
+        "Box",
+        "InlineDrawerLink",
+        "QuickDecisionMark"
+      ]
+    },
+    {
+      "file": "src/components/content/ClientCategoryIcon.tsx",
+      "sha256": "006feb5015adaeb315d6a79df40259b21e9e5a8c84cb353cc8ab5fd82d3358af",
+      "lines": 29,
+      "jsx": [
+        "Fallback",
+        "Box"
+      ]
+    },
+    {
+      "file": "src/components/content/LegalDocList.tsx",
+      "sha256": "95a19dae573247d4a5042d6d226523e19cc3699734fb6612bed328a76aa20166",
+      "lines": 95,
+      "jsx": [
+        "Typography",
+        "List",
+        "ListItem",
+        "span",
+        "br",
+        "Stack",
+        "Divider"
+      ]
+    },
+    {
+      "file": "src/components/content/LegalReviewSection.tsx",
+      "sha256": "0ea0a92ddd12dc2b74c352b854117ab508c52273a498e2a41ca3d6381c90b47b",
+      "lines": 17,
+      "jsx": [
+        "Box",
+        "Typography",
+        "PrintAction"
+      ]
+    },
+    {
+      "file": "src/components/content/PageHelp.tsx",
+      "sha256": "0546f2808f21735e83f3489b916cf95bc5122285e0b03806d20e16c620b57c9e",
+      "lines": 15,
+      "jsx": [
+        "PageHelpChips",
+        "PageHelpDrawer"
+      ]
+    },
+    {
+      "file": "src/components/content/PageHelpChips.tsx",
+      "sha256": "8d7f73fef61bbd1d4b36a79a189ff759c73df971c31beff102c9efafcf4952ab",
+      "lines": 126,
+      "jsx": [
+        "Stack",
+        "Box",
+        "Chip",
+        "HelpOutlineRoundedIcon"
+      ]
+    },
+    {
+      "file": "src/components/content/PageHelpDrawer.tsx",
+      "sha256": "ecdab644553744655d670442ff380980448848102a7f35e5b1e0e6ed56c82e15",
+      "lines": 8,
+      "jsx": [
+        "AppDrawer"
+      ]
+    },
+    {
+      "file": "src/components/content/PrintAction.tsx",
+      "sha256": "ab1f9126b788d5450cea34cd02137390bda0cb974782cadc0ed5e69c92932738",
+      "lines": 30,
+      "jsx": [
+        "Button",
+        "PrintRoundedIcon"
+      ]
+    },
+    {
+      "file": "src/components/content/QuickDecisionExplainer.tsx",
+      "sha256": "3fcc14e9974984f2342c0cc757053113e61b4de62132fdd1a7fe27438e832a95",
+      "lines": 127,
+      "jsx": [
+        "Link",
+        "Box",
+        "Typography",
+        "QuickDecisionIcon",
+        "QuickDecisionMark",
+        "Stack",
+        "QuickDecisionMarkPlain",
+        "QuickDecisionMarkStyled"
+      ]
+    },
+    {
+      "file": "src/components/content/QuickDecisionInfoBox.tsx",
+      "sha256": "acc3c71237492687475cc9c655afafa4f6e7a260683bf7706dbedd4c94a1cd36",
+      "lines": 86,
+      "jsx": [
+        "Box",
+        "QuickDecisionIcon",
+        "Typography",
+        "QuickDecisionMark",
+        "InlineDrawerLink",
+        "QuickDecisionDrawerContent"
+      ]
+    },
+    {
+      "file": "src/components/coverage/CoverageCart.tsx",
+      "sha256": "9539e958506b8f5b8799e6b2dfdf047a1342a3c61b716ce3270ca5bd10ac1a1c",
+      "lines": 566,
+      "jsx": [
+        "Stack",
+        "Box",
+        "ShoppingCartRoundedIcon",
+        "CheckCircleRoundedIcon",
+        "Typography",
+        "IconButton",
+        "CloseRoundedIcon",
+        "EmptyState",
+        "ProductCard",
+        "DeleteOutlineRoundedIcon",
+        "Chip",
+        "EstimatedRate",
+        "sup",
+        "InfoRoundedIcon",
+        "TotalCostSummary",
+        "AppModal",
+        "DialogContentText",
+        "strong",
+        "EditRoundedIcon",
+        "RateFrequencyControl",
+        "CoverageCartDrawer",
+        "CoverageCartInline"
+      ]
+    },
+    {
+      "file": "src/components/coverage/CoverageCategorySelector.tsx",
+      "sha256": "9788424a89b02cbacbbbef276b3bd2f4e7624ea2b135f84e9f91383f294b07a2",
+      "lines": 46,
+      "jsx": [
+        "FieldGroup",
+        "ControlledFieldRenderer"
+      ]
+    },
+    {
+      "file": "src/components/coverage/CoverageNeedsCalculator.tsx",
+      "sha256": "08a077c7151072478e5c16524ec7b21d555cf4d0596774966dab07b5377c18c0",
+      "lines": 103,
+      "jsx": [
+        "Stack",
+        "Typography",
+        "FieldGrid",
+        "FieldRenderer",
+        "Box"
+      ]
+    },
+    {
+      "file": "src/components/coverage/CoverageOptionsPanel.tsx",
+      "sha256": "66e205b5510454983d4587c34045c0ec7440938de20cd4f3e569f501ad0116c4",
+      "lines": 297,
+      "jsx": [
+        "Typography",
+        "Stack",
+        "QuickDecisionInfoBox",
+        "Box",
+        "Alert",
+        "Divider",
+        "Tabs",
+        "Tab",
+        "IconComponent",
+        "QuickDecisionIndicator"
+      ]
+    },
+    {
+      "file": "src/components/coverage/CoveragePortfolioDrawer.tsx",
+      "sha256": "75b37f0b1e739768de739566dc583209a98f29ef4bd5a4ae8fb3b1e40f0b40f1",
+      "lines": 114,
+      "jsx": [
+        "AppDrawer",
+        "Stack",
+        "Typography",
+        "Box",
+        "Divider",
+        "Chip"
+      ]
+    },
+    {
+      "file": "src/components/coverage/CoverageQuestions.tsx",
+      "sha256": "ed9698af7b3570eb2455829856dbcf0bc5b89ad022d92aac1095bc8cf0bdb62a",
+      "lines": 142,
+      "jsx": [
+        "Stack",
+        "CoverageCategorySelector",
+        "CoverageFollowupQuestions",
+        "FieldGroup",
+        "FieldRenderer",
+        "FieldGrid",
+        "ConditionalGroup",
+        "Box",
+        "SectionDivider",
+        "ApplicantSectionDivider"
+      ]
+    },
+    {
+      "file": "src/components/coverage/CoverageSelectionFeedback.tsx",
+      "sha256": "991ff445fe017c5e8bbf0507e38770b4fb10225b37f934c14c9d0a6bc279b039",
+      "lines": 22,
+      "jsx": [
+        "AppDrawer",
+        "CoverageCart",
+        "AppSnackbar"
+      ]
+    },
+    {
+      "file": "src/components/coverage/EstimatedRate.tsx",
+      "sha256": "c27ca6af893eec72022f1e4509efbda5422fe6141e85c36a486d3db77a62bb7a",
+      "lines": 37,
+      "jsx": [
+        "ReferenceRateTableLink",
+        "Box",
+        "Typography",
+        "InfoRoundedIcon",
+        "CircularProgress"
+      ]
+    },
+    {
+      "file": "src/components/coverage/EstimatorProductCard.tsx",
+      "sha256": "3de895e63833b11f1d0ec16abbbb96fb1220ed0d004a3342739f9a0abbacb324",
+      "lines": 154,
+      "jsx": [
+        "ProductCardSurface",
+        "FeaturedBadge",
+        "FieldGrid",
+        "Alert",
+        "ControlledFieldRenderer",
+        "Box",
+        "Stack",
+        "EstimatedRate",
+        "Typography"
+      ]
+    },
+    {
+      "file": "src/components/coverage/FeaturedBadge.tsx",
+      "sha256": "0085fc6b907e2ad29feab4679140e537106e2bf2362921403d347e2d4284ccda",
+      "lines": 22,
+      "jsx": [
+        "Chip",
+        "StarsRoundedIcon"
+      ]
+    },
+    {
+      "file": "src/components/coverage/ProductCatalog.tsx",
+      "sha256": "c4a8e397c2d4f05af4f423d52867c4b737422b0b02470314808120495cb3898f",
+      "lines": 783,
+      "jsx": [
+        "Stack",
+        "CircularProgress",
+        "Typography",
+        "QuickDecisionInfoBox",
+        "Alert",
+        "Box",
+        "Collapse",
+        "CategoryHeader",
+        "CategoryCard",
+        "ProductCard",
+        "CoverageCart",
+        "ProductCardSurface",
+        "FeaturedBadge",
+        "ApplicantSectionLabel",
+        "FieldGrid",
+        "ControlledFieldRenderer",
+        "EstimatedRate",
+        "sup",
+        "ProductCostBreakdown"
+      ]
+    },
+    {
+      "file": "src/components/coverage/ProductCostBreakdown.tsx",
+      "sha256": "66e774c5bc258f4e4d1c7691a1c707e2fdf4db2118016a33c0fa9dc53d4227bc",
+      "lines": 98,
+      "jsx": [
+        "Stack",
+        "Typography",
+        "EstimatedRate",
+        "Box",
+        "sup",
+        "BreakdownRow",
+        "Divider"
+      ]
+    },
+    {
+      "file": "src/components/coverage/QuickDecisionIcon.tsx",
+      "sha256": "2bd4984f7a4073343654c50199c984969fb54e9f613cc818fd125c1703555135",
+      "lines": 22,
+      "jsx": [
+        "OfflineBoltRoundedIcon",
+        "Box"
+      ]
+    },
+    {
+      "file": "src/components/coverage/QuickDecisionIndicator.tsx",
+      "sha256": "e51d02233569ae57beb020d5d4b10d07c9737840a5805990f6fd75403a89d35a",
+      "lines": 12,
+      "jsx": [
+        "QuickDecisionIcon"
+      ]
+    },
+    {
+      "file": "src/components/coverage/RateFrequencyControl.tsx",
+      "sha256": "66b2668994fc1418bd997fc5e2372f398e3bc18d312c41879399bd353a9d8d22",
+      "lines": 54,
+      "jsx": [
+        "Stack",
+        "Typography",
+        "RateFrequencyToggle"
+      ]
+    },
+    {
+      "file": "src/components/coverage/RateFrequencyToggle.tsx",
+      "sha256": "91259fda90e717fde7d37c616f1f71cb4c422de348ddb31aec57ea6a8fdc8bde",
+      "lines": 56,
+      "jsx": []
+    },
+    {
+      "file": "src/components/coverage/ReferenceRateTableLink.tsx",
+      "sha256": "846dc4bd5f6c0fa65c223210fc8a7a5de498e0942bba6dde25ac7730e6fd850b",
+      "lines": 23,
+      "jsx": [
+        "Link",
+        "AppDrawer",
+        "Typography",
+        "Box",
+        "Table",
+        "TableHead",
+        "TableRow",
+        "TableCell",
+        "TableBody"
+      ]
+    },
+    {
+      "file": "src/components/coverage/TotalCostSummary.tsx",
+      "sha256": "38551342f1578d895c78a42651303a29a4a043dd4769b07f6c88ed92d2fc5e36",
+      "lines": 111,
+      "jsx": [
+        "Box",
+        "Stack",
+        "Typography",
+        "sup",
+        "EstimatedRate",
+        "Divider"
+      ]
+    },
+    {
+      "file": "src/components/eligibility/EligibilitySections.tsx",
+      "sha256": "ff209512e999ba49e70d9c99f77010e31076d538baf4fa5b09bb0e97b527b189",
+      "lines": 52,
+      "jsx": [
+        "Fragment",
+        "Alert",
+        "FieldGroup",
+        "EligibilityFields",
+        "FieldGrid",
+        "FieldRenderer",
+        "DynamicList",
+        "Typography",
+        "div",
+        "ApplicantSectionDivider"
+      ]
+    },
+    {
+      "file": "src/components/feedback/AppSnackbar.tsx",
+      "sha256": "626d7fc3c5a64691d740c4a509b89d4d9a2e9ab7ae9f29156a756b282136df57",
+      "lines": 52,
+      "jsx": [
+        "Snackbar",
+        "Alert"
+      ]
+    },
+    {
+      "file": "src/components/feedback/ApplicationErrorState.tsx",
+      "sha256": "ffe7fb9e9f9be9ff63e9011de2baa5f76ad9c365f681a6d9c68338c633506f9d",
+      "lines": 46,
+      "jsx": [
+        "Stack",
+        "Icon",
+        "Typography",
+        "ApplicationRecoveryActions",
+        "SiteSupport",
+        "Box",
+        "PageShell",
+        "FormShell"
+      ]
+    },
+    {
+      "file": "src/components/feedback/ApplicationRecoveryActions.tsx",
+      "sha256": "bdad6597d72d10238ffcb75a3304dd5a7007a40c65ec22b8add557bad243558d",
+      "lines": 21,
+      "jsx": [
+        "Stack",
+        "Link",
+        "Button"
+      ]
+    },
+    {
+      "file": "src/components/feedback/EmptyState.tsx",
+      "sha256": "f24b37c08e7aa4d4caed82887409d9a599dfe03541a71b0bc2a43d69ed951b44",
+      "lines": 49,
+      "jsx": [
+        "Box",
+        "Stack",
+        "Icon",
+        "Typography"
+      ]
+    },
+    {
+      "file": "src/components/feedback/ExpiringCodeAlert.tsx",
+      "sha256": "ef4756eded5c45da3d21c6c21b60787e0be21e99eb0245b36131fba2a8caaf65",
+      "lines": 57,
+      "jsx": [
+        "Alert",
+        "Link"
+      ]
+    },
+    {
+      "file": "src/components/feedback/InformationAlert.tsx",
+      "sha256": "7452ac7ecc0ed5d9990a369df91a78053f45753dc7bb9869745c4ab8cddcf999",
+      "lines": 14,
+      "jsx": [
+        "Alert",
+        "Stack",
+        "AlertTitle",
+        "Typography"
+      ]
+    },
+    {
+      "file": "src/components/feedback/OfflineBanner.tsx",
+      "sha256": "9362d119d8196a66d003604b7bada253a9898293cf1c6d991ab4dc68d25544af",
+      "lines": 31,
+      "jsx": [
+        "Alert",
+        "Typography",
+        "Box"
+      ]
+    },
+    {
+      "file": "src/components/feedback/PageAlert.tsx",
+      "sha256": "291e3bcebb127f0a8218959fe917ed6d914f66babe93e8a0c2115d46c60947b2",
+      "lines": 48,
+      "jsx": [
+        "Box",
+        "Alert"
+      ]
+    },
+    {
+      "file": "src/components/feedback/PageTransitionSkeleton.tsx",
+      "sha256": "f7b6942247ecf90c252d4e0b1b7e5cef1887261c9e194585d67b9df3b615e527",
+      "lines": 37,
+      "jsx": [
+        "Box",
+        "Typography",
+        "Skeleton"
+      ]
+    },
+    {
+      "file": "src/components/feedback/ProgressSavedSnackbar.tsx",
+      "sha256": "95a57644cf4814fd32bffc8547fb1dc556c849eb7794f2ab311202ee74c35db2",
+      "lines": 22,
+      "jsx": [
+        "AppSnackbar"
+      ]
+    },
+    {
+      "file": "src/components/feedback/PrototypeHandoffPage.tsx",
+      "sha256": "b2c30a273d47e04547ebb570c985b2b2b7675e1b6c0ee64cc35669884afb411e",
+      "lines": 48,
+      "jsx": [
+        "FormRoutePage",
+        "Dialog",
+        "Alert",
+        "Box",
+        "Typography"
+      ]
+    },
+    {
+      "file": "src/components/feedback/ResendCountdownRow.tsx",
+      "sha256": "33e89ec48f04685bbd07d19194eb99878e70af38503a209ed96ffd49bcca1da3",
+      "lines": 57,
+      "jsx": [
+        "Stack",
+        "Typography",
+        "Box",
+        "Button",
+        "LoopRoundedIcon"
+      ]
+    },
+    {
+      "file": "src/components/feedback/ResumeSessionWarning.tsx",
+      "sha256": "e1078cbb13858423f2efdb428bdf0190a6d97950717ee2a52d4770e96f3d7270",
+      "lines": 16,
+      "jsx": [
+        "PageAlert",
+        "AlertTitle",
+        "Box"
+      ]
+    },
+    {
+      "file": "src/components/feedback/SessionExpiryAlert.tsx",
+      "sha256": "76671a1c77a909bc8867ca319d939971612ef3283a2f9f56ebc8f2bfe556c7fe",
+      "lines": 23,
+      "jsx": [
+        "AppModal",
+        "Typography",
+        "Stack",
+        "Box"
+      ]
+    },
+    {
+      "file": "src/components/forms/AddressFields.tsx",
+      "sha256": "d11d49085b8f07f6ace422490ec46432f0c898ce9e690a47fdabccd4a537b1dd",
+      "lines": 23,
+      "jsx": [
+        "FieldRenderer",
+        "FieldGrid"
+      ]
+    },
+    {
+      "file": "src/components/forms/ConditionalGroup.tsx",
+      "sha256": "e393c19ddad4fa20cc851372cc9bb4d22b67f530a23e80f1bf175d7f5c7aefc6",
+      "lines": 34,
+      "jsx": [
+        "Box"
+      ]
+    },
+    {
+      "file": "src/components/forms/ControlledFieldRenderer.tsx",
+      "sha256": "07a744646a99b6369a82aa39d4224447c95a65a44363484b3dce2599f017531b",
+      "lines": 40,
+      "jsx": [
+        "FieldRenderer"
+      ]
+    },
+    {
+      "file": "src/components/forms/DynamicList.tsx",
+      "sha256": "8ad83f3017b1a4370cd442e881d18d65fc944e06848d12216259740c9892f0df",
+      "lines": 300,
+      "jsx": [
+        "div",
+        "DynamicListItem",
+        "Button",
+        "AddCircleOutlineRoundedIcon",
+        "Box",
+        "AppModal",
+        "FieldGrid",
+        "FieldRenderer",
+        "DialogContentText"
+      ]
+    },
+    {
+      "file": "src/components/forms/DynamicListItem.tsx",
+      "sha256": "785eaf119bbcd0b9a2405e740d8555711cda544bed1ecd9221fbeee7fb0de4bd",
+      "lines": 62,
+      "jsx": [
+        "Box",
+        "Stack",
+        "Button"
+      ]
+    },
+    {
+      "file": "src/components/forms/EligibilityFields.tsx",
+      "sha256": "efa4e41f22d75fb90360760766a641ca6332ca6436d216ae3b5c9483ab2bbbe5",
+      "lines": 142,
+      "jsx": [
+        "FieldGrid",
+        "Box",
+        "CheckRoundedIcon",
+        "FieldRenderer",
+        "ControlledFieldRenderer",
+        "Alert"
+      ]
+    },
+    {
+      "file": "src/components/forms/FieldRenderer.tsx",
+      "sha256": "d068b00fb965fe64da6a3585714f5a347409b23f0a6f65feebe616204ecf55be",
+      "lines": 967,
+      "jsx": [
+        "Link",
+        "Controller",
+        "InputAdornment",
+        "LockRoundedIcon",
+        "Box",
+        "TextLikeField",
+        "RadioSelectionGroup",
+        "FormControl",
+        "FormLabel",
+        "Select",
+        "MenuItem",
+        "em",
+        "InputLabel",
+        "FormHelperText",
+        "Autocomplete",
+        "TextField",
+        "Checkbox",
+        "SelectionGroup",
+        "Typography",
+        "Stack",
+        "PhoneField",
+        "SsnField",
+        "FieldRendererInput"
+      ]
+    },
+    {
+      "file": "src/components/forms/FormFieldDefinitions.tsx",
+      "sha256": "a9a0e69d2c430fdacbe59c7993630f86d6bda94c247e007c5d89d47eb4b90059",
+      "lines": 12,
+      "jsx": [
+        "FieldDefinitionsContext"
+      ]
+    },
+    {
+      "file": "src/components/forms/HealthDetailSummary.tsx",
+      "sha256": "daf6d7935d679024a8ab223eea4ee3f8fb035387fd0adafe8542147d3aa94155",
+      "lines": 17,
+      "jsx": [
+        "Typography",
+        "Stack"
+      ]
+    },
+    {
+      "file": "src/components/forms/HealthQuestion.tsx",
+      "sha256": "82a8de842db667102bddf33eb204d4b828f585f8e92cc88d54bebb57172af8dd",
+      "lines": 33,
+      "jsx": [
+        "FieldGrid",
+        "FieldRenderer",
+        "DynamicList",
+        "Stack",
+        "Typography"
+      ]
+    },
+    {
+      "file": "src/components/forms/HealthQuestionList.tsx",
+      "sha256": "1297a7b5ac6e46d469ed900133fa360ad1ce24539e1bca076e9af23bd9d9a9f3",
+      "lines": 38,
+      "jsx": [
+        "Stack",
+        "Typography",
+        "Box",
+        "ApplicantSectionDivider",
+        "FieldGroup"
+      ]
+    },
+    {
+      "file": "src/components/forms/PhoneField.tsx",
+      "sha256": "8a7cf0e430f04e4c169abfabcef990f701aefba435a81cbc595e1004230f1a11",
+      "lines": 28,
+      "jsx": [
+        "TextLikeField",
+        "InputAdornment",
+        "Box",
+        "Select",
+        "MenuItem"
+      ]
+    },
+    {
+      "file": "src/components/forms/PhysicianInformation.tsx",
+      "sha256": "3c786c12533aab726b7f6f3775fc74548acb08237b8d134cadcf7de05c3a6618",
+      "lines": 69,
+      "jsx": [
+        "FieldRenderer",
+        "SectionDivider",
+        "FieldGrid",
+        "AddressFields"
+      ]
+    },
+    {
+      "file": "src/components/forms/RadioSelectionGroup.tsx",
+      "sha256": "262c47afb10b596f67590b659ff7b8fa41784fc825317cbeaa1b9135ac336f02",
+      "lines": 64,
+      "jsx": [
+        "FormControl",
+        "FormLabel",
+        "RadioGroup",
+        "SelectionGroup",
+        "Radio",
+        "Box",
+        "FormHelperText"
+      ]
+    },
+    {
+      "file": "src/components/forms/ReviewStatement.tsx",
+      "sha256": "1839a847fe51fc98bd560923b9d04280d9bbaf0e304024f36cec49371030c764",
+      "lines": 16,
+      "jsx": [
+        "Typography",
+        "Fragment"
+      ]
+    },
+    {
+      "file": "src/components/forms/SelectionGroup.tsx",
+      "sha256": "a7ea6870034b5f772b3d1aad548632a10eaa8fd70b540b084f1a29cb17d8fc0e",
+      "lines": 94,
+      "jsx": [
+        "Box"
+      ]
+    },
+    {
+      "file": "src/components/forms/SharedPaymentControls.tsx",
+      "sha256": "34686fc4a6bfd018b97ab5fe0f7556c26414897114f39b1b29d0e447e8a061dc",
+      "lines": 28,
+      "jsx": [
+        "FieldGrid",
+        "FieldRenderer",
+        "Alert"
+      ]
+    },
+    {
+      "file": "src/components/forms/TextLikeField.tsx",
+      "sha256": "50b7ee288649e58cb9df0e7515d507262dd46b1a892d29222ba8d9a7cfaee646",
+      "lines": 29,
+      "jsx": [
+        "TextField",
+        "FormControl",
+        "FormLabel",
+        "FormHelperText"
+      ]
+    },
+    {
+      "file": "src/components/forms/fieldInputPresentation.tsx",
+      "sha256": "f40dddf12d7eb4b634d0e5119dc8c6adf573a148dbc3b1d67ebbb224cd4b78e7",
+      "lines": 181,
+      "jsx": [
+        "CheckCircleRoundedIcon",
+        "CancelRoundedIcon",
+        "InputAdornment",
+        "Box",
+        "span",
+        "Tooltip",
+        "InfoRoundedIcon"
+      ]
+    },
+    {
+      "file": "src/components/home/ApplicationPreview.tsx",
+      "sha256": "2eeeba6dd49664e0bba3c56ecd5bc3660df81ff7f672263853b9a0f017246b95",
+      "lines": 393,
+      "jsx": [
+        "Stack",
+        "Typography",
+        "Box",
+        "ProgressHeader",
+        "FavoriteBorderRoundedIcon",
+        "CheckRoundedIcon",
+        "ChoicePill",
+        "Question",
+        "MobilePreviewFrame",
+        "CoverageScene",
+        "HealthScene",
+        "ReceiptScene",
+        "ApplicationPreview"
+      ]
+    },
+    {
+      "file": "src/components/home/ApplyingStepIllustration.tsx",
+      "sha256": "3c98249025d5fe1430c520f9431cf0e6211ab90a5bccc2a7693f177f92c78121",
+      "lines": 16,
+      "jsx": [
+        "Box"
+      ]
+    },
+    {
+      "file": "src/components/home/AssociationIntroduction.tsx",
+      "sha256": "1e0c2459a130b305d09a3079b9e47c9b375e6645ed296138123aa2c51b49e5ee",
+      "lines": 40,
+      "jsx": [
+        "Stack",
+        "Box",
+        "Typography"
+      ]
+    },
+    {
+      "file": "src/components/home/FormUmbrella.tsx",
+      "sha256": "bb69582a8bc22be53c9e7cfe34a537cabbece04ebb43ee7a03b2f6d1fbc451f6",
+      "lines": 50,
+      "jsx": [
+        "Box",
+        "path",
+        "g",
+        "circle",
+        "ellipse"
+      ]
+    },
+    {
+      "file": "src/components/home/HeroClouds.tsx",
+      "sha256": "1a55db03fc1fa07cdd0481edb81e4d779d77ab3c557f65dff37592950ae6b8da",
+      "lines": 70,
+      "jsx": [
+        "Box",
+        "path"
+      ]
+    },
+    {
+      "file": "src/components/home/HomeCoverageSection.tsx",
+      "sha256": "196df175f5aa6bd14c9bae68cb0ac367b7ccd7ccf5ab5eb1ee7dca3a99bcd069",
+      "lines": 24,
+      "jsx": [
+        "Stack",
+        "Typography",
+        "CoverageOptionsPanel"
+      ]
+    },
+    {
+      "file": "src/components/home/HomeHero.tsx",
+      "sha256": "cd3b1b1c099c3b1b06173c621107266c50a14fe8e7da898dbd95c182199d41a7",
+      "lines": 253,
+      "jsx": [
+        "Box",
+        "Stack",
+        "Typography",
+        "EligibilityFields",
+        "Button",
+        "CircularProgress",
+        "Chip",
+        "VerifiedUserRoundedIcon",
+        "Link",
+        "HomeQuoteSection"
+      ]
+    },
+    {
+      "file": "src/components/home/HowApplyingWorksPanel.tsx",
+      "sha256": "6ffcdaddb411730b96047a87f52a14dec5daa413248506f805a45e5191cbbba6",
+      "lines": 238,
+      "jsx": [
+        "InlineDrawerLink",
+        "QuickDecisionMark",
+        "Stack",
+        "Typography",
+        "Box",
+        "ApplyingStepIllustration",
+        "ApplicationPreview",
+        "AppDrawer",
+        "ApplicationReviewDrawerContent",
+        "QuickDecisionDrawerContent"
+      ]
+    },
+    {
+      "file": "src/components/home/UnderwriterCredentials.tsx",
+      "sha256": "9effd18bd9482abfc3525ca9b71cf00e5a05178c8f879c84e9c8bc52cb391320",
+      "lines": 77,
+      "jsx": [
+        "Stack",
+        "Box",
+        "Typography"
+      ]
+    },
+    {
+      "file": "src/components/layout/AppBody.tsx",
+      "sha256": "3678b0b3aec94e1958981c549dbe7901c8a9a3b651ab9ed888799926edc7748e",
+      "lines": 90,
+      "jsx": [
+        "Box"
+      ]
+    },
+    {
+      "file": "src/components/layout/AppDrawer.tsx",
+      "sha256": "98acb32386879e61480d4308911e3a66d37d389694bf2cd43a821ea72e71b958",
+      "lines": 128,
+      "jsx": [
+        "Box",
+        "Stack",
+        "Typography",
+        "IconButton",
+        "CloseRoundedIcon",
+        "SwipeableDrawer",
+        "Drawer"
+      ]
+    },
+    {
+      "file": "src/components/layout/AppFooter.tsx",
+      "sha256": "7bcbea72883fe9e321ebfd598cb3489eb5073516ab26017f12ef7895767e6828",
+      "lines": 314,
+      "jsx": [
+        "Box",
+        "Stack",
+        "Typography",
+        "br",
+        "LanguageRoundedIcon",
+        "Link",
+        "EmailRoundedIcon",
+        "PhoneRoundedIcon",
+        "AccessTimeRoundedIcon",
+        "span",
+        "sup",
+        "AppModal",
+        "PrintAction",
+        "LegalDocList"
+      ]
+    },
+    {
+      "file": "src/components/layout/AppHeader.tsx",
+      "sha256": "37e762e7065302585ad03b6207614ef8bf4dfa6c998ddaebcb092edeef239a1f",
+      "lines": 294,
+      "jsx": [
+        "ClientHelpBanner",
+        "Slide",
+        "AppBar",
+        "Toolbar",
+        "Box",
+        "Typography",
+        "Stack",
+        "IconButton",
+        "Badge",
+        "ShoppingCartRoundedIcon",
+        "MenuRoundedIcon",
+        "LinearProgress",
+        "AppMenu",
+        "AppDrawer",
+        "CoverageCart"
+      ]
+    },
+    {
+      "file": "src/components/layout/AppMenu.tsx",
+      "sha256": "274ba48e6d0506de2cd285cf2d29eb7cfbd67655f464c9f8846eaf4455f2cd17",
+      "lines": 316,
+      "jsx": [
+        "Drawer",
+        "Stack",
+        "Box",
+        "Typography",
+        "IconButton",
+        "CloseRoundedIcon",
+        "Button",
+        "ListAltRoundedIcon",
+        "PrivacyTipRoundedIcon",
+        "QuickDecisionIcon",
+        "QuickDecisionMark",
+        "CalculateRoundedIcon",
+        "LanguageRoundedIcon",
+        "Link",
+        "EmailRoundedIcon",
+        "PhoneRoundedIcon",
+        "AccessTimeRoundedIcon",
+        "AppDrawer",
+        "HowApplyingWorksPanel",
+        "CoverageOptionsPanel",
+        "CoverageNeedsCalculator",
+        "QuickDecisionDrawerContent"
+      ]
+    },
+    {
+      "file": "src/components/layout/AppModal.tsx",
+      "sha256": "889174718a6b8c0d818abd67a11c84dfc42da13b53701a1690f804593a9a19ec",
+      "lines": 146,
+      "jsx": [
+        "Dialog",
+        "DialogTitle",
+        "Typography",
+        "IconButton",
+        "CloseRoundedIcon",
+        "DialogContent",
+        "DialogActions",
+        "Button"
+      ]
+    },
+    {
+      "file": "src/components/layout/AppShell.tsx",
+      "sha256": "5d184c077789d4831fa3255801785d3e136b19ef2809499212edc0ec1ff7196f",
+      "lines": 98,
+      "jsx": [
+        "ComponentContentContext",
+        "ClientIconContext",
+        "Box",
+        "OfflineBanner",
+        "FormUmbrella",
+        "CookieDialog",
+        "AppHeader",
+        "AppBody",
+        "ApplicationSessionGuard",
+        "AppFooter",
+        "DevTools",
+        "AppSnackbar"
+      ]
+    },
+    {
+      "file": "src/components/layout/ApplicantSectionDivider.tsx",
+      "sha256": "a2199a7c2880c452bc21b2cda8f9f0f713b6f77345fe61a46a6e2ca1e3282189",
+      "lines": 112,
+      "jsx": [
+        "Box",
+        "Icon",
+        "Typography",
+        "Alert",
+        "ApplicantSectionLabel"
+      ]
+    },
+    {
+      "file": "src/components/layout/CategoryCard.tsx",
+      "sha256": "d48c21f7667966178ce7bc174df90bd14cb98dc42cb02363b9cab00b74eea90c",
+      "lines": 31,
+      "jsx": [
+        "Box",
+        "CategoryHeader",
+        "Stack"
+      ]
+    },
+    {
+      "file": "src/components/layout/CategoryHeader.tsx",
+      "sha256": "fc964b61c311b3b47f345f35235c6a067f3f07d53c81f4881deb63a40ceb283e",
+      "lines": 41,
+      "jsx": [
+        "Stack",
+        "Icon",
+        "Typography"
+      ]
+    },
+    {
+      "file": "src/components/layout/ClientHelpBanner.tsx",
+      "sha256": "b0371a2f64da8618b447bd449103c8d3d96b933ea6dc502b3abf890d14787489",
+      "lines": 164,
+      "jsx": [
+        "Box",
+        "Button",
+        "PhoneRoundedIcon",
+        "Typography",
+        "Divider",
+        "ChatBubbleOutlineRoundedIcon",
+        "CalendarMonthRoundedIcon",
+        "AppModal"
+      ]
+    },
+    {
+      "file": "src/components/layout/ConfirmationDialog.tsx",
+      "sha256": "dd0effb82adb54690957df85a68dd419c767eef9452ed37c3ef941355985d179",
+      "lines": 51,
+      "jsx": [
+        "AppModal",
+        "DialogContentText"
+      ]
+    },
+    {
+      "file": "src/components/layout/CookieDialog.tsx",
+      "sha256": "d006a465a4125086ab12414f862278b745a95138c5ca01ec96377c993a5e9f03",
+      "lines": 104,
+      "jsx": [
+        "Alert",
+        "Box",
+        "Typography",
+        "Link",
+        "IconButton",
+        "CloseRoundedIcon"
+      ]
+    },
+    {
+      "file": "src/components/layout/DetailsTable.tsx",
+      "sha256": "dab31d687b823bba6675f6b9e3e15b42d47637577bf258b97f611d932e495668",
+      "lines": 46,
+      "jsx": [
+        "TableContainer",
+        "Table",
+        "TableBody",
+        "TableRow",
+        "TableCell"
+      ]
+    },
+    {
+      "file": "src/components/layout/FieldGrid.tsx",
+      "sha256": "25649cd56fd2f7c81bbc44b55d23ca7e94c74d0c5b77e147556329b91a8bb53a",
+      "lines": 51,
+      "jsx": [
+        "Box"
+      ]
+    },
+    {
+      "file": "src/components/layout/FormShell.tsx",
+      "sha256": "9a3aa56bf801d2fa99ededfdc9206e82d8335a0cfcfe2e1decf5e17be74262c8",
+      "lines": 10,
+      "jsx": []
+    },
+    {
+      "file": "src/components/layout/InternalPageShell.tsx",
+      "sha256": "d0bf2cbcfbbdd6de650324a0213c6a2c64bf34d6df1460bd9269f1c18a899513",
+      "lines": 70,
+      "jsx": [
+        "Box",
+        "Typography",
+        "Breadcrumbs",
+        "Link"
+      ]
+    },
+    {
+      "file": "src/components/layout/MobilePreviewFrame.tsx",
+      "sha256": "3dd84f1514a69aa982bb9e858ef29be82032f16a82d69c0f53d6e2c0bf631bf8",
+      "lines": 69,
+      "jsx": [
+        "Box"
+      ]
+    },
+    {
+      "file": "src/components/layout/PageHeader.tsx",
+      "sha256": "b12e9ea4295dc6a987104c9a54c426a4d57dfdbc67abe8d0e0e3e19491a6756b",
+      "lines": 35,
+      "jsx": [
+        "Box",
+        "Stack",
+        "PageTitle"
+      ]
+    },
+    {
+      "file": "src/components/layout/PageShell.tsx",
+      "sha256": "e570ccef5cf48c0ba426009d83dbe5de0a2dc146bb6a4f6bb9b45f59a76eb1d0",
+      "lines": 64,
+      "jsx": [
+        "Stack",
+        "Box",
+        "PageHeader",
+        "PageAlert"
+      ]
+    },
+    {
+      "file": "src/components/layout/PageTitle.tsx",
+      "sha256": "6db23a332a6f54c9d6ffec5d974c07894e8be531dd9f49e3006cad5736e50c31",
+      "lines": 44,
+      "jsx": [
+        "Box",
+        "Stack",
+        "IconButton",
+        "ArrowBackIosRoundedIcon",
+        "Typography"
+      ]
+    },
+    {
+      "file": "src/components/layout/ProductCard.tsx",
+      "sha256": "3f094f4cdfccd8793d967b5d8292d5f688694b2320b69a85386342f5cc4b2829",
+      "lines": 53,
+      "jsx": [
+        "ProductSurface",
+        "Stack",
+        "Typography",
+        "Link",
+        "QuickDecisionIndicator"
+      ]
+    },
+    {
+      "file": "src/components/layout/SectionDivider.tsx",
+      "sha256": "a6149250245e6df7ba9ce0116ca55b37cae82239692e133ab0601dada5ecbfc4",
+      "lines": 128,
+      "jsx": [
+        "Divider",
+        "Stack",
+        "Icon",
+        "Typography",
+        "Chip",
+        "Box",
+        "FieldGroup"
+      ]
+    },
+    {
+      "file": "src/components/layout/SendApplicationDialog.tsx",
+      "sha256": "cb6bea7ad4e494a052cc40c04e52589fe37c74e38ee0bcce11782b1838aa5e1b",
+      "lines": 140,
+      "jsx": [
+        "AppModal",
+        "Stack",
+        "PageAlert",
+        "Typography",
+        "Box",
+        "SendRoundedIcon"
+      ]
+    },
+    {
+      "file": "src/components/layout/SinglePageSections.tsx",
+      "sha256": "d0f7ff1742a7460665f25ecdb8aed8ec741c324e1c5144938a429ea9377ea200",
+      "lines": 99,
+      "jsx": [
+        "SinglePageFlowContext",
+        "AppSnackbar",
+        "Stepper",
+        "Step",
+        "Box",
+        "StepLabel",
+        "Stack",
+        "Typography",
+        "StepEditButton"
+      ]
+    },
+    {
+      "file": "src/components/layout/SiteSupport.tsx",
+      "sha256": "4dd31c407a6f1e5629a391b0fd1f207e414b80e00774290f84f4e519fda35f36",
+      "lines": 57,
+      "jsx": [
+        "Link",
+        "a",
+        "p",
+        "strong",
+        "PhoneRounded",
+        "EmailRounded",
+        "LanguageRounded",
+        "div",
+        "Fragment",
+        "section",
+        "Alert",
+        "AlertTitle"
+      ]
+    },
+    {
+      "file": "src/components/layout/StandaloneFormPage.tsx",
+      "sha256": "8c7d82894c549a47eca33cf025511e2f7b3ebe48d0a0986345250efe3db9d7ca",
+      "lines": 20,
+      "jsx": [
+        "Box",
+        "PageShell",
+        "FormShell",
+        "PageHeader"
+      ]
+    },
+    {
+      "file": "src/components/membership/AdditionalMembershipInformation.tsx",
+      "sha256": "bea93d28e06349d4d37d790cff15e5e085efd2501afbc11e26f0f44a18b1b344",
+      "lines": 217,
+      "jsx": [
+        "FieldRenderer",
+        "FieldGrid",
+        "Alert",
+        "Box",
+        "SectionDivider",
+        "WAEPAAdditionalFields"
+      ]
+    },
+    {
+      "file": "src/components/membership/MemberInformation.tsx",
+      "sha256": "dd2f6afe2a927b86ccdfd507dcc4bac52f02227c76abd396e42d05041854dd80",
+      "lines": 24,
+      "jsx": [
+        "FieldGrid",
+        "FieldRenderer"
+      ]
+    },
+    {
+      "file": "src/components/membership/MembershipStatus.tsx",
+      "sha256": "9c7c504086da316469783725052ecf9f67f51d45b1c69e6e987d124bb7e1dd33",
+      "lines": 85,
+      "jsx": [
+        "Alert",
+        "FieldRenderer",
+        "Stack",
+        "Typography",
+        "Box",
+        "Link"
+      ]
+    },
+    {
+      "file": "src/components/navigation/PageNav.tsx",
+      "sha256": "76ad64a44f72cc9f04c41fbd39c06ab05626fb96a17de8e35cf198ad55d4083b",
+      "lines": 48,
+      "jsx": [
+        "Box",
+        "Button",
+        "ArrowForwardRoundedIcon"
+      ]
+    },
+    {
+      "file": "src/components/navigation/ProgressStep.tsx",
+      "sha256": "a0d2ee285d2a7e31e93ee2fd1d3c0c780a3e2b8845e447f9cf3116c428c4a81e",
+      "lines": 339,
+      "jsx": [
+        "MuiBreadcrumbs",
+        "ArrowRightRoundedIcon",
+        "Box",
+        "Typography",
+        "CheckCircleRoundedIcon",
+        "Stepper",
+        "Step",
+        "StepButton",
+        "StepLabel",
+        "StepContent"
+      ]
+    },
+    {
+      "file": "src/components/navigation/StepEditButton.tsx",
+      "sha256": "5aead88674e1069c7aa720658f9ad740b9b22da2d5f57d9bba5b8c2188fc36a4",
+      "lines": 22,
+      "jsx": [
+        "IconButton",
+        "EditRoundedIcon"
+      ]
+    },
+    {
+      "file": "src/components/payment/PaymentSections.tsx",
+      "sha256": "3b891ab9aa46f1ae5872783a7bf81c166cf9983b44fb866d6c4f83e293dd4109",
+      "lines": 66,
+      "jsx": [
+        "Stack",
+        "Box",
+        "FieldRenderer",
+        "Divider",
+        "Alert",
+        "Typography",
+        "CategoryCard",
+        "ProductCard",
+        "FieldGrid",
+        "SectionDivider"
+      ]
+    },
+    {
+      "file": "src/components/profile/ProfilePersonalInformation.tsx",
+      "sha256": "cb4c177fee619c0af0957789e2af6d9428b70401e10f310ada95527620ce8ea0",
+      "lines": 72,
+      "jsx": [
+        "FieldRenderer",
+        "FieldGrid",
+        "ConditionalGroup"
+      ]
+    },
+    {
+      "file": "src/components/profile/ProfileSections.tsx",
+      "sha256": "04cf8451e4ab37db73a8d275268267b53cddd0cfc28c8ba26cbb2d4e1113d848",
+      "lines": 518,
+      "jsx": [
+        "Typography",
+        "div",
+        "ApplicantSectionDivider",
+        "SectionDivider",
+        "ProfilePersonalInformation",
+        "PhysicianInformation",
+        "Alert",
+        "FieldRenderer",
+        "strong",
+        "ConditionalGroup",
+        "DynamicList",
+        "Box"
+      ]
+    },
+    {
+      "file": "src/components/receipt/ReceiptConfirmation.tsx",
+      "sha256": "0555eabf9a4f958cf1430da38f1e1220d62708436ebcd91ca497bac23af265c9",
+      "lines": 41,
+      "jsx": [
+        "Stack",
+        "Typography",
+        "InformationAlert",
+        "Button",
+        "FileDownloadRoundedIcon"
+      ]
+    },
+    {
+      "file": "src/components/receipt/ReceiptCoverageDecision.tsx",
+      "sha256": "d09ee22e32ff8353b382d5babcd827f77e1a33f2be218c5a436beaa1877c7c9c",
+      "lines": 66,
+      "jsx": [
+        "Stack",
+        "Typography",
+        "Box",
+        "ProductCard",
+        "ApplicantSectionDivider"
+      ]
+    },
+    {
+      "file": "src/components/receipt/ReceiptDecisions.tsx",
+      "sha256": "84f760f264023801955d83a0cd01ecb623e9cf3e84fb550dabb7e7e6f9e4376d",
+      "lines": 15,
+      "jsx": [
+        "Stack",
+        "Box",
+        "Typography"
+      ]
+    },
+    {
+      "file": "src/components/review/ReviewSections.tsx",
+      "sha256": "1b734dcf763c32f23f5b0c164c6613c66ffd25dd9f141e3298f45a23f86857b9",
+      "lines": 139,
+      "jsx": [
+        "Link",
+        "Stack",
+        "Typography",
+        "List",
+        "ListItem",
+        "FieldGrid",
+        "FieldRenderer",
+        "Alert",
+        "Box",
+        "li",
+        "LegalReviewSection",
+        "ReviewStatement",
+        "ApplicantSectionDivider",
+        "AppModal",
+        "PrintAction",
+        "LegalDocList"
+      ]
+    },
+    {
+      "file": "src/components/verification/MemberVerification.tsx",
+      "sha256": "e8b02bda325ed5a6a80c25003cd0a79612845d443da6ec16002dba3b4537933c",
+      "lines": 272,
+      "jsx": [
+        "Stack",
+        "Typography",
+        "FieldRenderer",
+        "Box",
+        "Button",
+        "Divider",
+        "CheckCircleRoundedIcon",
+        "CancelRoundedIcon",
+        "AppModal",
+        "MobileStepper",
+        "MethodStep",
+        "SecurityQuestionsStep",
+        "ResultStep"
+      ]
+    },
+    {
+      "file": "src/components/verification/VerificationAddress.tsx",
+      "sha256": "d32cf453d48f8723c721229d617e0682d876f5c1dc458fa04350a2bf7a3cf9cb",
+      "lines": 27,
+      "jsx": [
+        "AppModal",
+        "Stack",
+        "Alert",
+        "Box",
+        "AddressFields"
+      ]
+    },
+    {
+      "file": "src/pages/AdvisorLogin.tsx",
+      "sha256": "0b4b9b638aa45cbe5142b09988916990a0962e683edad69c27f143662f2b2998",
+      "lines": 126,
+      "jsx": [
+        "FormRoutePage",
+        "Box",
+        "Typography",
+        "AdvisorLoginFields",
+        "Stack",
+        "Controller",
+        "Tabs",
+        "Tab",
+        "FormHelperText",
+        "FieldGrid",
+        "FieldRenderer",
+        "Button"
+      ]
+    },
+    {
+      "file": "src/pages/AdvisorSendConfirmation.tsx",
+      "sha256": "cc53fddc81dd4769c88188aac676d117cab1875ae2d05d417695c4b33e01a726",
+      "lines": 82,
+      "jsx": [
+        "FormRoutePage",
+        "Stack",
+        "Alert",
+        "SendRoundedIcon",
+        "DetailsTable",
+        "Box",
+        "Button",
+        "AddCircleOutlineRoundedIcon"
+      ]
+    },
+    {
+      "file": "src/pages/ApplicationEditConfirmation.tsx",
+      "sha256": "b4a7a78f07b0acfc41a66dc45e7d930239a0353788da39602bbb9943aa9c5c49",
+      "lines": 98,
+      "jsx": [
+        "FormRoutePage",
+        "Stack",
+        "Box",
+        "Alert",
+        "UndoRoundedIcon",
+        "DetailsTable",
+        "Button",
+        "HomeRoundedIcon"
+      ]
+    },
+    {
+      "file": "src/pages/Beneficiary.tsx",
+      "sha256": "9e23d45fae9fb1db5ae57771fef04eaad5a3e050bd213ad9059c46e7be80c2d8",
+      "lines": 901,
+      "jsx": [
+        "BeneficiaryProductRecords",
+        "ApplicantSectionDivider",
+        "Stack",
+        "CategoryCard",
+        "FormRoutePage",
+        "PageHelp",
+        "Alert",
+        "Box",
+        "FieldRenderer",
+        "Divider",
+        "AppModal",
+        "FieldGrid",
+        "Tabs",
+        "Tab",
+        "Typography",
+        "ControlledFieldRenderer",
+        "Button"
+      ]
+    },
+    {
+      "file": "src/pages/Contact.tsx",
+      "sha256": "dc6c02bb0d43ddda117989c47a9755f1d4948f6c404add54f0bca5ec9ab40348",
+      "lines": 53,
+      "jsx": [
+        "FormRoutePage",
+        "ContactSections"
+      ]
+    },
+    {
+      "file": "src/pages/Coverage.tsx",
+      "sha256": "d2125cbff2b364d30fed40738d245cf2925ca0f01e87b989d7174e8842c43f2d",
+      "lines": 340,
+      "jsx": [
+        "FormRoutePage",
+        "CoveragePageContent",
+        "CoveragePortfolioDrawer",
+        "ConfirmationDialog",
+        "CoverageSelectionFeedback",
+        "Box",
+        "Button",
+        "AccountBalanceWalletRoundedIcon",
+        "CoverageQuestions",
+        "Divider",
+        "ProductCatalog",
+        "ArrowForwardRoundedIcon",
+        "PageAlert",
+        "Stack",
+        "span",
+        "Fragment"
+      ]
+    },
+    {
+      "file": "src/pages/DocuSign.tsx",
+      "sha256": "6951a5eb3a7493acf8157d764ad774a9e09e3f9a05ef39421a758e364f44b3ee",
+      "lines": 9,
+      "jsx": [
+        "PrototypeHandoffPage"
+      ]
+    },
+    {
+      "file": "src/pages/Eligibility.tsx",
+      "sha256": "5d284ba3d9ed10c5134ef45f95f2bf1bf620a6d17231acfdcb408dc3f889a5e0",
+      "lines": 133,
+      "jsx": [
+        "FormRoutePage",
+        "EligibilitySections",
+        "button",
+        "VerificationAddress",
+        "MemberVerification"
+      ]
+    },
+    {
+      "file": "src/pages/ErrorPage.tsx",
+      "sha256": "ad2c12c2e71be239477ecb2ff01680d7f56556a21fdcc9bceb25748c0cb60286",
+      "lines": 15,
+      "jsx": [
+        "ApplicationErrorState"
+      ]
+    },
+    {
+      "file": "src/pages/HealthCir.tsx",
+      "sha256": "ab786dd6b8877433def487a70f8e51df147faf8724e12cd35e969a91448d235f",
+      "lines": 23,
+      "jsx": [
+        "FormRoutePage",
+        "HealthQuestionList",
+        "PageAlert"
+      ]
+    },
+    {
+      "file": "src/pages/HealthDiSupp.tsx",
+      "sha256": "67db366119ec999cf7f92333a97e66e5b4c4899b435ce3ec1bad8db963b0bee4",
+      "lines": 7,
+      "jsx": [
+        "ConfiguredHealthPage"
+      ]
+    },
+    {
+      "file": "src/pages/HealthQd.tsx",
+      "sha256": "3696bc5f5e9d272673cf0a336219cc711eb3e72165bd92426067e0aeba17a81c",
+      "lines": 6,
+      "jsx": [
+        "PrototypeHandoffPage"
+      ]
+    },
+    {
+      "file": "src/pages/HealthSi.tsx",
+      "sha256": "91b7799d6ac0386504cbfb79097d0ddea7adc351af8a62773713f3e0d9b468b0",
+      "lines": 7,
+      "jsx": [
+        "ConfiguredHealthPage"
+      ]
+    },
+    {
+      "file": "src/pages/HealthTele.tsx",
+      "sha256": "b17f262ae2c1e2f6a9996cd4dd69c6cc06d8ce1eb278a9cbbc2adebf3e6f5cfc",
+      "lines": 7,
+      "jsx": [
+        "ConfiguredHealthPage"
+      ]
+    },
+    {
+      "file": "src/pages/Home.tsx",
+      "sha256": "d99843455205466b18331a0b046350c9af17a7d34d4a308a03b9b34d8bfafc7e",
+      "lines": 332,
+      "jsx": [
+        "QuickDecisionMark",
+        "Stack",
+        "Chip",
+        "VerifiedUserRoundedIcon",
+        "Typography",
+        "Box",
+        "QuoteCalculator",
+        "Button",
+        "Link",
+        "HomeHero",
+        "SinglePageApplication",
+        "HowApplyingWorksPanel",
+        "HomeCoverageSection",
+        "AssociationIntroduction",
+        "UnderwriterCredentials",
+        "Fragment",
+        "HeroClouds",
+        "AppModal",
+        "AppDrawer",
+        "ApplicationReviewDrawerContent",
+        "QuickDecisionDrawerContent"
+      ]
+    },
+    {
+      "file": "src/pages/Membership.tsx",
+      "sha256": "8e93934f86758740e5f5d51c4550b9c59a40b715e43c98de3353426f613d036a",
+      "lines": 118,
+      "jsx": [
+        "FormRoutePage",
+        "PageHelp",
+        "FieldGroup",
+        "Fragment",
+        "MemberInformation",
+        "AdditionalMembershipInformation",
+        "MembershipStatus"
+      ]
+    },
+    {
+      "file": "src/pages/Payment.tsx",
+      "sha256": "b73e1d2b77dd8bd1604c5877acd0cc4d7bf0fc905e89f7dd48718f985e17ddcf",
+      "lines": 284,
+      "jsx": [
+        "FormRoutePage",
+        "PageHelp",
+        "PaymentSections",
+        "SharedPaymentControls",
+        "PrototypePaymentCosts",
+        "ReferenceRateTableLink",
+        "TotalCostSummary"
+      ]
+    },
+    {
+      "file": "src/pages/Profile.tsx",
+      "sha256": "1d2909c2bcff873f96f69f9d3b058e68490417a3f6a83cb6f14970f2d4decf67",
+      "lines": 103,
+      "jsx": [
+        "FormRoutePage",
+        "ProfileSections",
+        "SendApplicationDialog"
+      ]
+    },
+    {
+      "file": "src/pages/Receipt.tsx",
+      "sha256": "25fd9cec94e736fca9d042be7ace9b34f61d6bc5cd85e7d8a0db92fa9c59d598",
+      "lines": 142,
+      "jsx": [
+        "ApplicationErrorState",
+        "PageShell",
+        "AppSnackbar",
+        "FormShell",
+        "Stack",
+        "ReceiptConfirmation",
+        "ReceiptDecisions",
+        "SiteSupport",
+        "Divider",
+        "ReceiptCoverageDecision",
+        "EstimatedRate",
+        "ApplicantSectionDivider",
+        "Typography",
+        "ProductCard",
+        "Alert"
+      ]
+    },
+    {
+      "file": "src/pages/Resume.tsx",
+      "sha256": "d611b8011c2831789bd69ae28b7fc87d8d805b41e4965322d895569d63b8400d",
+      "lines": 85,
+      "jsx": [
+        "Navigate",
+        "StandaloneFormPage",
+        "PageAlert",
+        "Stack",
+        "ExpiringCodeAlert",
+        "strong",
+        "ResendCountdownRow",
+        "ApplicantMockOutbox",
+        "Typography",
+        "FieldRenderer",
+        "Button",
+        "CircularProgress"
+      ]
+    },
+    {
+      "file": "src/pages/ResumeCode.tsx",
+      "sha256": "572072af08e795f4322f9ed81951c812edf4bf5518cd0518acd899af4d8d4d8f",
+      "lines": 104,
+      "jsx": [
+        "strong",
+        "Navigate",
+        "StandaloneFormPage",
+        "ResumeSessionWarning",
+        "Stack",
+        "ExpiringCodeAlert",
+        "FieldRenderer",
+        "ResendCountdownRow",
+        "Button",
+        "CheckRoundedIcon",
+        "CircularProgress",
+        "ApplicantMockOutbox"
+      ]
+    },
+    {
+      "file": "src/pages/ResumeMethod.tsx",
+      "sha256": "cf2c559dd6de9fe3134b23388ad46a5ad7c7c9299846d9a7d621120b13b4dbf6",
+      "lines": 61,
+      "jsx": [
+        "Navigate",
+        "StandaloneFormPage",
+        "ResumeSessionWarning",
+        "Stack",
+        "FieldRenderer",
+        "PageAlert",
+        "Button"
+      ]
+    },
+    {
+      "file": "src/pages/Review.tsx",
+      "sha256": "1e4331fa797a93c03c46c5474a9b7b97aa3608ffd70afeb225428221f55dd64d",
+      "lines": 162,
+      "jsx": [
+        "FormRoutePage",
+        "ReviewSections",
+        "ApplicationDocumentPreview",
+        "ConfirmationDialog",
+        "SendApplicationDialog"
+      ]
+    }
+  ],
+  "structuralCandidates": [
+    [
+      {
+        "file": "src/components/content/ApplicationReviewDrawerContent.tsx",
+        "line": 16,
+        "size": 96,
+        "tag": "Box"
+      },
+      {
+        "file": "src/components/content/QuickDecisionExplainer.tsx",
+        "line": 93,
+        "size": 96,
+        "tag": "Box"
+      }
+    ],
+    [
+      {
+        "file": "src/components/layout/AppFooter.tsx",
+        "line": 114,
+        "size": 61,
+        "tag": "Stack"
+      },
+      {
+        "file": "src/components/layout/AppMenu.tsx",
+        "line": 235,
+        "size": 61,
+        "tag": "Stack"
+      }
+    ],
+    [
+      {
+        "file": "src/pages/Beneficiary.tsx",
+        "line": 752,
+        "size": 61,
+        "tag": "FieldRenderer"
+      },
+      {
+        "file": "src/pages/Beneficiary.tsx",
+        "line": 804,
+        "size": 61,
+        "tag": "FieldRenderer"
+      }
+    ],
+    [
+      {
+        "file": "src/components/profile/ProfileSections.tsx",
+        "line": 117,
+        "size": 57,
+        "tag": "SectionDivider"
+      },
+      {
+        "file": "src/components/profile/ProfileSections.tsx",
+        "line": 239,
+        "size": 57,
+        "tag": "SectionDivider"
+      }
+    ],
+    [
+      {
+        "file": "src/pages/ResumeCode.tsx",
+        "line": 89,
+        "size": 57,
+        "tag": "Navigate"
+      },
+      {
+        "file": "src/pages/ResumeMethod.tsx",
+        "line": 50,
+        "size": 57,
+        "tag": "Navigate"
+      }
+    ],
+    [
+      {
+        "file": "src/components/coverage/CoverageCart.tsx",
+        "line": 203,
+        "size": 56,
+        "tag": "IconButton"
+      },
+      {
+        "file": "src/components/coverage/CoverageCart.tsx",
+        "line": 425,
+        "size": 56,
+        "tag": "IconButton"
+      }
+    ],
+    [
+      {
+        "file": "src/components/home/ApplicationPreview.tsx",
+        "line": 130,
+        "size": 49,
+        "tag": "Box"
+      },
+      {
+        "file": "src/components/home/ApplicationPreview.tsx",
+        "line": 244,
+        "size": 49,
+        "tag": "Box"
+      }
+    ],
+    [
+      {
+        "file": "src/components/coverage/RateFrequencyControl.tsx",
+        "line": 32,
+        "size": 48,
+        "tag": "Typography"
+      },
+      {
+        "file": "src/components/coverage/RateFrequencyControl.tsx",
+        "line": 44,
+        "size": 48,
+        "tag": "Typography"
+      }
+    ],
+    [
+      {
+        "file": "src/components/forms/DynamicList.tsx",
+        "line": 233,
+        "size": 45,
+        "tag": "FieldRenderer"
+      },
+      {
+        "file": "src/components/forms/DynamicList.tsx",
+        "line": 251,
+        "size": 45,
+        "tag": "FieldRenderer"
+      }
+    ]
+  ]
+}

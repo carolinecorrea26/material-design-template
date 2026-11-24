@@ -1,9 +1,11 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import dayjs from "dayjs";
 import { afterEach, beforeAll, expect, it } from "vitest";
 import { createReviewedMigrationDatabase } from "./fixtures";
 import { applyIsitrustSportAssociationCapAdoption, sportAssociationKeys } from "./isitrustSportAssociationCapAdoption";
 import { isAssociationAmountPolicy, resolveAssociationAmounts } from "../domain/associationAmountPolicy";
-import { resolvePrototypeLibrary, installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import { resolveApplicationCoverage, validateApplicationCoverages } from "../domain/coverageRuntime";
 import { validateNormalizedCoverageAmount } from "../domain/normalizedCoverageAmounts";
 import { createCoverageJourneyFixture } from "./coverageJourneyExceptionAcceptance";

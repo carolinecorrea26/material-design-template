@@ -1,8 +1,10 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import { afterEach, beforeAll, expect, it } from "vitest";
 import { createReviewedMigrationDatabase } from "./fixtures";
 import { applyNsoNurseTypeAdoption } from "./nsoNurseTypeAdoption";
 import { applyAvmaCollegeDecision } from "./avmaCollegeDecision";
-import { resolvePrototypeLibrary, installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import { getClientPageFields } from "../config/clientFields/getClientPageFields";
 import { getFieldValidationRules } from "../utils/fieldValidation";
 import { validateMigrationDatabase } from "./integrity";

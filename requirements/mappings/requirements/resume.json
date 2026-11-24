@@ -1,0 +1,75 @@
+{
+  "component": "resume",
+  "pages": [
+    "resume",
+    "resume-method",
+    "resume-code",
+    "advisor-send-confirmation"
+  ],
+  "rules": [
+    "resume-entry-and-privacy",
+    "resume-verification-and-return",
+    "resume-retention-and-limits",
+    "advisor-resume-content-and-storage",
+    "resume-mfa-lifecycle",
+    "resume-request-cooldowns",
+    "resume-phone-code-attempts",
+    "shared-action-typography",
+    "advisor-recovery-identity",
+    "advisor-access-stages",
+    "resume-signing-and-submission",
+    "shared-content-references"
+  ],
+  "configurations": [
+    "saved-application-retention-days",
+    "resume-link-validity-seconds",
+    "resume-code-validity-seconds",
+    "resume-code-attempt-limit",
+    "resume-code-issue-limit",
+    "resume-request-limit",
+    "resume-request-window-seconds",
+    "resume-mfa-validity-seconds",
+    "resume-mfa-warning-seconds",
+    "resume-code-issue-window-seconds",
+    "resume-code-issue-cooldown-seconds",
+    "resume-code-attempt-lock-seconds",
+    "resume-request-cooldown-seconds"
+  ],
+  "validations": [
+    {
+      "validation": "required-fields",
+      "trigger": "submit",
+      "scope": "visible-fields"
+    },
+    {
+      "validation": "available-selection",
+      "trigger": "submit",
+      "scope": "visible-fields"
+    },
+    {
+      "validation": "field-email",
+      "trigger": "submit",
+      "scope": "visible-fields"
+    },
+    {
+      "validation": "field-phone",
+      "trigger": "submit",
+      "scope": "visible-fields"
+    },
+    {
+      "validation": "field-digits",
+      "trigger": "submit",
+      "scope": "visible-fields"
+    },
+    {
+      "validation": "field-minimum-length",
+      "trigger": "submit",
+      "scope": "visible-fields"
+    },
+    {
+      "validation": "field-maximum-length",
+      "trigger": "submit",
+      "scope": "visible-fields"
+    }
+  ]
+}

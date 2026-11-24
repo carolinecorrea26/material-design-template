@@ -4,7 +4,7 @@ import { collectsBeneficiaries } from "./beneficiaryParticipation";
 import { applicantAge } from "../utils/applicantAge";
 import { resolveEffectiveEligibility, type EffectiveSite, type EligibilityFacts } from "./effectiveSite";
 import { reconcileCoverageSelection, isSelectionPolicy, type ApplicationMode, type SelectionElection } from "./coverageSelectionPolicy";
-import { resolveCoverageJourneyPolicy, resolveSubmissionMapping, reconcileDependentElections, resolveBilling, type MappingDimensions } from "./coverageJourneyPolicy";
+import { resolveCoverageJourneyPolicy, resolveSubmissionMapping, reconcileDependentElections, resolveBilling, type MappingDimensions, type CoverageJourneyPolicy } from "./coverageJourneyPolicy";
 import { resolveNormalizedResidency } from "./residencyPolicy";
 import { validateNormalizedCoverageAmount } from "./normalizedCoverageAmounts";
 import { resolveNormalizedBenefit, type BenefitFacts } from "./benefitPolicy";
@@ -13,8 +13,11 @@ import { paymentSelectionAllowed, reconcilePaymentSelection, type PaymentMethod,
 import { verifyExistingPolicy, type PolicyLookup, type PolicyVerificationService, type VerifiedPolicy } from "./policyVerification";
 import type { FieldDefinition } from "./fields";
 import type { ConditionDefinition } from "./rules";
+import { evaluateConditionClause } from './conditionValidation';
 import { resolveNormalizedAmountCap } from "./amountCapPolicy";
-import { resolveJourneyUnderwriting } from "./coverageJourneyUnderwriting";
+import { resolveJourneyUnderwriting, underwritingHealthPage as healthPageForUnderwriting } from "./coverageJourneyUnderwriting";
+import { effectiveHealthFollowUps } from '../config/fields/healthPageFields';
+import { validateHealthFollowUps } from './healthQuestionnaire';
 export { resolveJourneyUnderwriting } from "./coverageJourneyUnderwriting";
 
 export type CoverageJourneyInput = MappingDimensions & {
@@ -31,11 +34,10 @@ const finite = (v: unknown): v is number => typeof v === "number" && Number.isFi
 const empty = (v: unknown) => v === undefined || v === null || v === "" || Array.isArray(v) && !v.length;
 export { applicantAge } from "../utils/applicantAge";
 
-function condition(definition: ConditionDefinition, answers: Record<string, unknown>): boolean | null {
+function condition(definition: ConditionDefinition, answers: Record<string, unknown>, fields: FieldDefinition[]): boolean | null {
   const matches = definition.conditions.map(c => {
     if (empty(answers[c.fieldId])) return null;
-    const actual = answers[c.fieldId];
-    return c.operator === "equals" ? actual === c.value : c.operator === "notEquals" ? actual !== c.value : c.operator === "oneOf" ? Array.isArray(c.value) && c.value.includes(actual) : Array.isArray(actual) && actual.includes(c.value);
+    return evaluateConditionClause(c, answers, fields);
   });
   if (definition.match === "any") return matches.some(v => v === true) ? true : matches.some(v => v === null) ? null : false;
   return matches.some(v => v === false) ? false : matches.some(v => v === null) ? null : true;
@@ -49,20 +51,30 @@ function validAnswer(field: FieldDefinition, value: unknown) {
 export function resolveQuestionParticipation(site: EffectiveSite, productKey: string, applicantKey: string, mode: ApplicationMode, answers: Record<string, unknown> = {}, attestations: string[] = [], electedRiders: string[] = [], underwritingPathway?: string, underwritingHealthPage?: string | null, questionnaireContext?: { associationKey?: string; jurisdiction?: string; selectedProducts?: string[]; processing?: import("./configuredHealthQuestionnaire").QuestionnaireProcessing }) {
   const policy = resolveCoverageJourneyPolicy(site, productKey);
   const spec = policy?.questions.filter(q => q.applicantKey === applicantKey && q.modes.includes(mode));
+  // An explicitly question-free GI assignment is a complete policy. Missing or
+  // ambiguous participation for underwritten products must still fail closed.
+  if (policy?.questions.length === 0 && policy.defaultUnderwritingPathway === 'GI'
+    && policy.healthPageByUnderwriting?.GI === null && policy.applicants.includes(applicantKey)
+    && (!underwritingPathway || underwritingPathway === 'GI') && !electedRiders.length) {
+    return { status: 'resolved' as const, allowed: true, activeFields: [] as string[], cleanedAnswers: {}, missingFacts: [] as string[], errors: [] as string[], healthPage: null, cirQuestionnaireRequired: false };
+  }
   if (!policy || spec?.length !== 1) return { status: "unresolved" as const, allowed: false, activeFields: [] as string[], cleanedAnswers: {}, missingFacts: [], errors: ["No unique question participation policy"], healthPage: null, cirQuestionnaireRequired: false };
   const q = spec[0], product = site.configuration.products.find(p => p.productKey === productKey)!;
   const cir = electedRiders.some(key => product.riders.find(r => r.key === key)?.definition?.value.id === "cir");
-  const nativeHealthPage = underwritingHealthPage !== undefined ? underwritingHealthPage : underwritingPathway && policy.healthPageByUnderwriting && Object.hasOwn(policy.healthPageByUnderwriting, underwritingPathway) ? policy.healthPageByUnderwriting[underwritingPathway as keyof typeof policy.healthPageByUnderwriting] : undefined;
+  const nativeHealthPage = underwritingHealthPage !== undefined ? underwritingHealthPage : underwritingPathway
+    ? healthPageForUnderwriting(policy, product.catalog?.value.categoryKey, applicantKey, underwritingPathway as CoverageJourneyPolicy['defaultUnderwritingPathway']) : undefined;
   const separateCirForm = site.configuration.healthQuestionnairePolicies.some(row => isHealthQuestionnairePolicy(row.value) && row.value.pageId === "health-cir");
   // A separately assigned CIR form supplements the base product's native health
   // routing. Unassigned legacy CIR flows retain their provisional Life form.
-  const selectedHealthPage = applicantKey === "child" ? null : nativeHealthPage !== undefined ? nativeHealthPage : underwritingPathway === undefined ? q.healthPage : ["GI", "NA", "NCGI"].includes(underwritingPathway) ? null : underwritingPathway === "QD" ? "health-qd" : underwritingPathway === "SI" ? "health-si" : ["DI", "OO"].includes(product.catalog!.value.categoryKey) ? "health-di" : "health-li";
+  const selectedHealthPage = applicantKey === "child" ? null : nativeHealthPage !== undefined ? nativeHealthPage : q.healthPage;
   const portfolioPage = portfolioLifeHealthPage(site, productKey, applicantKey, underwritingPathway, questionnaireContext?.selectedProducts ?? [productKey], questionnaireContext?.processing ?? []);
-  const healthPage = portfolioPage.status === "matched" ? portfolioPage.healthPage : cir && !separateCirForm && (!selectedHealthPage || selectedHealthPage === "health-qd") ? "health-li" : selectedHealthPage;
-  const questionnaireValues = { ...answers, association: questionnaireContext?.associationKey ?? answers.association ?? answers.membership, "state-province": questionnaireContext?.jurisdiction ?? answers["state-province"] ?? answers.state, coverageSelections: questionnaireContext?.selectedProducts ?? [productKey], productApplicants: Object.fromEntries((questionnaireContext?.selectedProducts ?? [productKey]).map(key => [key, [applicantKey]])), coverageRiders: { ...(answers.coverageRiders && typeof answers.coverageRiders === "object" && !Array.isArray(answers.coverageRiders) ? answers.coverageRiders : {}), [`${productKey}:cir:${applicantKey}`]: cir } };
-  const configured = ["health-li", "health-di", "health-ci"].includes(healthPage ?? "") ? configuredHealthQuestionnaire(site, healthPage!, applicantKey, questionnaireValues, questionnaireContext?.processing) : null;
+  const healthPage = portfolioPage.status === "matched" ? portfolioPage.healthPage : cir && !separateCirForm && (!selectedHealthPage || selectedHealthPage === "health-qd") ? "health-tele" : selectedHealthPage;
+  const questionnaireValues = { ...answers, dependents: [...new Set([...(Array.isArray(answers.dependents) ? answers.dependents : []), ...(applicantKey === 'member' ? [] : [applicantKey])])], association: questionnaireContext?.associationKey ?? answers.association ?? answers.membership, membership: questionnaireContext?.associationKey ?? answers.membership, "state-province": questionnaireContext?.jurisdiction ?? answers["state-province"] ?? answers.state, coverageSelections: questionnaireContext?.selectedProducts ?? [productKey], productApplicants: Object.fromEntries((questionnaireContext?.selectedProducts ?? [productKey]).map(key => [key, [applicantKey]])), coverageRiders: { ...(answers.coverageRiders && typeof answers.coverageRiders === "object" && !Array.isArray(answers.coverageRiders) ? answers.coverageRiders : {}), [`${productKey}:cir:${applicantKey}`]: cir } };
+  const configured = ["health-tele", "health-di-supp"].includes(healthPage ?? "") ? configuredHealthQuestionnaire(site, healthPage!, applicantKey, questionnaireValues, questionnaireContext?.processing) : null;
   const hasConfigured = !!configured && configured.status !== "unassigned";
-  const health = healthPage && !hasConfigured ? site.configuration.pages.find(p => p.key === healthPage)?.fields.filter(f => f.included && f.key.startsWith(`${healthPage}-q`) && f.key.endsWith("-spouse") === (applicantKey === "spouse")) ?? [] : [];
+  const followUps = !hasConfigured && (healthPage === 'health-tele' || healthPage === 'health-si' || healthPage === 'health-di-supp')
+    ? effectiveHealthFollowUps(site, healthPage, applicantKey === 'spouse' ? 'spouse' : 'self') : [];
+  const health = followUps.map(question => ({ key: question.answer.id, definition: question.answer as FieldDefinition }));
   const wanted = [...q.financialFields, ...q.tobaccoFields];
   const allFields = site.configuration.pages.flatMap(p => p.fields);
   const fields = [...health, ...wanted.flatMap(key => {
@@ -83,7 +95,7 @@ export function resolveQuestionParticipation(site: EffectiveSite, productKey: st
     if (field.visibilityConditionId) {
       const definitions = site.configuration.conditions.filter(c => c.value.definition.id === field.visibilityConditionId);
       if (definitions.length !== 1) { errors.push(`Unknown visibility condition ${field.visibilityConditionId}`); continue; }
-      const show = condition(definitions[0].value.definition, answers);
+      const show = condition(definitions[0].value.definition, answers, site.configuration.pages.flatMap(page => page.fields.filter(field => field.included).map(field => field.definition)));
       if (show === null) { missingFacts.push(...definitions[0].value.definition.conditions.map(c => c.fieldId)); continue; }
       if (!show) continue;
     }
@@ -91,14 +103,16 @@ export function resolveQuestionParticipation(site: EffectiveSite, productKey: st
     if (empty(answers[row.key])) { if (field.required) missingFacts.push(row.key); continue; }
     if (!validAnswer(field, answers[row.key])) errors.push(`Invalid answer ${row.key}`);
     else cleanedAnswers[row.key] = answers[row.key];
-    // Detailed health responses stay in the candidate's scoped answer envelope.
-    // A yes answer requires a non-empty details string without diagnosing it.
-    if (row.key.startsWith("health-") && answers[row.key] === "yes") {
-      const detailKey = `${row.key}.details`;
-      if (typeof answers[detailKey] !== "string" || !(answers[detailKey] as string).trim()) missingFacts.push(detailKey);
-      else cleanedAnswers[detailKey] = answers[detailKey];
-    }
   }
+  const detailError = validateHealthFollowUps(followUps, answers);
+  for (const question of followUps.filter(question => answers[question.answer.id] === 'yes' && question.fields.length)) {
+    activeFields.push(question.collection);
+    const rows = answers[question.collection];
+    if (!Array.isArray(rows) || !rows.length) missingFacts.push(question.collection);
+    else cleanedAnswers[question.collection] = rows.map(row => row && typeof row === 'object' && !Array.isArray(row)
+      ? Object.fromEntries(Object.values(question.fieldToKey).filter(key => Object.hasOwn(row, key)).map(key => [key, (row as Record<string, unknown>)[key]])) : row);
+  }
+  if (detailError && !missingFacts.length) errors.push(detailError);
   const cirPageEnabled = site.configuration.pages.some(page => page.key === "health-cir" && page.requirement !== "none");
   const cirForm = cir && separateCirForm && cirPageEnabled ? configuredHealthQuestionnaire(site, "health-cir", applicantKey, questionnaireValues) : null;
   for (const sourceForm of [...(hasConfigured && configured ? [configured] : []), ...(cirForm ? [cirForm] : [])]) {

@@ -1,3 +1,7 @@
+import { isLegalDocContent } from './legalDocuments';
+import { pageFieldPlacements } from './pageFieldPlacements';
+import { isReviewPolicy } from './reviewPolicy';
+import { coverageMinimumAmount } from "./coverageMinimumAmount";
 import type { CoverageAssignment } from "./requirementCoverageValidation.mjs";
 import { isFinancialQuestionnairePolicy } from "./financialQuestionnaire";
 import { isBeneficiaryParticipationPolicy } from "./beneficiaryParticipation";
@@ -70,6 +74,13 @@ export function resolveEffectiveConfiguration(db: EffectiveConfigurationData, si
     return values(table, rows.flatMap(row => Object.entries(row.definition).map(([key, value]) => ({ ...row, property: key, value }))), r => r.property);
   }
   const fieldDefinitionOwnership = resolveFieldDefinitionOwnership(db);
+  const globalOnlyDefinitions = db.configurationDefinitions.filter(row => {
+    const metadata = row.definition.metadata;
+    return metadata && typeof metadata === 'object' && !Array.isArray(metadata) && metadata.globalOnly === true;
+  });
+  const globalOnlyPaths = new Set(globalOnlyDefinitions.map(row => row.definition.path?.join('.')).filter(Boolean));
+  const globalOnlyKeys = new Set(db.configurationDefinitions.filter(row => globalOnlyDefinitions.some(definition => definition.key === row.key) || globalOnlyPaths.has(row.definition.path?.join('.'))).map(row => row.key));
+  if (db.configurationValues.some(row => applicable(row) && row.scope !== 'global' && globalOnlyKeys.has(row.configurationKey))) throw new Error('Global-only configuration cannot be overridden');
   const configurations = values("configurationValues", db.configurationValues, r => r.configurationKey);
   for (const value of configurations) one(db.configurationDefinitions, value.key, "configurationDefinitions");
   const productAvailabilityOwnership = resolveProductAvailabilityOwnership(db, configurations, siteKey);
@@ -102,7 +113,7 @@ export function resolveEffectiveConfiguration(db: EffectiveConfigurationData, si
   const products = productKeys.map(productKey => {
     const row = one(db.products, productKey, "products");
     const category = row && one(db.coverageCategories, row.categoryKey, "coverageCategories");
-    const presentationKeys = ["name", "definition", "description", "brochureUrl", "coverageNote", "featured", "applicantNotes", "productWarning", "productContent", "groupPolicySitus", "options", "riders"] as const;
+    const presentationKeys = ["name", "definition", "description", "descriptionNotice", "brochureUrl", "coverageNote", "featured", "applicantNotes", "productWarning", "productContent", "groupPolicySitus", "options", "riders"] as const;
     const presentation = presentationKeys.flatMap(key => {
       const overrideKeys = new Set(db.configurationDefinitions.filter(d => {
         const target = d.definition.target;
@@ -315,16 +326,13 @@ export function resolveEffectiveConfiguration(db: EffectiveConfigurationData, si
       const resolved = resolveSharedFieldDefinition(row, db.validationRules, fieldDefinitionOwnership);
       return { included: true, ...resolved };
     };
-    for (const row of order(db.pageFields.filter(r => r.pageKey === assignment.pageKey))) {
-      if (fieldKeys.has(row.fieldKey)) throw new Error(`Duplicate page field: ${row.key}`);
+    for (const { table, row } of pageFieldPlacements(db, assignment.pageKey)) {
+      if (fieldKeys.has(row.fieldKey)) {
+        if (table === 'pageFields') throw new Error(`Duplicate page field: ${row.key}`);
+        continue;
+      }
       const value = field(row.fieldKey);
-      if (value) fieldKeys.set(row.fieldKey, { ...value, provenance: [...value.provenance, source("pageFields", row)] });
-    }
-    const sectionKeys = new Set(db.pageSections.filter(section => section.pageKey === assignment.pageKey && !section.definition.collectionName).map(section => section.key));
-    for (const row of order(db.pageSectionFields.filter(placement => sectionKeys.has(placement.sectionKey)))) {
-      if (fieldKeys.has(row.fieldKey)) continue;
-      const value = field(row.fieldKey);
-      if (value) fieldKeys.set(row.fieldKey, { ...value, provenance: [...value.provenance, source("pageSectionFields", row)] });
+      if (value) fieldKeys.set(row.fieldKey, { ...value, provenance: [...value.provenance, source(table, row)] });
     }
     const written = new Set<string>();
     for (const row of scoped(db.siteFieldConfigurations.filter(r => r.pageKey === assignment.pageKey))) {
@@ -341,6 +349,7 @@ export function resolveEffectiveConfiguration(db: EffectiveConfigurationData, si
       fieldKeys.set(row.fieldKey, { included: row.hidden !== null ? !row.hidden : row.include ?? value.included, definition: { ...value.definition, ...row.values }, provenance: [...value.provenance, source("siteFieldConfigurations", row)] });
     }
     for (const value of fieldKeys.values()) {
+      if (value.definition.optionalForProducts?.some(key => !productKeys.includes(key))) throw new Error(`Unassigned optional field product: ${assignment.pageKey}/${value.definition.id}`);
       const conditionKeys = [value.definition.visibilityConditionId, ...(value.definition.optionExclusions ?? []).map(e => e.conditionId)].filter((key): key is NonNullable<typeof key> => key !== undefined);
       for (const key of conditionKeys) one(db.conditions, key, "conditions");
     }
@@ -404,6 +413,38 @@ export function resolveEffectiveConfiguration(db: EffectiveConfigurationData, si
     if (!isBeneficiaryNotePolicy(policy.value) || policy.value.notes.some(note => note.productKeys.some(key => !db.products.some(product => product.key === key)))) throw new Error("Invalid beneficiary note policy or product scope");
   }
   const reviewPolicies = configurations.filter(configuration => db.configurationDefinitions.find(definition => definition.key === configuration.key)?.definition.target?.kind === "site-review-policy");
+  if (reviewPolicies.length > 1) throw new Error('Invalid or ambiguous Review policy');
+  for (const row of reviewPolicies) {
+    if (!isReviewPolicy(row.value)) throw new Error('Invalid or ambiguous Review policy');
+    const policy = row.value;
+    const referencedProducts = [...(policy.fraud.nyAccidentLifeProducts ?? []), ...policy.blocks.flatMap(block => block.when?.products ?? []), ...(policy.underwritingFlag?.rules.flatMap(rule => rule.products ?? []) ?? []), ...(policy.consent?.underwrittenWhen.map(rule => rule.productKey) ?? [])];
+    if (referencedProducts.some(key => !productKeys.includes(key))) throw new Error('Invalid Review policy product scope');
+    const metadata = db.configurationDefinitions.find(definition => definition.key === row.key)?.definition.metadata;
+    const fieldSurface = metadata && typeof metadata === 'object' && !Array.isArray(metadata) ? metadata.fieldSurface : undefined;
+    if (typeof fieldSurface === 'string') {
+      const surfaces = configurations.find(configuration => db.configurationDefinitions.find(definition => definition.key === configuration.key)?.definition.path?.join('.') === 'fieldSurfaces')?.value as unknown as Record<string, { fields: Array<{ fieldKey: string }> }> | undefined;
+      if (!surfaces?.[fieldSurface]) throw new Error(`Missing Review policy field surface: ${fieldSurface}`);
+      const declaredFields = new Set(surfaces[fieldSurface].fields.map(field => field.fieldKey));
+      for (const field of policy.blocks.flatMap(block => block.fields)) if (!declaredFields.has(field)) throw new Error(`Unmapped Review policy field: ${field}`);
+      const opening = policy.consent?.otherOpening;
+      if (opening) {
+        const field = pages.flatMap(page => page.fields).find(field => field.key === opening.fieldId && field.included)?.definition;
+        if (!field || field.options && opening.acceptedAnswers.some(answer => !field.options!.some(option => option.value === answer))) throw new Error('Invalid Review applicant-type field or options');
+      }
+    }
+    if (row.value.documentLinks?.some(link => link.document === 'privacy-notice')) {
+      const property = (name: string) => {
+        const key = db.contentEntries.find(entry => entry.definition.path?.join('.') === `footer.privacyNoticeContent.${name}`)?.key;
+        return content.find(entry => entry.key === key)?.value;
+      };
+      if (!isLegalDocContent({ title: property('title'), sections: property('sections'), revision: property('revision') })) throw new Error('Missing or invalid shared Privacy Notice document');
+    }
+    const notice = row.value.importantNotice;
+    for (const key of notice ? new Set([notice.defaultDocument, ...Object.values(notice.byJurisdiction)]) : []) {
+      const contentKey = db.contentEntries.find(entry => entry.definition.path?.join('.') === `review.importantNotices.${key}`)?.key;
+      if (!isLegalDocContent(content.find(entry => entry.key === contentKey)?.value)) throw new Error(`Missing or invalid Review notice document: ${key}`);
+    }
+  }
   const financialQuestionnairePolicies = configurations.filter(configuration => db.configurationDefinitions.find(definition => definition.key === configuration.key)?.definition.target?.kind === "site-financial-questionnaire");
   if (financialQuestionnairePolicies.length > 1 || financialQuestionnairePolicies.some(row => !isFinancialQuestionnairePolicy(row.value) || row.value.rules.some(rule => rule.productKeys.some(key => !productKeys.includes(key))))) throw new Error("Invalid financial questionnaire policy or product scope");
   const categoryEligibilityPolicies = configurations.filter(configuration => db.configurationDefinitions.find(definition => definition.key === configuration.key)?.definition.target?.kind === "site-category-eligibility");
@@ -418,7 +459,7 @@ export function resolveEffectiveConfiguration(db: EffectiveConfigurationData, si
 }
 export type EffectiveConfiguration = ReturnType<typeof resolveEffectiveConfiguration>;
 
-export type AmountFacts = { applicantKey: string; applicantClass?: string; associationKey?: string; amount?: number | string; baseAmount?: number; mode?: "new" | "increase" | "rider-only" };
+export type AmountFacts = { verifiedExistingAmount?: number; applicantKey: string; applicantClass?: string; associationKey?: string; amount?: number | string; baseAmount?: number; mode?: "new" | "increase" | "rider-only" };
 export type EffectiveAmountDecision = { status: "resolved" | "needs-information" | "unresolved"; allowed?: boolean; derivedAmount?: number; provenance: RuleProvenance[] };
 /** Evaluates one explicit Site/applicant amount assignment. Overlapping scopes never win implicitly. */
 export function resolveEffectiveAmount(configuration: EffectiveConfiguration, productKey: string, facts: AmountFacts): EffectiveAmountDecision {
@@ -440,7 +481,7 @@ export function resolveEffectiveAmount(configuration: EffectiveConfiguration, pr
   if (facts.amount === undefined || typeof facts.amount === "number" && (!Number.isFinite(facts.amount) || facts.amount < 0)) return { status: "needs-information", provenance };
   if (pattern.amountType !== "named-option" && typeof facts.amount !== "number") return { status: "needs-information", provenance };
   const selected = facts.amount;
-  const minimum = configuration.coverageRequirements?.find(row => row.product === productKey && row.applicants.includes(facts.applicantKey as "member" | "spouse" | "child") && row.configuration === "coverage-new-application-minimum-amount")?.value;
+  const minimum = coverageMinimumAmount(configuration.coverageRequirements, productKey, facts.applicantKey, facts.verifiedExistingAmount);
   if ((facts.mode ?? "new") === "new" && typeof selected === "number" && typeof minimum === "number" && selected < minimum) return { status: "resolved", allowed: false, provenance };
   const allowed = amount.options.some(o => o.value.value === String(selected)) || typeof selected === "number" && amount.bands.some(({ value: b }) => selected >= b.minimum! && selected <= b.maximum! && Math.abs((selected - b.minimum!) / b.increment! - Math.round((selected - b.minimum!) / b.increment!)) < 1e-9);
   return { status: "resolved", allowed, provenance };

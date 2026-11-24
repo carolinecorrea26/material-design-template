@@ -9,7 +9,7 @@ it('keeps the estimate label and amount reservation while presenting only the lo
   const container = document.createElement('div'); document.body.append(container);
   const root = createRoot(container);
   try {
-    const render = async (isCalculating: boolean) => act(async () => root.render(<Typography>Est. cost: <EstimatedRate amount={262.5} suffix="/mo" isCalculating={isCalculating} sx={{ fontSize: '1.25rem' }} /></Typography>));
+    const render = async (isCalculating: boolean) => act(async () => root.render(<Typography>Est. cost: <EstimatedRate amount={262.5} suffix="/mo" isCalculating={isCalculating} /></Typography>));
     await render(false);
     const amount = container.querySelector('span > span')!;
     expect(amount.textContent).toBe('$262.50/mo');

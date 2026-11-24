@@ -1,0 +1,17 @@
+{
+  "component": "receipt",
+  "pages": [
+    "receipt"
+  ],
+  "rules": [
+    "receipt-qd-product-outcomes",
+    "receipt-source-composition",
+    "receipt-confirmation-reference",
+    "receipt-confirmation-email",
+    "receipt-document-boundary",
+    "receipt-result-integrity",
+    "receipt-underwriting-next-steps",
+    "shared-action-typography",
+    "receipt-payment-notice-applicability"
+  ]
+}

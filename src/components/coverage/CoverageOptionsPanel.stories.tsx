@@ -1,3 +1,4 @@
+import { resolveAvailableApplicants, restrictCoverageApplicants } from '../../config/client/coverageApplicantScope';
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Box } from "@mui/material";
 import CoverageOptionsPanel from "./CoverageOptionsPanel";
@@ -37,4 +38,17 @@ export const InitialCategory: StoryObj = {
       <ComponentFixture>{fixture => <CoverageOptionsPanel variant="page" initialCategory="DI"  content={fixture.content} coverages={fixture.products} coverageConfig={fixture.client.coverages} />}</ComponentFixture>
     </Box>
   ),
+};
+
+export const MemberRestriction: StoryObj = {
+  name: 'applicant=member',
+  render: () => <ComponentFixture>{fixture => <CoverageOptionsPanel variant="page" content={fixture.content}
+    coverages={restrictCoverageApplicants(fixture.products, resolveAvailableApplicants(fixture.client.applicantExperience?.coveredPeople, 'member'))}
+    coverageConfig={fixture.client.coverages} />}</ComponentFixture>,
+};
+export const MemberSpouseRestriction: StoryObj = {
+  name: 'applicant=member,spouse',
+  render: () => <ComponentFixture>{fixture => <CoverageOptionsPanel variant="drawer" content={fixture.content}
+    coverages={restrictCoverageApplicants(fixture.products, resolveAvailableApplicants(fixture.client.applicantExperience?.coveredPeople, 'member,spouse'))}
+    coverageConfig={fixture.client.coverages} />}</ComponentFixture>,
 };

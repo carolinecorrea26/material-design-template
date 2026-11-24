@@ -1,0 +1,24 @@
+{
+  "application": {
+    "membership": "yes",
+    "state-province": "PA",
+    "birth-date": "1990-01-15",
+    "first-name": "Caroline",
+    "last-name": "Correa",
+    "coverageSelections": [
+      "li-term"
+    ],
+    "productApplicants": {
+      "li-term": [
+        "member"
+      ]
+    },
+    "coverageAmounts": {
+      "li-term:member": 100000
+    },
+    "qdDecisions": {
+      "li-term:member": "conditionally-approved"
+    },
+    "email": "returning.user@example.com"
+  }
+}

@@ -1,0 +1,581 @@
+{
+  "site": "abe",
+  "assignments": [
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-term",
+      "applicants": [
+        "member"
+      ],
+      "value": 17,
+      "source": "Main!O39"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-term",
+      "applicants": [
+        "member"
+      ],
+      "value": 75,
+      "source": "Main!O39"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-term",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 17,
+      "source": "Main!P39"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-term",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 75,
+      "source": "Main!P39"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-50plus",
+      "applicants": [
+        "member"
+      ],
+      "value": 50,
+      "source": "Main!O42"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-50plus",
+      "applicants": [
+        "member"
+      ],
+      "value": 75,
+      "source": "Main!O42"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-50plus",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 45,
+      "source": "Main!P42"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-50plus",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 75,
+      "source": "Main!P42"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-add",
+      "applicants": [
+        "member"
+      ],
+      "value": 17,
+      "source": "Main!O43"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-add",
+      "applicants": [
+        "member"
+      ],
+      "value": 64,
+      "source": "Main!O43"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-add",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 17,
+      "source": "Main!P43"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-add",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 64,
+      "source": "Main!P43"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "di-ltd-plus",
+      "applicants": [
+        "member"
+      ],
+      "value": 17,
+      "source": "Main!O44; other dimensions: prototype:abe.di-ltd-plus; work eligibility: Main!R44"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "di-ltd-plus",
+      "applicants": [
+        "member"
+      ],
+      "value": 64,
+      "source": "Main!O44; other dimensions: prototype:abe.di-ltd-plus; work eligibility: Main!R44"
+    },
+    {
+      "configuration": "coverage-minimum-work-hours",
+      "product": "di-ltd-plus",
+      "applicants": [
+        "member"
+      ],
+      "value": 30,
+      "source": "Main!O44; other dimensions: prototype:abe.di-ltd-plus; work eligibility: Main!R44"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "di-ltd-plus",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 17,
+      "source": "Main!P44; ABE source review: Main!S44"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "di-ltd-plus",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 64,
+      "source": "Main!P44; ABE source review: Main!S44"
+    },
+    {
+      "configuration": "coverage-minimum-work-hours",
+      "product": "di-ltd-plus",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 30,
+      "source": "Main!P44; ABE source review: Main!S44"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "di-ltd",
+      "applicants": [
+        "member"
+      ],
+      "value": 17,
+      "source": "Main!O45; other dimensions: prototype:abe.di-ltd; work eligibility: Main!R45"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "di-ltd",
+      "applicants": [
+        "member"
+      ],
+      "value": 64,
+      "source": "Main!O45; other dimensions: prototype:abe.di-ltd; work eligibility: Main!R45"
+    },
+    {
+      "configuration": "coverage-minimum-work-hours",
+      "product": "di-ltd",
+      "applicants": [
+        "member"
+      ],
+      "value": 30,
+      "source": "Main!O45; other dimensions: prototype:abe.di-ltd; work eligibility: Main!R45"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "di-ltd",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 17,
+      "source": "Main!P45; ABE source review: Main!S45"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "di-ltd",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 64,
+      "source": "Main!P45; ABE source review: Main!S45"
+    },
+    {
+      "configuration": "coverage-minimum-work-hours",
+      "product": "di-ltd",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 30,
+      "source": "Main!P45; ABE source review: Main!S45"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "di-mtd",
+      "applicants": [
+        "member"
+      ],
+      "value": 17,
+      "source": "Main!O46; other dimensions: prototype:abe.di-mtd; work eligibility: Main!R46"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "di-mtd",
+      "applicants": [
+        "member"
+      ],
+      "value": 64,
+      "source": "Main!O46; other dimensions: prototype:abe.di-mtd; work eligibility: Main!R46"
+    },
+    {
+      "configuration": "coverage-minimum-work-hours",
+      "product": "di-mtd",
+      "applicants": [
+        "member"
+      ],
+      "value": 30,
+      "source": "Main!O46; other dimensions: prototype:abe.di-mtd; work eligibility: Main!R46"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "di-mtd",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 17,
+      "source": "Main!P46; ABE source review: Main!S46"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "di-mtd",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 64,
+      "source": "Main!P46; ABE source review: Main!S46"
+    },
+    {
+      "configuration": "coverage-minimum-work-hours",
+      "product": "di-mtd",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 30,
+      "source": "Main!P46; ABE source review: Main!S46"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "sh-critical-illness",
+      "applicants": [
+        "member"
+      ],
+      "value": 25,
+      "source": "Main!O47"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "sh-critical-illness",
+      "applicants": [
+        "member"
+      ],
+      "value": 69,
+      "source": "Main!O47"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "sh-critical-illness",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 25,
+      "source": "Main!P47"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "sh-critical-illness",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 69,
+      "source": "Main!P47"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "oo-professional",
+      "applicants": [
+        "member"
+      ],
+      "value": 17,
+      "source": "Main!O48; other dimensions: prototype:abe.oo-professional; work eligibility: Main!R48"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "oo-professional",
+      "applicants": [
+        "member"
+      ],
+      "value": 64,
+      "source": "Main!O48; other dimensions: prototype:abe.oo-professional; work eligibility: Main!R48"
+    },
+    {
+      "configuration": "coverage-minimum-work-hours",
+      "product": "oo-professional",
+      "applicants": [
+        "member"
+      ],
+      "value": 30,
+      "source": "Main!O48; other dimensions: prototype:abe.oo-professional; work eligibility: Main!R48"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "sh-hospital-money",
+      "applicants": [
+        "member"
+      ],
+      "value": 17,
+      "source": "Main!O49"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "sh-hospital-money",
+      "applicants": [
+        "member"
+      ],
+      "value": 99,
+      "source": "Main!O49"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "sh-hospital-money",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 17,
+      "source": "Main!P49"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "sh-hospital-money",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 99,
+      "source": "Main!P49"
+    },
+    {
+      "configuration": "coverage-minimum-age-days",
+      "product": "li-term",
+      "applicants": [
+        "child"
+      ],
+      "value": 14,
+      "source": "docs/archive/step3-journey-adoption.md; ABE source review: Main!Q39; Main!T39"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-term",
+      "applicants": [
+        "child"
+      ],
+      "value": 0,
+      "source": "docs/archive/step3-journey-adoption.md; ABE source review: Main!Q39; Main!T39"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-term",
+      "applicants": [
+        "child"
+      ],
+      "value": 26,
+      "source": "docs/archive/step3-journey-adoption.md; ABE source review: Main!Q39; Main!T39"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-10yr",
+      "applicants": [
+        "member"
+      ],
+      "value": 17,
+      "source": "docs/archive/step3-journey-adoption.md; ABE source review: Main!O40"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-10yr",
+      "applicants": [
+        "member"
+      ],
+      "value": 69,
+      "source": "docs/archive/step3-journey-adoption.md; ABE source review: Main!O40"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-10yr",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 17,
+      "source": "docs/archive/step3-journey-adoption.md; ABE source review: Main!P40"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-10yr",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 69,
+      "source": "docs/archive/step3-journey-adoption.md; ABE source review: Main!P40"
+    },
+    {
+      "configuration": "coverage-minimum-age-days",
+      "product": "li-10yr",
+      "applicants": [
+        "child"
+      ],
+      "value": 14,
+      "source": "docs/archive/step3-journey-adoption.md; ABE source review: Main!Q40; Main!T40"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-10yr",
+      "applicants": [
+        "child"
+      ],
+      "value": 0,
+      "source": "docs/archive/step3-journey-adoption.md; ABE source review: Main!Q40; Main!T40"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-10yr",
+      "applicants": [
+        "child"
+      ],
+      "value": 26,
+      "source": "docs/archive/step3-journey-adoption.md; ABE source review: Main!Q40; Main!T40"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-20yr",
+      "applicants": [
+        "member"
+      ],
+      "value": 17,
+      "source": "docs/archive/step3-journey-adoption.md; ABE source review: Main!O41"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-20yr",
+      "applicants": [
+        "member"
+      ],
+      "value": 59,
+      "source": "docs/archive/step3-journey-adoption.md; ABE source review: Main!O41"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-20yr",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 17,
+      "source": "docs/archive/step3-journey-adoption.md; ABE source review: Main!P41"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-20yr",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 59,
+      "source": "docs/archive/step3-journey-adoption.md; ABE source review: Main!P41"
+    },
+    {
+      "configuration": "coverage-minimum-age-days",
+      "product": "li-20yr",
+      "applicants": [
+        "child"
+      ],
+      "value": 14,
+      "source": "docs/archive/step3-journey-adoption.md; ABE source review: Main!Q41; Main!T41"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-20yr",
+      "applicants": [
+        "child"
+      ],
+      "value": 0,
+      "source": "docs/archive/step3-journey-adoption.md; ABE source review: Main!Q41; Main!T41"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-20yr",
+      "applicants": [
+        "child"
+      ],
+      "value": 26,
+      "source": "docs/archive/step3-journey-adoption.md; ABE source review: Main!Q41; Main!T41"
+    },
+    {
+      "configuration": "coverage-minimum-age-days",
+      "product": "li-add",
+      "applicants": [
+        "child"
+      ],
+      "value": 0,
+      "source": "docs/archive/step3-journey-adoption.md; ABE source review: Main!Q43; Main!T43"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-add",
+      "applicants": [
+        "child"
+      ],
+      "value": 0,
+      "source": "docs/archive/step3-journey-adoption.md; ABE source review: Main!Q43; Main!T43"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-add",
+      "applicants": [
+        "child"
+      ],
+      "value": 26,
+      "source": "docs/archive/step3-journey-adoption.md; ABE source review: Main!Q43; Main!T43"
+    },
+    {
+      "configuration": "coverage-minimum-age-days",
+      "product": "sh-hospital-money",
+      "applicants": [
+        "child"
+      ],
+      "value": 0,
+      "source": "docs/archive/step3-journey-adoption.md; ABE source review: Main!Q49; Main!T49"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "sh-hospital-money",
+      "applicants": [
+        "child"
+      ],
+      "value": 0,
+      "source": "docs/archive/step3-journey-adoption.md; ABE source review: Main!Q49; Main!T49"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "sh-hospital-money",
+      "applicants": [
+        "child"
+      ],
+      "value": 25,
+      "source": "docs/archive/step3-journey-adoption.md; ABE source review: Main!Q49; Main!T49"
+    }
+  ]
+}

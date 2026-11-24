@@ -1,0 +1,12 @@
+{
+  "action.cancel": "Cancel",
+  "action.continue": "Continue",
+  "action.close": "Close",
+  "action.remove": "Remove",
+  "action.start-new": "Start new application",
+  "action.see-quote": "See my quote",
+  "navigation.health": "Health",
+  "help.coverage-options.title": "What are my coverage options?",
+  "help.how-applying-works.title": "How does applying work?",
+  "display.unavailable": "—"
+}

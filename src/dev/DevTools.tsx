@@ -1,3 +1,5 @@
+import { completePrototypeQdOutcomes } from '../domain/prototypeQdOutcomes';
+import { getIsDevMode, DEV_MODE_STORAGE_KEY } from './devMode';
 import * as React from "react";
 import {
   Box,
@@ -10,6 +12,8 @@ import {
   MenuItem,
   Stack,
   Typography,
+  TextField,
+  Alert,
 } from "@mui/material";
 import { CheckRounded, SettingsRounded, SwapHorizRounded } from "@mui/icons-material";
 import {
@@ -21,32 +25,19 @@ import {
 import {
   type ApplicationFormValues,
   useApplicationForm,
-  STORAGE_KEY,
+
 } from "../app/ApplicationFormContext";
 import { getConfiguredPages, getPagePath, getPageTitle } from "../config/pages";
 import type { PageId } from "../types";
 import { getClientPageFields } from "../config/clientFields/getClientPageFields";
 import { getResolvedFormFlow } from "../config/formFlow";
-import { generateFormDataUpToPage } from "./utils/generateFormData";
+import { buildPrototypeScenario, prototypeScenarios, scenarioProducts, type PrototypeScenarioId } from './utils/prototypeScenarios';
+import { getPrototypeLibrary } from '../domain/prototypeLibrary';
+import { useApplicationSession } from '../app/ApplicationSessionContext';
+import { shouldSkipPage } from '../config/formFlow';
 import { router } from "../app/router";
 
 const SITE_QUERY_PARAM = "site";
-
-const FORM_PAGE_PATHS = new Set([
-  "/membership",
-  "/eligibility",
-  "/coverage",
-  "/beneficiary",
-  "/contact",
-  "/profile",
-  "/review",
-  "/docusign",
-  "/health-si",
-  "/health-qd",
-  "/health-di",
-  "/health-cir",
-  "/payment",
-]);
 
 function switchSite(siteId: SiteId) {
   const url = new URL(window.location.href);
@@ -66,22 +57,17 @@ function clearSiteOverride() {
   window.location.replace(url.toString());
 }
 
-const DEVMODE_STORAGE_KEY = "devtools:devMode";
 
-function getIsDevMode(): boolean {
-  const params = new URLSearchParams(window.location.search);
-  if (params.has("dev")) {
-    const value = params.get("dev");
-    const enabled = value !== "false";
-    window.sessionStorage.setItem(DEVMODE_STORAGE_KEY, String(enabled));
-    return enabled;
-  }
-  return window.sessionStorage.getItem(DEVMODE_STORAGE_KEY) === "true";
-}
 
 export default function DevTools() {
   const isDevMode = getIsDevMode();
-  const { resetValues, setPageValues } = useApplicationForm();
+  const { values, resetValues, setPageValues } = useApplicationForm();
+  const { resetApplicationSession } = useApplicationSession();
+  const [scenario, setScenario] = React.useState<PrototypeScenarioId>('member');
+  const [productKey, setProductKey] = React.useState('');
+  const [scenarioError, setScenarioError] = React.useState('');
+  const library = getPrototypeLibrary();
+  const products = library ? scenarioProducts(library, scenario) : [];
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [jumpPageAnchorEl, setJumpPageAnchorEl] =
@@ -89,19 +75,19 @@ export default function DevTools() {
 
   const currentSite = getActiveSite();
   const currentClient = getClientForSite(currentSite.id)!;
-  const isFormPage = FORM_PAGE_PATHS.has(window.location.pathname);
+  const isFormPage = getConfiguredPages().some(page => page.path === window.location.pathname && page.type === 'form');
   const hasUrlOverride = new URLSearchParams(window.location.search).has(
     SITE_QUERY_PARAM,
   );
 
   const handleResetApp = () => {
     const siteId = window.sessionStorage.getItem("activeSiteId");
-    const devMode = window.sessionStorage.getItem(DEVMODE_STORAGE_KEY);
+    const devMode = window.sessionStorage.getItem(DEV_MODE_STORAGE_KEY);
     resetValues();
     window.sessionStorage.clear();
     window.localStorage.clear();
     if (siteId) window.sessionStorage.setItem("activeSiteId", siteId);
-    if (devMode) window.sessionStorage.setItem(DEVMODE_STORAGE_KEY, devMode);
+    if (devMode) window.sessionStorage.setItem(DEV_MODE_STORAGE_KEY, devMode);
     const url = new URL("/", window.location.origin);
     url.searchParams.set("reset", String(Date.now()));
     if (siteId) url.searchParams.set(SITE_QUERY_PARAM, siteId);
@@ -117,9 +103,7 @@ export default function DevTools() {
     const currentPage = getConfiguredPages().find((p) => p.path === window.location.pathname);
     if (!currentPage) return;
 
-    const current = JSON.parse(
-      window.sessionStorage.getItem(STORAGE_KEY) ?? "{}",
-    ) as Record<string, unknown>;
+    const current = values;
 
     const pageFieldIds = new Set(
       getClientPageFields(
@@ -132,43 +116,34 @@ export default function DevTools() {
       Object.entries(current).filter(([key]) => !pageFieldIds.has(key)),
     ) as ApplicationFormValues;
 
-    window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(nextValues));
+    resetValues();
     setPageValues(nextValues);
   };
 
   const handleJumpToPage = (pageId: PageId) => {
-    const formData = generateFormDataUpToPage(pageId);
-
-    const current = JSON.parse(
-      window.sessionStorage.getItem(STORAGE_KEY) ?? "{}",
-    ) as typeof formData;
-
-    const nextValues = { ...current, ...formData };
-
-    window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(nextValues));
-    setPageValues(nextValues);
-
-    setJumpPageAnchorEl(null);
-
-    const pagePath = getPagePath(pageId);
-    void router.navigate(pagePath);
+    if (!library) return;
+    try {
+      let nextValues = buildPrototypeScenario(library, scenario, productKey);
+      const flow = getResolvedFormFlow();
+      if (pageId === 'receipt') nextValues = completePrototypeQdOutcomes(nextValues, products);
+      else for (const completed of flow.slice(0, flow.indexOf(pageId))) nextValues = completePrototypeQdOutcomes(nextValues, products, completed);
+      if (pageId !== 'receipt' && shouldSkipPage(pageId, nextValues)) throw new Error('This page does not participate in the selected scenario. Choose another product or scenario.');
+      resetValues();
+      resetApplicationSession();
+      setPageValues(nextValues);
+      setScenarioError('');
+      setJumpPageAnchorEl(null);
+      void router.navigate({ pathname: getPagePath(pageId), search: window.location.search });
+    } catch (error) { setScenarioError(error instanceof Error ? error.message : String(error)); }
   };
+  const handleSubmitFullApplication = () => handleJumpToPage('receipt');
 
-  const handleSubmitFullApplication = () => {
-    const formData = generateFormDataUpToPage("receipt");
-
-    window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
-    setPageValues(formData);
-
-    const pagePath = getPagePath("receipt");
-    void router.navigate(pagePath);
-  };
-
-  if (!isDevMode || currentSite.id !== "demo") return null;
+  if (!isDevMode) return null;
 
   return (
     <>
       <IconButton
+        aria-label="Open Dev Tools"
         onClick={() => setOpen(true)}
         sx={{
           position: "fixed",
@@ -307,6 +282,13 @@ export default function DevTools() {
               </Typography>
 
               <Stack spacing={1}>
+                <TextField select label="Scenario" value={scenario} onChange={event => { setScenario(event.target.value as PrototypeScenarioId); setProductKey(''); setScenarioError(''); }}>
+                  {prototypeScenarios.filter(row => !library || scenarioProducts(library, row.id).length > 0).map(row => <MenuItem key={row.id} value={row.id}>{row.label}</MenuItem>)}
+                </TextField>
+                <TextField select label="Product" value={products.some(product => product.id === productKey) ? productKey : products[0]?.id ?? ''} onChange={event => setProductKey(event.target.value)} disabled={!products.length}>
+                  {products.map(product => <MenuItem key={product.id} value={product.id}>{product.name}</MenuItem>)}
+                </TextField>
+                {scenarioError && <Alert severity="error">{scenarioError}</Alert>}
                 <Button
                   onClick={(e) => setJumpPageAnchorEl(e.currentTarget)}
                   fullWidth

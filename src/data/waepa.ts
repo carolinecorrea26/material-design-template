@@ -81,7 +81,6 @@ export const waepaClientEntity: Client = {
         },
         "di-short-term": { underwritingType: "QD" },
       },
-      allCategoriesExpanded: true,
     },
     fields: { coverage: { hidden: ["average-employees-6-months"] } },
     licenseInfo: ["CA Insurance License: #OH62489", "AR Insurance License: #94726"],

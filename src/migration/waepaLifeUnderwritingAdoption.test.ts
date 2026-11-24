@@ -1,9 +1,11 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import dayjs from "dayjs";
 import { afterEach, beforeAll, expect, it } from "vitest";
 import { createReviewedMigrationDatabase } from "./fixtures";
 import { applyWaepaLifeUnderwritingAdoption } from "./waepaLifeUnderwritingAdoption";
 import { applyCoverageJourneyAdoption } from "./coverageJourneyAdoption";
-import { installPrototypeLibrary, resolvePrototypeLibrary } from "../domain/prototypeLibrary";
+import { installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import { resolveJourneyUnderwriting, resolveQuestionParticipation } from "../domain/coverageJourney";
 import { applicationUnderwriting } from "../domain/coverageRuntime";
 import { resolveFlowGate } from "../config/flowGates";
@@ -18,9 +20,9 @@ it("applies the approved adult WAEPA Life boundaries in native processing and th
   for (const applicant of ["member", "spouse"] as const) for (const age of [18, 49, 50, 59, 60, 69]) for (const amount of [500000, 500001, 1000000, 1000001]) {
     const pathway = age <= 49 && amount <= 1000000 || age <= 59 && amount <= 500000 ? "QD" : "FUW";
     expect(resolveJourneyUnderwriting(library.site, product.id, applicant, age, amount), `${applicant}/${age}/${amount}`).toMatchObject({ status: "resolved", pathway });
-    const values = { membership: "current", gender: "male", "spouse-gender": "male", "birth-date": dayjs().subtract(age, "year").format("YYYY-MM-DD"), "spouse-birth-date": dayjs().subtract(age, "year").format("YYYY-MM-DD"), coverageSelections: [product.id], productApplicants: { [product.id]: [applicant] }, coverageAmounts: { [`${product.id}:${applicant}`]: amount } };
-    expect(applicationUnderwriting(product, applicant, values)).toMatchObject({ status: "resolved", underwritingType: pathway, healthPage: "health-li" });
-    expect(resolveFlowGate("health-li", values, library.products)).toBe(true);
+    const values = { dependents: ["spouse", "child"], membership: "current", gender: "male", "spouse-gender": "male", "birth-date": dayjs().subtract(age, "year").format("YYYY-MM-DD"), "spouse-birth-date": dayjs().subtract(age, "year").format("YYYY-MM-DD"), coverageSelections: [product.id], productApplicants: { [product.id]: [applicant] }, coverageAmounts: { [`${product.id}:${applicant}`]: amount } };
+    expect(applicationUnderwriting(product, applicant, values)).toMatchObject({ status: "resolved", underwritingType: pathway, healthPage: "health-tele" });
+    expect(resolveFlowGate("health-tele", values, library.products)).toBe(true);
     expect(resolveFlowGate("health-qd", values, library.products)).toBe(false);
     const questions = resolveQuestionParticipation(library.site, product.id, applicant, "new", { gender: "male", "spouse-gender": "male" }, [], [], pathway);
     expect(questions.activeFields).toContain(`health-source-tele-weight-change-${applicant}`);

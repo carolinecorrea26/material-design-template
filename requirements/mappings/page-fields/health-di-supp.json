@@ -1,0 +1,267 @@
+{
+  "page": "health-di-supp",
+  "fields": [
+    {
+      "field": "health-detail-onset",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "health-detail-conditions",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "health-detail-physician-address",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "health-di-q1",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "health-di-q2",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "health-di-q3",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "health-di-q4",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "health-di-q5",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "health-di-q6",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "health-di-q7",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "health-di-assistance-type",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "health-di-fall-type",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    },
+    {
+      "field": "health-di-details",
+      "people": [
+        "self",
+        "spouse"
+      ]
+    }
+  ],
+  "constraints": {
+    "health-detail-onset": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "health-detail-conditions": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "health-detail-physician-address": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "health-di-q1": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "health-di-q2": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "health-di-q3": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "health-di-q4": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "health-di-q5": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "health-di-q6": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "health-di-q7": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "health-di-assistance-type": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "health-di-fall-type": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "health-di-details": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    }
+  }
+}

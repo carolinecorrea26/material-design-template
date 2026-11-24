@@ -3,19 +3,20 @@ import { effectiveConfigurationTables } from "./effectiveConfiguration";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 import { createMigrationDatabase } from "../migration/fixtures";
 import type { DatabaseSchema } from "../persistence/types";
-import { resolveEffectiveSite, resolveEffectiveEligibility, resolveEffectiveUnderwriting } from "./effectiveSite";
+import { resolveSnapshotSite as resolveEffectiveSite, resolveEffectiveSite as resolveFreshSite, resolveEffectiveEligibility, resolveEffectiveUnderwriting } from "./effectiveSite";
 import { createEffectiveSiteRepository } from "../repositories/effectiveSiteRepository";
 import { LocalStorageAdapter } from "../persistence/localAdapter";
 import { staticSiteAdapter } from "../repositories/staticSiteAdapter";
 import { createSiteRepository } from "../repositories/siteRepository";
 import { resolveClientCoverage } from "../config/resolvers";
 import { resolveUnderwritingBand } from "./coverageRequirements";
+import { journeyCatalog } from "../migration/freshStartJourneyFixtures";
 import { asceBusinessDecisions } from "./asceBusinessDecisions";
 
 let db: DatabaseSchema;
 beforeAll(() => { vi.stubGlobal("crypto", webcrypto); db = createMigrationDatabase(); });
 const candidate = () => resolveEffectiveSite(db, "asce");
-describe("Phase 6A candidate resolution", () => {
+describe("Historical snapshot resolution and current repository boundary", () => {
   for (const [product, maximum, older] of [["li-10yr", 69, 65], ["li-20yr", 59, 55]] as const) {
     for (const applicant of ["member", "spouse"] as const) {
       it(`${product}/${applicant} enforces inclusive approved ages and older FUW amounts`, () => {
@@ -91,18 +92,19 @@ describe("Phase 6A candidate resolution", () => {
     expect(() => resolveEffectiveSite({ ...db, siteProducts: [...db.siteProducts, db.siteProducts.find(p => p.siteId === "asce")!] }, "asce")).toThrow("Duplicate");
   });
   it("reads only persisted normalized inputs, refreshes reads, propagates failures", async () => {
-    const adapter = new LocalStorageAdapter(db);
+    const current = { ...db, ...journeyCatalog.data };
+    const adapter = new LocalStorageAdapter(current);
     const allowed = new Set([...effectiveConfigurationTables, "sites", "clients", "organizations", "organizationProfiles", "associationEntities", "associationContacts", "siteProducts", "siteProductApplicants", "eligibilityConstraints", "underwritingBands", "semanticRequirements", "associations", "siteAssociations", "sitePolicies"]);
     const snapshot = adapter.readSnapshot.bind(adapter);
     adapter.readSnapshot = async tables => { for (const table of tables) if (!allowed.has(table)) throw new Error(`Forbidden: ${table}`); return snapshot(tables); };
     const repository = createEffectiveSiteRepository(adapter);
-    expect(await repository.resolve("asce")).toEqual(candidate());
+    expect(await repository.resolve("asce")).toEqual(resolveFreshSite(current, "asce"));
     const site = db.sites.find(s => s.key === "asce")!;
     await adapter.update("sites", site.id, { name: "Persisted name" });
     expect((await repository.resolve("asce")).name.value).toBe("Persisted name");
     const approval = db.semanticRequirements.find(r => r.key === `business-decision.${asceBusinessDecisions[0].key}`)!;
     await adapter.remove("semanticRequirements", approval.id);
-    await expect(repository.resolve("asce")).rejects.toThrow("Unapproved");
+    expect((await repository.resolve("asce")).siteKey).toBe("asce"); // Retired review receipts cannot override authored requirements.
     adapter.readSnapshot = async () => { throw new Error("transport failure"); };
     await expect(repository.resolve("asce")).rejects.toThrow("transport failure");
   });

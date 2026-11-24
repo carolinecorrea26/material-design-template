@@ -11,7 +11,7 @@ import {
   type ReactElement,
   type ReactNode,
 } from "react";
-import { Controller, type Control, type FieldErrors } from "react-hook-form";
+import { Controller, useWatch, type Control, type FieldErrors } from "react-hook-form";
 import {
   Link,
   Autocomplete,
@@ -276,7 +276,7 @@ function FieldRendererInput({
   control,
   errors,
   hideLabel = false,
-  margin = "normal",
+  margin = "none",
   onValueChange,
   reserveFeedbackSpace,
   feedback,
@@ -285,9 +285,12 @@ function FieldRendererInput({
   const validationRules = getFieldValidationRules(field);
   const effectiveInputType = getEffectiveInputType(field);
   const fieldError = errors[field.id]?.message as string | undefined;
+  const currentValue = useWatch({ control, name: field.id });
+  const conditionalHelper = field.helperTextWhen?.values.includes(String(currentValue)) ? <><Box component="span" sx={{ color: 'error.main' }}>{field.helperTextWhen.marker}</Box>{field.helperTextWhen.text}</> : undefined;
   const resolvedHelperText =
     fieldError ??
     feedback ??
+    conditionalHelper ??
     (field.format === "ssn" ? renderSsnHelperText() : field.helperText) ??
     (reserveFeedbackSpace ? " " : undefined);
 
@@ -308,19 +311,20 @@ function FieldRendererInput({
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
       ) => void;
       placeholder?: string;
+      helperText?: ReactNode;
       inputProps?: Record<string, unknown>;
       inputAdornmentProps?: TextFieldProps["InputProps"];
     } = {},
   ) {
     const handleChange = options.onChange ?? ((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const value = isZipOrPostalField(field) ? formatZipOrPostalCode(event.target.value)
-        : field.format === 'digits' ? sanitizeDigits(event.target.value) : event.target.value;
+        : field.format === 'digits' ? sanitizeDigits(event.target.value, field.maxLength) : field.format === 'alphanumeric' ? event.target.value.replace(/[^a-z0-9]/gi, '').slice(0, field.maxLength) : event.target.value;
       controllerField.onChange(value);
       onValueChange?.(value);
     });
     return <TextLikeField {...options} field={field} value={options.value ?? String(controllerField.value ?? "")}
       onChange={handleChange} onBlur={controllerField.onBlur} hideLabel={hideLabel} margin={margin}
-      hasError={Boolean(errors[field.id])} helperText={resolvedHelperText} />;
+      hasError={Boolean(errors[field.id])} helperText={options.helperText ?? resolvedHelperText} />;
   }
 
   if (field.inputType === "radio") {
@@ -817,162 +821,22 @@ function FieldRendererInput({
     );
   }
 
-  if (field.inputType === "date") {
-    const dateHelperText = fieldError ?? field.helperText ?? "MM/DD/YYYY";
-    return (
-      <Controller
-        key={field.id}
-        name={field.id}
-        control={control}
-        rules={validationRules}
-        render={({ field: controllerField }) => {
-          const labelVariant = getLabelVariant(field);
-          const displayValue = parseStoredDate(
-            (controllerField.value as string) ?? "",
-          );
-          const isComplete = isFieldComplete(field, displayValue, statusState);
-          const showError = isFieldInError(statusState);
-          const textField = (
-            <TextField
-              label={
-                labelVariant === "floating"
-                  ? renderFieldLabel(field)
-                  : undefined
-              }
-              required={field.required}
-              fullWidth
-              margin={labelVariant === "floating" ? margin : "none"}
-              autoComplete={field.autoComplete}
-              name={controllerField.name}
-              inputProps={{ inputMode: "numeric" }}
-              value={displayValue}
-              onChange={(event) => {
-                const formatted = formatDateDisplay(event.target.value);
-                const digits = formatted.replace(/\D/g, "");
-                if (digits.length === 8) {
-                  controllerField.onChange(formatDateForStorage(formatted));
-                } else {
-                  controllerField.onChange(formatted);
-                }
-                onValueChange?.();
-              }}
-              onBlur={controllerField.onBlur}
-              disabled={field.disabled}
-              error={Boolean(errors[field.id])}
-              helperText={
-                labelVariant === "floating" ? dateHelperText : undefined
-              }
-              InputProps={{
-                endAdornment: isComplete
-                  ? renderCompletedAdornment()
-                  : showError
-                    ? renderErrorAdornment()
-                    : undefined,
-              }}
-            />
-          );
-
-          if (labelVariant === "floating") {
-            return textField;
-          }
-
-          return (
-            <FormControl
-              fullWidth
-              margin={margin}
-              error={Boolean(errors[field.id])}
-            >
-              {!hideLabel ? (
-                <FormLabel id={`${field.id}-label`} required={field.required} sx={{ mb: 1 }}>
-                  {renderFieldLabel(field)}
-                </FormLabel>
-              ) : null}
-              {textField}
-              <FormHelperText>{dateHelperText}</FormHelperText>
-            </FormControl>
-          );
-        }}
-      />
-    );
-  }
-
-  if (field.format === "month-year") {
-    const myHelperText = fieldError ?? field.helperText ?? "MM/YYYY";
-    return (
-      <Controller
-        key={field.id}
-        name={field.id}
-        control={control}
-        rules={validationRules}
-        render={({ field: controllerField }) => {
-          const labelVariant = getLabelVariant(field);
-          const displayValue = parseStoredMonthYear(
-            (controllerField.value as string) ?? "",
-          );
-          const isComplete = isFieldComplete(field, displayValue, statusState);
-          const showError = isFieldInError(statusState);
-          const textField = (
-            <TextField
-              label={
-                labelVariant === "floating"
-                  ? renderFieldLabel(field)
-                  : undefined
-              }
-              required={field.required}
-              fullWidth
-              margin={labelVariant === "floating" ? margin : "none"}
-              inputProps={{ inputMode: "numeric" }}
-              value={displayValue}
-              onChange={(event) => {
-                const formatted = formatMonthYearDisplay(event.target.value);
-                const digits = formatted.replace(/\D/g, "");
-                if (digits.length === 6) {
-                  controllerField.onChange(
-                    formatMonthYearForStorage(formatted),
-                  );
-                } else {
-                  controllerField.onChange(formatted);
-                }
-                onValueChange?.();
-              }}
-              onBlur={controllerField.onBlur}
-              disabled={field.disabled}
-              error={Boolean(errors[field.id])}
-              helperText={
-                labelVariant === "floating" ? myHelperText : undefined
-              }
-              InputProps={{
-                endAdornment: isComplete
-                  ? renderCompletedAdornment()
-                  : showError
-                    ? renderErrorAdornment()
-                    : undefined,
-              }}
-            />
-          );
-
-          if (labelVariant === "floating") {
-            return textField;
-          }
-
-          return (
-            <FormControl
-              fullWidth
-              margin={margin}
-              error={Boolean(errors[field.id])}
-            >
-              {!hideLabel ? (
-                <FormLabel id={`${field.id}-label`} required={field.required} sx={{ mb: 1 }}>
-                  {renderFieldLabel(field)}
-                </FormLabel>
-              ) : null}
-              {textField}
-              <FormHelperText>{myHelperText}</FormHelperText>
-            </FormControl>
-          );
-        }}
-      />
-    );
+  if (field.inputType === "date" || field.format === "month-year") {
+    const fullDate = field.inputType === "date";
+    const parse = fullDate ? parseStoredDate : parseStoredMonthYear;
+    const format = fullDate ? formatDateDisplay : formatMonthYearDisplay;
+    const store = fullDate ? formatDateForStorage : formatMonthYearForStorage;
+    const completeDigits = fullDate ? 8 : 6;
+    return <Controller key={field.id} name={field.id} control={control} rules={validationRules}
+      render={({ field: controllerField, fieldState }) => renderTextLikeField(controllerField, fieldState, {
+        value: parse(String(controllerField.value ?? "")), inputProps: { inputMode: "numeric" },
+        helperText: fieldError ?? field.helperText ?? (fullDate ? "MM/DD/YYYY" : "MM/YYYY"),
+        onChange: event => {
+          const formatted = format(event.target.value);
+          controllerField.onChange(formatted.replace(/\D/g, "").length === completeDigits ? store(formatted) : formatted);
+          onValueChange?.();
+        },
+      })} />;
   }
 
   if (isCurrencyField(field)) {
@@ -1044,7 +908,7 @@ function FieldRendererInput({
               pattern: field.allowDecimal ? "[0-9]*[.]?[0-9]*" : "[0-9]*",
             },
             onChange: (event) => {
-              controllerField.onChange(field.allowDecimal ? event.target.value.replace(/[^\d.]/g, "").replace(/(\..*)\./g, "$1") : sanitizeDigits(event.target.value));
+              controllerField.onChange(field.allowDecimal ? event.target.value.replace(/[^\d.]/g, "").replace(/(\..*)\./g, "$1") : sanitizeDigits(event.target.value, field.maxLength));
               onValueChange?.();
             },
           })
@@ -1098,5 +962,5 @@ function FieldRendererInput({
 }
 
 export default function FieldRenderer(props: FieldRendererProps) {
-  return <Box data-analytics-field={props.field.id} sx={{ display: "contents", ...(props.reserveFeedbackSpace && { "& .MuiFormHelperText-root": { minHeight: "1.66em" }, "& .MuiFormControl-root": { mt: 0, mb: 0 } }) }}><FieldRendererInput {...props} /></Box>;
+  return <Box className="FieldRenderer-root" data-analytics-field={props.field.id} sx={{ minWidth: 0, ...(props.reserveFeedbackSpace && { "& .MuiFormHelperText-root": { minHeight: "1.66em" }, "& .MuiFormControl-root": { mt: 0, mb: 0 } }) }}><FieldRendererInput {...props} /></Box>;
 }

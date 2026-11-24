@@ -1,3 +1,4 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import { describe, expect, it, vi } from "vitest";
 import { webcrypto } from "node:crypto";
 import { createMigrationDatabase, createReviewedMigrationDatabase } from "./fixtures";
@@ -5,7 +6,7 @@ import { applyDisabilityBenefitAdoption, disabilityBenefitSlices } from "./disab
 import { consolidateAmountOwnership } from "./amountOwnership";
 import { mcrSource } from "./mcr";
 import { validateMigrationDatabase } from "./integrity";
-import { resolveEffectiveSite } from "../domain/effectiveSite";
+import { resolveSnapshotSite as resolveEffectiveSite } from "../domain/effectiveSite";
 import { isBenefitPolicy, reconcileBenefitSelection, resolveNormalizedBenefit, type BenefitFacts } from "../domain/benefitPolicy";
 import { LocalStorageAdapter } from "../persistence/localAdapter";
 import { createPortalDataRepository, effectiveSiteSnapshotTables } from "../repositories/portalDataRepository";
@@ -24,7 +25,10 @@ describe("persisted disability and overhead benefit dimensions", () => {
     applyDisabilityBenefitAdoption(copy, mcrSource.cells);
     consolidateAmountOwnership(copy);
     const sorted = (value: typeof db) => Object.fromEntries(Object.entries(value).map(([table, rows]) => [table, [...rows].sort((a, b) => a.id.localeCompare(b.id))]));
-    expect(sorted(copy)).toEqual(sorted(db));
+    const once = structuredClone(copy);
+    applyDisabilityBenefitAdoption(copy, mcrSource.cells);
+    consolidateAmountOwnership(copy);
+    expect(sorted(copy)).toEqual(sorted(once));
   });
   it.each([[1000, 600], [8000, 4800], [100000, 5000]])("NSO income %s limits new benefit to %s", (monthlyIncome, maximum) => {
     expect(resolve("nso", "di-ltd", { ageYears: 40, monthlyIncome, amount: maximum, waitingPeriod: "60-days", benefitPeriod: "5-years" })).toMatchObject({ status: "resolved", allowed: true, maximum });
@@ -53,10 +57,10 @@ describe("persisted disability and overhead benefit dimensions", () => {
   });
   it("requires AMA class and exempts residents from financial underwriting while retaining aggregate limits", () => {
     expect(resolve("ama", "di-level-rated", { ageYears: 30 })).toMatchObject({ status: "needs-information", missingFacts: ["applicantClass"] });
-    expect(resolve("ama", "di-level-rated", { ageYears: 39, applicantClass: "resident", existingMonthlyBenefit: 0, otherMonthlyBenefits: { "di-step-rated": 0 }, amount: 5000 })).toMatchObject({ allowed: true, maximum: 5000 });
-    expect(resolve("ama", "di-level-rated", { ageYears: 40, applicantClass: "resident", existingMonthlyBenefit: 0, otherMonthlyBenefits: { "di-step-rated": 0 } }).allowed).toBe(false);
-    expect(resolve("ama", "di-level-rated", { ageYears: 54, applicantClass: "practicing", monthlyIncome: 60000, existingMonthlyBenefit: 10000, otherMonthlyBenefits: { "di-step-rated": 0 } })).toMatchObject({ allowed: true, maximum: 5000 });
-    expect(resolve("ama", "di-level-rated", { ageYears: 55, applicantClass: "practicing", monthlyIncome: 60000, existingMonthlyBenefit: 0, otherMonthlyBenefits: { "di-step-rated": 0 } }).maximum).toBe(5000);
+    expect(resolve("ama", "di-level-rated", { ageYears: 39, applicantClass: "resident", existingMonthlyBenefit: 0, otherMonthlyBenefits: { "di-step-rated": 0 }, selectedProducts: ["di-level-rated"], amount: 5000 })).toMatchObject({ allowed: true, maximum: 5000 });
+    expect(resolve("ama", "di-level-rated", { ageYears: 40, applicantClass: "resident", existingMonthlyBenefit: 0, otherMonthlyBenefits: { "di-step-rated": 0 }, selectedProducts: ["di-level-rated"] }).allowed).toBe(false);
+    expect(resolve("ama", "di-level-rated", { ageYears: 54, applicantClass: "practicing", monthlyIncome: 60000, existingMonthlyBenefit: 10000, otherMonthlyBenefits: { "di-step-rated": 0 }, selectedProducts: ["di-level-rated"] })).toMatchObject({ allowed: true, maximum: 5000 });
+    expect(resolve("ama", "di-level-rated", { ageYears: 55, applicantClass: "practicing", monthlyIncome: 60000, existingMonthlyBenefit: 0, otherMonthlyBenefits: { "di-step-rated": 0 }, selectedProducts: ["di-level-rated"] }).maximum).toBe(5000);
     expect(resolve("ama", "di-level-rated", { ageYears: 40, applicantClass: "retired" })).toMatchObject({ allowed: false, errors: ["Applicant or class is unavailable"] });
   });
   it("locks ASCE first-year self-employed waiting and benefit periods, and releases them at one year", () => {

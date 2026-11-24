@@ -1,16 +1,6 @@
 {
   "validationRules": [
     {
-      "id": "membership-status.validation",
-      "key": "membership-status.validation",
-      "definition": {},
-      "position": 0,
-      "fieldKey": "membership-status",
-      "displayId": 273044593527243,
-      "providedBy": null,
-      "sourceReference": "prototype:validationRules/membership-status.validation"
-    },
-    {
       "id": "title.validation",
       "key": "title.validation",
       "definition": {},
@@ -19,106 +9,6 @@
       "displayId": 152879677717994,
       "providedBy": null,
       "sourceReference": "prototype:validationRules/title.validation"
-    },
-    {
-      "id": "active-military.validation",
-      "key": "active-military.validation",
-      "definition": {},
-      "position": 0,
-      "fieldKey": "active-military",
-      "displayId": 76309965189454,
-      "providedBy": null,
-      "sourceReference": "prototype:validationRules/active-military.validation"
-    },
-    {
-      "id": "waepa-declaration.validation",
-      "key": "waepa-declaration.validation",
-      "definition": {},
-      "position": 0,
-      "fieldKey": "waepa-declaration",
-      "displayId": 33164750047663,
-      "providedBy": null,
-      "sourceReference": "prototype:validationRules/waepa-declaration.validation"
-    },
-    {
-      "id": "waepa-attestation.validation",
-      "key": "waepa-attestation.validation",
-      "definition": {},
-      "position": 0,
-      "fieldKey": "waepa-attestation",
-      "displayId": 211320659542761,
-      "providedBy": null,
-      "sourceReference": "prototype:validationRules/waepa-attestation.validation"
-    },
-    {
-      "id": "waepa-employer.validation",
-      "key": "waepa-employer.validation",
-      "definition": {},
-      "position": 0,
-      "fieldKey": "waepa-employer",
-      "displayId": 29900856526836,
-      "providedBy": null,
-      "sourceReference": "prototype:validationRules/waepa-employer.validation"
-    },
-    {
-      "id": "waepa-start-date.validation",
-      "key": "waepa-start-date.validation",
-      "definition": {},
-      "position": 0,
-      "fieldKey": "waepa-start-date",
-      "displayId": 139152853017410,
-      "providedBy": null,
-      "sourceReference": "prototype:validationRules/waepa-start-date.validation"
-    },
-    {
-      "id": "waepa-retired-employer.validation",
-      "key": "waepa-retired-employer.validation",
-      "definition": {},
-      "position": 0,
-      "fieldKey": "waepa-retired-employer",
-      "displayId": 173370768529344,
-      "providedBy": null,
-      "sourceReference": "prototype:validationRules/waepa-retired-employer.validation"
-    },
-    {
-      "id": "waepa-retirement-date.validation",
-      "key": "waepa-retirement-date.validation",
-      "definition": {},
-      "position": 0,
-      "fieldKey": "waepa-retirement-date",
-      "displayId": 245500450841353,
-      "providedBy": null,
-      "sourceReference": "prototype:validationRules/waepa-retirement-date.validation"
-    },
-    {
-      "id": "waepa-member-first-name.validation",
-      "key": "waepa-member-first-name.validation",
-      "definition": {},
-      "position": 0,
-      "fieldKey": "waepa-member-first-name",
-      "displayId": 59271038847446,
-      "providedBy": null,
-      "sourceReference": "prototype:validationRules/waepa-member-first-name.validation"
-    },
-    {
-      "id": "waepa-member-last-name.validation",
-      "key": "waepa-member-last-name.validation",
-      "definition": {},
-      "position": 0,
-      "fieldKey": "waepa-member-last-name",
-      "displayId": 233787114729754,
-      "providedBy": null,
-      "sourceReference": "prototype:validationRules/waepa-member-last-name.validation"
-    },
-    {
-      "id": "waepa-member-id.validation",
-      "key": "waepa-member-id.validation",
-      "definition": {},
-      "position": 0,
-      "fieldKey": "waepa-member-id",
-      "displayId": 55995250428827,
-      "providedBy": null,
-      "sourceReference": "prototype:validationRules/waepa-member-id.validation"
     },
     {
       "id": "avma-vet-college.validation",
@@ -339,66 +229,6 @@
       "displayId": 103615675374485,
       "providedBy": null,
       "sourceReference": "prototype:validationRules/review-spouse-consent.validation"
-    },
-    {
-      "id": "ama-physician-type.validation",
-      "key": "ama-physician-type.validation",
-      "definition": {},
-      "position": 0,
-      "fieldKey": "ama-physician-type",
-      "displayId": 46600468414123,
-      "providedBy": null,
-      "sourceReference": "prototype:validationRules/ama-physician-type.validation"
-    },
-    {
-      "id": "ama-physician-title.validation",
-      "key": "ama-physician-title.validation",
-      "definition": {},
-      "position": 0,
-      "fieldKey": "ama-physician-title",
-      "displayId": 131176893454233,
-      "providedBy": null,
-      "sourceReference": "prototype:validationRules/ama-physician-title.validation"
-    },
-    {
-      "id": "ama-physician-first-name.validation",
-      "key": "ama-physician-first-name.validation",
-      "definition": {},
-      "position": 0,
-      "fieldKey": "ama-physician-first-name",
-      "displayId": 169870565628153,
-      "providedBy": null,
-      "sourceReference": "prototype:validationRules/ama-physician-first-name.validation"
-    },
-    {
-      "id": "ama-physician-last-name.validation",
-      "key": "ama-physician-last-name.validation",
-      "definition": {},
-      "position": 0,
-      "fieldKey": "ama-physician-last-name",
-      "displayId": 243665688777627,
-      "providedBy": null,
-      "sourceReference": "prototype:validationRules/ama-physician-last-name.validation"
-    },
-    {
-      "id": "ama-physician-birth-date.validation",
-      "key": "ama-physician-birth-date.validation",
-      "definition": {},
-      "position": 0,
-      "fieldKey": "ama-physician-birth-date",
-      "displayId": 62290094454067,
-      "providedBy": null,
-      "sourceReference": "prototype:validationRules/ama-physician-birth-date.validation"
-    },
-    {
-      "id": "ama-physician-email.validation",
-      "key": "ama-physician-email.validation",
-      "definition": {},
-      "position": 0,
-      "fieldKey": "ama-physician-email",
-      "displayId": 196296404811735,
-      "providedBy": null,
-      "sourceReference": "prototype:validationRules/ama-physician-email.validation"
     },
     {
       "id": "csea-performing-duties.validation",

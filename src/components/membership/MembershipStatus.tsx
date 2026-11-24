@@ -1,3 +1,4 @@
+import { useComponentContent } from '../content/ComponentContentContext';
 import { Alert, Box, Link, Stack, Typography } from "@mui/material";
 import type { ComponentProps } from "react";
 import type { ClientConfig } from "../../config/clients/types";
@@ -16,11 +17,13 @@ type Props = Pick<ComponentProps<typeof FieldRenderer>, "control" | "errors"> & 
 /** Membership question with the page's existing link, eligibility and non-member feedback. */
 export default function MembershipStatus({ membershipField, client, control, errors,
   associationLinkError, membershipIneligibility, showMembershipIneligibleAlert, onMembershipChange }: Props) {
-  const [beforeWebsite, afterWebsite] = requirementText("membership.not-member.website", { clientPhone: client.support.phoneDisplay ?? client.support.phone ?? "" }).split("{{clientWebsite}}");
+  const messages = useComponentContent().pages.membership?.messages;
+  if (!messages) throw new Error('Missing fresh-start Membership guidance');
+  const [beforeWebsite, afterWebsite] = requirementText("notMemberContact", { clientPhone: client.support.phoneDisplay ?? client.support.phone ?? "" }, messages).split("{{clientWebsite}}");
   return <>
     {associationLinkError && (
       <Alert severity="error" sx={{ mb: 2 }}>
-        {associationLinkError} Please request a valid application link.
+        {associationLinkError} {requirementText("membership.association.link-required")}
       </Alert>
     )}
     {membershipIneligibility && (
@@ -50,10 +53,10 @@ export default function MembershipStatus({ membershipField, client, control, err
               variant="subtitle2"
               sx={{ fontWeight: 700, mb: 1 }}
             >
-              {requirementText("membership.not-member.heading")}
+              {requirementText("notMemberHeading", {}, messages)}
             </Typography>
             <Typography variant="body2">
-              {requirementText("membership.not-member.body", { clientName: client.branding.name })}
+              {requirementText("notMemberBody", { clientName: client.branding.name }, messages)}
             </Typography>
           </Box>
 
@@ -61,11 +64,11 @@ export default function MembershipStatus({ membershipField, client, control, err
             <Typography variant="body2">
               {beforeWebsite}
               {afterWebsite !== undefined && <Link
-                href={`https://${client.support.website}`}
+                href={/^https?:\/\//.test(client.support.website) ? client.support.website : `https://${client.support.website}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 sx={{
-                  font: "inherit",
+                  fontSize: "inherit",
                 }}
               >
                 {client.support.website}

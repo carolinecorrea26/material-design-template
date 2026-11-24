@@ -1,0 +1,1196 @@
+{
+  "products": {
+    "li-term": {
+      "name": "Medical Student Group Term Life Insurance",
+      "description": "Guaranteed-issue term life coverage for eligible medical students and their spouses."
+    },
+    "di-short-term": {
+      "name": "Medical Student Group Disability Insurance",
+      "description": "Guaranteed-issue coverage providing $1,000 a month for up to 12 months following a 30-day waiting period."
+    }
+  },
+  "catalog": {
+    "configurationValues": [
+      {
+        "id": "{{site}}.coverages.categories",
+        "key": "{{site}}.coverages.categories",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "coverages.categories",
+        "value": [
+          "LI",
+          "DI"
+        ],
+        "position": 0,
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026"
+      },
+      {
+        "id": "{{site}}.coveragePolicy.questionOverrides",
+        "key": "{{site}}.coveragePolicy.questionOverrides",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "coveragePolicy.questionOverrides",
+        "value": {
+          "LI": {
+            "self": []
+          },
+          "DI": {
+            "self": []
+          }
+        },
+        "position": 0,
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026"
+      },
+      {
+        "id": "{{site}}.template.site-category-eligibility",
+        "key": "{{site}}.template.site-category-eligibility",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.site-category-eligibility",
+        "value": {
+          "version": 1,
+          "fieldId": "membership",
+          "allowedByAnswer": {
+            "student": [
+              "LI",
+              "DI"
+            ],
+            "spouse": [
+              "LI"
+            ]
+          }
+        },
+        "position": 0,
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026"
+      },
+      {
+        "id": "{{site}}.coverages.hideSmokerQuestion",
+        "key": "{{site}}.coverages.hideSmokerQuestion",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "coverages.hideSmokerQuestion",
+        "value": true,
+        "position": 0,
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026"
+      },
+      {
+        "id": "{{site}}.rates.reviewed-presentation",
+        "key": "{{site}}.rates.reviewed-presentation",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "rates.reviewed-presentation",
+        "value": {
+          "version": 1,
+          "praseConfigured": true,
+          "quoteToolEnabled": true,
+          "coverageQuoteEnabled": true
+        },
+        "position": 0,
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026"
+      },
+      {
+        "id": "{{site}}.template.page-participation",
+        "key": "{{site}}.template.page-participation",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.page-participation",
+        "value": {
+          "version": 2,
+          "source": "sitePages"
+        },
+        "position": 0,
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026"
+      },
+      {
+        "id": "{{site}}.template.product-availability",
+        "key": "{{site}}.template.product-availability",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.product-availability",
+        "value": {
+          "version": 2,
+          "source": "siteProducts"
+        },
+        "position": 0,
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026"
+      },
+      {
+        "id": "{{site}}.template.site-structure",
+        "key": "{{site}}.template.site-structure",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.site-structure",
+        "value": {
+          "version": 2,
+          "source": "stored-structure"
+        },
+        "position": 0,
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026"
+      },
+      {
+        "id": "{{site}}.template.li-term.rider-set",
+        "key": "{{site}}.template.li-term.rider-set",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.li-term.rider-set",
+        "value": {
+          "version": 2,
+          "source": "productRiders"
+        },
+        "position": 0,
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026"
+      },
+      {
+        "id": "{{site}}.template.li-term.selection-policy",
+        "key": "{{site}}.template.li-term.selection-policy",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.li-term.selection-policy",
+        "value": {
+          "version": 1,
+          "modes": [
+            "new"
+          ],
+          "amountMeaning": "resulting-total",
+          "existingPolicyRequired": false,
+          "riderOnlyApplicants": [],
+          "riders": [],
+          "childSchedule": null,
+          "skipPaymentForExisting": false,
+          "skipPaymentForChildOnly": false,
+          "healthForRiderOnly": false,
+          "provisional": false,
+          "revisit": []
+        },
+        "position": 0,
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026"
+      },
+      {
+        "id": "{{site}}.template.li-term.journey-residency",
+        "key": "{{site}}.template.li-term.journey-residency",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.li-term.journey-residency",
+        "value": {
+          "version": 1,
+          "allowedJurisdictions": [
+            "US-AL",
+            "US-AK",
+            "US-AZ",
+            "US-AR",
+            "US-CA",
+            "US-CO",
+            "US-CT",
+            "US-DE",
+            "US-DC",
+            "US-FL",
+            "US-GA",
+            "US-HI",
+            "US-ID",
+            "US-IL",
+            "US-IN",
+            "US-IA",
+            "US-KS",
+            "US-KY",
+            "US-ME",
+            "US-MD",
+            "US-MA",
+            "US-MI",
+            "US-MN",
+            "US-MS",
+            "US-MO",
+            "US-MT",
+            "US-NE",
+            "US-NV",
+            "US-NH",
+            "US-NJ",
+            "US-NM",
+            "US-NY",
+            "US-NC",
+            "US-ND",
+            "US-OH",
+            "US-OK",
+            "US-OR",
+            "US-PA",
+            "US-RI",
+            "US-SC",
+            "US-SD",
+            "US-TN",
+            "US-TX",
+            "US-UT",
+            "US-VT",
+            "US-VA",
+            "US-WA",
+            "US-WV",
+            "US-WI",
+            "US-WY"
+          ],
+          "excludeActiveMilitary": false,
+          "provisional": false,
+          "revisit": []
+        },
+        "position": 0,
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026"
+      },
+      {
+        "id": "{{site}}.template.li-term.provisional-rate-outcome",
+        "key": "{{site}}.template.li-term.provisional-rate-outcome",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.li-term.provisional-rate-outcome",
+        "value": {
+          "status": "unavailable",
+          "reason": "Production premium tables are not supplied; prototype rating remains fictional.",
+          "provisional": true,
+          "revisit": true
+        },
+        "position": 0,
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026"
+      },
+      {
+        "id": "{{site}}.template.li-term.rate-modifier-policy",
+        "key": "{{site}}.template.li-term.rate-modifier-policy",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.li-term.rate-modifier-policy",
+        "value": {
+          "version": 1,
+          "rules": [],
+          "provisional": true,
+          "revisit": [
+            "Production rating integration and premium tables remain outside this prototype."
+          ]
+        },
+        "position": 0,
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026"
+      },
+      {
+        "id": "{{site}}.template.li-term.rate-input-policy",
+        "key": "{{site}}.template.li-term.rate-input-policy",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.li-term.rate-input-policy",
+        "value": {
+          "version": 1,
+          "dimensions": {
+            "amount": "required",
+            "applicant": "required",
+            "age": "ignored",
+            "gender": "ignored",
+            "tobacco": "ignored",
+            "jurisdiction": "ignored",
+            "membership": "ignored"
+          },
+          "sourceReferences": [
+            "User AMA-GI enrollment and confirmations November 19, 2026; Main!D130:P130; https://amainsure.com/insurance-products/life-insurance/medical-student-term-life/medical-student-term-life-coverage/"
+          ],
+          "authority": "provisional"
+        },
+        "position": 0,
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026"
+      },
+      {
+        "id": "{{site}}.template.li-term.journey-policy",
+        "key": "{{site}}.template.li-term.journey-policy",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.li-term.journey-policy",
+        "value": {
+          "version": 1,
+          "applicants": [
+            "member"
+          ],
+          "associationChoices": [],
+          "defaultUnderwritingPathway": "GI",
+          "healthPageByUnderwriting": {
+            "GI": null
+          },
+          "membershipRequired": true,
+          "ageBasis": "age-last-birthday-on-application-date",
+          "payment": {
+            "collection": "none",
+            "methods": [],
+            "defaultMethod": null,
+            "defaultFrequency": null,
+            "frequencyLocked": false,
+            "synchronizeAcrossProducts": false
+          },
+          "billing": {
+            "annualFactors": {
+              "annual": 1,
+              "semiannual": 0.5,
+              "quarterly": 0.25,
+              "monthly": 0.08333333333333333
+            },
+            "feePerCollection": {
+              "bank-account": 0,
+              "credit-card": 0,
+              "bill-me": 0
+            },
+            "annualCredit": 0,
+            "currency": "USD"
+          },
+          "dependentElections": [],
+          "questions": [],
+          "mappings": [
+            {
+              "when": {
+                "applicantKey": "member",
+                "mode": "new"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30610-0",
+                  "rating": "G-30610-0",
+                  "issue": "G-30610-0",
+                  "xml": "G-30610-0",
+                  "pdf": "G-30610-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "101",
+                  "rating": "101",
+                  "issue": "101",
+                  "xml": "101",
+                  "pdf": "101",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            }
+          ],
+          "provisional": true,
+          "revisit": [
+            "Submission and rating are prototype demonstrations; production service mapping requires review."
+          ]
+        },
+        "position": 0,
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026"
+      },
+      {
+        "id": "{{site}}.template.product-rider-set.di-short-term",
+        "key": "{{site}}.template.product-rider-set.di-short-term",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.product-rider-set.di-short-term",
+        "value": {
+          "version": 2,
+          "source": "productRiders"
+        },
+        "position": 0,
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026"
+      },
+      {
+        "id": "{{site}}.template.product-selection-policy.di-short-term",
+        "key": "{{site}}.template.product-selection-policy.di-short-term",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.product-selection-policy.di-short-term",
+        "value": {
+          "version": 1,
+          "modes": [
+            "new"
+          ],
+          "amountMeaning": "resulting-total",
+          "existingPolicyRequired": false,
+          "riderOnlyApplicants": [],
+          "riders": [],
+          "childSchedule": null,
+          "skipPaymentForExisting": false,
+          "skipPaymentForChildOnly": false,
+          "healthForRiderOnly": false,
+          "provisional": false,
+          "revisit": []
+        },
+        "position": 0,
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026"
+      },
+      {
+        "id": "{{site}}.template.product-residency-policy.di-short-term",
+        "key": "{{site}}.template.product-residency-policy.di-short-term",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.product-residency-policy.di-short-term",
+        "value": {
+          "version": 1,
+          "allowedJurisdictions": [
+            "US-AL",
+            "US-AK",
+            "US-AZ",
+            "US-AR",
+            "US-CA",
+            "US-CO",
+            "US-CT",
+            "US-DE",
+            "US-DC",
+            "US-FL",
+            "US-GA",
+            "US-HI",
+            "US-ID",
+            "US-IL",
+            "US-IN",
+            "US-IA",
+            "US-KS",
+            "US-KY",
+            "US-LA",
+            "US-ME",
+            "US-MD",
+            "US-MA",
+            "US-MI",
+            "US-MN",
+            "US-MS",
+            "US-MO",
+            "US-MT",
+            "US-NE",
+            "US-NV",
+            "US-NJ",
+            "US-NM",
+            "US-NY",
+            "US-NC",
+            "US-ND",
+            "US-OH",
+            "US-OK",
+            "US-OR",
+            "US-PA",
+            "US-RI",
+            "US-SC",
+            "US-SD",
+            "US-TN",
+            "US-TX",
+            "US-UT",
+            "US-VT",
+            "US-VA",
+            "US-WV",
+            "US-WI",
+            "US-WY"
+          ],
+          "excludeActiveMilitary": false,
+          "provisional": false,
+          "revisit": []
+        },
+        "position": 0,
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026"
+      },
+      {
+        "id": "{{site}}.template.product-rate-outcome.di-short-term",
+        "key": "{{site}}.template.product-rate-outcome.di-short-term",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.product-rate-outcome.di-short-term",
+        "value": {
+          "status": "unavailable",
+          "reason": "Production premium tables are not supplied; prototype rating remains fictional.",
+          "provisional": true,
+          "revisit": true
+        },
+        "position": 0,
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026"
+      },
+      {
+        "id": "{{site}}.template.product-rate-modifier-policy.di-short-term",
+        "key": "{{site}}.template.product-rate-modifier-policy.di-short-term",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.product-rate-modifier-policy.di-short-term",
+        "value": {
+          "version": 1,
+          "rules": [],
+          "provisional": true,
+          "revisit": [
+            "Production rating integration and premium tables remain outside this prototype."
+          ]
+        },
+        "position": 0,
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026"
+      },
+      {
+        "id": "{{site}}.template.product-rate-input-policy.di-short-term",
+        "key": "{{site}}.template.product-rate-input-policy.di-short-term",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.product-rate-input-policy.di-short-term",
+        "value": {
+          "version": 1,
+          "dimensions": {
+            "amount": "required",
+            "applicant": "required",
+            "age": "ignored",
+            "gender": "ignored",
+            "tobacco": "ignored",
+            "jurisdiction": "ignored",
+            "membership": "ignored"
+          },
+          "sourceReferences": [
+            "User AMA-GI enrollment and confirmations November 19, 2026; Main!D129:P129; https://amainsure.com/insurance-products/physician-disability-insurance/medical-student-insurance/medical-student-coverage/"
+          ],
+          "authority": "provisional"
+        },
+        "position": 0,
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026"
+      },
+      {
+        "id": "{{site}}.template.product-journey-policy.di-short-term",
+        "key": "{{site}}.template.product-journey-policy.di-short-term",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.product-journey-policy.di-short-term",
+        "value": {
+          "version": 1,
+          "applicants": [
+            "member"
+          ],
+          "associationChoices": [],
+          "defaultUnderwritingPathway": "GI",
+          "healthPageByUnderwriting": {
+            "GI": null
+          },
+          "membershipRequired": true,
+          "ageBasis": "age-last-birthday-on-application-date",
+          "payment": {
+            "collection": "none",
+            "methods": [],
+            "defaultMethod": null,
+            "defaultFrequency": null,
+            "frequencyLocked": false,
+            "synchronizeAcrossProducts": false
+          },
+          "billing": {
+            "annualFactors": {
+              "annual": 1,
+              "semiannual": 0.5,
+              "quarterly": 0.25,
+              "monthly": 0.08333333333333333
+            },
+            "feePerCollection": {
+              "bank-account": 0,
+              "credit-card": 0,
+              "bill-me": 0
+            },
+            "annualCredit": 0,
+            "currency": "USD"
+          },
+          "dependentElections": [],
+          "questions": [],
+          "mappings": [
+            {
+              "when": {
+                "applicantKey": "member",
+                "mode": "new"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-30639-0",
+                  "rating": "G-30639-0",
+                  "issue": "G-30639-0",
+                  "xml": "G-30639-0",
+                  "pdf": "G-30639-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "601-a",
+                  "rating": "601-a",
+                  "issue": "601-a",
+                  "xml": "601-a",
+                  "pdf": "601-a",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            }
+          ],
+          "provisional": true,
+          "revisit": [
+            "Submission and rating are prototype demonstrations; production service mapping requires review."
+          ]
+        },
+        "position": 0,
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026"
+      },
+      {
+        "id": "{{site}}.template.product-benefit-policy.di-short-term",
+        "key": "{{site}}.template.product-benefit-policy.di-short-term",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.product-benefit-policy.di-short-term",
+        "value": {
+          "version": 2,
+          "amountSource": "product-amount-rules",
+          "applicants": [
+            {
+              "applicantKey": "member",
+              "amountRuleKey": "{{site}}.di-short-term.member.amount",
+              "waitingPeriods": [
+                {
+                  "key": "30-days",
+                  "accidentDays": 30,
+                  "sicknessDays": 30
+                }
+              ],
+              "benefitPeriods": [
+                "12-months"
+              ]
+            }
+          ],
+          "exclusiveProducts": [],
+          "provisional": false,
+          "revisit": []
+        },
+        "position": 0,
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026"
+      },
+      {
+        "id": "{{site}}.coverages.overrides.li-term.brochureUrl",
+        "key": "{{site}}.coverages.overrides.li-term.brochureUrl",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "coverages.overrides.li-term.brochureUrl",
+        "value": "https://amainsure.com/insurance-products/life-insurance/medical-student-term-life/medical-student-term-life-coverage/",
+        "position": 0,
+        "sourceReference": "User AMA-GI product links November 19, 2026"
+      },
+      {
+        "id": "{{site}}.products.presentation.di-short-term.brochureUrl",
+        "key": "{{site}}.products.presentation.di-short-term.brochureUrl",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "products.presentation.di-short-term.brochureUrl",
+        "value": "https://amainsure.com/insurance-products/physician-disability-insurance/medical-student-insurance/medical-student-coverage/",
+        "position": 0,
+        "sourceReference": "User AMA-GI product links November 19, 2026"
+      },
+      {
+        "id": "{{site}}.life-aggregate-participation",
+        "key": "{{site}}.life-aggregate-participation",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.coveragePolicy.lifeAggregateParticipation",
+        "value": {
+          "version": 1,
+          "mode": "individual-only",
+          "provisional": false,
+          "reason": "Use individual product limits only; no combined Life aggregate applies.",
+          "authority": "User confirmation November 23, 2026"
+        },
+        "position": 0,
+        "sourceReference": "User confirmation November 23, 2026: AMA-GI uses individual product limits only"
+      }
+    ],
+    "siteProducts": [
+      {
+        "id": "{{site}}--li-term--product",
+        "key": "{{site}}.li-term",
+        "siteId": "{{siteId}}",
+        "productKey": "li-term",
+        "enabled": true,
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026; Main!D130:P130; https://amainsure.com/insurance-products/life-insurance/medical-student-term-life/medical-student-term-life-coverage/"
+      },
+      {
+        "id": "{{site}}--di-short-term--product",
+        "key": "{{site}}.di-short-term",
+        "siteId": "{{siteId}}",
+        "productKey": "di-short-term",
+        "enabled": true,
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026; Main!D129:P129; https://amainsure.com/insurance-products/physician-disability-insurance/medical-student-insurance/medical-student-coverage/"
+      }
+    ],
+    "siteProductApplicants": [
+      {
+        "id": "{{site}}.li-term.member",
+        "key": "{{site}}.li-term.member",
+        "siteKey": "{{site}}",
+        "productKey": "li-term",
+        "applicantKey": "member",
+        "position": 0,
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026; Main!D130:P130; https://amainsure.com/insurance-products/life-insurance/medical-student-term-life/medical-student-term-life-coverage/"
+      },
+      {
+        "id": "{{site}}.di-short-term.member",
+        "key": "{{site}}.di-short-term.member",
+        "siteKey": "{{site}}",
+        "productKey": "di-short-term",
+        "applicantKey": "member",
+        "position": 0,
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026; Main!D129:P129; https://amainsure.com/insurance-products/physician-disability-insurance/medical-student-insurance/medical-student-coverage/"
+      }
+    ],
+    "productApplicantEligibility": [
+      {
+        "id": "{{site}}.li-term.member",
+        "key": "{{site}}.li-term.member",
+        "siteKey": "{{site}}",
+        "productKey": "li-term",
+        "applicantTypeKey": "member",
+        "eligible": true,
+        "conditionKey": null,
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026; Main!D130:P130; https://amainsure.com/insurance-products/life-insurance/medical-student-term-life/medical-student-term-life-coverage/"
+      },
+      {
+        "id": "{{site}}.li-term.spouse",
+        "key": "{{site}}.li-term.spouse",
+        "siteKey": "{{site}}",
+        "productKey": "li-term",
+        "applicantTypeKey": "spouse",
+        "eligible": false,
+        "conditionKey": null,
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026; Main!D130:P130; https://amainsure.com/insurance-products/life-insurance/medical-student-term-life/medical-student-term-life-coverage/"
+      },
+      {
+        "id": "{{site}}.li-term.child",
+        "key": "{{site}}.li-term.child",
+        "siteKey": "{{site}}",
+        "productKey": "li-term",
+        "applicantTypeKey": "child",
+        "eligible": false,
+        "conditionKey": null,
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026; Main!D130:P130; https://amainsure.com/insurance-products/life-insurance/medical-student-term-life/medical-student-term-life-coverage/"
+      },
+      {
+        "id": "{{site}}.di-short-term.member",
+        "key": "{{site}}.di-short-term.member",
+        "siteKey": "{{site}}",
+        "productKey": "di-short-term",
+        "applicantTypeKey": "member",
+        "eligible": true,
+        "conditionKey": null,
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026; Main!D129:P129; https://amainsure.com/insurance-products/physician-disability-insurance/medical-student-insurance/medical-student-coverage/"
+      },
+      {
+        "id": "{{site}}.di-short-term.spouse",
+        "key": "{{site}}.di-short-term.spouse",
+        "siteKey": "{{site}}",
+        "productKey": "di-short-term",
+        "applicantTypeKey": "spouse",
+        "eligible": false,
+        "conditionKey": null,
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026; Main!D129:P129; https://amainsure.com/insurance-products/physician-disability-insurance/medical-student-insurance/medical-student-coverage/"
+      },
+      {
+        "id": "{{site}}.di-short-term.child",
+        "key": "{{site}}.di-short-term.child",
+        "siteKey": "{{site}}",
+        "productKey": "di-short-term",
+        "applicantTypeKey": "child",
+        "eligible": false,
+        "conditionKey": null,
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026; Main!D129:P129; https://amainsure.com/insurance-products/physician-disability-insurance/medical-student-insurance/medical-student-coverage/"
+      }
+    ],
+    "underwritingBands": [
+      {
+        "id": "{{site}}.li-term.gi-member",
+        "key": "{{site}}.li-term.gi-member",
+        "siteKey": "{{site}}",
+        "productKey": "li-term",
+        "applicantTypeKey": "member",
+        "applicantClass": null,
+        "pathway": "GI",
+        "minimumAge": 17,
+        "maximumAge": 39,
+        "minimumAmount": 50000,
+        "maximumAmount": 100000,
+        "minimumAmountExclusive": false,
+        "mortalityMorbidity": null,
+        "conditionKey": null,
+        "status": "documented",
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026; Main!D130:P130; https://amainsure.com/insurance-products/life-insurance/medical-student-term-life/medical-student-term-life-coverage/"
+      },
+      {
+        "id": "{{site}}.di-short-term.gi-member",
+        "key": "{{site}}.di-short-term.gi-member",
+        "siteKey": "{{site}}",
+        "productKey": "di-short-term",
+        "applicantTypeKey": "member",
+        "applicantClass": null,
+        "pathway": "GI",
+        "minimumAge": 17,
+        "maximumAge": 39,
+        "minimumAmount": 1000,
+        "maximumAmount": 1000,
+        "minimumAmountExclusive": false,
+        "mortalityMorbidity": null,
+        "conditionKey": null,
+        "status": "documented",
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026; Main!D129:P129; https://amainsure.com/insurance-products/physician-disability-insurance/medical-student-insurance/medical-student-coverage/"
+      }
+    ],
+    "coverageDependencies": [],
+    "maximumPlanRules": [],
+    "aggregateLimits": [],
+    "benefitPeriodOptions": [
+      {
+        "id": "{{site}}.di-short-term.waiting",
+        "key": "{{site}}.di-short-term.waiting",
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026; Main!D129:P129; https://amainsure.com/insurance-products/physician-disability-insurance/medical-student-insurance/medical-student-coverage/",
+        "siteKey": "{{site}}",
+        "productKey": "di-short-term",
+        "applicantTypeKey": null,
+        "value": "30-days",
+        "label": "30 days",
+        "days": 30,
+        "position": 0,
+        "kind": "waiting"
+      },
+      {
+        "id": "{{site}}.di-short-term.benefit",
+        "key": "{{site}}.di-short-term.benefit",
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026; Main!D129:P129; https://amainsure.com/insurance-products/physician-disability-insurance/medical-student-insurance/medical-student-coverage/",
+        "siteKey": "{{site}}",
+        "productKey": "di-short-term",
+        "applicantTypeKey": null,
+        "value": "12-months",
+        "label": "12 months",
+        "days": null,
+        "position": 0,
+        "kind": "benefit"
+      }
+    ],
+    "productAmountRules": [
+      {
+        "id": "{{site}}.li-term.member.amount",
+        "key": "{{site}}.li-term.member.amount",
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026; Main!D130:P130; https://amainsure.com/insurance-products/life-insurance/medical-student-term-life/medical-student-term-life-coverage/",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "productKey": "li-term",
+        "applicantTypeKey": "member",
+        "applicantClass": null,
+        "amountPatternKey": "ama-gi.li-term.amounts",
+        "conditionKey": null,
+        "position": 0
+      },
+      {
+        "id": "{{site}}.di-short-term.member.amount",
+        "key": "{{site}}.di-short-term.member.amount",
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026; Main!D129:P129; https://amainsure.com/insurance-products/physician-disability-insurance/medical-student-insurance/medical-student-coverage/",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "productKey": "di-short-term",
+        "applicantTypeKey": "member",
+        "applicantClass": null,
+        "amountPatternKey": "ama-gi.di-short-term.amounts",
+        "conditionKey": null,
+        "position": 0
+      }
+    ],
+    "productIdentifiers": [
+      {
+        "id": "{{site}}.li-term.planCode",
+        "key": "{{site}}.li-term.planCode",
+        "definition": {
+          "primary": "101"
+        },
+        "position": 0,
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "productKey": "li-term",
+        "kind": "planCode",
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026; Main!D130:P130; https://amainsure.com/insurance-products/life-insurance/medical-student-term-life/medical-student-term-life-coverage/"
+      },
+      {
+        "id": "{{site}}.li-term.gNumber",
+        "key": "{{site}}.li-term.gNumber",
+        "definition": {
+          "primary": "G-30610-0"
+        },
+        "position": 0,
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "productKey": "li-term",
+        "kind": "gNumber",
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026; Main!D130:P130; https://amainsure.com/insurance-products/life-insurance/medical-student-term-life/medical-student-term-life-coverage/"
+      },
+      {
+        "id": "{{site}}.di-short-term.planCode",
+        "key": "{{site}}.di-short-term.planCode",
+        "definition": {
+          "primary": "601-a"
+        },
+        "position": 0,
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "productKey": "di-short-term",
+        "kind": "planCode",
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026; Main!D129:P129; https://amainsure.com/insurance-products/physician-disability-insurance/medical-student-insurance/medical-student-coverage/"
+      },
+      {
+        "id": "{{site}}.di-short-term.gNumber",
+        "key": "{{site}}.di-short-term.gNumber",
+        "definition": {
+          "primary": "G-30639-0"
+        },
+        "position": 0,
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "productKey": "di-short-term",
+        "kind": "gNumber",
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026; Main!D129:P129; https://amainsure.com/insurance-products/physician-disability-insurance/medical-student-insurance/medical-student-coverage/"
+      }
+    ],
+    "productRiders": [],
+    "siteRiders": [],
+    "riderAmountRules": [],
+    "benefitCaps": [],
+    "coverageAmountPatterns": [
+      {
+        "id": "ama-gi.li-term.amounts",
+        "key": "ama-gi.li-term.amounts",
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026; Main!D130:P130; https://amainsure.com/insurance-products/life-insurance/medical-student-term-life/medical-student-term-life-coverage/",
+        "patternKey": "coverage-amount-options",
+        "amountType": "set",
+        "minimum": null,
+        "maximum": null,
+        "increment": 50000,
+        "formula": null,
+        "baseProductKey": null,
+        "baseApplicantKey": null,
+        "baseApplicantClass": null,
+        "multiplier": null
+      },
+      {
+        "id": "ama-gi.di-short-term.amounts",
+        "key": "ama-gi.di-short-term.amounts",
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026; Main!D129:P129; https://amainsure.com/insurance-products/physician-disability-insurance/medical-student-insurance/medical-student-coverage/",
+        "patternKey": "coverage-amount-options",
+        "amountType": "set",
+        "minimum": null,
+        "maximum": null,
+        "increment": 1000,
+        "formula": null,
+        "baseProductKey": null,
+        "baseApplicantKey": null,
+        "baseApplicantClass": null,
+        "multiplier": null
+      }
+    ],
+    "amountBands": [],
+    "amountOptions": [
+      {
+        "id": "ama-gi.li-term.amounts.50000",
+        "key": "ama-gi.li-term.amounts.50000",
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026; Main!D130:P130; https://amainsure.com/insurance-products/life-insurance/medical-student-term-life/medical-student-term-life-coverage/",
+        "amountPatternKey": "ama-gi.li-term.amounts",
+        "value": "50000",
+        "label": "$50,000",
+        "position": 0
+      },
+      {
+        "id": "ama-gi.li-term.amounts.100000",
+        "key": "ama-gi.li-term.amounts.100000",
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026; Main!D130:P130; https://amainsure.com/insurance-products/life-insurance/medical-student-term-life/medical-student-term-life-coverage/",
+        "amountPatternKey": "ama-gi.li-term.amounts",
+        "value": "100000",
+        "label": "$100,000",
+        "position": 1
+      },
+      {
+        "id": "ama-gi.di-short-term.amounts.1000",
+        "key": "ama-gi.di-short-term.amounts.1000",
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026; Main!D129:P129; https://amainsure.com/insurance-products/physician-disability-insurance/medical-student-insurance/medical-student-coverage/",
+        "amountPatternKey": "ama-gi.di-short-term.amounts",
+        "value": "1000",
+        "label": "$1,000",
+        "position": 0
+      }
+    ],
+    "siteFeatures": [
+      {
+        "id": "{{site}}.feature-health-flows",
+        "key": "{{site}}.feature-health-flows",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-health-flows",
+        "enabled": false,
+        "position": 0,
+        "sourceReference": "prototype:siteFeatures/ama.feature-health-flows"
+      },
+      {
+        "id": "{{site}}.feature-instant-quote",
+        "key": "{{site}}.feature-instant-quote",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-instant-quote",
+        "enabled": true,
+        "position": 1,
+        "sourceReference": "prototype:siteFeatures/ama.feature-instant-quote"
+      },
+      {
+        "id": "{{site}}.feature-ecart",
+        "key": "{{site}}.feature-ecart",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-ecart",
+        "enabled": true,
+        "position": 2,
+        "sourceReference": "prototype:siteFeatures/ama.feature-ecart"
+      },
+      {
+        "id": "{{site}}.feature-rate-toggle",
+        "key": "{{site}}.feature-rate-toggle",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-rate-toggle",
+        "enabled": false,
+        "position": 3,
+        "sourceReference": "prototype:siteFeatures/ama.feature-rate-toggle"
+      },
+      {
+        "id": "{{site}}.feature-coverage-brochure",
+        "key": "{{site}}.feature-coverage-brochure",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-coverage-brochure",
+        "enabled": true,
+        "position": 4,
+        "sourceReference": "prototype:siteFeatures/ama.feature-coverage-brochure"
+      },
+      {
+        "id": "{{site}}.feature-coverage-portfolio",
+        "key": "{{site}}.feature-coverage-portfolio",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-coverage-portfolio",
+        "enabled": false,
+        "position": 5,
+        "sourceReference": "prototype:siteFeatures/ama.feature-coverage-portfolio"
+      },
+      {
+        "id": "{{site}}.feature-page-helpers",
+        "key": "{{site}}.feature-page-helpers",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-page-helpers",
+        "enabled": true,
+        "position": 6,
+        "sourceReference": "prototype:siteFeatures/ama.feature-page-helpers"
+      },
+      {
+        "id": "{{site}}.feature-advisor-flow",
+        "key": "{{site}}.feature-advisor-flow",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-advisor-flow",
+        "enabled": true,
+        "position": 7,
+        "sourceReference": "prototype:siteFeatures/ama.feature-advisor-flow"
+      },
+      {
+        "id": "{{site}}.feature-abandoned-leads",
+        "key": "{{site}}.feature-abandoned-leads",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-abandoned-leads",
+        "enabled": true,
+        "position": 8,
+        "sourceReference": "prototype:siteFeatures/ama.feature-abandoned-leads"
+      },
+      {
+        "id": "{{site}}.feature-autosave",
+        "key": "{{site}}.feature-autosave",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-autosave",
+        "enabled": true,
+        "position": 9,
+        "sourceReference": "prototype:siteFeatures/ama.feature-autosave"
+      },
+      {
+        "id": "{{site}}.feature-reminder-emails",
+        "key": "{{site}}.feature-reminder-emails",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-reminder-emails",
+        "enabled": true,
+        "position": 10,
+        "sourceReference": "prototype:siteFeatures/ama.feature-reminder-emails"
+      },
+      {
+        "id": "{{site}}.feature-resume",
+        "key": "{{site}}.feature-resume",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-resume",
+        "enabled": true,
+        "position": 11,
+        "sourceReference": "prototype:siteFeatures/ama.feature-resume"
+      },
+      {
+        "id": "{{site}}.feature-tpa-integration",
+        "key": "{{site}}.feature-tpa-integration",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-tpa-integration",
+        "enabled": true,
+        "position": 12,
+        "sourceReference": "prototype:siteFeatures/ama.feature-tpa-integration"
+      },
+      {
+        "id": "{{site}}.feature-financial-questionnaire",
+        "key": "{{site}}.feature-financial-questionnaire",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-financial-questionnaire",
+        "enabled": false,
+        "position": 13,
+        "sourceReference": "prototype:siteFeatures/ama.feature-financial-questionnaire"
+      },
+      {
+        "id": "{{site}}.feature-online-payment",
+        "key": "{{site}}.feature-online-payment",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-online-payment",
+        "enabled": false,
+        "position": 14,
+        "sourceReference": "prototype:siteFeatures/ama.feature-online-payment"
+      },
+      {
+        "id": "{{site}}.feature-online-beneficiary",
+        "key": "{{site}}.feature-online-beneficiary",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-online-beneficiary",
+        "enabled": true,
+        "position": 15,
+        "sourceReference": "prototype:siteFeatures/ama.feature-online-beneficiary"
+      }
+    ],
+    "siteUrlParameters": [],
+    "sitePolicies": [
+      {
+        "id": "{{site}}",
+        "key": "{{site}}",
+        "siteKey": "{{site}}",
+        "position": 0,
+        "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026",
+        "definition": {
+          "associationSelection": {
+            "mode": "fixed",
+            "fixedAssociationId": "american-medical-association"
+          },
+          "payment": {
+            "collection": "none",
+            "methods": [],
+            "defaultMethod": null,
+            "defaultFrequency": null,
+            "frequencyLocked": false,
+            "synchronizeAcrossProducts": false
+          }
+        }
+      }
+    ]
+  }
+}

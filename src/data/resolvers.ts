@@ -1,3 +1,5 @@
+import { siteFlowContext } from '../config/flowGates';
+import { getRelatedPrototypeLibrary } from '../domain/prototypeLibrary';
 import type { ClientBranding, ClientConfig, ClientSupport } from "../config/clients/types";
 import {
   resolveClientConfigurations,
@@ -85,7 +87,8 @@ export function resolveSite(siteId: SiteId): ResolvedSite {
 }
 
 export function resolveSiteCoverage(siteId: SiteId) {
-  return resolveClientCoverage(resolveSite(siteId).effective);
+  const library = getRelatedPrototypeLibrary(siteId);
+  return resolveClientCoverage(library?.client ?? resolveSite(siteId).effective, siteFlowContext(siteId), library?.products);
 }
 
 export function resolveSiteFields(siteId: SiteId) {

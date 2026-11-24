@@ -25,5 +25,5 @@ export function requirementPageValidations(pageKey: string) {
   });
   visit(pages.find(page => page.page === pageKey)?.components ?? []);
   const ids = new Set(mappings.filter(mapping => mapping.pages?.includes(pageKey) || components.has(mapping.component)).flatMap(mapping => (mapping.validations ?? []).filter(binding => binding.scope === 'page').map(binding => binding.validation)));
-  return definitions.filter(definition => ids.has(definition.id) && definition.level === 'page' && definition.message);
+  return definitions.filter(definition => ids.has(definition.id) && definition.level === 'page');
 }

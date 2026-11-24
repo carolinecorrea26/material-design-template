@@ -4,7 +4,6 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import { MemoryRouter } from "react-router-dom";
 import { createAppTheme } from "../src/app/theme";
 import type { ThemeColorId } from "../src/config/clients/types";
-import { ApplicationSessionProvider } from "../src/app/ApplicationSessionContext";
 
 /**
  * Shared app chrome for every story: router context (many shared components
@@ -25,12 +24,14 @@ const preview: Preview = {
             theme={createAppTheme(context.globals.themeColor as ThemeColorId)}
           >
             <CssBaseline />
-            {context.parameters.standalone ? <Story /> : <ApplicationSessionProvider><Story /></ApplicationSessionProvider>}
+            <Story />
           </ThemeProvider>
       </MemoryRouter>
     ),
   ],
   parameters: {
+    // Whole-page examples each own an effective runtime in their preview document.
+    docs: { story: { inline: false } },
     controls: {
       expanded: true,
     },
@@ -45,7 +46,7 @@ const preview: Preview = {
     options: {
       storySort: {
         order: [
-          "Foundations", ["Typography", "Colors", "Icons", "Responsive layout"],
+          "Foundations", ["Overrides", "Component inventory", "Typography", "Colors", "Icons", "Responsive layout"],
           "Components", [
             "Actions", ["Buttons", "Links"],
             "Forms", ["Individual fields", "Field groups", ["Name", "Phone", "Address", "Height", "Layout"], "Selection rows", "Conditional groups", "Repeated records"],
@@ -61,7 +62,6 @@ const preview: Preview = {
               "Resume", ["Whole page"], "Advisor", ["Whole page"], "Error pages", ["Whole page"],
             ],
           ],
-          "Reference", ["Component inventory", "Theme configuration"],
         ],
       },
     },

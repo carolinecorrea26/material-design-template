@@ -7,8 +7,8 @@ export default function UnderwriterCredentials({ content }: { content: SiteConte
                 <Stack direction="row" spacing={2} alignItems="center">
                   <Box
                     component="img"
-                    src="/logo.svg"
-                    alt="New York Life Logo"
+                    src={content.shared.insurerLogo.src}
+                    alt={content.shared.insurerLogo.alt}
                     sx={{
                       display: "block",
                       height: 40,
@@ -65,7 +65,7 @@ export default function UnderwriterCredentials({ content }: { content: SiteConte
                 <Typography variant="caption" color="text.secondary">
                   <Box
                     component="sup"
-                    sx={{ fontSize: "0.85em", lineHeight: 1 }}
+                    sx={{ fontSize: "caption.fontSize", lineHeight: 1 }}
                   >
                     1
                   </Box>

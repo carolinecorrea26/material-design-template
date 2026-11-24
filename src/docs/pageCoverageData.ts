@@ -34,7 +34,7 @@ export const pageCoverageRows: PageCoverageRow[] = [
     route: "/membership",
     composition: "FormRoutePage",
     storyCoverage:
-      "Application Page Template, FieldRenderer, HelpChips, AppDrawer, QuoteCalculator, SectionDivider",
+      "Application Page Template, FieldRenderer, PageHelpChips, AppDrawer, QuoteCalculator, SectionDivider",
     pageSpecific: "Client-specific membership, member information and conditional additional-information sections. Applicant-facing AMA lookup dialog removed after review.",
     disposition: "Partial — examples missing",
   },
@@ -116,7 +116,7 @@ export const pageCoverageRows: PageCoverageRow[] = [
   },
   {
     page: "Health — Life",
-    route: "/health-li",
+    route: "/health-tele",
     composition: "FormRoutePage",
     storyCoverage: "Whole-page Life scenarios; HealthQuestion, HealthQuestionList, FieldRenderer and DynamicList",
     pageSpecific: "Default and configured source Life question sets, direct/repeated follow-ups and restored adult records. Shared HealthQuestion and HealthQuestionList have standalone examples.",
@@ -132,7 +132,7 @@ export const pageCoverageRows: PageCoverageRow[] = [
   },
   {
     page: "Health — Disability",
-    route: "/health-di",
+    route: "/health-di-supp",
     composition: "FormRoutePage",
     storyCoverage:
       "Whole-page Health scenarios; HealthQuestion, HealthQuestionList, FieldRenderer, DynamicList, help and drawer",
@@ -149,7 +149,7 @@ export const pageCoverageRows: PageCoverageRow[] = [
   },
   {
     page: "Health — Critical Illness",
-    route: "/health-ci",
+    route: "/health-tele",
     composition: "FormRoutePage",
     storyCoverage: "Whole-page Health scenarios; HealthQuestion, HealthQuestionList and shared field/layout primitives",
     pageSpecific: "CI-only/combined source forms, independent adult answers and California wording; application tobacco collection remains on Coverage.",

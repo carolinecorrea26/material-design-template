@@ -3,45 +3,66 @@
     {
       "id": "repeating-entry-list",
       "name": "Add, edit and remove repeating entries",
-      "status": "draft",
-      "statement": "Entries are added or edited in a dialog and removed after confirmation, up to the configured maximum. Each saved entry is listed with edit and remove actions. Shared by children, beneficiaries and companies.",
+      "status": "confirmed",
+      "statement": "Entries are added or edited in a dialog and removed after confirmation, up to the configured maximum. Each saved entry is listed with edit and remove actions. Shared by children, beneficiaries and companies. On Eligibility, Next also validates saved or restored child records against the effective collection fields and maximum; inactive or notice-only sections do not validate child records.",
       "source": "src/components/forms/DynamicList.tsx"
     },
     {
       "id": "dependents-from-site-people",
       "name": "Offer only the people the site covers",
-      "status": "draft",
+      "status": "confirmed",
       "fields": [
         "dependents"
       ],
       "statement": "The dependents question offers the people the site covers besides the applicant; a person's section exists only when that person is offered and selected.",
-      "source": "proposed; sections shownWhen in requirements/parked/legacy/eligibility.json"
+      "source": "requirements/global/configurations/people.json; requirements/parked/eligibility.json; src/domain/requirementCatalog.mjs"
     },
     {
       "id": "applicant-disqualifying-answer",
       "name": "Stop on a disqualifying answer",
-      "status": "draft",
+      "status": "confirmed",
       "statement": "When a participating person gives an answer the site marks as disqualifying, the reason shows as a page alert when Next is clicked and the page does not continue. Next stays enabled.",
       "source": "src/pages/Eligibility.tsx; src/domain/applicantExperience.ts"
     },
     {
       "id": "tpa-member-lookup",
       "name": "Look up the applicant with the TPA on Next",
-      "status": "draft",
+      "status": "confirmed",
       "fields": [
         "first-name",
         "last-name",
         "birth-date"
       ],
-      "statement": "After the page validates, sites with TPA integration look up the applicant. In the coverage-verification flow, an existing member with active coverage is prompted for identity verification, collecting an address first when configured. Successful verification enables portfolio access; failed or skipped verification continues as manual review without the portfolio, as recorded in coverage-tpa-portfolio-access. The lookup outcome and submission decision are saved with the application.",
+      "statement": "After the page validates and the standard page save succeeds, sites with TPA integration look up the applicant. In the coverage-verification flow, an existing member with active coverage is prompted for identity verification, collecting an address first when configured. Successful verification enables portfolio access; failed or skipped verification continues as manual review without the portfolio, as recorded in coverage-tpa-portfolio-access. The lookup outcome and submission decision are saved with the application. None performs no lookup, identity verification or portfolio approval. Membership-auto-approval gives new members automatic approval and existing members manual review, without identity verification or portfolio access.",
       "source": "src/pages/Eligibility.tsx; src/domain/tpaIntegration.ts"
     },
     {
       "id": "applicant-product-eligibility",
       "name": "Decide which products each person is eligible for",
-      "status": "draft",
-      "statement": "Each participating person's facts (age from date of birth, state, membership) decide which products and categories they are eligible for; Coverage shows only those. Age limits and eligible states are set per product.",
-      "source": "src/domain/prototypeCoverageDecision.ts; src/domain/dependentPolicy.ts; catalog productApplicantEligibility and eligibilityConstraints"
+      "status": "confirmed",
+      "statement": "Each participating person's facts (age from date of birth, state, membership) decide which products and categories they are eligible for; Coverage shows only those. Age limits and eligible states are set per product. Eligibility Next blocks only when every offered product for all participating applicants is definitively ineligible, using the same global resolver as Coverage. Missing later-page facts remain needs-information. The error uses the global message and effective client name/support contacts.",
+      "source": "requirements/global/products.json; requirements/parked/sites/<site>/products.json; src/domain/prototypeCoverageDecision.ts; src/domain/dependentPolicy.ts"
+    },
+    {
+      "id": "eligibility-shared-feedback-spacing",
+      "name": "Render only real feedback in shared location and birth-date fields",
+      "status": "confirmed",
+      "statement": "The shared ZIP/state/date-of-birth group used by Home, quote tools and application Eligibility renders no empty reserved helper paragraphs. Keep its one normal field gap, real date-format guidance, inferred-state feedback and complete validation messages. Shared FieldRenderer and controlled/form adapters retain their ownership and answer bindings; do not patch spacing separately per page.",
+      "source": "User shared field-spacing correction November 15, 2026; src/components/forms/EligibilityFields.tsx; src/components/forms/FieldRenderer.tsx"
+    },
+    {
+      "id": "eligibility-configuration-boundary",
+      "name": "Collect eligibility facts and validate TPA lookup inputs",
+      "status": "confirmed",
+      "statement": "Collect the member\u2019s location and date of birth before resolving product eligibility. Offered and selected people determine dependent sections. A child notice-only section requires nonblank notice wording and collects no child records; blank optional notes remain hidden. Enabling an additional question does not itself create an eligibility exclusion. An active TPA lookup uses exactly its configured owner-field list. Those fields must have been collected by Eligibility submission; optional Home quote inputs, later forms and dependent facts are not lookup inputs. None mode performs no lookup and does not require dormant lookup-field availability.",
+      "source": "User Eligibility configuration decisions November 15, 2026; requirements/mappings/components/eligibility.json#constraints; requirements/global/configurations/{people,address}.json; src/domain/requirementCatalog.mjs; src/domain/tpaIntegration.ts; User member/dependent collection clarification November 15, 2026"
+    },
+    {
+      "id": "payment-product-participation",
+      "name": "Collect payment only for applicable products",
+      "status": "confirmed",
+      "statement": "Payment participates only when at least one selected active product has a payment collection policy other than none. Site page participation can additionally exclude the page. Prototype routing and Library reachability use the same effective product policy.",
+      "source": "Existing product payment policy; CSEA Main!AE246 payroll deduction requires no collected payment data."
     }
   ]
 }

@@ -1,0 +1,151 @@
+{
+  "configurations": [
+    {
+      "id": "saved-application-retention-days",
+      "name": "Saved application retention (days)",
+      "policyKey": "retentionDays",
+      "status": "confirmed",
+      "type": "number",
+      "default": 10,
+      "source": "portal_inventory.xlsx, Rules - Resume!C2:D19; user clarifications November 13, 2026; global defaults (application retention remains the earlier confirmed ten-day rule); user decision November 17, 2026: fixed globally; Site overrides prohibited",
+      "replaces": [
+        "requirements.confirmation.signatureRetentionDays",
+        "confirmation.signatureRetentionDays"
+      ],
+      "minimum": 1,
+      "globalOnly": true
+    },
+    {
+      "id": "resume-link-validity-seconds",
+      "name": "Resume link validity (seconds)",
+      "policyKey": "linkValiditySeconds",
+      "status": "confirmed",
+      "type": "number",
+      "default": 600,
+      "source": "portal_inventory.xlsx, Rules - Resume!C2:D19; user clarifications November 13, 2026; global defaults (application retention remains the earlier confirmed ten-day rule); user decision November 17, 2026: fixed globally; Site overrides prohibited",
+      "minimum": 1,
+      "globalOnly": true
+    },
+    {
+      "id": "resume-code-validity-seconds",
+      "name": "Phone verification code validity (seconds)",
+      "policyKey": "codeValiditySeconds",
+      "status": "confirmed",
+      "type": "number",
+      "default": 600,
+      "source": "portal_inventory.xlsx, Rules - Resume!C2:D19; user clarifications November 13, 2026; global defaults (application retention remains the earlier confirmed ten-day rule); user decision November 17, 2026: fixed globally; Site overrides prohibited",
+      "minimum": 1,
+      "globalOnly": true
+    },
+    {
+      "id": "resume-code-attempt-limit",
+      "name": "Incorrect phone-code attempts per MFA session",
+      "policyKey": "codeAttemptLimit",
+      "status": "confirmed",
+      "type": "number",
+      "default": 3,
+      "source": "portal_inventory.xlsx, Rules - Resume!C2:D19; user clarifications November 13, 2026; global defaults (application retention remains the earlier confirmed ten-day rule); user decision November 17, 2026: fixed globally; Site overrides prohibited",
+      "minimum": 1,
+      "globalOnly": true
+    },
+    {
+      "id": "resume-code-issue-limit",
+      "name": "Phone-code requests per application window",
+      "policyKey": "codeIssueLimit",
+      "status": "confirmed",
+      "type": "number",
+      "default": 5,
+      "source": "portal_inventory.xlsx, Rules - Resume!C2:D19; user clarifications November 13, 2026; global defaults (application retention remains the earlier confirmed ten-day rule); user decision November 17, 2026: fixed globally; Site overrides prohibited",
+      "minimum": 1,
+      "globalOnly": true
+    },
+    {
+      "id": "resume-request-limit",
+      "name": "Resume link requests per window",
+      "policyKey": "requestLimit",
+      "status": "confirmed",
+      "type": "number",
+      "default": 5,
+      "source": "portal_inventory.xlsx, Rules - Resume!C2:D19; user clarifications November 13, 2026; global defaults (application retention remains the earlier confirmed ten-day rule); user decision November 17, 2026: fixed globally; Site overrides prohibited",
+      "minimum": 1,
+      "globalOnly": true
+    },
+    {
+      "id": "resume-request-window-seconds",
+      "name": "Resume link request window (seconds)",
+      "policyKey": "requestWindowSeconds",
+      "status": "confirmed",
+      "type": "number",
+      "default": 900,
+      "source": "portal_inventory.xlsx, Rules - Resume!C2:D19; user clarifications November 13, 2026; global defaults (application retention remains the earlier confirmed ten-day rule); user decision November 17, 2026: fixed globally; Site overrides prohibited",
+      "minimum": 1,
+      "globalOnly": true
+    },
+    {
+      "id": "resume-mfa-validity-seconds",
+      "name": "MFA session validity (seconds)",
+      "policyKey": "mfaValiditySeconds",
+      "status": "confirmed",
+      "type": "number",
+      "default": 1800,
+      "source": "portal_inventory.xlsx, Rules - Resume!C2:D19; user clarifications November 13, 2026; user decision November 17, 2026: fixed globally; Site overrides prohibited",
+      "minimum": 1,
+      "globalOnly": true
+    },
+    {
+      "id": "resume-mfa-warning-seconds",
+      "name": "MFA warning threshold (seconds)",
+      "policyKey": "mfaWarningSeconds",
+      "status": "confirmed",
+      "type": "number",
+      "default": 120,
+      "source": "portal_inventory.xlsx, Rules - Resume!C2:D19; user clarifications November 13, 2026; user decision November 17, 2026: fixed globally; Site overrides prohibited",
+      "minimum": 1,
+      "globalOnly": true
+    },
+    {
+      "id": "resume-code-issue-window-seconds",
+      "name": "Phone-code request window (seconds)",
+      "policyKey": "codeIssueWindowSeconds",
+      "status": "confirmed",
+      "type": "number",
+      "default": 900,
+      "source": "portal_inventory.xlsx, Rules - Resume!C2:D19; user clarifications November 13, 2026; user decision November 17, 2026: fixed globally; Site overrides prohibited",
+      "minimum": 1,
+      "globalOnly": true
+    },
+    {
+      "id": "resume-code-issue-cooldown-seconds",
+      "name": "Phone-code request cooldown (seconds)",
+      "policyKey": "codeIssueCooldownSeconds",
+      "status": "confirmed",
+      "type": "number",
+      "default": 1800,
+      "source": "portal_inventory.xlsx, Rules - Resume!C2:D19; user clarifications November 13, 2026; user decision November 17, 2026: fixed globally; Site overrides prohibited",
+      "minimum": 1,
+      "globalOnly": true
+    },
+    {
+      "id": "resume-code-attempt-lock-seconds",
+      "name": "Application recovery lock (seconds)",
+      "policyKey": "codeAttemptLockSeconds",
+      "status": "confirmed",
+      "type": "number",
+      "default": 1800,
+      "source": "portal_inventory.xlsx, Rules - Resume!C2:D19; user clarifications November 13, 2026; user decision November 17, 2026: fixed globally; Site overrides prohibited",
+      "minimum": 1,
+      "globalOnly": true
+    },
+    {
+      "id": "resume-request-cooldown-seconds",
+      "name": "Resume link request cooldown (seconds)",
+      "policyKey": "requestCooldownSeconds",
+      "status": "confirmed",
+      "type": "number",
+      "default": 600,
+      "source": "portal_inventory.xlsx, Rules - Resume!C2:D19; user clarifications November 13, 2026; user decision November 17, 2026: fixed globally; Site overrides prohibited",
+      "minimum": 1,
+      "globalOnly": true
+    }
+  ]
+}

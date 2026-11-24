@@ -2,7 +2,12 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Box, Checkbox, Radio, Stack, Typography } from "@mui/material";
-import StarsRoundedIcon from "@mui/icons-material/StarsRounded";
+import { resolveMappedFields } from '../../domain/requirementFields';
+import { coverageCategories } from '../../config/coverageCategories';
+const lifeCategory = coverageCategories.find(category => category.id === 'LI')!;
+const LifeIcon = lifeCategory.icon;
+const bank = resolveMappedFields({ page: 'payment' }).find(field => field.id === 'bank-authorization')!;
+const tobacco = resolveMappedFields({ component: 'quote-calculator' }).find(field => field.id === 'smoker')!;
 import SelectionGroup from "./SelectionGroup";
 
 /** Shared option-row surface used by the renderer's radio and checkbox primitives.
@@ -23,7 +28,7 @@ export const CheckboxRowUnselected: StoryObj = {
       <SelectionGroup htmlFor="sg-checkbox-1">
         <Checkbox id="sg-checkbox-1" />
         <Typography className="SelectionGroup-label" component="span">
-          I authorize this bank account for premium payments.
+          {bank.label}
         </Typography>
       </SelectionGroup>
     </Box>
@@ -37,7 +42,7 @@ export const CheckboxRowSelected: StoryObj = {
       <SelectionGroup htmlFor="sg-checkbox-2">
         <Checkbox id="sg-checkbox-2" defaultChecked />
         <Typography className="SelectionGroup-label" component="span">
-          I authorize this bank account for premium payments.
+          {bank.label}
         </Typography>
       </SelectionGroup>
 
@@ -51,8 +56,8 @@ export const RadioRow: StoryObj = {
     const [value, setValue] = useState("yes");
     return (
       <Box sx={{ maxWidth: 420 }}>
-        <Stack spacing={1} role="radiogroup" aria-label="Do you use tobacco products?">
-          {["yes", "no"].map((option) => (
+        <Stack spacing={1} role="radiogroup" aria-label={tobacco.label}>
+          {tobacco.options!.map(({ value: option, label }) => (
             <SelectionGroup key={option} htmlFor={`sg-radio-${option}`}>
               <Radio
                 id={`sg-radio-${option}`}
@@ -60,7 +65,7 @@ export const RadioRow: StoryObj = {
                 onChange={() => setValue(option)}
               />
               <Typography className="SelectionGroup-label" component="span" sx={{ textTransform: "capitalize" }}>
-                {option}
+                {label}
               </Typography>
             </SelectionGroup>
           ))}
@@ -85,9 +90,9 @@ export const IconToggleRowUnselected: StoryObj = {
           if (e.key === "Enter" || e.key === " ") e.preventDefault();
         }}
       >
-        <StarsRoundedIcon className="SelectionGroup-icon" />
+        <LifeIcon className="SelectionGroup-icon" />
         <Typography className="SelectionGroup-label" component="span">
-          Life Insurance
+          {lifeCategory.label}
         </Typography>
       </SelectionGroup>
 
@@ -100,9 +105,9 @@ export const IconToggleRowSelected: StoryObj = {
   render: () => (
     <Box sx={{ maxWidth: 420 }}>
       <SelectionGroup component="div" role="checkbox" aria-checked tabIndex={0} checked onClick={() => {}}>
-        <StarsRoundedIcon className="SelectionGroup-icon" />
+        <LifeIcon className="SelectionGroup-icon" />
         <Typography className="SelectionGroup-label" component="span">
-          Life Insurance
+          {lifeCategory.label}
         </Typography>
       </SelectionGroup>
     </Box>
@@ -115,9 +120,9 @@ export const FocusVisible: StoryObj = {
     <Box sx={{ maxWidth: 420 }}>
 
       <SelectionGroup component="div" role="checkbox" aria-checked={false} tabIndex={0} checked={false} onClick={() => {}}>
-        <StarsRoundedIcon className="SelectionGroup-icon" />
+        <LifeIcon className="SelectionGroup-icon" />
         <Typography className="SelectionGroup-label" component="span">
-          Tab here
+          {lifeCategory.label}
         </Typography>
       </SelectionGroup>
     </Box>

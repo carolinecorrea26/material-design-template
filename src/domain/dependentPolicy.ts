@@ -6,6 +6,8 @@ export type DependentRule = {
   applicantKey: "spouse" | "child";
   requires?: { applicantKeys: string[]; mode: "selected" | "covered" };
   memberCapMultiplier?: number;
+  /** Gate this cap on verified matching member coverage; compare total coverage. */
+  memberCapRequiresVerifiedCoverage?: boolean;
   capBehavior?: "block" | "notice";
   noticeContentKey?: string;
   applicationRole?: "included-benefit";
@@ -14,6 +16,8 @@ export type DependentRule = {
 };
 export type DependentPolicy = { version: 1; rules: DependentRule[]; associationRules?: Record<string, DependentRule[]>; provisional: boolean; revisit: string[] };
 export type DependentFacts = {
+  verifiedExistingAmount?: number;
+  verifiedMemberAmount?: number;
   associationKey?: string;
   amount?: number;
   /** Same-product amounts for covered applicants. For caps, the caller supplies
@@ -36,6 +40,7 @@ export function isDependentPolicy(value: unknown): value is DependentPolicy {
     seen.add(String(rule.applicantKey));
     if (rule.requires !== undefined && (!object(rule.requires) || !strings(rule.requires.applicantKeys) || !rule.requires.applicantKeys.length || !["selected", "covered"].includes(String(rule.requires.mode)))) return false;
     if (rule.memberCapMultiplier !== undefined && (!number(rule.memberCapMultiplier) || rule.memberCapMultiplier <= 0)) return false;
+    if (rule.memberCapRequiresVerifiedCoverage !== undefined && (typeof rule.memberCapRequiresVerifiedCoverage !== 'boolean' || rule.memberCapMultiplier === undefined || rule.applicantKey !== 'spouse')) return false;
     if (rule.capBehavior !== undefined && !["block", "notice"].includes(String(rule.capBehavior)) || rule.applicationRole !== undefined && rule.applicationRole !== "included-benefit") return false;
     if (rule.noticeContentKey !== undefined && (typeof rule.noticeContentKey !== "string" || !rule.noticeContentKey.trim() || rule.capBehavior !== "notice")) return false;
     if (rule.maximumPlans !== undefined && (!object(rule.maximumPlans) || !strings(rule.maximumPlans.productKeys) || !rule.maximumPlans.productKeys.length || !number(rule.maximumPlans.count) || !Number.isInteger(rule.maximumPlans.count))) return false;
@@ -66,7 +71,7 @@ export function resolveDependentCoverage(site: EffectiveSite, productKey: string
   if (!["spouse", "child"].includes(applicantKey) || !site.products.find(product => product.productKey === productKey)?.applicants.some(applicant => applicant.applicantKey === applicantKey)) return { ...result, status: "resolved" as const, errors: ["Dependent is unavailable"] };
   if (!rule) {
     if (facts.amount === undefined) return { ...result, status: "needs-information" as const, missingFacts: ["amount"] };
-    const numeric = validateNormalizedCoverageAmount(site, productKey, applicantKey, facts.amount, undefined, facts.associationKey);
+    const numeric = validateNormalizedCoverageAmount(site, productKey, applicantKey, facts.amount, undefined, facts.associationKey, "new", facts.verifiedExistingAmount);
     return { ...result, status: numeric.status, allowed: numeric.allowed, errors: numeric.allowed ? [] : [numeric.reason] };
   }
   result.applicationRole = rule.applicationRole ?? "applicant";
@@ -81,10 +86,10 @@ export function resolveDependentCoverage(site: EffectiveSite, productKey: string
     else if (facts.selectedProductKeys.some(key => !site.configuration.products.some(product => product.productKey === key))) result.errors.push("Unknown selected product");
     else if (new Set([...facts.selectedProductKeys, productKey].filter(key => rule.maximumPlans!.productKeys.includes(key))).size > rule.maximumPlans.count) result.errors.push("Dependent exceeds the maximum number of life plans");
   }
-  if (rule.memberCapMultiplier !== undefined) {
+  if (rule.memberCapMultiplier !== undefined && (!rule.memberCapRequiresVerifiedCoverage || number(facts.verifiedMemberAmount) && facts.verifiedMemberAmount > 0)) {
     const member = facts.baseAmounts?.member;
     if (!number(member)) result.missingFacts.push("baseAmounts.member");
-    else result.maximum = member * rule.memberCapMultiplier;
+    else result.maximum = Math.max(0, member * rule.memberCapMultiplier - (rule.memberCapRequiresVerifiedCoverage && number(facts.verifiedExistingAmount) ? facts.verifiedExistingAmount : 0));
   }
   if (rule.derived) {
     const base = facts.baseAmounts?.[rule.derived.baseApplicantKey];
@@ -102,7 +107,7 @@ export function resolveDependentCoverage(site: EffectiveSite, productKey: string
     }
   } else if (facts.amount === undefined) result.missingFacts.push("amount");
   else {
-    const numeric = validateNormalizedCoverageAmount(site, productKey, applicantKey, facts.amount, undefined, facts.associationKey);
+    const numeric = validateNormalizedCoverageAmount(site, productKey, applicantKey, facts.amount, undefined, facts.associationKey, "new", facts.verifiedExistingAmount);
     if (!numeric.allowed) result.errors.push(numeric.reason);
   }
   const amount = result.derivedAmount ?? facts.amount;

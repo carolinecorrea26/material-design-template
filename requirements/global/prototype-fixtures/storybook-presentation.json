@@ -1,0 +1,34 @@
+{
+  "siteName": "Global application template",
+  "clientIdentity": {
+    "name": "Example Association",
+    "acronym": "Example"
+  },
+  "branding": {
+    "name": "Example Association",
+    "acronym": "Example",
+    "logo": "/logo.svg",
+    "logoAlt": "Example association"
+  },
+  "support": {
+    "website": "example.org",
+    "phone": "8005550100",
+    "phoneDisplay": "(800) 555-0100",
+    "email": "support@example.org",
+    "helpPhone": {
+      "phone": "8005550100",
+      "phoneDisplay": "(800) 555-0100"
+    }
+  },
+  "administrator": {
+    "name": "Example administrator",
+    "acronym": "Example",
+    "logo": "/logo.svg",
+    "logoAlt": "Example administrator"
+  },
+  "assets": {
+    "hero": "/hero.svg",
+    "referenceRatesPdf": "/storybook/reference-rates.pdf",
+    "referenceRatesImage": "/storybook/reference-rates.svg"
+  }
+}

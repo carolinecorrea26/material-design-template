@@ -1,9 +1,11 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import dayjs from "dayjs";
 import { afterEach, beforeAll, expect, it } from "vitest";
 import { createReviewedMigrationDatabase } from "./fixtures";
 import { applyNsoCombinedLifeQuestionnaireAdoption } from "./nsoCombinedLifeQuestionnaireAdoption";
 import { applyCoverageJourneyAdoption } from "./coverageJourneyAdoption";
-import { installPrototypeLibrary, resolvePrototypeLibrary } from "../domain/prototypeLibrary";
+import { installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import { applicationUnderwriting } from "../domain/coverageRuntime";
 import { resolveFlowGate } from "../config/flowGates";
 import { resolveReviewExperience } from "../config/reviewExperience";
@@ -19,11 +21,11 @@ const answers = () => ({ membership: "yes", state: "PA", gender: "male", "birth-
 it("uses full Life and supplemental DI for the same NSO adult without changing QD processing or Life-only routing", () => {
   const library = resolvePrototypeLibrary(db, "nso", "combo-Life"); installPrototypeLibrary(library); const product = library.products.find(product => product.id === "li-term")!;
   const values = answers();
-  expect(applicationUnderwriting(product, "member", values)).toMatchObject({ underwritingType: "QD", healthPage: "health-li" });
-  expect(resolveFlowGate("health-li", values, library.products)).toBe(true); expect(resolveFlowGate("health-di", values, library.products)).toBe(true); expect(resolveFlowGate("health-qd", values, library.products)).toBe(false);
+  expect(applicationUnderwriting(product, "member", values)).toMatchObject({ underwritingType: "QD", healthPage: "health-tele" });
+  expect(resolveFlowGate("health-tele", values, library.products), "Life form").toBe(true); expect(resolveFlowGate("health-di-supp", values, library.products), "Supplemental DI form").toBe(true); expect(resolveFlowGate("health-qd", values, library.products), "Short QD form").toBe(false);
   const review = resolveReviewExperience(library.client, "nso", library.products, values); expect(review.authorizationVisible).toBe(true); expect(review.medicalAuthorization?.text).toContain("AUTHORIZATION:");
   const only = { ...values, coverageSelections: ["li-term"] };
-  expect(applicationUnderwriting(product, "member", only)).toMatchObject({ underwritingType: "QD", healthPage: "health-qd" }); expect(resolveFlowGate("health-li", only, library.products)).toBe(false);
+  expect(applicationUnderwriting(product, "member", only)).toMatchObject({ underwritingType: "QD", healthPage: "health-qd" }); expect(resolveFlowGate("health-tele", only, library.products)).toBe(false);
   const split = { ...values, productApplicants: { "li-term": ["member"], "di-ltd": ["spouse"] } };
   expect(applicationUnderwriting(product, "member", split).healthPage).toBe("health-qd");
   const inactive = { ...values, coverageAmounts: { ...values.coverageAmounts, "di-ltd:member": 0 } }; expect(applicationUnderwriting(product, "member", inactive).healthPage).toBe("health-qd");
@@ -33,7 +35,7 @@ it("requires both source forms at the normalized portfolio boundary and excludes
   const fixture = (key: string) => createCoverageJourneyFixture(library.site, key, resolveCoverageJourneyPolicy(library.site, key)!.mappings.find(row => row.when.applicantKey === "member" && row.when.mode === "new")!.when);
   const life = fixture("li-term"), di = fixture("di-ltd"); const values = answers();
   for (const entry of [life, di]) entry.input.eligibility.ageYears = 40; life.input.amount = 100000; di.input.amount = 1000;
-  for (const item of configuredHealthQuestionnaire(library.site, "health-di", "member", values).items) if (item.question) (values as Record<string, unknown>)[item.question.id] = "no";
+  for (const item of configuredHealthQuestionnaire(library.site, "health-di-supp", "member", values).items) if (item.question) (values as Record<string, unknown>)[item.question.id] = "no";
   di.input.answers = { ...di.input.answers, ...values };
   const removed = { ...life.input, answers: Object.fromEntries(Object.entries(life.input.answers ?? {}).filter(([key]) => !key.startsWith("health-source-"))) };
   const missing = await evaluateCoveragePortfolio(library.site, [removed, di.input], { policies: life.policies }, 0); expect(missing.allowed).toBe(false); expect(missing.missingFacts.some(key => key.includes("health-source-tele-weight-change-member"))).toBe(true);
@@ -47,5 +49,5 @@ it("honors captured policy edits and preserves compiler reapplication", () => {
   if (!isCoverageJourneyPolicy(policy)) throw new Error("Invalid fixture"); delete policy.healthPageForPortfolio;
   const library = resolvePrototypeLibrary(copy, "nso", "edited"); installPrototypeLibrary(library);
   expect(applicationUnderwriting(library.products.find(product => product.id === "li-term")!, "member", answers()).healthPage).toBe("health-qd");
-  expect(isCoverageJourneyPolicy({ ...policy, healthPageForPortfolio: { when: "unknown", pageId: "health-li" } })).toBe(false);
+  expect(isCoverageJourneyPolicy({ ...policy, healthPageForPortfolio: { when: "unknown", pageId: "health-tele" } })).toBe(false);
 });

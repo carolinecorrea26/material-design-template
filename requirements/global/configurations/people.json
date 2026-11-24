@@ -3,7 +3,7 @@
     {
       "id": "site-people",
       "name": "People the site covers",
-      "status": "draft",
+      "status": "confirmed",
       "type": "string-list",
       "options": [
         "self",
@@ -15,12 +15,12 @@
         "spouse",
         "child"
       ],
-      "source": "proposed; dependents field options"
+      "source": "Shared dependent participation; the effective Site assigns covered people."
     },
     {
       "id": "child-list-maximum",
       "name": "Most children an applicant can add",
-      "status": "draft",
+      "status": "confirmed",
       "type": "number",
       "default": 10,
       "source": "src/components/forms/DynamicList.tsx"
@@ -28,7 +28,7 @@
     {
       "id": "tpa-integration",
       "name": "TPA member lookup",
-      "status": "draft",
+      "status": "confirmed",
       "type": "enum",
       "options": [
         "none",
@@ -36,7 +36,49 @@
         "membership-auto-approval"
       ],
       "default": "none",
-      "source": "src/domain/tpaIntegration.ts"
+      "source": "src/domain/tpaIntegration.ts",
+      "runtimeValues": {
+        "none": "none",
+        "member-lookup": "coverage-verification",
+        "membership-auto-approval": "membership-auto-approval"
+      }
+    },
+    {
+      "id": "tpa-lookup-fields",
+      "name": "Applicant fields used for TPA lookup",
+      "status": "confirmed",
+      "type": "string-list",
+      "default": [
+        "first-name",
+        "last-name",
+        "birth-date"
+      ],
+      "source": "Shared TPA lookup contract; effective Site assigns its lookup fields.",
+      "format": "field-id"
+    },
+    {
+      "id": "tpa-require-address-before-verification",
+      "name": "Collect address before identity verification",
+      "status": "confirmed",
+      "type": "boolean",
+      "default": false,
+      "source": "Shared verification workflow; effective Site assigns the address requirement."
+    },
+    {
+      "id": "child-collection-mode",
+      "name": "Collect child details or display a notice",
+      "status": "confirmed",
+      "type": "enum",
+      "options": [
+        "details",
+        "notice-only"
+      ],
+      "default": "details",
+      "replaces": [
+        "requirements.applicantExperience.childEligibility.mode",
+        "requirements.applicantExperience.childEligibility.note"
+      ],
+      "source": "Existing shared child collection behavior; section content owns the notice."
     }
   ]
 }

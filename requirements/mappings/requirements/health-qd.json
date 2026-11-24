@@ -1,0 +1,12 @@
+{
+  "component": "health-qd",
+  "pages": [
+    "health-qd"
+  ],
+  "rules": [
+    "health-external-qd-boundary"
+  ],
+  "workflows": [
+    "external-provider-handoff"
+  ]
+}

@@ -10,7 +10,7 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import type { ReactNode } from "react";
+import { useId, type ReactNode } from "react";
 
 type AppModalAction = {
   label: string;
@@ -18,6 +18,8 @@ type AppModalAction = {
   /** Defaults to "contained" for the primary action, "text" for secondary. */
   variant?: "contained" | "outlined" | "text";
   color?: "primary" | "error" | "inherit";
+  autoFocus?: boolean;
+  disabled?: boolean;
 };
 
 type AppModalProps = {
@@ -34,6 +36,7 @@ type AppModalProps = {
    * If a close (×) icon is always desired regardless, set `showCloseIcon`.
    */
   actions?: AppModalAction[];
+  footerActions?: ReactNode;
   /** Always show the × icon button in the title bar. Defaults to true. */
   showCloseIcon?: boolean;
   /** Max width in px for desktop. Defaults to 900. */
@@ -47,6 +50,13 @@ type AppModalProps = {
   minHeight?: string;
   /** Force fullScreen regardless of viewport, for content meant to fill the entire viewport (e.g. documentation section browsers). */
   forceFullScreen?: boolean;
+  fullScreenOnMobile?: boolean;
+  dismissible?: boolean;
+  headerContent?: ReactNode;
+  contentDividers?: boolean;
+  closeLabel?: string;
+  titleId?: string;
+  descriptionId?: string;
 };
 
 export type { AppModalAction };
@@ -57,29 +67,37 @@ export default function AppModal({
   title,
   children,
   actions,
+  footerActions,
   showCloseIcon = true,
   maxWidth = 900,
   role = "dialog",
   minHeight = "50vh",
   forceFullScreen = false,
+  fullScreenOnMobile = true, dismissible = true, headerContent, contentDividers = true,
+  closeLabel = "Close", titleId: suppliedTitleId, descriptionId,
 }: AppModalProps) {
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
-  const fullScreen = forceFullScreen || !isDesktop;
+  const fullScreen = forceFullScreen || (fullScreenOnMobile && !isDesktop);
+  const generatedTitleId = useId();
+  const titleId = suppliedTitleId ?? generatedTitleId;
 
   return (
     <Dialog
       open={open}
-      onClose={onClose}
+      onClose={dismissible ? onClose : undefined}
+      disableEscapeKeyDown={!dismissible}
+      aria-labelledby={titleId}
+      aria-describedby={descriptionId}
       maxWidth={false}
       fullWidth
       fullScreen={fullScreen}
-      role={role}
       PaperProps={{
-        sx: isDesktop && !forceFullScreen ? { minHeight, maxHeight: "85vh", maxWidth } : {},
+        role,
+        sx: !fullScreen ? { minHeight, maxHeight: "85vh", maxWidth } : {},
       }}
     >
-      <DialogTitle
+      <DialogTitle id={titleId}
         sx={{
           display: "flex",
           alignItems: "center",
@@ -95,20 +113,24 @@ export default function AppModal({
         ) : (
           title
         )}
-        {showCloseIcon && (
-          <IconButton onClick={onClose} aria-label="Close" size="small">
+        {showCloseIcon && dismissible && (
+          <IconButton onClick={onClose} aria-label={closeLabel} size="small">
             <CloseRoundedIcon />
           </IconButton>
         )}
       </DialogTitle>
 
-      <DialogContent dividers>{children}</DialogContent>
+      {headerContent}
+      <DialogContent dividers={contentDividers}>{children}</DialogContent>
 
-      {actions && actions.length > 0 && (
+      {(footerActions || actions && actions.length > 0) && (
         <DialogActions>
-          {actions.map((action, index) => (
+          {footerActions}
+          {actions?.map((action, index) => (
             <Button
               key={index}
+              autoFocus={action.autoFocus}
+              disabled={action.disabled}
               onClick={action.onClick}
               variant={action.variant ?? (index === 0 ? "contained" : "text")}
               color={action.color ?? "primary"}

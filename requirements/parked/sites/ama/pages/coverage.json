@@ -1,0 +1,13 @@
+{
+  "page": "coverage",
+  "configurations": {
+    "estimated-rate-frequency-toggle": true,
+    "estimated-rate-frequency": "annual",
+    "coverage-cost-breakdown": true
+  },
+  "include": [
+    "applicant-class",
+    "existing-step-rated-monthly-benefit",
+    "existing-level-rated-monthly-benefit"
+  ]
+}

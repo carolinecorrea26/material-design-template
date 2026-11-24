@@ -1,0 +1,820 @@
+{
+  "placements": [
+    {
+      "id": "footer",
+      "location": "Site footer",
+      "component": "AppFooter",
+      "when": "When the site footer is displayed",
+      "keys": [
+        "footer.security-seal.src",
+        "footer.security-seal.alt",
+        "footer.administered-by-label",
+        "footer.underwritten-by.label",
+        "footer.underwritten-by.policy-form",
+        "footer.underwritten-by.address",
+        "footer.legal",
+        "footer.links.terms-of-use",
+        "footer.links.privacy-notice"
+      ],
+      "channel": "Site"
+    },
+    {
+      "id": "terms",
+      "location": "Site footer \u203a Terms of Use dialog",
+      "component": "AppFooter",
+      "when": "After opening Terms of Use",
+      "keys": [
+        "footer.terms-of-use-content.title",
+        "footer.terms-of-use-content.sections",
+        "footer.terms-of-use-content.revision"
+      ],
+      "channel": "Site"
+    },
+    {
+      "id": "privacy",
+      "location": "Site footer \u203a Privacy Notice dialog",
+      "component": "AppFooter",
+      "when": "After opening Privacy Notice",
+      "keys": [
+        "footer.privacy-notice-content.title",
+        "footer.privacy-notice-content.sections"
+      ],
+      "channel": "Site"
+    },
+    {
+      "id": "cookie",
+      "location": "Cookie notice",
+      "component": "CookieDialog",
+      "when": "Until the cookie notice is dismissed",
+      "keys": [
+        "shared.cookie-banner.message",
+        "shared.cookie-banner.learn-more-label",
+        "shared.cookie-banner.learn-more-href"
+      ],
+      "channel": "Site"
+    },
+    {
+      "id": "progress",
+      "location": "Application progress",
+      "component": "ProgressStep",
+      "when": "When the application progress navigation is displayed",
+      "keys": [
+        "navigation.progress-step-labels.getting-started",
+        "navigation.progress-step-labels.coverage-options",
+        "navigation.progress-step-labels.profile",
+        "navigation.progress-step-labels.application-review",
+        "navigation.progress-step-labels.esign-submit"
+      ],
+      "channel": "Site"
+    },
+    {
+      "id": "transition-contact",
+      "location": "Page transition",
+      "component": "PageTransitionSkeleton",
+      "when": "While moving forward from this page",
+      "keys": [
+        "navigation.transition-messages.contact"
+      ],
+      "pages": [
+        "contact"
+      ],
+      "channel": "Site"
+    },
+    {
+      "id": "transition-profile",
+      "location": "Page transition",
+      "component": "PageTransitionSkeleton",
+      "when": "While moving forward from this page",
+      "keys": [
+        "navigation.transition-messages.profile"
+      ],
+      "pages": [
+        "profile"
+      ],
+      "channel": "Site"
+    },
+    {
+      "id": "transition-review",
+      "location": "Page transition",
+      "component": "PageTransitionSkeleton",
+      "when": "While moving forward from this page",
+      "keys": [
+        "navigation.transition-messages.review"
+      ],
+      "pages": [
+        "review"
+      ],
+      "channel": "Site"
+    },
+    {
+      "id": "transition-health-si",
+      "location": "Page transition",
+      "component": "PageTransitionSkeleton",
+      "when": "While moving forward from this page",
+      "keys": [
+        "navigation.transition-messages.health-si"
+      ],
+      "pages": [
+        "health-si"
+      ],
+      "channel": "Site"
+    },
+    {
+      "id": "transition-health-qd",
+      "location": "Page transition",
+      "component": "PageTransitionSkeleton",
+      "when": "While moving forward from this page",
+      "keys": [
+        "navigation.transition-messages.health-qd"
+      ],
+      "pages": [
+        "health-qd"
+      ],
+      "channel": "Site"
+    },
+    {
+      "id": "transition-health-cir",
+      "location": "Page transition",
+      "component": "PageTransitionSkeleton",
+      "when": "While moving forward from this page",
+      "keys": [
+        "navigation.transition-messages.health-cir"
+      ],
+      "pages": [
+        "health-cir"
+      ],
+      "channel": "Site"
+    },
+    {
+      "id": "transition-payment",
+      "location": "Page transition",
+      "component": "PageTransitionSkeleton",
+      "when": "While moving forward from this page",
+      "keys": [
+        "navigation.transition-messages.payment"
+      ],
+      "pages": [
+        "payment"
+      ],
+      "channel": "Site"
+    },
+    {
+      "id": "transition-docusign",
+      "location": "Page transition",
+      "component": "PageTransitionSkeleton",
+      "when": "While moving forward from this page",
+      "keys": [
+        "navigation.transition-messages.docusign"
+      ],
+      "pages": [
+        "docusign"
+      ],
+      "channel": "Site"
+    },
+    {
+      "id": "transition-receipt",
+      "location": "Page transition",
+      "component": "PageTransitionSkeleton",
+      "when": "While moving forward from this page",
+      "keys": [
+        "navigation.transition-messages.receipt"
+      ],
+      "pages": [
+        "receipt"
+      ],
+      "channel": "Site"
+    },
+    {
+      "id": "transition-membership",
+      "location": "Page transition",
+      "component": "PageTransitionSkeleton",
+      "when": "While moving forward from this page",
+      "keys": [
+        "navigation.transition-messages.membership"
+      ],
+      "pages": [
+        "membership"
+      ],
+      "channel": "Site"
+    },
+    {
+      "id": "transition-health-di-supp",
+      "location": "Page transition",
+      "component": "PageTransitionSkeleton",
+      "when": "While moving forward from this page",
+      "keys": [
+        "navigation.transition-messages.health-di-supp"
+      ],
+      "pages": [
+        "health-di-supp"
+      ],
+      "channel": "Site"
+    },
+    {
+      "id": "transitions",
+      "location": "Application page transition",
+      "component": "PageTransitionSkeleton",
+      "when": "Default forward transition or return to previous page",
+      "keys": [
+        "navigation.transition-defaults",
+        "navigation.back-message"
+      ],
+      "channel": "Site"
+    },
+    {
+      "id": "help-group-insurance",
+      "location": "Help drawer \u203a Group insurance",
+      "component": "PageHelpDrawer",
+      "when": "After opening the corresponding help topic",
+      "keys": [
+        "help.group-insurance.intro",
+        "help.group-insurance.explore-title",
+        "help.group-insurance.explore-items"
+      ],
+      "channel": "Site"
+    },
+    {
+      "id": "help-why-asked",
+      "location": "Help drawer \u203a Why asked",
+      "component": "PageHelpDrawer",
+      "when": "After opening the corresponding help topic",
+      "keys": [
+        "help.why-asked.intro",
+        "help.why-asked.sections"
+      ],
+      "channel": "Site"
+    },
+    {
+      "id": "help-payment-handling",
+      "location": "Help drawer \u203a Payment handling",
+      "component": "PageHelpDrawer",
+      "when": "After opening the corresponding help topic",
+      "keys": [
+        "help.payment-handling.intro",
+        "help.payment-handling.sections"
+      ],
+      "channel": "Site"
+    },
+    {
+      "id": "send-applicant",
+      "location": "Send to applicant dialog",
+      "component": "SendApplicationDialog",
+      "when": "Advisor chooses to send the application to the applicant",
+      "keys": [
+        "dialogs.send-application.send-to-applicant.title",
+        "dialogs.send-application.send-to-applicant.intro-text"
+      ],
+      "pages": [
+        "profile"
+      ],
+      "channel": "Site"
+    },
+    {
+      "id": "send-shared",
+      "location": "Send application dialog \u203a recipient and actions",
+      "component": "SendApplicationDialog",
+      "when": "When the send application or request edit dialog is open",
+      "keys": [
+        "dialogs.send-application.default-title",
+        "dialogs.send-application.default-intro",
+        "dialogs.send-application.send",
+        "dialogs.send-application.name",
+        "dialogs.send-application.email",
+        "dialogs.send-application.cancel",
+        "dialogs.send-application.missing-value"
+      ],
+      "pages": [
+        "profile",
+        "review"
+      ],
+      "channel": "Site"
+    },
+    {
+      "id": "lists",
+      "location": "Repeated records \u203a add, edit and remove dialogs",
+      "component": "DynamicList",
+      "when": "When managing children, beneficiaries, insurance carriers or health detail records",
+      "keys": [
+        "list.add",
+        "list.edit",
+        "list.remove-title",
+        "list.updated",
+        "list.added",
+        "list.removed",
+        "list.save",
+        "list.edit-action",
+        "list.remove-named",
+        "list.remove-unnamed",
+        "list.remove-label",
+        "list.cancel",
+        "list.remove-action"
+      ],
+      "pages": [
+        "eligibility",
+        "beneficiary",
+        "profile",
+        "health-si",
+        "health-tele",
+        "health-di-supp",
+        "health-cir"
+      ],
+      "channel": "Site"
+    },
+    {
+      "id": "print",
+      "location": "Legal document \u203a Print action",
+      "component": "PrintAction",
+      "when": "When a printable disclosure is open",
+      "keys": [
+        "document.print"
+      ],
+      "pages": [
+        "review"
+      ],
+      "channel": "Site"
+    },
+    {
+      "id": "membership-status",
+      "location": "Membership information",
+      "component": "MembershipStatus",
+      "when": "According to membership status and assigned association",
+      "keys": [
+        "membership.not-member.message",
+        "membership.association.link-required"
+      ],
+      "pages": [
+        "membership"
+      ],
+      "channel": "Site"
+    },
+    {
+      "id": "child-label",
+      "location": "Product applicant selection",
+      "component": "ProductCatalog",
+      "when": "When child coverage can be selected",
+      "keys": [
+        "people.child"
+      ],
+      "pages": [
+        "home",
+        "coverage"
+      ],
+      "channel": "Site"
+    },
+    {
+      "id": "child-item",
+      "location": "Add or edit child dialog",
+      "component": "EligibilitySections",
+      "when": "When managing child records",
+      "keys": [
+        "people.child-item"
+      ],
+      "pages": [
+        "eligibility"
+      ],
+      "channel": "Site"
+    },
+    {
+      "id": "eligibility-errors",
+      "location": "Eligibility validation",
+      "component": "EligibilitySections",
+      "when": "When dependent information is incomplete",
+      "keys": [
+        "eligibility.error.child-required",
+        "eligibility.error.spouse-details"
+      ],
+      "pages": [
+        "eligibility"
+      ],
+      "channel": "Site"
+    },
+    {
+      "id": "field-validation",
+      "location": "Form fields \u203a validation feedback",
+      "component": "FieldRenderer",
+      "when": "When an entered field value fails validation",
+      "keys": [
+        "validation.field.required",
+        "validation.field.select-one",
+        "validation.field.available-options",
+        "validation.field.available-option",
+        "validation.field.maximum-length",
+        "validation.field.postal-code",
+        "validation.field.email",
+        "validation.field.phone",
+        "validation.field.ssn",
+        "validation.field.percent",
+        "validation.field.month-year",
+        "validation.field.date",
+        "validation.field.number",
+        "validation.field.minimum-length",
+        "validation.field.digits",
+        "validation.field.alphanumeric",
+        "validation.field.numeric-range"
+      ],
+      "channel": "Site"
+    },
+    {
+      "id": "collection-validation",
+      "location": "Repeated records \u203a validation feedback",
+      "component": "DynamicList",
+      "when": "When a collection has unfinished edits",
+      "keys": [
+        "validation.collection.review"
+      ],
+      "channel": "Site"
+    },
+    {
+      "id": "health-assignment-error",
+      "location": "Health questionnaire validation",
+      "component": "HealthQuestionList",
+      "when": "When selected Critical Illness coverage has no assigned TELE questionnaire",
+      "keys": [
+        "validation.health.ci-unassigned"
+      ],
+      "pages": [
+        "health-tele"
+      ],
+      "channel": "Site"
+    },
+    {
+      "id": "additional-membership",
+      "location": "Additional membership information",
+      "component": "AdditionalMembershipInformation",
+      "when": "When additional membership fields are configured",
+      "keys": [
+        "membership.additional.title"
+      ],
+      "pages": [
+        "membership"
+      ],
+      "channel": "Site"
+    },
+    {
+      "id": "print-footer",
+      "location": "Site footer \u203a legal disclosure \u203a Print action",
+      "component": "PrintAction",
+      "when": "When Terms of Use or Privacy Notice is open",
+      "keys": [
+        "document.print"
+      ],
+      "channel": "Site"
+    },
+    {
+      "id": "applicant-email-salutation",
+      "location": "Applicant-facing emails \u203a Salutation",
+      "when": "At the start of each applicant-facing email; use the applicant name when available",
+      "keys": [
+        "email.applicant-salutation",
+        "email.applicant-fallback"
+      ],
+      "channel": "Email",
+      "renderer": "src/utils/mockEmail.ts"
+    },
+    {
+      "id": "advisor-email-details",
+      "location": "Advisor notification emails \u203a Application details and login link",
+      "renderer": "src/utils/mockEmail.ts",
+      "when": "For sent-for-signature, pending, edit-request and submitted advisor notifications",
+      "keys": [
+        "email.advisor.association",
+        "email.advisor.applicant-name",
+        "email.advisor.applicant-email",
+        "email.advisor.sent-for-signature",
+        "email.advisor.submitted",
+        "email.advisor.scheduled-for-deletion",
+        "email.advisor.edit-requested",
+        "email.advisor.portal-intro",
+        "email.advisor.portal-link",
+        "email.advisor.status.sent-for-signature",
+        "email.advisor.status.pending-signature",
+        "email.advisor.status.edit-requested",
+        "email.advisor.status.submitted",
+        "email.advisor.edit-request-subject",
+        "email.advisor.status.deleted",
+        "email.advisor.deleted",
+        "email.advisor.purged-message"
+      ],
+      "channel": "Email"
+    },
+    {
+      "id": "email-sender",
+      "location": "Email sender display name",
+      "renderer": "src/utils/mockEmail.ts",
+      "when": "For applicant and advisor notifications",
+      "keys": [
+        "email.sender-name"
+      ],
+      "channel": "Email"
+    },
+    {
+      "id": "purge-emails",
+      "location": "Application deletion emails \u203a Applicant notification and next steps",
+      "renderer": "src/utils/mockEmail.ts",
+      "when": "When an incomplete application is deleted; advisor-prepared applicants receive advisor-contact guidance",
+      "keys": [
+        "email.purge.subject",
+        "email.purge.intro",
+        "email.purge.start-new",
+        "email.purge.apply-label",
+        "email.purge.copy-address",
+        "email.purge.questions",
+        "email.purge.closing",
+        "email.purge.advisor-next-step",
+        "email.purge.advisor-contact-label"
+      ],
+      "channel": "Email"
+    },
+    {
+      "id": "needs-calculator-copy",
+      "location": "Shared tools \u203a Coverage needs calculator",
+      "component": "CoverageNeedsCalculator",
+      "when": "When the calculator is opened; result wording appears after valid financial inputs",
+      "keys": [
+        "coverage.needs-calculator.intro",
+        "coverage.needs-calculator.title",
+        "coverage.needs-calculator.income-label",
+        "coverage.needs-calculator.debts-label",
+        "coverage.needs-calculator.existing-label",
+        "coverage.needs-calculator.disclaimer"
+      ],
+      "channel": "Site"
+    },
+    {
+      "id": "email-messages-common",
+      "location": "Applicant emails \u203a Shared recovery instructions, retention notice and closing",
+      "renderer": "src/utils/mockEmail.ts",
+      "when": "Autosave, invitation and pending messages; dated notices require the original saved expiry",
+      "keys": [
+        "email.common.copy-address",
+        "email.common.closing",
+        "email.common.identity-notice",
+        "email.common.continue-label",
+        "email.common.retention-title",
+        "email.common.retention-description"
+      ],
+      "channel": "Email"
+    },
+    {
+      "id": "email-messages-autosave",
+      "location": "Application autosaved email \u203a Subject and body",
+      "renderer": "src/utils/mockEmail.ts",
+      "when": "After successful initial saving",
+      "keys": [
+        "email.autosave.subject",
+        "email.autosave.intro",
+        "email.autosave.deadline"
+      ],
+      "channel": "Email"
+    },
+    {
+      "id": "email-messages-invitation",
+      "location": "Advisor invitation to applicant \u203a Subject and body",
+      "renderer": "src/utils/mockEmail.ts",
+      "when": "When the advisor sends the prepared application",
+      "keys": [
+        "email.invitation.subject",
+        "email.invitation.intro",
+        "email.invitation.deadline"
+      ],
+      "channel": "Email"
+    },
+    {
+      "id": "email-messages-pending",
+      "location": "Application pending email \u203a Subject and body",
+      "renderer": "src/utils/mockEmail.ts",
+      "when": "For the configured incomplete-application reminder",
+      "keys": [
+        "email.pending.subject",
+        "email.pending.intro"
+      ],
+      "channel": "Email"
+    },
+    {
+      "id": "email-messages-resume",
+      "location": "Resume request email \u203a Subject, instructions and verification action",
+      "renderer": "src/utils/mockEmail.ts",
+      "when": "For an authorized secure-link request",
+      "keys": [
+        "email.resume.subject",
+        "email.resume.intro",
+        "email.resume.verify-label",
+        "email.resume.expiry",
+        "email.resume.not-requested-title",
+        "email.resume.not-requested-description"
+      ],
+      "channel": "Email"
+    },
+    {
+      "id": "email-messages-footer",
+      "location": "All emails \u203a Automated-message footer",
+      "renderer": "src/utils/mockEmail.ts",
+      "when": "For applicant and advisor notification templates",
+      "keys": [
+        "email.footer.no-reply"
+      ],
+      "channel": "Email"
+    },
+    {
+      "id": "session-warning",
+      "location": "Application inactivity warning",
+      "renderer": "src/components/feedback/SessionExpiryAlert.tsx",
+      "when": "When the shared application inactivity warning is open",
+      "keys": [
+        "interface.session-title",
+        "interface.session-description",
+        "interface.session-keep-active",
+        "interface.session-time-remaining"
+      ],
+      "channel": "Site"
+    },
+    {
+      "id": "help-ribbon",
+      "location": "Site help ribbon and scheduling dialog",
+      "renderer": "src/components/layout/ClientHelpBanner.tsx",
+      "when": "When a help phone is configured; chat and scheduling also require their configured destinations",
+      "keys": [
+        "interface.help-call",
+        "interface.help-chat",
+        "interface.help-link",
+        "interface.help-schedule",
+        "interface.help-schedule-title",
+        "interface.help-schedule-close"
+      ],
+      "channel": "Site"
+    },
+    {
+      "id": "progress-accessibility",
+      "location": "Progress navigation and section editing",
+      "renderer": "src/components/navigation/ProgressStep.tsx",
+      "when": "When progress breadcrumbs or editable completed sections are rendered",
+      "keys": [
+        "interface.go-to-step",
+        "interface.breadcrumbs"
+      ],
+      "channel": "Site"
+    },
+    {
+      "id": "section-edit-label",
+      "location": "Completed section edit button",
+      "renderer": "src/components/navigation/StepEditButton.tsx",
+      "when": "When a completed section may be edited",
+      "keys": [
+        "interface.edit-step"
+      ],
+      "channel": "Site"
+    },
+    {
+      "id": "product-presentation",
+      "location": "Home and Coverage product cards, cart and summaries",
+      "component": "ProductCatalog",
+      "when": "For products assigned to the effective Site",
+      "keys": [
+        "coverage.product.li-term.name",
+        "coverage.product.li-term.definition",
+        "coverage.product.li-10yr.name",
+        "coverage.product.li-10yr.definition",
+        "coverage.product.li-10yr.description",
+        "coverage.product.li-20yr.name",
+        "coverage.product.li-20yr.definition",
+        "coverage.product.li-20yr.description",
+        "coverage.product.li-add.name",
+        "coverage.product.li-add.definition",
+        "coverage.product.di-ltd.name",
+        "coverage.product.di-ltd.definition",
+        "coverage.product.di-ltd.description",
+        "coverage.product.li-15yr.name",
+        "coverage.product.li-15yr.definition",
+        "coverage.product.li-50plus.name",
+        "coverage.product.li-50plus.definition",
+        "coverage.product.li-preferred.name",
+        "coverage.product.li-preferred.definition",
+        "coverage.product.li-premier-accident.name",
+        "coverage.product.li-premier-accident.definition",
+        "coverage.product.li-group-term.name",
+        "coverage.product.li-group-term.definition",
+        "coverage.product.li-group-term.description",
+        "coverage.product.di-ltd-plus.name",
+        "coverage.product.di-ltd-plus.definition",
+        "coverage.product.di-mtd.name",
+        "coverage.product.di-mtd.definition",
+        "coverage.product.di-step-rated.name",
+        "coverage.product.di-step-rated.definition",
+        "coverage.product.di-level-rated.name",
+        "coverage.product.di-level-rated.definition",
+        "coverage.product.di-short-term.name",
+        "coverage.product.di-short-term.definition",
+        "coverage.product.oo-professional.name",
+        "coverage.product.oo-professional.definition",
+        "coverage.product.oo-office-overhead.name",
+        "coverage.product.oo-office-overhead.definition",
+        "coverage.product.sh-critical-illness.name",
+        "coverage.product.sh-critical-illness.definition",
+        "coverage.product.sh-hospital-money.name",
+        "coverage.product.sh-hospital-money.definition",
+        "coverage.product.sh-hospital-income.name",
+        "coverage.product.sh-hospital-income.definition",
+        "coverage.product.sh-hospital-income.description"
+      ],
+      "pages": [
+        "home",
+        "coverage"
+      ],
+      "channel": "Site"
+    },
+    {
+      "id": "membership-follow-ups",
+      "location": "Membership additional information",
+      "component": "AdditionalMembershipInformation",
+      "when": "When the selected membership category or qualification requires physician or associated-member details",
+      "keys": [
+        "membership.physician.title",
+        "membership.physician.note",
+        "membership.associate-notices.spouse",
+        "membership.associate-notices.child",
+        "membership.associate-notices.other"
+      ],
+      "pages": [
+        "membership"
+      ],
+      "channel": "Site"
+    },
+    {
+      "id": "eligibility-no-products",
+      "location": "Eligibility \u203a page validation",
+      "component": "FormRoutePage",
+      "when": "All participating applicants are definitively ineligible for all offered products",
+      "keys": [
+        "eligibility.no-eligible-products"
+      ],
+      "channel": "Site"
+    }
+  ],
+  "exclusions": [
+    {
+      "reason": "Form inventory descriptions and contextual names describe implementations in the Forms Library; they are not site wording.",
+      "keys": [
+        "forms.membership.description",
+        "forms.eligibility.description",
+        "forms.coverage.description",
+        "forms.beneficiary.description",
+        "forms.contact.description",
+        "forms.profile.description",
+        "forms.review.description",
+        "forms.payment.description",
+        "forms.dividend-notices.description",
+        "forms.resume-email-request.description",
+        "forms.resume-delivery-method.description",
+        "forms.advisor-login.description",
+        "forms.docusign.description",
+        "forms.health-qd.description",
+        "forms.payment-credit-card.description",
+        "forms.member-authentication.description",
+        "forms.dividend-notices.name",
+        "forms.payment-credit-card.name",
+        "forms.member-authentication.name",
+        "forms.health-qd.name",
+        "forms.health-questionnaires.name",
+        "forms.health-questionnaires.description",
+        "forms.member-verification.description",
+        "forms.resume-code.description"
+      ]
+    },
+    {
+      "reason": "Administration, design documentation and simulator page names are not applicant or advisor site content.",
+      "keys": [
+        "page.mock-email-preview.title",
+        "page.mock-email-preview.nav-title",
+        "page.site-details.title",
+        "page.site-details.nav-title",
+        "page.design-system.title",
+        "page.design-system.nav-title",
+        "page.portal-admin.title",
+        "page.portal-admin.nav-title",
+        "page.cms.title",
+        "page.cms.nav-title",
+        "page.portal-template-project.title",
+        "page.portal-template-project.nav-title",
+        "page.portal-requirements-project.title",
+        "page.portal-requirements-project.nav-title"
+      ]
+    },
+    {
+      "reason": "Inspection labels identify form surfaces and dialogs in the Library; the site uses its actual field or dialog heading.",
+      "keys": [
+        "beneficiary.dialog.library-label",
+        "coverage.controls.label",
+        "eligibility.children.library",
+        "eligibility.verification.methods-label",
+        "eligibility.verification.questions-label",
+        "eligibility.verification.library-label",
+        "health.condition-details-modal",
+        "payment.controls-label",
+        "profile.disability.member-modal",
+        "profile.disability.spouse-modal",
+        "review.acknowledgements-label",
+        "review.policy-fields-label"
+      ]
+    }
+  ]
+}

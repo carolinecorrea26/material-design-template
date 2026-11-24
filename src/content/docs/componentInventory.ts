@@ -25,10 +25,10 @@ export const componentsData: ComponentRow[] = [
     storybookId: "content-applicationdocumentpreview--default",
   },
   {
-    name: "HelpChips",
+    name: "PageHelpChips",
     category: "content",
     description: "Horizontally scrollable row of clickable help topic chips.",
-    sourcePath: "src/components/content/HelpChips.tsx",
+    sourcePath: "src/components/content/PageHelpChips.tsx",
     usedIn: "PageHeader help section",
     storybookId: "content-helpchips--default",
   },
@@ -504,14 +504,7 @@ export const componentsData: ComponentRow[] = [
     usedIn: "Resume, ResumeCode",
     storybookId: "feedback-resume-expiration--active-link",
   },
-  {
-    name: "ProcessingStatusPage",
-    category: "feedback",
-    description: "Centered spinner, mark, heading, and body for external processing states.",
-    sourcePath: "src/components/feedback/ProcessingStatusPage.tsx",
-    usedIn: "DocuSign, HealthQd",
-    storybookId: "feedback-processingstatuspage--external-service",
-  },
+
   {
     name: "FieldGrid",
     category: "layout",
@@ -528,14 +521,7 @@ export const componentsData: ComponentRow[] = [
     usedIn: "AdvisorSendConfirmation, ApplicationEditConfirmation",
     storybookId: "application-patterns-detailstable--confirmation-details",
   },
-  {
-    name: "IconListItem",
-    category: "layout",
-    description: "Two-column list row with a leading icon or ordinal and content.",
-    sourcePath: "src/components/layout/IconListItem.tsx",
-    usedIn: "YesNoDetailList",
-    storybookId: "application-patterns-yesnodetaillist--interactive",
-  },
+
   {
     name: "RadioSelectionGroup",
     category: "forms",
@@ -544,12 +530,5 @@ export const componentsData: ComponentRow[] = [
     usedIn: "Beneficiary, ResumeMethod",
     storybookId: "forms-radioselectiongroup--interactive",
   },
-  {
-    name: "YesNoDetailList",
-    category: "forms",
-    description: "Numbered yes/no questions that reveal DynamicList details on Yes.",
-    sourcePath: "src/components/forms/YesNoDetailList.tsx",
-    usedIn: "HealthSi, HealthLi, HealthDi",
-    storybookId: "application-patterns-yesnodetaillist--interactive",
-  },
+
 ];

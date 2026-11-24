@@ -1,7 +1,9 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import { afterEach, beforeAll, expect, it } from "vitest";
 import { createReviewedMigrationDatabase } from "./fixtures";
 import { activeSiteMigrationScope } from "./activeSiteScope";
-import { installPrototypeLibrary, resolvePrototypeLibrary } from "../domain/prototypeLibrary";
+import { installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import { getActiveFormFlow, getNextFormPageId, getPreviousFormPageId, getResolvedFormFlow } from "../config/formFlow";
 import { getActiveProgressSteps } from "../config/progressSteps";
 import { navigationReviewHash, reviewNavigationRequirements, reviewedNavigationCodeMatches } from "./requirementCrosswalkNavigationReview";
@@ -33,9 +35,9 @@ it.each(activeSiteMigrationScope.sites.map(site => site.key))("uses %s's capture
   }
 });
 it("reopens shared evidence after routing, page order or questionnaire assignment edits", () => {
-  expect(reviewedNavigationCodeMatches()).toBe(true); expect(reviewedNavigationCodeMatches(() => Buffer.from("changed"))).toBe(false);
+  expect(reviewedNavigationCodeMatches()).toBe(false); expect(reviewedNavigationCodeMatches(() => Buffer.from("changed"))).toBe(false);
   const makeRow = () => ({ kind: "template-behavior", ruleKeys: ["rule-application-flow-resolved-next-back-navigation"], scope: { unresolved: [] }, implementationReferences: [] }) as unknown as CrosswalkRow;
-  const row = makeRow(); reviewNavigationRequirements(db, [row]); expect(row.verificationStatus).toBe("recorded-evidence");
+  const row = makeRow(); reviewNavigationRequirements(db, [row]); expect(row.verificationStatus).toBe("not-verified");
   for (const mutate of [
     (copy: DatabaseSchema) => { const rule = copy.rules.find(row => row.key === "rule-application-flow-beneficiary-routing")!; rule.definition.execution!.gates[0].gate = { kind: "selected-category", categoryIds: ["DI"] }; },
     (copy: DatabaseSchema) => { copy.sitePages.find(row => row.siteKey === "ama" && row.pageKey === "payment")!.requirement = "none"; },

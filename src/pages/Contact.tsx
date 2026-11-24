@@ -1,66 +1,52 @@
 import FormRoutePage from "../app/RoutePage";
 import ContactSections from "../app/sections/ConfiguredContactSections";
 import { useApplicationForm } from "../app/ApplicationFormContext";
-import { getSelectedCategoryIds } from "../config/formFlow";
 import { contactCarryForwardTransition, executeApplicationTransition } from "../config/applicationTransitions";
+import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
 import { getActiveClient } from "../config/client/getActiveClient";
-import { showContactBusinessSection } from "../domain/applicantExperience";
+import { contactEmployerCoverageCategories, contactHiddenCorrespondenceValue, showContactBusinessSection } from "../domain/applicantExperience";
+import { buildSelectedCoverageEntries } from "../utils/coverageDecisions";
+import { addressFieldNames } from "../components/forms/AddressFields";
+import type { ApplicationFormValues } from "../app/ApplicationFormContext";
+import { getClientPageFields } from '../config/clientFields/getClientPageFields';
+import { useEffect } from 'react';
+
+function businessParticipation(values: ApplicationFormValues) {
+  const entries = buildSelectedCoverageEntries(values, getActiveClientCoverages());
+  // Disability/overhead elections use the member's employment, including spouse-only DI.
+  const employer = entries.some(entry => contactEmployerCoverageCategories.includes(entry.coverage.categoryId));
+  const experience = getActiveClient().applicantExperience;
+  const products = [...new Set(entries.map(entry => entry.coverageId))];
+  const fields = getClientPageFields('contact', values);
+  const memberBusiness = showContactBusinessSection(experience, employer, fields.some(field => field.id === 'correspondence-to') ? values['correspondence-to'] : undefined, products);
+  return {
+    memberEmployer: employer,
+    memberBusiness,
+    correspondenceVisible: fields.some(field => field.id === 'correspondence-to'),
+    sameAsHome: memberBusiness && employer && fields.some(field => field.id === 'business-address-same-as-home') && values['business-address-same-as-home'] === true,
+  };
+}
 
 export default function Contact() {
-  const { values } = useApplicationForm();
-  const selectedCategories = getSelectedCategoryIds(values);
-  const hasDiOrOo = selectedCategories.some(
-    (cat) => cat === "DI" || cat === "OO",
-  );
-
-  const defaultValueOverrides = executeApplicationTransition(
-    contactCarryForwardTransition,
-    values,
-    values,
-  );
-  const selectedProducts = Array.isArray(values.coverageSelections) ? values.coverageSelections.map(String) : [];
-  if (values["business-address-same-as-home"] === true && showContactBusinessSection(getActiveClient().applicantExperience, hasDiOrOo, values["correspondence-to"], selectedProducts)) {
-    // Seed the reset values too: the parent's initial reset runs after child
-    // effects and must not erase the same-as-home address copied on mount.
-    for (const key of ["street-address", "apt-suite", "city", "state", "zip-code"]) if (typeof values[key] === "string") defaultValueOverrides[`business-${key}`] = values[key];
+  const { values, setPageValues } = useApplicationForm();
+  const defaultValueOverrides = executeApplicationTransition(contactCarryForwardTransition, values, values);
+  const participation = businessParticipation(values);
+  useEffect(() => {
+    if (!participation.correspondenceVisible && values['correspondence-to'] !== contactHiddenCorrespondenceValue) setPageValues({ 'correspondence-to': contactHiddenCorrespondenceValue });
+  }, [participation.correspondenceVisible, values, setPageValues]);
+  // Seed the member business address before the parent reset, including carry-forward.
+  if (participation.sameAsHome) {
+    for (const key of addressFieldNames) {
+      const value = defaultValueOverrides[key];
+      if (typeof value === 'string') defaultValueOverrides[`business-${key}`] = value;
+    }
   }
-
-  return (
-    <FormRoutePage
-      pageId="contact"
-      defaultValueOverrides={
-        defaultValueOverrides as Record<string, string | boolean | string[]>
-      }
-    >
-      {({
-        control,
-        errors,
-        watchedValues,
-        allFields,
-        pageSections,
-        setValue,
-      }) => {
-        const correspondenceTo = watchedValues["correspondence-to"];
-        const showBusinessSection =
-          showContactBusinessSection(getActiveClient().applicantExperience, hasDiOrOo, correspondenceTo, Array.isArray(watchedValues.coverageSelections) ? watchedValues.coverageSelections.map(String) : []);
-        const sameAsHome = Boolean(
-          watchedValues["business-address-same-as-home"],
-        );
-
-        return (
-          <ContactSections
-            control={control}
-            errors={errors}
-            watchedValues={watchedValues}
-            allFields={allFields}
-            pageSections={pageSections}
-            setValue={setValue}
-            showBusinessSection={showBusinessSection}
-            sameAsHome={sameAsHome}
-            hasDiOrOo={hasDiOrOo}
-          />
-        );
-      }}
-    </FormRoutePage>
-  );
+  return <FormRoutePage pageId="contact" defaultValueOverrides={defaultValueOverrides as Record<string, string | boolean | string[]>}
+    prepareSubmitValues={submitted => businessParticipation(submitted).correspondenceVisible ? submitted : { ...submitted, 'correspondence-to': contactHiddenCorrespondenceValue }}>
+    {({ control, errors, watchedValues, allFields, pageSections, setValue }) => {
+      const current = businessParticipation(watchedValues);
+      return <ContactSections control={control} errors={errors} watchedValues={watchedValues} allFields={allFields} pageSections={pageSections} setValue={setValue}
+        showBusinessSection={current.memberBusiness} sameAsHome={current.sameAsHome} hasDiOrOo={current.memberEmployer} />;
+    }}
+  </FormRoutePage>;
 }

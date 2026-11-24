@@ -2,7 +2,70 @@
   "page": "review",
   "components": [
     {
-      "type": "review"
+      "type": "FormRoutePage",
+      "mapping": "form-route-page",
+      "components": [
+        {
+          "type": "PageHeader"
+        },
+        {
+          "type": "PageAlert"
+        },
+        {
+          "type": "ReviewSections",
+          "mapping": "review",
+          "components": [
+            {
+              "type": "ApplicationDocumentPreview"
+            },
+            {
+              "type": "LegalReviewSection",
+              "components": [
+                {
+                  "type": "ReviewStatement"
+                },
+                {
+                  "type": "PrintAction"
+                }
+              ],
+              "purpose": "Read & Sign"
+            },
+            {
+              "type": "LegalReviewSection",
+              "purpose": "Electronic Consent",
+              "components": [
+                {
+                  "type": "PrintAction"
+                }
+              ]
+            },
+            {
+              "type": "ApplicantSectionDivider"
+            }
+          ]
+        },
+        {
+          "type": "PageNav"
+        }
+      ]
+    },
+    {
+      "type": "ConfirmationDialog"
+    },
+    {
+      "type": "SendApplicationDialog"
+    },
+    {
+      "type": "AppModal",
+      "purpose": "shared IMPORTANT NOTICE document viewer",
+      "components": [
+        {
+          "type": "LegalDocList"
+        },
+        {
+          "type": "PrintAction"
+        }
+      ]
     }
   ],
   "definition": {
@@ -12,23 +75,38 @@
     "groupId": "review",
     "flow": "application",
     "healthGate": false,
-    "displayName": "Review"
+    "displayName": "Review",
+    "previewPageIds": [
+      "membership",
+      "eligibility",
+      "coverage",
+      "beneficiary",
+      "contact",
+      "profile"
+    ],
+    "legalSections": {
+      "read-and-sign": {
+        "maxHeight": null
+      },
+      "electronic-consent": {
+        "maxHeight": 240
+      }
+    }
   },
   "position": 7,
-  "fieldBindings": [
-    "review-self-consent",
-    "review-spouse-consent"
-  ],
-  "looseFields": [],
   "layout": {
-    "sections": {}
+    "sections": {},
+    "dialogs": {
+      "spouse-acknowledgement": {
+        "for": "spouse",
+        "fields": [
+          "review-consent"
+        ]
+      }
+    }
   },
   "content": {
     "wording": [
-      "review.alert-title",
-      "review.alert-items",
-      "review.health-questions-note.title",
-      "review.health-questions-note.description",
       "review.read-and-sign-title",
       "review.read-and-sign-content",
       "review.electronic-consent-title",
@@ -41,14 +119,155 @@
       "application.ui.select-a-valid-applicant-type-to-display-the-applicable-consent",
       "application.ui.your-advisor-has-completed-this-section-of-the-application",
       "application.ui.review-the-information-below-if-anything-needs-to-be-corrected-click-the-edit",
-      "application.ui.steps-completed-by-your-advisor-getting-started-coverage-and-profile-are-locke",
       "application.ui.you-re-entering-the-final-stages-of-your-application",
       "application.ui.check-your-application-below-and-provide-your-consent-after-this-page-you-ll-c",
       "application.ui.your-application-is-submitted-after-you-complete-the-remaining-steps",
       "application.ui.preview-your-application",
       "application.ui.check-your-answers-and-use-edit-to-make-corrections-before-continuing",
       "application.ui.read-and-consent",
-      "application.ui.read-the-statements-and-electronic-consent-below-then-confirm-your-agreement-t"
+      "application.ui.read-the-statements-and-electronic-consent-below-then-confirm-your-agreement-t",
+      "review.missing-residency",
+      "review.missing-applicant-type",
+      "review.remaining-steps.health",
+      "review.remaining-steps.payment",
+      "review.remaining-steps.docusign",
+      "application.document-preview.title",
+      "application.document-preview.subtitle",
+      "application.document-preview.edit-section",
+      "application.document-preview.signature",
+      "application.document-preview.electronic-signature",
+      "application.document-preview.signed-date",
+      "application.document-preview.estimated-rate",
+      "application.document-preview.physician",
+      "application.document-preview.drivers-license",
+      "application.document-preview.outside-us-travel",
+      "application.document-preview.outside-us-residence",
+      "application.document-preview.country-residence",
+      "application.document-preview.country-travel",
+      "application.document-preview.spouse-country-residence",
+      "application.document-preview.spouse-country-travel",
+      "application.document-preview.name",
+      "application.document-preview.amount",
+      "application.document-preview.riders",
+      "application.document-preview.waiting-period",
+      "application.document-preview.benefit-option",
+      "application.document-preview.max-benefit-period",
+      "application.document-preview.selected",
+      "application.document-preview.trust",
+      "application.document-preview.relationship-missing",
+      "resume.error.technical"
+    ],
+    "dialogs": [
+      "dialogs.confirmation.edit-application.title",
+      "dialogs.confirmation.edit-application.message",
+      "dialogs.send-application.request-edit-to-application.title",
+      "dialogs.send-application.request-edit-to-application.intro-text",
+      "review.edit.confirm",
+      "review.edit.cancel"
+    ],
+    "important-notices": [
+      "review.important-notice.standard",
+      "review.important-notice.new-mexico",
+      "review.important-notice.virginia",
+      "review.important-notice.close"
     ]
-  }
+  },
+  "fieldMapping": {
+    "page": "review"
+  },
+  "contentRoots": [
+    "review"
+  ],
+  "controls": [
+    "review-consent",
+    "dividend-acknowledgement",
+    "dividend-first-name",
+    "dividend-last-name",
+    "dividend-birth-date"
+  ],
+  "surfaces": {
+    "reviewAcknowledgements": {
+      "mapping": {
+        "page": "review"
+      },
+      "definition": {
+        "label": "review.acknowledgements-label",
+        "fields": [
+          {
+            "fieldKey": "review-self-consent",
+            "valueKey": "review-self-consent"
+          }
+        ]
+      },
+      "aliases": {
+        "review-self-consent": {
+          "field": "review-consent"
+        }
+      },
+      "for": "self"
+    },
+    "reviewPolicyFields": {
+      "mapping": {
+        "page": "review"
+      },
+      "definition": {
+        "label": "review.policy-fields-label",
+        "fields": [
+          {
+            "fieldKey": "dividend-acknowledgement",
+            "valueKey": "dividend-acknowledgement"
+          },
+          {
+            "fieldKey": "dividend-first-name",
+            "valueKey": "dividend-first-name"
+          },
+          {
+            "fieldKey": "dividend-last-name",
+            "valueKey": "dividend-last-name"
+          },
+          {
+            "fieldKey": "dividend-birth-date",
+            "valueKey": "dividend-birth-date"
+          }
+        ]
+      }
+    },
+    "reviewSpouseAcknowledgement": {
+      "mapping": {
+        "page": "review"
+      },
+      "for": "spouse",
+      "definition": {
+        "label": "review.acknowledgements-label",
+        "fields": [
+          {
+            "fieldKey": "review-spouse-consent",
+            "valueKey": "review-spouse-consent"
+          }
+        ]
+      },
+      "aliases": {
+        "review-spouse-consent": {
+          "field": "review-consent"
+        }
+      }
+    }
+  },
+  "retiredDecisionKeys": [
+    "business-decision.rules-review.important-notice-viewer-deferral",
+    "business-decision.rules-review.medical-authorization.asce",
+    "business-decision.rules-review.shared-consent.asce",
+    "business-decision.rules-review.jurisdiction-notices.asce"
+  ],
+  "contentSlots": {
+    "page.review.title": {
+      "name": "Page title"
+    },
+    "page.review.subhead": {
+      "name": "Page introduction"
+    }
+  },
+  "retiredContentKeys": [
+    "application.ui.steps-completed-by-your-advisor-getting-started-coverage-and-profile-are-locke"
+  ]
 }

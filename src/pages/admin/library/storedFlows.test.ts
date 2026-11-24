@@ -1,42 +1,46 @@
-import { beforeAll, expect, it } from "vitest";
-import { createReviewedMigrationDatabase } from "../../../migration/fixtures";
-import type { LibraryCatalog } from "../../../services/libraryCatalogService";
-import { storedFlowRows } from "./storedFlows";
+import { readFileSync } from 'node:fs';
+import { expect, it } from 'vitest';
+import type { LibraryCatalog } from '../../../services/libraryCatalogService';
+import { freshStartSource } from '../../../domain/freshStartCatalog';
+import { storedFlowRows } from './storedFlows';
+import { allFlows } from '../../../content/docs/flows';
+import { flowStages } from '../../../domain/flowStages.mjs';
+const catalog = JSON.parse(readFileSync('public/catalog/portal.json', 'utf8')) as LibraryCatalog;
 
-let catalog: LibraryCatalog;
-beforeAll(() => { catalog = { data: createReviewedMigrationDatabase(), revision: "test", analyticsTags: [] }; }, 120000);
-
-it("reads saved diagrams, preserves every node and edge, and resolves Site health pages", () => {
-  const original = JSON.stringify(catalog);
-  const flows = storedFlowRows(catalog, "abe");
-  expect(flows.map(row => row.definition.id)).toEqual(["consumer", "advisor", "resume", "autosave", "quote", "tpaVerification"]);
-  for (const flow of flows) {
-    const nodes = catalog.data.flowSteps.filter(row => row.flowKey === flow.key).sort((a, b) => a.position - b.position);
-    const edges = catalog.data.flowTransitions.filter(row => row.flowKey === flow.key).sort((a, b) => a.position - b.position);
-    expect(flow.definition.nodes.map(node => node.id)).toEqual(nodes.map(row => row.definition.id));
-    expect(flow.definition.edges).toEqual(edges.map(row => row.definition));
+it.each(['all', 'asce'])('reconstructs all shared graphs after removing saved topology (%s)', site => {
+  const input = structuredClone(catalog), before = JSON.stringify(catalog);
+  input.data.flows = []; input.data.flowSteps = []; input.data.flowTransitions = []; input.data.siteFlows = [];
+  const rows = storedFlowRows(input, site);
+  expect(rows).toHaveLength(allFlows.length);
+  for (const row of rows) {
+    const authored = allFlows.find(flow => flow.id === row.definition.id)!;
+    expect(row.key).toBe(`global:*.${authored.id}`);
+    expect(row.status).toBe('inherited');
+    expect(row.definition.edges).toEqual(authored.edges);
+    expect(row.definition.stages).toEqual(authored.stages);
+    expect(row.definition.nodes.map(node => ({ ...node, description: undefined }))).toEqual(authored.nodes.map(node => ({ ...node, description: undefined })));
   }
-  const summary = flows.find(row => row.definition.id === "advisor")!.definition.nodes.find(node => node.pageGroupId === "health")!;
-  expect(summary.label).toBe("Health Routing");
-  expect(summary.description).toContain("Health LI, Health QD, Health DI, Health CI");
-  expect(summary.description).not.toContain("Health CIR");
-  expect(summary.description).not.toContain("Health SI");
-  expect(storedFlowRows(catalog, "all").find(row => row.definition.id === "advisor")!.definition.nodes.find(node => node.pageGroupId === "health")!.description).toContain("Health SI");
-  expect(JSON.stringify(catalog)).toBe(original);
+  expect(JSON.stringify(catalog)).toBe(before);
 });
 
-it("follows saved copy, branch labels, overrides and availability without importing authored diagrams", () => {
-  const changed = structuredClone(catalog);
-  const advisor = changed.data.flows.find(row => row.definition.id === "advisor")!;
-  advisor.definition.title = "Saved advisor journey";
-  const edge = changed.data.flowTransitions.find(row => row.flowKey === advisor.key && row.definition.condition)!;
-  edge.definition.condition = "Saved branch";
-  changed.data.sitePages.find(row => row.siteKey === "abe" && row.pageKey === "health-ci")!.requirement = "none";
-  changed.data.sitePages.find(row => row.siteKey === "abe" && row.pageKey === "contact")!.requirement = "none";
-  const flow = storedFlowRows(changed, "abe").find(row => row.key === advisor.key)!.definition;
-  expect(flow.title).toBe("Saved advisor journey");
-  expect(flow.edges.find(row => row.id === edge.definition.id)?.condition).toBe("Saved branch");
-  expect(flow.nodes.find(row => row.pageGroupId === "health")?.description).not.toContain("Health CI,");
-  expect(flow.nodes.find(row => row.pageId === "contact")?.description).toContain("Disabled on this Site");
-  expect(storedFlowRows(changed, "waepa").find(row => row.definition.id === "tpaVerification")!.key).toBe("client:waepa.tpaVerification");
+it.each(['consumer', 'advisor'])('uses canonical application wording for %s stages after the JSON changes', id => {
+  const source = structuredClone(freshStartSource());
+  source.content['navigation.progress-step-labels.coverage-options'] = 'Updated canonical coverage stage';
+  for (const site of ['all', 'asce']) {
+    const row = storedFlowRows(catalog, site, source).find(row => row.definition.id === id)!;
+    expect(flowStages(row.definition, row.stageContent).find(stage => stage.id === 'coverage-options')?.label).toBe('Updated canonical coverage stage');
+  }
+});
+
+it('resolves effective TPA values independently while keeping the same shared graph', () => {
+  const source = structuredClone(freshStartSource());
+  const before = storedFlowRows(catalog, 'asce', source).find(flow => flow.definition.id === 'tpaVerification')!;
+  source.siteEligibility.asce.tpa.lookupFields = ['first-name', 'last-name', 'birth-date'];
+  source.siteEligibility.asce.tpa.requireAddressBeforeVerification = false;
+  const after = storedFlowRows(catalog, 'asce', source).find(flow => flow.definition.id === 'tpaVerification')!;
+  expect(after.definition).toEqual(before.definition);
+  expect(before.settings.find(setting => setting.key === 'tpaIntegration.lookupFields')?.value).toContain('member-id');
+  expect(after.settings.find(setting => setting.key === 'tpaIntegration.lookupFields')?.value).not.toContain('member-id');
+  expect(after.settings.find(setting => setting.key === 'tpaIntegration.requireAddressBeforeVerification')?.value).toBe(false);
+  expect(storedFlowRows(catalog, 'all').find(flow => flow.definition.id === 'tpaVerification')?.settings.find(setting => setting.key === 'tpaIntegration.mode')?.value).toBe('none');
 });

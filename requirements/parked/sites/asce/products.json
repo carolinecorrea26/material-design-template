@@ -1,16 +1,32 @@
 {
   "products": {
     "li-term": {
-      "brochureUrl": "https://asceinsurance.com/Downloads/ASCE/brochures/ASCE-Term-Life-Brochure.pdf"
+      "brochureUrl": "https://asceinsurance.com/Downloads/ASCE/brochures/ASCE-Term-Life-Brochure.pdf",
+      "description": "The simple, economical way to help financially protect your loved ones should they unexpectedly lose you.",
+      "applicantNotes": {
+        "spouse": "Spouse benefit amount may not exceed the member benefit amount (whether already insured or applying now)."
+      }
     },
     "li-10yr": {
-      "brochureUrl": "https://asceinsurance.com/Downloads/ASCE/brochures/ASCE-10-or-20-Year-Level-Term-Life-Brochure.pdf"
+      "brochureUrl": "https://asceinsurance.com/Downloads/ASCE/brochures/ASCE-10-or-20-Year-Level-Term-Life-Brochure.pdf",
+      "description": "Family financial protection at an exclusive-member group rate guaranteed not to increase for 10 years.",
+      "applicantNotes": {
+        "spouse": "Spouse benefit amount may not exceed the member benefit amount (whether already insured or applying now)."
+      },
+      "descriptionNotice": "Please note: If you are already insured under this policy, a new application will be based on your current age and amount of coverage requested."
     },
     "li-20yr": {
-      "brochureUrl": "https://asceinsurance.com/Downloads/ASCE/brochures/ASCE-10-or-20-Year-Level-Term-Life-Brochure.pdf"
+      "brochureUrl": "https://asceinsurance.com/Downloads/ASCE/brochures/ASCE-10-or-20-Year-Level-Term-Life-Brochure.pdf",
+      "description": "Family financial protection at an exclusive-member group rate guaranteed not to increase for 20 years.",
+      "applicantNotes": {
+        "spouse": "Spouse benefit amount may not exceed the member benefit amount (whether already insured or applying now)."
+      },
+      "descriptionNotice": "Please note: If you are already insured under this policy, a new application will be based on your current age and amount of coverage requested."
     },
     "li-add": {
-      "brochureUrl": "https://asceinsurance.com/Downloads/ASCE/brochures/ASCE-HLA-Brochure.pdf"
+      "brochureUrl": "https://asceinsurance.com/Downloads/ASCE/brochures/ASCE-HLA-Brochure.pdf",
+      "description": "Unexpected accidents happen every day. This insurance can help to provide some financial security should a covered accident happen to you.",
+      "name": "High-Limit Accident Insurance"
     },
     "di-ltd": {
       "brochureUrl": "https://asceinsurance.com/Downloads/ASCE/brochures/ASCE-DI-Brochure.pdf"
@@ -243,7 +259,7 @@
         "value": [
           {
             "id": "base-eligibility-ages",
-            "description": "Summary eligibility ages 17–64 conflict with detailed underwriting bands beginning at 18 and including older ages. Base eligibility requires confirmation; bands do not establish eligibility.",
+            "description": "Summary eligibility ages 17\u201364 conflict with detailed underwriting bands beginning at 18 and including older ages. Base eligibility requires confirmation; bands do not establish eligibility.",
             "source": "ASCE_Portal_Site_Rules.xlsx, Open Issues!C3; Life Products!E2"
           }
         ],
@@ -390,7 +406,7 @@
         "value": [
           {
             "id": "base-eligibility-ages",
-            "description": "Summary eligibility ages 17–54 conflict with detailed underwriting bands beginning at 18 and including older ages. Base eligibility requires confirmation; bands do not establish eligibility.",
+            "description": "Summary eligibility ages 17\u201354 conflict with detailed underwriting bands beginning at 18 and including older ages. Base eligibility requires confirmation; bands do not establish eligibility.",
             "source": "ASCE_Portal_Site_Rules.xlsx, Open Issues!C3; Life Products!E3"
           }
         ],
@@ -848,6 +864,11 @@
           "version": 1,
           "rules": [
             {
+              "applicantKey": "spouse",
+              "memberCapMultiplier": 1,
+              "memberCapRequiresVerifiedCoverage": true
+            },
+            {
               "applicantKey": "child",
               "requires": {
                 "applicantKeys": [
@@ -884,6 +905,11 @@
           "version": 1,
           "rules": [
             {
+              "applicantKey": "spouse",
+              "memberCapMultiplier": 1,
+              "memberCapRequiresVerifiedCoverage": true
+            },
+            {
               "applicantKey": "child",
               "requires": {
                 "applicantKeys": [
@@ -919,6 +945,11 @@
         "value": {
           "version": 1,
           "rules": [
+            {
+              "applicantKey": "spouse",
+              "memberCapMultiplier": 1,
+              "memberCapRequiresVerifiedCoverage": true
+            },
             {
               "applicantKey": "child",
               "requires": {
@@ -1116,7 +1147,7 @@
                 "spouse"
               ],
               "included": false,
-              "minimumBase": 25000,
+              "minimumBase": 100000,
               "maximumAge": 64,
               "requires": [],
               "incompatible": [],
@@ -1148,7 +1179,8 @@
               },
               "amountCap": {
                 "baseFraction": 1
-              }
+              },
+              "baseAmountSource": "requested-and-verified-existing"
             }
           ],
           "childSchedule": null,
@@ -1199,7 +1231,7 @@
             "defaultMethod": "bank-account",
             "defaultFrequency": "monthly",
             "frequencyLocked": false,
-            "synchronizeAcrossProducts": true,
+            "synchronizeAcrossProducts": false,
             "methods": [
               {
                 "method": "bank-account",
@@ -1564,7 +1596,7 @@
           "excludeActiveMilitary": false,
           "provisional": true,
           "revisit": [
-            "Mainland US plus DC only provisionally; Canadian/territory/foreign address behavior needs source review. Main N exclusions parsed after explicit spelling repairs: VTVA → VT/VA, MV → MT, TE → TN, YT → UT, Louisisana → Louisiana. Revisit those repairs.",
+            "Mainland US plus DC only provisionally; Canadian/territory/foreign address behavior needs source review. Main N exclusions parsed after explicit spelling repairs: VTVA \u2192 VT/VA, MV \u2192 MT, TE \u2192 TN, YT \u2192 UT, Louisisana \u2192 Louisiana. Revisit those repairs.",
             "ASCE spouse-only NH restriction is persisted in applicantExcludedJurisdictions; no source country or military status is inferred."
           ]
         }
@@ -1637,7 +1669,7 @@
             "defaultMethod": "bank-account",
             "defaultFrequency": "monthly",
             "frequencyLocked": false,
-            "synchronizeAcrossProducts": true,
+            "synchronizeAcrossProducts": false,
             "methods": [
               {
                 "method": "bank-account",
@@ -1990,7 +2022,7 @@
           "excludeActiveMilitary": false,
           "provisional": true,
           "revisit": [
-            "Mainland US plus DC only provisionally; Canadian/territory/foreign address behavior needs source review. Main N exclusions parsed after explicit spelling repairs: VTVA → VT/VA, MV → MT, TE → TN, YT → UT, Louisisana → Louisiana. Revisit those repairs.",
+            "Mainland US plus DC only provisionally; Canadian/territory/foreign address behavior needs source review. Main N exclusions parsed after explicit spelling repairs: VTVA \u2192 VT/VA, MV \u2192 MT, TE \u2192 TN, YT \u2192 UT, Louisisana \u2192 Louisiana. Revisit those repairs.",
             "ASCE spouse-only NH restriction is persisted in applicantExcludedJurisdictions; no source country or military status is inferred."
           ]
         }
@@ -2063,7 +2095,7 @@
             "defaultMethod": "bank-account",
             "defaultFrequency": "monthly",
             "frequencyLocked": false,
-            "synchronizeAcrossProducts": true,
+            "synchronizeAcrossProducts": false,
             "methods": [
               {
                 "method": "bank-account",
@@ -2416,7 +2448,7 @@
           "excludeActiveMilitary": false,
           "provisional": true,
           "revisit": [
-            "Mainland US plus DC only provisionally; Canadian/territory/foreign address behavior needs source review. Main N exclusions parsed after explicit spelling repairs: VTVA → VT/VA, MV → MT, TE → TN, YT → UT, Louisisana → Louisiana. Revisit those repairs.",
+            "Mainland US plus DC only provisionally; Canadian/territory/foreign address behavior needs source review. Main N exclusions parsed after explicit spelling repairs: VTVA \u2192 VT/VA, MV \u2192 MT, TE \u2192 TN, YT \u2192 UT, Louisisana \u2192 Louisiana. Revisit those repairs.",
             "ASCE spouse-only NH restriction is persisted in applicantExcludedJurisdictions; no source country or military status is inferred."
           ]
         }
@@ -2487,7 +2519,7 @@
             "defaultMethod": "bank-account",
             "defaultFrequency": "monthly",
             "frequencyLocked": false,
-            "synchronizeAcrossProducts": true,
+            "synchronizeAcrossProducts": false,
             "methods": [
               {
                 "method": "bank-account",
@@ -2820,7 +2852,7 @@
           "excludeActiveMilitary": false,
           "provisional": true,
           "revisit": [
-            "Mainland US plus DC only provisionally; Canadian/territory/foreign address behavior needs source review. Main N exclusions parsed after explicit spelling repairs: VTVA → VT/VA, MV → MT, TE → TN, YT → UT, Louisisana → Louisiana. Revisit those repairs.",
+            "Mainland US plus DC only provisionally; Canadian/territory/foreign address behavior needs source review. Main N exclusions parsed after explicit spelling repairs: VTVA \u2192 VT/VA, MV \u2192 MT, TE \u2192 TN, YT \u2192 UT, Louisisana \u2192 Louisiana. Revisit those repairs.",
             "ASCE spouse-only NH restriction is persisted in applicantExcludedJurisdictions; no source country or military status is inferred."
           ]
         }
@@ -2889,7 +2921,7 @@
             "defaultMethod": "bank-account",
             "defaultFrequency": "monthly",
             "frequencyLocked": false,
-            "synchronizeAcrossProducts": true,
+            "synchronizeAcrossProducts": false,
             "methods": [
               {
                 "method": "bank-account",
@@ -3972,6 +4004,26 @@
           "version": 2,
           "source": "stored-structure"
         }
+      },
+      {
+        "id": "{{site}}.coverage-question-overrides",
+        "key": "{{site}}.coverage-question-overrides",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "coveragePolicy.questionOverrides",
+        "value": {
+          "DI": {
+            "self": [
+              "gender",
+              "average-monthly-income",
+              "hours-worked-per-week",
+              "self-employed-under-one-year"
+            ]
+          }
+        },
+        "position": 0,
+        "sourceReference": "User November 19, 2026: self-employed-under-one-year applies to ASCE only; retain shared field definition and Site question participation."
       }
     ],
     "siteProducts": [
@@ -7483,11 +7535,11 @@
         "key": "{{site}}.feature-financial-questionnaire",
         "siteKey": "{{site}}",
         "featureKey": "feature-financial-questionnaire",
-        "enabled": true,
+        "enabled": false,
         "position": 13,
         "displayId": 186764619541027,
         "providedBy": null,
-        "sourceReference": "prototype:siteFeatures/asce.feature-financial-questionnaire"
+        "sourceReference": "User Profile review: ASCE financial questionnaire disabled"
       },
       {
         "id": "{{site}}.feature-online-payment",

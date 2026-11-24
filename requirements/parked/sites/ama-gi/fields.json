@@ -1,0 +1,26 @@
+{
+  "fields": {
+    "coverage-categories": {
+      "options": [
+        "LI",
+        "DI"
+      ]
+    },
+    "membership": {
+      "configuration": "category",
+      "label": "I am a (select one):",
+      "options": [
+        {
+          "label": "Student",
+          "value": "student",
+          "outcome": "member"
+        },
+        {
+          "label": "Spouse",
+          "value": "spouse",
+          "outcome": "member"
+        }
+      ]
+    }
+  }
+}

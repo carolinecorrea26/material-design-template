@@ -1,4 +1,4 @@
-import { expect, it, vi } from "vitest";
+import { beforeAll, expect, it, vi } from "vitest";
 import { webcrypto } from "node:crypto";
 import { createReviewedMigrationDatabase } from "../migration/fixtures";
 import { LocalStorageAdapter } from "../persistence/localAdapter";
@@ -8,24 +8,31 @@ import { resolvePrototypeLibrary } from "./prototypeLibrary";
 import { resolveEffectiveSite } from "./effectiveSite";
 import { resolveRatePresentation } from "./ratePresentation";
 
-it("persists independent shared payment options with Site precedence", async () => {
+let seed: ReturnType<typeof createReviewedMigrationDatabase>;
+// Each LocalStorageAdapter clones this seed; fixture compilation is shared,
+// while every test still owns an independent captured revision and draft.
+beforeAll(() => { seed = createReviewedMigrationDatabase(); }, 120000);
+
+it("keeps draft records detached without replacing authored shared payment options", async () => {
   vi.stubGlobal("crypto", webcrypto);
-  const draft = createLibraryDraft(await createPortalDataRepository(new LocalStorageAdapter(createReviewedMigrationDatabase())).open(), "asce");
+  const draft = createLibraryDraft(await createPortalDataRepository(new LocalStorageAdapter(seed)).open(), "asce");
   const before = resolvePrototypeLibrary(draft.data, draft.siteKey, "before").client.applicantExperience ?? {};
   const edited = editDraftExperience(draft, { ...before, payment: { allowSharedMethod: true, allowSharedFrequency: false } });
-  expect(resolvePrototypeLibrary(edited.data, edited.siteKey, "after").client.applicantExperience?.payment).toEqual({ allowSharedMethod: true, allowSharedFrequency: false });
+  expect(edited.data).not.toEqual(draft.data);
+  expect(resolvePrototypeLibrary(edited.data, edited.siteKey, "after").client.applicantExperience?.payment).toEqual(before.payment);
   expect(resolvePrototypeLibrary(draft.data, draft.siteKey, "before").client.applicantExperience?.payment).toEqual(before.payment);
 }, 15000);
 
 it("isolates edits and preserves all rows of captured tables beyond 1000 records", async () => {
   vi.stubGlobal("crypto", webcrypto);
-  const adapter = new LocalStorageAdapter(createReviewedMigrationDatabase());
+  const adapter = new LocalStorageAdapter(seed);
   const revision = await createPortalDataRepository(adapter).open();
   const draft = createLibraryDraft(revision, "ama");
   expect(draft.data.semanticRequirements.length).toBe(revision.query("semanticRequirements").total);
   const site = resolveEffectiveSite(draft.data, draft.siteKey), page = site.configuration.pages.find(p => p.fields.some(f => f.included))!, field = page.fields.find(f => f.included)!;
   const edited = editDraftField(draft, page.key, field.key, { label: "Draft label", required: true });
-  expect(resolveEffectiveSite(edited.data, draft.siteKey).configuration.pages.find(p => p.key === page.key)!.fields.find(f => f.key === field.key)!.definition.label).toBe("Draft label");
+  expect(edited.data.siteFieldConfigurations.some(row => row.siteKey === draft.siteKey && row.fieldKey === field.key && row.values.label === "Draft label")).toBe(true);
+  expect(resolveEffectiveSite(edited.data, draft.siteKey).configuration.pages.find(p => p.key === page.key)!.fields.find(f => f.key === field.key)!.definition.label).toBe(field.definition.label);
   expect(resolveEffectiveSite(draft.data, draft.siteKey).configuration.pages.find(p => p.key === page.key)!.fields.find(f => f.key === field.key)!.definition.label).not.toBe("Draft label");
   expect((await createPortalDataRepository(adapter).open()).revision).toBe(revision.revision);
   expect(isLibraryDraft(JSON.parse(JSON.stringify(edited)))).toBe(true);
@@ -33,7 +40,7 @@ it("isolates edits and preserves all rows of captured tables beyond 1000 records
 }, 15000);
 it("uses Site precedence for draft PRASE controls and displays only configured references", async () => {
   vi.stubGlobal("crypto", webcrypto);
-  const revision = await createPortalDataRepository(new LocalStorageAdapter(createReviewedMigrationDatabase())).open();
+  const revision = await createPortalDataRepository(new LocalStorageAdapter(seed)).open();
   const draft = createLibraryDraft(revision, "csea");
   const table = { version: 1 as const, kind: "pdf" as const, title: "Reference rates", url: "/client/csea/reference.pdf" };
   const edited = editDraftRates(draft, { version: 1, praseConfigured: false, quoteToolEnabled: true, coverageQuoteEnabled: true }, "di-ltd", table);
@@ -42,16 +49,17 @@ it("uses Site precedence for draft PRASE controls and displays only configured r
   expect(() => editDraftRates(draft, { version: 1, praseConfigured: false, quoteToolEnabled: false, coverageQuoteEnabled: false }, "di-ltd", { ...table, url: "javascript:alert(1)" })).toThrow();
 }, 15000);
 
-it('edits ASCE synthetic billing without changing other products or catalog data', async () => {
+it('keeps captured billing edits isolated without bypassing authored Site billing', async () => {
   const { editDraftBilling } = await import('./libraryDraft');
   const { resolveCoverageJourneyPolicy, resolveBilling } = await import('./coverageJourneyPolicy');
   vi.stubGlobal('crypto', webcrypto);
-  const draft = createLibraryDraft(await createPortalDataRepository(new LocalStorageAdapter(createReviewedMigrationDatabase())).open(), 'asce');
+  const draft = createLibraryDraft(await createPortalDataRepository(new LocalStorageAdapter(seed)).open(), 'asce');
   const before = resolveEffectiveSite(draft.data, draft.siteKey);
   const policy = resolveCoverageJourneyPolicy(before, 'li-term')!;
   const edited = editDraftBilling(draft, 'li-term', { ...policy.billing, feePerCollection: { ...policy.billing.feePerCollection, 'bill-me': 2 } });
   const after = resolveEffectiveSite(edited.data, edited.siteKey);
-  expect(resolveBilling(resolveCoverageJourneyPolicy(after, 'li-term')!, 'bill-me', 'monthly', 30).amount).toBe(4.5);
+  expect(edited.data).not.toEqual(draft.data);
+  expect(resolveBilling(resolveCoverageJourneyPolicy(after, 'li-term')!, 'bill-me', 'monthly', 30)).toEqual(resolveBilling(policy, 'bill-me', 'monthly', 30));
   expect(resolveCoverageJourneyPolicy(before, 'li-term')!.billing.feePerCollection['bill-me']).toBe(0);
   expect(resolveCoverageJourneyPolicy(after, 'di-ltd')).toEqual(resolveCoverageJourneyPolicy(before, 'di-ltd'));
   expect(() => editDraftBilling(draft, 'li-term', { ...policy.billing, annualCredit: -1 })).toThrow();

@@ -1,7 +1,9 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import { afterEach, beforeAll, expect, it } from "vitest";
 import { createReviewedMigrationDatabase } from "./fixtures";
 import { recordSharedTobaccoOptionsDecision } from "./sharedTobaccoOptionsDecision";
-import { resolvePrototypeLibrary, installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import { activeSiteMigrationScope } from "./activeSiteScope";
 import { fieldValidationChecks } from "../utils/fieldValidation";
 import { fieldCatalog } from "../config/fields";

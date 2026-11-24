@@ -1,5 +1,6 @@
 import type { EffectiveSite } from "./effectiveSite";
 import { numericFact } from "../utils/applicantFacts";
+import { selectedSiteApplicants } from './applicantParticipation';
 
 export type QuickDecisionPolicy = {
   applicants: string[]; minimumAgeYears: number; maximumAgeYears: number;
@@ -44,7 +45,7 @@ export function quickDecisionOutcome(policy: QuickDecisionPolicy, productKey: st
 
 export function applicationUnderwritingContext(site: EffectiveSite, productKey: string, applicantKey: string, values: Record<string, unknown>): UnderwritingContext {
   const amounts = values.coverageAmounts as Record<string, unknown> | undefined;
-  const applicants = values.productApplicants as Record<string, string[]> | undefined;
+  const applicants = selectedSiteApplicants(site, values);
   const selected = Array.isArray(values.coverageSelections) ? values.coverageSelections.map(String) : [productKey];
   const prefix = applicantKey === "spouse" ? "spouse-" : "";
   const hasOther = values[`${prefix}has-other-life-insurance`];

@@ -22,7 +22,12 @@
     "beneficiary": {
       "type": "form",
       "step": "Your application details",
-      "requirement": "required"
+      "requirement": "optional",
+      "siteRequirementOptions": [
+        "none",
+        "optional",
+        "required"
+      ]
     },
     "contact": {
       "type": "form",
@@ -44,7 +49,7 @@
       "step": "Review your application",
       "requirement": "required"
     },
-    "health-li": {
+    "health-tele": {
       "type": "form",
       "step": "Review your application",
       "requirement": "required"
@@ -54,15 +59,10 @@
       "step": "Review your application",
       "requirement": "required"
     },
-    "health-di": {
+    "health-di-supp": {
       "type": "form",
       "step": "Review your application",
       "requirement": "required"
-    },
-    "health-ci": {
-      "type": "form",
-      "step": "Review your application",
-      "requirement": "none"
     },
     "health-cir": {
       "type": "form",
@@ -72,7 +72,12 @@
     "payment": {
       "type": "form",
       "step": "Review your application",
-      "requirement": "required"
+      "requirement": "required",
+      "siteRequirementOptions": [
+        "none",
+        "optional",
+        "required"
+      ]
     },
     "docusign": {
       "type": "form",
@@ -111,10 +116,6 @@
       "type": "error",
       "requirement": "required"
     },
-    "application-unavailable": {
-      "type": "error",
-      "requirement": "required"
-    },
     "technical-error": {
       "type": "error",
       "requirement": "required"
@@ -127,11 +128,11 @@
       "type": "error",
       "requirement": "required"
     },
-    "unconfirmed-result": {
+    "error-500": {
       "type": "error",
       "requirement": "required"
     },
-    "error-500": {
+    "error-400": {
       "type": "error",
       "requirement": "required"
     }

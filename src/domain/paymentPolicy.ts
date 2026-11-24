@@ -1,6 +1,10 @@
 /** Authored billing choices; processor execution and payment details are separate. */
 export type PaymentMethod = "bank-account" | "credit-card" | "bill-me";
 export type PaymentFrequency = "monthly" | "quarterly" | "semiannual" | "annual";
+/** Policy identities and authored form values use different annual suffixes. */
+export function paymentFrequencyFieldValue(frequency: PaymentFrequency): string {
+  return frequency === 'annual' ? 'annually' : frequency === 'semiannual' ? 'semiannually' : frequency;
+}
 export type PaymentPolicy = {
   collection: "required" | "optional" | "none";
   methods: Array<{ method: PaymentMethod; frequencies: PaymentFrequency[] }>;

@@ -1,0 +1,135 @@
+{
+  "rules": [
+    {
+      "id": "beneficiary-applicable-applicants-products",
+      "name": "Applicable applicants/products",
+      "status": "confirmed",
+      "statement": "Collect independent records only for selected member/spouse product elections with positive requested amounts that participate under the effective configured category default and product/applicant/Association policy. The global default is Life/AD; explicit participation exceptions remain authoritative. Retained amount defaults and child coverage do not create adult beneficiary elections.",
+      "source": "CHG-009; src/pages/Beneficiary.tsx",
+      "replaces": [
+        "rule-beneficiary-applicable-applicants-products"
+      ]
+    },
+    {
+      "id": "beneficiary-optional-page-opt-in",
+      "name": "Optional page opt-in",
+      "status": "confirmed",
+      "statement": "When Beneficiary mode is optional, the page first asks whether the user wants to add beneficiary information. No skips the beneficiary questions and permits continuation.",
+      "source": "CHG-009; src/pages/Beneficiary.tsx",
+      "replaces": [
+        "rule-beneficiary-optional-page-opt-in"
+      ]
+    },
+    {
+      "id": "beneficiary-required-beneficiary-per-applicable-product",
+      "name": "Required beneficiary per applicable product",
+      "status": "confirmed",
+      "statement": "When beneficiary questions are active, each applicable product/applicant must have at least one Primary beneficiary before continuing. Contingent beneficiaries are optional and cannot satisfy the Primary requirement. An individual or a trust can be Primary.",
+      "source": "CHG-009; src/pages/Beneficiary.tsx; User clarification November 13, 2026",
+      "replaces": [
+        "rule-beneficiary-required-beneficiary-per-applicable-product"
+      ]
+    },
+    {
+      "id": "beneficiary-add-edit-remove-modal",
+      "name": "Add/edit/remove modal",
+      "status": "confirmed",
+      "statement": "Clicking 'Add Beneficiary' on a product card opens an AppModal. The modal shows: designation tabs (Primary / Contingent) with a remaining-slot counter; beneficiary type selector (Individual or Trust); and type-specific fields. Individual fields: First Name, Last Name, Relationship, % Share with 25/50/75/100% quick-fill buttons and a live 'X% unassigned remaining' display. Trust fields: Name of Trust and Date of Trust. Clicking Edit pre-populates the modal with the existing record. The 'Add Beneficiary' button is replaced by an info alert when both designations are fully maxed.",
+      "source": "CHG-009; src/pages/Beneficiary.tsx; src/components/layout/AppModal.tsx",
+      "replaces": [
+        "rule-beneficiary-add-edit-remove-modal"
+      ]
+    },
+    {
+      "id": "beneficiary-primary-contingent-designation",
+      "name": "Primary/contingent designation",
+      "status": "confirmed",
+      "statement": "Each beneficiary is designated as Primary or Contingent, selected via tabs in the add/edit modal.",
+      "source": "CHG-009; src/pages/Beneficiary.tsx",
+      "replaces": [
+        "rule-beneficiary-primary-contingent-designation"
+      ]
+    },
+    {
+      "id": "beneficiary-individual-vs-trust",
+      "name": "Individual vs. trust",
+      "status": "confirmed",
+      "statement": "A beneficiary can be an Individual or Trust. Within the same Primary/Contingent designation, trust and individual beneficiary types cannot be mixed.",
+      "source": "CHG-009; src/pages/Beneficiary.tsx",
+      "replaces": [
+        "rule-beneficiary-individual-vs-trust"
+      ]
+    },
+    {
+      "id": "beneficiary-maximum-beneficiaries",
+      "name": "Maximum beneficiaries",
+      "status": "confirmed",
+      "statement": "Use the compiled individual/trust surface limits independently for each product/applicant and designation; reaching capacity blocks additional entries. A trust is the sole record for its designation.",
+      "source": "CHG-009; src/pages/Beneficiary.tsx",
+      "replaces": [
+        "rule-beneficiary-maximum-beneficiaries"
+      ]
+    },
+    {
+      "id": "beneficiary-individual-allocation",
+      "name": "Individual allocation",
+      "status": "confirmed",
+      "statement": "Individual beneficiary shares use canonical whole percentages greater than 0 and cannot exceed the unassigned percentage remaining for that designation. Reject fractional, scientific-notation and noncanonical saved share values; each populated individual designation must total exactly 100% on Next.",
+      "source": "CHG-009; src/pages/Beneficiary.tsx",
+      "replaces": [
+        "rule-beneficiary-individual-allocation"
+      ]
+    },
+    {
+      "id": "beneficiary-allocation-reaches-100",
+      "name": "Allocation reaches 100%",
+      "status": "confirmed",
+      "statement": "Once the assigned individual share reaches 100% for a designation, no more individual beneficiaries can be added for that designation.",
+      "source": "CHG-009; src/pages/Beneficiary.tsx",
+      "replaces": [
+        "rule-beneficiary-allocation-reaches-100"
+      ]
+    },
+    {
+      "id": "beneficiary-trust-exclusivity",
+      "name": "Trust exclusivity",
+      "status": "confirmed",
+      "statement": "Only one Trust may be added per Primary/Contingent designation; if a Trust exists, additional individuals or trusts are blocked for that designation.",
+      "source": "CHG-009; src/pages/Beneficiary.tsx",
+      "replaces": [
+        "rule-beneficiary-trust-exclusivity"
+      ]
+    },
+    {
+      "id": "beneficiary-apply-to-other-coverages",
+      "name": "Apply to other coverages",
+      "status": "confirmed",
+      "statement": "After adding a beneficiary, offer copying to other eligible member or spouse product/applicant targets when compatible targets exist. Preselect compatible targets. Copies receive independent IDs and preserve the source record. Editing does not automatically offer copying; existing records can be copied explicitly. Revalidate all targets atomically against current participation and allocation rules before writing. Do not offer the action when no eligible compatible target remains.",
+      "source": "CHG-009; src/pages/Beneficiary.tsx",
+      "replaces": [
+        "rule-beneficiary-apply-to-other-coverages"
+      ]
+    },
+    {
+      "id": "beneficiary-product-presentation",
+      "name": "Inherit shared Site product/category presentation",
+      "status": "confirmed",
+      "statement": "Use the shared effective Site category/product ordering, configured names and featured/first-category entry priorities for applicable selected products. Determine the QD indicator from the selected applicant/product underwriting outcome. Definition notes remain independent of participation and allocation validation.",
+      "source": "src/domain/coveragePresentation.ts; src/domain/coverageRuntime.ts; src/pages/Beneficiary.tsx"
+    },
+    {
+      "id": "beneficiary-complete-individual-allocation",
+      "name": "Complete each populated individual designation before continuing",
+      "status": "confirmed",
+      "statement": "On Next, individual beneficiary shares must total exactly 100% independently for each populated primary or contingent designation, per applicable product/applicant. At least one Primary beneficiary is required; Contingent beneficiaries are optional. Empty Contingent designations and trusts have no share-total input requirement. Add/edit/copy may save valid partial allocations while records are assembled; positive shares, available capacity, type exclusivity and the 100% upper bound still apply. Drafts may temporarily have only Contingent records, but Next cannot continue until a Primary is added for each applicable product/applicant.",
+      "source": "User decision November 13, 2026; src/domain/beneficiaryValidation.ts; src/pages/Beneficiary.tsx; User clarification November 13, 2026"
+    },
+    {
+      "id": "beneficiary-configuration-boundaries",
+      "name": "Validate beneficiary participation and note assignments",
+      "status": "confirmed",
+      "statement": "Resolve beneficiary participation from current product/applicant elections and the effective Association context. Intersect assigned availability with URL scope and explicit elections while retaining inactive drafts. Reject note or participation policies outside the assigned product/applicant/Association scope. Membership attestation does not identify an Association. The same assigned statement is used wherever its content key applies.",
+      "source": "User Beneficiary configuration decision November 16, 2026; shared field constraints and Beneficiary/effective-Site/flow-gate resolvers"
+    }
+  ]
+}

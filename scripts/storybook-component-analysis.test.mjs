@@ -60,3 +60,17 @@ it.each([true, false])('follows an imported fixture without counting copied fixt
  const [story] = createComponentAnalyzer(root).stories('src/components/Real.stories.tsx');
  expect(story.components.map(component => component.source)).toEqual(real ? ['src/components/Real.tsx'] : []);
 });
+
+it.each([true, false])('follows a re-exported preview harness and credits only its rendered source: real=%s', real => {
+ const root = fs.mkdtempSync(path.join(os.tmpdir(), 'storybook-reexport-audit-')); roots.push(root);
+ fs.mkdirSync(path.join(root, 'src/components'), { recursive: true });
+ fs.mkdirSync(path.join(root, 'src/dev/preview'), { recursive: true });
+ fs.mkdirSync(path.join(root, '.storybook'), { recursive: true });
+ fs.writeFileSync(path.join(root, 'src/components/Real.tsx'), 'export default function Real() { return <input />; }');
+ fs.writeFileSync(path.join(root, 'src/dev/preview/Preview.tsx'), real ? "import Real from '../../components/Real'; export default function Preview(){ return <Real />; }" : 'export default function Preview(){ return <input />; }');
+ fs.writeFileSync(path.join(root, '.storybook/Preview.tsx'), "export { default } from '../src/dev/preview/Preview';");
+ fs.writeFileSync(path.join(root, 'src/components/Real.stories.tsx'), "import Preview from '../../.storybook/Preview'; export default {title:'Forms/Real'}; export const Default={render:()=> <Preview />};");
+ const [story] = createComponentAnalyzer(root).stories('src/components/Real.stories.tsx');
+ expect(story.unresolved).toEqual([]);
+ expect(story.components.map(component => component.source)).toEqual(real ? ['src/components/Real.tsx'] : []);
+});

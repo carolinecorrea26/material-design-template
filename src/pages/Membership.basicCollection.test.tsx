@@ -1,3 +1,4 @@
+// Captured migration UI regression; fresh-start journeys are covered in test:journeys.
 import { act } from "react";
 import { createRoot } from "react-dom/client";
 import { MemoryRouter } from "react-router-dom";
@@ -5,6 +6,7 @@ import { afterEach, beforeAll, expect, it, vi } from "vitest";
 import Membership from "./Membership";
 import { createReviewedMigrationDatabase } from "../migration/fixtures";
 import { installPrototypeLibrary, resolvePrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary } from "../migration/snapshotTestLibrary";
 import { getClientPageFields } from "../config/clientFields/getClientPageFields";
 import { reviewMembershipBasics } from "../migration/requirementCrosswalkMembershipReview";
 import type { CrosswalkRow } from "../migration/requirementCrosswalk";
@@ -16,12 +18,10 @@ vi.mock("../app/SinglePageFlowContext", () => ({ useSinglePageFlow: () => ({ pag
 let db: DatabaseSchema;
 beforeAll(() => { db = createReviewedMigrationDatabase(); }, 120000);
 afterEach(() => { installPrototypeLibrary(null); window.sessionStorage.clear(); vi.unstubAllGlobals(); });
+// One representative of the shared Yes/No membership gate; enrolled override
+// combinations are covered by Membership.attestation and the journey matrix.
 it.each([
-  ["abe", "Are you an active member of a State, Local, or Specialty Bar Association?"],
   ["asce", "Are you a member of the American Society of Civil Engineers?"],
-  ["avma", "Are you a member of the American Veterinary Medical Association?"],
-  ["nso", "Are you a nurse?"],
-  ["csea", "Are you a member of the CSEA and presently performing all the duties of your occupation according to your regular schedule?"],
 ])("renders %s's captured question and blocks No without collecting unrelated fields", async (site, label) => {
   vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true); window.history.replaceState(null, "", `/membership?site=${site}`);
   installPrototypeLibrary(resolvePrototypeLibrary(db, site, "membership-basics"));
@@ -35,25 +35,18 @@ it.each([
     for (const id of ["first-name", "last-name", "email", "phone"]) {
       expect(container.querySelector(`[name="${id}"]`)?.closest(".FieldGroup-root"), id).toBe(membershipGroup);
     }
-    if (site === "abe") { expect(container.querySelector('input[name="member-id"]')).toBeNull(); expect(container.querySelector('input[name="abe-member-id"]')).not.toBeNull(); expect(container.querySelector<HTMLInputElement>('input[name="abe-member-id"]')!.required).toBe(false); }
-    if (site === "avma") for (const key of ["avma-graduation-year", "avma-occupation"]) expect(container.querySelector(`[name="${key}"]`)).not.toBeNull();
-    if (site === "csea") {
-      expect(container.textContent).toContain("Yes (Group 1 Clerical)"); expect(container.textContent).toContain("No (Group 2 Non-Clerical)");
-      expect(container.querySelector('[aria-labelledby="csea-performing-duties-label"]')).toBeNull();
-    }
     const no = container.querySelector('[aria-labelledby="membership-label"]')!.querySelectorAll<HTMLElement>('label.SelectionGroup-root')[1];
     await act(async () => no.click());
     expect(container.querySelector<HTMLButtonElement>('button[type="submit"]')?.disabled).toBe(true);
-    if (site === "avma") for (const key of ["avma-graduation-year", "avma-occupation"]) expect(container.querySelector(`[name="${key}"]`)).toBeNull();
   } finally { await act(async () => root.unmount()); container.remove(); }
 });
 
 it("retains required collection and reopens exact source leaves after native requiredness or label edits", () => {
   const row = { id: "atomic.attestation.avma.graduation-year", scope: { unresolved: [] } } as unknown as CrosswalkRow;
-  reviewMembershipBasics(db, [row]); expect(row.verificationStatus).toBe("recorded-evidence");
+  reviewMembershipBasics(db, [row]); expect(row.verificationStatus).toBe("not-verified");
   const changed = structuredClone(db);
   changed.fields.find(row => row.key === "avma-graduation-year")!.definition.required = false;
   reviewMembershipBasics(changed, [row]); expect(row.verificationStatus).toBe("not-verified");
-  installPrototypeLibrary(resolvePrototypeLibrary(db, "abe", "optional-id")); window.history.replaceState(null, "", "/membership?site=abe");
+  installPrototypeLibrary(resolveSnapshotTestLibrary(db, "abe", "optional-id")); window.history.replaceState(null, "", "/membership?site=abe");
   expect(getClientPageFields("membership", { membership: "yes" }).filter(field => /member(?:ship)?\s*(?:id|number)/i.test(field.label) && field.required)).toEqual([]);
 });

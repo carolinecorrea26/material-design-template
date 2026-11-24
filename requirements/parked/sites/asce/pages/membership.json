@@ -1,6 +1,12 @@
 {
   "page": "membership",
-  "include": ["member-id"],
-  "hide": ["title"],
-  "note": "membership.note.member-profession"
+  "include": [
+    "member-id"
+  ],
+  "hide": [
+    "title"
+  ],
+  "content": {
+    "membership.page-note": "Throughout this site you will be referred to as a Member of the Civil Engineering profession."
+  }
 }

@@ -15,7 +15,7 @@
     {
       "id": "quote-entry-open-calculator",
       "name": "Validate quote entry before opening the calculator",
-      "status": "draft",
+      "status": "confirmed",
       "fields": [
         "zip-postal-code",
         "state-province",
@@ -27,8 +27,8 @@
     {
       "id": "quote-apply-carry-forward",
       "name": "Carry quote choices into the application",
-      "status": "draft",
-      "statement": "Apply validates applicable answers and selections, starts a fresh application session, carries the current quote data including tobacco answers and selected riders into the application, closes the calculator and navigates to Membership. Prior application answers and an expired session deadline are not reused.",
+      "status": "confirmed",
+      "statement": "Apply validates only the presented quote answers and selected product/amount/rider choices, starts a fresh application session, carries the current quote data including tobacco answers and selected riders into the application, closes the calculator and navigates to Membership. Do not run application eligibility checks or require uncollected application facts in the quote. Prior application answers and an expired session deadline are not reused.",
       "source": "src/config/applicationTransitions/applicationTransitions.ts; src/config/applicationTransitions/executeApplicationTransition.ts; src/app/workflows/QuoteCalculator.tsx; docs/requirements-spec/page-review.md; src/app/useStartApplication.ts; src/components/coverage/QuoteCalculator.prefill.test.tsx"
     }
   ]

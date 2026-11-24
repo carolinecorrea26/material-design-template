@@ -1,0 +1,8 @@
+{
+  "page": "membership",
+  "include": [
+    "avma-vet-college",
+    "avma-graduation-year",
+    "avma-occupation"
+  ]
+}

@@ -1,124 +1,106 @@
-import { useMemo } from "react";
-import { ReactFlow, Background, MarkerType, BaseEdge, EdgeLabelRenderer, Controls, type Edge, type EdgeProps } from "@xyflow/react";
-import "@xyflow/react/dist/style.css";
-import { Box, Typography } from "@mui/material";
-import type { FlowDefinition } from "../../../content/docs/flows/types";
-import { computeFlowLayout, FLOW_NODE_WIDTH } from "./layout";
-import { flowNodeTypes } from "./nodes";
-import type { FlowRFNode } from "./nodes/types";
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { ReactFlow, Background, MarkerType, BaseEdge, EdgeLabelRenderer, Controls, type Edge, type EdgeProps, type ReactFlowInstance } from '@xyflow/react';
+import '@xyflow/react/dist/style.css';
+import { Box, Button, Stack, Typography, useTheme } from '@mui/material';
+import type { FlowDefinition, FlowNodeDef } from '../../../content/docs/flows/types';
+import { computeFlowLayout, FLOW_NODE_WIDTH, type FlowMeasurements, type Size } from './layout';
+import { flowNodeTypes } from './nodes';
+import type { FlowRFNode } from './nodes/types';
+import type { Rect, Point } from './routing';
+import { useFlowMeasurement } from './measure';
 
-/** Use the obstacle-aware path computed alongside the node positions. */
 function RoutedFlowEdge({ data, label, markerEnd, style }: EdgeProps) {
-  const points = data?.points as { x: number; y: number }[] | undefined;
+  const ref = useRef<HTMLDivElement>(null);
+  useFlowMeasurement(ref, data?.onMeasure as ((size: Size) => void) | undefined);
+  const points = data?.points as Point[] | undefined, bounds = data?.labelBounds as Rect | undefined;
   if (!points?.length) return null;
-  const path = points.map((point, index) => `${index === 0 ? "M" : "L"} ${point.x},${point.y}`).join(" ");
-  const midpoint = points[Math.floor(points.length / 2)];
+  const path = points.map((point, index) => `${index ? 'L' : 'M'} ${point.x},${point.y}`).join(' ');
   return <>
     <BaseEdge path={path} markerEnd={markerEnd} style={style} />
-    {label && <EdgeLabelRenderer><div style={{ position: "absolute", transform: `translate(-50%, -50%) translate(${midpoint.x}px,${midpoint.y}px)`, fontSize: 11, fontWeight: 600, padding: "2px 4px", background: "white", borderRadius: 3 }}>{label}</div></EdgeLabelRenderer>}
+    {label && bounds && <EdgeLabelRenderer><Box ref={ref} className="nodrag nopan" data-flow-label="true" sx={{ position: 'absolute', transform: `translate(${bounds.x}px,${bounds.y}px)`, width: bounds.width, boxSizing: 'border-box', typography: 'caption', lineHeight: 1.4, fontWeight: 600, p: 0.5, border: '1px solid', borderColor: 'divider', bgcolor: 'background.paper', color: 'text.primary', borderRadius: 1, overflowWrap: 'anywhere', whiteSpace: 'normal', pointerEvents: 'all' }}>{label}</Box></EdgeLabelRenderer>}
   </>;
 }
 const edgeTypes = { routed: RoutedFlowEdge };
 
-const MIN_DIAGRAM_HEIGHT = 340;
-const MAX_DIAGRAM_HEIGHT = 900;
-
-export default function FlowDiagram({ definition }: { definition: FlowDefinition }) {
-  const { nodes, edges, edgeRoutes } = useMemo(() => computeFlowLayout(definition), [definition]);
-
-  // Size the box to the graph instead of a fixed height: a fixed height
-  // forces very tall, mostly-linear flows (e.g. advisor's 18 nodes) down to
-  // an unreadably tiny fitView zoom. Clamped so short flows stay compact and
-  // very tall ones still get a scroll/zoom-friendly box rather than growing
-  // without bound.
-  const diagramHeight = useMemo(() => {
-    if (nodes.length === 0) return MIN_DIAGRAM_HEIGHT;
-    const minY = Math.min(...nodes.map((n) => n.position.y));
-    const maxY = Math.max(...nodes.map((n) => n.position.y + n.layoutHeight));
-    return Math.min(MAX_DIAGRAM_HEIGHT, Math.max(MIN_DIAGRAM_HEIGHT, maxY - minY + 120));
-  }, [nodes]);
-
-  const rfNodes: FlowRFNode[] = useMemo(
-    () =>
-      nodes.map((node) => ({
-        id: node.id,
-        type: node.kind,
-        position: node.position,
-        data: node,
-        draggable: false,
-        // `measured` (not the top-level width/height) is what React Flow's
-        // fitView and useNodesInitialized actually read to decide a node is
-        // ready. Declaring it upfront — matching what FlowNodeShell actually
-        // renders at and what layout.ts told dagre — lets fitView compute
-        // correct bounds on first render instead of waiting on (and in a
-        // static, never-re-set nodes array, never getting) a ResizeObserver
-        // pass that updates individual nodes without ever flipping the
-        // store's aggregate "initialized" flag.
-        width: FLOW_NODE_WIDTH,
-        height: node.layoutHeight,
-        measured: { width: FLOW_NODE_WIDTH, height: node.layoutHeight },
-      })),
-    [nodes],
-  );
-
-  const rfEdges: Edge[] = useMemo(
-    () =>
-      edges.map((edge) => ({
-        id: edge.id,
-        source: edge.source,
-        target: edge.target,
-        label: edge.condition,
-        type: "routed",
-        data: { points: edgeRoutes[edge.id] },
-        animated: edge.styleHint === "loop-back",
-        style: edge.styleHint === "loop-back" ? { strokeDasharray: "4 4" } : undefined,
-        markerEnd: { type: MarkerType.ArrowClosed },
-        labelBgPadding: [4, 2] as [number, number],
-        labelStyle: { fontSize: 11, fontWeight: 600 },
-      })),
-    [edges, edgeRoutes],
-  );
-
-  return (
-    <Box>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-        {definition.intro}
-      </Typography>
-      <Box
-        sx={{
-          height: diagramHeight,
-          width: "100%",
-          border: "1px solid",
-          borderColor: "divider",
-          borderRadius: 2,
-        }}
-      >
-        <ReactFlow
-          key={definition.id}
-          nodes={rfNodes}
-          edges={rfEdges}
-          nodeTypes={flowNodeTypes}
-          edgeTypes={edgeTypes}
-          fitView
-          fitViewOptions={{ padding: 0.15 }}
-          // React Flow's default minZoom (0.5) floors how far fitView can
-          // zoom out — too shallow for a 480px box holding a tall, mostly
-          // linear flow (e.g. advisor's 18 nodes), which silently clips the
-          // top of the graph instead of shrinking it to fit.
-          minZoom={0.05}
-          nodesDraggable={false}
-          nodesConnectable={false}
-          edgesReconnectable={false}
-          elementsSelectable={false}
-          panOnDrag
-          panOnScroll={false}
-          zoomOnScroll={false}
-          zoomOnPinch
-        >
-          <Background />
-          <Controls showInteractive={false} />
-        </ReactFlow>
-      </Box>
+/** Read-only graph of the canonical JSON. Geometry is a measured projection;
+ * selecting a step exposes its full record instead of expanding a canvas box. */
+export default function FlowDiagram({ definition, onSelectNode, initialView = 'start', compact = false }: { definition: FlowDefinition; onSelectNode?: (node: FlowNodeDef) => void; initialView?: 'start' | 'fit'; compact?: boolean }) {
+  const theme = useTheme();
+  const [measurements, setMeasurements] = useState<FlowMeasurements>({});
+  const [selected, setSelected] = useState<string>();
+  const [instance, setInstance] = useState<ReactFlowInstance<FlowRFNode>>();
+  const container = useRef<HTMLDivElement>(null), canvas = useRef<HTMLDivElement>(null);
+  const [canvasWidth, setCanvasWidth] = useState(0);
+  const measureCanvas = useCallback((size: Size) => setCanvasWidth(size.width), []);
+  useFlowMeasurement(canvas, measureCanvas);
+  const [fullscreen, setFullscreen] = useState(false);
+  const userMoved = useRef(false);
+  const layout = useMemo(() => computeFlowLayout(definition, measurements), [definition, measurements]);
+  // Stage diagrams use normal page scrolling for height. A long vertical path
+  // must not shrink all its text just to fit a fixed-height canvas.
+  const compactHeight = Math.max(280, layout.bounds.height * Math.min(1, Math.max(1, canvasWidth - 40) / layout.bounds.width) + 44);
+  const report = useCallback((kind: 'nodes' | 'labels', id: string, size: Size) => {
+    setMeasurements(previous => {
+      const before = previous[kind]?.[id];
+      return before && Math.abs(before.width - size.width) < 1 && Math.abs(before.height - size.height) < 1 ? previous : { ...previous, [kind]: { ...previous[kind], [id]: size } };
+    });
+  }, []);
+  const callbacks = useMemo(() => ({
+    nodes: Object.fromEntries(definition.nodes.map(node => [node.id, (size: Size) => report('nodes', node.id, size)])),
+    labels: Object.fromEntries(definition.edges.map(edge => [edge.id, (size: Size) => report('labels', edge.id, size)])),
+  }), [definition, report]);
+  const focusStart = useCallback(() => {
+    const first = layout.nodes[0], width = canvas.current?.clientWidth;
+    if (!instance || !first || !width) return;
+    const zoom = Math.min(1, (width - 32) / FLOW_NODE_WIDTH);
+    void instance.setViewport({ x: width / 2 - (first.position.x + FLOW_NODE_WIDTH / 2) * zoom, y: 32 - first.position.y * zoom, zoom });
+  }, [instance, layout.nodes]);
+  const fit = useCallback(() => {
+    if (!instance || !canvas.current) return;
+    const { clientWidth: w, clientHeight: h } = canvas.current, b = layout.bounds;
+    const zoom = Math.min(1, (w - 40) / b.width, (h - 40) / b.height);
+    void instance.setViewport({ x: (w - b.width * zoom) / 2 - b.x * zoom, y: (h - b.height * zoom) / 2 - b.y * zoom, zoom });
+  }, [instance, layout.bounds]);
+  const focusRef = useRef(focusStart); focusRef.current = initialView === 'fit' ? fit : focusStart;
+  useEffect(() => {
+    // One initial readable entry view, after the first measurement pass.
+    // Later measurements preserve the user's pan/zoom.
+    if (userMoved.current) return;
+    const timer = window.setTimeout(() => focusRef.current(), 150);
+    return () => window.clearTimeout(timer);
+  }, [instance, definition.id, measurements, canvasWidth]);
+  useEffect(() => {
+    const changed = () => setFullscreen(document.fullscreenElement === container.current);
+    document.addEventListener('fullscreenchange', changed);
+    return () => document.removeEventListener('fullscreenchange', changed);
+  }, []);
+  const nodes: FlowRFNode[] = useMemo(() => layout.nodes.map(node => ({
+    id: node.id, type: node.kind, position: node.position, width: FLOW_NODE_WIDTH, height: node.layoutHeight,
+    measured: { width: FLOW_NODE_WIDTH, height: node.layoutHeight }, draggable: false,
+    data: { ...node, active: node.id === selected, onMeasure: callbacks.nodes[node.id], onInspect: () => { setSelected(node.id); onSelectNode?.(definition.nodes.find(record => record.id === node.id)!); } },
+  })), [layout.nodes, selected, callbacks, onSelectNode, definition.nodes]);
+  const edges: Edge[] = useMemo(() => layout.edges.map(edge => ({
+    ...edge, type: 'routed', label: edge.condition,
+    data: { points: layout.edgeRoutes[edge.id], labelBounds: layout.edgeLabels[edge.id], onMeasure: callbacks.labels[edge.id] },
+    style: { stroke: selected && edge.source !== selected && edge.target !== selected ? theme.palette.divider : theme.palette.text.secondary, strokeWidth: 1.5, ...(edge.styleHint === 'loop-back' ? { strokeDasharray: '5 4' } : {}) },
+    markerEnd: { type: MarkerType.ArrowClosed, color: theme.palette.text.secondary },
+  })), [layout, selected, theme, callbacks]);
+  const current = definition.nodes.find(node => node.id === selected);
+  return <Box ref={container} sx={{ bgcolor: 'background.paper', p: fullscreen ? 2 : 0 }}>
+    <Stack direction="row" gap={1} alignItems="center" flexWrap="wrap" sx={{ mb: 1 }}>
+      <Button size="small" onClick={focusStart}>Start of flow</Button>
+      <Button size="small" onClick={fit}>Fit overview</Button>
+      {typeof document !== 'undefined' && document.fullscreenEnabled && <Button size="small" onClick={() => { if (fullscreen) void document.exitFullscreen(); else void container.current?.requestFullscreen(); }}>{fullscreen ? 'Exit fullscreen' : 'Fullscreen'}</Button>}
+      <Typography variant="caption" color="text.secondary">Drag to pan. Use +/− to zoom. Select a step for details.</Typography>
+    </Stack>
+    <Box ref={canvas} aria-label={`${definition.title} flowchart`} sx={{ height: fullscreen ? 'calc(100vh - 80px)' : compact ? compactHeight : { xs: '65vh', md: 680 }, minHeight: compact ? 280 : 420, width: '100%', border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
+      <ReactFlow key={definition.id} nodes={nodes} edges={edges} nodeTypes={flowNodeTypes} edgeTypes={edgeTypes} onInit={setInstance}
+        minZoom={0.05} maxZoom={2} nodesDraggable={false} nodesConnectable={false} edgesReconnectable={false} elementsSelectable={false}
+        onMoveStart={event => { if (event) userMoved.current = true; }}
+        panOnDrag panOnScroll={false} zoomOnScroll={false} zoomOnDoubleClick={false} zoomOnPinch>
+        <Background /><Controls showInteractive={false} showFitView={false} />
+      </ReactFlow>
     </Box>
-  );
+    {!onSelectNode && current && <Box sx={{ mt: 2 }}><Typography variant="subtitle1">{current.label}</Typography><Typography variant="body2">{current.description}</Typography></Box>}
+  </Box>;
 }

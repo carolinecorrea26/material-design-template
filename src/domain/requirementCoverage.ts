@@ -43,7 +43,7 @@ export function requirementCoverageRows(data: Pick<DatabaseSchema, "semanticRequ
       return owner.reviewedValue === undefined || canonical(current) !== canonical(owner.reviewedValue);
     })) {
       result.status = "review-pending";
-      result.finding = `Owning data changed or is unavailable since verification. Recheck this requirement. Previous finding: ${result.finding}`;
+      result.finding = "Owning data changed or is unavailable since verification. Recheck this requirement against its current definition.";
     }
     return result;
   }).filter(row => siteKey === "all" || row.siteKey === siteKey).sort((a, b) => a.area.localeCompare(b.area) || a.siteKey.localeCompare(b.siteKey) || a.id.localeCompare(b.id));

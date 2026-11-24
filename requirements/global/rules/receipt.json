@@ -1,0 +1,76 @@
+{
+  "rules": [
+    {
+      "id": "receipt-source-composition",
+      "name": "Render the terminal Receipt from the shared source",
+      "status": "confirmed",
+      "statement": "Receipt is a read-only terminal page with two source-ordered sections: confirmation/information/downloads, then product/applicant decisions with shared support. PageShell, FormShell, InformationAlert, ProductCard, applicant headings, EstimatedRate, AppSnackbar and SiteSupport retain shared ownership. There is no separate application summary, portal form entry, Back or Next action. Current selected offered products use the shared effective category/product/featured order; applicants retain member, spouse, child order. Removed products and deselected people do not create decisions. Attached rider benefits remain with their owner\u2019s decision and use applicant-scoped wording. Shared estimate presentation and rate states apply without page-level typography overrides.",
+      "uses": [
+        "effective-site-configuration-resolution",
+        "category-product-presentation-order",
+        "applicant-active-participation",
+        "coverage-rider-applicant-wording"
+      ],
+      "source": "requirements/parked/receipt.json; requirements/mappings/page-sections/receipt.json; src/pages/Receipt.tsx; src/utils/coverageDecisions.ts"
+    },
+    {
+      "id": "receipt-confirmation-reference",
+      "name": "Use one reference for the submitted application",
+      "status": "confirmed",
+      "statement": "Receipt uses the reference returned for the successfully submitted application after required signing. One reference covers its products and applicants. Opening, refreshing or revisiting a page is not a new submission and must not create a new reference. Starting a different application must not reuse the previous application\u2019s reference.",
+      "uses": [
+        "docusign-completion-submits",
+        "signing-evidence-integrity"
+      ],
+      "source": "src/domain/receiptConfirmation.ts; src/app/ApplicationFormContext.tsx; user DocuSign completion decision November 14, 2026"
+    },
+    {
+      "id": "receipt-confirmation-email",
+      "name": "Confirm submission with the applicant\u2019s product decisions",
+      "status": "confirmed",
+      "statement": "Successful submission triggers the applicant confirmation email once for that submission. Receipt rendering, refresh and revisiting do not trigger another message. Begin with the shared Dear applicant salutation, thank the applicant for trusting the association and New York Life Insurance Company, introduce the request summary, list current selected products/applicants with their explicit decisions using ReceiptCoverageDecision, then show Thank you and the effective TPA acronym Group Sponsored Insurance Program, Insurance Administrator signature. Render the same configured decision descriptions as Receipt literally, without amount or product-name substitution. Email summaries contain product headings and their decision labels/descriptions, without requested amounts, premium estimates or payment details. Never invent a missing QD result. Retain available confirmation-reference context in administrator support. Omit unrelated form answers, bank details and application/payment documents. Documents remain downloads in the application flow. This replaces the earlier confirmation-only email restriction.",
+      "uses": [
+        "docusign-completion-submits",
+        "shared-site-support"
+      ],
+      "source": "User email-copy and shared decision-component instruction November 18, 2026; requirements/global/content/receipt.json; src/utils/mockEmail.ts"
+    },
+    {
+      "id": "receipt-document-boundary",
+      "name": "Provide submitted application and applicable payment documents",
+      "status": "confirmed",
+      "statement": "After successful submission, Receipt provides the applicable completed application and payment documents through download actions. Documents are not emailed. An unsigned Review preview is not a signed application. Use shared active-payment applicability and inactive-answer filtering for document content. Offer Payment PDF only when at least one currently selected product/applicant has an allowed payment method and frequency, including Bill me. Omit it when collection is disabled, optional payment is declined or only stale, incomplete or invalid choices remain.",
+      "uses": [
+        "payment-active-storage",
+        "docusign-shared-document-content"
+      ],
+      "source": "MCR v78 New UX Multi-page Requirements!AU21; src/components/receipt/ReceiptConfirmation.tsx; src/pages/Receipt.tsx; existing Receipt placeholder contract"
+    },
+    {
+      "id": "receipt-result-integrity",
+      "name": "Keep four explicit QD outcomes and use shared technical-error handling for missing results",
+      "status": "confirmed",
+      "statement": "QD results are explicit per product/applicant: conditionally-approved, referred, soft-declined or database-unavailable. Never derive outcomes from card order, a missing value or an unrecognized value. Database unavailable is only the explicit database-failure outcome. Missing/unrecognized QD results and unresolved underwriting data use the existing general technical-error presentation, not a fifth underwriting decision or an invented referral. Non-QD products ignore retained QD results. Reuse the existing technical-error component without adding a new error page, service or automatic redirect wiring. Completing the resolved Health page for a prototype QD election explicitly records the global fictional default result for each active selected QD product/applicant without an existing result. The default is conditionally-approved; explicit internal scenario outcomes are preserved. This is a prototype simulation, not a real assessment or a Receipt fallback.",
+      "source": "User decision November 14, 2026; MCR v78 Standard Decision Wording!B2:B5; src/domain/receiptPresentation.ts; src/pages/Receipt.tsx; user decision November 23, 2026: conditionally approved by default, preserving explicit Dev Tools outcomes"
+    },
+    {
+      "id": "receipt-underwriting-next-steps",
+      "name": "Show configured medical-review guidance only for applicable coverage sent for review",
+      "status": "confirmed",
+      "statement": "Global Receipt owns the standard ExamOne underwriting-review note and its wording defaults. Effective Sites inherit this content; an override is appropriate only for a genuine provider or wording difference. Display a nonempty note only if a selected adult coverage meets the shared product-based underwriting applicability flag and is sent for review: FUW/SI/TELE standard review or an explicit QD referred/database-unavailable outcome. Omit it when all outcomes are conditionally approved or declined, for AD&D or child-only coverage without adult medical-review applicability, or for absent/unrecognized results. The shared wording retains may contact rather than promising an exam.",
+      "source": "User decision November 14, 2026; MCR v78 New UX Multi-page Requirements!AU21; requirements/global/content/receipt.json; src/domain/receiptPresentation.ts; user global ownership correction November 14, 2026"
+    },
+    {
+      "id": "receipt-payment-notice-applicability",
+      "name": "Show payment guidance only for active payment information",
+      "status": "confirmed",
+      "statement": "Display the configured nonempty Receipt payment notice only when the shared active-payment projection contains an allowed payment method and frequency for at least one currently selected product/applicant, including Bill me. This uses the same active-payment fact as Payment PDF availability. Omit the notice when collection is disabled, optional payment is declined or unanswered, or only removed, stale, incomplete or disallowed choices remain. Effective Sites may override or omit its approved wording slot, but cannot override this global display rule. Other next-step, underwriting, document/security and support content retain their own applicability and are not hidden by the absence of payment information. This is informational wording, not proof that payment was processed.",
+      "uses": [
+        "payment-active-storage",
+        "effective-site-configuration-resolution",
+        "receipt-document-boundary"
+      ],
+      "source": "User Receipt payment-notice decision November 17, 2026; src/domain/paymentAnswers.ts; src/pages/Receipt.tsx; src/components/receipt/ReceiptConfirmation.tsx"
+    }
+  ]
+}

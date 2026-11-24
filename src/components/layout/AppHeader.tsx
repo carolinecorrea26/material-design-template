@@ -4,14 +4,8 @@ import {
   AppBar,
   Badge,
   Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   IconButton,
   LinearProgress,
-  Link,
   Slide,
   Stack,
   Toolbar,
@@ -23,7 +17,6 @@ import ShoppingCartRoundedIcon from "@mui/icons-material/ShoppingCartRounded";
 import AppMenu from "./AppMenu";
 import AppDrawer from "../layout/AppDrawer";
 import { getConfiguredPages, getPagePath } from "../../config/pages";
-import type { CoverageDefinition } from "../../config/coverages/types";
 import { getFormProgressPercent, isFormPage } from "../../config/formFlow";
 import type { ClientConfig } from "../../config/clients/types";
 import type { PageId } from "../../types";
@@ -33,46 +26,14 @@ import { router } from "../../app/router";
 import CoverageCart, { useCoverageCartBadge } from "../../app/sections/ConfiguredCoverageCart";
 import type { AppShellVariant } from "./AppShell";
 import ClientHelpBanner from "./ClientHelpBanner";
-import { getContent } from "../../content";
-import { getCoverageAmountRange } from "../../utils/coverageAmounts";
 import { getActiveSite, resolveEffectiveBranding } from "../../data";
 
-const coverageDetailsContent = getContent().dialogs.coverageDetails;
 
 type AppHeaderProps = {
   client: ClientConfig;
   /** Controls which header actions are shown. Defaults to "applicationForm". */
   variant?: AppShellVariant;
 };
-
-const currencyFormatter = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-  maximumFractionDigits: 0,
-});
-
-function formatCoverageRange(coverage: CoverageDefinition) {
-  const { minAmount, maxAmount } = getCoverageAmountRange(coverage);
-  if (minAmount == null && maxAmount == null) {
-    return "Amount varies by selection.";
-  }
-  if (minAmount != null && maxAmount != null) {
-    return `${currencyFormatter.format(minAmount)} - ${currencyFormatter.format(maxAmount)}`;
-  }
-  if (minAmount != null) {
-    return `Starting at ${currencyFormatter.format(minAmount)}`;
-  }
-  return `Up to ${currencyFormatter.format(maxAmount ?? 0)}`;
-}
-
-function formatApplicants(applicants: CoverageDefinition["applicants"]) {
-  const labels: Record<CoverageDefinition["applicants"][number], string> = {
-    member: "Member",
-    spouse: "Spouse",
-    child: "Child",
-  };
-  return applicants.map((applicant) => labels[applicant]).join(", ");
-}
 
 function patchHistoryForLocationChangeEvents() {
   if (typeof window === "undefined") return;
@@ -131,8 +92,6 @@ export default function AppHeader({
   const [summarySource, setSummarySource] = useState<
     "cart-icon" | "coverage-page"
   >("cart-icon");
-  const [activeCoverage, setActiveCoverage] =
-    useState<CoverageDefinition | null>(null);
   const { values, activeAssociationId } = useApplicationForm();
   const { reviewSubmitted } = useApplicationSession();
   const effectiveBranding = resolveEffectiveBranding({
@@ -316,118 +275,6 @@ export default function AppHeader({
           client={client}
         />
       )}
-
-      {/* Coverage details dialog (triggered from CoverageCart or ProductCatalog) */}
-      <Dialog
-        open={Boolean(activeCoverage)}
-        onClose={() => setActiveCoverage(null)}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle>
-          {activeCoverage?.name ?? coverageDetailsContent.fallbackTitle}
-        </DialogTitle>
-        <DialogContent dividers>
-          <Stack spacing={1.5}>
-            <Typography variant="body2" color="text.secondary">
-              {activeCoverage?.description ?? activeCoverage?.definition}
-            </Typography>
-            <Typography variant="body2">
-              <Box component="span" sx={{ fontWeight: 700 }}>
-                {coverageDetailsContent.benefitAmountLabel}
-              </Box>{" "}
-              {activeCoverage ? formatCoverageRange(activeCoverage) : "-"}
-            </Typography>
-            {activeCoverage?.coverageNote ? (
-              <Typography variant="body2">
-                <Box component="span" sx={{ fontWeight: 700 }}>
-                  {coverageDetailsContent.coverageNoteLabel}
-                </Box>{" "}
-                {activeCoverage.coverageNote}
-              </Typography>
-            ) : null}
-            {activeCoverage ? (
-              <Typography variant="body2">
-                <Box component="span" sx={{ fontWeight: 700 }}>
-                  {coverageDetailsContent.eligibleApplicantsLabel}
-                </Box>{" "}
-                {formatApplicants(activeCoverage.applicants)}
-              </Typography>
-            ) : null}
-            {activeCoverage?.waitingPeriodOptions?.length ? (
-              <Typography variant="body2">
-                <Box component="span" sx={{ fontWeight: 700 }}>
-                  {coverageDetailsContent.waitingPeriodsLabel}
-                </Box>{" "}
-                {activeCoverage.waitingPeriodOptions
-                  .map((option) => option.label)
-                  .join(", ")}
-              </Typography>
-            ) : null}
-            {activeCoverage?.waitingPeriodOptionsByApplicant
-              ? Object.entries(
-                  activeCoverage.waitingPeriodOptionsByApplicant,
-                ).map(([applicant, options]) => (
-                  <Typography key={applicant} variant="body2">
-                    <Box component="span" sx={{ fontWeight: 700 }}>
-                      {applicant} waiting periods:
-                    </Box>{" "}
-                    {options.map((option) => option.label).join(", ")}
-                  </Typography>
-                ))
-              : null}
-            {activeCoverage?.maxBenefitPeriodOptions?.length ? (
-              <Typography variant="body2">
-                <Box component="span" sx={{ fontWeight: 700 }}>
-                  {coverageDetailsContent.maxBenefitPeriodsLabel}
-                </Box>{" "}
-                {activeCoverage.maxBenefitPeriodOptions
-                  .map((option) => option.label)
-                  .join(", ")}
-              </Typography>
-            ) : null}
-            {activeCoverage?.maxBenefitPeriodOptionsByApplicant
-              ? Object.entries(
-                  activeCoverage.maxBenefitPeriodOptionsByApplicant,
-                ).map(([applicant, options]) => (
-                  <Typography key={applicant} variant="body2">
-                    <Box component="span" sx={{ fontWeight: 700 }}>
-                      {applicant} benefit options:
-                    </Box>{" "}
-                    {options.map((option) => option.label).join(", ")}
-                  </Typography>
-                ))
-              : null}
-            {activeCoverage?.riders?.length ? (
-              <Stack spacing={0.75}>
-                <Typography variant="body2" sx={{ fontWeight: 700 }}>
-                  {coverageDetailsContent.availableRidersLabel}
-                </Typography>
-                {activeCoverage.riders.map((rider) => (
-                  <Typography
-                    key={rider.id}
-                    variant="body2"
-                    color="text.secondary"
-                  >
-                    {rider.name}: {rider.description}
-                  </Typography>
-                ))}
-              </Stack>
-            ) : null}
-            <Link
-              component="button"
-              type="button"
-              color="primary"
-              sx={{ alignSelf: "flex-start", fontWeight: 700 }}
-            >
-              {coverageDetailsContent.viewFullDetailsLinkLabel}
-            </Link>
-          </Stack>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setActiveCoverage(null)}>Close</Button>
-        </DialogActions>
-      </Dialog>
 
       <AppDrawer
         open={isSummaryOpen}

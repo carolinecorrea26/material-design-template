@@ -1,3 +1,4 @@
+import { getPrototypeLibrary } from "../domain/prototypeLibrary";
 import optionLists from "../../requirements/global/option-lists.json";
 import { requirementText } from "../domain/requirementContent";
 import { clientCategoryIcon } from "../components/content/ClientCategoryIcon";
@@ -24,6 +25,13 @@ export const coverageCategories = [
 
 export type CoverageCategory = (typeof coverageCategories)[number];
 export type CoverageCategoryId = CoverageCategory["id"];
+
+/** Resolve at consumption time so effective-Site names never leak into global defaults. */
+export function getCoverageCategories(names = getPrototypeLibrary()?.client.coverages.categoryNames): CoverageCategory[] {
+  return coverageCategories.map(category => names?.[category.id]
+    ? { ...category, label: names[category.id]!, shortLabel: names[category.id]! }
+    : category);
+}
 
 export const defaultCategorySectionLabels: Record<CoverageCategoryId, string> =
   Object.fromEntries(coverageCategories.map((c) => [c.id, c.label])) as Record<

@@ -20,7 +20,7 @@ import {
   Typography,
 } from "@mui/material";
 import { formFlow } from "../../config/formFlow";
-import { coverageUnlocksPage } from "../../config/flowGates";
+import { coverageUnlocksPage, siteFlowContext } from "../../config/flowGates";
 import { HEALTH_PAGE_IDS } from "../../config/progressSteps";
 import type { PageId } from "../../types";
 import { themeColorLabels } from "../../config/clients/types";
@@ -186,7 +186,7 @@ function formatCoverageRow(
   };
 }
 
-const resolvedCoverage = resolveClientCoverage(activeClient);
+const resolvedCoverage = resolveClientCoverage(activeClient, siteFlowContext(getSiteIdForClientAlias(activeClient.id)));
 const enabledCoverage = resolvedCoverage.filter((c) => c.status !== "disabled");
 const clientCoverageRows: ClientCoverageRow[] = enabledCoverage.map((c) =>
   formatCoverageRow(c, beneficiaryRequiredLabel),
@@ -393,7 +393,7 @@ export default function ClientSiteDetailsPanel({
       // so getActiveClient()-derived config picks it up everywhere.
       if (HEALTH_PAGE_IDS.includes(pageId)) {
         const activeClientUnlocksPage = getActiveClientCoverages().some(
-          (coverage) => coverageUnlocksPage(pageId, coverage),
+          (coverage) => coverageUnlocksPage(pageId, coverage, siteFlowContext(getSiteIdForClientAlias(activeClient.id))),
         );
 
         if (!activeClientUnlocksPage) {
@@ -1024,7 +1024,7 @@ export default function ClientSiteDetailsPanel({
                                 sx={{
                                   verticalAlign: "top",
                                   fontWeight: 600,
-                                  fontSize: "0.8125rem",
+                                  fontSize: "caption.fontSize",
                                   color: showCategory
                                     ? "text.primary"
                                     : "transparent",
@@ -1057,7 +1057,7 @@ export default function ClientSiteDetailsPanel({
                               >
                                 <Link
                                   href={page.path}
-                                  sx={{ fontWeight: 700 }}
+                                  sx={{ }}
                                   onClick={(event) =>
                                     handlePageLinkClick(
                                       event,
@@ -1337,10 +1337,6 @@ export default function ClientSiteDetailsPanel({
                           .map(([id, label]) => `${id} → "${label}"`)
                           .join(", ")}`,
                       );
-                    if (cc.allCategoriesExpanded)
-                      displaySettings.push(
-                        "All category accordions expanded by default",
-                      );
                     if (cc.additionalCoverageWarning)
                       displaySettings.push(
                         `Additional coverage warning: ${cc.additionalCoverageWarning}`,
@@ -1508,16 +1504,16 @@ export default function ClientSiteDetailsPanel({
                               <TableBody>
                                 {rows.map((row) => (
                                   <TableRow key={row.siteCoverageId}>
-                                    <TableCell sx={{ fontFamily: "monospace", fontSize: "0.75rem", whiteSpace: "normal !important" }}>
+                                    <TableCell sx={{ fontFamily: "monospace", fontSize: "caption.fontSize", whiteSpace: "normal !important" }}>
                                       {row.siteCoverageId}
                                     </TableCell>
-                                    <TableCell sx={{ fontFamily: "monospace", fontSize: "0.75rem", whiteSpace: "normal !important" }}>
+                                    <TableCell sx={{ fontFamily: "monospace", fontSize: "caption.fontSize", whiteSpace: "normal !important" }}>
                                       {row.siteId}
                                     </TableCell>
                                     <TableCell
                                       sx={{
                                         fontFamily: "monospace",
-                                        fontSize: "0.75rem",
+                                        fontSize: "caption.fontSize",
                                         whiteSpace: "normal !important",
                                       }}
                                     >
@@ -1526,7 +1522,7 @@ export default function ClientSiteDetailsPanel({
                                     <TableCell
                                       sx={{
                                         fontFamily: "monospace",
-                                        fontSize: "0.75rem",
+                                        fontSize: "caption.fontSize",
                                         whiteSpace: "normal !important",
                                       }}
                                     >
@@ -1688,7 +1684,7 @@ export default function ClientSiteDetailsPanel({
                                       verticalAlign: "top",
                                       fontFamily: "monospace",
                                       fontWeight: 700,
-                                      fontSize: "0.8125rem",
+                                      fontSize: "caption.fontSize",
                                       whiteSpace: "normal !important",
                                     }}
                                   >

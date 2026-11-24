@@ -5,6 +5,8 @@ import { MemoryRouter } from 'react-router-dom';
 import { afterAll, afterEach, expect, it, vi } from 'vitest';
 import { getPrototypeLibrary } from '../../domain/prototypeLibrary';
 import * as stories from '../../components/layout/AdvisorPages.stories';
+import * as dialogs from '../../components/layout/SendApplicationDialog.stories';
+import { requirementText } from '../../domain/requirementContent';
 
 const catalog = JSON.parse(readFileSync('public/catalog/portal.json', 'utf8'));
 const originalScroll = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'scrollIntoView');
@@ -14,6 +16,19 @@ afterAll(() => {
   else Reflect.deleteProperty(HTMLElement.prototype, 'scrollIntoView');
 });
 afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); vi.unstubAllEnvs(); });
+it.each(Object.entries(dialogs).filter(([key]) => key !== 'default'))('renders shared handoff dialog %s from global content without an active Site', async (name, story) => {
+  vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
+  const host = document.createElement('div'), root = createRoot(host); document.body.append(host);
+  const render = (story as typeof dialogs.Default).render as unknown as () => ReactNode;
+  try {
+    await act(async () => root.render(<MemoryRouter>{render()}</MemoryRouter>));
+    const dialog = document.querySelector('[role="alertdialog"]')!;
+    expect(dialog.textContent).toContain(requirementText('dialogs.send-application.email'));
+    for (const action of ['send', 'cancel']) expect([...dialog.querySelectorAll('button')].some(button => button.textContent === requirementText(`dialogs.send-application.${action}`))).toBe(true);
+    if (name === 'ToAdvisor') expect(dialog.textContent).not.toContain(requirementText('dialogs.send-application.name'));
+    if (name === 'MissingRecipientData') expect(dialog.textContent).toContain(requirementText('dialogs.send-application.default-title', { recipient: 'applicant' }));
+  } finally { await act(async () => root.unmount()); host.remove(); }
+});
 it.each(Object.entries(stories).filter(([key]) => key !== 'default'))('renders Advisor %s with actual fields and navigation', async (name, story) => {
   vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
   vi.stubEnv('VITE_MOCK_PLATFORM_ENABLED', '');

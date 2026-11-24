@@ -12,7 +12,8 @@
         "title": "recovery.404.title",
         "message": "recovery.404.message",
         "guidance": "recovery.404.guidance"
-      }
+      },
+      "family": "error"
     },
     "500": {
       "actions": [
@@ -26,7 +27,8 @@
         "title": "recovery.500.title",
         "message": "recovery.500.message",
         "guidance": "recovery.500.guidance"
-      }
+      },
+      "family": "error"
     },
     "session-expired": {
       "actions": [
@@ -40,7 +42,8 @@
         "title": "recovery.session-expired.title",
         "message": "recovery.session-expired.message",
         "guidance": "recovery.session-expired.guidance"
-      }
+      },
+      "family": "expired"
     },
     "technical-error": {
       "actions": [
@@ -54,7 +57,8 @@
         "title": "recovery.technical-error.title",
         "message": "recovery.technical-error.message",
         "guidance": "recovery.technical-error.guidance"
-      }
+      },
+      "family": "error"
     },
     "maintenance": {
       "actions": [],
@@ -65,32 +69,8 @@
         "title": "recovery.maintenance.title",
         "message": "recovery.maintenance.message",
         "guidance": "recovery.maintenance.guidance"
-      }
-    },
-    "application-unavailable": {
-      "actions": [
-        "resume",
-        "start-new"
-      ],
-      "placement": "page",
-      "severity": "error",
-      "icon": "unavailable",
-      "content": {
-        "title": "recovery.application-unavailable.title",
-        "message": "recovery.application-unavailable.message",
-        "guidance": "recovery.application-unavailable.guidance"
-      }
-    },
-    "outcome-unknown": {
-      "actions": [],
-      "placement": "page",
-      "severity": "warning",
-      "icon": "error",
-      "content": {
-        "title": "recovery.outcome-unknown.title",
-        "message": "recovery.outcome-unknown.message",
-        "guidance": "recovery.outcome-unknown.guidance"
-      }
+      },
+      "family": "maintenance"
     },
     "validation": {
       "actions": [],
@@ -114,30 +94,6 @@
         "guidance": "recovery.offline.guidance"
       }
     },
-    "save-failed": {
-      "actions": [
-        "retry"
-      ],
-      "placement": "alert",
-      "severity": "error",
-      "icon": "error",
-      "content": {
-        "title": "recovery.save-failed.title",
-        "message": "recovery.save-failed.message",
-        "guidance": "recovery.save-failed.guidance"
-      }
-    },
-    "save-conflict": {
-      "actions": [],
-      "placement": "alert",
-      "severity": "warning",
-      "icon": "error",
-      "content": {
-        "title": "recovery.save-conflict.title",
-        "message": "recovery.save-conflict.message",
-        "guidance": "recovery.save-conflict.guidance"
-      }
-    },
     "processing-pending": {
       "actions": [],
       "placement": "status",
@@ -147,19 +103,6 @@
         "title": "recovery.processing-pending.title",
         "message": "recovery.processing-pending.message",
         "guidance": "recovery.processing-pending.guidance"
-      }
-    },
-    "processing-timeout": {
-      "actions": [
-        "resume"
-      ],
-      "placement": "alert",
-      "severity": "warning",
-      "icon": "pending",
-      "content": {
-        "title": "recovery.processing-timeout.title",
-        "message": "recovery.processing-timeout.message",
-        "guidance": "recovery.processing-timeout.guidance"
       }
     },
     "processing-complete": {
@@ -172,6 +115,33 @@
         "message": "recovery.processing-complete.message",
         "guidance": "recovery.processing-complete.guidance"
       }
+    },
+    "400": {
+      "actions": [
+        "home",
+        "resume"
+      ],
+      "placement": "page",
+      "severity": "error",
+      "icon": "error",
+      "content": {
+        "title": "recovery.400.title",
+        "message": "recovery.400.message",
+        "guidance": "recovery.400.guidance"
+      },
+      "family": "error"
+    },
+    "link-expired": {
+      "actions": [],
+      "placement": "alert",
+      "severity": "error",
+      "icon": "error",
+      "content": {
+        "title": "recovery.link-expired.title",
+        "message": "recovery.link-expired.message",
+        "guidance": "recovery.link-expired.guidance"
+      },
+      "hostPage": "resume"
     }
   },
   "codeStates": {
@@ -182,12 +152,9 @@
     "MAINTENANCE": "maintenance",
     "VALIDATION_FAILED": "validation",
     "OFFLINE": "offline",
-    "SAVE_FAILED": "save-failed",
-    "SAVE_CONFLICT": "save-conflict",
-    "APPLICATION_UNAVAILABLE": "application-unavailable",
     "OPERATION_PENDING": "processing-pending",
-    "OPERATION_TIMED_OUT": "processing-timeout",
-    "OUTCOME_UNKNOWN": "outcome-unknown",
+    "OPERATION_TIMED_OUT": "technical-error",
+    "OUTCOME_UNKNOWN": "technical-error",
     "OPERATION_COMPLETE": "processing-complete"
   },
   "actions": {
@@ -202,13 +169,67 @@
     "start-new": {
       "label": "recovery.action.start-new",
       "page": "home"
-    },
-    "retry": {
-      "label": "recovery.action.retry"
-    },
-    "payment": {
-      "label": "recovery.action.payment",
-      "page": "payment"
     }
-  }
+  },
+  "template": {
+    "id": "recovery",
+    "component": "ApplicationErrorState",
+    "header": "recovery",
+    "footer": "shared",
+    "maxWidth": 720,
+    "messageMaxWidth": 560,
+    "sections": [
+      "indicator",
+      "title",
+      "message",
+      "guidance",
+      "actions",
+      "support"
+    ],
+    "indicatorSize": 48
+  },
+  "families": {
+    "error": {
+      "name": "Error",
+      "description": "Content group for specific HTTP errors and the generic technical error used only when no specific error-code mapping applies. All use the one shared redirect-page component."
+    },
+    "maintenance": {
+      "name": "Maintenance",
+      "description": "Temporary Site unavailability with support and no navigation into the unavailable flow."
+    },
+    "expired": {
+      "name": "Session expired",
+      "description": "The shared expiration page for application inactivity and Resume MFA session expiry. Magic-link and phone-code expiry remain inline on their respective pages."
+    }
+  },
+  "retiredPageKeys": [
+    "application-unavailable",
+    "outcome-unknown",
+    "link-expired"
+  ],
+  "retiredContentRoots": [
+    "pages.application-unavailable",
+    "pages.outcome-unknown",
+    "recovery.application-unavailable",
+    "recovery.save-failed",
+    "recovery.save-conflict",
+    "recovery.action.retry",
+    "recovery.processing-timeout",
+    "recovery.outcome-unknown",
+    "recovery.payment",
+    "recovery.submission",
+    "recovery.operation",
+    "recovery.link",
+    "recovery.code",
+    "recovery.resume.failed",
+    "recovery.resume.guidance",
+    "recovery.action.payment",
+    "support.application-title",
+    "shared.support.applicationTitle",
+    "pages.link-expired",
+    "recovery.action.request-link"
+  ],
+  "retiredComponentKeys": [
+    "component-recovery-alert"
+  ]
 }

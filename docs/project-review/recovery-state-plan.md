@@ -1,57 +1,116 @@
-# Consistent application recovery and support
+# Shared redirect-page component — prototype and Library review
 
-Status: component review only. Local typed incidents and visual scenarios now demonstrate field, alert, full-page and bounded status presentations. No new API callouts or service adapters are implemented. Service-code mapping, authoritative outcomes, retries and policy activation remain for the later rules review. Review the product/service decisions below before activating the proposed states. The applicant session timeout remains provisional at 45 minutes of inactivity and a two-minute warning.
+Current checkpoint: November 13, 2026 (CHG-057). This supersedes the earlier
+magic-link redirect-page proposal. This review
+covers prototype presentation and Library/Storybook documentation. It adds no
+service integration, magic-link validation or automatic failure routing.
 
-## Shared contract
+## One component, source-defined content cases
 
-Use one state identity and approved message for each cause, independent of where it appears. `src/content/applicationRecovery.ts` now owns the implemented page titles, messages, recovery guidance and allowed actions. `RecoveryAlert` reads the same approved recovery copy as the full page. Its local contract records cause code, operation, outcome and an optional opaque support reference. The full page no longer repeats the same technical failure in a nested alert.
+`ApplicationErrorState` is the one global redirect-page component. Error,
+Maintenance and Expired access are content groups, not different components.
 
-Every maintenance/error page uses `SiteSupport`. Receipts use the same site component; email HTML uses the same contact resolver and labels. Resolve the current Site's administrator and configured phone/email/website, including existing contact overrides; do not substitute an Association name, sales number, or help-ribbon number. Email-only contact-box hiding remains email-only. Hide absent channels instead of rendering empty links. Do not invent contact data or return-to-service estimates.
+| Case | Content and selection rule |
+|---|---|
+| HTTP 400/404/500 | Use a specific mapped error code when available. Show the document icon beside the code; no X overlay. |
+| Generic technical error | An error occurred but no specific error-code mapping applies. Show the document icon without a code. |
+| Maintenance | Temporary Site unavailability, with support and no navigation into the unavailable flow. |
+| Session expired | Application inactivity or Resume MFA countdown reaches zero and opens this shared content. Use the clock icon and secure resume/start-new actions; link/code expiry stays inline. |
+| Phone code expired (inline on code entry) | Show the expiry error on the verification-code page, disable verification and retain the resend action. Do not redirect to Session expired or another expiry page. |
+| Magic link expired (inline on Resume) | An expired or invalid secure link lands directly on Resume with a page error above the email request field. The user requests another link through the existing form. There is no standalone expiry page or automatic link request. |
 
-The next implementation should translate stable service error codes into approved recovery states at the service boundary. Do not classify by matching free-form exception text, or show raw service errors to applicants. A response should identify the cause, operation and whether an outcome is known; attach an opaque support/request reference when the service supplies one. That reference should appear in the alert and full page for the same incident and be offered in contact context. Do not include application answers, tokens, payment details or medical data in support links or diagnostics.
+There are no payment, submission, saved-application-unavailable or outcome-specific
+page components. Correctable field and business issues use ordinary current-page
+feedback. A link request never indicates whether a saved application exists;
+public confirmation remains uniform until successful resume verification.
 
-Choose presentation by what is blocked:
+## Fresh-start ownership and consumers
 
-- Field error: the applicant can correct a particular answer. Place feedback on the field; use one page summary on Next. Keep specific eligibility/validation feedback.
-- Page alert: the current form remains usable and progress can be retained, including offline/save failure or retryable dependency errors. Preserve values and focus. Link or scroll to recovery/support; do not silently clear the form.
-- Full page: the entire route/session is unavailable, the application cannot be recovered, or the application service must establish a pending operation's result. Use the shared page shell, approved actions and support card.
-- Status: a request is in progress. Announce politely. A spinner or skeleton must lead to a result, timeout or recoverable failure; do not leave the applicant waiting indefinitely.
+`requirements/global/recovery.json` owns the component contract, content-case
+references, icons, action definitions and content groups. The ordered slots are
+indicator, title, message, optional guidance, actions and shared Site support.
+All redirect-page indicators use the shared 48px size. The minimal recovery header and shared
+footer surround one centered card; empty optional slots leave no blank rows.
 
-## State and action matrix
+`requirements/global/content/recovery.json` owns the wording.
+`requirements/parked/<page>.json` owns each global page declaration and content
+placement. `resume.json` owns the inline magic-link error placement;
+the superseded standalone `link-expired` page is retired. These global parked records are
+fresh-start authoring sources, not legacy fallbacks. Compiled output is generated.
+Library, prototype and Storybook use the same projection. ASCE inherits the global
+structure and supplies its effective branding and contacts. No separate ASCE
+implementation or other real-Site rollout is introduced.
 
-| State | Trigger and presentation | Proposed message / guidance | Allowed actions and progress handling | Delivery status |
-| --- | --- | --- | --- | --- |
-| Validation / eligibility | Specific field or coverage rule; field feedback and one page summary | Explain the particular answer or eligibility restriction and how to correct it where possible | Correct answers; keep all unrelated values. No generic 500 or automatic new application | Existing behavior; standardize service-code mapping |
-| Session warning | Before authoritative expiry; warning alert with countdown | Session is about to expire; continue using the form to keep it active | Extend only while the session is valid. Preserve confirmed saved progress; no unsaved-data guarantee | Implemented with provisional timing |
-| Session expired | Inactivity deadline or explicit session-expired service code; full page after reload | Session expired; resume from last saved progress; recent unsaved changes may be unavailable | Secure resume or explicitly start anew. Activity cannot revive the expired session | Implemented in prototype; authoritative enforcement/expiry duration still requires service confirmation |
-| Technical error | Unexpected recoverable save/rating/submission service failure; page alert; full page if route cannot render | Same approved technical-error message and resume guidance in either placement | Resume; keep current values until leaving. A payment/submission whose outcome is unknown uses the pending state below | Shared copy implemented; replace coarse HTTP classification with operation-aware service codes next |
-| Maintenance | Authoritative host/site availability signal; full page | Site temporarily unavailable for maintenance; try again later; resume when available | No navigation actions or header options; contact support through the shared card. No Start new while unavailable and no speculative completion time | Generic /maintenance component and icons implemented; automatic activation is deferred to rules |
-| Offline / save pending | Offline: application-wide bar above the client help banner/header. Save pending remains a distinct persistence state | You’re offline. Any changes you make may not be saved. Check your internet connection. | Keep entered values; hide the bar on reconnect. No support reference or navigation actions. Reconnection alone does not establish successful saving | Offline bar implemented; pending-save/retry rules remain separate |
-| Save failure | Definitive non-payment persistence failure; page alert | We couldn’t save your latest changes. Try saving again before continuing | Retry save; retain values; optional secure resume from the last confirmed save with a clear warning that unsaved changes may be lost | Proposed with offline/save pending |
-| Newer saved version / conflict | Explicit application revision conflict; page alert, then controlled reconciliation | A newer version of this application is available. Review it before continuing | Do not overwrite the newer version. Preserve a local snapshot until comparison/recovery is complete. Offer review/reload only with clear consequences | Proposed; needs revision comparison/merge contract |
-| Saved application unavailable | Service confirms missing, removed, completed or retention-expired record; full page | We can’t resume this application. Contact the administrator for help or start a new application when appropriate | Start new or support; avoid a Resume link that loops to the same unavailable record. Show a more specific reason only when authorized by the service | Proposed; distinguish unavailable from temporary lookup failure |
-| Expired/used resume link or code | Recovery token invalid, consumed, expired or attempts exhausted; alert on the recovery screen | Explain whether to request a new secure link/code or wait before retrying | Request new link/code, respect resend/attempt limits and preserve email input. Never expose whether an unrelated person has an application | Existing expiry/resend feedback; unify invalid/used/rate-limited cases next |
-| E-sign cancelled / timed out | Verified provider return status or expired signing transaction; page alert on the signing step | Your signature was not completed. Continue signing when you’re ready | Ask the service whether the document was already signed before reopening. Retain completed application/payment steps; no fresh submission | Proposed; requires provider return/status contract |
-| Payment declined | Processor confirms a declined attempt; error on Payment | Payment could not be authorized. Review your payment details or choose another available method | Correct payment details and create a controlled new attempt. Keep application values; use existing idempotency keys for transport retries of the same attempt | Existing feedback; standardize confirmed outcome codes |
-| Payment/submission outcome unknown | Network interruption or timeout after dispatch; persistent pending status/full page | We’re checking whether your payment/application completed. Please don’t submit it again | Query authoritative status using the original operation/idempotency reference. Disable repeat payment/submission and Start new until reconciled. Offer support if unresolved; no automatic charging retry | Proposed: reconcile before broadening retry UX |
-| 404 / 500 | Unknown route / unhandled page failure; full page | Approved not-found or load-failure copy | Shared recovery actions and current Site support. Do not clear local application state merely by showing the page | Implemented |
+Shared Questions support is a standard MUI info Alert with AlertTitle and no
+leading alert icon. Contact-channel icons and accessible channel names remain.
+There is no Application or product support heading. The confirmed technical
+sentence below the divider contains the Send an email link. Page links use the
+configured MUI Link; email-compatible HTML follows the same content and styling.
 
-## Implementation order
+Superseded unavailable/outcome pages, specialized content and the old recovery
+alert cannot reappear from saved catalogs. Direct prototype routes document the
+content cases; adding a preview route does not establish service interception.
 
-1. Build the operation-aware recovery contract and save-status state machine: saving, saved, offline, failed and revision conflict. Bind pending status to actual save acknowledgement, and expose the shared support card through one recovery panel on repeated errors.
-2. Complete resume unavailable/expired/used/rate-limit states using secure recovery outcomes. Add the shared unavailable page and remove looping resume actions for definitive unavailable records.
-3. Integrate maintenance activation at the host/application boundary. A host/CDN fallback must work even when the catalog/bootstrap API is down; the React route alone cannot guarantee outage coverage. Honor a server-provided retry time only when present.
-4. Implement payment/submission reconciliation before offering any transport retry after an unknown outcome. Then add e-sign cancellation/timeout return handling using the same contract.
-5. Exercise the complete matrix across multi-page/single-page templates, stored Site contacts and responsive layouts, including real expiry/backgrounding, reconnect, revision conflict, stale/used links, signing returns and interrupted payment/submission.
+## Production rules and implementation status
 
-Acceptance criteria: one incident yields one principal message; alert/page wording and actions agree; current Site support is available; Back, refresh and retries preserve the correct progress; only explicit Start new resets data; completed or unknown payment/submission outcomes cannot be repeated accidentally; countdowns/status announcements do not spam assistive technology; no raw service diagnostics or unsupported save promises appear in applicant copy.
+- Specific error-code mappings take priority; generic technical content is the
+  fallback only when an error has no specific mapping.
+- The existing session timer and redirect are retained. Countdown verification
+  checks that expiry fires at zero, once; ordinary activity cannot renew an open
+  warning without its explicit action.
+- Magic-link expiry uses the global `link-expired` alert definition with Resume
+  as its host page. Its title/message remain shared fresh-start content. Production
+  invalid/expired-link landing on Resume is documented; this pass previews the
+  inline state without adding token validation or new service routing.
+- Resume never discloses saved-application existence before successful verification.
+- Only explicit Start new resets application values. Safe support references may
+  be displayed; private diagnostics and tokens may not.
+
+## Verification
+
+Focused checks cover session countdown expiry, specific-code/generic presentation,
+inline magic-link feedback and re-requesting, shared support and identifier privacy. Fresh-start
+checks reconstruct every reviewed case without superseded authored records and
+compare Library, prototype and Storybook projections. Production and Storybook
+builds verify the generated previews.
 
 
-## Component decisions completed in this review
+## Client configuration and copy review (CHG-085)
 
-- Removed LoadingOverlay and its stories/catalog record because it had no production usage. Catalog generation now rejects any component with no production placement. Existing navigation skeletons and processing status remain the active loading components.
-- Recovery pages have state-specific icons and a logo-only header without help-ribbon/menu/cart/logo navigation. Maintenance has no Return to home or other navigation button.
-- RecoveryAlert replaces the technical-error-only alert. Local stable-code scenarios demonstrate offline/save/conflict feedback and carry one safe reference into the full recovery page and SiteSupport contact drawer. New alerts retain form values and focus. Field incidents remain with FieldRenderer; Next owns one page summary.
-- ProcessingStatusPage demonstrates pending, complete and timeout locally, with a bounded 15-second default pending view. Unconfirmed financial outcome examples lead to a static support/recovery page without a repeat action or an endless spinner. This timer is a prototype presentation choice, not a service timeout rule.
-- The example reference format is REQ/REF/SUP plus 8–32 hexadecimal characters. Unrecognized/free-form references are omitted, references are never invented, and no diagnostic text or sensitive payload fields enter the presentation context or support URL. The eventual accepted service reference format belongs in the rules/service contract.
-- November 2 adopted consolidation: technical navigation, payment and submission failures share the “We ran into an issue” page. Mock transport now carries the operation and treats payment/submission network and server errors as unconfirmed, routing to the same page with support and no repeat action. Explicitly confirmed unsuccessful operations may return to Payment. Authoritative outcome reconciliation, server-side operation enforcement and broader service mapping remain follow-up work. A prototype scenario is not evidence of completed service integration.
+User variant-by-variant decisions November 15, 2026. The one shared ApplicationErrorState remains the renderer for all six redirect cases.
+
+| Variant | Client copy |
+| --- | --- |
+| HTTP 400 | Global title, explanation and guidance |
+| HTTP 500 | Global title, explanation and guidance |
+| Generic unmapped technical issue | Global title, explanation and guidance; remains the fallback only without a specific mapping |
+| HTTP 404 | Global title, explanation and guidance |
+| Maintenance | Three Site slots: `recovery.maintenance.title`, `.message`, `.guidance`; global defaults, optional guidance |
+| Session expired | Global title, explanation and guidance; existing countdown redirect unchanged |
+
+Maintenance values belong in `parked/sites/<site>/pages/maintenance.json` → `content`; ASCE inherits all three global defaults. Existing bindings project them into `pages.maintenance.title`, `.subhead` and `.recoveryGuidance`. The default adapter imports global content; ApplicationErrorState reads the same effective ComponentContentContext for direct status and incident-based presentation. Empty guidance renders no extra text row. The static recovery definitions continue to own global selection, severity, icons, actions and layout.
+
+Action labels and behavior remain global for every variant; Maintenance still has no application-navigation actions. Site identity/branding and support contacts retain their independent effective configuration. No custom return time, save guarantee, additional error component, service interception or automatic failure routing is introduced. Link/code expiry stays inline on the reviewed Resume screens; the later CHG-087 session destination applies to MFA sessions. This completes redirect copy classification; unsupported variant/action overrides are rejected.
+
+
+CHG-087 supersedes the earlier inline-MFA landing: the existing shared expiration page covers application inactivity and Resume MFA session expiry. Link and phone-code expiry remain inline. Global Session expired wording now says “Your session has expired.” without restricting the cause to application inactivity. Its copy remains global by the confirmed variant review; no additional MFA page/content type is created. The prototype's existing MFA expiry handling now selects this shared page; no technical-error service interception is introduced.
+
+
+CHG-086–088 final verification: **78 Fresh-start checks and 97 focused checks passed**. TypeScript, focused ESLint, requirements mapping and component/Storybook/icon/handoff checks pass. Prototype and Storybook production bundles build successfully; public, prototype and Storybook catalogs have identical SHA-256 `51ff0996bcb99a2ac4cef20e3583c03e99e35df05cf0ac81323b0b527c7a7e57`. All 110 canonical component owners remain covered. HomeHero and QuickDecisionExplainer explicitly declare their existing shared MUI Link dependency in the global component inventory.
+
+Browser verification confirmed global Home wording with synthetic effective branding, the primary action/continuation link, no blank helpers, 16px ZIP/state/DOB gaps at desktop and 390px width, no mobile horizontal overflow, a 1s QD reveal transform and weight-600/no-underline controls, including shared recovery/support/footer links. The shared expiration page uses the generic session wording. Timer, late-response and inline link/code expiry behavior is covered by focused integration tests. ASCE has no new Site-owned copy or configuration assignment.
+
+
+## Non-copy configuration review (CHG-111)
+
+November 17, 2026: all six redirect cases remain one global ApplicationErrorState composition. The global template owns route/page participation/order, minimal header/shared footer, widths, ordered slots, indicator size/icons, error-code mapping, permitted actions and their destinations, reset behavior, support-reference privacy, and session/link/code selection rules. These are not ordinary Site settings. There are no form fields, operation-specific page types, payment/resume-specific recovery controls, configurable retry/return times or Site maintenance-activation switch. Maintenance activation remains a production host/availability responsibility, not a newly implemented service.
+
+Only Maintenance title, explanation and optional guidance accept the three already approved Site copy overrides. HTTP 400/404/500, unmapped technical-error and Session expired copy/actions remain global. Effective Site identity and support contacts continue through their shared configuration. ASCE inherits defaults. Library definitions stay global; effective page/content projections carry permitted overrides. Existing ApplicationErrorState, ApplicationRecoveryActions, PageShell/FormShell and SiteSupport remain the shared owners. No wrapper or additional story variation is needed.
+
+The audit found application inactivity still marked provisional. The user confirmed **45 minutes of inactivity with a two-minute warning**, fixed globally, separately from the confirmed **30-minute Resume MFA session with a two-minute warning**. `global/configurations/application-session.json` now owns the two numeric defaults; shared validation requires positive whole minutes and warning lead time shorter than inactivity. Bindings project them into `applicationSessionPolicy` for the Library/prototype/Storybook. The existing timer reads the same global source, with no Site overrides or changed duration. The provisional hardcoded policy and duplicated legacy rule descriptions are replaced with confirmed shared recovery rules.
+
+Before its warning opens, form activity may renew the application inactivity deadline. Once open, only the explicit Keep session active action can renew an unexpired session; activity/reload/navigation cannot extend it. Absolute deadlines survive routes/reloads/background pauses. Expiry opens the shared Session expired page once; utility pages remain usable. Resume MFA remains fixed and cannot be extended. Expired/invalid links stay on Resume, and expired phone codes stay on code entry while MFA remains active. Public recovery never reveals saved-application existence.
+
+Production rules are normative requirements; existing local timer and recovery simulation remain their prototype representation. No live availability/session/authentication/delivery integration or new technical-error interception is added. No policy decision remains open for these templates.
+
+CHG-111 verification: **92 Fresh-start checks and 57 focused checks passed**. Checks cover global timing values/override rejection and validation, retirement of provisional rules, reconstruction and Library/prototype/Storybook agreement, effective Maintenance copy, session/MFA countdowns, inline link expiry, permitted actions/resets, support and identifier privacy. TypeScript, focused ESLint, requirements mapping, component-reuse and catalog/Storybook/icon/handoff gates pass. Prototype and Storybook builds pass. Public, prototype and Storybook catalogs share SHA-256 `f2e5d06a33339326fdf1eb97d01c11b50ea43de8b7e8ac36e6defde2aeb5f8c0`. This template configuration review is complete with no open decisions.

@@ -4,9 +4,9 @@ import { resolveMappedFields, siteUsesRequirementFields } from "../../../domain/
 import type { LibraryCatalog } from "../../../services/libraryCatalogService";
 import type { FieldDefinition } from "../../../domain/fields";
 import { getSiteFieldInventory } from "../../../config/fields/inspectionInventory";
-import { resolvePrototypeLibrary } from "../../../domain/prototypeLibrary";
+import { resolveCompiledPrototypeLibrary } from "../../../domain/prototypeLibrary";
 import { resolveRatePresentation } from "../../../domain/ratePresentation";
-import { storedFieldRows, childCollection } from "./storedLibraryModel";
+import { compiledStoredFieldRows, compiledChildCollection } from "./storedLibraryModel";
 import { fieldSurfaceLabel } from "./fieldSurfaceLabel";
 import { libraryApplicantText } from "./libraryApplicants";
 import { resolvePageCatalog } from "../../../domain/pageCatalog";
@@ -16,8 +16,10 @@ export type FieldSurfaceRow = { position?: number; key: string; field: FieldDefi
 
 /** Saved page definitions remain authoritative; inspection metadata identifies shared tool surfaces. */
 export function fieldSurfaceRows(catalog: LibraryCatalog, siteKey: string): FieldSurfaceRow[] {
-  catalog = { ...catalog, data: withFreshStartCatalog(catalog.data, siteKey === "all" ? undefined : siteKey) };
-  const fields = storedFieldRows(catalog, siteKey);
+  return compiledFieldSurfaceRows({ ...catalog, data: withFreshStartCatalog(catalog.data, siteKey === "all" ? undefined : siteKey, catalog.siteScope) }, siteKey);
+}
+export function compiledFieldSurfaceRows(catalog: LibraryCatalog, siteKey: string): FieldSurfaceRow[] {
+  const fields = compiledStoredFieldRows(catalog, siteKey);
   const inlineKeys = (page: string) => catalog.data.pages.find(row => row.key === page)?.definition.inlineFieldKeys;
   const pageName = (page: string) => catalog.data.pages.find(row => row.key === page)?.definition.displayName ?? page;
   const quoteOrder = new Map<string, number>();
@@ -29,7 +31,7 @@ export function fieldSurfaceRows(catalog: LibraryCatalog, siteKey: string): Fiel
   const excludedFields = new Set<string>();
   const collectionFieldIds = new Set<string>();
   const toolRows = sites.flatMap(site => {
-    const library = resolvePrototypeLibrary(catalog.data, site, catalog.revision);
+    const library = resolveCompiledPrototypeLibrary(catalog.data, site, catalog.revision);
     for (const collection of Object.values(library.fieldCollections)) for (const field of collection.mapping.fields) collectionFieldIds.add(field.id);
     const effective = library.site;
     for (const [id, rank] of Object.entries(library.fieldSurfaces.quoteInputs.inspectionOrder ?? {})) quoteOrder.set(id, rank);
@@ -56,7 +58,7 @@ export function fieldSurfaceRows(catalog: LibraryCatalog, siteKey: string): Fiel
     }
     for (const surface of Object.values(library.fieldSurfaces)) for (const field of surface.mapping.fields) effectiveFields.set(`${surface.pageKey}:${field.id}`, field);
     const inventory = getSiteFieldInventory(site, library);
-    const collection = childCollection(catalog, site);
+    const collection = compiledChildCollection(catalog, site);
     supplementalRows.push(...inventory.filter(row => row.pageId && pageKeys.has(row.pageId) && (row.area !== "childSection" || collection.collects && collection.fields.some(field => field.key === row.field.id)) && !excludedFields.has(`${row.pageId}:${row.field.id}`)));
     const quoteEnabled = effective.products.some(product => resolveRatePresentation(effective, product.productKey).quoteToolEnabled);
     return inventory.filter(row => row.group && (!row.field.id.startsWith("quote-selection:") && !row.field.id.startsWith("quote-amount:") || productKeys.has(row.field.id.split(":")[1])) && (row.group.id !== "quote-calculator" || quoteEnabled)).flatMap(row => {
@@ -71,7 +73,7 @@ export function fieldSurfaceRows(catalog: LibraryCatalog, siteKey: string): Fiel
     const placement = row.placements[0];
     // Home's first three inputs belong to its eligibility card. Remaining inputs
     // are owned by the quote tool, rather than an inline Home form.
-    if (placement?.page === "home" && toolRows.some(tool => tool.field.id === row.key && tool.group?.id === "quote-calculator") && inlineKeys(placement.page) && !inlineKeys(placement.page)!.includes(row.key)) continue;
+    if (placement?.page === "home" && inlineKeys(placement.page) && !inlineKeys(placement.page)!.includes(row.key)) continue;
     if (siteKey !== "all" && placement?.page === "home" && toolRows.some(tool => tool.field.id === row.key && tool.placements.some(placement => placement.pageId === "home" && placement.presentation === "inline"))) continue;
     const surface = !placement ? "Unassigned" : placement.page === "home" ? "Home eligibility card" : fieldSurfaceLabel(catalog, placement.page, placement.section, row.key);
     const section = catalog.data.pageSections.find(section => section.pageKey === placement?.page && section.definition.id === placement?.section);

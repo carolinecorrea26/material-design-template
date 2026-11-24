@@ -7,6 +7,7 @@ import { demoClient } from "../../config/clients/demo";
 import { themeColorLabels, type HomePageVariant, type ClientThemeConfig, type ThemeColorId, type ClientConfig } from "../../config/clients/types";
 import { ClientIconContext } from "../content/ClientIconContext";
 import Home from "../../pages/Home";
+import { getApplyingWorksPresentation } from '../../config/homepagePresentation';
 
 const PRESET_IDS: ThemeColorId[] = ["default", "teal", "purple", "dark-blue"];
 const HEX_COLOR_PATTERN = /^#[\da-f]{3}([\da-f]{3})?$/i;
@@ -22,7 +23,7 @@ export default function ThemeConfigurationPreview({ client = demoClient }: { cli
   const [overrideButtons, setOverrideButtons] = useState(Boolean(client.theme?.primaryAction));
   const [primaryAction, setPrimaryAction] = useState<NonNullable<ClientThemeConfig["primaryAction"]>>(client.theme?.primaryAction ?? { main: customColor as `#${string}`, tone: "dark" });
   const [buttonShape, setButtonShape] = useState<NonNullable<ClientThemeConfig["buttonShape"]>>(client.theme?.buttonShape ?? "pill");
-  const [applyingStepsPresentation, setApplyingStepsPresentation] = useState<"image" | "animated">(client.features?.applyingStepsPresentation ?? "image");
+  const [applyingStepsPresentation, setApplyingStepsPresentation] = useState<'static' | 'animated'>(getApplyingWorksPresentation(client.features));
   const customColorIsValid = HEX_COLOR_PATTERN.test(customColor);
   const previewTheme = useMemo(() => {
     const config: ClientThemeConfig = themeSelection === "custom" && customColorIsValid
@@ -88,7 +89,7 @@ export default function ThemeConfigurationPreview({ client = demoClient }: { cli
             <FormControlLabel value="welcome-back" control={<Radio />} label="Welcome back" />
           </RadioGroup>
           <Typography variant="subtitle2" sx={{mt:2}}>Applying steps</Typography>
-          <RadioGroup value={applyingStepsPresentation} onChange={event => setApplyingStepsPresentation(event.target.value as "image" | "animated")} aria-label="Applying steps presentation"><FormControlLabel value="image" control={<Radio />} label="Images (default)"/><FormControlLabel value="animated" control={<Radio />} label="Animated preview"/></RadioGroup>
+          <RadioGroup value={applyingStepsPresentation} onChange={event => setApplyingStepsPresentation(event.target.value as 'static' | 'animated')} aria-label="Applying steps presentation"><FormControlLabel value="static" control={<Radio />} label="Images (default)"/><FormControlLabel value="animated" control={<Radio />} label="Animated preview"/></RadioGroup>
         </CardContent>
       </Card>
     </Box>

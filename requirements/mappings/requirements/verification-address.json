@@ -1,0 +1,10 @@
+{
+  "component": "verification-address",
+  "validations": [
+    {
+      "validation": "field-definition-checks",
+      "trigger": "continue-address",
+      "scope": "registered-fields"
+    }
+  ]
+}

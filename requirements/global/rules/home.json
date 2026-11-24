@@ -1,0 +1,11 @@
+{
+  "rules": [
+    {
+      "id": "home-entry-presentation",
+      "name": "Present shared Home entry actions",
+      "status": "confirmed",
+      "statement": "Use one primary Home action and a paragraph containing the secondary route link. Resolve Site names through shared name/acronym substitutions. Preserve new-application reset and optional entry-notice gating. The shared QuickDecision notice reveals its icon once when at least half the notice enters view; honor reduced motion and product-driven applicability.",
+      "source": "User Home mockup and global-default clarification November 15, 2026; requirements/global/content/home.json; requirements/global/presentation-tokens.json; src/components/home/HomeHero.tsx; src/components/content/QuickDecisionInfoBox.tsx"
+    }
+  ]
+}

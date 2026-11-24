@@ -1,3 +1,4 @@
+import { billedRateBreakdown, type QuotePriceComponent } from './rateBreakdown';
 import { resolveRatePresentation } from "./ratePresentation";
 import { applyRateModifiers, isRateModifierPolicy } from "./rateModifiers";
 import type { EffectiveSite } from "./effectiveSite";
@@ -6,7 +7,7 @@ import { resolveBilling, resolveCoverageJourneyPolicy } from "./coverageJourneyP
 import type { PaymentMethod, PaymentFrequency } from "./paymentPolicy";
 import type { RiderCharge } from "./pricingFormulas.mjs";
 
-export type MockRatingService = { quote: (request: { siteKey: string; productKey: string; amount: number; frequency: "annual"; dimensions: Partial<Record<RateDimension, unknown>>; riders?: RiderCharge[] }) => Promise<{ mode: string; premiumCents: number; expiresAt: number; authority: string }> };
+export type MockRatingService = { quote: (request: { siteKey: string; productKey: string; amount: number; frequency: "annual"; dimensions: Partial<Record<RateDimension, unknown>>; riders?: RiderCharge[] }) => Promise<{ mode: string; premiumCents: number; expiresAt: number; authority: string; components?: QuotePriceComponent[] }> };
 /** Explicit mock boundary. Authoritative rates stay unavailable; this result
  * cannot be mistaken for a release-ready insurance quote. CSEA has no price. */
 export async function quoteCandidateWithMock(site: EffectiveSite, productKey: string, facts: RateFacts, payment: { method: PaymentMethod; frequency: PaymentFrequency }, service: MockRatingService, now = Date.now(), purpose: "quote-tool" | "coverage" = "quote-tool", riders: RiderCharge[] = []) {
@@ -33,6 +34,7 @@ export async function quoteCandidateWithMock(site: EffectiveSite, productKey: st
     if (!adjusted.allowed || adjusted.annualPremium === null) return fail(adjusted.missing.length ? "needs-information" : "error", `Rate adjustment inputs: ${adjusted.missing.join(", ")}`, adjusted.missing.length ? "inputs" : "configuration");
     const billing = resolveBilling(journey, payment.method, payment.frequency, adjusted.annualPremium);
     if (!billing.displayPrice) return fail("error", "Payment choice is unavailable");
-    return { status: "mock" as const, amount: billing.amount, displayPrice: true, authority: quote.authority, reason: null, inputs: collected.inputs, provenance: policy[0].provenance };
+    const breakdown = billedRateBreakdown(quote.components, quote.premiumCents / 100, riders.length, modifiers[0].value.rules.filter(rule => adjusted.applied.includes(rule.key)), journey.billing, payment, billing.amount!);
+    return { status: "mock" as const, amount: billing.amount, ...(breakdown ? { breakdown } : {}), displayPrice: true, authority: quote.authority, reason: null, inputs: collected.inputs, provenance: policy[0].provenance };
   } catch { return fail("error", "Mock rating service is unavailable", "technical"); }
 }

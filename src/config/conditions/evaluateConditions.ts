@@ -1,8 +1,9 @@
-import { isConditionDefinition } from "../../domain/conditionValidation";
+import { isConditionDefinition, evaluateConditionClause } from "../../domain/conditionValidation";
 import { getPrototypeLibrary } from "../../domain/prototypeLibrary";
 import type { ApplicationFormValues } from "../../app/ApplicationFormContext";
 import { conditionDefinitions } from "./conditions";
-import type { ConditionClause, ConditionDefinition, ConditionId } from "./types";
+import type { ConditionDefinition, ConditionId } from "./types";
+import type { FieldDefinition } from "../../domain/fields";
 
 const conditionsById = new Map(conditionDefinitions.map((definition) => [definition.id, definition]));
 
@@ -11,29 +12,28 @@ export function getConditionDefinition(conditionId: ConditionId) {
   return library ? library.site.configuration.conditions.find(c => c.value.definition.id === conditionId)?.value.definition : conditionsById.get(conditionId);
 }
 
-function evaluateClause(clause: ConditionClause, values: ApplicationFormValues): boolean {
-  const actual = values[clause.fieldId];
-  if (clause.operator === "equals") return actual === clause.value;
-  if (clause.operator === "notEquals") return actual !== clause.value;
-    if (clause.operator === "oneOf") return Array.isArray(clause.value) && clause.value.includes(actual);
-  return Array.isArray(actual) && typeof clause.value === "string" && actual.includes(clause.value);
-}
-
 export function evaluateCondition(
   definition: ConditionDefinition,
   values: ApplicationFormValues,
+  fields: FieldDefinition[] = [],
 ): boolean {
   if (!isConditionDefinition(definition)) return false;
-  const matches = definition.conditions.map((clause) => evaluateClause(clause, values));
+  const matches = definition.conditions.map((clause) => evaluateConditionClause(clause, values, fields));
   return definition.match === "any" ? matches.some(Boolean) : matches.every(Boolean);
 }
 
 export function evaluateConditionDefinition(
   conditionId: ConditionId,
   values: ApplicationFormValues,
+  fields: FieldDefinition[] = [],
 ): boolean {
   const definition = getConditionDefinition(conditionId);
-  return definition ? evaluateCondition(definition, values) : false;
+  // Cross-page predicates (for example Membership outcomes on Eligibility)
+  // use the same effective field metadata as their owning page. Local supplied
+  // definitions retain precedence for synthetic and placement-specific checks.
+  const ids = new Set(fields.map(field => field.id));
+  const inherited = getPrototypeLibrary()?.site.configuration.pages.flatMap(page => page.fields.filter(field => field.included && !ids.has(field.definition.id)).map(field => field.definition)) ?? [];
+  return definition ? evaluateCondition(definition, values, [...fields, ...inherited]) : false;
 }
 
 export function formatConditionDefinition(conditionId: ConditionId): string {

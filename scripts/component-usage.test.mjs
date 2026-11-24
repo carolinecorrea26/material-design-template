@@ -8,7 +8,7 @@ import { createComponentUsage } from './component-usage.mjs';
 
 const roots = [];
 afterEach(() => roots.splice(0).forEach(root => fs.rmSync(root, { recursive: true, force: true })));
-function fixture() {
+function fixture(registry = 'inline') {
  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'portal-component-usage-')); roots.push(root);
  const files = {
   'src/app/router.tsx': `import One from '../pages/One'; import Two from '../pages/Two'; import Internal from '../pages/Internal'; import AppShell from '../components/layout/AppShell'; const pageComponents = {one: One, two: Two, internal: Internal}; function Route(){return <AppShell/>;}`,
@@ -23,6 +23,10 @@ function fixture() {
   'src/components/layout/AppShell.tsx': `import Header from './Header'; export default function AppShell(){return <Header/>;}`,
   'src/components/layout/Header.tsx': 'export default function Header(){return <header/>;}',
  };
+ if (registry !== 'inline') {
+  files['src/app/pageComponents.tsx'] = `import One from '../pages/One'; import Two from '../pages/Two'; export const applicationPages = {one: One, two: Two} satisfies Record<string, unknown>;`;
+  files['src/app/router.tsx'] = `import {applicationPages as sharedPages} from './pageComponents'; import Two from '../pages/Two'; import Internal from '../pages/Internal'; import AppShell from '../components/layout/AppShell'; const pageComponents = {...sharedPages, ${registry === 'override' ? 'one: Two,' : ''} internal: Internal}; function Route(){return <AppShell/>;}`;
+ }
  for (const [file, source] of Object.entries(files)) { fs.mkdirSync(path.dirname(path.join(root, file)), {recursive:true}); fs.writeFileSync(path.join(root, file), source); }
  const analyzer = createComponentAnalyzer(root);
  const pages = ['one', 'two', 'internal'].map(key => ({key,definition:{displayName:key,flow:key==='internal'?'internal':'application'}}));
@@ -43,4 +47,15 @@ it('records shared app chrome in each page context without copying its definitio
 it('tracks actual package button renders rather than inventing a portal wrapper', () => {
  const usage = fixture();
  expect(usage('@mui/material/Button', {module:'@mui/material',symbol:'Button'})).toMatchObject([{source:'src/pages/One.tsx',pageKey:'one'}]);
+});
+it('follows imported registry spreads without losing the defining module bindings', () => {
+ const usage = fixture('spread');
+ expect(usage('src/components/Common.tsx').map(use => use.pageKey)).toEqual(['one', 'two']);
+ expect(usage('src/components/Single.tsx').map(use => use.pageKey)).toEqual(['one']);
+ expect(usage('src/components/layout/Header.tsx').map(use => use.pageKey)).toEqual(['one', 'two']);
+});
+it('honors later page overrides after a registry spread', () => {
+ const usage = fixture('override');
+ expect(usage('src/components/Single.tsx')).toEqual([]);
+ expect(usage('src/components/Common.tsx').map(use => use.pageKey)).toEqual(['one', 'two']);
 });

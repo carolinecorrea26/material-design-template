@@ -1,0 +1,77 @@
+{
+  "site": "waepa",
+  "assignments": [
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "di-short-term",
+      "applicants": [
+        "member"
+      ],
+      "value": 18,
+      "source": "prototype:waepa.di-short-term; work eligibility: Main!R380"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "di-short-term",
+      "applicants": [
+        "member"
+      ],
+      "value": 64,
+      "source": "prototype:waepa.di-short-term; work eligibility: Main!R380"
+    },
+    {
+      "configuration": "coverage-minimum-work-hours",
+      "product": "di-short-term",
+      "applicants": [
+        "member"
+      ],
+      "value": 30,
+      "source": "prototype:waepa.di-short-term; work eligibility: Main!R380"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-group-term",
+      "applicants": [
+        "member"
+      ],
+      "value": 18,
+      "source": "Main!O379"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-group-term",
+      "applicants": [
+        "member"
+      ],
+      "value": 69,
+      "source": "Main!O379"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-group-term",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 18,
+      "source": "Main!P379"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-group-term",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 69,
+      "source": "Main!P379"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-group-term",
+      "applicants": [
+        "child"
+      ],
+      "value": 25,
+      "source": "docs/archive/step3-journey-adoption.md"
+    }
+  ]
+}

@@ -3,6 +3,7 @@ import FieldGrid from "../layout/FieldGrid";
 import type { FieldDefinition } from "../../config/fields/types";
 import FieldRenderer from "./FieldRenderer";
 import SectionDivider from "../layout/SectionDivider";
+import { requirementText } from '../../domain/requirementContent';
 
 type PhysicianInformationProps = {
   fieldIds: string[];
@@ -11,6 +12,7 @@ type PhysicianInformationProps = {
   errors: unknown;
   nameRow: Set<string>;
   addressFieldIds: AddressFieldMapping;
+  title?: string;
 };
 
 export default function PhysicianInformation({
@@ -20,6 +22,7 @@ export default function PhysicianInformation({
   errors,
   nameRow,
   addressFieldIds,
+  title = requirementText('physician.title'),
 }: PhysicianInformationProps) {
   const phoneField = fieldIds.find((id) => id.includes("physician-phone"));
   const facilityField = fieldIds.find((id) => id.includes("facility-name"));
@@ -40,7 +43,7 @@ export default function PhysicianInformation({
 
   return (
     <SectionDivider
-      label="Physician information"
+      label={title}
       variant="subsection"
       sx={{ mb: 1 }}
     >

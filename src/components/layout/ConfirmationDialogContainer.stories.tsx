@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Button } from "@mui/material";
 import ConfirmationDialog from "./ConfirmationDialog";
+import ComponentFixture from '../../../.storybook/fixtures/ComponentFixture';
 
 /**
  * ConfirmationDialog is a thin Yes/Cancel preset over AppModal
@@ -35,33 +36,5 @@ function ConfirmationDemo(
 }
 
 export const Default: StoryObj = {
-  render: () => (
-    <ConfirmationDemo
-      title="Remove this beneficiary?"
-      message="This action can't be undone."
-    />
-  ),
+  render: () => <ComponentFixture>{fixture => <ConfirmationDemo {...fixture.content.dialogs.confirmation.editApplication} />}</ComponentFixture>,
 };
-
-export const DestructiveColor: StoryObj = {
-  name: 'confirmColor="error"',
-  render: () => (
-    <ConfirmationDemo
-      title="Delete this record?"
-      message="This action can't be undone."
-      confirmColor="error"
-    />
-  ),
-};
-
-export const CustomLabels: StoryObj = {
-  render: () => (
-    <ConfirmationDemo
-      title="Leave without saving?"
-      message="Your changes to this page haven't been saved yet."
-      confirmLabel="Leave page"
-      cancelLabel="Stay here"
-    />
-  ),
-};
-

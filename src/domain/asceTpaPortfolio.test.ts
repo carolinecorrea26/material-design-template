@@ -66,9 +66,11 @@ describe("fresh-start ASCE TPA portfolio access", () => {
   it.each(["prototype", "storybook"] as const)("deducts each person's in-force amounts from product and shared Life choices in %s", surface => {
     const current = surface === "prototype" ? library : buildGlobalTemplate(catalog, "multipleTerms");
     installPrototypeLibrary(current);
-    const choices = (id: string, person: "member" | "spouse", values = { ...base, ...verified }) => resolveApplicationCoverage(current.products.find(product => product.id === id)!, person, values, current.products).amounts;
+    const choices = (id: string, person: "member" | "spouse", values: Record<string, unknown> = { ...base, ...verified }) => resolveApplicationCoverage(current.products.find(product => product.id === id)!, person, values, current.products).amounts;
     expect(choices("li-term", "member").at(-1)).toBe(750000);
-    expect(choices("li-term", "spouse").at(-1)).toBe(900000);
+    // Matching verified member coverage also caps the spouse total.
+    expect(choices("li-term", "spouse").at(-1)).toBe(150000);
+    expect(choices("li-term", "spouse", { ...base, ...verified, coverageSelections: ["li-term"], productApplicants: { "li-term": ["member", "spouse"] }, coverageAmounts: { "li-term:member": 750000 } }).at(-1)).toBe(900000);
     expect(choices("li-10yr", "member").at(-1)).toBe(1750000);
     expect(choices("li-20yr", "spouse").at(-1)).toBe(1900000);
     const adMaximum = choices("li-add", "member", { ...base, ...verified, "tpa-verified": false }).at(-1)!;

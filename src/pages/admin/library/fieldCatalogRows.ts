@@ -1,6 +1,7 @@
+import { withFreshStartCatalog } from "../../../domain/freshStartCatalog";
 import type { LibraryCatalog } from "../../../services/libraryCatalogService";
 import type { FieldDefinition, FieldOption } from "../../../domain/fields";
-import { fieldSurfaceRows, type FieldSurfaceRow } from "./fieldSurfaceRows";
+import { compiledFieldSurfaceRows, type FieldSurfaceRow } from "./fieldSurfaceRows";
 
 /** Catalog attributes exclude placement, validation and visibility behavior. */
 export function fieldCatalogDefinition(field: FieldDefinition) {
@@ -12,7 +13,9 @@ export function fieldCatalogDefinition(field: FieldDefinition) {
 
 /** One saved definition per ID. Generated controls retain their definition
  * reference in usage; product/applicant instance IDs never become field rows. */
-export function fieldCatalogRows(catalog: LibraryCatalog, siteKey: string, usages = fieldSurfaceRows(catalog, siteKey)) {
+export function fieldCatalogRows(catalog: LibraryCatalog, siteKey: string, usages?: FieldSurfaceRow[]) {
+  catalog = { ...catalog, data: withFreshStartCatalog(catalog.data, siteKey === "all" ? undefined : siteKey, catalog.siteScope) };
+  usages ??= compiledFieldSurfaceRows(catalog, siteKey);
   const byDefinition = new Map<string, FieldSurfaceRow[]>();
   for (const usage of usages) if (usage.definitionKey) {
     const group = byDefinition.get(usage.definitionKey) ?? [];

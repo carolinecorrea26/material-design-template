@@ -12,11 +12,16 @@ export function applyAbeApprovedReviewAdoption(db: DatabaseSchema) {
     if (!value) throw new Error(`Missing ABE source ${sheet}!${cell}`);
     return value.replace("{Link to IMPORTANT NOTICE}", "IMPORTANT NOTICE");
   };
+  // This historical capture predates explicit premium-statement policy. Preserve
+  // its accepted base copy even as today's global Review content evolves.
+  const contentKey = "review.readAndSignContent", contentId = "abe.accepted-review-base";
+  const content = { ...meta("contentValues", contentId), scope: "site" as const, siteKey: "abe", clientKey: null, contentKey, value: text("Read & Sign", "B7"), position: 40000 };
+  db.contentValues = [...db.contentValues.filter(row => !(row.scope === "site" && row.siteKey === "abe" && row.contentKey === contentKey)), content];
   const row = db.configurationValues.find(row => row.key === "abe.review-policy");
   if (!row || !isReviewPolicy(row.value)) throw new Error("Invalid ABE Review policy");
   const [minnesota, afterConsentText] = text("Read & Sign", "C43").split(/\nStandard Fraud Notice\nCONSENT: site specific or standard consent\n/).map(part => part.trim());
   row.value.authorization = {
-    when: "health-questions-or-underwriting", underwritingTypes: ["FUW", "TELE"], pageIds: ["health-li", "health-si", "health-di", "health-qd", "health-ci"],
+    when: "health-questions-or-underwriting", underwritingTypes: ["FUW", "TELE"], pageIds: ["health-tele", "health-si", "health-di-supp", "health-qd"],
     introductoryStatement: text("Read & Sign", "B36"),
     wording: { defaultText: text("Read & Sign", "B41"), variants: [
       { jurisdictions: ["MN"], text: minnesota, afterConsentText },

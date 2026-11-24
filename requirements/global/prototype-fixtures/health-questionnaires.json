@@ -1,0 +1,463 @@
+{
+  "ci": {
+    "version": 1,
+    "applicability": "site",
+    "associationKeys": [],
+    "pageId": "health-tele",
+    "variants": [
+      {
+        "key": "synthetic-authored-ci",
+        "when": {
+          "any": [
+            "li-term"
+          ]
+        },
+        "items": [
+          {
+            "key": "question-1",
+            "groupKey": "ci-question-1",
+            "questionFieldKey": "health-ci-q1",
+            "fieldKeys": [],
+            "sourceReferences": [
+              "requirements/parked/field-details.json#health-ci-q1"
+            ]
+          },
+          {
+            "key": "question-2",
+            "groupKey": "ci-question-2",
+            "questionFieldKey": "health-ci-q2",
+            "fieldKeys": [],
+            "sourceReferences": [
+              "requirements/parked/field-details.json#health-ci-q2"
+            ]
+          },
+          {
+            "key": "question-3",
+            "groupKey": "ci-question-3",
+            "questionFieldKey": "health-ci-q3",
+            "fieldKeys": [],
+            "sourceReferences": [
+              "requirements/parked/field-details.json#health-ci-q3"
+            ]
+          },
+          {
+            "key": "question-4",
+            "groupKey": "ci-question-4",
+            "questionFieldKey": "health-ci-q4",
+            "fieldKeys": [],
+            "sourceReferences": [
+              "requirements/parked/field-details.json#health-ci-q4"
+            ]
+          },
+          {
+            "key": "question-5",
+            "groupKey": "ci-question-5",
+            "questionFieldKey": "health-ci-q5",
+            "fieldKeys": [],
+            "sourceReferences": [
+              "requirements/parked/field-details.json#health-ci-q5"
+            ]
+          },
+          {
+            "key": "question-6",
+            "groupKey": "ci-question-6",
+            "questionFieldKey": "health-ci-q6",
+            "fieldKeys": [],
+            "sourceReferences": [
+              "requirements/parked/field-details.json#health-ci-q6"
+            ]
+          },
+          {
+            "key": "question-7",
+            "groupKey": "ci-question-7",
+            "questionFieldKey": "health-ci-q7",
+            "fieldKeys": [],
+            "sourceReferences": [
+              "requirements/parked/field-details.json#health-ci-q7"
+            ]
+          },
+          {
+            "key": "question-8",
+            "groupKey": "ci-question-8",
+            "questionFieldKey": "health-ci-q8",
+            "fieldKeys": [],
+            "sourceReferences": [
+              "requirements/parked/field-details.json#health-ci-q8"
+            ]
+          },
+          {
+            "key": "question-9",
+            "groupKey": "ci-question-9",
+            "questionFieldKey": "health-ci-q9",
+            "fieldKeys": [],
+            "sourceReferences": [
+              "requirements/parked/field-details.json#health-ci-q9"
+            ]
+          },
+          {
+            "key": "question-10",
+            "groupKey": "ci-question-10",
+            "questionFieldKey": "health-ci-q10",
+            "fieldKeys": [],
+            "sourceReferences": [
+              "requirements/parked/field-details.json#health-ci-q10"
+            ]
+          },
+          {
+            "key": "question-11",
+            "groupKey": "ci-question-11",
+            "questionFieldKey": "health-ci-q11",
+            "fieldKeys": [],
+            "sourceReferences": [
+              "requirements/parked/field-details.json#health-ci-q11"
+            ],
+            "when": {
+              "exceptJurisdictions": [
+                "CA"
+              ]
+            }
+          },
+          {
+            "key": "question-11-ca",
+            "groupKey": "ci-question-11-ca",
+            "questionFieldKey": "health-ci-q11-ca",
+            "fieldKeys": [],
+            "sourceReferences": [
+              "health_forms_questions.xlsx#Health questions!E97/E215; preserved California wording"
+            ],
+            "when": {
+              "jurisdictions": [
+                "CA"
+              ]
+            }
+          },
+          {
+            "key": "question-12",
+            "groupKey": "ci-question-12",
+            "questionFieldKey": "health-ci-q12",
+            "fieldKeys": [],
+            "sourceReferences": [
+              "requirements/parked/field-details.json#health-ci-q12"
+            ]
+          },
+          {
+            "key": "question-13",
+            "groupKey": "ci-question-13",
+            "questionFieldKey": "health-ci-q13",
+            "fieldKeys": [],
+            "sourceReferences": [
+              "requirements/parked/field-details.json#health-ci-q13"
+            ]
+          },
+          {
+            "key": "question-14",
+            "groupKey": "ci-question-14",
+            "questionFieldKey": "health-ci-q14",
+            "fieldKeys": [],
+            "sourceReferences": [
+              "requirements/parked/field-details.json#health-ci-q14"
+            ]
+          },
+          {
+            "key": "question-15",
+            "groupKey": "ci-question-15",
+            "questionFieldKey": "health-ci-q15",
+            "fieldKeys": [],
+            "sourceReferences": [
+              "requirements/parked/field-details.json#health-ci-q15"
+            ]
+          },
+          {
+            "key": "question-16",
+            "groupKey": "ci-question-16",
+            "questionFieldKey": "health-ci-q16",
+            "fieldKeys": [],
+            "sourceReferences": [
+              "requirements/parked/field-details.json#health-ci-q16"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "cir": {
+    "version": 1,
+    "applicability": "site",
+    "associationKeys": [],
+    "pageId": "health-cir",
+    "whenRider": {
+      "productKey": "li-term",
+      "riderId": "cir"
+    },
+    "variants": [
+      {
+        "key": "synthetic-authored-cir",
+        "when": {
+          "any": [
+            "li-term"
+          ]
+        },
+        "items": [
+          {
+            "key": "question-1",
+            "questionFieldKey": "health-cir-q1",
+            "fieldKeys": [
+              "health-cir-activities"
+            ],
+            "sourceReferences": [
+              "requirements/parked/field-details.json#health-cir-q1"
+            ]
+          },
+          {
+            "key": "question-2",
+            "questionFieldKey": "health-cir-q2",
+            "fieldKeys": [],
+            "sourceReferences": [
+              "requirements/parked/field-details.json#health-cir-q2"
+            ]
+          },
+          {
+            "key": "question-3",
+            "questionFieldKey": "health-cir-q3",
+            "fieldKeys": [],
+            "sourceReferences": [
+              "requirements/parked/field-details.json#health-cir-q3"
+            ]
+          },
+          {
+            "key": "question-4",
+            "questionFieldKey": "health-cir-q4",
+            "fieldKeys": [],
+            "sourceReferences": [
+              "requirements/parked/field-details.json#health-cir-q4"
+            ]
+          },
+          {
+            "key": "question-5",
+            "questionFieldKey": "health-cir-q5",
+            "fieldKeys": [],
+            "sourceReferences": [
+              "requirements/parked/field-details.json#health-cir-q5"
+            ]
+          },
+          {
+            "key": "question-6",
+            "questionFieldKey": "health-cir-q6",
+            "fieldKeys": [],
+            "sourceReferences": [
+              "requirements/parked/field-details.json#health-cir-q6"
+            ]
+          },
+          {
+            "key": "question-7",
+            "questionFieldKey": "health-cir-q7",
+            "fieldKeys": [],
+            "sourceReferences": [
+              "requirements/parked/field-details.json#health-cir-q7"
+            ]
+          },
+          {
+            "key": "question-8",
+            "questionFieldKey": "health-cir-q8",
+            "fieldKeys": [],
+            "sourceReferences": [
+              "requirements/parked/field-details.json#health-cir-q8"
+            ]
+          },
+          {
+            "key": "question-9",
+            "questionFieldKey": "health-cir-q9",
+            "fieldKeys": [],
+            "sourceReferences": [
+              "requirements/parked/field-details.json#health-cir-q9"
+            ]
+          },
+          {
+            "key": "question-10",
+            "questionFieldKey": "health-cir-q10",
+            "fieldKeys": [],
+            "sourceReferences": [
+              "requirements/parked/field-details.json#health-cir-q10"
+            ]
+          },
+          {
+            "key": "question-11",
+            "questionFieldKey": "health-cir-q11",
+            "fieldKeys": [
+              "health-cir-dwelling-other"
+            ],
+            "sourceReferences": [
+              "requirements/parked/field-details.json#health-cir-q11"
+            ],
+            "detailsAnswer": "other"
+          },
+          {
+            "key": "question-12",
+            "questionFieldKey": "health-cir-q12",
+            "fieldKeys": [],
+            "sourceReferences": [
+              "requirements/parked/field-details.json#health-cir-q12"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "life": {
+    "version": 1,
+    "applicability": "site",
+    "pageId": "health-tele",
+    "associationKeys": [],
+    "variants": [
+      {
+        "key": "synthetic-authored-life",
+        "when": {
+          "any": [
+            "li-term"
+          ]
+        },
+        "items": [
+          {
+            "key": "condition",
+            "questionFieldKey": "health-li-q1",
+            "fieldKeys": [
+              "health-li-detail-onset",
+              "health-li-detail-conditionsDetails",
+              "health-li-detail-physicianAddress"
+            ],
+            "repeated": true,
+            "sourceReferences": [
+              "Synthetic source assignment referencing global Life fields"
+            ]
+          },
+          {
+            "key": "history",
+            "questionFieldKey": "health-li-q2",
+            "fieldKeys": [],
+            "sourceReferences": [
+              "Synthetic source assignment referencing global Life fields"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "disability": {
+    "version": 1,
+    "applicability": "site",
+    "pageId": "health-di-supp",
+    "associationKeys": [],
+    "variants": [
+      {
+        "key": "synthetic-authored-disability",
+        "when": {
+          "any": [
+            "di-ltd"
+          ]
+        },
+        "items": [
+          {
+            "key": "question-1",
+            "questionFieldKey": "health-di-q1",
+            "fieldKeys": [
+              "health-di-q1-detail-assistanceType",
+              "health-di-q1-detail-onset",
+              "health-di-q1-detail-conditionsDetails",
+              "health-di-q1-detail-physicianAddress"
+            ],
+            "repeated": true,
+            "sourceReferences": [
+              "Synthetic source assignment referencing global Disability fields"
+            ]
+          },
+          {
+            "key": "question-2",
+            "questionFieldKey": "health-di-q2",
+            "fieldKeys": [
+              "health-di-q2-detail-fallType",
+              "health-di-q2-detail-onset",
+              "health-di-q2-detail-conditionsDetails",
+              "health-di-q2-detail-physicianAddress"
+            ],
+            "repeated": true,
+            "sourceReferences": [
+              "Synthetic source assignment referencing global Disability fields"
+            ]
+          },
+          {
+            "key": "question-3",
+            "questionFieldKey": "health-di-q3",
+            "fieldKeys": [
+              "health-di-q3-detail-onset",
+              "health-di-q3-detail-conditionsDetails",
+              "health-di-q3-detail-physicianAddress"
+            ],
+            "repeated": true,
+            "sourceReferences": [
+              "Synthetic source assignment referencing global Disability fields"
+            ]
+          },
+          {
+            "key": "question-4",
+            "questionFieldKey": "health-di-q4",
+            "fieldKeys": [
+              "health-di-q4-detail-onset",
+              "health-di-q4-detail-conditionsDetails",
+              "health-di-q4-detail-physicianAddress"
+            ],
+            "repeated": true,
+            "sourceReferences": [
+              "Synthetic source assignment referencing global Disability fields"
+            ]
+          },
+          {
+            "key": "question-5",
+            "questionFieldKey": "health-di-q5",
+            "fieldKeys": [
+              "health-di-q5-detail-onset",
+              "health-di-q5-detail-conditionsDetails",
+              "health-di-q5-detail-physicianAddress"
+            ],
+            "repeated": true,
+            "sourceReferences": [
+              "Synthetic source assignment referencing global Disability fields"
+            ]
+          },
+          {
+            "key": "question-6",
+            "questionFieldKey": "health-di-q6",
+            "fieldKeys": [
+              "health-di-q6-detail-onset",
+              "health-di-q6-detail-conditionsDetails",
+              "health-di-q6-detail-physicianAddress"
+            ],
+            "repeated": true,
+            "sourceReferences": [
+              "Synthetic source assignment referencing global Disability fields"
+            ]
+          },
+          {
+            "key": "question-7",
+            "questionFieldKey": "health-di-q7",
+            "fieldKeys": [
+              "health-di-q7-detail-details"
+            ],
+            "repeated": true,
+            "sourceReferences": [
+              "Synthetic source assignment referencing global Disability fields"
+            ]
+          },
+          {
+            "key": "supplement",
+            "fieldKeys": [
+              "health-di-q7-detail-details"
+            ],
+            "sourceReferences": [
+              "Synthetic direct-detail layout example; not an ASCE supplemental-health assignment"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

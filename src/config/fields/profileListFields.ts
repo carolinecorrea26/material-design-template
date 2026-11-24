@@ -1,49 +1,15 @@
-// Shared by the page renderer and the Library inspection inventory.
-import type { FieldDefinition } from "./types";
+import profile from '../../../requirements/parked/profile.json';
+import { resolveMappedFields } from '../../domain/requirementFields';
 
-export const disabilityCompanyFields: FieldDefinition[] = [
-  {
-    id: "di-company-name",
-    label: "Company",
-    inputType: "text",
-    labelVariant: "floating",
-    required: true,
-  },
-  {
-    id: "di-company-monthly-benefit",
-    label: "Monthly Benefit Amount",
-    inputType: "text",
-    format: "currency",
-    inputMode: "numeric",
-    labelVariant: "floating",
-    required: true,
-    helperText:
-      "You can find your current coverage amount in your recent statement from your carrier.",
-  },
-  {
-    id: "di-company-benefit-period",
-    label: "Benefit Period",
-    inputType: "text",
-    placeholder: "Age 65 or older, 1-5 year, etc.",
-    labelVariant: "floating",
-    required: true,
-  },
-  {
-    id: "di-company-waiting-period",
-    label: "Waiting Period",
-    inputType: "text",
-    placeholder: "30 days, 60 days, etc",
-    labelVariant: "floating",
-    required: true,
-  },
-];
-
+/** Default/inspection adapter of the same fresh-start dialog used by both adult collections. */
+const definitions = new Map(resolveMappedFields(profile.fieldMapping, { page: profile.page }).map(field => [field.id, field]));
+const bindings = profile.surfaces.disabilityCompany.definition.fields;
+export const disabilityCompanyFields = bindings.map(binding => {
+  const field = definitions.get(binding.fieldKey);
+  if (!field) throw new Error(`Missing configured disability record field: ${binding.fieldKey}`);
+  return field;
+});
 export const disabilityCompanyMapping = {
   fields: disabilityCompanyFields,
-  fieldToKey: {
-    "di-company-name": "company",
-    "di-company-monthly-benefit": "monthlyBenefitAmount",
-    "di-company-benefit-period": "benefitPeriod",
-    "di-company-waiting-period": "waitingPeriod",
-  } as const,
+  fieldToKey: Object.fromEntries(bindings.map(binding => [binding.fieldKey, binding.valueKey])),
 };

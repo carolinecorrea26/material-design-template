@@ -1,0 +1,34 @@
+{
+  "status": "planned",
+  "description": "Library-only tracking review prompts, separate from implemented analytics inventory.",
+  "areas": [
+    [
+      "Pages and journey steps",
+      "Page / section views, continuation, validation failure, back navigation, edit-step actions, and conditional or skipped steps. Check both single-page and multi-page templates."
+    ],
+    [
+      "Fields and selections",
+      "Every configured field, including conditional and repeated-list fields, radio groups, checkboxes, selects, date pickers, consent controls, sliders, and rate toggles. Review focus / blur and validation events where useful."
+    ],
+    [
+      "Buttons, links and navigation",
+      "Primary and secondary actions, icon buttons, logos, menus, tabs, support contacts, external links, anchor links, and disabled actions. Separate an action attempt from its successful outcome."
+    ],
+    [
+      "Drawers and modals",
+      "Opening, closing, confirmation, cancellation, and nested overlays. Review close buttons, Escape, backdrop clicks, and browser navigation as dismissal paths; preserve the opening context."
+    ],
+    [
+      "Tools and content",
+      "Quote and needs calculators, coverage cards, cart / portfolio, result panels, help content, notices, and document previews. Review impressions, expansion, meaningful scroll milestones, and download completion."
+    ],
+    [
+      "Application and service outcomes",
+      "Start, save, resume, verification, payment authorization, signing, submission, and receipt. Define success, failure, retry, and abandonment separately; agree the measurement window for abandonment."
+    ],
+    [
+      "Consent and delivery verification",
+      "Review consent requirements, vendor mappings, and duplicate prevention across navigation, rerenders, and templates. Verify delivery for each approved event; exclude applicant values, health answers, credentials, and document contents."
+    ]
+  ]
+}

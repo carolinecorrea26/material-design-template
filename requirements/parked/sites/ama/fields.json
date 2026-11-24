@@ -1,0 +1,48 @@
+{
+  "fields": {
+    "coverage-categories": {
+      "options": [
+        "LI",
+        "AD",
+        "DI",
+        "OO",
+        "SH"
+      ]
+    },
+    "membership": {
+      "configuration": {
+        "self": "category",
+        "spouse": "yes-no"
+      },
+      "options": {
+        "self": [
+          {
+            "label": "Physician",
+            "value": "physician",
+            "outcome": "member"
+          },
+          {
+            "label": "Resident",
+            "value": "resident",
+            "outcome": "member"
+          },
+          {
+            "label": "Student",
+            "value": "student",
+            "outcome": "member"
+          },
+          {
+            "label": "Retired Physician",
+            "value": "retired",
+            "outcome": "member"
+          },
+          {
+            "label": "Spouse of Physician",
+            "value": "spouse",
+            "outcome": "member"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "description": "Fictional prototype scenarios and QD simulation default. Baseline answers are internal preview data. The QD result is explicitly recorded when its resolved Health page completes; no real assessment or Site policy is implied.",
+  "baseline": {
+    "has-drivers-license": "no",
+    "intend-live-outside-us": "no",
+    "travel-outside-us-six-months": "no",
+    "has-other-life-insurance": "no",
+    "is-replacing-life-insurance": "no",
+    "has-pending-life-insurance-applications": "no",
+    "has-disability-insurance": "no",
+    "is-replacing-disability-insurance": "no"
+  },
+  "quickDecisionDefaultResult": "conditionally-approved"
+}

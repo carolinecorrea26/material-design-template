@@ -8,7 +8,7 @@ const meta = (table: string, key: string) => ({ id: key, key, ...libraryMetadata
 export function applyWaepaStdUnderwritingAdoption(db: DatabaseSchema) {
   const policy = db.configurationValues.find(row => row.key === "waepa.di-short-term.journey-policy");
   if (!policy || !isCoverageJourneyPolicy(policy.value)) throw new Error("Missing native WAEPA STD journey policy");
-  policy.value.healthPageByUnderwriting = { QD: "health-qd", FUW: "health-di" };
+  policy.value.healthPageByUnderwriting = { QD: "health-qd", FUW: "health-di-supp" };
   // Reuse the canonical age/amount contract consumed by every Site. The Site
   // column is the explicit assignment; no Site-name runtime branch is needed.
   const bands = ([{ minimumAge: 17, maximumAge: 49, pathway: "QD" }, { minimumAge: 50, maximumAge: 69, pathway: "FUW" }] as const).map(band => {

@@ -1,0 +1,293 @@
+{
+  "site": "nso",
+  "assignments": [
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-term",
+      "applicants": [
+        "member"
+      ],
+      "value": 17,
+      "source": "Main!O318"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-term",
+      "applicants": [
+        "member"
+      ],
+      "value": 64,
+      "source": "Main!O318"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-term",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 17,
+      "source": "Main!P318"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-term",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 64,
+      "source": "Main!P318"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-50plus",
+      "applicants": [
+        "member"
+      ],
+      "value": 50,
+      "source": "Main!O319"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-50plus",
+      "applicants": [
+        "member"
+      ],
+      "value": 74,
+      "source": "Main!O319"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-50plus",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 50,
+      "source": "Main!P319"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-50plus",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 74,
+      "source": "Main!P319"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-10yr",
+      "applicants": [
+        "member"
+      ],
+      "value": 17,
+      "source": "Main!O322"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-10yr",
+      "applicants": [
+        "member"
+      ],
+      "value": 59,
+      "source": "Main!O322"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-10yr",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 17,
+      "source": "Main!P322"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-10yr",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 59,
+      "source": "Main!P322"
+    },
+    {
+      "configuration": "coverage-minimum-age-days",
+      "product": "li-10yr",
+      "applicants": [
+        "child"
+      ],
+      "value": 15,
+      "source": "Main!Q322"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-10yr",
+      "applicants": [
+        "child"
+      ],
+      "value": 18,
+      "source": "Main!Q322"
+    },
+    {
+      "configuration": "coverage-student-maximum-age-years",
+      "product": "li-10yr",
+      "applicants": [
+        "child"
+      ],
+      "value": 25,
+      "source": "Main!Q322"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-20yr",
+      "applicants": [
+        "member"
+      ],
+      "value": 17,
+      "source": "Main!O323"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-20yr",
+      "applicants": [
+        "member"
+      ],
+      "value": 54,
+      "source": "Main!O323"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-20yr",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 17,
+      "source": "Main!P323"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-20yr",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 54,
+      "source": "Main!P323"
+    },
+    {
+      "configuration": "coverage-minimum-age-days",
+      "product": "li-20yr",
+      "applicants": [
+        "child"
+      ],
+      "value": 15,
+      "source": "Main!Q323"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-20yr",
+      "applicants": [
+        "child"
+      ],
+      "value": 18,
+      "source": "Main!Q323"
+    },
+    {
+      "configuration": "coverage-student-maximum-age-years",
+      "product": "li-20yr",
+      "applicants": [
+        "child"
+      ],
+      "value": 25,
+      "source": "Main!Q323"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "di-ltd",
+      "applicants": [
+        "member"
+      ],
+      "value": 17,
+      "source": "docs/step3-provisional-decisions.md; work eligibility: Main!R321"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "di-ltd",
+      "applicants": [
+        "member"
+      ],
+      "value": 59,
+      "source": "docs/step3-provisional-decisions.md; work eligibility: Main!R321"
+    },
+    {
+      "configuration": "coverage-minimum-work-hours",
+      "product": "di-ltd",
+      "applicants": [
+        "member"
+      ],
+      "value": 20,
+      "source": "docs/step3-provisional-decisions.md; work eligibility: Main!R321"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-add",
+      "applicants": [
+        "member"
+      ],
+      "value": 17,
+      "source": "docs/archive/step3-journey-adoption.md; source adoption: Main!O320"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-add",
+      "applicants": [
+        "member"
+      ],
+      "value": 69,
+      "source": "docs/archive/step3-journey-adoption.md; source adoption: Main!O320"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-add",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 17,
+      "source": "docs/archive/step3-journey-adoption.md; source adoption: Main!P320"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-add",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 69,
+      "source": "docs/archive/step3-journey-adoption.md; source adoption: Main!P320"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-add",
+      "applicants": [
+        "child"
+      ],
+      "value": 0,
+      "source": "docs/archive/step3-journey-adoption.md; source adoption: Main!Q320"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-add",
+      "applicants": [
+        "child"
+      ],
+      "value": 18,
+      "source": "docs/archive/step3-journey-adoption.md; source adoption: Main!Q320"
+    },
+    {
+      "configuration": "coverage-student-maximum-age-years",
+      "product": "li-add",
+      "applicants": [
+        "child"
+      ],
+      "value": 25,
+      "source": "docs/archive/step3-journey-adoption.md; source adoption: Main!Q320"
+    }
+  ]
+}

@@ -11,7 +11,7 @@ const meta = {
 export default meta;
 type Story = StoryObj;
 function Example({ spouseOnly = false, restored = false }: { spouseOnly?: boolean; restored?: boolean }) {
-  return <HealthQuestionExample restored={restored}>{form => <HealthQuestionList values={{ dependents: ['spouse'], productApplicants: { example: spouseOnly ? ['spouse'] : ['member', 'spouse'] } }} entries={(spouseOnly ? ['spouse'] as const : ['self', 'spouse'] as const).map(applicant => {
+  return <HealthQuestionExample restored={restored}>{form => <HealthQuestionList applicantHeadings={{ self: !spouseOnly, spouse: true }} entries={(spouseOnly ? ['spouse'] as const : ['self', 'spouse'] as const).map(applicant => {
     const role = applicant === 'self' ? 'member' : 'spouse', id = `health-example-${role}`;
     return { key: 'same-medical-question', order: 0, applicant, content: <HealthQuestion control={form.control} errors={form.formState.errors} item={{ question: questionField(id), fields: [detailField('details')], repeated: true, collection: `${id}-details`, showDetails: form.watch(id) === 'yes' }} /> };
   })} />}</HealthQuestionExample>;

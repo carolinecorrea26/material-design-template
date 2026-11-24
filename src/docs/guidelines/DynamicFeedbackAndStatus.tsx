@@ -59,11 +59,11 @@ export const DynamicFeedbackAndStatus = () => (
       </Typography>
     </DocsSection>
 
-    <DocsSection title="Loading & processing states" description="PageTransitionSkeleton preserves form layout during navigation; ProcessingStatusPage presents a bounded operation status.">
+    <DocsSection title="Loading & processing states" description="PageTransitionSkeleton preserves form layout during navigation; PrototypeHandoffPage presents the supplied external-screen images.">
       <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 720, mb: 1 }}>
         <code>PageTransitionSkeleton</code> is shown by <code>FormRoutePage</code> while a page transition completes.
-        <code>ProcessingStatusPage</code> supplies the shared spinner, optional mark, heading and explanatory body for DocuSign and QuickDecision.
-        Every pending state must lead to completion or timeout feedback. Use the existing amount reservation for inline cost calculation.
+        <code>PrototypeHandoffPage</code> replaces the viewport with configured QuickDecision or DocuSign prototype images; clicking the final image continues through the normal save and transition flow.
+        The temporary external processing loaders have been removed. Use the existing amount reservation for inline cost calculation.
       </Typography>
     </DocsSection>
 

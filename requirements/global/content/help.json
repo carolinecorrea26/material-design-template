@@ -42,6 +42,9 @@
   "help.application-review.closing-note": "The review process typically takes a few business days, but with QuickDecision, many applications can get a real-time decision, often without requiring a medical exam.",
   "help.coverage-options.intro": "Review the coverage categories available and the products offered within each category.",
   "help.quick-decision.title-prefix": "What is",
+  "help.quick-decision.availability": "available! Get a decision instantly or within a few days without a medical exam.",
+  "help.quick-decision.show-more": "Show more",
+  "help.quick-decision.show-less": "Show less",
   "help.quick-decision.intro": "helps speed up your application by using your answers to health questions along with securely accessed data, such as prescription history, medical claims, driving records, and prior insurance activity. In many cases, this means no medical exams or lab tests are needed.",
   "help.quick-decision.what-to-expect-title": "What to expect",
   "help.quick-decision.what-to-expect-items": [
@@ -55,5 +58,6 @@
     "may not be available for all products or in all states/territories."
   ],
   "help.coverage-portfolio.title": "Coverage portfolio",
-  "help.coverage-portfolio.intro": "The following coverage is currently in force based on your membership record."
+  "help.coverage-portfolio.intro": "The following coverage is currently in force based on your membership record.",
+  "payment.help.handling": "How is my payment information handled?"
 }

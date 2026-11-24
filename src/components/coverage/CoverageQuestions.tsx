@@ -1,3 +1,4 @@
+import FieldGrid from '../layout/FieldGrid';
 import { Box, Stack } from "@mui/material";
 import FieldRenderer from "../forms/FieldRenderer";
 import CoverageCategorySelector from "./CoverageCategorySelector";
@@ -19,8 +20,10 @@ type CoverageQuestionsProps = Pick<
 > & {
   selectedCategories: CoverageCategoryId[];
   hasSpouse: boolean;
+  showSelfLabel?: boolean;
   onFieldChange?: () => void;
   coverageQuestions?: ClientCoverageQuestions;
+  categoryField?: import("../../domain/fields").FieldDefinition;
   factFields?: import("../../config/fields/types").FieldDefinition[];
   applicantLabels?: import("../../config/clients/types").ClientApplicantLabels;
   sectionNotes?: Partial<Record<string, string>>;
@@ -38,6 +41,7 @@ type CoverageQuestionSectionProps = CoverageQuestionsProps & {
 export default function CoverageQuestions(props: CoverageQuestionSectionProps) {
   return <Stack spacing={3}>
     {props.availableCategories.length > 1 && <CoverageCategorySelector
+      field={props.categoryField}
       categories={props.availableCategories}
       selectedIds={props.selectedCategories}
       onToggle={props.onCategoryToggle}
@@ -83,7 +87,7 @@ function CoverageFollowupQuestions(props: CoverageQuestionsProps) {
       const isConditional = section.presentation === "conditional";
 
       const content = (
-        <Stack spacing={2}>
+        <FieldGrid>
           {section.fieldIds.map((fieldId) => {
             const field = allFields.find((f) => f.id === fieldId);
             if (!field) return null;
@@ -97,7 +101,7 @@ function CoverageFollowupQuestions(props: CoverageQuestionsProps) {
               />
             );
           })}
-        </Stack>
+        </FieldGrid>
       );
 
       const fields = isConditional ? <ConditionalGroup>{content}</ConditionalGroup> : content;
@@ -118,11 +122,11 @@ function CoverageFollowupQuestions(props: CoverageQuestionsProps) {
 
   return (
     <Box>
-      {hasSpouse ? (
+      {(props.showSelfLabel ?? hasSpouse) ? (
         <Stack spacing={2}>
-          <ApplicantSectionDivider applicant="self" labels={props.applicantLabels} showLabel>
+          {hasVisibleSelfSections && <ApplicantSectionDivider applicant="self" labels={props.applicantLabels} showLabel>
             <Stack spacing={2}>{renderSections(selfSections)}</Stack>
-          </ApplicantSectionDivider>
+          </ApplicantSectionDivider>}
           {hasVisibleSpouseSections && (
             <ApplicantSectionDivider applicant="spouse" labels={props.applicantLabels} note={props.sectionNotes?.spouseSection} showLabel>
               <Stack spacing={2}>{renderSections(spouseSections)}</Stack>

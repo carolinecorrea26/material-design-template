@@ -1,172 +1,208 @@
-# Coverage page section review
+# Coverage page review
 
-Current component/application ownership is defined by the [standalone boundary audit](standalone-component-boundaries.md). Section examples receive explicit inputs; whole-page and workflow examples retain application rules.
+Fresh-start audit checkpoint: **CHG-045 / CHG-046**. Scope is the shared global template and
+ASCE effective Site. Policy values, exceptions and resolved decisions are in
+[the Coverage requirements](../requirements-spec/coverage.md#coverage-audit-checkpoint-chg-045).
 
-Documentation follows [application frame → page sections → shared pieces](component-documentation.md). Shared definitions retain one owner and canonical reference. Current Storybook examples use [global template capabilities](global-template-review.md); earlier Site-specific verification below is historical source evidence.
+| Area | Ownership and implementation |
+|---|---|
+| Application frame | Shared `FormRoutePage` owns progress, header, standard alerts, validation/save-before-advance and Next. Coverage supplies its page checks and dependent-only confirmation. |
+| Coverage questions | `CoverageQuestions` composes the category selector, authored personal/tobacco/work-income groups, applicant dividers, conditional groups and additional product facts. Canonical fields, section order/roles, selected categories and participating applicants determine the result. Tobacco follow-ups require Yes. Child details remain on Eligibility. |
+| Product reveal | `ProductCatalog` composes product cards, applicant controls, policy-resolved amounts/options, riders, rate states and the inline `CoverageCart`. The estimate remains within product reveal. Add coverage is separate from amount defaults. |
+| Supporting surfaces | Verified portfolio action/drawer, dependent-only confirmation, first-add cart drawer and later-add feedback are explicitly placed in the page source. They reuse shared components. Portfolio access also requires the configured verification mode and current successful outcomes. |
+| Source | `requirements/parked/coverage.json` owns composition, dialogs and generated-control surfaces; `mappings/page-sections/coverage.json` owns its exact order. Global category requirements and field definitions/defaults remain shared. `parked/sites/asce/` owns assignments, values and overrides. Generated catalog/build outputs are projections. |
+| Validation | Reveal validates registered applicable questions and shows inline/page errors. Next validates registered fields and product/applicant/amount/policy acceptance, configured submit alerts and combined Life limits. Confirmation follows successful validation/save. No new inline field-answer stopping rule was added. |
+| Storage | Canonical question IDs and product/applicant/rider keyed answer maps retain their bindings. Generated field aliases are definitions, not extra scalar answers. Display frequency, loading, drawers and feedback remain transient. Full contracts are recorded in the requirements checkpoint. |
+| Storybook | Whole-page examples cover interactive progression, campaign amounts, verified portfolio, unavailable/restricted entries, dependent-only confirmation and reference rates. Product examples use assigned products and supported options. Detached sections/cards receive compiled fields. A source-compiled synthetic rate assignment supplies reference-table presentation. Unsupported absent-product, OO/SH, obsolete unresolved and CIR-only examples were removed. |
+| Execution | Business rules describe the actual system. The prototype uses fictional rates and simulated integration outcomes; live delivery, lookup and batch execution are outside its execution scope. |
 
-## Application frame
+CHG-046 resolves all raised Coverage decisions: verified existing coverage supports
+dependent-only applications, the Term Life minimum is $10,000 for both adults regardless of TPA verification (CHG-106, superseding CHG-047), CIR uses existing
+plus requested matching Life, and `preselect=TRUE` initially elects offered base
+products/applicants without optional riders. Its applied flag preserves edits/resume.
+The defined `firstCategory` ordering reader is also connected. Spouse Life maximum
+guidance is enforced only with TPA-verified matching member coverage (CHG-106); otherwise it remains informational.
+Existing confirmed exceptions and draft statuses are preserved.
 
-`AppShell` provides site chrome. `FormRoutePage` owns the form surface, progress, `PageHeader` (title, Back and help slot), validation feedback, transitions and Next. Coverage supplies its contextual help and the two sections below. Shared references: [application page template](http://localhost:6006/?path=/story/application-patterns-application-page-template--standard-form-page), [PageHeader](http://localhost:6006/?path=/story/layout-pageheader--default).
+Verification covers source reconstruction without superseded records, global and
+effective ownership, Library/prototype/Storybook agreement, question participation,
+ASCE policy regressions and the real page's entry/validation/confirmation/reference
+flows. Site-wide visual/accessibility acceptance is a separate review boundary;
+this checkpoint does not claim production service or rating execution.
 
-## Page sections and shared pieces
 
-Eligibility's section review and approved manual-State behavior are implemented. Coverage component documentation includes both page sections and complete-page scenarios. Visual and accessibility acceptance for every Site remains open.
+## Client configuration and copy review (CHG-079)
 
-Review **Pages → Coverage** in page order. The page uses the existing application template and shared controls; each shared component retains one catalog definition.
+User decisions November 15, 2026. Coverage uses the shared global header contract. Its declared content slots are `coverage.title` and `coverage.subhead`, with global defaults and optional effective-Site overrides under `parked/sites/<site>/pages/coverage.json` → `content`. ASCE adds no header override. Library Configurations discovers the same slots that the shared application frame, prototype and Storybook consume.
 
-| Main section | Pieces and behavior | Storybook |
-| --- | --- | --- |
-| Coverage questions | The category question plus any follow-up questions for the selected categories and additional product facts. Uses the real `CoverageQuestions` section, `CoverageCategorySelector`, configured fields, applicant groups and conditional sections | [Start with the category question](http://127.0.0.1:6007/?path=/story/coverage-commerce-coveragequestions--no-category-selected), [life](http://127.0.0.1:6007/?path=/story/coverage-commerce-coveragequestions--life-insurance-selected), [disability](http://127.0.0.1:6007/?path=/story/coverage-commerce-coveragequestions--disability-selected), [office overhead](http://127.0.0.1:6007/?path=/story/coverage-commerce-coveragequestions--office-overhead-selected), [supplemental health](http://127.0.0.1:6007/?path=/story/coverage-commerce-coveragequestions--supplemental-health-selected), [with spouse](http://127.0.0.1:6007/?path=/story/coverage-commerce-coveragequestions--with-spouse) |
-| Product reveal | Product boxes containing coverage and rider notes/options for each applicant, followed by the total cost of all selected products. `ProductCatalog` composes the actual product boxes, applicant controls, notes, riders, estimated rates and inline `CoverageCart`/`TotalCostSummary` | [Interactive reveal](http://127.0.0.1:6007/?path=/story/coverage-commerce-productcatalog--interactive) |
-
-The page header is already reviewed as a reusable `PageHeader`; it is not a Coverage section. The category question is a piece of Coverage questions, not a separate section called “Coverage choices.” Applicant notes/options, riders and the combined cost stay within Product reveal. Shared cart-drawer, rate-control and calculator examples keep their shared references rather than adding top-level Coverage sections.
-
-## Conditional pieces
-
-| Piece | Trigger and ownership | Shared reference |
-| --- | --- | --- |
-| Existing coverage portfolio | The page shows its trigger only when both `tpa-portfolio-enabled` and `tpa-verified` are true. Member/spouse portfolios use the existing drawer. Its contents are prototype demonstration data | [Member](http://localhost:6006/?path=/story/coverage-commerce-coverageportfoliodrawer--member-only), [with spouse](http://localhost:6006/?path=/story/coverage-commerce-coverageportfoliodrawer--with-spouse) |
-| Additional product facts | The shared Coverage questions section derives extra fields from `coverageFactFieldIds(categoryProducts, watchedValues)` and renders their actual definitions. These can include work hours, self-employment duration and normalized product requirements | `FieldRenderer` inside the same section used by the page and its stories |
-| Unavailable products | A restricted entry link can leave saved selections outside the current portfolio. A shared `PageAlert` offers explicit removal; the page does not silently delete saved selections | Existing Coverage entry-scope integration test |
-| Dependent-only confirmation | Next pauses when selected coverage includes dependents and no member coverage. The existing `ConfirmationDialog` allows cancel or continuation | Existing shared dialog reference; verify with dependent-only selections in the Site journey |
-| Added feedback | The first product addition opens the Coverage added drawer; later additions use the shared success `AppSnackbar` | Shared `CoverageSelectionFeedback` |
-
-## Configuration and reuse findings
-
-- The Library and prototype read the same generated JSON revision. Coverage fields and placements live in `fields.json` and `pages.json`; product definitions live in `products.json`; eligibility, amounts, rates and assignments remain in their existing rule/configuration owners.
-- Coverage has exactly two reviewed sections, Coverage questions and Product reveal, in page order. Existing category/follow-up, product and cart story IDs are preserved; the redundant Coverage Introduction example has been removed in favor of the shared PageHeader reference.
-- The category-question examples now resolve fields against current watched values and pass the active Site's `coverageQuestions` configuration. Their validation button belongs only to the review harness.
-- The interactive product example uses the hook's available categories and the same `resolveApplicationCoverage` callback as the live page, with explicit fictional eligibility inputs. It demonstrates product shopping; it does not certify a Site's eligibility rules or execute the page's question-validation/Next flow.
-- The standalone category question remains a shared reference for selection and error states. Product reveal starts with a fictional category selection so its review does not duplicate the category question.
-- Page-owned orchestration retains question validation, product reveal, restricted-link warnings and dependent-only continuation. CoverageQuestions owns category selection, category follow-ups and extra fact rendering; the page continues to supply the same state and configuration.
-
-Related: [Eligibility](eligibility-component-review.md), [cross-page reuse](page-reuse-review.md), [JSON catalog](../../public/catalog/README.md).
-
-## Verification
-
-- 47 focused tests passed across identity validation/part files, shared catalog consumption, Coverage products and restricted-entry handling, coverage question requirements and Eligibility manual-State behavior.
-- TypeScript, targeted ESLint, the application build and the Storybook production build passed. Catalog/document checks passed after regenerating the saved component references and ABE reference tables.
-- Browser checks against the clean Storybook build verified required-field errors for member/spouse questions, tobacco follow-ups appearing, the product loading state, available product controls, adding a coverage and the requested-coverage summary.
-- The source/build audit found every current story ID in the build and no invalid saved component examples. Its broader verdict remains incomplete: two foundations stories lack traced source renders, and the legacy FieldGrid inventory references a missing story. These are outside this Coverage section review.
-- The existing development preview returned a stale indexing error/blank frame during verification. The clean static build on port 6007 rendered correctly; no existing preview process was stopped.
-
-## Component accounting audit
-
-All 35 referenced component modules have Storybook references (34 direct, 1 through a parent). Every referenced story ID exists in the current build. This establishes component accounting, not complete Coverage scenario coverage.
-
-| Component source | Reference | Example |
-| --- | --- | --- |
-| `app/RoutePage.tsx` | direct-story-reference | [Story](http://127.0.0.1:6007/?path=/story/application-patterns-application-page-template--standard-form-page) |
-| `content/HelpChips.tsx` | direct-story-reference | [Story](http://127.0.0.1:6007/?path=/story/content-helpchips--default) |
-| `content/QuickDecisionExplainer.tsx` | direct-story-reference | [Story](http://127.0.0.1:6007/?path=/story/content-quickdecision--drawer-explainer-content) |
-| `content/QuickDecisionInfoBox.tsx` | direct-story-reference | [Story](http://127.0.0.1:6007/?path=/story/content-quickdecision--info-box-inline-collapse) |
-| `coverage/CoverageSelectionFeedback.tsx` | direct-story-reference | [First add](http://127.0.0.1:6007/?path=/story/coverage-commerce-productcatalog--first-product-from-empty-cart), [later add](http://127.0.0.1:6007/?path=/story/coverage-commerce-productcatalog--additional-product-with-existing-cart) |
-| `coverage/CoverageCart.tsx` | direct-story-reference | [Story](http://127.0.0.1:6007/?path=/story/coverage-commerce-coveragecart--empty-drawer) |
-| `coverage/CoverageCategorySelector.tsx` | direct-story-reference | [Story](http://127.0.0.1:6007/?path=/story/coverage-commerce-coveragecategoryselector--default) |
-| `coverage/CoveragePortfolioDrawer.tsx` | direct-story-reference | [Story](http://127.0.0.1:6007/?path=/story/coverage-commerce-coverageportfoliodrawer--member-only) |
-| `coverage/CoverageQuestions.tsx` | direct-story-reference | [Story](http://127.0.0.1:6007/?path=/story/coverage-commerce-coveragequestions--no-category-selected) |
-| `coverage/EstimatedRate.tsx` | direct-story-reference | [Story](http://127.0.0.1:6007/?path=/story/components-estimated-rate--available) |
-| `coverage/FeaturedBadge.tsx` | direct-story-reference | [Story](http://127.0.0.1:6007/?path=/story/coverage-commerce-product-adornments--side-by-side) |
-| `coverage/ProductCatalog.tsx` | direct-story-reference | [Story](http://127.0.0.1:6007/?path=/story/coverage-commerce-productcatalog--interactive) |
-| `coverage/ProductCostBreakdown.tsx` | direct-story-reference | [Story](http://127.0.0.1:6007/?path=/story/coverage-commerce-productcostbreakdown--monthly) |
-| `coverage/QuickDecisionIcon.tsx` | composition-reference-only | [Story](http://127.0.0.1:6007/?path=/story/content-quickdecision--info-box-inline-collapse) |
-| `coverage/QuickDecisionIndicator.tsx` | direct-story-reference | [Story](http://127.0.0.1:6007/?path=/story/content-quickdecision--mark-variants) |
-| `coverage/RateFrequencyControl.tsx` | direct-story-reference | [Story](http://127.0.0.1:6007/?path=/story/coverage-commerce-ratefrequencycontrol--interactive) |
-| `coverage/RateFrequencyToggle.tsx` | direct-story-reference | [Story](http://127.0.0.1:6007/?path=/story/coverage-commerce-ratefrequencytoggle--unchecked) |
-| `coverage/ReferenceRateTableLink.tsx` | direct-story-reference | [Image](http://127.0.0.1:6007/?path=/story/coverage-reference-rate-table--image), [PDF](http://127.0.0.1:6007/?path=/story/coverage-reference-rate-table--pdf), [table](http://127.0.0.1:6007/?path=/story/coverage-reference-rate-table--html-table), [link](http://127.0.0.1:6007/?path=/story/coverage-reference-rate-table--link), [XML](http://127.0.0.1:6007/?path=/story/coverage-reference-rate-table--xml) |
-| `coverage/TotalCostSummary.tsx` | direct-story-reference | [Story](http://127.0.0.1:6007/?path=/story/components-estimated-rate--cost-summaries) |
-| `feedback/AppSnackbar.tsx` | direct-story-reference | [Story](http://127.0.0.1:6007/?path=/story/feedback-appsnackbar--success) |
-| `feedback/EmptyState.tsx` | direct-story-reference | [Story](http://127.0.0.1:6007/?path=/story/feedback-emptystate--default) |
-| `feedback/PageAlert.tsx` | direct-story-reference | [Story](http://127.0.0.1:6007/?path=/story/feedback-pagealert--error) |
-| `forms/ConditionalGroup.tsx` | direct-story-reference | [Story](http://127.0.0.1:6007/?path=/story/forms-conditionalgroup--hidden-and-revealed) |
-| `forms/ControlledFieldRenderer.tsx` | direct-story-reference | [Story](http://127.0.0.1:6007/?path=/story/feedback-technical-error--save-failure-preserves-answers) |
-| `forms/FieldRenderer.tsx` | direct-story-reference | [Story](http://127.0.0.1:6007/?path=/story/application-patterns-application-page-template--standard-form-page) |
-| `forms/RadioSelectionGroup.tsx` | direct-story-reference | [Story](http://127.0.0.1:6007/?path=/story/forms-radioselectiongroup--interactive) |
-| `forms/SelectionGroup.tsx` | direct-story-reference | [Story](http://127.0.0.1:6007/?path=/story/forms-selectiongroup--checkbox-row-unselected) |
-| `layout/AppDrawer.tsx` | direct-story-reference | [Story](http://127.0.0.1:6007/?path=/story/coverage-commerce-coveragecart--empty-drawer) |
-| `layout/ApplicantSectionDivider.tsx` | direct-story-reference | [Story](http://127.0.0.1:6007/?path=/story/layout-applicantsectiondivider--member-section) |
-| `layout/AppModal.tsx` | direct-story-reference | [Story](http://127.0.0.1:6007/?path=/story/overlays-appmodal--default) |
-| `layout/CategoryCard.tsx` | direct-story-reference | [Story](http://127.0.0.1:6007/?path=/story/layout-categorycard--default) |
-| `layout/CategoryHeader.tsx` | direct-story-reference | [Story](http://127.0.0.1:6007/?path=/story/layout-categoryheader--with-icon) |
-| `layout/ConfirmationDialog.tsx` | direct-story-reference | [Story](http://127.0.0.1:6007/?path=/story/overlays-confirmationdialog--default) |
-| `layout/ProductCard.tsx` | direct-story-reference | [Story](http://127.0.0.1:6007/?path=/story/layout-productcard--unselected) |
-| `layout/SectionDivider.tsx` | direct-story-reference | [Story](http://127.0.0.1:6007/?path=/story/layout-sectiondivider--subsection-preset) |
-
-The table counts source modules once; named exports are preserved in [the JSON audit](coverage-storybook-audit.json). MUI layout, inputs and stock icons remain package primitives demonstrated inside these compositions. The shared application frame is an explicit boundary; its existing layout/template stories own navigation and chrome.
-
-### Complete-page and conditional examples
-
-The requested Coverage scenario gaps are covered by real page examples under **Pages → Coverage → Whole page**. These examples compose the same two page sections; Whole page is a review entry, not an additional page section.
-
-| Example | Behavior |
+| Coverage copy/configuration | Ownership / client boundary |
 | --- | --- |
-| [Interactive](http://127.0.0.1:6007/?path=/story/pages-coverage-whole-page--interactive) | Real category/question validation, product reveal, selection, cost summary, overlays and Next gating |
-| [Entry link without products](http://127.0.0.1:6007/?path=/story/pages-coverage-whole-page--entry-link-without-products) | No product matches the captured campaign scope; the page shows its unavailable-link notice |
-| [Entry link with unavailable selections](http://127.0.0.1:6007/?path=/story/pages-coverage-whole-page--entry-link-with-unavailable-selections) | A restored selection falls outside the AMA campaign scope; explicit removal preserves the permitted selection |
-| [Dependent-only confirmation](http://127.0.0.1:6007/?path=/story/pages-coverage-whole-page--dependent-only-confirmation) | Fictional AVMA spouse-only Group Life selection passes validation; Next opens the actual Coverage confirmation, Cancel remains on the page, Continue finishes local navigation |
-| [Reference rate table](http://127.0.0.1:6007/?path=/story/pages-coverage-whole-page--reference-rate-table) | Saved CSEA configuration supplies reference rates on the complete Coverage page |
+| Page title and introduction | Client-overridable strings; global defaults inherit |
+| Category/product/rider names and descriptions | Existing shared product definitions, effective product data and supported presentation overrides; no separate Coverage copy model |
+| Coverage limit and eligibility warnings | Global wording, effective policy values/substitutions and existing applicable content selections; no free-form Site page-copy overrides |
+| Total-versus-additional coverage instructions | Shared global messages selected by effective Site `coverage-increase-note`. Message selection does not affect calculations, eligibility, allowed amounts or in-force deductions (CHG-096). |
+| Estimate disclaimers and rate-state messages | Global shared copy; rate availability, frequency and display remain configuration-driven |
+| Other section, selector, button, dialog, cart, loading and validation wording | Existing global definitions; no new Site copy permission |
+| Applicant section labels and field labels/options | Existing shared applicant/field contracts |
+| Coverage amounts, defaults/locks, category/product/featured order, available applicants/riders, benefit/waiting periods, eligibility and integration | Existing product/configuration/URL contracts, independently of page wording |
+| Existing spouse note | ASCE retains its approved selection of the global the retired general spouse note (replaced by effective product applicantNotes in CHG-106) text. Existing content-key selections remain supported; this does not grant arbitrary warning wording overrides |
 
-**Pages → Shared → Reference rate table** separately demonstrates image, PDF, HTML-table, link and XML drawer formats. Image/PDF examples use existing CSEA assets; tabular/XML data is explicitly fictional. The examples use the existing component without changing rate policy.
+The client copy review adds no component, product, Site implementation, real rating/integration or additional behavior. Field/product answer bindings and shared estimate presentation are unchanged. Compiler tests reject attempted Site overrides of the amount instructions, combined-limit error, estimate disclaimer and breadcrumb. Product and policy content remains under its existing shared owners.
 
-Whole-page examples use saved catalog definitions, in-memory answers and the existing synthetic rate transport. Entry scope is installed per example and restored when it unmounts. They stop at a local completion message after real forward navigation rather than opening another applicant page.
+CHG-079 verification: all 70 fresh-start checks pass, including isolated overrides across all 11 newly approved header pages, default-adapter parity, unchanged page enablement and rejection of Coverage policy-copy overrides. TypeScript, focused lint, requirements/component checks and prototype/Storybook builds pass; all three catalog artifacts match.
 
-**QD icon terminology:** There is one shared QD icon. A client can override it through `branding.icons.quickDecision`; if the image fails, the shared icon renders. The earlier phrase “configured QuickDecision artwork” referred to that override, not another Coverage component. Dedicated override/failure examples are an optional shared-icon follow-up and are outside the four requested Coverage gaps.
 
-The subsequent section-organization correction moved category selection and extra fact rendering into the existing CoverageQuestions component, using the same state and field definitions. Its stories now include OO and SH examples. Product/rider behavior and pricing calculations are unchanged. The global audit still reports the two foundations tracing gaps and the stale legacy FieldGrid story reference outside Coverage.
+## Non-copy configuration audit (CHG-094)
 
-The Library groups each page section once and lists the shared components demonstrated there. Coverage has only Coverage questions and Product reveal; the product review does not repeat the category question as a separate control.
+November 15, 2026. Global definitions/defaults remain under `global/configurations`, canonical fields/questions and global product policies. Site assignments/overrides remain under `parked/sites/<site>/{products,coverage,coverage-policies}.json`, `fields.json` and `pages/coverage.json`. The following inventory supplements the completed copy review; it does not reopen approved ASCE values or exceptions.
 
-Section-organization verification: the built Storybook index contains exactly `Pages/Coverage/Coverage questions` and `Pages/Coverage/Product reveal`. The Library regression check lists those two sections once each. Targeted page, question-requirement, Library and Storybook tracing checks passed, along with TypeScript, targeted ESLint and both production builds. Browser checks verified category selection revealing its follow-ups and the independent product reveal/loading flow.
+| Configuration | Global default / supported scope | Effective ASCE / boundary |
+| --- | --- | --- |
+| Page/flow structure | Coverage required at global position 3; shared section order, stages and dialogs | Inherits; no Site page skip or reorder option |
+| Assigned products | Global product definitions; Site assigns enabled products and applicants | Term Life, 10-Year Level Term, 20-Year Level Term, AD&D and LTD. Disabled products are not made available by presentation settings |
+| Available categories/applicants | Assigned products, Site-covered people, eligibility, active elections and URL scope intersect | LI/AD/DI and their assigned member/spouse/child scopes; only applicable applicants appear |
+| Category/product order | Explicit global JSON order; Site ordering overrides; omitted entries follow defaults | Inherits. `featured_prod` prioritizes its available product/category, followed by valid `firstCategory`, then shared ordering. Stored legacy featured flags are not a second owner |
+| Product/category/rider content | Existing shared product and content ownership | Effective values reused across Home, Coverage, quote and About Coverage. Header overrides and approved spouse-note selection retain their separate contracts |
+| Question composition | Global category-to-question map plus product/applicant participation and tobacco conditions | Supported Site show/hide/requiredness overrides are retained, as confirmed. Missing required eligibility/rating facts still block the relevant checks or rate; hiding a question does not waive policy |
+| Additional facts / self-employment | Global canonical fields; effective product policies select applicable facts | Member DI uses the approved single self-employed-under-one-year question; spouse DI retains its applicable facts. Obsolete employment/years answers do not replace the approved answer |
+| Eligibility thresholds | Product/applicant scoped supported overrides; omitted override retains product policy | Existing work hours, income, adult/child age and student values remain as recorded in `sites/asce/coverage.json` and the product assignments. No page-only duplicate limits |
+| Residency | Assigned product residency policies plus supported excluded-state overrides | ASCE DI exclusions and spouse NH restriction remain recorded in `coverage-policies.json`; note wording does not change eligibility |
+| Amount choices | Product/applicant amount patterns, increments, income/age limits and verified in-force reductions | Existing effective choices retained; no presentation setting creates a benefit outside them |
+| Amount dropdown order | Ascending or descending; default ascending. Site or product/applicant override | Inherits ascending; order is independent of the initial amount |
+| Initial amount mode/value | Minimum (default) or specified value; zero default value is unassigned | Inherits minimum. Valid campaign `amt` overrides the initial target. Invalid/unavailable targets follow the already-confirmed valid-target/minimum fallback |
+| Amount lock | Default false; Site or product/applicant override; valid `dprods` campaign lock | Inherits unlocked. Locks enforce valid permitted targets and never elect coverage or expand limits; saved editable choices remain authoritative |
+| TPA/in-force behavior | Existing shared integration/verification contract; per-product/applicant deduction flag defaults false | ASCE enables deductions for its assigned adult products. Only verified matching amounts affect capacity, dependent prerequisites and the existing-Term minimum |
+| New/existing Term minimum | Global rule with explicit product/applicant values; no new-versus-additional question | $10,000 for either adult with or without verified matching existing coverage; November 17 confirmation supersedes the earlier distinction |
+| Combined Life limit | Shared per-person policy and product references | $2,000,000 across assigned Term/10-/20-Year Life; requested plus configured verified in-force, checked on Coverage Next, excluding rider amounts |
+| Dependent prerequisites/caps | Effective dependent and relationship policies; supported additional category-member dependency flag | Existing verified member coverage may satisfy covered-person prerequisites; child Life one-plan rule, caps and approved spouse behavior retained. A false additional flag does not cancel an independent product-policy prerequisite |
+| Riders and rider amounts | Assigned parent/applicant, age/residency/dependency rules, amount patterns/defaults | CIR remains a normal rider on Term Life, with separate applicant amounts/wording. It uses verified existing plus requested matching base Life as approved; rider-only is not enabled for ASCE |
+| Waiting/benefit periods | Product/applicant options and policy-selected requirements/defaults | Existing DI choices and short self-employment restrictions retained; amount/default configuration does not replace them |
+| Estimate frequency | Monthly default; annual supported; frequency selector defaults hidden | Inherits monthly/hidden selector. Feature inventory indicates capability and does not independently turn on the selector |
+| Rate presentation | Shared product/Site rating presentation; fictional prototype rate data | PRaSE presentation and quote/Coverage estimates enabled; supported reference-rate examples use detached source assignments. No real rating service is implied |
+| Cost display | Shared product-card/cart estimate components and reviewed global typography | Shared `coverage-cost-breakdown` boolean defaults false; ASCE inherits total-only. Sites can enable reconciled base/rider/fee itemization from the same quote result. Pricing policies own amounts, modifiers, credits and fees; display settings do not add charges |
+| Entry/campaign controls | Existing global category/prods/applicant/featured/firstCategory/amt/dprods/preselect contract | Restrict/present existing offerings only. `preselect=TRUE` elects base products/applicants once without optional riders; resume preserves edits/context |
+| Global policy definitions vs values | Reusable definitions remain visible under every Site filter; Site values are separate rows | Product/applicant overrides require declared capability, confirmed definitions and enabled assigned product/applicant scope. Numeric policy zeros are placeholders, not applied zero limits |
+| Other shared behavior | Applicant headings, portfolio privacy, reveal/submit validation, save, drawers and action states | Existing global contracts and ASCE exceptions retained; no new configurable page-specific versions |
 
-## Product reveal state review
+Implemented gap closure: `productApplicantOverrides` is an explicit global definition capability, reused by the shared parser. The compiler now checks assignments against enabled Site products and assigned applicants. Age minimum/maximum validation checks every applicant, avoiding the previous first-overlap-only result. The checker reads authored Site product scope rather than the generated deployment bundle. Library Configurations and Rules list shared policy definitions even when the selected Site has no corresponding override. ASCE values are unchanged.
 
-Product reveal now has 20 named examples, using saved catalog definitions and fictional applicant data. All scenarios run the real coverage hook and resolver. Prices use an explicitly local synthetic transport; the examples make no rate-service requests and do not modify saved catalog rules.
+Component reuse remains intact: the shared form frame, question/field groups, ProductCatalog, CoverageInformation, product/applicant/rider controls, rate states, CoverageCart, portfolio and common drawers own their existing distinct behavior. No duplicate page component or redundant Name story is added. Product/applicant/rider policy values are not copied into page-owned fields. Existing canonical source-compiled variations cover the supported structural/rate/entry differences.
 
-| State family | Examples |
+Both configuration decisions are resolved. The optional breakdown reuses ProductCostBreakdown and EstimatedRate. Its labels are global content, and source-compiled Storybook examples use fictional itemized quotes. Missing or inconsistent optional itemization retains the valid total estimate without fabricating component amounts. Captured parent/fee/child display-pricing settings are retired by declared replacement paths; they cannot restore pricing through an old display setting. ASCE inherits the global false default. No new real integration is added.
+
+Verification: 85 Fresh-start checks and 65 focused policy, quote-itemization, Coverage page/Storybook and mock/checker cases pass. Checks cover reconstruction without superseded records, independent Site question overrides, product/applicant scope rejection, per-applicant age bounds, global Library definitions, reconciled monthly/annual base/rider/fee/credit amounts and total-only fallback. Requirements, TypeScript, focused lint, component/Storybook organization, refreshed icon inventory and handoff checks pass. Prototype and Storybook builds pass; Library/public, prototype and Storybook catalog hashes match. No Coverage configuration decision remains open. Prototype rates and integrations remain simulated.
+
+
+## Coverage URL review (CHG-095)
+
+November 16, 2026. Definitions, formats, precedence and readers belong to the global template; ASCE supplies its assigned G-numbers, applicants and policy values. Neither a URL nor a missing Site URL assignment enables an unavailable product/person or overrides eligibility, dependency, benefit or rating policies.
+
+| Entry control | Coverage application and edge cases |
 | --- | --- |
-| First and later additions | Empty cart → first product opens the Coverage added drawer; an existing cart → another product uses Added; clearing and re-adding within the same session retains later-add feedback |
-| Eligibility | DI below work hours; missing hours; missing income; mixed eligible/ineligible categories; spouse eligibility differing from the member |
-| Conflicts | One mutually exclusive product selected; restored application with conflicting selections; remove one selection to resolve validation |
-| Applicant options | Selected waiting/benefit periods; WAEPA rider options; a zero-base CIR-only election |
-| Estimates | Unavailable selected-product estimate; configured CSEA reference presentation; persistent loading; persistent recalculation |
-| Other boundaries | Unresolved saved product requirements; no category selected |
+| `category` / `categories` | Same comma-separated category restriction. Explicit `category` wins if both appear, including empty input. Trim/case-insensitive category matching; `all` clears category scope. Empty/unknown scopes cannot expand the offering. A single available category is selected normally. |
+| `prods` | G-number product intersection with effective Site/category/applicant availability. Requires nonempty `category` or `categories` on entry; a product-only link cannot inherit another campaign's stored category. Unsupported IDs never enable products. |
+| `applicant` | Shared member or member/spouse restriction governs questions, product/applicant/rider controls and available amount rows. Form dependent choices do not narrow general Coverage Information availability; URL scope does. Site/product assignments remain authoritative. |
+| `featured_prod` | Prioritizes its available product and category, with Featured chip; no automatic election. It takes precedence over `firstCategory`, then effective/global ordering. Unmatched products cannot become available. |
+| `firstCategory` | Supported global parameter with bare category values. Prioritizes a valid available category after featured precedence; unknown/unavailable values do not expand scope. Legacy `ctg` is explicitly removed/ignored. |
+| `amt` | Product G-number amount presets, independently validated per applicant against current allowed positive choices. No election or rider selection. Invalid/duplicate amounts use the approved valid-configured-default/minimum fallback; saved editable choices remain authoritative. |
+| `dprods` | User-confirmed: URL locking requires a valid `amt` for that product/applicant. Missing, malformed, duplicate or unavailable amounts cannot lock. An adult amount cannot lock a fixed child amount. Existing configured locks are independent. |
+| `preselect` | TRUE elects offered base products and participating applicants once after normal question validation/reveal. No optional riders or waived policy checks. Preserve later edits and the applied flag through resume. |
+| Entry lifecycle | Both category names reset omitted prior campaign product/applicant/order/amount/lock/preselection controls. Save one canonical category key. Plain routes retain scope; resume restores the saved application's own scope, isolated by Site. Existing out-of-scope elections are preserved for explicit correction; no silent removal. |
+| Other URL context | Association and template/advisor/navigation context retain their global contracts; tracking values do not change Coverage elections or eligibility. Removed `mrate`/`nc`/`ctg` do not restore rate, calculator or ordering behavior. CIR-only remains removed. |
 
-Add coverage remains usable, preserving the recorded project decision. Eligibility and exclusivity continue to block continuation through the existing validator; the review harness has a Check selection requirements action to demonstrate it. Ineligible applicants/products are filtered by the same live presentation rules.
+Library and reference documentation now read reviewed URL names, behaviors and values from `global/products.json`; no parallel editable behavior text remains for these entries. `firstCategory` is registered under its actual runtime name; retired `ctg` is identified as removed. No Site-specific URL implementation or configuration value is introduced. The existing restricted-entry Storybook example uses `categories` through the common parser, alongside canonical-category and campaign-amount examples. Shared components and page structure remain unchanged.
 
-CoverageSelectionFeedback is the shared owner of the first-add cart drawer and later-add snackbar. Both the page and these examples mount it. A restored nonempty cart counts as already established. The selected-product summary remains visible for unavailable or zero estimates; unavailable is never rendered as a zero premium.
+Both user decisions are resolved. Explicit all-category scope is retained when paired with a product restriction so resume cannot lose that offering.
 
-Browser verification confirmed DI unavailable at 20 hours and available at the saved 30-hour threshold, first-add drawer feedback, later-add snackbar feedback and both products appearing in the combined summary. Unit/integration checks cover the same transitions, restored carts, conflicts, preserved incomplete-eligibility Add behavior and unavailable/zero totals. The application and Storybook production builds passed.
+CHG-095 verification: 85 Fresh-start checks and 48 focused entry, amount, applicant, saved-context and Coverage page/Storybook checks pass. Source reconstruction replaces stale ctg records/values and proves Library/reference parity for all nine reviewed URL entries. Alias precedence, empty/unknown input, campaign resets, all-plus-product resume, per-applicant lock validity and independent configured locks are covered. Requirements, TypeScript, scoped lint, component/Storybook organization, icon and handoff checks pass. Prototype and Storybook builds pass; Library/public, prototype and Storybook catalog hashes match. No Coverage URL decision remains open.
 
-The exclusivity review also caught a normalization issue: a temporarily empty amount-choice list could overwrite saved benefit amounts with zero. Normalization now preserves those amounts until a valid replacement exists, and conflict validation takes precedence over its derivative no-amount message. A regression test verifies both saved amounts survive the conflict and remain intact after one plan is removed. A newly selected product with no supplied benefit amount shows the missing-information rate state, without a zero quote or a technical-failure message.
 
-Final focused verification: 74 tests passed across product cards/feedback, saved-catalog scenario inputs, cart totals and Coverage runtime integration. The separate Library/page checks passed as well. Browser review verified the work-hour threshold and first/later addition surfaces; catalog/story references remain in sync. The broader source audit retains its three unrelated foundations/legacy-reference gaps.
+## Coverage presentation cleanup (CHG-096)
 
-## Shared rate display states
+User decisions November 16, 2026:
 
-The shared rate display (`src/components/coverage/EstimatedRate.tsx`, shown as **Pages → Shared → Rate display**) is driven by the typed `RateDisplayState` union in `src/domain/rateDisplay.ts`.
+- Category expansion is removed. It has no configuration, default, type property, active rule or Library control. Canonical category labels/order and the existing Coverage layout remain shared capabilities. The obsolete global rule, assignment and action are removed from authoring. Root `retiredRuleKeys` and `retiredConfigurationKeys` in `global/application.json` prevent older catalogs, aliased paths and the combined legacy label/expansion description from restoring the capability. These retirement declarations are global metadata, not Site settings; requirements validation and the compiler reject conflicting active authoring.
+- `coverage-increase-note` is a confirmed shared enum: `applyForAdditional` (global default) or `applyForTotal`. Effective Sites select the message, and ASCE inherits the additional-coverage message. Global approved content owns both strings. This is message selection only: it does not change benefit calculations, maxima, eligibility, saved amounts, in-force deductions or validation. Those retain their product/applicant policy ownership.
 
-| State | Presentation |
+Library descriptions, type comments and the prototype default adapter follow the same source. Existing source-compiled page examples support either message for regression checks; no new component or duplicate story is introduced. A historical unused flag is removed from the legacy data adapter without changing another Site's rollout or policies.
+
+CHG-096 verification: 86 Fresh-start checks and 30 focused page/example/checker cases pass. Coverage reconstructs without retired records; semantic-key, aliased-path and legacy combined-description configurations/values cannot restore expansion. Both configured messages render with the same selected benefit; product policies and current allowed amounts remain identical. Active conflicting retirement authoring rejects. Requirements, TypeScript, scoped lint, component/Storybook organization, icon/handoff checks and prototype/Storybook builds pass. Library/public, prototype and Storybook catalog hashes match. Both decisions are resolved; no Coverage configuration question remains open.
+
+
+## ASCE Coverage values and product notes (CHG-106)
+
+User confirmations November 17, 2026. Effective ASCE values are authored under
+`requirements/parked/sites/asce/`; shared schema, presentation and evaluation
+remain global. This supersedes the ASCE CHG-047 minimum distinction and the
+unconditional spouse-Life note-only exception.
+
+| Item | Confirmed effective behavior |
 | --- | --- |
-| Available | Price and billing suffix, including a valid returned zero premium |
-| Loading/recalculating | Reserved price space with an accessible loading indicator |
-| Unavailable | Explicit technical failure fetching or validating a mock-rate response |
-| Reference table | The shared View rate table link and its drawer |
-| Needs information | A prompt to complete the inputs required for an estimate |
-| Provided separately | A separately-priced product/rider or total that cannot be calculated from the shown numeric prices |
-| Hidden | No rate display when pricing is suppressed/disabled by configuration |
+| Term minimum | $10,000 for member and spouse, whether or not existing coverage is TPA-verified. No new-versus-additional question. Existing increments, age caps, in-force deductions and combined maxima remain. |
+| CIR | Member minimum $50,000; spouse minimum $25,000. Available only when that applicant's verified existing matching Term Life plus selected Term Life is at least $100,000, inclusive. Other products and the other person's coverage do not count. Retain existing amount caps, increments, age/residency rules and no CIR-only application. |
+| QD products | Term, 10-Year and 20-Year retain their existing QD assignments and existing underwriting bands. |
+| Coverage instruction | ASCE inherits the global applyForAdditional note. Its wording selection still changes no calculations. |
+| Spouse maximum | For each of Term, 10-Year and 20-Year, enforce spouse existing + selected requested coverage <= member existing + selected requested coverage under that same policy only when positive existing member coverage is TPA-verified. Otherwise show the note without that cap. Inactive requested amounts do not count. Existing spouse amounts reduce available additional capacity; zero remaining capacity offers no positive amount. |
+| Shared rendering | ProductCard accepts a plain-text descriptionNotice, rendered bold on a separate line. Coverage and quote cards and the offering overview read the same effective property; applicantNotes stay scoped to their applicant. No page-specific note component or HTML copy is stored. |
 
-Mock rates are requested for displayed eligible applicant/product options before selection. A missing number alone does not indicate a technical failure. Stale results cannot replace a newer input generation. Configured reference/hidden modes avoid calculated-rate requests. Product cards, the quote tool, cart rows and totals use the same renderer and state model, preserving Association-specific price suppression.
+| Product | ASCE description |
+| --- | --- |
+| Term | The simple, economical way to help financially protect your loved ones should they unexpectedly lose you. |
+| 10-Year | Family financial protection at an exclusive-member group rate guaranteed not to increase for 10 years. |
+| 20-Year | Family financial protection at an exclusive-member group rate guaranteed not to increase for 20 years. |
+| High-Limit Accident Insurance (li-add) | Unexpected accidents happen every day. This insurance can help to provide some financial security should a covered accident happen to you. |
 
-Storybook examples include each state plus cost summaries. The mock boundary retains the failure category so missing inputs and pricing configuration do not become technical-unavailable UI. Mixed numeric and reference/separately-provided costs do not produce a misleading partial numeric total.
+10-Year and 20-Year both add this bold separate-line notice: **Please note: If you
+are already insured under this policy, a new application will be based on your
+current age and amount of coverage requested.** Each of the three Life products
+uses this spouse-only note: “Spouse benefit amount may not exceed the member
+benefit amount (whether already insured or applying now).” The former general
+spouse question-section note is removed to avoid duplicate or overbroad guidance.
 
-Rate-display verification: 74 focused tests passed across the state model, mock-rate hook, shared renderer, product cards, cart, quote tool, Coverage, payment policy and work-hour collection. TypeScript, targeted ESLint and both production builds passed. Browser review confirmed prices on unselected product cards and the reference-table link opening its rate drawer. The broader Storybook source audit still reports the three previously recorded foundations/legacy-reference gaps.
+Global product presentation declarations and Library rows expose descriptions,
+separate notices and applicant notes; effective ASCE supplies the above values.
+Canonical presentation definitions replace captured aliases for the same target,
+so stale records cannot compete. The verified-member cap is a shared optional
+DependentRule capability, disabled unless assigned by policy. Prototype amount
+choices, validation and household reconciliation use the same policy, with
+verified values kept distinct from requested values. No live TPA service is added.
+Other product notes were not supplied in this update and retain their current
+values; they are not inferred from this copy.
 
-## October 27 scenario completion
+CHG-106 verification: **90 Fresh-start and 61 focused ASCE checks passed**. Checks cover both adult Term minima without verification, inclusive CIR support thresholds and rider minima, same-policy verified spouse caps and exhausted capacity, quote rider behavior, household accumulation of verified/new amounts, effective product copy and bold notices, three QD products, the additional instruction, Library visibility and stale presentation-alias replacement. TypeScript, scoped lint, requirements, component/reuse/icon/organization/handoff checks and application/Storybook builds passed. The three deployment catalog artifacts match. An additional historical multi-client household suite passed seven cases but its ABE cross-person case remains blocked before household evaluation by duplicate Review policy configuration; it is outside the current ASCE rollout and no ABE source was changed.
 
-Added the five whole-page stories and five shared reference-rate format examples. Integration checks exercise empty entry scope and cleanup, removal of unavailable selections, whole-page validation, dependent-only Next/Cancel/Continue and the saved reference-rate drawer. The Library still lists exactly Coverage questions and Product reveal as page sections. Site-wide visual/accessibility acceptance remains a separate open review boundary.
+## Unselected product-card tint (CHG-134)
 
-Current verification: 46 focused tests passed across complete-page scenarios, restricted entry handling, reference-rate formats, saved scenario rules, Library grouping and Storybook source tracing. TypeScript, targeted ESLint, catalog/document checks and the application and Storybook production builds passed. Browser review confirmed the actual dependent-only dialog/Cancel, the empty-link notice and the image/HTML reference drawers. The in-app browser leaves the PDF iframe blank; the Open PDF link remains available, so inline PDF visual acceptance is browser-dependent. The three previously recorded foundations/legacy-reference audit gaps remain outside Coverage.
+The existing shared ProductCard surface uses the effective primary color at 4%
+opacity for explicitly unselected cards. Quote and Coverage inherit this treatment
+through their existing card composition; selected cards retain the green treatment.
+Cards without a selectable state retain the neutral surface. The opacity is owned
+by the global presentation tokens, with no Site-specific colors or new wrappers.
 
-## October 27 checkpoint cleanup
+## Effective question participation (CHG-135)
 
-The three audit errors recorded above are resolved: the analyzer now recognizes the existing foundations documentation components while keeping them outside applicant component accounting, and the historical FieldGrid reference uses its current stacked-fields story. The clean Storybook build contains all 306 non-admin story IDs, with zero source/reference audit errors. The component consolidation register also includes CoverageSelectionFeedback and ReferenceRateTableLink. This cleanup does not close the remaining page/state, visual or accessibility review boundaries.
+The self-employment-under-one-year field remains a global definition, but only
+ASCE assigns it through the existing Disability question override. It is no longer
+a global category default inherited by WAEPA or future Sites. AMA retains its own
+existing Disability question selection.
+
+The shared category question reader now honors the effective hideSmokerQuestion
+setting unless a caller explicitly supplies another value. Coverage uses that same
+reader as Quote, so WAEPA's existing setting suppresses both adult smoking questions
+and tobacco follow-ups in both surfaces. WAEPA GI assigns that setting as well.
+No Site-specific renderer or duplicate question definitions are introduced.
+
+The restored-Site regression cases compare Quote and Coverage participation for
+both WAEPA Sites and verify that ASCE retains its separate assignments.
+
+## Cart summary boundary (CHG-136)
+
+The shared cart no longer evaluates application selectability, classifies incomplete
+answers as ineligibility, or displays an eligibility warning. Its obsolete warning
+prop, copy and special Office Overhead warning calculation are removed globally.
+Fresh-start retirement removes the old content keys from saved projections too.
+Selections, pricing, removal and navigation continue through the existing adapter.
+
+The intended product availability and no-eligible-products Eligibility-page error
+are recorded separately in `requirements/global/planned/eligibility-product-availability.json`.
+No new filtering or Eligibility-page behavior is implemented by this correction.

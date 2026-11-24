@@ -5,7 +5,7 @@ import FormShell from "./FormShell";
 /**
  * FormShell is the rounded, elevated Paper container every FormRoutePage-
  * based page renders its content inside. Resume, ResumeCode, and ResumeMethod
- * now compose it with PageShell and PageHeader as well.
+ * share it through StandaloneFormPage as well.
  */
 const meta = {
   id: "layout-formshell",

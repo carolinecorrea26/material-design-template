@@ -1,4 +1,8 @@
+import { completePrototypeQdOutcomes } from '../domain/prototypeQdOutcomes';
+import { advanceApplicationWorkflow } from '../services/applicantSaveService';
 import { getPrototypeLibrary } from "../domain/prototypeLibrary";
+import FormFieldDefinitions from '../components/forms/FormFieldDefinitions';
+import { applicantHasSelectedCategory } from '../config/flowGates';
 import { configuredHealthQuestionnaire } from "../domain/configuredHealthQuestionnaire";
 import { attachPageAnalytics, emitPageAnalytics } from "../analytics/runtime";
 import { getAnalyticsInventory } from "../analytics/inventory";
@@ -21,7 +25,7 @@ import {
   getNextFormPageId,
   getPreviousFormPageId,
 } from "../config/formFlow";
-import { getPagePath, getPageInfoNote, getPageSubhead, getPageTitle } from "../config/pages";
+import { getConfiguredPages, getPagePath, getPageInfoNote, getPageSubhead, getPageTitle } from "../config/pages";
 import { getPageSections } from "../config/pageSections";
 import type { PageSectionConfig } from "../config/pageSections/types";
 import { resolveVisibilityCondition } from "../config/conditions";
@@ -42,7 +46,7 @@ import { getActiveProgressStepIndex } from "../config/progressSteps";
 import { generateFormDataUpToPage } from "../dev/utils/generateFormData";
 import {
   getForwardMessages,
-  BACK_MESSAGE,
+  getBackMessage,
   MESSAGE_DURATION,
 } from "../config/transitionMessages";
 import { useApplicationSession } from "./ApplicationSessionContext";
@@ -60,6 +64,8 @@ type FormRoutePageFormValues = Record<string, FormRouteFieldValue>;
 export type FormRoutePageValues = ApplicationFormValues;
 
 export type FormRouteRenderProps = {
+  navigationPending: boolean;
+  pageError?: string;
   control: ReturnType<typeof useForm<FormRoutePageFormValues>>["control"];
   errors: ReturnType<
     typeof useForm<FormRoutePageFormValues>
@@ -98,6 +104,7 @@ type FormRoutePageProps = {
   children: ReactNode | ((props: FormRouteRenderProps) => ReactNode);
   validate?: (values: FormRoutePageValues) => string | undefined;
   defaultValueOverrides?: FormRoutePageFormValues;
+  prepareSubmitValues?: (values: FormRoutePageValues) => FormRoutePageValues;
   devFillFields?: (currentValues: FormRoutePageValues) => FieldDefinition[];
   /** Explicitly rendered policy fields participate in restoration, validation and dev fill. */
   runtimeFields?: (currentValues: FormRoutePageValues) => FieldDefinition[];
@@ -110,7 +117,7 @@ type FormRoutePageProps = {
 /** Restore configured repeatable records alongside scalar field defaults. */
 export function getPageCollectionDefaults(pageId: PageId, values: Record<string, unknown>): FormRoutePageFormValues {
   const library = getPrototypeLibrary();
-  const healthCollections = library && ["health-li", "health-di", "health-ci", "health-cir"].includes(pageId)
+  const healthCollections = library && ["health-tele", "health-di-supp", "health-cir"].includes(pageId)
     ? (["member", "spouse"] as const).flatMap(applicant => configuredHealthQuestionnaire(library.site, pageId, applicant, values).items.filter(item => item.repeated).map(item => item.collection))
     : [];
   const names = new Set([
@@ -140,6 +147,7 @@ function getDefaultValueForField(field: FieldDefinition): FormRouteFieldValue {
 function getStoredFieldValue(
   value: ApplicationFormValues[string] | undefined,
 ): FormRouteFieldValue | undefined {
+  if (typeof value === 'number' && Number.isFinite(value)) return String(value);
   if (
     typeof value === "string" ||
     typeof value === "boolean" ||
@@ -179,12 +187,14 @@ export function isSectionVisible(
 
   if (
     useApplicantCoverageGate &&
+    section.applicantParticipation !== 'always' &&
     section.applicant &&
     !isApplicantApplying(section.applicant, values)
   ) {
     return false;
   }
 
+  if (section.coverageCategories?.length && !applicantHasSelectedCategory(values, section.applicant ?? 'self', section.coverageCategories)) return false;
   return resolveVisibilityCondition(section, values);
 }
 
@@ -260,6 +270,7 @@ export default function FormRoutePage({
   children,
   validate,
   defaultValueOverrides,
+  prepareSubmitValues,
   devFillFields,
   runtimeFields,
   onDevFill,
@@ -356,6 +367,16 @@ export default function FormRoutePage({
 
     reset(restoredValues);
   }, [pageId, reset, values]);
+
+  // Newly applicable controls receive their configured defaults too. Retained
+  // answers (including an explicitly cleared value) always take precedence.
+  const configuredFieldDefaults = JSON.stringify(Object.fromEntries(allFields.flatMap(field =>
+    field.defaultValue !== undefined ? [[field.id, field.defaultValue]] : [])));
+  useEffect(() => {
+    for (const [id, value] of Object.entries(JSON.parse(configuredFieldDefaults) as FormRoutePageFormValues)) {
+      if (getValues(id) === undefined) setValue(id, value);
+    }
+  }, [configuredFieldDefaults, getValues, setValue]);
 
   useEffect(() => {
     function handleDevFillForm() {
@@ -490,10 +511,8 @@ export default function FormRoutePage({
     emitPageAnalytics(pageId, event, { siteKey, template: getFormTemplate(), revision: getPrototypeLibrary(siteKey)?.revision ?? "prototype" }, getAnalyticsInventory(siteKey));
   }
   async function onSubmit(formValues: FormRoutePageValues) {
-    const nextNavigationValues = {
-      ...values,
-      ...formValues,
-    };
+    const submittedValues = { ...values, ...formValues };
+    const nextNavigationValues = completePrototypeQdOutcomes(prepareSubmitValues?.(submittedValues) ?? submittedValues, undefined, pageId);
 
     const validationError = validate?.(nextNavigationValues);
 
@@ -507,12 +526,13 @@ export default function FormRoutePage({
     analyticsEvent("submit");
     setPageError(undefined);
     try {
-      await saveApplication?.(nextNavigationValues, pageId === 'membership' || pageId === 'coverage' || pageId === 'review' ? pageId : undefined);
+      if (getConfiguredPages().find(page => page.id === pageId)?.saveProgress !== false) await saveApplication?.(nextNavigationValues, pageId === 'membership' || pageId === 'coverage' || pageId === 'review' ? pageId : undefined);
+      if (pageId === 'docusign') await advanceApplicationWorkflow(resolveSiteId(), 'complete-signing');
     } catch {
-      setPageError(`${applicationRecovery['save-failed'].message} ${applicationRecovery['save-failed'].guidance}`);
+      setPageError(applicationRecovery['technical-error'].message);
       return;
     }
-    setPageValues(formValues);
+    setPageValues(nextNavigationValues);
     hasExplicitlySavedRef.current = true;
 
     if (pageId === "review") {
@@ -556,7 +576,7 @@ export default function FormRoutePage({
 
 
       emitPendingBreadcrumbCompletion(null);
-      setTransitionMessage(BACK_MESSAGE);
+      setTransitionMessage(getBackMessage());
       setIsTransitioning(true);
       if (singlePageFlow) singlePageFlow.setNavigationPending(true);
       else window.scrollTo({ top: 0 });
@@ -572,6 +592,8 @@ export default function FormRoutePage({
   }
 
   const renderProps: FormRouteRenderProps = {
+    navigationPending: isSubmitting || isTransitioning || !!singlePageFlow?.navigationPending,
+    pageError,
     control,
     errors,
     watchedValues,
@@ -604,6 +626,7 @@ export default function FormRoutePage({
       noTitle
       actions={undefined}
     >
+      <FormFieldDefinitions fields={allFields}>
       <Box ref={analyticsRoot} data-analytics-page={pageId}>
         <FormShell
           sx={{
@@ -671,6 +694,7 @@ export default function FormRoutePage({
           </Box>
         </FormShell>
       </Box>
+      </FormFieldDefinitions>
     </PageShell>
   );
 

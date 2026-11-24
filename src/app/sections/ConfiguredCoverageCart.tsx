@@ -1,3 +1,5 @@
+import { selectedProductApplicants } from '../../domain/applicantParticipation';
+import { reconcileApplicationRiders } from '../../domain/applicationRiders';
 import { useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import CoverageCart, { type CoverageCartProps, type CoverageSummaryEntry, type ApplicantSummary } from "../../components/coverage/CoverageCart";
@@ -6,7 +8,7 @@ import { usePrototypeRates } from "../usePrototypeRates";
 import { getActiveClient } from "../../config/client/getActiveClient";
 import { getActiveClientCoverages } from "../../config/client/getActiveClientCoverages";
 import { getResolvedApplicantLabels } from "../../config/formSectionTitle";
-import { applicationCoverageName, applicationUnderwriting, resolveApplicationCoverage } from "../../domain/coverageRuntime";
+import { applicationCoverageName, applicationUnderwriting } from "../../domain/coverageRuntime";
 import { selectedRiderOnly } from "../../domain/coverageRiderOnly";
 import { productMonthlyPremium } from "../../domain/pricing";
 import { rateDisplayForAmount, type RateDisplayState } from "../../domain/rateDisplay";
@@ -24,13 +26,13 @@ export function useSummaryData() {
 
   const rateRequests = Object.entries(values.coverageAmounts as Record<string, number> ?? {}).flatMap(([key, amount]) => {
     const [productKey, applicant] = key.split(":");
-    return Array.isArray(values.coverageSelections) && values.coverageSelections.includes(productKey) && (values.productApplicants as Record<string, string[]> ?? {})[productKey]?.includes(applicant)
+    return allCoverages.some(product => product.id === productKey && selectedProductApplicants(values, product).includes(applicant as CoverageApplicantId))
       ? [{ productKey, applicant: applicant as CoverageApplicantId, amount }] : [];
   });
   const rates = usePrototypeRates(rateRequests, values, "monthly", "coverage");
   return useMemo(() => {
     const selectedIds: string[] = Array.isArray(values.coverageSelections)
-      ? values.coverageSelections
+      ? values.coverageSelections.filter((value): value is string => typeof value === "string")
       : [];
 
     if (selectedIds.length === 0) {
@@ -41,17 +43,6 @@ export function useSummaryData() {
       };
     }
 
-    const selectedDependents: string[] = Array.isArray(values.dependents)
-      ? values.dependents
-      : [];
-
-    const productApplicants: Record<string, CoverageApplicantId[]> =
-      values.productApplicants != null &&
-      typeof values.productApplicants === "object" &&
-      !Array.isArray(values.productApplicants)
-        ? (values.productApplicants as Record<string, CoverageApplicantId[]>)
-        : {};
-
     const amounts: Record<string, number> =
       values.coverageAmounts != null &&
       typeof values.coverageAmounts === "object" &&
@@ -59,19 +50,7 @@ export function useSummaryData() {
         ? (values.coverageAmounts as Record<string, number>)
         : {};
 
-    const riders: Record<string, boolean> =
-      values.coverageRiders != null &&
-      typeof values.coverageRiders === "object" &&
-      !Array.isArray(values.coverageRiders)
-        ? (values.coverageRiders as Record<string, boolean>)
-        : {};
-
-    const riderAmounts: Record<string, number> =
-      values.coverageRiderAmounts != null &&
-      typeof values.coverageRiderAmounts === "object" &&
-      !Array.isArray(values.coverageRiderAmounts)
-        ? (values.coverageRiderAmounts as Record<string, number>)
-        : {};
+    const { coverageRiders: riders, coverageRiderAmounts: riderAmounts } = reconcileApplicationRiders(allCoverages, values);
 
     const coverageMap = new Map(allCoverages.map((c) => [c.id, { ...c, name: applicationCoverageName(c, values) }]));
 
@@ -83,34 +62,15 @@ export function useSummaryData() {
       const coverage = coverageMap.get(covId);
       if (!coverage) continue;
 
-      let visibleApplicants: CoverageApplicantId[];
-
-      if (Object.prototype.hasOwnProperty.call(productApplicants, covId)) {
-        const selected = Array.isArray(productApplicants[covId])
-          ? productApplicants[covId]
-          : [];
-        visibleApplicants = coverage.applicants.filter((a) =>
-          selected.includes(a),
-        );
-      } else if (selectedDependents.length > 0) {
-        visibleApplicants = coverage.applicants.filter((a) => {
-          if (a === "member") return true;
-          return selectedDependents.includes(a);
-        });
-      } else {
-        visibleApplicants = coverage.applicants.includes("member")
-          ? ["member"]
-          : [];
-      }
-
-      if (visibleApplicants.length === 0) continue;
+      const visibleApplicants = selectedProductApplicants(values, coverage);
+      if (!visibleApplicants.length) continue;
       badgeCount += visibleApplicants.length;
 
       const applicantSummaries: ApplicantSummary[] = visibleApplicants.map(
         (applicantId) => {
           const amountKey = `${covId}:${applicantId}`;
           const amount = amounts[amountKey];
-          const selectedRiders: { name: string; amount?: number }[] = [];
+          const selectedRiders: ApplicantSummary['riders'] = [];
 
           if (coverage.riders) {
             for (const rider of coverage.riders) {
@@ -119,7 +79,7 @@ export function useSummaryData() {
                 const riderAmount = rider.hasAmount
                   ? riderAmounts[riderKey]
                   : undefined;
-                selectedRiders.push({ name: rider.name, amount: riderAmount });
+                selectedRiders.push({ name: rider.name, applicant: rider.dependentApplicant ?? applicantId, amount: riderAmount });
               }
             }
           }
@@ -161,7 +121,7 @@ function ConfiguredDrawer({ onClose, source }: { onClose: () => void; source?: "
   const navigate = useNavigate(), location = useLocation();
   function handleRemoveCoverage(coverageId: string) {
     const currentSelections: string[] = Array.isArray(values.coverageSelections)
-      ? values.coverageSelections
+      ? values.coverageSelections.filter((value): value is string => typeof value === "string")
       : [];
     const nextSelections = currentSelections.filter((id) => id !== coverageId);
     const currentProductApplicants: Record<string, unknown> =
@@ -191,21 +151,10 @@ function ConfiguredDrawer({ onClose, source }: { onClose: () => void; source?: "
     }
   }
 
-  const ineligibleProducts = entries.filter(entry => entry.applicants.some(({ applicantId }) =>
-    !resolveApplicationCoverage(entry.coverage, applicantId, values, getActiveClientCoverages()).selectable,
-  )).map(entry => entry.coverage.name);
-
-  // Retain the existing Office Overhead expense warning alongside rule outcomes.
-  if (entries.length > 1 && entries.some(entry => entry.coverage.categoryId === "OO") &&
-      values["monthly-business-expenses"] != null && Number(values["monthly-business-expenses"]) === 0) {
-    ineligibleProducts.push("Office Overhead");
-  }
-
-
   const library = getPrototypeLibrary();
   return <CoverageCart variant="drawer" source={source} onClose={onClose} entries={entries} totalMonthly={totalMonthly}
     applicantLabels={getResolvedApplicantLabels(getActiveClient().applicantLabels)}
-    ineligibleProducts={ineligibleProducts} onRemoveCoverage={handleRemoveCoverage}
+    onRemoveCoverage={handleRemoveCoverage}
     ratesSuppressed={library ? associationRatesSuppressed(library.site, values) : false} />;
 }
 export default function ConfiguredCoverageCart(props: Props) {

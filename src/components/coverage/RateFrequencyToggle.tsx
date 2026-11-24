@@ -14,11 +14,11 @@ const RateFrequencyToggle = styled(Switch)(({ theme }) => ({
     padding: 0,
     transform: "translateX(4px)",
     "&.Mui-checked": {
-      color: "#fff",
+      color: theme.palette.common.white,
       transform: "translateX(22px)",
       "& .MuiSwitch-thumb:before": {
         backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="14" width="14" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
-          "#fff",
+          theme.palette.common.white,
         )}" d="M7 2v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-2V2h-2v2H9V2H7Zm12 18H5V10h14v10Z"/></svg>')`,
       },
       "& + .MuiSwitch-track": {
@@ -41,7 +41,7 @@ const RateFrequencyToggle = styled(Switch)(({ theme }) => ({
       backgroundRepeat: "no-repeat",
       backgroundPosition: "center",
       backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="14" width="14" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
-        "#fff",
+        theme.palette.common.white,
       )}" d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2Zm0 16H5V8h14v11Z"/></svg>')`,
     },
   },

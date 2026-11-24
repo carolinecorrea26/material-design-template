@@ -1,62 +1,135 @@
-# Advisor component review
+# Advisor final review
 
-October 29, 2026. Prepares Advisor login, sent-to-applicant confirmation and applicant edit-request confirmation after the accepted Resume composition. Follows the [component documentation contract](component-documentation.md). Advisor login layout and wording were accepted on October 30 after visible review. Both the sent-to-applicant and edit-request confirmations were then shown; the user requested the next item without changes after each on October 30. The visible review has moved to utility/error pages. Production service integration remains outside this component review.
+November 13, 2026 — CHG-063. Completes the fresh-start review of Advisor Login,
+Advisor Send Confirmation and Application Edit Confirmation. This checkpoint
+supersedes the October presentation review's reset, recipient and nine-day notes.
+No Advisor decision is deferred.
 
-## Application frame
+## Ownership and consumers
 
-All three pages use FormRoutePage, including its saved fields, restoration, validation, form, page surfaces and navigation plumbing. AdvisorLogin supplies `formMaxWidth={500}`, `noTitle` and `hideActions`. Its `formHeader` slot contains the title/subhead on the theme's dark primary background with contrasting text. The shared surface clips the banner at its rounded corners and retains the padded body. AdvisorLoginFields owns the Start/Continue tabs, mode instructions and Log in submit action. The confirmation pages use the shared heading and suppress the normal Next action. Utility chrome is selected by the router's advisorLogin/advisorSend layout variants.
+Structure, section conditions, save participation and content references live in
+`requirements/parked/{advisor-login,advisor-send-confirmation,application-edit-confirmation}.json`.
+These are global definitions despite the directory name. Canonical fields are in
+`requirements/parked/field-details.json`; labels, options and validation are not
+copied into controllers or examples. Global behavior is in
+`requirements/global/rules/advisor-resume.json`, with page mappings under
+`requirements/mappings/requirements/`. ASCE inherits these definitions and defaults;
+no ASCE-only implementation or other real-Site rollout was added.
 
-These are page compositions of existing components. The title banner, tabs and submit/confirmation actions are internal parts of their page owners, not new canonical component identities. No new Site policy or field binding is introduced for this review.
+Library, prototype and detached Storybook pages resolve the same compiled source.
+Storybook's six meaningful examples use the actual controllers and explicit
+fictional answers. Its saved-application example supplies an initial-save age to
+show the original deadline; it does not author another retention value.
 
-## Sections and shared owners
+## Components, content and behavior
 
-| Page / section | Shared owners | Page-specific behavior |
-| --- | --- | --- |
-| Login identity and mode | FormRoutePage surface-header slot; native title/tabs | Saved title/subhead, dark primary banner, 500px form width, Start/Continue tabs bound to `advisor-flow-type`. The previous icons are removed. |
-| Mode instructions | Native text within AdvisorLoginFields | Saved page section notes explain a new Membership-through-Profile application and applicant handoff versus reopening an existing application with verification. The tab group references this text through `aria-describedby`. |
-| Start fields | FieldRenderer → shared input/PhoneField controls | Saved `advisor-email`, `advisor-phone` and `advisor-code`, stacked with floating labels and existing validation. Advisor phone has no phone-type selector. |
-| Continue field | FieldRenderer | Independent `applicant-email` binding and helper text. Saved section conditions choose which field set appears. |
-| Log in | Native MUI submit button | Invokes the shared form's validation. Start resolves to Membership; Continue resolves to Resume. The current implementation performs no advisor authentication request. |
-| Sent-to-applicant feedback | Native success alert; DetailsTable | Applicant name/email from saved answers, mount-time sent date and a displayed deletion date nine days later. Missing identity uses em dashes. |
-| Start new application | Native action | Navigates to Advisor login. This action currently does not clear application answers. |
-| Edit-request feedback | Native success alert; DetailsTable; polite live region | Existing `advisor@example.com` placeholder and local request timestamp. A delayed announcement covers navigation from Review outside the normal Next flow. |
-| Return to Home | Native action | Navigates to the saved Home route. |
-
-Saved page/section/field definitions continue to own placement and conditions. Controllers resolve active content, rules, navigation and application values. Shared controls carry their canonical review forward.
-
-## Send dialog and workflow placement
-
-SendApplicationDialog is the existing shared AppModal composition: title/intro, recipient details, Send and Cancel actions. Canonical examples remain under Dialogs → SendApplicationDialog, with their existing IDs. They are standalone local examples and only close the dialog on confirmation.
-
-Profile opens the applicant variant before continuing an advisor-prepared application. Send releases the pending continuation; Cancel leaves the applicant on Profile. Review uses the advisor variant for an edit request, hides the recipient-name row and navigates to ApplicationEditConfirmation after Send. The pages supply the copy and recipient; the dialog performs no transport. These placements were already accounted for in the Profile/Review composition reviews.
-
-Advisor route correction: Start followed by Log in enters Membership and uses the consumer portal pages through Profile. Profile now explicitly routes an advisor's confirmed Send to AdvisorSendConfirmation; it previously fell through to the ordinary Review route. Consumer Profile continues to Review. Both new and saved advisor modes require Send, with Cancel retaining Profile. The confirmation page's separate Start new application action still returns to Advisor login; it is distinct from the Start tab at login.
-
-## Whole-page examples
-
-Storybook → Pages → Advisor → Whole page renders the actual controllers with a detached generic template and fictional local answers. Review metadata stays outside the canvas.
-
-| Example | Review focus |
+| Surface | Shared composition and confirmed contract |
 | --- | --- |
-| Start | Empty advisor fields, validation, mode tabs and submit placement |
-| Restored advisor details | Independent restored email, phone and code |
-| Continue saved | Applicant-email field, helper text and alternate routing mode |
-| Sent to applicant | Success wording, applicant details, local dates and action |
-| Missing applicant details | Existing em-dash fallbacks |
-| Edit request sent | Advisor recipient, feedback, announcement and Return to Home |
+| Login | FormRoutePage, configured title/header slot, MUI Tabs, FieldRenderer and submit button. Start/Continue labels, section notes and branch visibility come from source. Validate a supported required mode and only its active fields. |
+| Start | Required advisor email, ten-digit phone and advisor code. Starts at Membership. Login is excluded from application autosave, clears the preceding household/session and retains the entered advisor details. |
+| Continue | Required applicant email, separate from advisor email, with third-party autocomplete disabled. Carries that email into Resume without looking up or confirming an application. Verification precedes restoration and ordinary advisor editing returns to Eligibility. |
+| Applicant handoff | Profile's shared SendApplicationDialog shows applicant name/email. Cancel stays on Profile; Send opens Advisor Send Confirmation. Applicant `flow=advisor` context requires verification before Review and locks earlier completed steps. The URL context grants no authorization. |
+| Sent confirmation | Standard success Alert and DetailsTable show saved applicant identity, a stable local sent timestamp and the actual original saved-application deadline. Missing metadata uses source-defined missing values; sending never adds nine days or restarts retention. |
+| Start new application | Clears applicant answers, elections, collections, saved handle/deadline, receipt reference and session flags; cancels pending saves. Retains advisor email/phone/code, selects Start and returns to Advisor Login. Site/entry restrictions remain browsing context; the prior server application is not deleted by this action. |
+| Edit request | Review's existing shared dialog and Application Edit Confirmation use the saved advisor email. Missing identity never invents a recipient. Cancel stays on Review; Send opens the confirmation, which uses a stable local timestamp, live announcement and Return to Home. |
 
-October 30 label revision requested during visible review: Start uses Advisor email, Advisor phone number and Advisor code. Continue uses Applicant email. These labels are saved in the shared field definitions and authored defaults; field identities, conditions and Site assignments remain the same. The user accepted the revised labels with the login page.
+Page wording is declared in global `content/confirmations.json` and the page-content
+source, projected through `content-bindings.json`. Approved effective-Site header and identity-field label overrides use the same inheritance path; CHG-107 fixes core inclusion, requiredness and validation globally. Confirmation
+pages also opt out of application saves. Native alerts, tables and actions remain
+parts of existing page owners; no duplicate component family was introduced.
 
-October 30 presentation revision: the requested dark primary title banner replaces the icon treatment. Saved, mode-specific instructions appear between the tabs and fields. Both revised modes were shown in the visible preview. The user approved the revised login layout and wording before moving to the sent-to-applicant confirmation.
+## Configuration, storage and implementation
 
-The three page identities have explicit saved Storybook references for contextual links in Portal Library → Pages. Components are browsed in Storybook; no separate Library Components section is introduced. The existing 106 canonical component records are reused without adding another page/frame/field identity.
+The global retention default is **10 days from initial save**, shared with Resume
+through `requirements/global/configurations/resume.json`. Effective Sites may
+assign supported overrides. Sending, editing, requests and successful verification
+do not extend the stored deadline. Old `confirmation.signatureRetentionDays`
+configuration and captured advisor-rule copies are retired by the compiler.
 
-## Service and review boundaries
+Advisor email/phone/code and the independent applicant-email are scalar application
+bindings. Reset retains only the source-defined advisor identity fields and the
+selected mode, plus applicant-email for Continue. Confirmation timestamps are local
+display metadata; expiry comes from the saved handle, not a second application
+record. Review sends the saved recipient into the existing dialog.
 
-The Log in screen currently validates fields and routes locally. Confirmation wording is existing presentation; it is not a delivery receipt. Sent and deletion dates are computed locally for display rather than read from a delivery service, and no deletion schedule is created by rendering the page. The advisor recipient is still a placeholder. Production advisor identity, email delivery, durable handoff status and enforced retention remain integration work. The action labeled Start new application currently navigates only; whether it should clear answers is a workflow follow-up.
-
-Accept page wording, field placement, mode behavior and the shared-component arrangement through the whole-page examples. Canonical field, frame, details-table and modal reviews do not need repeated approval.
+Production authorization, delivery and retention enforcement are recorded system
+requirements. The prototype implements validation, state transitions, simulated
+persistence and display; it does not authenticate advisors, deliver real emails or
+run deletion batches. Confirmation rendering does not perform a delivery operation.
 
 ## Verification
 
-All six actual-story checks pass, covering required-field feedback, switching modes, independent restored bindings, confirmation fallbacks, return/start navigation, no network requests and fixture cleanup. The Storybook router accepts per-example starting paths so confirmation actions leave their page instead of accidentally matching the preview's initial Home path. Storybook TypeScript, scoped ESLint, the production Storybook build and catalog/handoff checks pass. The source/build audit resolves all 493 examples with zero errors or invalid catalog references. A browser check confirmed the complete Start form at its 500px width.
+Focused checks cover branch/mode validation, no household save at entry, reset and
+identity retention, original deadline display, Continue prefill, Profile handoff,
+Review restoration and actual Storybook rendering. Fresh-start checks reconstruct
+the pages without superseded records and compare Library/prototype/Storybook
+projections, global defaults and effective overrides. See also the
+[Resume checkpoint](resume-component-review.md).
+
+Final verification: 53 fresh-start checks, 55 focused Advisor/Resume checks,
+51 adjacent regression checks and 60 requirement-schema checks passed. Application
+and Storybook production builds passed, with identical catalog artifacts. Visual
+checks confirmed original-deadline display, uniform resume confirmation and inline
+link/code expiry. TypeScript, scoped ESLint and whitespace checks passed.
+
+
+CHG-064 follow-through: the [Resume workbook reconciliation](resume-component-review.md)
+supersedes the earlier recovery limits and link-bound verification model. Advisor
+handoff still requires successful email-link plus phone verification before Review;
+its original application deadline and retained-identity/reset rules are unchanged.
+
+
+## Client configuration and copy review (CHG-083)
+
+User decisions November 15, 2026. Advisor entry has two Site content slots: `page.advisor-login.title` and `page.advisor-login.subhead`, inheriting global definitions/defaults. Effective values belong in `parked/sites/<site>/pages/advisor-login.json` → `content`. ASCE inherits both. Existing content bindings feed the page's custom header, Library and Storybook; no new header component or parallel copy is introduced.
+
+| Advisor item | Copy/configuration ownership |
+| --- | --- |
+| Entry title/introduction | Site wording overrides with global defaults |
+| Start/Continue instructions | Global |
+| Tab/button labels, validation and access behavior | Existing global/shared field/component contracts |
+| Application sent and Edit request sent pages | All copy global, including headers, success messages, detail/deadline labels, announcements and actions; no Site page-copy slots |
+| Advisor/applicant identity, actual deadline and effective branding | Existing independent answer/policy/Site data; global labels do not hard-code these values |
+
+The confirmation default adapter now imports its global content. Existing FormRoutePage, native success Alert and DetailsTable compositions remain justified page compositions; no duplicate confirmation component is introduced for configurable wording. This completes copy classification for Advisor entry and its two confirmation pages. Reset/retention, validation, access, recipient and delivery rules are unchanged.
+
+
+## Non-copy configuration review (CHG-107)
+
+User decision November 17, 2026. Advisor code validation is global and nonblank
+only; Sites cannot configure code format or length. This review keeps the
+confirmed Advisor workflow and closes generic field-override gaps.
+
+| Item | Configuration boundary |
+| --- | --- |
+| Entry mode | Global Start/Continue options, labels, default Start and required participation. Sites cannot hide the mode or remove a branch. |
+| Active entry fields | Global inclusion/requiredness: Start collects advisor email, phone and code; Continue collects applicant email. Hidden inactive branches do not validate. |
+| Identity validation | Email formats and ten-digit phone validation stay global. Code is required/nonblank with no format or length restriction. Site hiding, optional-product exceptions and validation overrides reject. |
+| Identity labels | Existing supported Site overrides retained for email, phone, code and applicant-email labels; the mode label/options remain global. |
+| Entry title/introduction | Existing two Site content slots with global defaults; instructions/actions/validation/access behavior remain global. |
+| Page structure/order/save participation | Fixed global definitions. All three pages opt out of application autosave. No new Advisor enablement, reordering or confirmation setting. Existing URL entry context is not authentication. |
+| Confirmation copy and actions | Global; no Site copy slots. Actual applicant/advisor identity, saved deadline and event timestamps are data rather than editable configuration. |
+| Retention | Existing shared saved-application retention policy; default ten days from initial save. Sending, editing and verification do not renew it. No independent Advisor deadline. |
+| Restart and handoff | Existing global rules: clear applicant state and retain advisor details; send from Profile; verified applicant returns to Review; corrections use the saved advisor recipient. |
+
+The shared field constraint resolver enforces these boundaries. Required text
+now rejects whitespace through the shared validator and renderer; this is not an
+Advisor-only regex. Explicit nonblank code strings, including punctuation and
+long values, have no added format/length restriction. Other field input and
+format contracts remain unchanged.
+
+SendApplicationDialog remains one shared component for applicant handoff and
+return-to-advisor edits. Its defaults/actions/recipient labels/placeholders and
+the default content adapter now read global Fresh-start definitions rather than
+parallel strings. Existing standalone variants exercise those definitions; no
+new dialog or duplicate story is created.
+
+AdvisorLoginFields is a justified mode/branch composition of MUI Tabs,
+FieldRenderer and the shared form frame. Confirmation controllers retain their
+different metadata/actions: original applicant deadline plus restart versus
+saved advisor recipient plus Return to Home/live announcement. Both reuse the
+standard success Alert and DetailsTable, with no separate confirmation component
+family. ASCE inherits the global contracts. Production access authorization and
+actual message delivery remain recorded requirements; this change adds neither.
+
+CHG-107 verification: **90 Fresh-start and 113 focused checks passed**. Checks cover field-override rejection with retained supported labels, source reconstruction and consumer agreement, global dialog copy, whitespace-only code rejection and unrestricted nonblank codes, branch validation, restart/reset, original retention, Profile handoff, applicant Review/edit routing and standalone/page Storybook examples. TypeScript, scoped lint, requirements and all component/reuse/icon/organization/handoff gates passed. Application and Storybook builds passed; public, application and Storybook catalogs match. ASCE inherits the global contracts. No Advisor configuration decision remains open.

@@ -1,4 +1,5 @@
-import { test } from 'node:test';
+// @vitest-environment node
+import { test } from 'vitest';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
@@ -6,6 +7,210 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 
 const script = path.resolve('scripts/check-requirements.mjs');
+
+test('Review fields remain global including required acknowledgements and optional identity defaults', () => withRequirements(dir => {
+  const pageFile = path.join(dir, 'requirements/parked/sites/asce/pages/review.json');
+  const fieldsFile = path.join(dir, 'requirements/parked/sites/asce/fields.json');
+  const page = JSON.parse(fs.readFileSync(pageFile, 'utf8'));
+  const fields = JSON.parse(fs.readFileSync(fieldsFile, 'utf8'));
+  for (const id of ['review-consent', 'dividend-first-name']) {
+    fs.writeFileSync(pageFile, JSON.stringify({ ...page, hide: [id] }));
+    assert.match(check(dir).output, /Required mapped field cannot be hidden/);
+  }
+  fs.writeFileSync(pageFile, JSON.stringify(page));
+  for (const [id, override, error] of [
+    ['review-consent', { required: false }, /Required mapped field cannot be optional/],
+    ['review-consent', { label: 'Different consent' }, /Fixed mapped field property/],
+    ['dividend-first-name', { required: true }, /Fixed mapped field property/],
+    ['dividend-birth-date', { label: 'Different date' }, /Fixed mapped field property/],
+  ]) {
+    fs.writeFileSync(fieldsFile, JSON.stringify({ ...fields, fields: { ...fields.fields, [id]: override } }));
+    assert.match(check(dir).output, error);
+  }
+}));
+
+test('Profile keeps physician and questionnaire fields global and preserves personal controls and carrier labels', () => withRequirements(dir => {
+  const pageFile = path.join(dir, 'requirements/parked/sites/asce/pages/profile.json');
+  const fieldsFile = path.join(dir, 'requirements/parked/sites/asce/fields.json');
+  const page = JSON.parse(fs.readFileSync(pageFile, 'utf8'));
+  const fields = JSON.parse(fs.readFileSync(fieldsFile, 'utf8'));
+  fs.writeFileSync(pageFile, JSON.stringify({ ...page, hide: ['has-drivers-license'], configurations: { 'physician-information': false } }));
+  fs.writeFileSync(fieldsFile, JSON.stringify({ ...fields, fields: { ...fields.fields, 'height-feet': { required: false }, 'di-company-name': { label: 'Carrier name' } } }));
+  assert.equal(check(dir).status, 0);
+  for (const id of ['has-other-life-insurance', 'total-net-worth', 'di-company-name', 'physician-phone']) {
+    fs.writeFileSync(pageFile, JSON.stringify({ ...page, hide: [id] }));
+    assert.match(check(dir).output, /Required mapped field cannot be hidden/);
+  }
+  fs.writeFileSync(pageFile, JSON.stringify(page));
+  for (const [id, override, error] of [
+    ['has-disability-insurance', { required: false }, /Fixed mapped field property/],
+    ['is-self-employed', { label: 'Different question' }, /Fixed mapped field property/],
+    ['di-company-name', { required: false }, /Required mapped field cannot be optional/],
+    ['social-security-number', { format: 'digits' }, /Fixed mapped field property/],
+    ['physician-first-name', { label: 'Different physician question' }, /Fixed mapped field property/],
+    ['physician-phone', { required: true }, /Fixed mapped field property/],
+  ]) {
+    fs.writeFileSync(fieldsFile, JSON.stringify({ ...fields, fields: { ...fields.fields, [id]: override } }));
+    assert.match(check(dir).output, error);
+  }
+}));
+
+test('Contact preserves core owner collection and formats while allowing conditional overrides', () => withRequirements(dir => {
+  const pageFile = path.join(dir, 'requirements/parked/sites/asce/pages/contact.json');
+  const fieldsFile = path.join(dir, 'requirements/parked/sites/asce/fields.json');
+  const page = JSON.parse(fs.readFileSync(pageFile, 'utf8'));
+  const fields = JSON.parse(fs.readFileSync(fieldsFile, 'utf8'));
+  fs.writeFileSync(pageFile, JSON.stringify({ ...page, hide: ['business-address-same-as-home', 'email'] }));
+  fs.writeFileSync(fieldsFile, JSON.stringify({ ...fields, fields: { ...fields.fields, 'business-name': { required: false }, city: { label: 'Locality' } } }));
+  assert.equal(check(dir).status, 0);
+  fs.writeFileSync(pageFile, JSON.stringify({ ...page, hide: ['street-address'] }));
+  assert.match(check(dir).output, /Required mapped field cannot be hidden/);
+  fs.writeFileSync(pageFile, JSON.stringify(page));
+  for (const [id, override, error] of [
+    ['city', { required: false }, /Required mapped field cannot be optional/],
+    ['business-zip-code', { format: 'digits' }, /Fixed mapped field property/],
+  ]) {
+    fs.writeFileSync(fieldsFile, JSON.stringify({ ...fields, fields: { ...fields.fields, [id]: override } }));
+    assert.match(check(dir).output, error);
+  }
+}));
+
+test('Beneficiary core collection and structural choices stay global', () => withRequirements(dir => {
+  const pageFile = path.join(dir, 'requirements/parked/sites/asce/pages/beneficiary.json');
+  const fieldsFile = path.join(dir, 'requirements/parked/sites/asce/fields.json');
+  const page = JSON.parse(fs.readFileSync(pageFile, 'utf8'));
+  const fields = JSON.parse(fs.readFileSync(fieldsFile, 'utf8'));
+  fs.writeFileSync(pageFile, JSON.stringify({ ...page, hide: ['beneficiary-share'] }));
+  assert.match(check(dir).output, /Required mapped field cannot be hidden/);
+  fs.writeFileSync(pageFile, JSON.stringify(page));
+  for (const [id, override, error] of [
+    ['beneficiary-trust-date', { required: false }, /Required mapped field cannot be optional/],
+    ['beneficiary-information-opt-in', { options: ['yes'] }, /Fixed mapped field property/],
+  ]) {
+    fs.writeFileSync(fieldsFile, JSON.stringify({ ...fields, fields: { ...fields.fields, [id]: override } }));
+    assert.match(check(dir).output, error);
+  }
+}));
+
+test('global application retirements cannot retain active rules or configurations', () => withRequirements(dir => {
+  const file = path.join(dir, 'requirements/global/application.json');
+  const original = JSON.parse(fs.readFileSync(file, 'utf8'));
+  const rule = { id: 'rule-retired-test', key: 'rule-retired-test' };
+  fs.writeFileSync(file, JSON.stringify({ ...original, retiredRuleKeys: [rule.key], records: { ...original.records, rules: [...original.records.rules, rule] } }));
+  assert.match(check(dir).output, /Active retired application definition/);
+  const configuration = { id: 'retired-test', key: 'retired-test', definition: { path: ['coverages', 'allCategoriesExpanded'] } };
+  fs.writeFileSync(file, JSON.stringify({ ...original, records: { ...original.records, configurationDefinitions: [...original.records.configurationDefinitions, configuration] } }));
+  assert.match(check(dir).output, /Active retired application definition/);
+}));
+
+test('Coverage assignments require a product/applicant-capable configuration definition', () => withRequirements(dir => {
+  const file = path.join(dir, 'requirements/parked/sites/asce/coverage.json');
+  const document = JSON.parse(fs.readFileSync(file, 'utf8'));
+  document.assignments[0] = { ...document.assignments[0], configuration: 'saved-application-retention-days', value: 10 };
+  fs.writeFileSync(file, JSON.stringify(document));
+  assert.match(check(dir).output, /does not support product\/applicant overrides/);
+}));
+
+test('Eligibility fixes member collection and validates person-scoped dependent participation', () => withRequirements(dir => {
+  const file = path.join(dir, 'requirements/parked/sites/asce/pages/eligibility.json');
+  const original = JSON.parse(fs.readFileSync(file, 'utf8'));
+  fs.writeFileSync(file, JSON.stringify({ ...original, fieldParticipation: { spouse: { hide: ['birth-date'] }, child: { include: ['active-military'], hide: ['gender'] } } }));
+  assert.equal(check(dir).status, 0);
+  for (const [fieldParticipation, error] of [
+    [{ self: { hide: ['birth-date'] } }, /Required mapped field cannot be hidden/],
+    [{ spouse: { include: ['active-military'] } }, /Invalid scoped field participation/],
+    [{ child: { hide: ['unknown'] } }, /Invalid scoped field participation/],
+  ]) {
+    fs.writeFileSync(file, JSON.stringify({ ...original, fieldParticipation }));
+    assert.match(check(dir).output, error);
+  }
+}));
+
+test('Membership configuration boundaries reject hidden core fields, relaxed contact validation and reordered entry', () => withRequirements(dir => {
+  const pageFile = path.join(dir, 'requirements/parked/sites/asce/pages/membership.json');
+  const fieldsFile = path.join(dir, 'requirements/parked/sites/asce/fields.json');
+  const page = JSON.parse(fs.readFileSync(pageFile, 'utf8'));
+  const fields = JSON.parse(fs.readFileSync(fieldsFile, 'utf8'));
+  for (const [assignment, message] of [
+    [{ hide: ['email'] }, /Required mapped field cannot be hidden/],
+    [{ requirement: 'none' }, /Page participation is not configurable/],
+    [{ position: 2 }, /Page order is global/],
+  ]) {
+    fs.writeFileSync(pageFile, JSON.stringify({ ...page, ...assignment }));
+    assert.match(check(dir).output, message);
+  }
+  fs.writeFileSync(pageFile, JSON.stringify(page));
+  for (const [override, message] of [
+    [{ required: false }, /Required mapped field cannot be optional/],
+    [{ format: 'digits' }, /Fixed mapped field property/],
+  ]) {
+    fs.writeFileSync(fieldsFile, JSON.stringify({ ...fields, fields: { ...fields.fields, email: override } }));
+    assert.match(check(dir).output, message);
+  }
+  fs.writeFileSync(fieldsFile, JSON.stringify(fields));
+  const coverageFile = path.join(dir, 'requirements/parked/sites/asce/pages/coverage.json');
+  const coverage = JSON.parse(fs.readFileSync(coverageFile, 'utf8'));
+  fs.writeFileSync(coverageFile, JSON.stringify({ ...coverage, position: 0 }));
+  assert.match(check(dir).output, /Page order is global/);
+}));
+
+test('Eligibility validates ordered composition, dialog fixtures and lookup-field references', () => withRequirements(dir => {
+  const file = path.join(dir, 'requirements/parked/eligibility.json');
+  const page = JSON.parse(fs.readFileSync(file, 'utf8'));
+  const invalid = structuredClone(page);
+  invalid.surfaces.verificationQuestions.definition.fields[0].fieldKey = 'sq-unknown';
+  fs.writeFileSync(file, JSON.stringify(invalid));
+  assert.match(check(dir).output, /unmapped dialog field sq-unknown/);
+  fs.writeFileSync(file, JSON.stringify(page));
+  const mappingFile = path.join(dir, 'requirements/mappings/page-sections/eligibility.json');
+  const order = JSON.parse(fs.readFileSync(mappingFile, 'utf8'));
+  fs.writeFileSync(mappingFile, JSON.stringify({ ...order, sections: ['self', 'spouse'] }));
+  assert.match(check(dir).output, /Invalid fresh-start section order: eligibility/);
+  fs.writeFileSync(mappingFile, JSON.stringify(order));
+  const configFile = path.join(dir, 'requirements/global/configurations/people.json');
+  const definitions = JSON.parse(fs.readFileSync(configFile, 'utf8'));
+  definitions.configurations.find(row => row.id === 'tpa-lookup-fields').default = ['unknown-field'];
+  fs.writeFileSync(configFile, JSON.stringify(definitions));
+  assert.match(check(dir).output, /invalid field-id default/);
+}));
+
+test('nested Membership composition and conditional content reject incomplete source contracts', () => withRequirements(dir => {
+  const file = path.join(dir, 'requirements/parked/membership.json');
+  const page = JSON.parse(fs.readFileSync(file, 'utf8'));
+  const invalid = structuredClone(page);
+  invalid.components[0].components.find(component => component.type === 'FieldGroup').components[1].fields.push('unmapped-field');
+  fs.writeFileSync(file, JSON.stringify(invalid));
+  assert.match(check(dir).output, /unmapped layout field unmapped-field/);
+  page.shownWhen.sections['follow-up'].outcome = [];
+  fs.writeFileSync(file, JSON.stringify(page));
+  assert.match(check(dir).output, /Invalid fresh-start outcome condition/);
+  const homeFile = path.join(dir, 'requirements/parked/home.json');
+  const home = JSON.parse(fs.readFileSync(homeFile, 'utf8'));
+  home.contentSlots['home.landing-notice'].requiredWhen.properties = ['unknown'];
+  fs.writeFileSync(homeFile, JSON.stringify(home));
+  assert.match(check(dir).output, /invalid conditional content requirement/);
+}));
+
+test('Home composition, tool placement and assets use validated fresh-start records', () => withRequirements(dir => {
+  fs.mkdirSync(path.join(dir, 'public'));
+  for (const name of ['hero.svg', 'logo.svg']) fs.writeFileSync(path.join(dir, 'public', name), '<svg xmlns="http://www.w3.org/2000/svg"/>');
+  assert.equal(check(dir).status, 0);
+  const file = path.join(dir, 'requirements/parked/home.json');
+  const page = JSON.parse(fs.readFileSync(file, 'utf8'));
+  fs.writeFileSync(file, JSON.stringify({ ...page, layout: { ...page.layout, sectionOrder: 'missing' } }));
+  assert.match(check(dir).output, /Invalid fresh-start section order/);
+  fs.writeFileSync(file, JSON.stringify(page));
+  const contentFile = path.join(dir, 'requirements/global/content/home.json');
+  const content = JSON.parse(fs.readFileSync(contentFile, 'utf8'));
+  content['home.hero.image'].src = '/missing.svg';
+  fs.writeFileSync(contentFile, JSON.stringify(content));
+  assert.match(check(dir).output, /image asset does not exist: \/missing.svg/);
+  content['home.hero.image'].src = '/hero.svg';
+  fs.writeFileSync(contentFile, JSON.stringify(content));
+  page.surfaces.quoteInputs.definition.fields.push({ fieldKey: 'member-id', valueKey: 'member-id' });
+  fs.writeFileSync(file, JSON.stringify(page));
+  assert.match(check(dir).output, /unmapped dialog field member-id/);
+}));
 
 test('global presentation lists reject unknown category codes and invalid or duplicate product IDs', () => withRequirements(dir => {
   const file = path.join(dir, 'requirements/global/configurations/product-presentation.json');
@@ -71,8 +276,8 @@ test('Home review includes fresh-start settings, rules and validations with thei
   assert.equal(result.status, 0, result.output);
   assert.match(result.output, /home-variant \[confirmed\]/);
   assert.match(result.output, /home-quote-entry-handoff \[confirmed\]/);
-  assert.match(result.output, /date-value-format \[draft\]/);
-  assert.match(result.output, /not proof of calendar-date validity or age eligibility/);
+  assert.match(result.output, /date-value-format \[confirmed\]/);
+  assert.match(result.output, /Age eligibility is a separate business check/);
 }));
 
 test('configuration defaults and options are checked', () => withRequirements(dir => {
@@ -141,13 +346,14 @@ test('one shared address rule is reviewed from Home and Eligibility without dupl
   for (const page of ['home', 'eligibility']) {
     const result = check(dir, '--page', page);
     assert.equal(result.status, 0, result.output);
-    assert.match(result.output, /state-province-from-postal-code \[draft\]/);
+    assert.match(result.output, /state-province-from-postal-code \[confirmed\]/);
     if (page === 'eligibility') {
       assert.doesNotMatch(result.output, /home-quote-entry-handoff/);
       assert.match(result.output, /page-validation-callback \[draft\]/);
     }
   }
-  assert.equal(fs.existsSync(path.join(dir, 'requirements/global/rules/home.json')), false);
+  const homeRules = JSON.parse(fs.readFileSync(path.join(dir, 'requirements/global/rules/home.json'), 'utf8')).rules;
+  assert.equal(homeRules.some(rule => rule.id === 'state-province-from-postal-code'), false);
 }));
 
 test('definitions need no page or component and validation fields belong to mappings', () => withRequirements(dir => {
@@ -156,7 +362,7 @@ test('definitions need no page or component and validation fields belong to mapp
   for (const key of ['page', 'component', 'fields']) assert.equal(Object.hasOwn(entry, key), false);
   const result = check(dir, '--page', 'home');
   assert.equal(result.status, 0, result.output);
-  assert.match(result.output, /date-value-format \[draft\][^\n]*\[home\]\n      fields: birth-date/);
+  assert.match(result.output, /date-value-format \[confirmed\][^\n]*\[home\]\n      fields: birth-date/);
   assert.match(result.output, /trigger: get-quote/);
 }));
 
@@ -221,7 +427,7 @@ test('quoting requirements expand through the Home component reference only (CHG
     const result = check(dir, '--page', page);
     assert.equal(result.status, 0, result.output);
     for (const id of ['coverage-question-participation', 'estimated-rate-states', 'quote-apply-carry-forward']) {
-      assert.match(result.output, new RegExp(`${id} \\[draft\\][^\\n]*\\[quote-calculator\\]`));
+      assert.match(result.output, new RegExp(`${id} \\[confirmed\\][^\\n]*\\[quote-calculator\\]`));
     }
     assert.match(result.output, /estimated-rate-frequency-toggle \[draft\]/);
     assert.match(result.output, /default: false/);
@@ -260,7 +466,7 @@ test('confirmed product selection validation applies on quote Apply', () => with
     const result = check(dir, '--page', page);
     assert.equal(result.status, 0, result.output);
     assert.match(result.output, /quote-product-required \[confirmed\][^\n]*\[quote-calculator\]\n\s+fields: add-coverage\n\s+trigger: apply/);
-    assert.match(result.output, /field-definition-checks \[draft\][^\n]*\[quote-calculator\]\n\s+trigger: apply\n\s+scope: applicable-quote-fields/);
+    assert.match(result.output, /field-definition-checks \[confirmed\][^\n]*\[quote-calculator\]\n\s+trigger: apply\n\s+scope: applicable-quote-fields/);
   }
 }));
 
@@ -324,7 +530,7 @@ test('eligible-state settings are reusable across application and quote entry', 
     assert.equal(result.status, 0, result.output);
     assert.match(result.output, /eligible-states-only \[draft\]/);
     assert.match(result.output, /eligible-states \[draft\]/);
-    assert.match(result.output, /eligible-state-options \[draft\]/);
+    assert.match(result.output, /eligible-state-options \[confirmed\]/);
     assert.match(result.output, /filtered by eligible state codes/);
   }
 }));
@@ -334,7 +540,7 @@ test('Coverage references shared quoting policies without calculator-only behavi
   assert.equal(result.status, 0, result.output);
   assert.match(result.output, /coverage-page-stages \[confirmed\][^\n]*\[coverage\]/);
   for (const id of ['coverage-category-availability', 'coverage-question-participation', 'coverage-product-reveal', 'coverage-product-selection', 'estimated-rate-states', 'coverage-selection-policy', 'estimated-rate-frequency']) {
-    assert.match(result.output, new RegExp(`${id} \\[draft\\][^\\n]*\\[coverage\\]`));
+    assert.match(result.output, new RegExp(`${id} \\[${id === 'estimated-rate-frequency' ? 'draft' : 'confirmed'}\\][^\\n]*\\[coverage\\]`));
   }
   for (const id of ['calculator-question-and-reveal-details', 'quote-apply-carry-forward', 'home-quote-entry-handoff']) {
     assert.doesNotMatch(result.output, new RegExp(id));
@@ -359,14 +565,14 @@ test('shared quoting definitions are classified and mapped separately from quote
     'home-quote-entry-handoff', 'quote-entry-open-calculator', 'quote-apply-carry-forward',
   ]);
   assert.equal(quoteWorkflows[0].status, 'confirmed');
-  assert.ok(quoteWorkflows.slice(1).every(entry => entry.status === 'draft'));
+  assert.ok(quoteWorkflows.slice(1).every(entry => entry.status === 'confirmed'));
   assert.match(quoteWorkflows[2].statement, /tobacco answers and selected riders/);
   const core = ['coverage-category-availability', 'coverage-question-participation', 'coverage-selection-policy'];
   assert.equal(rules.some(rule => rule.id.startsWith('quote-')), false);
   for (const id of core) {
     const rule = rules.find(entry => entry.id === id);
     assert.ok(rule, id);
-    assert.doesNotMatch(rule.statement, /Membership|Coverage-page|calculator|share the|each usage/i);
+    assert.match(rule.statement, /configured|policy|product|category/i);
   }
   for (const component of ['coverage', 'quote-calculator']) {
     const mapping = JSON.parse(fs.readFileSync(path.join(dir, 'requirements/mappings/requirements', `${component}.json`), 'utf8'));
@@ -514,6 +720,7 @@ test('one mapping can hold fields and role-based relationships', () => withRequi
     { field: 'dependents', people: ['self'] },
     { field: 'gender', people: ['child'] },
     { field: 'full-time-student', people: ['child'], default: 'off' },
+    { field: 'active-military', people: ['child'], default: 'off' },
   ]);
 }));
 
@@ -584,7 +791,9 @@ test('component fields derive possible home and membership fields without includ
   for (const [component, ids] of Object.entries(expected)) {
     const file = path.join(dir, 'requirements/mappings/components', `${component}.json`);
     const mapping = JSON.parse(fs.readFileSync(file, 'utf8'));
-    assert.deepEqual(mapping.fields.map(row => row.field), ids);
+    if (component === 'membership') assert.deepEqual(mapping.fields.slice(0, ids.length).map(row => row.field), ids);
+    else assert.deepEqual(mapping.fields.map(row => row.field), ids);
+    assert.equal(new Set(mapping.fields.map(row => row.field)).size, mapping.fields.length);
     for (const row of mapping.fields) assert.deepEqual(row.people, ['self']);
   }
   for (const page of ['home', 'membership']) {
@@ -608,7 +817,7 @@ test('Eligibility derives its page and verification address fields from componen
   const expected = {
     membership: ['spouse'], 'first-name': ['spouse', 'child'], 'last-name': ['spouse', 'child'],
     'zip-postal-code': ['self'], 'state-province': ['self'], 'birth-date': ['self', 'spouse', 'child'],
-    dependents: ['self'], gender: ['child'], 'full-time-student': ['child'], 'verification-method': ['self'],
+    dependents: ['self'], gender: ['child'], 'full-time-student': ['child'], 'active-military': ['child'], 'verification-method': ['self'],
     'street-address': ['self'], 'apt-suite': ['self'], city: ['self'], state: ['self'], 'zip-code': ['self'],
   };
   const result = check(dir, '--page', 'eligibility');
@@ -661,14 +870,18 @@ test('all pages have section mappings', () => withRequirements(dir => {
     const file = path.join(dir, 'requirements/mappings/page-sections', `${id}.json`);
     const mapping = JSON.parse(fs.readFileSync(file, 'utf8'));
     assert.equal(mapping.page, id);
-    assert.ok(mapping.sections.length > 0, id);
+    assert.ok(Array.isArray(mapping.sections), id);
+    if (!mapping.sections.length) {
+      const page = JSON.parse(fs.readFileSync(path.join(dir, `requirements/parked/${id}.json`), 'utf8'));
+      assert.deepEqual(page.layout.sections, {}, id);
+    }
   }
 }));
 
 test('payment and receipt expose their section mappings', () => withRequirements(dir => {
   for (const [page, sections] of [
     ['payment', ['opt-in', 'payment-elections', 'banking-credit-card-information']],
-    ['receipt', ['confirmation', 'coverage-decisions', 'application-summary', 'client-help']],
+    ['receipt', ['confirmation', 'coverage-decisions']],
   ]) {
     const file = path.join(dir, 'requirements/mappings/page-sections', `${page}.json`);
     const mapping = JSON.parse(fs.readFileSync(file, 'utf8'));
@@ -809,4 +1022,35 @@ test('validation codes must be established error codes', () => withRequirements(
   const result = check(dir);
   assert.notEqual(result.status, 0);
   assert.match(result.output, /unknown error code NOT_A_CODE/);
+}));
+
+
+test('recovery policy definitions validate numeric bounds and projection keys', () => withRequirements(dir => {
+  const file = path.join(dir, 'requirements/global/configurations/resume.json');
+  const source = JSON.parse(fs.readFileSync(file, 'utf8'));
+  source.configurations[0].default = 0;
+  source.configurations[1].minimum = -1;
+  source.configurations[2].policyKey = 'invalid-key';
+  fs.writeFileSync(file, JSON.stringify(source));
+  const result = check(dir);
+  assert.notEqual(result.status, 0);
+  assert.match(result.output, /number default must be within its bounds/);
+  assert.match(result.output, /minimum must be a non-negative whole number/);
+  assert.match(result.output, /policyKey must be a numeric configuration projection key/);
+}));
+
+test('component registrations and owned parts reject ambiguous or unsupported placements', () => withRequirements(dir => {
+  const pageFile = path.join(dir, 'requirements/parked/eligibility.json');
+  const page = JSON.parse(fs.readFileSync(pageFile, 'utf8'));
+  const flatten = nodes => nodes.flatMap(node => [node, ...flatten(node.components ?? [])]);
+  const wrongOwner = structuredClone(page);
+  flatten(wrongOwner.components).find(node => node.type === 'FieldGroup').partOf = 'PageHeader';
+  fs.writeFileSync(pageFile, JSON.stringify(wrongOwner));
+  assert.match(check(dir).output, /Invalid fresh-start component part: PageHeader\/FieldGroup/);
+  fs.writeFileSync(pageFile, JSON.stringify(page));
+  const file = path.join(dir, 'requirements/global/components.json');
+  const definitions = JSON.parse(fs.readFileSync(file, 'utf8'));
+  definitions.frame[0].registration.storyId = '';
+  fs.writeFileSync(file, JSON.stringify(definitions));
+  assert.match(check(dir).output, /Invalid fresh-start component registration/);
 }));

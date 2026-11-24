@@ -35,12 +35,12 @@ export function applyCombinedDisabilityQuestionnaireAdoption(db: DatabaseSchema)
   const selected = ["waepa", "nso"].map(siteKey => {
     const site = db.sites.find(row => row.key === siteKey)!;
     const products = db.siteProducts.filter(link => link.siteId === site.id && link.enabled && db.products.some(product => product.key === link.productKey && product.categoryKey === "DI")).map(link => link.productKey);
-    const policy: HealthQuestionnairePolicy = { version: 1, applicability: "site", associationKeys: [], pageId: "health-di", whenProcessing: "qd-life-with-fuw-disability", variants: [{ key: "combined-supplemental-di", when: { any: products }, items: structuredClone(items) }] };
+    const policy: HealthQuestionnairePolicy = { version: 1, applicability: "site", associationKeys: [], pageId: "health-di-supp", whenProcessing: "qd-life-with-fuw-disability", variants: [{ key: "combined-supplemental-di", when: { any: products }, items: structuredClone(items) }] };
     const key = `${siteKey}.combined.supplemental-di-questionnaires`, row = { ...meta("configurationValues", key), position: 0, scope: "site" as const, siteKey, clientKey: null, configurationKey, value: policy as unknown as Json };
     const index = db.configurationValues.findIndex(row => row.key === key); if (index < 0) db.configurationValues.push(row); else db.configurationValues[index] = row;
     return { siteKey, key, policy };
   });
-  const key = combinedDisabilityQuestionnaireDecisionKey, row = { ...meta("semanticRequirements", key), domain: "approved-business-decision", subjectTable: "pages", subjectKey: "health-di", predicate: "combined-source-supplemental-di", status: "documented", value: {
+  const key = combinedDisabilityQuestionnaireDecisionKey, row = { ...meta("semanticRequirements", key), domain: "approved-business-decision", subjectTable: "pages", subjectKey: "health-di-supp", predicate: "combined-source-supplemental-di", status: "documented", value: {
     authority, approvalStatus: "approved", runtimeActivation: "reviewed-seed", sourceReconciliation: "approved-new-template-interpretation", sourceReferences: ["Health Questions!A101:B104", "SUP DI Health questions!A1:A4"], selected,
     fields: [...new Set(items.flatMap(item => [...(item.questionFieldKey ? [item.questionFieldKey] : []), ...item.fieldKeys]))].map(key => ({ key, definition: structuredClone(db.fields.find(row => row.key === key)!.definition) })),
     interpretation: "For each adult on WAEPA or NSO, require the source supplemental DI questions on Health DI only when that adult has QD Life plus FUW Disability. Use native processing, independent answers and complete conditional detail records. Replace the generic DI questions for that combined applicant; Life questions keep their own approved scope. DI-only retains its existing provisional questionnaire. Unknown combined processing fails closed. PDF splitting and output remain deferred.",

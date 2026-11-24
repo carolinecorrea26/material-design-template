@@ -18,13 +18,20 @@
     "self": [
       "gender",
       "average-monthly-income",
-      "hours-worked-per-week",
-      "self-employed-under-one-year"
+      "hours-worked-per-week"
     ],
     "spouse": [
       "spouse-gender",
       "spouse-average-monthly-income",
       "spouse-hours-worked-per-week"
     ]
-  }
+  },
+  "OO": {
+    "self": [
+      "hours-worked-per-week",
+      "monthly-business-expenses",
+      "business-expense-responsibility"
+    ]
+  },
+  "SH": {}
 }

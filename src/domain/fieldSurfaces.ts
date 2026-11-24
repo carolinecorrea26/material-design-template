@@ -2,7 +2,8 @@ import { resolveSharedFieldDefinition } from "./fieldDefinitionOwnership";
 import type { EffectiveSiteData, resolveEffectiveSite } from './effectiveSite';
 import type { FieldDefinition } from './fields';
 export type FieldSurfaceDefinition = {
-  pageKey: string; label: string; maxItems?: number;
+  kind?: 'tool' | 'controls';
+  pageKey: string; label: string; maxItems?: number; minItems?: number;
   inspectionLabel?: string;
   inspectionOrder?: Record<string, number>;
   libraryGroup?: { label: string; excludeFieldKeys?: string[] };
@@ -13,7 +14,7 @@ export type ResolvedFieldSurface = Omit<FieldSurfaceDefinition, 'fields'> & {
   mapping: { fields: FieldDefinition[]; fieldToKey: Record<string, string>; gridFields: string[] };
 };
 const safeKey = (key: unknown): key is string => typeof key === 'string' && /^[a-zA-Z][a-zA-Z0-9-]*$/.test(key) && !['constructor', 'prototype', '__proto__'].includes(key);
-const requiredSurfaces = ['beneficiaryIndividual', 'beneficiaryTrust', 'beneficiaryControls', 'healthLiDetails', 'healthSiDetails', ...Array.from({ length: 7 }, (_, i) => `healthDiq${i + 1}Details`), 'needsCalculator', 'quoteInputs', 'paymentControls', 'paymentBank', 'verificationControls', 'verificationQuestions'];
+const requiredSurfaces = ['beneficiaryIndividual', 'beneficiaryTrust', 'beneficiaryControls', 'healthLiDetails', 'healthSiDetails', ...Array.from({ length: 7 }, (_, i) => `healthDiq${i + 1}Details`), 'needsCalculator', 'quoteInputs', 'paymentControls', 'paymentBank', 'verificationControls', 'verificationQuestions', 'coverageControls', 'coverageSpouseControls', 'coverageChildControls'];
 export function resolveStoredFieldSurfaces(data: EffectiveSiteData, site: Pick<ReturnType<typeof resolveEffectiveSite>, 'configuration' | 'siteKey' | 'clientKey'>) {
   const rows = site.configuration.configurations.filter(row => data.configurationDefinitions.find(def => def.key === row.key)?.definition.path?.join('.') === 'fieldSurfaces');
   if (rows.length !== 1 || !rows[0].value || typeof rows[0].value !== 'object' || Array.isArray(rows[0].value)) throw new Error('Missing or ambiguous stored field surface configuration');
@@ -68,7 +69,8 @@ export function resolveStoredFieldSurfaces(data: EffectiveSiteData, site: Pick<R
     }
     if (['beneficiaryControls', 'verificationControls'].includes(name) && !fields.some(field => field.id === (name === 'beneficiaryControls' ? 'beneficiaryType' : 'verification-method'))) throw new Error(`Missing semantic surface control: ${name}`);
     if (name === 'beneficiaryIndividual' && !fields.some(field => field.id === 'beneficiary-share')) throw new Error('Missing semantic surface control: beneficiary share');
-    result[name] = { pageKey: definition.pageKey, label: definition.label, maxItems: definition.maxItems, libraryGroup: definition.libraryGroup, inspectionLabel: definition.inspectionLabel, inspectionOrder: definition.inspectionOrder, mapping: { fields, fieldToKey, gridFields } };
+    if (definition.minItems !== undefined && (!Number.isSafeInteger(definition.minItems) || definition.minItems < 0 || definition.minItems > (definition.maxItems ?? 100))) throw new Error(`Invalid stored surface minimum: ${name}`);
+    result[name] = { kind: definition.kind, pageKey: definition.pageKey, label: definition.label, maxItems: definition.maxItems, minItems: definition.minItems, libraryGroup: definition.libraryGroup, inspectionLabel: definition.inspectionLabel, inspectionOrder: definition.inspectionOrder, mapping: { fields, fieldToKey, gridFields } };
   }
   return result;
 }

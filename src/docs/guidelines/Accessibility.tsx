@@ -19,7 +19,7 @@ const Applies = ({ items }: { items: string[] }) => (
       Applies to:
     </Typography>
     {items.map((c) => (
-      <Chip key={c} label={c} size="small" variant="outlined" sx={{ fontFamily: "monospace", fontSize: "0.7rem" }} />
+      <Chip key={c} label={c} size="small" variant="outlined" sx={{ fontFamily: "monospace", fontSize: "caption.fontSize" }} />
     ))}
   </Stack>
 );
@@ -220,7 +220,7 @@ export const Accessibility = () => (
           prototype's placeholder colors.
         </Typography>
       </Stack>
-      <Applies items={["ProgressStep", "CoverageOptionsPanel", "HelpChips"]} />
+      <Applies items={["ProgressStep", "CoverageOptionsPanel", "PageHelpChips"]} />
     </DocsSection>
 
     <DocsSection title="Pointer & touch interaction">

@@ -1,7 +1,9 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import { afterEach, beforeAll, expect, it } from "vitest";
 import { createReviewedMigrationDatabase } from "./fixtures";
 import { applySharedConsentAdoption } from "./sharedConsentAdoption";
-import { resolvePrototypeLibrary, installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import { composeReadAndSign, resolveReviewExperience } from "../config/reviewExperience";
 import { isReviewPolicy, resolveReviewConsent, validateCapturedReview } from "../domain/reviewPolicy";
 import { reviewDefaults } from "../content/defaults/review";
@@ -22,7 +24,7 @@ it.each([
   expect(review.authorizationVisible).toBe(health);
   expect(review.consent.status).toBe("resolved");
   expect(review.consent.text?.includes("MIB")).toBe(health);
-  const content = composeReadAndSign(reviewDefaults.readAndSignContent, review.fraudNotice, review.consent.text, review.authorizationVisible, review.medicalAuthorization);
+  const content = composeReadAndSign(reviewDefaults.readAndSignContent, review.fraudNotice, review.consent.text, review.authorizationVisible, review.medicalAuthorization, review.premiumContributionStatement);
   expect(content.match(/CONSENT:/g)).toHaveLength(1);
   expect(content).not.toContain("{Link");
   expect(content.includes("AUTHOR")).toBe(health);

@@ -102,3 +102,12 @@ export const ForceFullScreen: StoryObj = {
     </ModalDemo>
   ),
 };
+
+export const NondismissableWarning: StoryObj = {
+  render: () => <ModalDemo title="Session warning" role="alertdialog" dismissible={false} fullScreenOnMobile={false} minHeight="auto" maxWidth={444}
+    actions={[{ label: 'Keep session active', onClick: () => {}, autoFocus: true }]} />,
+};
+
+export const StagedHeader: StoryObj = {
+  render: () => <ModalDemo title="Verification" headerContent={<Typography role="group" aria-label="Choose method" sx={{ px: 3, pb: 1 }}>Step 1 of 3</Typography>} />,
+};

@@ -4,14 +4,43 @@ import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import CoverageCart from "../../app/sections/ConfiguredCoverageCart";
 import CoverageCartView from './CoverageCart';
 import { getActiveClientCoverages } from '../../config/client/getActiveClientCoverages';
-import { installPrototypeLibrary } from '../../domain/prototypeLibrary';
+import { installPrototypeLibrary, resolvePrototypeLibrary } from '../../domain/prototypeLibrary';
+import { readFileSync } from 'node:fs';
+import { MemoryRouter } from 'react-router-dom';
+import { ApplicationFormContext } from '../../app/ApplicationFormContext';
+import { withFreshStartCatalog } from '../../domain/freshStartCatalog';
+vi.mock('../../app/usePrototypeRates', () => ({ usePrototypeRates: () => ({ enabled: false }) }));
 let root: Root, container: HTMLDivElement;
 beforeEach(() => {
   vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true); installPrototypeLibrary(null);
   window.history.replaceState(null, '', '/coverage?site=demo');
   container = document.createElement('div'); document.body.append(container); root = createRoot(container);
 });
-afterEach(async () => { await act(async () => root.unmount()); container.remove(); vi.unstubAllGlobals(); });
+afterEach(async () => { await act(async () => root.unmount()); container.remove(); installPrototypeLibrary(null); vi.unstubAllGlobals(); });
+
+it('keeps the WAEPA cart a summary even when application eligibility facts are incomplete', async () => {
+  window.history.replaceState(null, '', '/coverage?site=waepa');
+  const catalog = JSON.parse(readFileSync('public/catalog/portal.json', 'utf8'));
+  const library = resolvePrototypeLibrary(catalog.data, 'waepa', 'cart-summary');
+  installPrototypeLibrary(library);
+  await act(async () => root.render(<ApplicationFormContext.Provider value={{
+    values: { coverageSelections: ['li-group-term'], productApplicants: { 'li-group-term': ['member'] }, coverageAmounts: { 'li-group-term:member': 100000 } },
+    resetValues: vi.fn(), setPageValues: vi.fn(), saveApplication: vi.fn(async () => null),
+  }}><MemoryRouter><CoverageCart variant="drawer" onClose={() => {}} /></MemoryRouter></ApplicationFormContext.Provider>));
+  expect(container.textContent).toContain('Group Term Life Insurance');
+  expect(container.querySelector('[role="alert"]')).toBeNull();
+  expect(container.querySelector('button[aria-label*="Remove"]')).not.toBeNull();
+
+  // Captured content cannot restore the retired cart messages.
+  const keys = ['coverage.coverage-cart.eligibility-concern', 'coverage.coverage-cart.based-on-your-answers-you-may-not-be', 'coverage.coverage-cart.you-may-still-continue-with-your-other-selected'];
+  for (const key of keys) {
+    catalog.data.contentEntries.push({ ...catalog.data.contentEntries[0], id: key, key });
+    catalog.data.contentValues.push({ ...catalog.data.contentValues[0], id: key, key, contentKey: key, value: 'Obsolete cart warning', scope: 'site', siteKey: 'waepa', clientKey: null });
+  }
+  const rebuilt = withFreshStartCatalog(catalog.data);
+  expect(rebuilt.contentEntries.some((row: { key: string }) => keys.includes(row.key))).toBe(false);
+  expect(rebuilt.contentValues.some((row: { contentKey: string }) => keys.includes(row.contentKey))).toBe(false);
+});
 async function render(total: number, selected = true, technicalFailure = false) {
   const product = getActiveClientCoverages()[0];
   await act(async () => root.render(<CoverageCart variant="inline" rateFrequency="monthly" showRateFrequencyToggle={false} grandTotal={total}
@@ -59,4 +88,18 @@ it('preserves nonnumeric rate states and hides cost labels when drawer pricing i
   expect(container.textContent).toContain('Requested coverage');
   expect(container.textContent).not.toContain('Est. cost');
   expect(container.textContent).not.toContain('Estimate unavailable');
+});
+
+it('keeps member labels on other products when a dependent participates elsewhere in the drawer', async () => {
+  const product = getActiveClientCoverages()[0];
+  const member = { applicantId: 'member' as const, amount: 100000, riders: [], monthlyEstimate: 25, display: { status: 'available' as const, amount: 25 } };
+  const render = (dependent: boolean) => root.render(<CoverageCartView variant="drawer" onClose={() => {}} onRemoveCoverage={() => {}} totalMonthly={25}
+    applicantLabels={{ member: 'MemberLabel', spouse: 'SpouseLabel', child: 'ChildLabel' }}
+    entries={[{ coverage: product, applicants: [member] }, ...(dependent ? [{ coverage: { ...product, id: 'other-product' }, applicants: [{ ...member, applicantId: 'child' as const }] }] : [])]} />);
+  await act(async () => render(true));
+  expect(container.textContent).toContain('MemberLabel');
+  expect(container.textContent).toContain('ChildLabel');
+  await act(async () => render(false));
+  expect(container.textContent).not.toContain('MemberLabel');
+  expect(container.textContent).not.toContain('ChildLabel');
 });

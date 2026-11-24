@@ -6,7 +6,8 @@
       "status": "confirmed",
       "type": "boolean",
       "default": false,
-      "source": "User confirmed ASCE TPA portfolio amount reduction; src/domain/tpaPortfolioAmounts.ts"
+      "source": "User confirmed ASCE TPA portfolio amount reduction; src/domain/tpaPortfolioAmounts.ts",
+      "productApplicantOverrides": true
     },
     {
       "id": "coverage-minimum-work-hours",
@@ -14,7 +15,8 @@
       "status": "confirmed",
       "type": "number",
       "default": 0,
-      "source": "Coverage review approved November 2026; site assignments supply MCR values; src/domain/requirementCoveragePolicy.ts"
+      "source": "Coverage review approved November 2026; site assignments supply MCR values; src/domain/requirementCoveragePolicy.ts",
+      "productApplicantOverrides": true
     },
     {
       "id": "coverage-minimum-annual-income",
@@ -22,7 +24,8 @@
       "status": "confirmed",
       "type": "number",
       "default": 0,
-      "source": "Coverage review approved November 2026; site assignments supply MCR values; src/domain/requirementCoveragePolicy.ts"
+      "source": "Coverage review approved November 2026; site assignments supply MCR values; src/domain/requirementCoveragePolicy.ts",
+      "productApplicantOverrides": true
     },
     {
       "id": "coverage-minimum-age-years",
@@ -30,7 +33,8 @@
       "status": "confirmed",
       "type": "number",
       "default": 0,
-      "source": "Coverage review approved November 2026; site assignments supply MCR values; src/domain/requirementCoveragePolicy.ts"
+      "source": "Coverage review approved November 2026; site assignments supply MCR values; src/domain/requirementCoveragePolicy.ts",
+      "productApplicantOverrides": true
     },
     {
       "id": "coverage-maximum-age-years",
@@ -38,7 +42,8 @@
       "status": "confirmed",
       "type": "number",
       "default": 0,
-      "source": "Coverage review approved November 2026; site assignments supply MCR values; src/domain/requirementCoveragePolicy.ts"
+      "source": "Coverage review approved November 2026; site assignments supply MCR values; src/domain/requirementCoveragePolicy.ts",
+      "productApplicantOverrides": true
     },
     {
       "id": "coverage-minimum-age-days",
@@ -46,7 +51,8 @@
       "status": "confirmed",
       "type": "number",
       "default": 0,
-      "source": "Coverage review approved November 2026; site assignments supply MCR values; src/domain/requirementCoveragePolicy.ts"
+      "source": "Coverage review approved November 2026; site assignments supply MCR values; src/domain/requirementCoveragePolicy.ts",
+      "productApplicantOverrides": true
     },
     {
       "id": "coverage-excluded-states",
@@ -55,15 +61,26 @@
       "type": "string-list",
       "default": [],
       "source": "Coverage review approved November 2026; site assignments supply MCR values; src/domain/requirementCoveragePolicy.ts",
-      "format": "state-code"
+      "format": "state-code",
+      "productApplicantOverrides": true
     },
     {
       "id": "coverage-new-application-minimum-amount",
-      "name": "Minimum amount for a new application",
+      "name": "Minimum amount without TPA-verified existing coverage",
       "status": "confirmed",
       "type": "number",
       "default": 0,
-      "source": "Coverage review approved November 2026; site assignments supply MCR values; src/domain/requirementCoveragePolicy.ts"
+      "source": "Coverage review approved November 2026; site assignments supply MCR values; src/domain/requirementCoveragePolicy.ts",
+      "productApplicantOverrides": true
+    },
+    {
+      "id": "coverage-verified-existing-minimum-amount",
+      "name": "Minimum amount with TPA-verified existing coverage",
+      "status": "confirmed",
+      "type": "number",
+      "default": 0,
+      "source": "Use only a positive, successfully TPA-verified matching product amount for this applicant. Without an assignment or verified matching coverage, retain the new-application minimum. User decision November 12, 2026; src/domain/coverageMinimumAmount.ts",
+      "productApplicantOverrides": true
     },
     {
       "id": "coverage-age-maximum-amount",
@@ -71,7 +88,8 @@
       "status": "confirmed",
       "type": "number",
       "default": 0,
-      "source": "Coverage review approved November 2026; site assignments supply MCR values; src/domain/requirementCoveragePolicy.ts"
+      "source": "Coverage review approved November 2026; site assignments supply MCR values; src/domain/requirementCoveragePolicy.ts",
+      "productApplicantOverrides": true
     },
     {
       "id": "coverage-member-benefit-submit-minimum",
@@ -79,7 +97,8 @@
       "status": "confirmed",
       "type": "number",
       "default": 0,
-      "source": "Coverage review approved November 2026; site assignments supply MCR values; src/domain/requirementCoveragePolicy.ts"
+      "source": "Coverage review approved November 2026; site assignments supply MCR values; src/domain/requirementCoveragePolicy.ts",
+      "productApplicantOverrides": true
     },
     {
       "id": "coverage-self-employment-question",
@@ -91,7 +110,8 @@
       "options": [
         "employment-and-years",
         "under-one-year"
-      ]
+      ],
+      "productApplicantOverrides": true
     },
     {
       "id": "coverage-child-requires-member",
@@ -99,7 +119,8 @@
       "status": "confirmed",
       "type": "boolean",
       "default": false,
-      "source": "Coverage review approved November 2026; site assignments supply MCR values; src/domain/requirementCoveragePolicy.ts"
+      "source": "Coverage review approved November 2026; site assignments supply MCR values; src/domain/requirementCoveragePolicy.ts",
+      "productApplicantOverrides": true
     },
     {
       "id": "coverage-student-maximum-age-years",
@@ -107,7 +128,8 @@
       "status": "confirmed",
       "type": "number",
       "default": 0,
-      "source": "Approved ASCE Eligibility review; src/domain/requirementCatalog.mjs"
+      "source": "Approved ASCE Eligibility review; src/domain/requirementCatalog.mjs",
+      "productApplicantOverrides": true
     }
   ]
 }

@@ -41,10 +41,10 @@ export default function InternalPageShell({ pageId, children }: InternalPageShel
           borderColor: "divider",
         }}
       >
-        <Breadcrumbs aria-label="breadcrumb" sx={{ fontSize: "0.8125rem" }}>
+        <Breadcrumbs aria-label="breadcrumb">
           {trail.map((crumb, i) =>
             i === trail.length - 1 ? (
-              <Typography key={crumb.id} color="text.primary" sx={{ fontSize: "0.8125rem", fontWeight: 700 }}>
+              <Typography key={crumb.id} variant="inherit" aria-current="page" color="text.primary">
                 {crumb.label}
               </Typography>
             ) : (
@@ -52,8 +52,9 @@ export default function InternalPageShell({ pageId, children }: InternalPageShel
                 key={crumb.id}
                 component={RouterLink}
                 to={getPagePath(crumb.id)}
+                variant="inherit"
+                data-completed="true"
                 color="text.secondary"
-                sx={{ fontSize: "0.8125rem" }}
               >
                 {crumb.label}
               </Link>

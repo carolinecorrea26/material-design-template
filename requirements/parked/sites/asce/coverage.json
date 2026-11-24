@@ -1,11 +1,56 @@
 {
   "site": "asce",
   "assignments": [
-    { "configuration": "coverage-deduct-inforce-amount", "product": "li-term", "applicants": ["member", "spouse"], "value": true, "source": "User confirmed: deduct verified TPA in-force amounts from the configured coverage maximum" },
-    { "configuration": "coverage-deduct-inforce-amount", "product": "li-10yr", "applicants": ["member", "spouse"], "value": true, "source": "User confirmed: deduct verified TPA in-force amounts from product and combined Life maxima" },
-    { "configuration": "coverage-deduct-inforce-amount", "product": "li-20yr", "applicants": ["member", "spouse"], "value": true, "source": "User confirmed: deduct verified TPA in-force amounts from product and combined Life maxima" },
-    { "configuration": "coverage-deduct-inforce-amount", "product": "li-add", "applicants": ["member", "spouse"], "value": true, "source": "User confirmed: deduct verified TPA in-force amounts from the configured coverage maximum" },
-    { "configuration": "coverage-deduct-inforce-amount", "product": "di-ltd", "applicants": ["member", "spouse"], "value": true, "source": "User confirmed: deduct verified TPA in-force monthly benefits from available Disability benefits" },
+    {
+      "configuration": "coverage-deduct-inforce-amount",
+      "product": "li-term",
+      "applicants": [
+        "member",
+        "spouse"
+      ],
+      "value": true,
+      "source": "User confirmed: deduct verified TPA in-force amounts from the configured coverage maximum"
+    },
+    {
+      "configuration": "coverage-deduct-inforce-amount",
+      "product": "li-10yr",
+      "applicants": [
+        "member",
+        "spouse"
+      ],
+      "value": true,
+      "source": "User confirmed: deduct verified TPA in-force amounts from product and combined Life maxima"
+    },
+    {
+      "configuration": "coverage-deduct-inforce-amount",
+      "product": "li-20yr",
+      "applicants": [
+        "member",
+        "spouse"
+      ],
+      "value": true,
+      "source": "User confirmed: deduct verified TPA in-force amounts from product and combined Life maxima"
+    },
+    {
+      "configuration": "coverage-deduct-inforce-amount",
+      "product": "li-add",
+      "applicants": [
+        "member",
+        "spouse"
+      ],
+      "value": true,
+      "source": "User confirmed: deduct verified TPA in-force amounts from the configured coverage maximum"
+    },
+    {
+      "configuration": "coverage-deduct-inforce-amount",
+      "product": "di-ltd",
+      "applicants": [
+        "member",
+        "spouse"
+      ],
+      "value": true,
+      "source": "User confirmed: deduct verified TPA in-force monthly benefits from available Disability benefits"
+    },
     {
       "configuration": "coverage-minimum-work-hours",
       "product": "di-ltd",
@@ -68,8 +113,18 @@
         "member",
         "spouse"
       ],
-      "value": 20000,
-      "source": "MCR v78 Main!H167:I167; existing coverage is not a new application"
+      "value": 10000,
+      "source": "User confirmation November 17, 2026: $10,000 minimum Term Life for member and spouse, with or without TPA-verified existing coverage; supersedes CHG-047 distinction."
+    },
+    {
+      "configuration": "coverage-verified-existing-minimum-amount",
+      "product": "li-term",
+      "applicants": [
+        "member",
+        "spouse"
+      ],
+      "value": 10000,
+      "source": "User confirmation November 17, 2026: $10,000 minimum Term Life for member and spouse, with or without TPA-verified existing coverage; supersedes CHG-047 distinction."
     },
     {
       "configuration": "coverage-age-maximum-amount",

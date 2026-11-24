@@ -79,3 +79,10 @@ describe("coverage presentation", () => {
   });
 
 });
+
+it('honors firstCategory while preserving featured-product precedence and product availability', () => {
+  const products = coverages.map(product => product.id === 'li-term' ? { ...product, gNumber: { primary: 'G-TEST-1' } } : product);
+  expect(orderCoveragePresentation(products, {}, null, 'di').categories[0]).toBe('DI');
+  expect(orderCoveragePresentation(products, {}, 'G-TEST-1', 'di').categories.slice(0, 2)).toEqual(['LI', 'DI']);
+  expect(orderCoveragePresentation(products, {}, null, 'unknown').categories).toEqual(orderCoveragePresentation(products, {}).categories);
+});

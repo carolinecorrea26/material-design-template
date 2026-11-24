@@ -1,10 +1,11 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import { expect, it, vi } from "vitest";
 import { webcrypto } from "node:crypto";
 import { createReviewedMigrationDatabase } from "./fixtures";
 import { applyResidencyAdoption } from "./residencyAdoption";
 import { mcrSource } from "./mcr";
 import { validateMigrationDatabase } from "./integrity";
-import { resolveEffectiveSite } from "../domain/effectiveSite";
+import { resolveSnapshotSite as resolveEffectiveSite } from "../domain/effectiveSite";
 import { resolveNormalizedResidency } from "../domain/residencyPolicy";
 import { LocalStorageAdapter } from "../persistence/localAdapter";
 import { createPortalDataRepository } from "../repositories/portalDataRepository";

@@ -36,11 +36,11 @@ const passwordLifetime = 30 * 24 * 60 * 60 * 1000;
 /** Mock pricing shared with the app; PRASE is not connected. */
 const pricing = pricingFormulas(JSON.parse(readFileSync(new URL('../requirements/global/formulas/pricing.json', import.meta.url), 'utf8')));
 const frequencies = pricing.frequency.factors;
-const siteKeys = ['demo','abe','ama','asce','avma','csea','nso','isitrust','waepa','waepa-gi'];
 
 /** Local simulation only. It never calls PRASE, a payment processor or email. */
 export function createMockPlatform({ database, prototypeTables = Object.keys(database ?? {}), libraryTables = Object.keys(database ?? {}), statePath, clock = Date.now, checkReadiness, analyticsTags = [], validatePayload, operationsDatabase, accountSignInEnabled = true } = {}) {
   database = normalizeSiteReferences(database);
+  const siteKeys = (database?.sites ?? []).map(site => site.key);
   const prototypeData = Object.fromEntries([...new Set(prototypeTables)].map(table => {
     if (!Array.isArray(database?.[table])) throw new Error(`Missing catalog table: ${table}`);
     return [table, database[table]];
@@ -125,6 +125,7 @@ export function createMockPlatform({ database, prototypeTables = Object.keys(dat
     return payloadRevisions.get(payload);
   };
   const requiredProducts = (site, environment) => { const data = prototypePayload(site, environment)?.data ?? database; return data?.siteProducts?.filter(p => p.enabled && p.siteId === data.sites.find(s => s.key === site)?.id).map(p => p.productKey) ?? []; };
+  // Recovery policy is globally fixed in Fresh-start, including saved-application retention.
   const applicantSaves = createApplicantSaves({ statePath: statePath ? `${statePath}.applicants.json` : undefined, clock, availableSite, revisionFor: prototypeRevision });
   const strictKeys = (body, keys) => { if (!body || typeof body !== 'object' || Array.isArray(body) || Object.keys(body).some(k => !keys.includes(k))) fail(400, 'Unexpected request properties'); };
   const requestBody = async req => {
@@ -401,6 +402,14 @@ export function createMockPlatform({ database, prototypeTables = Object.keys(dat
         const categoryKey = prototypePayload(body.siteKey, body.environment).data.products?.find(product => product.key === body.productKey)?.categoryKey ?? '';
         const monthlyCents = Math.round(monthlyPremium(pricing, categoryKey, body.amount, body.riders ?? []) * 100);
         let premiumCents = monthlyCents * frequencies[body.frequency];
+        const factor = frequencies[body.frequency];
+        let previousCents = Math.round(monthlyPremium(pricing, categoryKey, body.amount) * 100);
+        const components = [{ key: 'base', kind: 'base', amount: previousCents * factor / 100 }];
+        for (const [riderIndex] of (body.riders ?? []).entries()) {
+          const cents = Math.round(monthlyPremium(pricing, categoryKey, body.amount, body.riders.slice(0, riderIndex + 1)) * 100);
+          components.push({ key: `rider:${riderIndex}`, kind: 'rider', riderIndex, amount: (cents - previousCents) * factor / 100 });
+          previousCents = cents;
+        }
         if (body.paymentMethod !== undefined) {
           const data = prototypePayload(body.siteKey, body.environment).data;
           const keys = data.configurationDefinitions?.filter(d => d.definition.target?.kind === 'product-journey-policy' && d.definition.target.productKey === body.productKey).map(d => d.key) ?? [];
@@ -408,7 +417,7 @@ export function createMockPlatform({ database, prototypeTables = Object.keys(dat
           if (!policy?.payment?.methods.some(m => m.method === body.paymentMethod && m.frequencies.includes(body.frequency))) fail(400, 'Unavailable Library billing choice');
           premiumCents = Math.round((Math.max(0, monthlyCents * 12 / 100 - policy.billing.annualCredit) * policy.billing.annualFactors[body.frequency] + policy.billing.feePerCollection[body.paymentMethod] + Number.EPSILON) * 100);
         }
-        const quote = { mode: 'mock', quoteId: randomUUID(), siteKey: body.siteKey, ...(body.environment ? { environment: body.environment } : {}), revision, productKey: body.productKey, amount: body.amount, ...(body.dimensions ? { dimensions: body.dimensions } : {}), premiumCents, currency: 'USD', frequency: body.frequency, expiresAt: clock() + 15 * 60000, authority: 'Synthetic test rates; not an insurance quote' };
+        const quote = { mode: 'mock', quoteId: randomUUID(), siteKey: body.siteKey, ...(body.environment ? { environment: body.environment } : {}), revision, productKey: body.productKey, amount: body.amount, ...(body.dimensions ? { dimensions: body.dimensions } : {}), premiumCents, ...(body.paymentMethod === undefined ? { components } : {}), currency: 'USD', frequency: body.frequency, expiresAt: clock() + 15 * 60000, authority: 'Synthetic test rates; not an insurance quote' };
         quotes.set(quote.quoteId, quote); return respond(200, quote);
       }
       if (path === '/payments/authorize') {
@@ -538,7 +547,7 @@ export function createMockPlatform({ database, prototypeTables = Object.keys(dat
       }
       if (path === '/library/history') { strictKeys(body, ['siteKey']); return respond(200, { releases: Object.values(state.releases).filter(r => r.siteKey === body.siteKey).map(({ payload, ...r }) => r), audit: state.audit }); }
       fail(404, 'Unknown mock endpoint');
-    } catch (error) { respond(error.status ?? 500, { error: error.status ? error.message : 'Mock service error', mode: 'mock' }); }
+    } catch (error) { respond(error.status ?? 500, { error: error.status ? error.message : 'Mock service error', ...(typeof error.code === 'string' && error.code.startsWith('RESUME_') ? { code: error.code, ...(Number.isSafeInteger(error.retryAt) ? { retryAt: error.retryAt } : {}) } : {}), mode: 'mock' }); }
   });
   return server;
 }

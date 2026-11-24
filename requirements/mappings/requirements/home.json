@@ -1,19 +1,67 @@
 {
   "component": "home",
-  "configurations": ["category-order", "product-order", "home-variant", "applying-steps-presentation", "form-template", "eligible-states-only", "eligible-states"],
-  "rules": ["category-product-presentation-order", "state-province-from-postal-code", "quote-entry-location-feedback", "browser-autofill-self-only"],
-  "presentation": ["eligible-state-options"],
-  "workflows": ["home-quote-entry-handoff", "quote-entry-open-calculator", "form-template-selection", "home-start-and-resume"],
+  "configurations": [
+    "home-variant",
+    "applying-steps-presentation",
+    "form-template",
+    "eligible-states-only",
+    "eligible-states",
+    "category-order",
+    "product-order",
+    "category-names",
+    "category-descriptions",
+    "product-names",
+    "product-descriptions",
+    "home-landing-notice",
+    "single-page-artwork"
+  ],
+  "rules": [
+    "category-product-presentation-order",
+    "state-province-from-postal-code",
+    "quote-entry-location-feedback",
+    "browser-autofill-self-only",
+    "quick-decision-information-availability",
+    "applicant-availability-url",
+    "shared-action-typography",
+    "home-entry-presentation",
+    "eligibility-shared-feedback-spacing",
+    "shared-content-references"
+  ],
+  "presentation": [
+    "eligible-state-options"
+  ],
+  "workflows": [
+    "home-quote-entry-handoff",
+    "quote-entry-open-calculator",
+    "form-template-selection",
+    "home-start-and-resume",
+    "home-entry-notice"
+  ],
   "validations": [
+    {
+      "validation": "field-definition-checks",
+      "trigger": "get-quote",
+      "fields": [
+        "zip-postal-code",
+        "state-province",
+        "birth-date"
+      ]
+    },
     {
       "validation": "required-fields",
       "trigger": "get-quote",
-      "fields": ["zip-postal-code", "state-province", "birth-date"]
+      "fields": [
+        "zip-postal-code",
+        "state-province",
+        "birth-date"
+      ]
     },
     {
       "validation": "date-value-format",
       "trigger": "get-quote",
-      "fields": ["birth-date"]
+      "fields": [
+        "birth-date"
+      ]
     }
   ]
 }

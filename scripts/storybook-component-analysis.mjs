@@ -28,8 +28,8 @@ export function createComponentAnalyzer(root = process.cwd()) {
     if (cache.has(file)) return cache.get(file);
     const text = fs.readFileSync(path.resolve(root, file), 'utf8');
     const ast = ts.createSourceFile(file, text, ts.ScriptTarget.Latest, true, file.endsWith('x') ? ts.ScriptKind.TSX : ts.ScriptKind.TS);
-    const imports = new Map(), exports = new Set(), top = new Map();
-    const result = { ast, imports, exports, top }; cache.set(file, result);
+    const imports = new Map(), exports = new Set(), top = new Map(), reexports = new Map();
+    const result = { ast, imports, exports, top, reexports }; cache.set(file, result);
     for (const node of ast.statements) {
       if (ts.isImportDeclaration(node) && node.importClause && !node.importClause.isTypeOnly) {
         const origin = node.moduleSpecifier.text, source = resolve(file, origin);
@@ -48,9 +48,24 @@ export function createComponentAnalyzer(root = process.cwd()) {
         if (exported(node)) exports.add(declaration.name.getText());
       }
       if (ts.isExportAssignment(node)) exports.add('default');
-      if (ts.isExportDeclaration(node) && node.exportClause && ts.isNamedExports(node.exportClause)) for (const binding of node.exportClause.elements) exports.add(binding.name.text);
+      if (ts.isExportDeclaration(node) && !node.isTypeOnly && node.exportClause && ts.isNamedExports(node.exportClause)) for (const binding of node.exportClause.elements.filter(binding => !binding.isTypeOnly)) {
+        exports.add(binding.name.text);
+        if (node.moduleSpecifier) reexports.set(binding.name.text, { source: resolve(file, node.moduleSpecifier.text), symbol: binding.propertyName?.text ?? binding.name.text });
+      }
     }
     return result;
+  }
+  function exportBody(file, symbol, seen = new Set()) {
+    const key = `${file}:${symbol}`;
+    if (seen.has(key)) return null;
+    const target = module(file), forwarded = target.reexports.get(symbol);
+    if (forwarded?.source) return exportBody(forwarded.source, forwarded.symbol, new Set(seen).add(key));
+    const assignment = target.ast.statements.find(ts.isExportAssignment)?.expression;
+    const body = symbol === 'default'
+      ? target.ast.statements.find(node => defaulted(node) && (ts.isFunctionDeclaration(node) || ts.isClassDeclaration(node)))
+        ?? (assignment && ts.isIdentifier(assignment) ? target.top.get(assignment.text) : assignment)
+      : target.top.get(symbol);
+    return target.exports.has(symbol) && body ? { file, body } : null;
   }
   function declaration(name, node, mod) {
     for (let parent = node.parent; parent; parent = parent.parent) {
@@ -84,16 +99,11 @@ export function createComponentAnalyzer(root = process.cwd()) {
         // Imported Storybook harnesses are not production components. Follow
         // their actual export bodies and credit only the real views they render.
         if (imported.source?.startsWith('.storybook/') && imported.source.endsWith('.tsx') && !provider) {
-          const target = module(imported.source);
           const symbol = imported.symbol === '*' ? name.split('.')[1] : imported.symbol;
-          const assignment = target.ast.statements.find(ts.isExportAssignment)?.expression;
-          const body = symbol === 'default'
-            ? target.ast.statements.find(node => defaulted(node) && (ts.isFunctionDeclaration(node) || ts.isClassDeclaration(node)))
-              ?? (assignment && ts.isIdentifier(assignment) ? target.top.get(assignment.text) : assignment)
-            : target.top.get(symbol);
-          if (!target.exports.has(symbol) || !body) unresolved.add(`${name}: missing fixture export ${symbol}`);
+          const exportedBody = exportBody(imported.source, symbol);
+          if (!exportedBody) unresolved.add(`${name}: missing fixture export ${symbol}`);
           else {
-            const nested = trace(imported.source, body, trail);
+            const nested = trace(exportedBody.file, exportedBody.body, trail);
             for (const component of nested.components) components.set(`${component.source}:${component.symbol}`, component);
             for (const error of nested.unresolved) unresolved.add(error);
           }

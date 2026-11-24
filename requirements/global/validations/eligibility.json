@@ -14,7 +14,7 @@
     {
       "id": "eligible-state-required",
       "name": "State must be eligible",
-      "status": "draft",
+      "status": "confirmed",
       "check": "page-check",
       "level": "page",
       "message": "validation.page.ineligible",
@@ -25,18 +25,18 @@
     {
       "id": "child-required",
       "name": "At least one child when Child is selected",
-      "status": "draft",
+      "status": "confirmed",
       "check": "page-check",
       "level": "page",
       "message": "eligibility.error.child-required",
-      "statement": "When Child is selected as a dependent, at least one child must be added.",
+      "statement": "When Child is offered and selected, and the effective child mode collects details, at least one child must be added. Notice-only and unoffered child sections do not require records.",
       "source": "src/pages/Eligibility.tsx",
       "code": "VALIDATION_FAILED"
     },
     {
       "id": "spouse-details-required",
       "name": "Spouse details when Spouse is selected",
-      "status": "draft",
+      "status": "confirmed",
       "check": "page-check",
       "level": "page",
       "message": "eligibility.error.spouse-details",

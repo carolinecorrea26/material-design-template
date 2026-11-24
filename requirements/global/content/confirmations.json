@@ -10,7 +10,6 @@
   "confirmation.advisor.applicant-email": "Applicant email",
   "confirmation.advisor.sent": "Sent for signature",
   "confirmation.advisor.deletion": "Scheduled for deletion",
-  "confirmation.advisor.start": "Start new application",
   "confirmation.edit.announcement": "Your request has been sent to your advisor.",
   "confirmation.edit.message": "Your advisor will contact you regarding the required updates to your application. They will review the changes with you and return the application once the updates have been completed.",
   "confirmation.edit.recipient": "Sent to advisor",

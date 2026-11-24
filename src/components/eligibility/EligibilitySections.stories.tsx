@@ -6,7 +6,7 @@ const meta = {
   id: "pages-eligibility-your-information",
   title: "Components/Pages/Eligibility/Sections/Your information",
   component: EligibilitySections,
-  parameters: { standalone: true, catalog: { position: 1 }, layout: "fullscreen", docs: { description: { component: "The Eligibility page's ZIP/postal code, State/Province and date-of-birth section. Uses the same EligibilityFields group and reserved ZIP-to-state/error feedback as the Home quote card and quote tool." } } },
+  parameters: { standalone: true, catalog: { position: 1 }, layout: "fullscreen", docs: { description: { component: "The Eligibility page's ZIP/postal code, State/Province date-of-birth and dependent-coverage choices. Uses the same EligibilityFields group and reserved ZIP-to-state/error feedback as the Home quote card and quote tool." } } },
 } satisfies Meta<typeof EligibilitySections>;
 export default meta;
 
@@ -23,5 +23,5 @@ export const ZipDerivedState: StoryObj = {
 };
 
 export const AllowedResidencyOptions: StoryObj = {
-  render: () => <EligibilityStoryForm capability='occupationAndChildNotice'>{props => <EligibilitySections {...props} pageSections={props.pageSections.filter(section => section.id === 'selfEligibility')} />}</EligibilityStoryForm>,
+  render: () => <EligibilityStoryForm eligibility={{ eligibleStates: ['NY', 'CA'] }}>{props => <EligibilitySections {...props} pageSections={props.pageSections.filter(section => section.id === 'selfEligibility')} />}</EligibilityStoryForm>,
 };

@@ -1,16 +1,19 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import { act } from "react";
 import { createRoot } from "react-dom/client";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, beforeAll, expect, it, vi } from "vitest";
 import { createReviewedMigrationDatabase } from "./fixtures";
+import { atpeAssociationKey } from "./atpeAssociationAdoption";
 import { applyBeneficiaryNoteAdoption } from "./beneficiaryNoteAdoption";
 import { beneficiaryDesignationNote, isBeneficiaryNotePolicy } from "../domain/beneficiaryNotes";
-import { installPrototypeLibrary, resolvePrototypeLibrary } from "../domain/prototypeLibrary";
+import { installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import { validateMigrationDatabase } from "./integrity";
 import type { DatabaseSchema } from "../persistence/types";
 import Beneficiary from "../pages/Beneficiary";
 
-const form = vi.hoisted(() => ({ values: { coverageSelections: ["li-10yr", "li-group-term"], productApplicants: { "li-10yr": ["member"], "li-group-term": ["member"] }, coverageAmounts: { "li-10yr:member": 100000, "li-group-term:member": 100000 } }, setPageValues: vi.fn(), saveApplication: vi.fn() }));
+const form = vi.hoisted(() => ({ values: { "beneficiary-information-opt-in": "yes", membership: "", "birth-date": "1990-01-01", state: "PA", coverageSelections: ["li-10yr", "li-group-term"], productApplicants: { "li-10yr": ["member"], "li-group-term": ["member"] }, coverageAmounts: { "li-10yr:member": 100000, "li-group-term:member": 100000 } }, setPageValues: vi.fn(), saveApplication: vi.fn() }));
 vi.mock("../app/ApplicationFormContext", () => ({ useApplicationForm: () => form }));
 vi.mock("../app/ApplicationSessionContext", () => ({ useApplicationSession: () => ({ reviewSubmitted: false, markReviewSubmitted: vi.fn() }) }));
 vi.mock("../app/SinglePageFlowContext", () => ({ useSinglePageFlow: () => null }));
@@ -53,6 +56,7 @@ it("uses captured native copy, isolates Sites and rejects overlapping or orphan 
 it("renders each product's designation note on the real Beneficiary page", async () => {
   vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true);
   window.history.replaceState(null, "", "/?site=isitrust");
+  form.values.membership = atpeAssociationKey;
   installPrototypeLibrary(resolvePrototypeLibrary(db, "isitrust", "rendered-beneficiary-notes"));
   const container = document.createElement("div"), root = createRoot(container); document.body.append(container);
   try {

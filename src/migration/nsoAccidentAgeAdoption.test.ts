@@ -1,10 +1,12 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import dayjs from "dayjs";
 import { afterEach, beforeAll, expect, it } from "vitest";
 import { createReviewedMigrationDatabase } from "./fixtures";
 import { applyNsoAccidentAgeAdoption, applyNsoAccidentChildAgeAdoption } from "./nsoAccidentAgeAdoption";
 import { resolveEffectiveEligibility } from "../domain/effectiveSite";
 import { resolveApplicationCoverage } from "../domain/coverageRuntime";
-import { installPrototypeLibrary, resolvePrototypeLibrary } from "../domain/prototypeLibrary";
+import { installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import { inspectAsceBusinessDecisions } from "../domain/asceBusinessDecisions";
 import type { DatabaseSchema } from "../persistence/types";
 let db: DatabaseSchema;
@@ -40,7 +42,7 @@ it("requires student status only for the child age extension and uses the shared
     else expect(result.eligible, `${ageYears}/${fullTimeStudent}`).toBe(ageYears <= 18 || ageYears <= 25 && fullTimeStudent === true);
   }
   const mapping = library.fieldCollections.children.mapping;
-  expect(mapping.fieldToKey["child-full-time-student"]).toBe("fullTimeStudent");
+  expect(mapping.fieldToKey["child-full-time-student"]).toBe("child-full-time-student");
   expect(mapping.fields.find(field => field.id === "child-full-time-student")?.required).toBe(true);
   const repeated = structuredClone(db); applyNsoAccidentChildAgeAdoption(repeated); expect(repeated).toEqual(db);
 });

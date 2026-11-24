@@ -5,6 +5,7 @@ import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import ApplicationSessionGuard from './ApplicationSessionGuard';
 import { applicationTimeoutKey, readApplicationDeadline, resetApplicationTimeout, timeoutMilliseconds, warningMilliseconds } from './applicationTimeout';
 import ApplicationErrorState from '../components/feedback/ApplicationErrorState';
+import { applicationRecovery } from '../content/applicationRecovery';
 
 vi.mock('../data/activeSite', async importOriginal => ({ ...await importOriginal<typeof import('../data/activeSite')>(), resolveSiteId: () => 'asce' }));
 let root: Root, container: HTMLDivElement;
@@ -34,7 +35,12 @@ it('shows the countdown at the warning threshold and reloads once on expiry', as
   expect(document.querySelector('[role="timer"]')?.textContent).toBe('Time remaining: 2:00');
   await act(async () => vi.advanceTimersByTime(1000));
   expect(document.querySelector('[role="timer"]')?.textContent).toBe('Time remaining: 1:59');
-  await act(async () => vi.advanceTimersByTime(warningMilliseconds + 2000));
+  await act(async () => vi.advanceTimersByTime(warningMilliseconds - 2000));
+  expect(document.querySelector('[role="timer"]')?.textContent).toBe('Time remaining: 0:01');
+  expect(onExpire).not.toHaveBeenCalled();
+  await act(async () => vi.advanceTimersByTime(1000));
+  expect(onExpire).toHaveBeenCalledTimes(1);
+  await act(async () => vi.advanceTimersByTime(2000));
   expect(onExpire).toHaveBeenCalledTimes(1);
 });
 it('extends an active session on form activity but never revives an expired deadline', async () => {
@@ -87,19 +93,19 @@ it('leaves utility pages usable and routes technical failures to the shared reco
   expect(onExpire).not.toHaveBeenCalled();
   await mount(true, onExpire);
   await act(async () => window.dispatchEvent(new Event('application:technical-error')));
-  expect(container.querySelector('h1')?.textContent).toBe('We ran into an issue');
+  expect(container.querySelector('h1')?.textContent).toBe(applicationRecovery['technical-error'].title);
   expect(container.querySelector('output')?.textContent).toBe('/technical-error?site=asce');
   expect(container.querySelector('input')).toBeNull();
   expect(container.querySelector('a')?.getAttribute('href')).toBe('/resume?site=asce');
 });
 
-it.each(['payment', 'submission'] as const)('carries an unconfirmed %s into the same recovery page without repeat actions', async operation => {
+it.each(['payment', 'submission'] as const)('uses the existing generic technical-error route for %s without a specialized page', async operation => {
   await mount();
   await act(async () => window.dispatchEvent(new CustomEvent('application:technical-error', { detail: { code: 'TECHNICAL_ERROR', operation, outcome: 'unknown', applicationId: 'APP-12345678' } })));
-  expect(container.querySelector('h1')?.textContent).toBe('We ran into an issue');
-  expect(container.textContent).toContain(`We can’t confirm the result of your ${operation} yet.`);
+  expect(container.querySelector('h1')?.textContent).toBe(applicationRecovery['technical-error'].title);
+  expect(container.textContent).toContain(applicationRecovery['technical-error'].message);
   expect(container.textContent).toContain('APP-12345678');
-  expect(container.querySelector('a[href^="/resume"]')).toBeNull();
+  expect(container.querySelector('a[href^="/resume"]')).not.toBeNull();
   expect(container.querySelector('a[href^="/payment"]')).toBeNull();
   expect(container.querySelector('input')).toBeNull();
 });

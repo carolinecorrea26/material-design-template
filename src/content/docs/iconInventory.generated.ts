@@ -18,16 +18,16 @@ import CloseRounded from '@mui/icons-material/CloseRounded';
 import CreditCardOffRounded from '@mui/icons-material/CreditCardOffRounded';
 import DeleteOutlineRounded from '@mui/icons-material/DeleteOutlineRounded';
 import Diversity1Rounded from '@mui/icons-material/Diversity1Rounded';
+import EditNotificationsRounded from '@mui/icons-material/EditNotificationsRounded';
 import EditRounded from '@mui/icons-material/EditRounded';
 import EmailRounded from '@mui/icons-material/EmailRounded';
-import ErrorOutlineRounded from '@mui/icons-material/ErrorOutlineRounded';
 import EscalatorWarningRounded from '@mui/icons-material/EscalatorWarningRounded';
 import FavoriteBorderRounded from '@mui/icons-material/FavoriteBorderRounded';
 import FileDownloadRounded from '@mui/icons-material/FileDownloadRounded';
-import FindInPageRounded from '@mui/icons-material/FindInPageRounded';
 import HelpOutlineRounded from '@mui/icons-material/HelpOutlineRounded';
 import HomeRounded from '@mui/icons-material/HomeRounded';
 import InfoRounded from '@mui/icons-material/InfoRounded';
+import InsertDriveFileRounded from '@mui/icons-material/InsertDriveFileRounded';
 import LanguageRounded from '@mui/icons-material/LanguageRounded';
 import ListAltRounded from '@mui/icons-material/ListAltRounded';
 import LocalHospitalRounded from '@mui/icons-material/LocalHospitalRounded';
@@ -35,19 +35,19 @@ import LockRounded from '@mui/icons-material/LockRounded';
 import LoopRounded from '@mui/icons-material/LoopRounded';
 import MenuRounded from '@mui/icons-material/MenuRounded';
 import OfflineBoltRounded from '@mui/icons-material/OfflineBoltRounded';
+import PendingActionsRounded from '@mui/icons-material/PendingActionsRounded';
 import PersonRounded from '@mui/icons-material/PersonRounded';
 import PersonalInjuryRounded from '@mui/icons-material/PersonalInjuryRounded';
 import PhoneRounded from '@mui/icons-material/PhoneRounded';
 import PrintRounded from '@mui/icons-material/PrintRounded';
 import PrivacyTipRounded from '@mui/icons-material/PrivacyTipRounded';
-import ReportRounded from '@mui/icons-material/ReportRounded';
 import SendRounded from '@mui/icons-material/SendRounded';
 import ShoppingCartRounded from '@mui/icons-material/ShoppingCartRounded';
 import StarsRounded from '@mui/icons-material/StarsRounded';
 import SupervisorAccountRounded from '@mui/icons-material/SupervisorAccountRounded';
-import TuneRounded from '@mui/icons-material/TuneRounded';
 import UndoRounded from '@mui/icons-material/UndoRounded';
 import VerifiedUserRounded from '@mui/icons-material/VerifiedUserRounded';
+import WarningAmberRounded from '@mui/icons-material/WarningAmberRounded';
 
 export const applicantIcons = [
   { Icon: AccessTimeRounded, name: "AccessTimeRounded", label: "AccessTimeRounded", sources: ["src/components/feedback/recoveryIcons.ts","src/components/layout/AppFooter.tsx","src/components/layout/AppMenu.tsx"] },
@@ -59,44 +59,44 @@ export const applicantIcons = [
   { Icon: ArrowRightRounded, name: "ArrowRightRounded", label: "ArrowRightRounded", sources: ["src/components/navigation/ProgressStep.tsx"] },
   { Icon: BuildRounded, name: "BuildRounded", label: "BuildRounded", sources: ["src/components/feedback/recoveryIcons.ts"] },
   { Icon: BusinessRounded, name: "BusinessRounded", label: "BusinessRounded", sources: ["src/config/coverageCategories.ts"] },
-  { Icon: CalculateRounded, name: "CalculateRounded", label: "CalculateRounded", sources: ["src/components/layout/AppMenu.tsx","src/content/helpContent.tsx"] },
+  { Icon: CalculateRounded, name: "CalculateRounded", label: "CalculateRounded", sources: ["src/components/layout/AppMenu.tsx"] },
   { Icon: CalendarMonthRounded, name: "CalendarMonthRounded", label: "CalendarMonthRounded", sources: ["src/components/layout/ClientHelpBanner.tsx"] },
   { Icon: CancelRounded, name: "CancelRounded", label: "CancelRounded", sources: ["src/components/forms/fieldInputPresentation.tsx","src/components/verification/MemberVerification.tsx"] },
   { Icon: ChatBubbleOutlineRounded, name: "ChatBubbleOutlineRounded", label: "ChatBubbleOutlineRounded", sources: ["src/components/layout/ClientHelpBanner.tsx"] },
-  { Icon: CheckCircleRounded, name: "CheckCircleRounded", label: "CheckCircleRounded", sources: ["src/components/coverage/CoverageCart.tsx","src/components/feedback/ProcessingStatusPage.tsx","src/components/feedback/recoveryIcons.ts","src/components/forms/fieldInputPresentation.tsx","src/components/navigation/ProgressStep.tsx","src/components/receipt/ReceiptCoverageDecision.tsx","src/components/verification/MemberVerification.tsx"] },
+  { Icon: CheckCircleRounded, name: "CheckCircleRounded", label: "CheckCircleRounded", sources: ["src/components/coverage/CoverageCart.tsx","src/components/feedback/recoveryIcons.ts","src/components/forms/fieldInputPresentation.tsx","src/components/navigation/ProgressStep.tsx","src/components/verification/MemberVerification.tsx","src/utils/mockEmail.ts"] },
   { Icon: CheckRounded, name: "CheckRounded", label: "CheckRounded", sources: ["src/components/forms/EligibilityFields.tsx","src/components/home/ApplicationPreview.tsx","src/pages/ResumeCode.tsx"] },
-  { Icon: CloseRounded, name: "CloseRounded", label: "CloseRounded", sources: ["src/components/coverage/CoverageCart.tsx","src/components/layout/AppDrawer.tsx","src/components/layout/AppMenu.tsx","src/components/layout/AppModal.tsx","src/components/layout/ClientHelpBanner.tsx","src/components/layout/CookieDialog.tsx","src/components/verification/MemberVerification.tsx"] },
+  { Icon: CloseRounded, name: "CloseRounded", label: "CloseRounded", sources: ["src/components/coverage/CoverageCart.tsx","src/components/layout/AppDrawer.tsx","src/components/layout/AppMenu.tsx","src/components/layout/AppModal.tsx","src/components/layout/CookieDialog.tsx"] },
   { Icon: CreditCardOffRounded, name: "CreditCardOffRounded", label: "CreditCardOffRounded", sources: ["src/content/helpContent.tsx"] },
-  { Icon: DeleteOutlineRounded, name: "DeleteOutlineRounded", label: "DeleteOutlineRounded", sources: ["src/components/coverage/CoverageCart.tsx","src/content/helpContent.tsx"] },
+  { Icon: DeleteOutlineRounded, name: "DeleteOutlineRounded", label: "DeleteOutlineRounded", sources: ["src/components/coverage/CoverageCart.tsx","src/content/helpContent.tsx","src/utils/mockEmail.ts"] },
   { Icon: Diversity1Rounded, name: "Diversity1Rounded", label: "Diversity1Rounded", sources: ["src/config/coverageCategories.ts"] },
+  { Icon: EditNotificationsRounded, name: "EditNotificationsRounded", label: "EditNotificationsRounded", sources: ["src/utils/mockEmail.ts"] },
   { Icon: EditRounded, name: "EditRounded", label: "EditRounded", sources: ["src/components/content/ApplicationDocumentPreview.tsx","src/components/coverage/CoverageCart.tsx","src/components/navigation/StepEditButton.tsx"] },
-  { Icon: EmailRounded, name: "EmailRounded", label: "EmailRounded", sources: ["src/components/layout/AppFooter.tsx","src/components/layout/AppMenu.tsx"] },
-  { Icon: ErrorOutlineRounded, name: "ErrorOutlineRounded", label: "ErrorOutlineRounded", sources: ["src/components/feedback/recoveryIcons.ts"] },
+  { Icon: EmailRounded, name: "EmailRounded", label: "EmailRounded", sources: ["src/components/layout/AppFooter.tsx","src/components/layout/AppMenu.tsx","src/components/layout/SiteSupport.tsx"] },
   { Icon: EscalatorWarningRounded, name: "EscalatorWarningRounded", label: "EscalatorWarningRounded", sources: ["src/config/formSectionTitle.ts"] },
   { Icon: FavoriteBorderRounded, name: "FavoriteBorderRounded", label: "FavoriteBorderRounded", sources: ["src/components/home/ApplicationPreview.tsx"] },
   { Icon: FileDownloadRounded, name: "FileDownloadRounded", label: "FileDownloadRounded", sources: ["src/components/receipt/ReceiptConfirmation.tsx"] },
-  { Icon: FindInPageRounded, name: "FindInPageRounded", label: "FindInPageRounded", sources: ["src/components/receipt/ReceiptCoverageDecision.tsx"] },
-  { Icon: HelpOutlineRounded, name: "HelpOutlineRounded", label: "HelpOutlineRounded", sources: ["src/components/content/HelpChips.tsx"] },
+  { Icon: HelpOutlineRounded, name: "HelpOutlineRounded", label: "HelpOutlineRounded", sources: ["src/components/content/PageHelpChips.tsx"] },
   { Icon: HomeRounded, name: "HomeRounded", label: "HomeRounded", sources: ["src/pages/ApplicationEditConfirmation.tsx"] },
-  { Icon: InfoRounded, name: "InfoRounded", label: "InfoRounded", sources: ["src/components/coverage/CoverageCart.tsx","src/components/coverage/EstimatedRate.tsx","src/components/forms/fieldInputPresentation.tsx","src/components/payment/PaymentSections.tsx","src/components/receipt/ReceiptCoverageDecision.tsx","src/components/review/ReviewSections.tsx","src/content/helpContent.tsx"] },
-  { Icon: LanguageRounded, name: "LanguageRounded", label: "LanguageRounded", sources: ["src/components/layout/AppFooter.tsx","src/components/layout/AppMenu.tsx"] },
+  { Icon: InfoRounded, name: "InfoRounded", label: "InfoRounded", sources: ["src/components/coverage/CoverageCart.tsx","src/components/coverage/EstimatedRate.tsx","src/components/forms/fieldInputPresentation.tsx","src/content/helpContent.tsx"] },
+  { Icon: InsertDriveFileRounded, name: "InsertDriveFileRounded", label: "InsertDriveFileRounded", sources: ["src/components/feedback/recoveryIcons.ts"] },
+  { Icon: LanguageRounded, name: "LanguageRounded", label: "LanguageRounded", sources: ["src/components/layout/AppFooter.tsx","src/components/layout/AppMenu.tsx","src/components/layout/SiteSupport.tsx"] },
   { Icon: ListAltRounded, name: "ListAltRounded", label: "ListAltRounded", sources: ["src/components/layout/AppMenu.tsx"] },
   { Icon: LocalHospitalRounded, name: "LocalHospitalRounded", label: "LocalHospitalRounded", sources: ["src/config/coverageCategories.ts"] },
   { Icon: LockRounded, name: "LockRounded", label: "LockRounded", sources: ["src/components/forms/FieldRenderer.tsx","src/content/helpContent.tsx"] },
   { Icon: LoopRounded, name: "LoopRounded", label: "LoopRounded", sources: ["src/components/feedback/ResendCountdownRow.tsx","src/content/helpContent.tsx"] },
   { Icon: MenuRounded, name: "MenuRounded", label: "MenuRounded", sources: ["src/components/layout/AppHeader.tsx"] },
   { Icon: OfflineBoltRounded, name: "OfflineBoltRounded", label: "OfflineBoltRounded", sources: ["src/components/coverage/QuickDecisionIcon.tsx"] },
+  { Icon: PendingActionsRounded, name: "PendingActionsRounded", label: "PendingActionsRounded", sources: ["src/utils/mockEmail.ts"] },
   { Icon: PersonRounded, name: "PersonRounded", label: "PersonRounded", sources: ["src/config/formSectionTitle.ts"] },
   { Icon: PersonalInjuryRounded, name: "PersonalInjuryRounded", label: "PersonalInjuryRounded", sources: ["src/config/coverageCategories.ts"] },
-  { Icon: PhoneRounded, name: "PhoneRounded", label: "PhoneRounded", sources: ["src/components/layout/AppFooter.tsx","src/components/layout/AppMenu.tsx","src/components/layout/ClientHelpBanner.tsx"] },
-  { Icon: PrintRounded, name: "PrintRounded", label: "PrintRounded", sources: ["src/components/content/LegalReviewSection.tsx"] },
+  { Icon: PhoneRounded, name: "PhoneRounded", label: "PhoneRounded", sources: ["src/components/layout/AppFooter.tsx","src/components/layout/AppMenu.tsx","src/components/layout/ClientHelpBanner.tsx","src/components/layout/SiteSupport.tsx"] },
+  { Icon: PrintRounded, name: "PrintRounded", label: "PrintRounded", sources: ["src/components/content/PrintAction.tsx"] },
   { Icon: PrivacyTipRounded, name: "PrivacyTipRounded", label: "PrivacyTipRounded", sources: ["src/components/feedback/EmptyState.tsx","src/components/layout/AppMenu.tsx"] },
-  { Icon: ReportRounded, name: "ReportRounded", label: "ReportRounded", sources: ["src/components/review/ReviewSections.tsx"] },
-  { Icon: SendRounded, name: "SendRounded", label: "SendRounded", sources: ["src/components/layout/SendApplicationDialog.tsx","src/pages/AdvisorSendConfirmation.tsx"] },
+  { Icon: SendRounded, name: "SendRounded", label: "SendRounded", sources: ["src/components/layout/SendApplicationDialog.tsx","src/pages/AdvisorSendConfirmation.tsx","src/utils/mockEmail.ts"] },
   { Icon: ShoppingCartRounded, name: "ShoppingCartRounded", label: "ShoppingCartRounded", sources: ["src/components/coverage/CoverageCart.tsx","src/components/layout/AppHeader.tsx"] },
   { Icon: StarsRounded, name: "StarsRounded", label: "StarsRounded", sources: ["src/components/coverage/FeaturedBadge.tsx"] },
   { Icon: SupervisorAccountRounded, name: "SupervisorAccountRounded", label: "SupervisorAccountRounded", sources: ["src/config/formSectionTitle.ts"] },
-  { Icon: TuneRounded, name: "TuneRounded", label: "TuneRounded", sources: ["src/content/helpContent.tsx"] },
   { Icon: UndoRounded, name: "UndoRounded", label: "UndoRounded", sources: ["src/pages/ApplicationEditConfirmation.tsx"] },
   { Icon: VerifiedUserRounded, name: "VerifiedUserRounded", label: "VerifiedUserRounded", sources: ["src/components/home/HomeHero.tsx","src/pages/Home.tsx"] },
+  { Icon: WarningAmberRounded, name: "WarningAmberRounded", label: "WarningAmberRounded", sources: ["src/utils/mockEmail.ts"] },
 ];

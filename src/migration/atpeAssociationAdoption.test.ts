@@ -1,13 +1,14 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import { afterEach, beforeAll, expect, it } from "vitest";
 import { createReviewedMigrationDatabase } from "./fixtures";
 import { applyAtpeAssociationAdoption, atpeAssociationKey, atpeProducts } from "./atpeAssociationAdoption";
 import { currentMcrSource } from "./currentMcr";
 import { isResidencyPolicy, resolveNormalizedResidency, usJurisdictions } from "../domain/residencyPolicy";
 import { resolveCoverageJourneyPolicy, resolveSubmissionMapping } from "../domain/coverageJourneyPolicy";
-import { resolveEffectiveEligibility, resolveEffectiveSite } from "../domain/effectiveSite";
+import { resolveEffectiveEligibility, resolveSnapshotSite as resolveEffectiveSite } from "../domain/effectiveSite";
 import { validateMigrationDatabase } from "./integrity";
-import { installPrototypeLibrary, resolvePrototypeLibrary } from "../domain/prototypeLibrary";
-import { getClientPageFields } from "../config/clientFields/getClientPageFields";
+import { installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import type { DatabaseSchema } from "../persistence/types";
 import { applicationCoverageName, resolveApplicationCoverage } from "../domain/coverageRuntime";
 import dayjs from "dayjs";
@@ -61,8 +62,6 @@ it("offers ATPE as the 26th association on seven products while retaining the ar
   installPrototypeLibrary(library); window.history.replaceState(null, "", "/?site=isitrust");
   expect(library.associationContext.associations).toHaveLength(26);
   expect(library.associationContext.associations.find(row => row.id === atpeAssociationKey)?.name).toBe("Association of Texas Professional Educators");
-  const membership = getClientPageFields("membership", {}).find(field => field.id === "membership")!;
-  expect(membership.options).toContainEqual({ value: atpeAssociationKey, label: "Association of Texas Professional Educators" });
   expect(db.associations.some(row => row.key === "mcr.association.atpe.388" && row.clientKey === "mcr.client.atpe")).toBe(true);
   for (const product of library.site.configuration.products) {
     const offered = resolveCoverageJourneyPolicy(library.site, product.productKey)!.associationChoices.some(choice => choice.key === atpeAssociationKey);

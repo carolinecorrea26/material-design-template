@@ -14,6 +14,9 @@ import { resolveApplicationCoverage } from "../../domain/coverageRuntime";
 import { installPrototypeLibrary, resolvePrototypeLibrary } from "../../domain/prototypeLibrary";
 import { createReviewedMigrationDatabase } from "../../migration/fixtures";
 import dayjs from "dayjs";
+import { journeyLibrary, journeyFormValues } from "../../migration/freshStartJourneyFixtures";
+import { createCoverageJourneyFixture } from "../../migration/coverageJourneyExceptionAcceptance";
+import { resolveCoverageJourneyPolicy } from "../../domain/coverageJourneyPolicy";
 import { formatUSD } from "../../utils/formatUSD";
 
 const catalog = vi.hoisted(() => ({ products: [] as CoverageDefinition[] }));
@@ -71,8 +74,9 @@ async function choose(label: string, value: string) {
   await act(async () => selectedOption.click());
 }
 
-it("renders stored WAEPA age-capped choices alongside the labeled CIR-only election", async () => {
-  const library = resolvePrototypeLibrary(createReviewedMigrationDatabase(), "waepa", "test:age-cap-menu");
+it("renders WAEPA age-capped choices without a CIR-only election", async () => {
+  const saved = JSON.parse(readFileSync('public/catalog/portal.json', 'utf8'));
+  const library = resolvePrototypeLibrary(saved.data, "waepa", "test:age-cap-menu");
   installPrototypeLibrary(library);
   window.history.replaceState(null, "", "/?site=waepa");
   catalog.products = library.products.filter(product => product.id === "li-group-term");
@@ -83,13 +87,9 @@ it("renders stored WAEPA age-capped choices alongside the labeled CIR-only elect
   expect(option('25000')).not.toBeNull();
   expect(option('550000')).not.toBeNull();
   expect(option('575000')).toBeNull();
-  expect(option('0')).toBeNull();
-  const standalone = option('rider-only:cir')!;
-  expect(standalone.textContent).toBe("$0 - Applying for Chronic Illness Rider (CIR) only");
-  await act(async () => standalone.click());
-  expect(state.storedAmounts["li-group-term:member"]).toBe(0);
-  expect(state.values.coverageRiderOnly).toEqual({ "li-group-term:member": "cir" });
-  expect(checkbox("Add coverage").disabled).toBe(false);
+  expect(option('0')).not.toBeNull();
+  expect(option('rider-only:cir')).toBeNull();
+  expect(document.body.textContent).not.toContain('CIR) only');
 }, 15000);
 
 it("keeps residency validation without automatically displaying its internal diagnostic in Coverage or quote cards", async () => {
@@ -135,14 +135,20 @@ it("keeps CSEA spouse and child benefits independently optional with the sourced
   expect(catalog.products[0].riders?.find(row => row.dependentApplicant === "child")?.hasAmount).toBe(false);
 }, 20000);
 
-it("shows and preserves editable rider choices before adding a product", async () => {
+it("reveals rider choices only after adding coverage and hides them when removed", async () => {
   await act(async () => root.render(<Harness />));
+  expect(container.textContent).not.toContain("Standalone benefit description");
+  expect(container.textContent).not.toContain("Other benefit description");
+  expect(state.selectedCoverageIds).toEqual([]);
+  await act(async () => checkbox("Add coverage").click());
   expect(container.textContent).toContain("Standalone benefit description");
   expect(container.textContent).toContain("Other benefit description");
   expect(checkbox("Other Benefit").disabled).toBe(false);
   await act(async () => checkbox("Other Benefit").click());
   expect(state.storedRiders["di-ltd:optional:member"]).toBe(true);
-  expect(state.selectedCoverageIds).toEqual([]);
+  expect(state.selectedCoverageIds).toEqual(['di-ltd']);
+  await act(async () => checkbox("Add coverage").click());
+  expect(container.textContent).not.toContain("Other benefit description");
 });
 
 it("renders the ATPE 50% comparison as information while keeping the full spouse amount range", async () => {
@@ -175,6 +181,9 @@ it("selects a standalone rider at $0, locks other controls, preserves Add, and u
   await act(async () => option('rider-only:standalone')!.click());
   expect(state.storedAmounts["di-ltd:member"]).toBe(0);
   expect(state.values.coverageRiderOnly).toEqual({ "di-ltd:member": "standalone" });
+  expect(container.textContent).not.toContain("Standalone benefit description");
+  expect(checkbox("Add coverage").disabled).toBe(false);
+  await act(async () => checkbox("Add coverage").click());
   expect(checkbox("Standalone Benefit").checked).toBe(true);
   expect(checkbox("Standalone Benefit").disabled).toBe(true);
   expect(checkbox("Other Benefit").disabled).toBe(true);
@@ -184,7 +193,6 @@ it("selects a standalone rider at $0, locks other controls, preserves Add, and u
   await choose("di-ltd:standalone:member-amount-label", "1000");
   expect(state.storedRiderAmounts["di-ltd:standalone:member"]).toBe(1000);
   expect(checkbox("Add coverage").disabled).toBe(false);
-  await act(async () => checkbox("Add coverage").click());
   expect(state.productApplicants["di-ltd"]).toEqual(["member"]);
   expect(state.storedAmounts["di-ltd:member"]).toBe(0);
   expect(state.validate(state.values)).toBeUndefined();
@@ -221,12 +229,12 @@ it("distinguishes two standalone riders and rejects incomplete or forged zero-am
   catalog.products[0].riders![1].riderOnlyApplicants = ["member"];
   await act(async () => root.render(<Harness />));
   await choose("di-ltd:member-amount-label", "rider-only:optional");
+  await act(async () => checkbox("Add coverage").click());
   expect(checkbox("Other Benefit").checked).toBe(true);
   expect(checkbox("Standalone Benefit").checked).toBe(false);
-  await act(async () => checkbox("Add coverage").click());
   expect(state.validate(state.values)).toBeUndefined();
   expect(state.validate({ ...state.values, coverageRiders: {} })).toContain("select Other Benefit");
-  expect(state.validate({ ...state.values, coverageRiderOnly: { "di-ltd:member": "missing" } })).toContain("Select at least one benefit amount");
+  expect(state.validate({ ...state.values, coverageRiderOnly: { "di-ltd:member": "missing" } })).toContain("select an available benefit amount");
   await choose("di-ltd:member-amount-label", "rider-only:standalone");
   expect(state.validate({ ...state.values, coverageRiderAmounts: { "di-ltd:standalone:member": 900 } })).toContain("select an available rider amount");
 });
@@ -234,7 +242,8 @@ it("distinguishes two standalone riders and rejects incomplete or forged zero-am
 it("shows a rider-only cart entry with separately provided pricing rather than zero premium", async () => {
   const values = { coverageSelections: ["di-ltd"], productApplicants: { "di-ltd": ["member"] }, coverageAmounts: { "di-ltd:member": 0 }, coverageRiderOnly: { "di-ltd:member": "standalone" }, coverageRiders: { "di-ltd:standalone:member": true }, coverageRiderAmounts: { "di-ltd:standalone:member": 1000 } };
   await act(async () => root.render(<MemoryRouter><ApplicationFormContext.Provider value={{ values, setPageValues: () => {}, resetValues: () => {} }}><CoverageCart variant="drawer" onClose={() => {}} /></ApplicationFormContext.Provider></MemoryRouter>));
-  expect(container.textContent).toContain("$0 - Applying for Standalone Benefit only");
+  expect(container.textContent).toContain("Requested coverage$0");
+  expect(container.textContent).toContain("Applying forStandalone Benefitonly");
   expect(container.textContent).toContain("Standalone Benefit: $1,000");
   expect(container.textContent).toContain("Rate provided separately");
   expect(container.textContent).not.toContain("Choose benefit amount");
@@ -256,18 +265,15 @@ it.each([false, true])("keeps Add coverage usable with incomplete eligibility, i
     expect(checkbox("Other Benefit").disabled).toBe(true);
   }
   await act(async () => checkbox("Add coverage").click());
-  expect(state.productApplicants["di-ltd"]).toEqual([]);
+  expect(state.productApplicants["di-ltd"] ?? []).toEqual([]);
 });
 
-it("hides 50+ Life when the applicant is under its minimum age", async () => {
-  const library = resolvePrototypeLibrary(createReviewedMigrationDatabase(), "abe", "test:hidden-50plus");
-  installPrototypeLibrary(library);
-  window.history.replaceState(null, "", "/coverage?site=abe");
-  catalog.products = [library.products.find(product => product.id === "li-50plus")!];
-  initialValues = { membership: "yes", "birth-date": "1990-01-01", "state-province": "NY" };
+it("hides an age-limited product when the applicant is under its configured minimum", async () => {
+  catalog.products = [{ ...fixture(), name: 'Age-limited protection', requirements: { eligibility: [{ applicantType: 'member', minimumAgeYears: 50 }] } }];
+  initialValues = { membership: 'yes', 'birth-date': '1990-01-01', 'state-province': 'NY' };
   await act(async () => root.render(<MemoryRouter><Harness /></MemoryRouter>));
   expect(container.textContent).not.toContain(catalog.products[0].name);
-  expect(container.textContent).not.toContain("This applicant does not meet");
+  expect(container.textContent).not.toContain('This applicant does not meet');
 });
 
 it("omits raw underwriting status notes from the product card", async () => {
@@ -320,19 +326,30 @@ it("uses later-add feedback when restoring an existing cart and adding after it 
 });
 
 it("preserves saved benefit amounts during a normalized exclusivity conflict and after removing one plan", async () => {
-  const saved = JSON.parse(readFileSync('public/catalog/portal.json', 'utf8'));
-  const library = resolvePrototypeLibrary(saved.data, 'abe', 'test:exclusive-amount-retention');
+  const library = journeyLibrary('ama');
   installPrototypeLibrary(library);
-  window.history.replaceState(null, '', '/coverage?site=abe');
-  catalog.products = library.products.filter(product => ['di-ltd', 'di-ltd-plus'].includes(product.id));
-  initialValues = { membership: 'yes', 'birth-date': '1990-01-01', 'state-province': 'VA', 'hours-worked-per-week': '40', 'average-monthly-income': '10000',
-    coverageSelections: ['di-ltd', 'di-ltd-plus'], productApplicants: { 'di-ltd': ['member'], 'di-ltd-plus': ['member'] },
-    coverageAmounts: { 'di-ltd:member': 1000, 'di-ltd-plus:member': 1000 } };
+  window.history.replaceState(null, '', '/coverage?site=ama');
+  catalog.products = library.products.filter(product => ['di-step-rated', 'di-level-rated'].includes(product.id));
+  const inputs = catalog.products.map(product => ({ ...createCoverageJourneyFixture(library.site, product.id, resolveCoverageJourneyPolicy(library.site, product.id)!.mappings.find(mapping => mapping.when.mode === 'new' && mapping.when.applicantClass === 'practicing')!.when).input, amount: 1000 }));
+  initialValues = journeyFormValues(library, inputs);
   await act(async () => root.render(<Harness />));
-  expect(state.storedAmounts['di-ltd:member']).toBe(1000);
-  expect(state.storedAmounts['di-ltd-plus:member']).toBe(1000);
+  expect(state.storedAmounts['di-step-rated:member']).toBe(1000);
+  expect(state.storedAmounts['di-level-rated:member']).toBe(1000);
   expect(state.validate(state.values)).toContain('cannot be selected together');
-  await act(async () => state.toggleApplicantForProduct('di-ltd-plus', 'member'));
-  expect(state.selectedCoverageIds).toEqual(['di-ltd']);
-  expect(state.storedAmounts['di-ltd:member']).toBe(1000);
+  await act(async () => state.toggleApplicantForProduct('di-level-rated', 'member'));
+  expect(state.selectedCoverageIds).toEqual(['di-step-rated']);
+  expect(state.storedAmounts['di-step-rated:member']).toBe(1000);
+});
+
+it('renders ASCE rider helper wording for only the control applicant', async () => {
+  const saved = JSON.parse(readFileSync('public/catalog/portal.json', 'utf8'));
+  const library = resolvePrototypeLibrary(saved.data, 'asce', 'rider-copy-scope');
+  installPrototypeLibrary(library); window.history.replaceState(null, '', '/?site=asce');
+  catalog.products = library.products.filter(product => product.id === 'li-term');
+  initialValues = { membership: 'yes', 'birth-date': '1990-01-01', 'spouse-birth-date': '1991-01-01', 'state-province': 'PA', dependents: ['spouse'], coverageSelections: ['li-term'], productApplicants: { 'li-term': ['member', 'spouse'] }, coverageAmounts: { 'li-term:member': 100000, 'li-term:spouse': 100000 } };
+  await act(async () => root.render(<Harness />));
+  const member = container.querySelector('[data-analytics-field="li-term:cir:member-selected"]')!.textContent;
+  const spouse = container.querySelector('[data-analytics-field="li-term:cir:spouse-selected"]')!.textContent;
+  expect(member).toContain('$50,000 to $1,000,000 for members.'); expect(member).not.toContain('spouses');
+  expect(spouse).toContain('$25,000 to $1,000,000 for spouses.'); expect(spouse).not.toContain('members');
 });

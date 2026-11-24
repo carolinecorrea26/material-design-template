@@ -1,0 +1,16 @@
+{
+  "fields": {
+    "coverage-categories": {
+      "options": [
+        "LI",
+        "AD",
+        "DI"
+      ]
+    },
+    "membership": {
+      "label": {
+        "self": "Are you a nurse?"
+      }
+    }
+  }
+}

@@ -1,4 +1,7 @@
+import { riderDescription } from '../../domain/riderDescription';
+import { shouldShowApplicantLabel } from '../../utils/applicantVisibility';
 import { requirementText } from "../../domain/requirementContent";
+import { requirementConfigurationValue } from '../../domain/requirementConfiguration';
 import { requirementCoverageControl } from "../../domain/requirementFields";
 import { combineRateDisplays, rateDisplayForAmount, type RateDisplayState } from '../../domain/rateDisplay';
 import { orderCoveragePresentation } from "../../domain/coveragePresentation";
@@ -20,6 +23,7 @@ import CategoryCard from "../layout/CategoryCard";
 import CategoryHeader from "../layout/CategoryHeader";
 import { ApplicantSectionLabel } from "../layout/ApplicantSectionDivider";
 import ControlledFieldRenderer from "../forms/ControlledFieldRenderer";
+import FieldGrid from '../layout/FieldGrid';
 import ProductCardSurface from "../layout/ProductCard";
 import QuickDecisionInfoBox from "../content/QuickDecisionInfoBox";
 import { getCoverageCategorySectionLabel } from "../../config/coverageCategories";
@@ -33,8 +37,6 @@ import type {
   CoverageApplicantId,
 } from "../../config/coverages/types";
 import type {
-  ClientAmountByFrequency,
-  ClientProductEstimatedCostBreakdown,
   EstimatedRateFrequency,
 } from "../../config/clients/types";
 import { formatUSD } from "../../utils/formatUSD";
@@ -45,87 +47,10 @@ import ProductCostBreakdown, {
 import {
   getDisplayedPremium,
   } from "../../utils/coverageDisplay";
-import { baseMonthlyPremium, riderMonthlyPremium } from "../../domain/pricing";
+import { selectedRiderCharges } from "../../domain/pricing";
+import { validRateBreakdown } from "../../domain/rateBreakdown";
 
 type ResolvedCoverage = import("../../domain/coverage").CoverageDefinition & { featured: boolean };
-
-function toMonthlyAmount(config?: ClientAmountByFrequency): number {
-  if (!config) return 0;
-  if (typeof config.monthly === "number") return config.monthly;
-  if (typeof config.annual === "number") return config.annual / 12;
-  return 0;
-}
-
-function collectBreakdownRiderItems({
-  coverage,
-  currentApplicants,
-  storedAmounts,
-  storedRiders,
-  storedRiderAmounts,
-  isMultiApplicant,
-  breakdownConfig,
-}: {
-  coverage: ProductCardProps["coverage"];
-  currentApplicants: CoverageApplicantId[];
-  storedAmounts: ProductCardProps["storedAmounts"];
-  storedRiders: ProductCardProps["storedRiders"];
-  storedRiderAmounts: ProductCardProps["storedRiderAmounts"];
-  isMultiApplicant: boolean;
-  breakdownConfig?: ClientProductEstimatedCostBreakdown;
-}): ProductCostBreakdownItem[] {
-  const riderTotals = new Map<string, number>();
-
-  for (const applicantId of currentApplicants) {
-    const key = `${coverage.id}:${applicantId}`;
-    const amount = storedAmounts[key] ?? 0;
-    if (amount <= 0) continue;
-
-    if (
-      applicantId === "child" &&
-      breakdownConfig?.childApplicantRider?.enabled !== false
-    ) {
-      const childLabel =
-        breakdownConfig?.childApplicantRider?.label ??
-        requirementText("coverage.rider.child-fallback");
-      const childAmount = toMonthlyAmount(
-        breakdownConfig?.childApplicantRider?.amount,
-      );
-      if (childAmount > 0) {
-        riderTotals.set(
-          childLabel,
-          (riderTotals.get(childLabel) ?? 0) + childAmount,
-        );
-      }
-    }
-
-    for (const rider of coverage.riders ?? []) {
-      if (rider.applicants && !rider.applicants.includes(applicantId)) continue;
-      const riderKey = `${coverage.id}:${rider.id}:${applicantId}`;
-      if (!storedRiders[riderKey]) continue;
-
-      const riderAmount = rider.hasAmount
-        ? (storedRiderAmounts[riderKey] ?? 0)
-        : amount;
-      if (riderAmount <= 0) continue;
-
-      const riderPremium = riderMonthlyPremium(coverage.categoryId, { amount: riderAmount, premiumFactor: rider.premiumFactor });
-      if (riderPremium <= 0) continue;
-
-      const riderLabel = isMultiApplicant
-        ? `${rider.name} (${applicantCheckboxLabels[applicantId]})`
-        : rider.name;
-      riderTotals.set(
-        riderLabel,
-        (riderTotals.get(riderLabel) ?? 0) + riderPremium,
-      );
-    }
-  }
-
-  return Array.from(riderTotals.entries()).map(([label, amount]) => ({
-    label,
-    amount,
-  }));
-}
 
 const applicantCheckboxLabels = { member: requirementText("people.self"), spouse: requirementText("people.spouse"), child: requirementText("people.child") };
 
@@ -134,6 +59,7 @@ export type ProductPresentation = {
   coverageConfig: import("../../config/clients/types").ClientCoverages;
   applicantLabels?: import("../../config/clients/types").ClientApplicantLabels;
   helpPhone?: import("../../config/clients/types").ClientConfig["support"]["helpPhone"];
+  firstCategory?: string | null;
   featuredProduct?: string | null;
   aggregateNotes?: Partial<Record<CoverageCategoryId, import("../../config/coverageConstants").MaxAggregateNote | null>>;
   ratesSuppressed?: boolean;
@@ -141,6 +67,7 @@ export type ProductPresentation = {
 };
 const defaultPresentation: ProductPresentation = { coverageConfig: { categories: [], enabled: [] } };
 type ProductCatalogProps = {
+  controlDefinition?: typeof requirementCoverageControl;
   presentation?: ProductPresentation;
   applicationValues?: import("../../app/ApplicationFormContext").ApplicationFormValues;
   getRateDisplay?: (productId: string, applicant: CoverageApplicantId) => RateDisplayState;
@@ -259,14 +186,14 @@ export default function ProductCatalog(props: ProductCatalogProps) {
   const categorySectionLabelOverrides = coverageConfig.categorySectionLabels;
 
   const additionalCoverageWarningMode =
-    coverageConfig.additionalCoverageWarning ?? "applyForAdditional";
+    coverageConfig.additionalCoverageWarning ?? requirementConfigurationValue('coverage-increase-note');
 
   const additionalCoverageWarningText =
     additionalCoverageWarningMode === "applyForTotal"
       ? requirementText("coverage.increase.total-note")
       : requirementText("coverage.increase.additional-note");
 
-  const orderedPresentation = orderCoveragePresentation(categoryProducts, coverageConfig, presentation.featuredProduct ?? null);
+  const orderedPresentation = orderCoveragePresentation(categoryProducts, coverageConfig, presentation.featuredProduct ?? null, presentation.firstCategory ?? null);
   const categoryDisplayOrder = orderedPresentation.categories;
   const orderedCategories = [...selectedCategories].sort((a, b) => categoryDisplayOrder.indexOf(a) - categoryDisplayOrder.indexOf(b));
 
@@ -398,6 +325,8 @@ export default function ProductCatalog(props: ProductCatalogProps) {
                           coverage={coverage}
                           presentation={presentation}
                           applicationValues={props.applicationValues}
+                          showMemberLabel={shouldShowApplicantLabel('member', props.applicationValues ?? {}, props.categoryProducts)}
+                          controlDefinition={props.controlDefinition}
                           productApplicants={productApplicants}
                           storedAmounts={storedAmounts}
                           storedRiders={storedRiders}
@@ -452,6 +381,7 @@ export default function ProductCatalog(props: ProductCatalogProps) {
       <Box sx={{ mt: 3 }}>
         {!presentation.ratesSuppressed && <CoverageCart
           variant="inline"
+          frequencyField={(props.controlDefinition ?? requirementCoverageControl)("rate-frequency")}
           categoryProducts={categoryProducts}
           selectedCoverageIds={selectedCoverageIds}
           productApplicants={productApplicants}
@@ -474,9 +404,11 @@ export default function ProductCatalog(props: ProductCatalogProps) {
 // ── Product Card ──────────────────────────────────────────────────────────────
 
 type ProductCardProps = {
+  showMemberLabel?: boolean;
   presentation?: ProductPresentation;
   applicationValues?: ProductCatalogProps["applicationValues"];
   getCoverageBehavior?: ProductCatalogProps["getCoverageBehavior"];
+  controlDefinition?: typeof requirementCoverageControl;
   getRateDisplay?: ProductCatalogProps["getRateDisplay"];
   coverage: ProductCatalogProps["categoryProducts"][number];
   productApplicants: Record<string, CoverageApplicantId[]>;
@@ -500,6 +432,8 @@ type ProductCardProps = {
 };
 
 export function ProductCard({
+  showMemberLabel = false,
+  controlDefinition = requirementCoverageControl,
   presentation = defaultPresentation, applicationValues = {},
   getCoverageBehavior,
   getRateDisplay,
@@ -533,35 +467,27 @@ export function ProductCard({
   ).filter(applicant => getCoverageBehavior?.(coverage, applicant).eligibility !== "ineligible");
   const currentApplicants = productApplicants[coverage.id] ?? [];
   const hasAnyApplicantSelected = currentApplicants.length > 0;
-  const amountLabel = requirementCoverageControl("coverage-amount").label;
   const rateSuffix = rateFrequency === "annual" ? "/yr" : "/mo";
   const isMultiApplicant = visibleApplicants.length > 1;
 
-  const premiumCost = currentApplicants.reduce((sum, applicantId) => {
-    const key = `${coverage.id}:${applicantId}`;
-    const amount = storedAmounts[key] ?? 0;
-    if (amount <= 0) return sum;
-    return sum + baseMonthlyPremium(coverage.categoryId, amount);
-  }, 0);
-
-  const riderItems = collectBreakdownRiderItems({
-    coverage,
-    currentApplicants,
-    storedAmounts,
-    storedRiders,
-    storedRiderAmounts,
-    isMultiApplicant,
-    breakdownConfig,
+  const quoted = currentApplicants.map(applicant => {
+    const state = getRateDisplay?.(coverage.id, applicant);
+    const charges = selectedRiderCharges(coverage, applicant, storedAmounts[`${coverage.id}:${applicant}`] ?? 0, storedRiders, storedRiderAmounts);
+    return state?.status === 'available' && validRateBreakdown(state.breakdown, state.amount, charges.length)
+      ? { applicant, components: state.breakdown, charges } : null;
   });
-
-  const policyFeeLabel =
-    breakdownConfig?.policyFee?.label ?? requirementText("coverage.policy-fee");
-  const policyFeeAmount = toMonthlyAmount(breakdownConfig?.policyFee?.amount);
-  const shouldShowBreakdown =
-    hasAnyApplicantSelected &&
-    !currentApplicants.some(applicant => selectedRiderOnly(coverage, applicant, applicationValues)) &&
-    breakdownConfig?.enabled === true &&
-    (premiumCost > 0 || riderItems.length > 0 || policyFeeAmount > 0);
+  const divisor = rateFrequency === 'annual' ? 12 : 1;
+  let premiumCost = 0;
+  const riderItems: ProductCostBreakdownItem[] = [];
+  for (const price of quoted) if (price) for (const component of price.components) {
+    if (component.kind === 'base' && price.applicant !== 'child') { premiumCost += component.amount / divisor; continue; }
+    const label = component.label ?? (component.kind === 'rider' ? price.charges[component.riderIndex!].rider.name
+      : component.kind === 'base' ? requirementText('coverage.rider.child-fallback')
+      : component.kind === 'adjustment' ? requirementText('coverage.cost-breakdown.adjustment') : requirementText('coverage.cost-breakdown.fee'));
+    riderItems.push({ key: `${price.applicant}:${component.key}`, label: isMultiApplicant ? `${label} (${applicantCheckboxLabels[price.applicant]})` : label, amount: component.amount / divisor });
+  }
+  const shouldShowBreakdown = breakdownConfig?.enabled === true && quoted.length > 0 && quoted.every(Boolean)
+    && !currentApplicants.some(applicant => selectedRiderOnly(coverage, applicant, applicationValues));
 
   if (!visibleApplicants.length) return null;
 
@@ -571,6 +497,7 @@ export function ProductCard({
       productName={presentation.productNames?.[coverage.id] ?? coverage.name}
       brochureUrl={coverage.brochureUrl}
       description={coverage.description ?? coverage.definition}
+      descriptionNotice={coverage.descriptionNotice}
       quickDecision={!coverage.underwritingBands?.length && coverage.underwritingType === "QD"}
       headerAction={coverage.featured && <FeaturedBadge />}
     >
@@ -690,7 +617,7 @@ export function ProductCard({
 
           return (
             <Box key={applicantId}>
-              {isMultiApplicant && (
+              {(applicantId !== 'member' || isMultiApplicant || showMemberLabel) && (
                 <ApplicantSectionLabel
                   label={resolvedSectionTitles[sectionId]}
                   icon={applicantIcons[sectionId]}
@@ -709,9 +636,9 @@ export function ProductCard({
               {behavior?.notices.map(notice => <Alert key={notice} severity="info" sx={{ mb: 1 }}>{notice}</Alert>)}
               {behavior?.underwriting.status === "unresolved" && <Alert severity="warning">{requirementText("coverage.product-catalog.underwriting-requirements-for-this-selection-are-unresolved-contact")}</Alert>}
               {/* Benefit amount & cost */}
-              <Stack spacing={1.5} sx={{ mt: 1.5 }}>
+              <FieldGrid sx={{ mt: 1.5 }}>
                 <ControlledFieldRenderer
-                  field={{ ...requirementCoverageControl("coverage-amount", applicantId), id: `${key}-amount`, label: amountLabel, disabled: behavior?.amountControl?.locked, options: [
+                  field={{ ...controlDefinition("coverage-amount", applicantId), id: `${key}-amount`, label: controlDefinition("coverage-amount", applicantId).label, disabled: behavior?.amountControl?.locked, options: [
                     ...standaloneOptions.map(rider => ({ value: `rider-only:${rider.id}`, label: requirementText("coverage.rider.only-label", { rider: rider.name }) })),
                     ...choices.filter(amount => amount !== 0 || !standaloneOptions.length).map(amount => ({ value: String(amount), label: formatUSD(amount, 0) })),
                   ] }}
@@ -722,9 +649,9 @@ export function ProductCard({
                     else onAmountChange(key, Number(value));
                   }}
                 />
-                <Box sx={{ pt: 1.5 }}>
+                <Box>
                   <ControlledFieldRenderer
-                    field={{ ...requirementCoverageControl("add-coverage", applicantId), id: `${key}-selected`, disabled: !isSelected && applicantId === "child" && behavior?.selectable === false }}
+                    field={{ ...controlDefinition("add-coverage", applicantId), id: `${key}-selected`, disabled: !isSelected && applicantId === "child" && behavior?.selectable === false }}
                     value={isSelected}
                     onChange={() => onToggleApplicant(coverage.id, applicantId)}
                   />
@@ -739,9 +666,9 @@ export function ProductCard({
                         coverage.categoryId === "OO") && (
                         <ControlledFieldRenderer
                           field={{
-                            ...requirementCoverageControl("waiting-period", applicantId === "child" ? "member" : applicantId), id: `${applicantOptionKey}-waiting-period`,
+                            ...controlDefinition("waiting-period", applicantId === "child" ? "member" : applicantId), id: `${applicantOptionKey}-waiting-period`,
                             disabled: isRiderOnly || !!behavior?.waitingPeriod.requiredValue, options: waitingPeriodOptions,
-                            helperText: requirementCoverageControl("waiting-period").helperText,
+                            helperText: controlDefinition("waiting-period", applicantId === "child" ? "member" : applicantId).helperText,
                           }}
                           value={behavior?.waitingPeriod.requiredValue ?? storedWaitingPeriods[applicantOptionKey] ?? storedWaitingPeriods[coverage.id] ?? waitingPeriodOptions[0].value}
                           onChange={value => onWaitingPeriodChange(coverage.id, String(value), applicantId)}
@@ -754,7 +681,7 @@ export function ProductCard({
                       maxBenefitPeriodOptions && maxBenefitPeriodOptions.length > 0 && (
                         <ControlledFieldRenderer
                           field={{
-                            ...requirementCoverageControl("benefit-option", applicantId === "child" ? "member" : applicantId),
+                            ...controlDefinition("benefit-option", applicantId === "child" ? "member" : applicantId),
                             id: `${applicantOptionKey}-max-benefit-period`,
                             disabled: isRiderOnly || !!behavior?.benefitPeriod.requiredValue, options: maxBenefitPeriodOptions,
                             helperText: coverage.categoryId === "OO" ? requirementText("coverage.product-catalog.the-maximum-length-of-time-office-overhead-benefits") : undefined,
@@ -766,14 +693,14 @@ export function ProductCard({
                   </>
                 )}
 
-                {/* Offered riders remain visible before Add coverage. */}
-                {coverage.riders && coverage.riders.length > 0 && (
+                {/* Riders follow the same selection boundary as benefit periods. */}
+                {isSelected && (currentAmount > 0 || isRiderOnly) && coverage.riders && coverage.riders.length > 0 && (
                   <Box>
                     <Typography
                       variant="body2"
                       sx={{ fontWeight: 700, mb: 1 }}
                     >{requirementText("coverage.product-catalog.optional-benefit-s")}</Typography>
-                    <Stack spacing={1}>
+                    <FieldGrid>
                       {coverage.riders
                         .filter(
                           (rider) =>
@@ -786,9 +713,10 @@ export function ProductCard({
 
                         return (
                           <Box key={rider.id} sx={rider.displayAsProduct ? { border: "1px solid", borderColor: "divider", borderRadius: 1, p: 2 } : undefined}>
+                            <FieldGrid>
                             {rider.dependentApplicant && <ApplicantSectionLabel label={resolvedSectionTitles[coverageApplicantToSection[rider.dependentApplicant]]} sx={{ mb: 1 }} />}
                             <ControlledFieldRenderer
-                              field={{ id: `${riderKey}-selected`, label: rider.name, inputType: "checkbox", helperText: rider.description, disabled: isRiderOnly || rider.included || !options.available }}
+                              field={{ ...controlDefinition("rider", applicantId === "child" ? "member" : applicantId), id: `${riderKey}-selected`, label: rider.name, helperText: riderDescription(rider, applicantId), disabled: isRiderOnly || rider.included || !options.available }}
                               value={isChecked}
                               onChange={() => onRiderToggle(coverage.id, rider.id, applicantId)}
                             />
@@ -798,7 +726,7 @@ export function ProductCard({
                               rider.coverageAmounts && (
                                 <ControlledFieldRenderer
                                   field={{
-                                    ...requirementCoverageControl("rider-amount"), id: `${riderKey}-amount`, label: rider.amountLabel ?? requirementCoverageControl("rider-amount").label,
+                                    ...controlDefinition("rider-amount", applicantId === "child" ? "member" : applicantId), id: `${riderKey}-amount`, label: rider.amountLabel ?? controlDefinition("rider-amount", applicantId === "child" ? "member" : applicantId).label,
                                     disabled: isRiderOnly && standalone?.id !== rider.id,
                                     options: [...(rider.included || rider.dependentApplicant || isRiderOnly || options.configured ? [] : [0]), ...options.choices].map(amount => ({ value: String(amount), label: formatUSD(amount, 0) })),
                                   }}
@@ -807,10 +735,11 @@ export function ProductCard({
                                 />
                               )}
                             {!ratesSuppressed && rider.referenceRateTable && <EstimatedRate display={{ status: 'reference-table', table: rider.referenceRateTable }} />}
+                            </FieldGrid>
                           </Box>
                         );
                       })}
-                    </Stack>
+                    </FieldGrid>
                   </Box>
                 )}
 
@@ -835,7 +764,7 @@ export function ProductCard({
                     />
                   </Stack>
                 )}
-              </Stack>
+              </FieldGrid>
             </Box>
           );
         })}
@@ -843,14 +772,8 @@ export function ProductCard({
 
       {shouldShowBreakdown && !ratesSuppressed && (
         <ProductCostBreakdown
-          helpPhone={presentation.helpPhone}
           premiumCost={premiumCost}
           riderItems={riderItems}
-          policyFee={
-            policyFeeAmount > 0
-              ? { label: policyFeeLabel, amount: policyFeeAmount }
-              : undefined
-          }
           rateFrequency={rateFrequency}
         />
       )}

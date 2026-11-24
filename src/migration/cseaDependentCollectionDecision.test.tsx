@@ -1,10 +1,12 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import { act } from "react";
 import { createRoot } from "react-dom/client";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, beforeAll, expect, it, vi } from "vitest";
 import { createReviewedMigrationDatabase } from "./fixtures";
 import { recordCseaDependentCollectionDecision } from "./cseaDependentCollectionDecision";
-import { installPrototypeLibrary, resolvePrototypeLibrary } from "../domain/prototypeLibrary";
+import { installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import { getClientPageFields } from "../config/clientFields/getClientPageFields";
 import Eligibility from "../pages/Eligibility";
 import type { DatabaseSchema } from "../persistence/types";

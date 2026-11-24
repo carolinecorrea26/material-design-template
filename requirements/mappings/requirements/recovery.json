@@ -1,0 +1,31 @@
+{
+  "component": "recovery",
+  "pages": [
+    "error-400",
+    "not-found",
+    "error-500",
+    "technical-error",
+    "maintenance",
+    "session-expired",
+    "resume",
+    "resume-method",
+    "resume-code"
+  ],
+  "rules": [
+    "recovery-shared-layout",
+    "recovery-operation-status-boundary",
+    "recovery-technical-failure",
+    "recovery-resume-privacy",
+    "recovery-expired-access",
+    "recovery-maintenance",
+    "recovery-shared-support",
+    "shared-action-typography",
+    "application-session-warning",
+    "application-session-expired",
+    "shared-content-references"
+  ],
+  "configurations": [
+    "application-inactivity-minutes",
+    "application-session-warning-minutes"
+  ]
+}

@@ -9,7 +9,7 @@ import { createAppTheme } from "../../app/theme";
  * desktop, a bottom sheet on mobile. `swipeable` opts into `SwipeableDrawer`
  * on mobile instead of plain `Drawer` — but the cart (AppHeader) is the only
  * real consumer that passes it. AppMenu's 4 sub-drawers and every page-level
- * drawer (Beneficiary, Home, HealthDi, Payment, Membership, HealthSi,
+ * drawer (Beneficiary, Home, HealthDiSupp, Payment, Membership, HealthSi,
  * Coverage) render as a plain, non-swipeable `Drawer` even on mobile, which
  * is an inconsistent mobile interaction pattern worth knowing about before
  * adding a new drawer, not a bug in this component itself.

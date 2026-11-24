@@ -1,0 +1,24 @@
+{
+  "tpa": {
+    "lookupFields": [
+      "first-name",
+      "last-name",
+      "birth-date"
+    ],
+    "prototypeRecords": [
+      {
+        "facts": {
+          "first-name": "Taylor",
+          "last-name": "Morgan",
+          "birth-date": "1990-08-26"
+        },
+        "activeCoverage": true
+      }
+    ]
+  },
+  "configurations": {
+    "tpa-integration": "membership-auto-approval",
+    "eligible-states-only": false,
+    "eligible-states": []
+  }
+}

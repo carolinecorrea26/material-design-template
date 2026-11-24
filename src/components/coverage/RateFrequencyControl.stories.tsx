@@ -1,3 +1,4 @@
+import ComponentFixture from "../../../.storybook/fixtures/ComponentFixture";
 import { useState } from "react";
 import type { Meta } from "@storybook/react-vite";
 import RateFrequencyControl, { type RateFrequency } from "./RateFrequencyControl";
@@ -13,13 +14,14 @@ export default meta;
 
 export const Interactive = () => {
   const [value, setValue] = useState<RateFrequency>("monthly");
-  return <RateFrequencyControl value={value} onChange={setValue} />;
+  return <ComponentFixture>{fixture => <RateFrequencyControl field={fixture.fieldSurfaces.coverageControls.mapping.fields.find(field => field.id === "rate-frequency")} value={value} onChange={setValue} />}</ComponentFixture>;
 };
 
 export const EndAligned = () => (
-  <RateFrequencyControl
+  <ComponentFixture>{fixture => <RateFrequencyControl
+    field={fixture.fieldSurfaces.coverageControls.mapping.fields.find(field => field.id === "rate-frequency")}
     value="annual"
     onChange={() => {}}
     justifyContent="end"
-  />
+  />}</ComponentFixture>
 );

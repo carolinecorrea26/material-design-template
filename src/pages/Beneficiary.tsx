@@ -1,11 +1,20 @@
+import { selectedApplicationApplicants } from '../domain/applicantParticipation';
+import PageHelp from "../components/content/PageHelp";
+import { pageHelpItems } from "../content/helpContent";
+import { orderCoveragePresentation } from "../domain/coveragePresentation";
+import { activeFeaturedProduct, activeFirstCoverageCategory } from "../config/client/coverageProductScope";
+import { resolveSiteId } from "../data/activeSite";
+import { resolveActiveAssociationFromApplication } from '../data/activeAssociation';
+import { applicationUnderwriting, applicationCoverageName } from "../domain/coverageRuntime";
+import { getDesignationLabel } from "../components/beneficiary/beneficiaryRecords";
 import { requirementText } from "../domain/requirementContent";
 import BeneficiaryProductRecords from "../components/beneficiary/BeneficiaryProductRecords";
 import { type BeneficiaryDesignation, type BeneficiaryType, type BeneficiaryItem } from "../components/beneficiary/beneficiaryRecords";
-import { collectsBeneficiaries } from "../domain/beneficiaryParticipation";
+import { collectsBeneficiaries, beneficiaryQuestionsEnabled as shouldShowBeneficiaryQuestions } from "../domain/beneficiaryParticipation";
 import { beneficiaryDesignationNote } from "../domain/beneficiaryNotes";
 import { getPrototypeLibrary } from "../domain/prototypeLibrary";
 import { validateBeneficiaryRecords } from '../domain/beneficiaryValidation';
-import { getFieldSurface, getSurfaceFields, getSurfaceField, surfaceSemanticValues, beneficiarySemanticValues } from '../config/fields/storedSurfaces';
+import { getFieldSurface, getSurfaceFields, getSurfaceField, surfaceSemanticValues, beneficiarySemanticValues, beneficiaryStoredValues } from '../config/fields/storedSurfaces';
 import { BENEFICIARY_INFO_OPT_IN_FIELD_ID } from "../config/fields/beneficiaryFields";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -25,23 +34,20 @@ import CategoryCard from "../components/layout/CategoryCard";
 import AppModal from "../components/layout/AppModal";
 import FieldRenderer from "../components/forms/FieldRenderer";
 import { shouldShowApplicantLabel } from "../utils/applicantVisibility";
-import FormRoutePage from "../app/RoutePage";
-import AppDrawer from "../components/layout/AppDrawer";
+import FormRoutePage, { isSectionVisible } from "../app/RoutePage";
 import { getClientPageRequirement } from "../config/client/getClientPageRequirement";
 import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
 import {
-  coverageCategories,
+  getCoverageCategories,
   getCoverageCategorySectionLabel,
 } from "../config/coverageCategories";
 import { getActiveClient } from "../config/client/getActiveClient";
 import type { CoverageApplicantId } from "../config/coverages/types";
 import { useApplicationForm } from "../app/ApplicationFormContext";
-import { beneficiaryHelpItems } from "../content/helpContent";
-import FormHelpChips from "../components/content/HelpChips";
 import { getContent } from "../content";
 import FieldGrid from "../components/layout/FieldGrid";
 
-const content = getContent();
+
 
 type ProductContext = {
   productKey: string;
@@ -50,17 +56,6 @@ type ProductContext = {
   applicantId: CoverageApplicantId;
 };
 
-
-function shouldShowBeneficiaryQuestions(
-  pageRequirement: "required" | "optional" | "none",
-  values: Record<string, unknown>,
-): boolean {
-  if (pageRequirement !== "optional") {
-    return true;
-  }
-
-  return values[BENEFICIARY_INFO_OPT_IN_FIELD_ID] === "yes";
-}
 
 function getBeneficiaryPageError(
   pageRequirement: "required" | "optional" | "none",
@@ -95,18 +90,20 @@ function getBeneficiaryPageError(
   });
 
   if (hasMissingBeneficiaryInfo) {
-    return content.beneficiary.missingBeneficiaryError;
+    return getContent().beneficiary.missingBeneficiaryError;
   }
 
   for (const productKey of applicableProductKeys) {
-    const invalid = validateBeneficiaryRecords(beneficiaries[productKey] as unknown[], getFieldSurface('beneficiaryIndividual'), getFieldSurface('beneficiaryTrust'));
+    const invalid = validateBeneficiaryRecords(beneficiaries[productKey] as unknown[], getFieldSurface('beneficiaryIndividual'), getFieldSurface('beneficiaryTrust'), 'next');
     if (invalid) return invalid;
   }
   return undefined;
 }
 
 export default function Beneficiary() {
+  const content = getContent();
   const { values, setPageValues } = useApplicationForm();
+  const associationKey = resolveActiveAssociationFromApplication(resolveSiteId(), values).association?.id;
   const individualFields = getSurfaceFields("beneficiaryIndividual");
   const trustFields = getSurfaceFields("beneficiaryTrust");
   const maxBeneficiaries = getFieldSurface("beneficiaryIndividual").maxItems!;
@@ -129,18 +126,7 @@ export default function Beneficiary() {
     return {};
   }, [values.coverageAmounts]);
 
-  const productApplicants = useMemo<
-    Record<string, CoverageApplicantId[]>
-  >(() => {
-    if (
-      values.productApplicants != null &&
-      typeof values.productApplicants === "object" &&
-      !Array.isArray(values.productApplicants)
-    ) {
-      return values.productApplicants as Record<string, CoverageApplicantId[]>;
-    }
-    return {};
-  }, [values.productApplicants]);
+  const productApplicants = useMemo(() => selectedApplicationApplicants(values, coverages), [values, coverages]);
 
   const beneficiariesByProduct = useMemo<Record<string, BeneficiaryItem[]>>(
     () =>
@@ -157,35 +143,8 @@ export default function Beneficiary() {
       selectedCoverageIds.includes(coverage.id),
   );
 
-  const selectedDependents = useMemo(
-    () => (Array.isArray(values.dependents) ? values.dependents : []),
-    [values.dependents],
-  );
-
-  const isApplicantSelectedForProduct = useCallback((
-    coverageId: string,
-    applicantId: CoverageApplicantId,
-  ): boolean => {
-    // If the dependent type is no longer selected on eligibility, never show it
-    if (applicantId === "spouse" && !selectedDependents.includes("spouse"))
-      return false;
-    if (applicantId === "child" && !selectedDependents.includes("child"))
-      return false;
-
-    const selectedApplicantsForProduct = productApplicants[coverageId];
-
-    if (
-      Object.prototype.hasOwnProperty.call(productApplicants, coverageId) &&
-      Array.isArray(selectedApplicantsForProduct)
-    ) {
-      return selectedApplicantsForProduct.includes(applicantId);
-    }
-
-    if (applicantId === "member") return true;
-    if (applicantId === "spouse") return selectedDependents.includes("spouse");
-    if (applicantId === "child") return selectedDependents.includes("child");
-    return false;
-  }, [productApplicants, selectedDependents]);
+  const isApplicantSelectedForProduct = useCallback((coverageId: string, applicantId: CoverageApplicantId) =>
+    productApplicants[coverageId]?.includes(applicantId) ?? false, [productApplicants]);
 
   const applicantProducts = useMemo(() => {
     const byApplicant: Record<"member" | "spouse", ProductContext[]> = {
@@ -196,33 +155,35 @@ export default function Beneficiary() {
     for (const coverage of selectedCoverages) {
       const memberKey = `${coverage.id}:member`;
       if (
+        coverage.applicants.includes('member') &&
         (storedAmounts[memberKey] ?? 0) > 0 &&
-        isApplicantSelectedForProduct(coverage.id, "member") && collectsBeneficiaries(getPrototypeLibrary()?.site, coverage.id, coverage.categoryId, "member", typeof values.membership === "string" ? values.membership : undefined)
+        isApplicantSelectedForProduct(coverage.id, "member") && collectsBeneficiaries(getPrototypeLibrary()?.site, coverage.id, coverage.categoryId, "member", associationKey)
       ) {
         byApplicant.member.push({
           productKey: memberKey,
           coverageId: coverage.id,
-          coverageName: coverage.name,
+          coverageName: applicationCoverageName(coverage, values),
           applicantId: "member",
         });
       }
 
       const spouseKey = `${coverage.id}:spouse`;
       if (
+        coverage.applicants.includes('spouse') &&
         (storedAmounts[spouseKey] ?? 0) > 0 &&
-        isApplicantSelectedForProduct(coverage.id, "spouse") && collectsBeneficiaries(getPrototypeLibrary()?.site, coverage.id, coverage.categoryId, "spouse", typeof values.membership === "string" ? values.membership : undefined)
+        isApplicantSelectedForProduct(coverage.id, "spouse") && collectsBeneficiaries(getPrototypeLibrary()?.site, coverage.id, coverage.categoryId, "spouse", associationKey)
       ) {
         byApplicant.spouse.push({
           productKey: spouseKey,
           coverageId: coverage.id,
-          coverageName: coverage.name,
+          coverageName: applicationCoverageName(coverage, values),
           applicantId: "spouse",
         });
       }
     }
 
     return byApplicant;
-  }, [selectedCoverages, storedAmounts, isApplicantSelectedForProduct, values.membership]);
+  }, [selectedCoverages, storedAmounts, isApplicantSelectedForProduct, values, associationKey]);
 
   const [activeProduct, setActiveProduct] = useState<ProductContext | null>(
     null,
@@ -269,15 +230,10 @@ export default function Beneficiary() {
     [],
   );
 
-  const helpItems = beneficiaryHelpItems;
-
-  const [activeHelpId, setActiveHelpId] = useState<string | null>(null);
-  const activeHelpItem =
-    helpItems.find((item) => item.id === activeHelpId) ?? null;
 
   function getProductBeneficiaries(productKey: string): BeneficiaryItem[] {
     const items = beneficiariesByProduct[productKey];
-    return Array.isArray(items) ? items.map(item => beneficiarySemanticValues(item as unknown as Record<string, unknown>) as unknown as BeneficiaryItem) : [];
+    return Array.isArray(items) ? items.filter(item => item && typeof item === "object" && !Array.isArray(item)).map(item => beneficiarySemanticValues(item as unknown as Record<string, unknown>) as unknown as BeneficiaryItem) : [];
   }
 
   function upsertProductBeneficiaries(
@@ -287,14 +243,14 @@ export default function Beneficiary() {
     setPageValues({
       beneficiaries: {
         ...beneficiariesByProduct,
-        [productKey]: nextItems,
+        [productKey]: nextItems.map(item => beneficiaryStoredValues(item as unknown as Record<string, unknown>)),
       },
     });
   }
 
   const allApplicantProducts = [...applicantProducts.member, ...applicantProducts.spouse];
   function canApplyBeneficiary(product: ProductContext, item: BeneficiaryItem) {
-    return !validateBeneficiaryRecords([...getProductBeneficiaries(product.productKey), item], getFieldSurface("beneficiaryIndividual"), getFieldSurface("beneficiaryTrust"));
+    return !validateBeneficiaryRecords([...getProductBeneficiaries(product.productKey), item].map(row => beneficiaryStoredValues(row as unknown as Record<string, unknown>)), getFieldSurface("beneficiaryIndividual"), getFieldSurface("beneficiaryTrust"));
   }
   function offerApplyToOthers(source: ProductContext, item: BeneficiaryItem) {
     const targets = allApplicantProducts.filter(product => product.productKey !== source.productKey && canApplyBeneficiary(product, item));
@@ -367,17 +323,15 @@ export default function Beneficiary() {
     designation: BeneficiaryDesignation,
   ) {
     const used = getFilteredListForDesignation(list, designation).length;
-    return Math.max(0, maxBeneficiaries - used);
+    const maximum = getFieldSurface(modalBeneficiaryType === "trust" ? "beneficiaryTrust" : "beneficiaryIndividual").maxItems!;
+    return Math.max(0, maximum - used);
   }
 
   function getShareRemaining(
     list: BeneficiaryItem[],
     designation: BeneficiaryDesignation,
   ) {
-    const assigned = getFilteredListForDesignation(list, designation).reduce(
-      (sum, item) => sum + item.share,
-      0,
-    );
+    const assigned = getFilteredListForDesignation(list, designation).reduce((sum, item) => sum + (Number(item.share) || 0), 0);
     return Math.max(0, 100 - assigned);
   }
 
@@ -399,7 +353,7 @@ export default function Beneficiary() {
     if (items.length === 0) return false;
     if (items.length >= maxBeneficiaries) return true;
     if (items.some((item) => item.beneficiaryType === "trust")) return true;
-    const totalShare = items.reduce((sum, item) => sum + item.share, 0);
+    const totalShare = items.reduce((sum, item) => sum + (Number(item.share) || 0), 0);
     return totalShare >= 100;
   }
 
@@ -414,6 +368,7 @@ export default function Beneficiary() {
   function saveBeneficiary(boundData: Record<string, string>) {
     const formData = surfaceSemanticValues(modalBeneficiaryType === "individual" ? "beneficiaryIndividual" : "beneficiaryTrust", boundData) as Record<string, string>;
     if (!activeProduct) return;
+    if (!allApplicantProducts.some(product => product.productKey === activeProduct.productKey)) { setModalError(requirementText("beneficiary.error.coverage-unavailable")); return; }
 
     const currentList = getProductBeneficiaries(activeProduct.productKey);
     const remainingSlots = getDesignationRemaining(
@@ -422,9 +377,7 @@ export default function Beneficiary() {
     );
 
     if (remainingSlots <= 0) {
-      setModalError(
-        `You have reached the maximum of ${maxBeneficiaries} ${modalDesignation} beneficiaries for this product.`,
-      );
+      setModalError(requirementText("beneficiary.error.maximum", { maximum: String(getFieldSurface(modalBeneficiaryType === "trust" ? "beneficiaryTrust" : "beneficiaryIndividual").maxItems), designation: getDesignationLabel(modalDesignation) }));
       return;
     }
 
@@ -433,7 +386,7 @@ export default function Beneficiary() {
 
     if (modalBeneficiaryType === "individual") {
       if (!Number.isFinite(parsedShare) || parsedShare <= 0) {
-        const message = "Enter a valid share percentage greater than 0.";
+        const message = requirementText("beneficiary.error.share-positive");
         setModalError(message);
         setModalFieldError(shareKey, { type: "manual", message });
         return;
@@ -441,7 +394,7 @@ export default function Beneficiary() {
 
       const unassignedShare = getShareRemaining(currentList, modalDesignation);
       if (parsedShare > unassignedShare) {
-        const message = `Share exceeds available unassigned percentage (${unassignedShare}%).`;
+        const message = requirementText("beneficiary.error.share-exceeds", { remaining: String(unassignedShare) });
         setModalError(message);
         setModalFieldError(shareKey, { type: "manual", message });
         return;
@@ -467,6 +420,8 @@ export default function Beneficiary() {
       ? currentList.map((item) => (item.id === editingId ? nextItem : item))
       : [...currentList, nextItem];
 
+    const invalid = validateBeneficiaryRecords(nextList.map(item => beneficiaryStoredValues(item as unknown as Record<string, unknown>)), getFieldSurface("beneficiaryIndividual"), getFieldSurface("beneficiaryTrust"));
+    if (invalid) { setModalError(invalid); return; }
     upsertProductBeneficiaries(activeProduct.productKey, nextList);
 
     if (!editingId) offerApplyToOthers(activeProduct, nextItem);
@@ -483,7 +438,8 @@ export default function Beneficiary() {
     const nextBeneficiaries = { ...beneficiariesByProduct };
 
     for (const productKey of applyToOthersSelected) {
-      const invalid = validateBeneficiaryRecords([...(Array.isArray(nextBeneficiaries[productKey]) ? nextBeneficiaries[productKey] : []), applyToOthersItem], getFieldSurface("beneficiaryIndividual"), getFieldSurface("beneficiaryTrust"));
+      if (!allApplicantProducts.some(product => product.productKey === productKey) || productKey === applyToOthersSource.productKey) { setApplyToOthersError(requirementText("beneficiary.error.coverage-unavailable")); return; }
+      const invalid = validateBeneficiaryRecords([...(Array.isArray(nextBeneficiaries[productKey]) ? nextBeneficiaries[productKey] : []), beneficiaryStoredValues(applyToOthersItem as unknown as Record<string, unknown>)], getFieldSurface("beneficiaryIndividual"), getFieldSurface("beneficiaryTrust"));
       if (invalid) { setApplyToOthersError(invalid); return; }
     }
 
@@ -494,7 +450,7 @@ export default function Beneficiary() {
       // Add a copy with a new unique ID
       nextBeneficiaries[productKey] = [
         ...existing,
-        { ...applyToOthersItem, id: crypto.randomUUID() },
+        beneficiaryStoredValues({ ...applyToOthersItem, id: crypto.randomUUID() }) as unknown as BeneficiaryItem,
       ];
     }
 
@@ -518,8 +474,9 @@ export default function Beneficiary() {
     const library = getPrototypeLibrary();
     return <BeneficiaryProductRecords key={product.productKey} productName={product.coverageName}
       items={getProductBeneficiaries(product.productKey)}
+      relationshipOptions={getSurfaceField("beneficiaryIndividual", "beneficiary-relationship")?.options}
       note={library ? beneficiaryDesignationNote(library.site, product.coverageId, product.applicantId) ?? undefined : undefined}
-      quickDecision={coverages.some(coverage => coverage.id === product.coverageId && !coverage.underwritingBands?.length && coverage.underwritingType === "QD")}
+      quickDecision={coverages.some(coverage => coverage.id === product.coverageId && applicationUnderwriting(coverage, product.applicantId, values).underwritingType === "QD")}
       capacityMessage={isProductFullyMaxed(product.productKey) ? content.beneficiary.noMoreOnlineMessage : undefined}
       onEdit={item => openEditModal(product, item)} onRemove={id => removeBeneficiary(product.productKey, id)} onAdd={() => openAddModal(product)}
       onApply={allApplicantProducts.some(target => target.productKey !== product.productKey) ? item => offerApplyToOthers(product, item) : undefined}
@@ -531,7 +488,8 @@ export default function Beneficiary() {
     const products = applicantProducts[applicant];
     if (!products.length) return null;
 
-    const groupedByCategory = coverageCategories
+    const orderedCategories = orderCoveragePresentation(selectedCoverages, getActiveClient().coverages, activeFeaturedProduct(resolveSiteId()), activeFirstCoverageCategory(resolveSiteId())).categories;
+    const groupedByCategory = orderedCategories.map(id => getCoverageCategories().find(category => category.id === id)!)
       .filter((category) => products.some(product => coverages.some(coverage => coverage.id === product.coverageId && coverage.categoryId === category.id)))
       .map((category) => ({
         category,
@@ -582,8 +540,7 @@ export default function Beneficiary() {
   const currentShareValue = Number(modalShare) || 0;
   const displayRemainingShare = Math.max(
     0,
-    remainingShare -
-      (modalBeneficiaryType === "individual" ? currentShareValue : 0),
+    remainingShare - (modalBeneficiaryType === "individual" ? currentShareValue : 0),
   );
 
   const designationHasIndividual = hasTypeForDesignation(
@@ -662,7 +619,7 @@ export default function Beneficiary() {
   return (
     <FormRoutePage
       pageId="beneficiary"
-      devFillFields={() =>
+      runtimeFields={() =>
         pageRequirement === "optional" ? getSurfaceFields("beneficiaryControls").filter(field => field.id === BENEFICIARY_INFO_OPT_IN_FIELD_ID) : []
       }
       validate={(nextValues) =>
@@ -672,20 +629,9 @@ export default function Beneficiary() {
           applicableProductKeys,
         )
       }
-      help={
-        <>
-          <FormHelpChips items={helpItems} onSelect={setActiveHelpId} />
-          <AppDrawer
-            open={!!activeHelpItem}
-            title={activeHelpItem?.title ?? ""}
-            onClose={() => setActiveHelpId(null)}
-          >
-            {activeHelpItem?.content}
-          </AppDrawer>
-        </>
-      }
+      help={<PageHelp items={pageHelpItems("beneficiary")} />}
     >
-      {({ control, errors, watchedValues }) => {
+      {({ control, errors, watchedValues, pageSections }) => {
         const showBeneficiaryQuestions = shouldShowBeneficiaryQuestions(
           pageRequirement,
           watchedValues as Record<string, unknown>,
@@ -693,30 +639,15 @@ export default function Beneficiary() {
 
         return (
           <>
-            {pageRequirement === "optional" && getSurfaceField("beneficiaryControls", BENEFICIARY_INFO_OPT_IN_FIELD_ID) && (
-              <FieldRenderer
-                field={getSurfaceField("beneficiaryControls", BENEFICIARY_INFO_OPT_IN_FIELD_ID)!}
-                control={control}
-                errors={errors}
-              />
-            )}
-
-            {pageRequirement === "optional" && showBeneficiaryQuestions && (
-              <Divider sx={{ my: 2 }} />
-            )}
-
-            {!hasAnyApplicantProducts ? (
-              showBeneficiaryQuestions && (
-                <Alert severity="info">
-                  {content.beneficiary.noApplicantProductsMessage}
-                </Alert>
-              )
-            ) : showBeneficiaryQuestions ? (
-              <Stack spacing={2.5}>
-                {renderApplicantSection("member")}
-                {renderApplicantSection("spouse")}
-              </Stack>
-            ) : null}
+            {!hasAnyApplicantProducts && showBeneficiaryQuestions && <Alert severity="info">{content.beneficiary.noApplicantProductsMessage}</Alert>}
+            <Stack spacing={2.5}>{pageSections.filter(section => isSectionVisible(section, watchedValues)).map(section => {
+              if (section.components?.includes("FieldGroup")) return pageRequirement === "optional" ? <Box key={section.id}>
+                <FieldRenderer field={getSurfaceField("beneficiaryControls", BENEFICIARY_INFO_OPT_IN_FIELD_ID)!} control={control} errors={errors} />
+                {showBeneficiaryQuestions && <Divider sx={{ my: 2 }} />}
+              </Box> : null;
+              if (section.components?.includes("BeneficiaryProductRecords") && showBeneficiaryQuestions) return <Box key={section.id}>{renderApplicantSection(section.applicant === "spouse" ? "spouse" : "member")}</Box>;
+              return null;
+            })}</Stack>
 
             <AppModal
               open={!!activeProduct}
@@ -755,7 +686,7 @@ export default function Beneficiary() {
                   handleModalSubmit(saveBeneficiary)(e);
                 }}
               >
-                <Stack spacing={2} sx={{ pt: 0.5 }}>
+                <FieldGrid sx={{ pt: 0.5 }}>
                   <Box>
                     <Tabs
                       value={modalDesignation}
@@ -784,12 +715,12 @@ export default function Beneficiary() {
                       >
                         {remainingDesignationSlots}
                       </Typography>{" "}
-                      {modalDesignation} {requirementText("beneficiary.designation.remaining")}</Typography>
+                      {getDesignationLabel(modalDesignation)} {requirementText("beneficiary.designation.remaining")}</Typography>
                   </Box>
 
                   {remainingDesignationSlots === 0 && !editingId && (
                     <Alert severity="warning">
-                      {requirementText("beneficiary.error.designation-full").replace("{designation}", modalDesignation)}</Alert>
+                      {requirementText("beneficiary.error.designation-full", { designation: getDesignationLabel(modalDesignation) })}</Alert>
                   )}
 
                   <ControlledFieldRenderer
@@ -802,7 +733,7 @@ export default function Beneficiary() {
                     individualBlocked && (
                       <Alert severity="warning">
                         {designationHasTrust
-                          ? requirementText("beneficiary.error.trust-exists").replace("{designation}", modalDesignation)
+                          ? requirementText("beneficiary.error.trust-exists", { designation: getDesignationLabel(modalDesignation) })
                           : requirementText("beneficiary.error.no-unassigned-share")}
                       </Alert>
                     )}
@@ -810,8 +741,8 @@ export default function Beneficiary() {
                   {modalBeneficiaryType === "trust" && trustBlocked && (
                     <Alert severity="warning">
                       {designationHasTrust
-                        ? requirementText("beneficiary.error.one-trust").replace("{designation}", modalDesignation)
-                        : requirementText("beneficiary.error.individual-exists").replace("{designation}", modalDesignation)}
+                        ? requirementText("beneficiary.error.one-trust", { designation: getDesignationLabel(modalDesignation) })
+                        : requirementText("beneficiary.error.individual-exists", { designation: getDesignationLabel(modalDesignation) })}
                     </Alert>
                   )}
 
@@ -897,7 +828,7 @@ export default function Beneficiary() {
                   {modalError ? (
                     <Alert severity="error">{modalError}</Alert>
                   ) : null}
-                </Stack>
+                </FieldGrid>
               </Box>
             </AppModal>
 
@@ -933,7 +864,7 @@ export default function Beneficiary() {
                     <Stack spacing={2}>
                       {(["member", "spouse"] as const).map(applicant => {
                         const products = otherProducts.filter(product => product.applicantId === applicant);
-                        return products.length ? <ApplicantSectionDivider key={applicant} applicant={applicant === "member" ? "self" : "spouse"} showLabel={applicantProducts.spouse.length > 0}>
+                        return products.length ? <ApplicantSectionDivider key={applicant} applicant={applicant === "member" ? "self" : "spouse"} showLabel={shouldShowApplicantLabel(applicant, values)}>
                         <Stack spacing={1}>{products.map((product) => (
                         <Box
                           key={product.productKey}
@@ -945,9 +876,9 @@ export default function Beneficiary() {
                         >
                           <ControlledFieldRenderer
                             field={{
+                              ...getSurfaceField("beneficiaryCopyControls", "beneficiaryApplyTarget")!,
                               id: `apply-beneficiary-${product.productKey}`,
                               label: product.coverageName,
-                              inputType: "checkbox",
                               disabled: !!applyToOthersItem && !canApplyBeneficiary(product, applyToOthersItem),
                             }}
                             value={applyToOthersSelected.includes(product.productKey)}

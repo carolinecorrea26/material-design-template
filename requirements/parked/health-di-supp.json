@@ -1,0 +1,491 @@
+{
+  "page": "health-di-supp",
+  "components": [
+    {
+      "type": "FormRoutePage",
+      "mapping": "form-route-page",
+      "components": [
+        {
+          "type": "PageHeader"
+        },
+        {
+          "type": "HealthQuestionList",
+          "mapping": "health-di-supp",
+          "components": [
+            {
+              "type": "ApplicantSectionDivider"
+            },
+            {
+              "type": "HealthQuestion",
+              "components": [
+                {
+                  "type": "FieldRenderer"
+                },
+                {
+                  "type": "DynamicList"
+                }
+              ]
+            },
+            {
+              "type": "HealthQuestion",
+              "purpose": "effective configured questionnaire items"
+            }
+          ]
+        },
+        {
+          "type": "PageNav"
+        }
+      ]
+    }
+  ],
+  "definition": {
+    "id": "health-di-supp",
+    "path": "/health-di-supp",
+    "type": "form",
+    "groupId": "health",
+    "flow": "application",
+    "healthGate": true,
+    "displayName": "Health DI SUPP"
+  },
+  "position": 11,
+  "layout": {
+    "sections": {
+      "questions": {
+        "id": "healthDiSelf",
+        "for": "self",
+        "fields": [
+          "health-di-q1",
+          "health-di-q2",
+          "health-di-q3",
+          "health-di-q4",
+          "health-di-q5",
+          "health-di-q6",
+          "health-di-q7"
+        ]
+      },
+      "spouse-questions": {
+        "id": "healthDiSpouse",
+        "for": "spouse",
+        "fields": [
+          "health-di-q1",
+          "health-di-q2",
+          "health-di-q3",
+          "health-di-q4",
+          "health-di-q5",
+          "health-di-q6",
+          "health-di-q7"
+        ]
+      }
+    },
+    "dialogs": {
+      "condition-details": {
+        "for": "self",
+        "fields": [
+          "health-detail-onset",
+          "health-detail-conditions",
+          "health-detail-physician-address",
+          "health-di-assistance-type",
+          "health-di-fall-type",
+          "health-di-details"
+        ]
+      }
+    }
+  },
+  "content": {
+    "wording": [
+      "page.health-di-supp.title",
+      "page.health-di-supp.subhead",
+      "page.health-di-supp.nav-title"
+    ],
+    "runtime": [
+      "application.ui.no-details-provided",
+      "application.ui.onset",
+      "health.question-title",
+      "health.details-label",
+      "health.condition-details-label"
+    ]
+  },
+  "fieldMapping": {
+    "page": "health-di-supp"
+  },
+  "answerKeyPatterns": {
+    "spouse": "{field}-spouse"
+  },
+  "surfaces": {
+    "healthDiq1Details": {
+      "mapping": {
+        "page": "health-di-supp"
+      },
+      "definition": {
+        "label": "health.details-label",
+        "maxItems": 10,
+        "fields": [
+          {
+            "fieldKey": "health-di-q1-detail-assistanceType",
+            "valueKey": "assistanceType"
+          },
+          {
+            "fieldKey": "health-di-q1-detail-onset",
+            "valueKey": "onset"
+          },
+          {
+            "fieldKey": "health-di-q1-detail-conditionsDetails",
+            "valueKey": "conditionsDetails"
+          },
+          {
+            "fieldKey": "health-di-q1-detail-physicianAddress",
+            "valueKey": "physicianAddress"
+          }
+        ],
+        "libraryGroup": {
+          "label": "health.condition-details-modal"
+        }
+      },
+      "aliases": {
+        "health-di-q1-detail-assistanceType": {
+          "field": "health-di-assistance-type"
+        },
+        "health-di-q1-detail-onset": {
+          "field": "health-detail-onset"
+        },
+        "health-di-q1-detail-conditionsDetails": {
+          "field": "health-detail-conditions"
+        },
+        "health-di-q1-detail-physicianAddress": {
+          "field": "health-detail-physician-address"
+        }
+      }
+    },
+    "healthDiq2Details": {
+      "mapping": {
+        "page": "health-di-supp"
+      },
+      "definition": {
+        "label": "health.details-label",
+        "maxItems": 10,
+        "fields": [
+          {
+            "fieldKey": "health-di-q2-detail-fallType",
+            "valueKey": "fallType"
+          },
+          {
+            "fieldKey": "health-di-q2-detail-onset",
+            "valueKey": "onset"
+          },
+          {
+            "fieldKey": "health-di-q2-detail-conditionsDetails",
+            "valueKey": "conditionsDetails"
+          },
+          {
+            "fieldKey": "health-di-q2-detail-physicianAddress",
+            "valueKey": "physicianAddress"
+          }
+        ],
+        "libraryGroup": {
+          "label": "health.condition-details-modal"
+        }
+      },
+      "aliases": {
+        "health-di-q2-detail-fallType": {
+          "field": "health-di-fall-type"
+        },
+        "health-di-q2-detail-onset": {
+          "field": "health-detail-onset"
+        },
+        "health-di-q2-detail-conditionsDetails": {
+          "field": "health-detail-conditions"
+        },
+        "health-di-q2-detail-physicianAddress": {
+          "field": "health-detail-physician-address"
+        }
+      }
+    },
+    "healthDiq3Details": {
+      "mapping": {
+        "page": "health-di-supp"
+      },
+      "definition": {
+        "label": "health.details-label",
+        "maxItems": 10,
+        "fields": [
+          {
+            "fieldKey": "health-di-q3-detail-onset",
+            "valueKey": "onset"
+          },
+          {
+            "fieldKey": "health-di-q3-detail-conditionsDetails",
+            "valueKey": "conditionsDetails"
+          },
+          {
+            "fieldKey": "health-di-q3-detail-physicianAddress",
+            "valueKey": "physicianAddress"
+          }
+        ],
+        "libraryGroup": {
+          "label": "health.condition-details-modal"
+        }
+      },
+      "aliases": {
+        "health-di-q3-detail-onset": {
+          "field": "health-detail-onset"
+        },
+        "health-di-q3-detail-conditionsDetails": {
+          "field": "health-detail-conditions"
+        },
+        "health-di-q3-detail-physicianAddress": {
+          "field": "health-detail-physician-address"
+        }
+      }
+    },
+    "healthDiq4Details": {
+      "mapping": {
+        "page": "health-di-supp"
+      },
+      "definition": {
+        "label": "health.details-label",
+        "maxItems": 10,
+        "fields": [
+          {
+            "fieldKey": "health-di-q4-detail-onset",
+            "valueKey": "onset"
+          },
+          {
+            "fieldKey": "health-di-q4-detail-conditionsDetails",
+            "valueKey": "conditionsDetails"
+          },
+          {
+            "fieldKey": "health-di-q4-detail-physicianAddress",
+            "valueKey": "physicianAddress"
+          }
+        ],
+        "libraryGroup": {
+          "label": "health.condition-details-modal"
+        }
+      },
+      "aliases": {
+        "health-di-q4-detail-onset": {
+          "field": "health-detail-onset"
+        },
+        "health-di-q4-detail-conditionsDetails": {
+          "field": "health-detail-conditions"
+        },
+        "health-di-q4-detail-physicianAddress": {
+          "field": "health-detail-physician-address"
+        }
+      }
+    },
+    "healthDiq5Details": {
+      "mapping": {
+        "page": "health-di-supp"
+      },
+      "definition": {
+        "label": "health.details-label",
+        "maxItems": 10,
+        "fields": [
+          {
+            "fieldKey": "health-di-q5-detail-onset",
+            "valueKey": "onset"
+          },
+          {
+            "fieldKey": "health-di-q5-detail-conditionsDetails",
+            "valueKey": "conditionsDetails"
+          },
+          {
+            "fieldKey": "health-di-q5-detail-physicianAddress",
+            "valueKey": "physicianAddress"
+          }
+        ],
+        "libraryGroup": {
+          "label": "health.condition-details-modal"
+        }
+      },
+      "aliases": {
+        "health-di-q5-detail-onset": {
+          "field": "health-detail-onset"
+        },
+        "health-di-q5-detail-conditionsDetails": {
+          "field": "health-detail-conditions"
+        },
+        "health-di-q5-detail-physicianAddress": {
+          "field": "health-detail-physician-address"
+        }
+      }
+    },
+    "healthDiq6Details": {
+      "mapping": {
+        "page": "health-di-supp"
+      },
+      "definition": {
+        "label": "health.details-label",
+        "maxItems": 10,
+        "fields": [
+          {
+            "fieldKey": "health-di-q6-detail-onset",
+            "valueKey": "onset"
+          },
+          {
+            "fieldKey": "health-di-q6-detail-conditionsDetails",
+            "valueKey": "conditionsDetails"
+          },
+          {
+            "fieldKey": "health-di-q6-detail-physicianAddress",
+            "valueKey": "physicianAddress"
+          }
+        ],
+        "libraryGroup": {
+          "label": "health.condition-details-modal"
+        }
+      },
+      "aliases": {
+        "health-di-q6-detail-onset": {
+          "field": "health-detail-onset"
+        },
+        "health-di-q6-detail-conditionsDetails": {
+          "field": "health-detail-conditions"
+        },
+        "health-di-q6-detail-physicianAddress": {
+          "field": "health-detail-physician-address"
+        }
+      }
+    },
+    "healthDiq7Details": {
+      "mapping": {
+        "page": "health-di-supp"
+      },
+      "definition": {
+        "label": "health.details-label",
+        "maxItems": 10,
+        "fields": [
+          {
+            "fieldKey": "health-di-q7-detail-details",
+            "valueKey": "details"
+          }
+        ],
+        "libraryGroup": {
+          "label": "health.condition-details-modal"
+        }
+      },
+      "aliases": {
+        "health-di-q7-detail-details": {
+          "field": "health-di-details"
+        }
+      }
+    }
+  },
+  "questionDetails": {
+    "health-di-q1": {
+      "surface": "healthDiq1Details",
+      "summary": "assistance"
+    },
+    "health-di-q2": {
+      "surface": "healthDiq2Details",
+      "summary": "fall"
+    },
+    "health-di-q3": {
+      "surface": "healthDiq3Details",
+      "summary": "condition"
+    },
+    "health-di-q4": {
+      "surface": "healthDiq4Details",
+      "summary": "condition"
+    },
+    "health-di-q5": {
+      "surface": "healthDiq5Details",
+      "summary": "condition"
+    },
+    "health-di-q6": {
+      "surface": "healthDiq6Details",
+      "summary": "condition"
+    },
+    "health-di-q7": {
+      "surface": "healthDiq7Details",
+      "summary": "general"
+    }
+  },
+  "collections": {
+    "healthDiQ1SelfDetails": {
+      "surface": "healthDiq1Details",
+      "section": "questions",
+      "storageName": "health-di-q1-details"
+    },
+    "healthDiQ2SelfDetails": {
+      "surface": "healthDiq2Details",
+      "section": "questions",
+      "storageName": "health-di-q2-details"
+    },
+    "healthDiQ3SelfDetails": {
+      "surface": "healthDiq3Details",
+      "section": "questions",
+      "storageName": "health-di-q3-details"
+    },
+    "healthDiQ4SelfDetails": {
+      "surface": "healthDiq4Details",
+      "section": "questions",
+      "storageName": "health-di-q4-details"
+    },
+    "healthDiQ5SelfDetails": {
+      "surface": "healthDiq5Details",
+      "section": "questions",
+      "storageName": "health-di-q5-details"
+    },
+    "healthDiQ6SelfDetails": {
+      "surface": "healthDiq6Details",
+      "section": "questions",
+      "storageName": "health-di-q6-details"
+    },
+    "healthDiQ7SelfDetails": {
+      "surface": "healthDiq7Details",
+      "section": "questions",
+      "storageName": "health-di-q7-details"
+    },
+    "healthDiQ1SpouseDetails": {
+      "surface": "healthDiq1Details",
+      "section": "spouse-questions",
+      "storageName": "health-di-q1-spouse-details"
+    },
+    "healthDiQ2SpouseDetails": {
+      "surface": "healthDiq2Details",
+      "section": "spouse-questions",
+      "storageName": "health-di-q2-spouse-details"
+    },
+    "healthDiQ3SpouseDetails": {
+      "surface": "healthDiq3Details",
+      "section": "spouse-questions",
+      "storageName": "health-di-q3-spouse-details"
+    },
+    "healthDiQ4SpouseDetails": {
+      "surface": "healthDiq4Details",
+      "section": "spouse-questions",
+      "storageName": "health-di-q4-spouse-details"
+    },
+    "healthDiQ5SpouseDetails": {
+      "surface": "healthDiq5Details",
+      "section": "spouse-questions",
+      "storageName": "health-di-q5-spouse-details"
+    },
+    "healthDiQ6SpouseDetails": {
+      "surface": "healthDiq6Details",
+      "section": "spouse-questions",
+      "storageName": "health-di-q6-spouse-details"
+    },
+    "healthDiQ7SpouseDetails": {
+      "surface": "healthDiq7Details",
+      "section": "spouse-questions",
+      "storageName": "health-di-q7-spouse-details"
+    }
+  },
+  "retiredPageKeys": [
+    "health-di"
+  ],
+  "retiredComponentKeys": [
+    "component-yes-no-detail-list"
+  ],
+  "contentSlots": {
+    "page.health-di-supp.title": {
+      "name": "Page title"
+    },
+    "page.health-di-supp.subhead": {
+      "name": "Page introduction"
+    }
+  }
+}

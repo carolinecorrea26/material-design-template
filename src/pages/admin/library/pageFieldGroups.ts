@@ -1,5 +1,5 @@
 import type { LibraryCatalog } from "../../../services/libraryCatalogService";
-import { resolveEffectiveSite } from "../../../domain/effectiveSite";
+import { resolveCompiledEffectiveSite } from "../../../domain/effectiveSite";
 import { resolveStoredFieldSurfaces } from "../../../domain/fieldSurfaces";
 import { resolveStoredFieldCollections } from "../../../domain/fieldCollections";
 import { isHealthQuestionnairePolicy } from "../../../domain/configuredHealthQuestionnaire";
@@ -15,7 +15,7 @@ export function pageModalFields(catalog: LibraryCatalog, siteKey: string): Modal
   const result: ModalFields[] = [];
   const sites = siteKey === "all" ? catalog.data.sites.map(site => site.key) : [siteKey];
   for (const site of sites) {
-    const effective = resolveEffectiveSite(catalog.data, site);
+    const effective = resolveCompiledEffectiveSite(catalog.data, site);
     const surfaces = resolveStoredFieldSurfaces(catalog.data, effective);
     if (effective.configuration.configurations.some(row => row.key === "tpaIntegration.requireAddressBeforeVerification" && row.value === true)) {
       result.push({ pageKey: "eligibility", label: "Verification address modal", keys: new Set(["street-address", "apt-suite", "city", "state", "zip-code"]) });

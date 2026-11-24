@@ -35,23 +35,6 @@
       "sourceReference": "prototype:brandingProfiles/client:abe"
     },
     {
-      "id": "client:ama",
-      "key": "client:ama",
-      "definition": {
-        "name": "American Medical Association",
-        "acronym": "AMA",
-        "logo": "/client/ama/logo.png",
-        "logoAlt": "AMA Logo"
-      },
-      "position": 0,
-      "scope": "client",
-      "clientKey": "ama",
-      "siteKey": null,
-      "displayId": 122943131683282,
-      "providedBy": null,
-      "sourceReference": "prototype:brandingProfiles/client:ama"
-    },
-    {
       "id": "client:avma",
       "key": "client:avma",
       "definition": {
@@ -118,44 +101,6 @@
       "displayId": 125011441419282,
       "providedBy": null,
       "sourceReference": "prototype:brandingProfiles/client:isitrust"
-    },
-    {
-      "id": "client:waepa",
-      "key": "client:waepa",
-      "definition": {
-        "name": "Worldwide Assurance for Employees of Public Agencies",
-        "acronym": "WAEPA",
-        "logo": "/client/waepa/logo.png",
-        "logoAlt": "WAEPA Logo",
-        "icons": {
-          "quickDecision": "/client/waepa/icons/quick-decision.svg",
-          "categories": {
-            "LI": "/client/waepa/icons/life.svg",
-            "DI": "/client/waepa/icons/disability.svg"
-          }
-        }
-      },
-      "position": 0,
-      "scope": "client",
-      "clientKey": "waepa",
-      "siteKey": null,
-      "displayId": 193029889117031,
-      "providedBy": null,
-      "sourceReference": "prototype:brandingProfiles/client:waepa"
-    },
-    {
-      "id": "site:waepa-gi",
-      "key": "site:waepa-gi",
-      "definition": {
-        "logo": "/client/waepagi/logo.png"
-      },
-      "position": 0,
-      "scope": "site",
-      "clientKey": null,
-      "siteKey": "waepa-gi",
-      "displayId": 196336469134662,
-      "providedBy": null,
-      "sourceReference": "prototype:brandingProfiles/site:waepa-gi"
     }
   ]
 }

@@ -1,12 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { createReviewedMigrationDatabase } from "./fixtures";
-import { resolveEffectiveSite } from "../domain/effectiveSite";
+import { journeySite as site, journeyLibrary, journeyAssignment, syntheticJourneySource } from "./freshStartJourneyFixtures";
 import { createCoverageJourneyFixture } from "./coverageJourneyExceptionAcceptance";
+import { resolveCoverageJourneyPolicy } from "../domain/coverageJourneyPolicy";
 import { evaluateCoverageHousehold } from "../domain/coverageHousehold";
 import { createMockPolicyVerificationService, type VerifiedPolicy } from "../domain/policyVerification";
-const db = JSON.parse(JSON.stringify(createReviewedMigrationDatabase()));
 const policies = createMockPolicyVerificationService([]);
-const site = (key: string) => resolveEffectiveSite(db, key);
 
 describe("captured household reconciliation", () => {
   it("recalculates primary/dependent relationships and prevents spoofed member amounts", async () => {
@@ -33,18 +31,21 @@ describe("captured household reconciliation", () => {
     expect(await evaluateCoverageHousehold(s, people, { policies }, [record])).toMatchObject({ allowed: false, submissions: null });
   });
   it("enforces synchronized billing across different people", async () => {
-    const s = site("nso");
+    const s = site("ama");
     const member = createCoverageJourneyFixture(s, "li-term", { applicantKey: "member", mode: "new" }).input;
     const spouse = createCoverageJourneyFixture(s, "li-term", { applicantKey: "spouse", mode: "new" }).input;
     const people = [{ personKey: "member", applicantKey: "member" as const, inputs: [member], existingLifeAmount: 0 }, { personKey: "spouse", applicantKey: "spouse" as const, inputs: [spouse], existingLifeAmount: 0 }];
     expect((await evaluateCoverageHousehold(s, people, { policies })).allowed).toBe(true);
-    const changed = [{ ...people[0] }, { ...people[1], inputs: [{ ...spouse, payment: { method: "bank-account" as const, frequency: "quarterly" as const } }] }];
-    expect(await evaluateCoverageHousehold(s, changed, { policies })).toMatchObject({ allowed: false, submissions: null, errors: ["Household payment method and frequency must match"] });
+    const changed = [{ ...people[0] }, { ...people[1], inputs: [{ ...spouse, payment: { method: "bill-me" as const, frequency: "semiannual" as const } }] }];
+    const result = await evaluateCoverageHousehold(s, changed, { policies });
+    expect(result, JSON.stringify(result)).toMatchObject({ allowed: false, submissions: null, errors: ["Household payment method and frequency must match"] });
   });
   it("blocks cross-person exclusions and invalid household identities", async () => {
-    const s = site("abe");
-    const a = createCoverageJourneyFixture(s, "di-ltd", { applicantKey: "member", mode: "new", waitingPeriod: "30", benefitPeriod: "60" }).input;
-    const b = createCoverageJourneyFixture(s, "di-ltd-plus", { applicantKey: "spouse", mode: "new", waitingPeriod: "90", benefitPeriod: "65" }).input;
+    const source = syntheticJourneySource();
+    journeyAssignment<{ exclusiveProducts: string[] }>(source, 'example', 'di-ltd', 'product-benefit-policy').exclusiveProducts = ['li-term'];
+    const s = journeyLibrary('example', source).site;
+    const a = createCoverageJourneyFixture(s, "di-ltd", resolveCoverageJourneyPolicy(s, "di-ltd")!.mappings.find(mapping => mapping.when.applicantKey === "member" && mapping.when.mode === "new")!.when).input;
+    const b = createCoverageJourneyFixture(s, "li-term", { applicantKey: "spouse", mode: "new" }).input;
     const people = [{ personKey: "member", applicantKey: "member" as const, inputs: [a] }, { personKey: "spouse", applicantKey: "spouse" as const, inputs: [b] }];
     const rejected = await evaluateCoverageHousehold(s, people, { policies });
     expect(rejected).toMatchObject({ allowed: false, submissions: null });

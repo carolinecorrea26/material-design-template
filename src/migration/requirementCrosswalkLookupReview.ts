@@ -1,4 +1,4 @@
-import { createHash } from "node:crypto";
+import { recordedFilesMatch } from "./sourceEvidence";
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -22,7 +22,7 @@ const evidence: Record<string, string> = {
   "src/migration/sources/mcr-v78.json": "a93cb29e6ed20aa05b67e3bf22bb4554baf3a58ebf5d1df7b539a5466a49471a"
 };
 export function reviewedLookupAndLandingCodeMatches(read = (path: string) => readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), "../..", path))) {
-  return Object.keys(evidence).length > 0 && Object.entries(evidence).every(([path, hash]) => createHash("sha256").update(read(path)).digest("hex") === hash);
+  return recordedFilesMatch(evidence, read);
 }
 export function reviewLookupAndLandingRequirements(rows: CrosswalkRow[]) {
   const codeMatches = reviewedLookupAndLandingCodeMatches();

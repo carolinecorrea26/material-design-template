@@ -1,0 +1,21 @@
+{
+  "page": "profile",
+  "configurations": {
+    "physician-information": false,
+    "other-coverage-information": false
+  },
+  "fieldParticipation": {
+    "self": {
+      "hide": [
+        "height-feet",
+        "height-inches",
+        "weight-lbs",
+        "weight-12-months-ago-lbs",
+        "marital-status",
+        "has-drivers-license",
+        "intend-live-outside-us",
+        "travel-outside-us-six-months"
+      ]
+    }
+  }
+}

@@ -4,27 +4,7 @@ import { getCategoryQuestionFieldIds } from "../coverageQuestionRequirements";
 import { getPrototypeLibrary, type PrototypeLibrary } from "../../domain/prototypeLibrary";
 import type {
   PageSectionConfig,
-  PageSectionId,
 } from "../pageSections/types";
-
-const defaultPersonalSections = new Set<PageSectionId>([
-  "selfCoverageQuestions",
-  "selfCoverageTobacco",
-  "spouseCoverageQuestions",
-  "spouseCoverageTobacco",
-]);
-const defaultWorkIncomeSections = new Set<PageSectionId>([
-  "selfCoverageWorkIncome",
-  "spouseCoverageWorkIncome",
-]);
-const defaultBusinessSections = new Set<PageSectionId>([
-  "selfCoverageBusinessExpenses",
-]);
-const defaultCoverageQuestionSections = new Set<PageSectionId>([
-  ...defaultPersonalSections,
-  ...defaultWorkIncomeSections,
-  ...defaultBusinessSections,
-]);
 
 export type ResolveCoverageQuestionSectionsOptions = {
   sections: PageSectionConfig[];
@@ -45,7 +25,7 @@ export function resolveCoverageQuestionSections({
 
   const removedDefaults = new Set(coverageQuestions?.removeDefaults ?? []);
 
-  return sections.flatMap((section) => {
+  return sections.filter(section => section.role === "questions").flatMap((section) => {
     if (coverageQuestions?.always?.includes(section.id)) {
       return [{ ...section, fieldIds: [...section.fieldIds] }];
     }
@@ -54,10 +34,6 @@ export function resolveCoverageQuestionSections({
       coverageQuestions?.[categoryId]?.includes(section.id),
     );
     if (isClientAddition) {
-      return [{ ...section, fieldIds: [...section.fieldIds] }];
-    }
-
-    if (!defaultCoverageQuestionSections.has(section.id)) {
       return [{ ...section, fieldIds: [...section.fieldIds] }];
     }
 

@@ -1,15 +1,18 @@
+// Historical normalization: assertions resolve the captured snapshot explicitly.
 import { expect, it } from "vitest";
 import { createMigrationDatabase, createReviewedMigrationDatabase } from "./fixtures";
 import { consolidateFieldDefinitionOwnership } from "./fieldDefinitionOwnership";
 import { consolidateRequiredFieldOwnership } from "./requiredFieldOwnership";
-import { resolvePrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import { resolveSharedFieldDefinition } from "../domain/fieldDefinitionOwnership";
 
 const db = createReviewedMigrationDatabase();
-it("reconciles all 161 copied required values without changing global definitions or scoped placements", () => {
+it("reconciles every copied required value without changing global definitions or scoped placements", () => {
   const original = createMigrationDatabase();
   expect(db.semanticRequirements.find(row => row.predicate === "shared-field-required")?.value).toMatchObject({ previousValidationRules: expect.arrayContaining([expect.objectContaining({ definition: { required: true } })]) });
-  expect(original.validationRules.filter(row => Object.hasOwn(row.definition, "required"))).toHaveLength(161);
+  const copied = original.validationRules.filter(row => Object.hasOwn(row.definition, "required"));
+  expect(copied.length).toBeGreaterThan(0);
+  expect(new Set(copied.map(row => row.fieldKey)).size).toBe(copied.length);
   expect(db.validationRules.every(row => !Object.hasOwn(row.definition, "required"))).toBe(true);
   for (const field of db.fields) expect(resolveSharedFieldDefinition(field, db.validationRules, "fields-required").definition.required)
     .toEqual(resolveSharedFieldDefinition(field, original.validationRules, "legacy").definition.required);

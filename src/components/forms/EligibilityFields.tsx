@@ -3,7 +3,8 @@ import { requirementText } from "../../domain/requirementContent";
 import { requirementValidationMessage } from '../../domain/requirementValidations';
 import { fieldValidationChecks } from '../../utils/fieldValidation';
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Alert, Box, Stack } from "@mui/material";
+import { Alert, Box } from "@mui/material";
+import FieldGrid from '../layout/FieldGrid';
 import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
 import ControlledFieldRenderer from "./ControlledFieldRenderer";
 import FieldRenderer from "./FieldRenderer";
@@ -76,8 +77,9 @@ export default function EligibilityFields(props: QuoteProps | ApplicationProps) 
   }, [values.zipCode, values.state, stateOptions, eligibleStatesOnly, update, clearMessage]);
 
   const { errors: quoteErrors } = validateEligibility(values, { ...props, fields });
-  // Use the standard field gap; empty feedback rows must not add another gap.
-  return <Stack spacing={2} useFlexGap>
+  // Render real helper/validation text only; blank reserved helper paragraphs
+  // otherwise add another row of spacing between ZIP, State and DOB.
+  return <FieldGrid>
     {fields.map(field => {
       const key = valueKeys[field.id as keyof typeof valueKeys];
       const feedback = key === "state" && showInferredState ? <Box component="span" role="status" sx={{ display: "flex", alignItems: "center", gap: 0.5, color: "success.main", fontWeight: 500 }}>
@@ -100,7 +102,7 @@ export default function EligibilityFields(props: QuoteProps | ApplicationProps) 
       />;
     })}
     {quote?.eligibilityError && <Alert severity="error">{quote.eligibilityError}</Alert>}
-  </Stack>;
+  </FieldGrid>;
 }
 
 /**

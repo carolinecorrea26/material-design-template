@@ -7,7 +7,7 @@ import { migrateFieldCollectionData } from '../migration/fieldCollectionDefaults
 export const legacyPagePositions = [
   ['home', 0, 0], ['membership', 1, 1], ['eligibility', 2, 2], ['coverage', 3, 3],
   ['beneficiary', 4, 4], ['contact', 5, 5], ['profile', 29, 6], ['review', 6, 7],
-  ['health-si', 8, 8], ['health-li', 9, 9], ['health-qd', 10, 10], ['health-di', 11, 11],
+  ['health-si', 8, 8], ['health-tele', 9, 9], ['health-qd', 10, 10], ['health-di-supp', 11, 11],
   ['health-cir', 12, 12], ['payment', 13, 13], ['docusign', 7, 14], ['receipt', 14, 15],
   ['resume', 15, 16], ['resume-method', 16, 17], ['resume-code', 17, 18],
   ['advisor-login', 18, 19], ['advisor-send-confirmation', 19, 20],

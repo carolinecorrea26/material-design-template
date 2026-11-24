@@ -9,10 +9,10 @@ import { coverageFactFieldIds } from "../config/fields/coverageFactFields";
 import { coverageConfigurationDefinitions, coverageRequirementAssignments, applyRequirementCoveragePolicy, requirementCoverageAmounts, requirementCoverageSubmitAlert } from "./requirementCoveragePolicy";
 import { parseCoverageAssignments } from "./requirementCoverageValidation.mjs";
 import { configurationRows } from "../pages/admin/library/configurationRows";
+import { freshStartSource } from './freshStartCatalog';
 import { libraryRequirementRows } from "../pages/admin/library/libraryRequirementRows";
 import { fieldSurfaceRows } from "../pages/admin/library/fieldSurfaceRows";
 import { storedLibraryRows } from "../pages/admin/library/storedLibraryModel";
-import { requirementText } from "./requirementContent";
 
 const catalog = { ...validateSharedCatalog(JSON.parse(readFileSync("public/catalog/portal.json", "utf8"))), revision: "test:coverage-json" };
 const library = resolvePrototypeLibrary(catalog.data, "asce", catalog.revision);
@@ -35,11 +35,11 @@ describe("reviewed Coverage JSON policies", () => {
     const product = current.products.find(product => product.id === "di-ltd")!;
     expect(coverageFactFieldIds([product], base)).toContain("self-employed-under-one-year");
     expect(coverageFactFieldIds([product], base)).not.toContain("years-self-employed");
-    const note = requirementText("coverage.note.spouse-member-maximum");
-    expect(current.content.pages.coverage?.sectionNotes?.spouseSection).toBe(note);
+    expect(current.content.pages.coverage?.sectionNotes?.spouseSection).toBeUndefined();
+    expect(current.products.find(product => product.id === "li-term")?.applicantNotes?.spouse).toContain("whether already insured or applying now");
     const result = resolveApplicationCoverage(product, "member", base, current.products);
     expect(result.selectable).toBe(true);
-    expect(product.requirementPolicy?.map(({ source: _source, ...row }) => row)).toEqual(library.products.find(candidate => candidate.id === product.id)!.requirementPolicy?.map(({ source: _source, ...row }) => row));
+    expect(product.requirementPolicy?.map(({ source, ...row }) => { void source; return row; })).toEqual(library.products.find(candidate => candidate.id === product.id)!.requirementPolicy?.map(({ source, ...row }) => { void source; return row; }));
   });
 
   it("uses the reviewed single answer and ignores obsolete saved answers", () => {
@@ -91,12 +91,12 @@ describe("reviewed Coverage JSON policies", () => {
     for (const patch of [{ productApplicants: { "di-ltd": ["member"] } }, { productApplicants: { "di-ltd": ["spouse"] } }, { coverageSelections: [] }, { coverageAmounts: { "di-ltd:member": 0, "di-ltd:spouse": 500 } }]) expect(requirementCoverageSubmitAlert(library.products, { ...below, ...patch })).toBeUndefined();
   });
 
-  it.each([69, 70, 72, 73, 75])("applies new Term Life minimum and age cap at age %s to both adults", age => {
+  it.each([69, 70, 72, 73, 75])("applies the 10k Term Life minimum and age cap at age %s to both adults", age => {
     const product = library.products.find(product => product.id === "li-term")!;
     for (const person of ["member", "spouse"] as const) {
       const prefix = person === "member" ? "" : "spouse-";
       const result = resolveApplicationCoverage(product, person, { ...base, [`${prefix}birth-date`]: `${2026 - age}-01-01` }, library.products);
-      expect(result.amounts[0]).toBe(20000);
+      expect(result.amounts[0]).toBe(10000);
       expect(result.amounts.at(-1)).toBe(age >= 73 ? 350000 : age >= 70 ? 500000 : 1000000);
     }
     expect(requirementCoverageAmounts(product, "member", age, [10000, 20000], "increase")).toEqual([10000, 20000]);
@@ -106,7 +106,7 @@ describe("reviewed Coverage JSON policies", () => {
     expect(evaluateEligibility(library.products.find(product => product.id === "li-add")!.requirements, "child", { ageDays: days, ageYears: years }) === "eligible").toBe(expected);
   });
 
-  it("requires member Life for child benefits and adds no spouse Life amount gate", () => {
+  it("requires member Life for child benefits and leaves unverified spouse amounts informational", () => {
     expect(coverageRelationshipErrors(library.products, { "li-term": ["spouse", "child"] })).not.toEqual([]);
     expect(coverageRelationshipErrors(library.products, { "li-term": ["member", "child"] })).toEqual([]);
     const life = library.products.find(product => product.id === "li-term")!;
@@ -126,7 +126,8 @@ describe("reviewed Coverage JSON policies", () => {
     const fields = fieldSurfaceRows(catalog, "asce").filter(row => row.pages.includes("coverage"));
     expect(fields.some(row => row.field.id === "self-employed-under-one-year")).toBe(true);
     expect(fields.some(row => ["is-self-employed", "years-self-employed"].includes(row.field.id))).toBe(false);
-    expect(storedLibraryRows(catalog, "contentValues", "asce").find(row => row.contentKey === "pages.coverage.sectionNotes.spouseSection")?.value).toBe(requirementText("coverage.note.spouse-member-maximum"));
+    expect(storedLibraryRows(catalog, "contentValues", "asce").some(row => row.contentKey === "pages.coverage.sectionNotes.spouseSection")).toBe(false);
+    expect(library.products.find(product => product.id === "li-term")?.applicantNotes?.spouse).toContain("whether already insured or applying now");
   });
 
   it("uses modified JSON values through the shared adapter and leaves unconfigured sites unchanged", () => {
@@ -147,5 +148,16 @@ describe("reviewed Coverage JSON policies", () => {
     expect(() => parse([{ ...rows[0], configuration: "missing-rule" }])).toThrow("unknown configuration");
     const band = rows.find(row => row.configuration === "coverage-age-maximum-amount")!;
     expect(() => parse([band, { ...band, minimumAgeYears: 72, maximumAgeYears: 74 }])).toThrow("overlapping");
+  });
+  it('rejects unrelated confirmed configuration keys and checks age bounds for every assigned applicant', () => {
+    const row = coverageRequirementAssignments('asce')[0];
+    expect(() => parseCoverageAssignments({ site: 'asce', assignments: [{ ...row, configuration: 'saved-application-retention-days', value: 10 }] }, freshStartSource().configurations, 'asce')).toThrow('does not support product/applicant overrides');
+    const assignments = [
+      { ...row, configuration: 'coverage-minimum-age-years', applicants: ['member', 'spouse'], value: 35 },
+      { ...row, configuration: 'coverage-maximum-age-years', applicants: ['member'], value: 60 },
+      { ...row, configuration: 'coverage-maximum-age-years', applicants: ['spouse'], value: 30 },
+    ];
+    expect(() => parseCoverageAssignments({ site: 'asce', assignments }, coverageConfigurationDefinitions, 'asce')).toThrow('minimum age exceeds maximum age');
+    expect(() => parseCoverageAssignments({ site: 'asce', assignments: [{ ...row, product: 'di-ltd', applicants: ['child'] }] }, coverageConfigurationDefinitions, 'asce', { 'di-ltd': ['member', 'spouse'] })).toThrow('invalid applicants');
   });
 });

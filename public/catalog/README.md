@@ -22,7 +22,7 @@ Each basename listed above has a `.json` extension. See the generated [table ind
 
 ## Authoring and generation
 
-Edit files listed in the manifest. Preserve IDs, semantic keys and relationships. `portal.json` is the generated deployment bundle: do not edit it directly. Its envelope remains `{ formatVersion: 1, data: { table: [] }, analyticsTags: [] }`. The prototype, mock server and Library read this single bundle to stay on one atomic revision. Operational application/account records are outside this public catalog.
+Reviewed template definitions are authored under `requirements/global/` and the page/mapping sources; effective values are under `requirements/parked/sites/<site>/`. The manifest parts retain identities and parked evidence, not a second editable copy of migrated requirements. Preserve IDs, semantic keys and relationships. `portal.json` is the generated deployment bundle: do not edit it directly. Its envelope remains `{ formatVersion: 1, data: { table: [] }, analyticsTags: [] }`. The prototype, mock server and Library read this single bundle to stay on one atomic revision. Operational application/account records are outside this public catalog.
 
 After a catalog edit:
 

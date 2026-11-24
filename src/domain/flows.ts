@@ -28,6 +28,19 @@ export type FlowNodeDef = {
   pageId?: PageId;
   /** A summary of the enabled saved pages in this group; never expands the graph. */
   pageGroupId?: PageGroupId;
+  /** Canonical email and rule references for auditing the authored graph. */
+  emailTemplateKeys?: string[];
+  /** Actor context when a shared email is used by more than one recipient role. */
+  emailRecipient?: 'Advisor' | 'Applicant';
+  /** Canonical shared UI for a dialog/drawer step. Pages retain pageId. */
+  componentKey?: string;
+  componentExampleKey?: string;
+  ruleKeys?: string[];
+  workflowKeys?: string[];
+  /** Shared subflows are linked rather than copied into each caller's graph. */
+  flowIds?: FlowId[];
+  /** Links to existing definitions; effective values are resolved, never copied into graphs. */
+  configurationPaths?: string[];
 };
 
 export type FlowEdgeStyleHint =
@@ -51,5 +64,16 @@ export type FlowDefinition = {
   intro: string;
   nodes: FlowNodeDef[];
   edges: FlowEdgeDef[];
+  /** Documentation stages reference existing application navigation, not new routing. */
+  stages?: {
+    id: string;
+    progressStepId?: string;
+    nodeIds?: string[];
+    label?: string;
+    actor?: string;
+    related?: boolean;
+    branchDetailsNodeIds?: string[];
+    branchDetailsEdgeIds?: string[];
+  }[];
 };
 

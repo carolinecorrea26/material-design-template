@@ -1,4 +1,3 @@
-import { coverages } from "../coverages";
 import { describe, expect, it } from "vitest";
 import { getEffectiveSiteConfig } from "../../data/registry";
 import { homeQuotePlacements, homeQuoteFieldIds } from "./homeQuoteFields";
@@ -17,9 +16,9 @@ describe("Home quote placements", () => {
       expect(db.pageFields.some((row) => row.pageKey === "home" && row.fieldKey === id)).toBe(true);
     }
   });
-  it.each(["default", "quoteFirst"] as const)("includes eligibility and category questions for %s", (homePageVariant) => {
-    const placements = homeQuotePlacements({ ...base, coverages: { ...base.coverages, enabled: coverages.map((p) => p.id), hideSmokerQuestion: false }, features: { ...base.features, defaultTemplate: "multi", homePageVariant } });
-    expect(placements.filter((p) => !p.hidden).map((p) => p.fieldId)).toEqual(homeQuoteFieldIds.filter(id => id !== "actively-at-work"));
+  it.each(["default", "quoteFirst"] as const)("includes eligibility and configured ASCE category questions for %s", (homePageVariant) => {
+    const placements = homeQuotePlacements({ ...base, coverages: { ...base.coverages, hideSmokerQuestion: false }, features: { ...base.features, defaultTemplate: "multi", homePageVariant } });
+    expect(placements.filter((p) => !p.hidden).map((p) => p.fieldId)).toEqual(["zip-postal-code", "state-province", "birth-date", "gender", "smoker", "tobacco-last-used", "tobacco-products", "average-monthly-income", "hours-worked-per-week"]);
   });
   it.each(["hero-image", "welcome-back"] as const)("has no quote placements for %s", (homePageVariant) => {
     expect(homeQuotePlacements({ ...base, features: { ...base.features, homePageVariant } }).every((p) => p.hidden)).toBe(true);

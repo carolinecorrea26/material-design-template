@@ -9,6 +9,7 @@ import { ApplicationSessionProvider } from '../app/ApplicationSessionContext';
 import type { SharedCatalog } from '../persistence/sharedCatalog';
 import { getPrototypeLibrary } from '../domain/prototypeLibrary';
 import { coverageLinkUnavailableMessage } from '../content/interactionLabels';
+import { requirementText } from '../domain/requirementContent';
 
 const catalog = JSON.parse(readFileSync('public/catalog/portal.json', 'utf8')) as SharedCatalog;
 let root: Root;
@@ -33,6 +34,14 @@ async function click(label: string, scope: ParentNode = container) {
   await act(async () => button!.click());
 }
 async function settle(ms = 1600) { await act(async () => vi.advanceTimersByTimeAsync(ms)); }
+
+it.each(['applyForAdditional', 'applyForTotal'] as const)('uses the configured %s message without changing the selected benefit', async increaseNote => {
+  await render({ ...coveragePageScenarios.dependentOnly, coverage: { increaseNote } });
+  await settle();
+  expect(container.textContent).toContain(requirementText(increaseNote === 'applyForTotal' ? 'coverage.increase.total-note' : 'coverage.increase.additional-note'));
+  const amount = container.querySelector<HTMLInputElement>('input[name="li-term:spouse-amount"]');
+  expect(amount?.value).toBe('$100,000');
+});
 
 it('renders the empty entry notice and restores the previous entry scope on unmount', async () => {
   window.sessionStorage.setItem('coverage-category-scope:ama', 'LI');
@@ -76,4 +85,43 @@ it('opens the saved reference rates from the complete page', async () => {
   await click('View rate table');
   expect(document.querySelector('[role="dialog"]')).not.toBeNull();
   expect(document.body.textContent).toContain('Reference rates. Your actual premium');
+});
+it('uses projected question participation when switching from AD&D to Disability', async () => {
+  await render(coveragePageScenarios.interactive);
+  async function selectCategory(id: 'AD' | 'DI') {
+    const input = container.querySelector<HTMLInputElement>(`input[name="coverage-categories"][value="${id}"]`);
+    expect(input, `Missing category ${id}`).not.toBeNull();
+    await act(async () => input!.click());
+  }
+  await selectCategory('AD'); await settle();
+  expect([...container.querySelectorAll('button')].some(button => button.textContent?.includes('See my coverage options'))).toBe(false);
+  expect(container.textContent).toContain('Add coverage');
+  await selectCategory('DI'); await settle();
+  expect([...container.querySelectorAll('button')].some(button => button.textContent?.includes('See my coverage options'))).toBe(true);
+  expect(container.querySelector('[name="hours-worked-per-week"]')).not.toBeNull();
+});
+it('preselects base coverage after reveal and preserves the applicant’s subsequent removal', async () => {
+  await render(coveragePageScenarios.preselected);
+  await click('See my coverage options'); await settle();
+  const selected = [...container.querySelectorAll<HTMLInputElement>('input[name$="-selected"]')].filter(input => input.checked);
+  expect(selected).toHaveLength(5);
+  const first = selected[0], name = first.name;
+  await act(async () => first.click()); await settle();
+  expect(container.querySelector<HTMLInputElement>(`input[name="${name}"]`)?.checked).toBe(false);
+  expect([...container.querySelectorAll<HTMLInputElement>('input[name$="-selected"]')].filter(input => input.checked)).toHaveLength(4);
+});
+it('continues a child-only application supported by verified existing member Life', async () => {
+  await render(coveragePageScenarios.existingDependent); await settle();
+  await click('Next'); await settle();
+  expect(document.querySelector('[role="alertdialog"]')).not.toBeNull();
+  await click('Continue', document); await settle(10000);
+  expect(container.textContent).toContain('Coverage completed.');
+});
+it.each([false, true])('preserves the confirmed $10,000 Term Life minimum with and without verified coverage: verified=%s', async verified => {
+    await render(verified ? coveragePageScenarios.verifiedExistingMember : coveragePageScenarios.interactive);
+    const category = container.querySelector<HTMLInputElement>('input[name="coverage-categories"][value="LI"]')!;
+    await act(async () => category.click());
+    await click('See my coverage options'); await settle();
+    const amount = container.querySelector<HTMLInputElement>('input[name="li-term:member-amount"]');
+    expect(amount?.value, container.textContent ?? '').toBe('$10,000');
 });

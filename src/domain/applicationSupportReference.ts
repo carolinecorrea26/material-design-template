@@ -10,6 +10,6 @@ export function applicationSupportReference({ applicationId, confirmationId }: A
   const confirmation = applicationSupportId(confirmationId);
   const id = application ?? confirmation;
   if (!id) return undefined;
-  const label = application || /^APP-/i.test(id) ? 'application ID' : 'confirmation ID';
-  return { id, instruction: `Please include your ${label} for reference when contacting support:` };
+  const kind = application || /^APP-/i.test(id) ? 'application' : 'confirmation';
+  return { id, kind } as const;
 }

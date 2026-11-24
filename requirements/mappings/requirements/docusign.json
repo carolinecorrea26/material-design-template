@@ -1,0 +1,22 @@
+{
+  "component": "docusign",
+  "pages": [
+    "docusign"
+  ],
+  "rules": [
+    "docusign-shared-handoff",
+    "docusign-shared-document-content",
+    "signing-evidence-integrity",
+    "docusign-required-signers",
+    "docusign-completion-submits",
+    "advisor-recovery-identity",
+    "advisor-access-stages",
+    "resume-signing-and-submission"
+  ],
+  "workflows": [
+    "external-provider-handoff",
+    "form-next-validation",
+    "form-next-save",
+    "form-next-transition"
+  ]
+}

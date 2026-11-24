@@ -1,3 +1,4 @@
+import { validateRuleTemplates, type RuleTemplateScope } from './ruleTemplates.mjs';
 import type { PageId } from "./identities";
 import type { CoverageCategoryId, CoverageUnderwritingType } from "./coverage";
 import type { DatabaseSchema } from "../persistence/types";
@@ -8,7 +9,7 @@ export type FlowGate =
   | { kind: "selected-underwriting-type"; underwritingTypes: CoverageUnderwritingType[] }
   | { kind: "selected-coverage"; categoryId: CoverageCategoryId; underwritingType: CoverageUnderwritingType }
   | { kind: "selected-rider"; riderId: string };
-export type FlowGateDefinition = { pageId: PageId; gate: FlowGate };
+export type FlowGateDefinition = RuleTemplateScope & { pageId: PageId; gate: FlowGate };
 export type RoutingRuleExecution = { kind: "page-routing"; gates: FlowGateDefinition[] };
 type RoutingData = Pick<DatabaseSchema, "rules" | "ruleAssignments" | "ruleConditions" | "pages">;
 type Configuration = { key: string; value: unknown; provenance: RuleProvenance[] };
@@ -54,6 +55,7 @@ export function resolveRoutingRules(data: RoutingData, configuration: Configurat
       || row.scope === "client" && row.clientKey === clientKey && row.siteKey === null || row.scope === "site" && row.siteKey === siteKey && row.clientKey === null));
     if (rows.length !== 1 || !assignments.length || new Set(assignments.map(row => row.scope)).size !== assignments.length) throw new Error(`Missing or ambiguous routing rule assignment: ${key}`);
     const rule = rows[0];
+    validateRuleTemplates(rule.definition.templates);
     if (rule.definition.id !== key || rule.definition.documentationStatus !== "current" || !object(rule.definition.execution)
       || rule.definition.execution.kind !== "page-routing" || Object.keys(rule.definition.execution).some(key => !["kind", "gates"].includes(key))) throw new Error(`Invalid executable routing rule: ${key}`);
     // Conditions and dependencies require separate semantics; do not silently
@@ -61,7 +63,7 @@ export function resolveRoutingRules(data: RoutingData, configuration: Configurat
     if (rule.definition.dependsOn?.length || data.ruleConditions.some(row => row.ruleKey === key)) throw new Error(`Unsupported routing rule dependency: ${key}`);
     const gates = parseFlowGates(rule.definition.execution.gates, data.pages);
     if (!gates.length) throw new Error(`Empty routing rule: ${key}`);
-    definitions.push(...gates);
+    definitions.push(...gates.map(gate => rule.definition.templates ? { ...gate, templates: rule.definition.templates } : gate));
     provenance.push({ table: "rules", key, sourceReference: rule.sourceReference }, ...assignments.map(row => ({ table: "ruleAssignments", key: row.key, sourceReference: row.sourceReference })));
   }
   if (new Set(definitions.map(row => row.pageId)).size !== definitions.length) throw new Error("Conflicting routing rules for a page");

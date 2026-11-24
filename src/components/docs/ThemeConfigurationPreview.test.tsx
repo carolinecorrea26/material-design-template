@@ -2,6 +2,9 @@ import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { Button, Link } from "@mui/material";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
+import { ThemeProvider } from "@mui/material/styles";
+import { createAppTheme } from "../../app/theme";
+import { MuiThemeOverrides } from "../../docs/foundations/ThemeOverrides";
 import ThemeConfigurationPreview from "./ThemeConfigurationPreview";
 import { waepaClient } from "../../config/clients/waepa";
 import { demoClient } from "../../config/clients/demo";
@@ -66,4 +69,20 @@ it("uses the blue theme for buttons unless an override is enabled", async () => 
   expect(input("Override button color").checked).toBe(false);
   expect(getComputedStyle(button("Primary action")).getPropertyValue("--variant-containedBg")).toBe("#0668ff");
   expect(getComputedStyle(container.querySelector("a")!).color).toBe("rgb(6, 104, 255)");
+});
+
+
+it("compares the actual MUI ellipsis with the application's wrapping selected-option text", async () => {
+  await act(async () => root.render(<ThemeProvider theme={createAppTheme()}><MuiThemeOverrides /></ThemeProvider>));
+  const row = [...container.querySelectorAll('tbody tr')].find(row => row.querySelector('td')?.textContent?.startsWith('Selected option text'))!;
+  const original = row.querySelector<HTMLElement>('[data-theme-example="mui-default"] .MuiSelect-select')!;
+  const override = row.querySelector<HTMLElement>('[data-theme-example="application-override"] .MuiSelect-select')!;
+  expect(original.textContent).toBe('Moving in/out of a bed or chair or wheel chair');
+  expect(override.textContent).toBe(original.textContent);
+  expect(getComputedStyle(original).whiteSpace).toBe('nowrap');
+  expect(getComputedStyle(original).textOverflow).toBe('ellipsis');
+  expect(getComputedStyle(override).whiteSpace).toBe('normal');
+  expect(getComputedStyle(override).textOverflow).toBe('clip');
+  const ids = [...container.querySelectorAll<HTMLElement>('[id]')].map(element => element.id);
+  expect(new Set(ids).size).toBe(ids.length);
 });

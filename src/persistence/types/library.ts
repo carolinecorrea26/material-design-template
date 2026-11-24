@@ -21,7 +21,7 @@ export type ComponentPart = {
   sourceSymbol: string;
   description: string;
 };
-export type ComponentRow = LibraryRow<{ name: string; description: string; section: string; storyId: string; storybookPath: string; source: string;
+export type ComponentRow = LibraryRow<{ name: string; displayName?: string; description: string; section: string; storyId: string; storybookPath: string; source: string;
   /** Primary ownership, separate from Storybook category and reuse count. */
   role: ComponentRole;
   /** Direct registered source dependencies by component key, including conditional paths. */
@@ -30,7 +30,7 @@ export type ComponentRow = LibraryRow<{ name: string; description: string; secti
   parts: ComponentPart[];
   packageImport?: { module: string; symbol: string };
   usages?: ComponentUsage[];
-  examples?: { label: string; storyId: string; section: string; pageKey?: string; position?: number }[];
+  examples?: { key?: string; label: string; storyId: string; section: string; pageKey?: string; position?: number }[];
 }>;
 
 export interface LibrarySchema {

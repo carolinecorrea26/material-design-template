@@ -1,4 +1,4 @@
-import { createHash } from "node:crypto";
+import { recordedFilesMatch } from "./sourceEvidence";
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -15,7 +15,7 @@ const evidence: Record<string, string> = {
   "src/migration/reviewAndRateAcceptance.test.ts": "d76107fdcfe5d65a85766f8f597bee3af0f17c5ad22c4c6520387a5699d1b4c6"
 };
 export function reviewedTobaccoLookbackCodeMatches(read = (path: string) => readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), "../..", path))) {
-  return Object.keys(evidence).length > 0 && Object.entries(evidence).every(([path, hash]) => createHash("sha256").update(read(path)).digest("hex") === hash);
+  return recordedFilesMatch(evidence, read);
 }
 /** Only the two explicit lookback statements; the adjoining question/version
  * instruction and other products retain their separate reviews. */

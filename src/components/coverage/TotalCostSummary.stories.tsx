@@ -15,7 +15,7 @@ const meta = {
   id: "coverage-commerce-totalcostsummary",
   title: "Components/Coverage and pricing/Total cost summary",
   component: TotalCostSummary,
-  parameters: { standalone: true, docs: { description: { component: "Shared \"Total Estimated Cost\" panel used by EstimatedCostPanel (Coverage page) and CoverageSummary (ECart drawer). Styling: bg #f8fafd, border 2px solid primary, borderRadius 16px. Total: fontWeight 900, color success.main." } }, layout: "padded" },
+  parameters: { standalone: true, docs: { description: { component: "Shared \"Total Estimated Cost\" panel used by EstimatedCostPanel (Coverage page) and CoverageSummary (ECart drawer). Styling: bg #f8fafd, border 2px solid primary, borderRadius 16px. Prices are 1rem in normal text color; only the total amount uses primary color." } }, layout: "padded" },
 } satisfies Meta<typeof TotalCostSummary>;
 
 export default meta;
@@ -82,10 +82,6 @@ export const WithDisclaimer: StoryObj = {
   ),
 };
 
-export const SingleItem: StoryObj = {
-  render: () => (
-    <Box sx={{ maxWidth: 360 }}>
-      <TotalCostSummary items={[{ id: "li", name: "Life Insurance", amount: 42.5 }]} total={42.5} />
-    </Box>
-  ),
+export const TotalOnly: StoryObj = {
+  render: () => <TotalCostSummary showItems={false} items={sampleItems} total={61.25} />,
 };

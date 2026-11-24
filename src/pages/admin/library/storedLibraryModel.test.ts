@@ -3,9 +3,10 @@ import { createReviewedMigrationDatabase } from "../../../migration/fixtures";
 import { childCollection, storedApplicationPageRows, storedFieldRows, storedLibraryRows, storedPageFieldGroups, storedFieldVisibility } from "./storedLibraryModel";
 import { resolveEffectiveSite } from "../../../domain/effectiveSite";
 import type { LibraryCatalog } from "../../../services/libraryCatalogService";
-import { readFileSync } from "node:fs";
+import { projectLibraryCatalog } from "../../../services/libraryCatalogService";
+import { withFreshStartCatalog } from "../../../domain/freshStartCatalog";
 const data = JSON.parse(JSON.stringify(createReviewedMigrationDatabase()));
-const catalog: LibraryCatalog = { data, revision: "test", analyticsTags: [] };
+const catalog: LibraryCatalog = projectLibraryCatalog({ data, revision: "test", analyticsTags: [] });
 describe("stored Library collection and scope", () => {
   it("lists current application pages without admin or legacy reference pages", () => {
     const rows = storedApplicationPageRows(catalog, "all");
@@ -26,19 +27,14 @@ describe("stored Library collection and scope", () => {
       }
     }
   });
-  it("lists only ABE's applicable pages in both the Library and requirements document", () => {
-    const rows = storedApplicationPageRows(catalog, "abe");
-    expect(rows).toHaveLength(28);
-    expect(rows.filter(page => page.flow === "Utility").map(page => page.key)).toEqual(["error-404", "error-500", "session-expired", "technical-error", "maintenance", "application-unavailable", "outcome-unknown"]);
-    expect(rows.filter(page => page.key.startsWith("health-")).map(page => page.key)).toEqual(["health-li", "health-qd", "health-di", "health-ci"]);
-    expect(storedApplicationPageRows(catalog, "all").some(page => page.key === "health-si")).toBe(true);
-    const doc = readFileSync("docs/project-review/abe-template-requirements.md", "utf8");
-    const pageSection = doc.split("## Pages\n")[1].split("### Health page layout")[0];
-    const ids = [...pageSection.matchAll(/^\| `([^`]+)` \|/gm)].map(match => match[1]);
-    expect(ids).toEqual(rows.map(page => page.key));
-    const documentRows = pageSection.split('\n').filter(line => line.startsWith('| `')).map(line => line.split('|').map(cell => cell.trim()));
-    expect(documentRows.map(row => row[4])).toEqual(rows.map(page => page.flow));
-    expect(documentRows.every(row => row.length === 6)).toBe(true);
+  it("lists the enrolled Sites and excludes retired Sites from the active Library", () => {
+    expect(catalog.data.sites.map(site => site.key).sort()).toEqual(["ama", "ama-gi", "asce", "waepa", "waepa-gi"]);
+    expect(storedApplicationPageRows(catalog, "abe")).toEqual([]);
+    for (const site of catalog.data.sites) {
+      const rows = storedApplicationPageRows(catalog, site.key);
+      expect(new Set(rows.map(page => page.key)).size).toBe(rows.length);
+      expect(rows.map(page => page.key)).toContain("receipt");
+    }
   });
   it("shows only configured categories and enabled effective riders, respecting scoped replacement", () => {
     for (const site of catalog.data.sites.filter(s => s.status === 'active')) {
@@ -60,7 +56,7 @@ describe("stored Library collection and scope", () => {
     const physicianKeys = ["ama-physician-type", "ama-physician-title", "ama-physician-first-name", "ama-physician-last-name", "ama-physician-birth-date", "ama-physician-email"];
     expect(ama.filter(field => field.placements[0]?.page === "membership").map(field => field.key)).toEqual(expect.arrayContaining(physicianKeys));
     for (const key of physicianKeys) expect(storedFieldVisibility(catalog, ama.find(field => field.key === key)!, ama)).toContain("Spouse of Physician");
-    expect(storedFieldRows(catalog, "csea").some(field => physicianKeys.includes(field.key))).toBe(false);
+    expect(storedFieldRows(catalog, "waepa").some(field => physicianKeys.includes(field.key))).toBe(false);
   });
   it("matches included runtime fields for every active Site/page and retains per-page overrides", () => {
     for (const site of catalog.data.sites.filter(site => site.status === "active")) {
@@ -91,10 +87,9 @@ describe("stored Library collection and scope", () => {
     expect(pages.slice(0, 3)).toEqual(["home", "membership", "eligibility"]);
     expect(storedPageFieldGroups(catalog, "asce", "home", fields).flatMap(group => group.fields).length).toBeGreaterThan(0);
   });
-  it("keeps internal reference pages in All and out of effective Site pages and sections", () => {
+  it("keeps internal reference pages outside the application Library", () => {
     const internal = catalog.data.pages.filter(page => page.definition.type === "internal").map(page => page.key);
-    expect(internal).toContain("design-system");
-    expect(storedLibraryRows(catalog, "pages", "all").map(row => row.key)).toEqual(expect.arrayContaining(internal));
+    expect(storedLibraryRows(catalog, "pages", "all").some(row => internal.includes(String(row.key)))).toBe(false);
     for (const site of catalog.data.sites.filter(site => site.status === "active")) {
       const pages = storedLibraryRows(catalog, "pages", site.key).map(row => row.key);
       expect(pages).toContain("home");
@@ -109,21 +104,25 @@ describe("stored Library collection and scope", () => {
     expect(collection.fields.map(field => field.key)).toEqual(["child-first-name", "child-last-name", "child-birth-date", "child-gender"]);
     expect(storedFieldRows(catalog, "waepa").find(field => field.key === "child-first-name")?.placements).toContainEqual({ page: "eligibility", section: "childSection", collection: "children", order: 0 });
   });
-  it("resolves CSEA's stored notice choice without requiring records", () => {
-    expect(childCollection(catalog, "csea")).toMatchObject({ collects: false, mode: "notice-only" });
-    expect(storedFieldRows(catalog, "csea").filter(field => field.key.startsWith("child-"))).toEqual([]);
+  it("uses the effective child collection for each enrolled Site", () => {
+    for (const site of catalog.data.sites) {
+      const collection = childCollection(catalog, site.key);
+      expect(collection.collects).toBe(collection.mode === "details");
+      if (!collection.collects) expect(collection.fields).toEqual([]);
+    }
   });
-  it("reflects a saved Site collection choice over the earlier client choice", () => {
+  it("does not let superseded saved settings bypass authored inheritance", () => {
     const changed = structuredClone(catalog);
-    changed.data.configurationDefinitions.push({ id: "draft.csea.experience", key: "draft.csea.experience", position: 0, definition: { path: ["applicantExperience"], metadata: null } });
-    changed.data.configurationValues.push({ id: "draft.csea.experience", key: "draft.csea.experience", position: 0, configurationKey: "draft.csea.experience", scope: "site", clientKey: null, siteKey: "csea", value: { childEligibility: { mode: "details", note: "Collect child details" } } });
-    expect(childCollection(changed, "csea")).toMatchObject({ collects: true, settingKey: "draft.csea.experience" });
+    changed.data.configurationDefinitions.push({ id: "draft.waepa.experience", key: "draft.waepa.experience", position: 0, definition: { path: ["applicantExperience"], metadata: null } });
+    changed.data.configurationValues.push({ id: "draft.waepa.experience", key: "draft.waepa.experience", position: 0, configurationKey: "draft.waepa.experience", scope: "site", clientKey: null, siteKey: "waepa", value: { childEligibility: { mode: "notice-only", note: "Superseded" } } });
+    expect(childCollection(changed, "waepa").mode).toBe(childCollection(catalog, "waepa").mode);
   });
-  it("reflects saved field labels and excludes disabled products", () => {
+  it("projects authoritative field labels and enabled products", () => {
     const changed = structuredClone(catalog);
-    changed.data.fields.find(field => field.key === "child-first-name")!.definition.label = "Stored child given name";
-    expect(childCollection(changed, "waepa").fields[0].definition.label).toBe("Stored child given name");
-    const products = storedLibraryRows(catalog, "products", "csea");
-    expect(products.map(row => row.key).sort()).toEqual(["di-ltd", "li-add"]);
+    changed.data.fields.find(field => field.key === "child-first-name")!.definition.label = "Superseded child given name";
+    expect(childCollection(changed, "waepa").fields[0].definition).toEqual(childCollection(catalog, "waepa").fields[0].definition);
+    const effective = withFreshStartCatalog(changed.data, "waepa");
+    const enabled = effective.siteProducts.filter(row => row.siteId === "waepa" && row.enabled).map(row => row.productKey).sort();
+    expect(storedLibraryRows(changed, "products", "waepa").map(row => row.key).sort()).toEqual(enabled);
   });
 });

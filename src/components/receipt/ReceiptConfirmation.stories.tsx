@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { getContent } from "../../content";
+import { getPageTitle, getPageSubhead } from '../../config/pages';
 import ReceiptConfirmation from "./ReceiptConfirmation";
 
 const meta = {
@@ -12,10 +13,16 @@ export default meta;
 
 export const Documents: StoryObj = {
   render: () => <ReceiptConfirmation
-    title="Application received"
+    title={getPageTitle('receipt')}
+    description={getPageSubhead('receipt')}
     content={getContent().receipt}
     confirmationNumber="APP-12345678"
+    hasActivePaymentInformation
     onDownloadApplication={() => {}}
     onDownloadPayment={() => {}}
   />,
+};
+
+export const ApplicationDocumentOnly: StoryObj = {
+  render: () => <ReceiptConfirmation title={getPageTitle('receipt')} description={getPageSubhead('receipt')} content={getContent().receipt} confirmationNumber="APP-12345678" hasActivePaymentInformation={false} onDownloadApplication={() => {}} />,
 };

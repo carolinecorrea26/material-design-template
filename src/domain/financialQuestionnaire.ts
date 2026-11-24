@@ -13,7 +13,9 @@ export function requiresFinancialQuestionnaire(products: EffectiveSite["configur
     if (policies.length !== 1 || !isFinancialQuestionnairePolicy(policies[0].value)) throw new Error("No unique valid financial questionnaire policy");
     const policy = policies[0].value;
     return policy.enabled && policy.rules.some(rule => {
-      const sum = rule.productKeys.filter(key => selectedMemberProducts.has(key)).reduce((sum, key) => sum + (numericFact(memberAmounts[key]) ?? 0), 0);
+      const selected = rule.productKeys.filter(key => selectedMemberProducts.has(key));
+      if (!selected.length) return false;
+      const sum = selected.reduce((sum, key) => sum + (numericFact(memberAmounts[key]) ?? 0), 0);
       return rule.inclusive ? sum >= rule.minimumAmount : sum > rule.minimumAmount;
     });
   }
@@ -21,4 +23,14 @@ export function requiresFinancialQuestionnaire(products: EffectiveSite["configur
     ["financial", "financial-questions"].includes(set.definition?.value.questionType ?? "") &&
     (set.value.applicantTypeKey === null || set.value.applicantTypeKey === "member")
   ));
+}
+
+/** Profile and its read-only Review copy use the same effective Site policy and active elections. */
+export function financialQuestionnaireForApplication(configuration: EffectiveSite['configuration'] | undefined, entries: ReadonlyArray<{ coverageId: string; applicant: string }>, values: Record<string, unknown>) {
+  if (!configuration) return false;
+  if (configuration.features?.find(feature => feature.key === 'feature-financial-questionnaire')?.enabled === false) return false;
+  const amounts = (values.coverageAmounts ?? {}) as Record<string, unknown>;
+  const memberAmounts = Object.fromEntries(entries.filter(entry => entry.applicant === 'member').map(entry => [entry.coverageId, amounts[`${entry.coverageId}:member`] ?? amounts[`member:${entry.coverageId}`] ?? amounts[`${entry.coverageId}:self`]]));
+  const selected = new Set(Object.keys(memberAmounts).filter(key => (numericFact(memberAmounts[key]) ?? 0) > 0));
+  return requiresFinancialQuestionnaire(configuration.products, selected, memberAmounts, configuration.financialQuestionnairePolicies);
 }

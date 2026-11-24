@@ -1,0 +1,383 @@
+{
+  "site": "ama",
+  "assignments": [
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "sh-hospital-income",
+      "applicants": [
+        "member"
+      ],
+      "value": 17,
+      "source": "Main!O117"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "sh-hospital-income",
+      "applicants": [
+        "member"
+      ],
+      "value": 79,
+      "source": "Main!O117"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "sh-hospital-income",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 17,
+      "source": "Main!P117"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "sh-hospital-income",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 79,
+      "source": "Main!P117"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "di-step-rated",
+      "applicants": [
+        "member"
+      ],
+      "value": 17,
+      "source": "Main!O118"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "di-step-rated",
+      "applicants": [
+        "member"
+      ],
+      "value": 59,
+      "source": "Main!O118"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "di-level-rated",
+      "applicants": [
+        "member"
+      ],
+      "value": 17,
+      "source": "Main!O119; other dimensions: prototype:ama.di-level-rated"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "di-level-rated",
+      "applicants": [
+        "member"
+      ],
+      "value": 59,
+      "source": "Main!O119; other dimensions: prototype:ama.di-level-rated"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-10yr",
+      "applicants": [
+        "member"
+      ],
+      "value": 17,
+      "source": "Main!O120"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-10yr",
+      "applicants": [
+        "member"
+      ],
+      "value": 70,
+      "source": "Main!O120"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-10yr",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 17,
+      "source": "Main!P120"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-10yr",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 70,
+      "source": "Main!P120"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-15yr",
+      "applicants": [
+        "member"
+      ],
+      "value": 17,
+      "source": "Main!O121"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-15yr",
+      "applicants": [
+        "member"
+      ],
+      "value": 60,
+      "source": "Main!O121"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-15yr",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 17,
+      "source": "Main!P121"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-15yr",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 60,
+      "source": "Main!P121"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-20yr",
+      "applicants": [
+        "member"
+      ],
+      "value": 17,
+      "source": "Main!O122"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-20yr",
+      "applicants": [
+        "member"
+      ],
+      "value": 60,
+      "source": "Main!O122"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-20yr",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 17,
+      "source": "Main!P122"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-20yr",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 60,
+      "source": "Main!P122"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-term",
+      "applicants": [
+        "member"
+      ],
+      "value": 17,
+      "source": "Main!O123"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-term",
+      "applicants": [
+        "member"
+      ],
+      "value": 44,
+      "source": "Main!O123"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-term",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 17,
+      "source": "Main!P123"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-term",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 44,
+      "source": "Main!P123"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-preferred",
+      "applicants": [
+        "member"
+      ],
+      "value": 17,
+      "source": "Main!O124"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-preferred",
+      "applicants": [
+        "member"
+      ],
+      "value": 60,
+      "source": "Main!O124"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-preferred",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 17,
+      "source": "Main!P124"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-preferred",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 60,
+      "source": "Main!P124"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "oo-office-overhead",
+      "applicants": [
+        "member"
+      ],
+      "value": 17,
+      "source": "Main!O125; other dimensions: prototype:ama.oo-office-overhead"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "oo-office-overhead",
+      "applicants": [
+        "member"
+      ],
+      "value": 59,
+      "source": "Main!O125; other dimensions: prototype:ama.oo-office-overhead"
+    },
+    {
+      "configuration": "coverage-minimum-work-hours",
+      "product": "oo-office-overhead",
+      "applicants": [
+        "member"
+      ],
+      "value": 40,
+      "source": "Main!O125; other dimensions: prototype:ama.oo-office-overhead"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-premier-accident",
+      "applicants": [
+        "member"
+      ],
+      "value": 17,
+      "source": "Main!O126"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-premier-accident",
+      "applicants": [
+        "member"
+      ],
+      "value": 69,
+      "source": "Main!O126"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-premier-accident",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 17,
+      "source": "Main!P126"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-premier-accident",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 69,
+      "source": "Main!P126"
+    },
+    {
+      "configuration": "coverage-minimum-age-days",
+      "product": "li-preferred",
+      "applicants": [
+        "child"
+      ],
+      "value": 14,
+      "source": "docs/step3-provisional-decisions.md"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-preferred",
+      "applicants": [
+        "child"
+      ],
+      "value": 26,
+      "source": "docs/step3-provisional-decisions.md"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-10yr",
+      "applicants": [
+        "child"
+      ],
+      "value": 25,
+      "source": "docs/archive/step3-journey-adoption.md"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-15yr",
+      "applicants": [
+        "child"
+      ],
+      "value": 25,
+      "source": "docs/archive/step3-journey-adoption.md"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-20yr",
+      "applicants": [
+        "child"
+      ],
+      "value": 25,
+      "source": "docs/archive/step3-journey-adoption.md"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-premier-accident",
+      "applicants": [
+        "child"
+      ],
+      "value": 25,
+      "source": "docs/archive/step3-journey-adoption.md"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "sh-hospital-income",
+      "applicants": [
+        "child"
+      ],
+      "value": 25,
+      "source": "docs/archive/step3-journey-adoption.md"
+    }
+  ]
+}

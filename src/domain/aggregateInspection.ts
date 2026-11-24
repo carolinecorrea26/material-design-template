@@ -1,5 +1,5 @@
 import type { EffectiveSite } from "./effectiveSite";
-import { isLifeAggregatePolicy } from "./lifeAggregatePolicy";
+import { isLifeAggregatePolicy, resolveLifeAggregateParticipation } from "./lifeAggregatePolicy";
 import { isBenefitPolicy } from "./benefitPolicy";
 
 export type AggregateInspectionRow = {
@@ -27,6 +27,11 @@ export function inspectSiteAggregates(site: EffectiveSite): AggregateInspectionR
       included: productKeys.map(label), excluded: products.filter(product => product.catalog?.value.categoryKey === category && !productKeys.includes(product.productKey)).map(product => label(product.productKey)), notes, sources: [...new Set(sources)] };
   };
   const result: AggregateInspectionRow[] = [];
+  const lifeParticipation = resolveLifeAggregateParticipation(site);
+  if (lifeParticipation === 'unresolved') throw new Error(`Invalid life aggregate participation: ${site.siteKey}`);
+  if (lifeParticipation === 'individual-only' && products.some(product => product.catalog?.value.categoryKey === 'LI')) {
+    result.push(row(`${site.siteKey}.LI.individual-only`, 'LI', [], 'Per applicant', 'Individual product limits only', ['No combined Life aggregate applies.'], site.configuration.lifeAggregateParticipation.flatMap(policy => policy.provenance.flatMap(source => source.sourceReference ? [source.sourceReference] : []))));
+  }
   if (site.configuration.lifeAggregates.length > 1) throw new Error(`Ambiguous life aggregate policy: ${site.siteKey}`);
   for (const policy of site.configuration.lifeAggregates) {
     if (!isLifeAggregatePolicy(policy.value)) throw new Error(`Invalid life aggregate policy: ${site.siteKey}`);

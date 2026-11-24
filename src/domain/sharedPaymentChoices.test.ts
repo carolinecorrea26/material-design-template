@@ -60,3 +60,12 @@ describe("shared payment configuration", () => {
     expect(state.updates).toMatchObject({ "payment-method:life": "", "payment-method:disability": "" });
   });
 });
+
+it('uses configured defaults for frequency-only sharing and preserves restored choices', () => {
+  const products = ['life', 'disability'].map(productKey => ({ productKey, methods: [bank, bill], frequenciesByMethod: { 'bank-account': [monthly, annual], 'bill-me': [monthly] } }));
+  const defaults = Object.fromEntries(products.flatMap(product => [[`payment-method:${product.productKey}`, 'bank-account'], [`payment-frequency:${product.productKey}`, 'monthly']]));
+  const state = sharedPaymentState(products, {}, { allowSharedFrequency: true }, defaults);
+  expect(state.frequency).toBe('monthly');
+  expect(state.updates).toMatchObject({ 'payment-frequency:all': 'monthly', 'payment-frequency:life': 'monthly', 'payment-frequency:disability': 'monthly' });
+  expect(sharedPaymentState(products, { 'payment-frequency:life': 'annually', 'payment-frequency:disability': 'annually' }, { allowSharedFrequency: true }, defaults).frequency).toBe('annually');
+});

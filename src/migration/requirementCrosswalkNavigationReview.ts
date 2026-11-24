@@ -1,9 +1,10 @@
+import { recordedFilesMatch } from "./sourceEvidence";
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { DatabaseSchema } from "../persistence/types";
-import { resolveSnapshotSite as resolveEffectiveSite } from "../domain/effectiveSite";
+import { resolveAuditSnapshotSite as resolveEffectiveSite } from "./snapshotSiteResolution";
 import { resolvePageCatalog } from "../domain/pageCatalog";
 import { activeSiteMigrationScope } from "./activeSiteScope";
 import type { CrosswalkRow } from "./requirementCrosswalk";
@@ -24,7 +25,7 @@ export const navigationReviewRuleKeys = new Set([
   "rule-validation-page-advance",
 ]);
 export function reviewedNavigationCodeMatches(read = (path: string) => readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), "../..", path))) {
-  return Object.keys(evidence.files).length > 0 && Object.entries(evidence.files).every(([path, hash]) => createHash("sha256").update(read(path)).digest("hex") === hash);
+  return recordedFilesMatch(evidence.files, read);
 }
 export function navigationReviewSnapshot(db: DatabaseSchema) {
   return activeSiteMigrationScope.sites.map(({ key }) => {

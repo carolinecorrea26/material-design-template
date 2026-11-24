@@ -36,7 +36,7 @@ export function applyAbeHealthQuestionnairesAdoption(db: DatabaseSchema) {
     });
   };
   const ci = "sh-critical-illness";
-  const ciPolicy: HealthQuestionnairePolicy = { version: 1, applicability: "site", associationKeys: [], pageId: "health-ci", variants: [
+  const ciPolicy: HealthQuestionnairePolicy = { version: 1, applicability: "site", associationKeys: [], pageId: "health-tele", variants: [
     { key: "CI-2014-ci-only", when: { only: [ci] }, items: ciItems("CI-2014 - CI only applications") },
     { key: "CI-2014-combined", when: { any: [ci], otherThan: [ci] }, items: ciItems("CI-2014") },
   ] };
@@ -49,7 +49,7 @@ export function applyAbeHealthQuestionnairesAdoption(db: DatabaseSchema) {
     const text = row.text!.replace(/^[a-d]\)\s*/, "");
     return answer(row, row.row >= 163 && row.row <= 166 ? `${diPrefix} ${text}` : text, details, row.row !== 168);
   });
-  const diPolicy: HealthQuestionnairePolicy = { version: 1, applicability: "site", associationKeys: [], pageId: "health-di", whenProcessing: "qd-life-with-disability", variants: [{ key: "Supp-DI", when: { any: ["di-ltd-plus", "di-ltd", "di-mtd"] }, items: diItems }] };
+  const diPolicy: HealthQuestionnairePolicy = { version: 1, applicability: "site", associationKeys: [], pageId: "health-di-supp", whenProcessing: "qd-life-with-disability", variants: [{ key: "Supp-DI", when: { any: ["di-ltd-plus", "di-ltd", "di-mtd"] }, items: diItems }] };
   for (const [index, definition] of fields.entries()) {
     const row = { ...meta("fields", definition.id), position: 32000 + index, definition }, indexInDb = db.fields.findIndex(row => row.key === definition.id);
     if (indexInDb < 0) db.fields.push(row); else db.fields[indexInDb] = row;
@@ -60,24 +60,34 @@ export function applyAbeHealthQuestionnairesAdoption(db: DatabaseSchema) {
     const key = `abe.${policy.pageId}.source-questionnaire`, row = { ...meta("configurationValues", key), position: 0, scope: "site" as const, siteKey: "abe", clientKey: null, configurationKey, value: policy as unknown as Json }, index = db.configurationValues.findIndex(row => row.key === key);
     if (index < 0) db.configurationValues.push(row); else db.configurationValues[index] = row;
   }
-  const page = db.sitePages.find(row => row.siteKey === "abe" && row.pageKey === "health-ci"); if (!page) throw new Error("Missing CI page assignment"); page.requirement = "required";
+  const page = db.sitePages.find(row => row.siteKey === "abe" && row.pageKey === "health-tele"); if (!page) throw new Error("Missing CI page assignment"); page.requirement = "required";
   const siPage = db.sitePages.find(row => row.siteKey === "abe" && row.pageKey === "health-si");
   if (!siPage) throw new Error("Missing ABE SI page assignment");
   siPage.requirement = "none";
   const journey = db.configurationValues.find(row => row.key === `abe.${ci}.journey-policy`);
   if (!journey || !isCoverageJourneyPolicy(journey.value)) throw new Error("Missing ABE CI journey");
-  journey.value.healthPageByUnderwriting = { ...journey.value.healthPageByUnderwriting, FUW: "health-ci" };
-  journey.value.questions = journey.value.questions.map(row => ({ ...row, healthPage: row.applicantKey === "child" ? null : "health-ci" }));
+  journey.value.healthPageByUnderwriting = { ...journey.value.healthPageByUnderwriting, FUW: "health-tele" };
+  journey.value.questions = journey.value.questions.map(row => ({ ...row, healthPage: row.applicantKey === "child" ? null : "health-tele" }));
   for (const productKey of ["di-ltd-plus", "di-ltd", "di-mtd"]) {
     const journey = db.configurationValues.find(row => row.key === `abe.${productKey}.journey-policy`);
     if (!journey || !isCoverageJourneyPolicy(journey.value)) throw new Error("Missing ABE DI journey");
-    journey.value.healthPageForPortfolio = { when: "qd-life-with-disability", pageId: "health-di" };
+    journey.value.healthPageForPortfolio = { when: "qd-life-with-disability", pageId: "health-di-supp" };
   }
+  // Preserve the captured ABE category collection explicitly as global question
+  // defaults evolve; the native CI participation policy already owns these IDs.
+  const questionDefinition = db.configurationDefinitions.find(row => row.definition.path?.join(".") === "coveragePolicy.questionRequirements")!;
+  const questionDefaults = db.configurationValues.find(row => row.configurationKey === questionDefinition.key && row.scope === "global")!.value as Record<string, Json>;
+  const ciQuestions = journey.value.questions;
+  const tobacco = Object.fromEntries(["self", "spouse"].map(applicant => [applicant, [...new Set(ciQuestions.filter(row => row.applicantKey === (applicant === "self" ? "member" : applicant)).flatMap(row => row.tobaccoFields))]]));
+  const questionKey = "abe.coverage-category-questions";
+  const categoryQuestions = { ...meta("configurationValues", questionKey), configurationKey: questionDefinition.key, scope: "site" as const, siteKey: "abe", clientKey: null, position: 0, value: { ...questionDefaults, SH: tobacco } as Json };
+  const questionIndex = db.configurationValues.findIndex(row => row.key === questionKey);
+  if (questionIndex < 0) db.configurationValues.push(categoryQuestions); else db.configurationValues[questionIndex] = categoryQuestions;
   const key = abeHealthDecisionKey, decision = { ...meta("semanticRequirements", key), domain: "approved-business-decision", subjectTable: "sites", subjectKey: "abe", predicate: "abe-source-health-questionnaires", status: "documented", value: {
     authority, approvalStatus: "approved", runtimeActivation: "reviewed-seed", sourceReconciliation: "approved-new-template-interpretation", workbook: source.workbook, workbookSha256: source.sha256,
-    selected: { ciPolicy, diPolicy, fields }, sourceReferences: ["Health Questions!A41:B44", "Health Questions!A81:B84", "SUP DI Health questions!T50", "health_forms_questions.xlsx#Health questions!A79:E97", "health_forms_questions.xlsx#Health questions!A160:E168", "health_forms_questions.xlsx#Health questions!A197:E215"],
+    selected: { ciPolicy, diPolicy, fields, coverageQuestions: tobacco }, sourceReferences: ["Health Questions!A41:B44", "Health Questions!A81:B84", "SUP DI Health questions!T50", "health_forms_questions.xlsx#Health questions!A79:E97", "health_forms_questions.xlsx#Health questions!A160:E168", "health_forms_questions.xlsx#Health questions!A197:E215"],
     interpretation: "CI-2014 questions use their own page for each participating adult. Source group headings provide context rather than extra answers. The tobacco item is deliberately omitted here: the existing Coverage category smoker question remains the only collection. Supplemental DI uses all eight answer questions and source-required detail records when the same adult requests QD Life and DI. FUW is post-submission underwriting and does not itself collect online health questions. Only explicitly assigned forms, including TELE where configured, activate online collection. Existing TELE routes and forms are preserved. Explicit CI and supplemental DI forms remain active under their own guards. QD remains externally hosted. Member and spouse answers are independent. Financial questions stay on Profile.",
-    destinations: [{ table: "configurationValues", key: "abe.health-ci.source-questionnaire" }, { table: "configurationValues", key: "abe.health-di.source-questionnaire" }, { table: "sitePages", key: page.key }, ...[ci, "di-ltd-plus", "di-ltd", "di-mtd"].map(productKey => ({ table: "configurationValues", key: `abe.${productKey}.journey-policy`, column: "value" }))],
+    destinations: [{ table: "configurationValues", key: questionKey, column: "value" }, { table: "configurationValues", key: "abe.health-ci.source-questionnaire" }, { table: "configurationValues", key: "abe.health-di.source-questionnaire" }, { table: "sitePages", key: page.key }, ...[ci, "di-ltd-plus", "di-ltd", "di-mtd"].map(productKey => ({ table: "configurationValues", key: `abe.${productKey}.journey-policy`, column: "value" }))],
   } as unknown as Json };
   const index = db.semanticRequirements.findIndex(row => row.key === key); if (index < 0) db.semanticRequirements.push(decision); else db.semanticRequirements[index] = decision;
 }

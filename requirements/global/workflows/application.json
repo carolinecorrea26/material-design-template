@@ -6,6 +6,13 @@
       "status": "confirmed",
       "statement": "Successful validation, submission and saving of Membership establishes the saved application and starts application autosave. Later successfully submitted portal pages save progress before advancing, using form-next-save. Opening Membership, typing an email or failing validation does not by itself start this business lifecycle. This requirement applies to consumer and advisor-assisted applications; local browser caching is separate from confirmed application saving.",
       "source": "docs/requirements-spec/page-review.md; src/content/docs/flows/autosaveFlow.ts"
+    },
+    {
+      "id": "external-provider-handoff",
+      "name": "Complete external provider handoffs",
+      "status": "confirmed",
+      "statement": "Save validated application progress before entering the configured external provider step. Continue only on the provider result required by the applicable journey. Prevent duplicate advancement while saving or navigating. Preserve answers on technical failures and apply the shared recovery rules; correctable validation stays on the current page. A display, navigation action or unverified return URL is not provider completion.",
+      "source": "User request 2026-11-10; src/components/feedback/PrototypeHandoffPage.tsx; requirements/global/prototype-fixtures/handoffs.json"
     }
   ]
 }

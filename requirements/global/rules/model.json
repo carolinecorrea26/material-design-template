@@ -1,0 +1,25 @@
+{
+  "rules": [
+    {
+      "id": "effective-site-configuration-resolution",
+      "name": "Resolve an effective Site from shared definitions and configured values",
+      "status": "confirmed",
+      "appliesTo": "all-pages",
+      "statement": "Resolve every effective Site from the global template definitions and defaults plus its assigned products, content selections and permitted overrides. Apply configured values only within the scopes, types and constraints declared by the owning definition; omitted values inherit the global default. Properties without an override contract retain their global definition. Reject unknown, unsupported, conflicting or out-of-scope assignments. Use this same resolution for every page, section, field, content item and policy instance; adding a Site does not create another shared definition or a copy of this rule. Wording and presentation overrides do not alter business decisions or applicant answers.",
+      "source": "AGENTS.md; docs/requirements-spec/README.md; requirements/global/configuration-bindings.json; requirements/mappings; User model clarification November 18, 2026",
+      "replaces": [
+        "home-client-copy-contract",
+        "membership-client-copy-contract",
+        "contact-client-copy-contract",
+        "beneficiary-client-copy-contract",
+        "receipt-client-copy-contract",
+        "recovery-client-copy-contract",
+        "application-header-client-copy",
+        "contact-configuration-boundaries",
+        "profile-configuration-boundaries",
+        "eligibility-client-copy-contract",
+        "coverage-client-copy-contract"
+      ]
+    }
+  ]
+}

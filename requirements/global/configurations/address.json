@@ -3,7 +3,7 @@
     {
       "id": "eligible-states-only",
       "name": "Only show eligible states",
-      "status": "draft",
+      "status": "confirmed",
       "type": "boolean",
       "default": false,
       "source": "src/domain/applicantExperience.ts; src/config/clientFields/getClientPageFields.ts"
@@ -11,7 +11,7 @@
     {
       "id": "eligible-states",
       "name": "Eligible state codes",
-      "status": "draft",
+      "status": "confirmed",
       "type": "string-list",
       "format": "state-code",
       "default": [],
@@ -23,7 +23,7 @@
       "status": "confirmed",
       "type": "boolean",
       "default": false,
-      "source": "Existing shared Contact configuration; src/domain/applicantExperience.ts; runtime supported"
+      "source": "Global Contact setting. When business collection is effectively hidden (no selected product-scope exception), hide all business controls and the correspondence question; persist the global Home correspondence value. Business address drafts remain retained."
     },
     {
       "id": "contact-hide-correspondence",
@@ -31,7 +31,16 @@
       "status": "confirmed",
       "type": "boolean",
       "default": false,
-      "source": "Existing shared Contact configuration; src/domain/applicantExperience.ts; runtime supported"
+      "source": "Global Contact setting. Hide the correspondence question and persist the global Home value. Automatic employer/business collection remains governed independently by current product scope."
+    },
+    {
+      "id": "contact-business-address-products",
+      "name": "Products that automatically enable Contact business information",
+      "status": "confirmed",
+      "type": "string-list",
+      "format": "product-id",
+      "default": [],
+      "source": "Global Contact product-scope capability. Empty uses DI/OO for automatic collection; a nonempty effective-Site list uses selected assigned products instead and provides exceptions to hide-business-address. When business collection is not effectively hidden, choosing Business correspondence independently reveals address-only fields even for products outside automatic scope. Current URL-filtered product/applicant elections determine participation."
     }
   ]
 }

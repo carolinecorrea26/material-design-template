@@ -2,7 +2,56 @@
   "page": "receipt",
   "components": [
     {
-      "type": "receipt"
+      "type": "PageShell",
+      "components": [
+        {
+          "type": "AppSnackbar",
+          "purpose": "shared document-placeholder feedback"
+        },
+        {
+          "type": "FormShell",
+          "components": [
+            {
+              "type": "ReceiptConfirmation",
+              "components": [
+                {
+                  "type": "InformationAlert",
+                  "purpose": "information and document downloads"
+                }
+              ],
+              "section": "confirmation",
+              "purpose": "shared confirmation/documents and independent next-step notes; configured payment notice appears only with active allowed payment method/frequency"
+            },
+            {
+              "type": "ReceiptDecisions",
+              "mapping": "receipt",
+              "components": [
+                {
+                  "type": "ReceiptCoverageDecision",
+                  "purpose": "one product/applicant decision with requested coverage, estimated payment and payment method below its wording"
+                },
+                {
+                  "type": "SiteSupport",
+                  "mapping": "site-support",
+                  "purpose": "shared support aligned with the decisions section"
+                }
+              ],
+              "section": "coverage-decisions"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "ApplicationErrorState",
+      "mapping": "recovery",
+      "purpose": "existing technical-error template for missing/unrecognized decision data; no new redirect wiring",
+      "components": [
+        {
+          "type": "SiteSupport",
+          "mapping": "site-support"
+        }
+      ]
     }
   ],
   "definition": {
@@ -14,14 +63,36 @@
     "displayName": "Receipt"
   },
   "position": 16,
-  "fieldBindings": [],
-  "looseFields": [],
   "layout": {
-    "sections": {}
+    "sectionOrder": "receipt",
+    "sections": {
+      "confirmation": {
+        "id": "receiptConfirmation",
+        "role": "summary",
+        "fields": []
+      },
+      "coverage-decisions": {
+        "id": "receiptDecisions",
+        "role": "products",
+        "fields": []
+      }
+    }
   },
   "content": {
-    "wording": [
-      "receipt.decision-steps",
+    "confirmation": [
+      "receipt.documents-note",
+      "receipt.confirmation-number-label",
+      "receipt.document-download-labels.application",
+      "receipt.document-download-labels.payment",
+      "receipt.what-happens-next.title",
+      "page.receipt.title",
+      "page.receipt.subhead",
+      "page.receipt.nav-title",
+      "receipt.payment-notice",
+      "receipt.underwriting-note"
+    ],
+    "decisions": [
+      "receipt.decision-label",
       "receipt.decision-statuses.fully-underwritten.label",
       "receipt.decision-statuses.fully-underwritten.description",
       "receipt.decision-statuses.conditionally-approved.label",
@@ -32,48 +103,135 @@
       "receipt.decision-statuses.soft-declined.description",
       "receipt.decision-statuses.database-unavailable.label",
       "receipt.decision-statuses.database-unavailable.description",
-      "receipt.documents-note",
-      "receipt.confirmation-number-label",
-      "receipt.document-download-labels.application",
-      "receipt.document-download-labels.payment",
-      "receipt.document-download-labels.quick-decision",
-      "receipt.summary-labels.status",
-      "receipt.summary-labels.applying",
-      "receipt.summary-labels.requested",
-      "receipt.summary-labels.submitted-status",
-      "receipt.summary-labels.default-applicant",
-      "receipt.summary-labels.product-singular",
-      "receipt.summary-labels.product-plural",
-      "receipt.coverage-card-labels.coverage-suffix",
-      "receipt.coverage-card-labels.requested",
       "receipt.coverage-decisions.title",
       "receipt.coverage-decisions.description",
-      "receipt.coverage-decisions.no-selections-message",
-      "receipt.what-happens-next.title",
-      "receipt.what-happens-next.items",
-      "receipt.support.title",
-      "receipt.support.administrator-label",
-      "receipt.support.call-label",
-      "receipt.support.email-label",
-      "page.receipt.title",
-      "page.receipt.subhead",
-      "page.receipt.nav-title",
-      "receipt.payment-notice-title",
-      "receipt.payment-notice",
-      "receipt.received-message"
+      "receipt.coverage-decisions.no-selections-message"
     ],
-    "runtime": [
-      "application.ui.document-downloads-are-placeholders-in-this-prototype",
-      "application.ui.requested",
-      "application.ui.included-in",
-      "application.ui.coverage-shares-its-application-decision",
-      "application.ui.application-receipt",
-      "application.ui.your-coverage-and-payment-selections",
+    "selectionDetails": [
       "coverage.coverage-cart.requested-coverage",
       "application.ui.not-available",
       "application.ui.estimated-payment",
       "application.ui.payment-method",
       "application.ui.not-selected"
+    ],
+    "runtime": [
+      "application.ui.document-downloads-are-placeholders-in-this-prototype",
+      "application.ui.requested",
+      "receipt.attached-benefit.decision-note"
+    ],
+    "support": [
+      "support.title",
+      "support.technical-title",
+      "support.technical-email-label",
+      "support.technical-email-address",
+      "support.administrator-suffix",
+      "support.call-label",
+      "support.email-label",
+      "support.website-label",
+      "support.application-reference",
+      "support.confirmation-reference",
+      "support.email-subject"
+    ],
+    "email": [
+      "receipt.email.subject",
+      "receipt.email.title",
+      "receipt.email.intro",
+      "receipt.email.summary",
+      "receipt.email.closing",
+      "receipt.email.signature"
+    ],
+    "wording": [
+      "page.receipt.title",
+      "page.receipt.subhead",
+      "receipt.email.subject",
+      "receipt.email.title",
+      "receipt.email.intro",
+      "receipt.payment-notice",
+      "receipt.what-happens-next.title",
+      "receipt.decision-statuses.fully-underwritten.label",
+      "receipt.decision-statuses.fully-underwritten.description",
+      "receipt.decision-statuses.conditionally-approved.label",
+      "receipt.decision-statuses.conditionally-approved.description",
+      "receipt.decision-statuses.referred.label",
+      "receipt.decision-statuses.referred.description",
+      "receipt.decision-statuses.soft-declined.label",
+      "receipt.decision-statuses.soft-declined.description",
+      "receipt.decision-statuses.database-unavailable.label",
+      "receipt.decision-statuses.database-unavailable.description",
+      "receipt.underwriting-note"
     ]
-  }
+  },
+  "contentRoots": [
+    "receipt"
+  ],
+  "retiredComponentKeys": [
+    "component-receipt-next-steps"
+  ],
+  "contentSlots": {
+    "page.receipt.title": {
+      "name": "Page title"
+    },
+    "page.receipt.subhead": {
+      "name": "Page introduction"
+    },
+    "receipt.email.subject": {
+      "name": "Receipt confirmation email subject"
+    },
+    "receipt.email.title": {
+      "name": "Receipt confirmation email title"
+    },
+    "receipt.email.intro": {
+      "name": "Receipt confirmation email introduction"
+    },
+    "receipt.payment-notice": {
+      "name": "Receipt payment notice",
+      "optional": true
+    },
+    "receipt.what-happens-next.title": {
+      "name": "Receipt what happens next title"
+    },
+    "receipt.decision-statuses.fully-underwritten.label": {
+      "name": "Receipt decision statuses fully underwritten label"
+    },
+    "receipt.decision-statuses.fully-underwritten.description": {
+      "name": "Receipt decision statuses fully underwritten description"
+    },
+    "receipt.decision-statuses.conditionally-approved.label": {
+      "name": "Receipt decision statuses conditionally approved label"
+    },
+    "receipt.decision-statuses.conditionally-approved.description": {
+      "name": "Receipt decision statuses conditionally approved description"
+    },
+    "receipt.decision-statuses.referred.label": {
+      "name": "Receipt decision statuses referred label"
+    },
+    "receipt.decision-statuses.referred.description": {
+      "name": "Receipt decision statuses referred description"
+    },
+    "receipt.decision-statuses.soft-declined.label": {
+      "name": "Receipt decision statuses soft declined label"
+    },
+    "receipt.decision-statuses.soft-declined.description": {
+      "name": "Receipt decision statuses soft declined description"
+    },
+    "receipt.decision-statuses.database-unavailable.label": {
+      "name": "Receipt decision statuses database unavailable label"
+    },
+    "receipt.decision-statuses.database-unavailable.description": {
+      "name": "Receipt decision statuses database unavailable description"
+    },
+    "receipt.underwriting-note": {
+      "name": "Underwriting review next-step note",
+      "optional": true,
+      "kind": "notice"
+    }
+  },
+  "retiredContentKeys": [
+    "application.ui.included-in",
+    "application.ui.coverage-shares-its-application-decision",
+    "receipt.requestedAmountFallback",
+    "receipt.coverageNameFallback",
+    "receipt.requested-amount-fallback",
+    "receipt.coverage-name-fallback"
+  ]
 }

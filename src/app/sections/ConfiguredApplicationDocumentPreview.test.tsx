@@ -31,8 +31,9 @@ it("shows applicant-specific coverage amounts and mock rates without a bottom es
     coverageAmounts: { "li-term:member": 100000, "li-term:spouse": 50000 },
   };
   container = document.createElement("div"); document.body.append(container); root = createRoot(container);
-  const render = () => root!.render(<MemoryRouter><ConfiguredApplicationDocumentPreview values={values} signatureName="" signedDate="" currentDate="2026-09-28" hideSignature /></MemoryRouter>);
+  const render = () => root!.render(<MemoryRouter><ConfiguredApplicationDocumentPreview values={values} signatureName="" signedDate="" hideSignature /></MemoryRouter>);
   await act(async () => { render(); });
+  expect(container.textContent).not.toContain("Prepared on");
   expect(container.textContent).toContain("$21.23/mo");
   expect(container.textContent).toContain("$17.64/mo");
   expect(container.textContent).toContain("$100,000");

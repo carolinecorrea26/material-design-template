@@ -1,0 +1,37 @@
+{
+  "component": "health-tele",
+  "pages": [
+    "health-tele"
+  ],
+  "rules": [
+    "health-tele-questionnaire",
+    "health-participation-and-storage"
+  ],
+  "validations": [
+    {
+      "validation": "health-required-answer",
+      "trigger": "next",
+      "scope": "page"
+    },
+    {
+      "validation": "health-yes-details",
+      "trigger": "next",
+      "scope": "page"
+    },
+    {
+      "validation": "health-details-limit",
+      "trigger": "next",
+      "scope": "page"
+    },
+    {
+      "validation": "health-questionnaire-resolution",
+      "trigger": "next",
+      "scope": "page"
+    },
+    {
+      "validation": "health-ci-questionnaire-assignment",
+      "trigger": "next",
+      "scope": "page"
+    }
+  ]
+}

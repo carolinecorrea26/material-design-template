@@ -1,9 +1,10 @@
+import { withFreshStartCatalog } from "../../../domain/freshStartCatalog";
 import { getPhoneTypeFieldId } from "../../../domain/phoneFields";
 import type { LibraryCatalog } from "../../../services/libraryCatalogService";
 import { resolvePageCatalog } from "../../../domain/pageCatalog";
-import { fieldSurfaceRows, type FieldSurfaceRow } from "./fieldSurfaceRows";
+import { compiledFieldSurfaceRows, type FieldSurfaceRow } from "./fieldSurfaceRows";
 import { fieldDisplayName } from "./fieldCatalogRows";
-import { resolveEffectiveSite } from "../../../domain/effectiveSite";
+import { resolveCompiledEffectiveSite } from "../../../domain/effectiveSite";
 import { resolveStoredFieldCollections, type ResolvedFieldCollection } from "../../../domain/fieldCollections";
 import { groupPageFields, pageModalFields } from "./pageFieldGroups";
 
@@ -26,7 +27,7 @@ function orderedPageFieldKeys(catalog: LibraryCatalog, pageKey: string, usages: 
     const placements = catalog.data.pageSectionFields.filter(field => field.sectionKey === section.key).sort((a, b) => a.position - b.position);
     for (const placement of placements) if (rank.has(placement.fieldKey)) rank.set(placement.fieldKey, section.position * 10000 + placement.position);
     const definition = section.definition;
-    if (!definition.title && !definition.description && !definition.collectionName && definition.visibilityConditionId) {
+    if (!definition.title && !definition.description && !definition.display?.label && !definition.collectionName && definition.visibilityConditionId) {
       const condition = catalog.data.conditions.find(row => row.key === definition.visibilityConditionId)?.definition;
       const parents = [...new Set(condition?.conditions.map(clause => clause.fieldId))].filter(key => rank.has(key));
       if (parents.length === 1) attach(parents[0], placements.map(field => field.fieldKey));
@@ -57,9 +58,10 @@ function orderedPageFieldKeys(catalog: LibraryCatalog, pageKey: string, usages: 
 /** Include configured disabled pages for inspection without enabling them. */
 export function pageCatalogRows(catalog: LibraryCatalog, siteKey: string, fieldUsages?: FieldSurfaceRow[]) {
   if (siteKey !== "all" && !catalog.data.sites.some(site => site.key === siteKey)) return [];
-  const usages = fieldUsages ?? fieldSurfaceRows(catalog, siteKey);
+  catalog = { ...catalog, data: withFreshStartCatalog(catalog.data, siteKey === "all" ? undefined : siteKey, catalog.siteScope) };
+  const usages = fieldUsages ?? compiledFieldSurfaceRows(catalog, siteKey);
   const definitions = new Set(catalog.data.fields.map(field => field.key));
-  const collections = siteKey === "all" ? {} : resolveStoredFieldCollections(catalog.data, resolveEffectiveSite(catalog.data, siteKey));
+  const collections = siteKey === "all" ? {} : resolveStoredFieldCollections(catalog.data, resolveCompiledEffectiveSite(catalog.data, siteKey));
   const modals = pageModalFields(catalog, siteKey);
   return resolvePageCatalog(catalog.data, siteKey === "all" ? undefined : siteKey)
     .filter(page => page.definition.flow !== "internal" && page.assigned)
@@ -67,7 +69,8 @@ export function pageCatalogRows(catalog: LibraryCatalog, siteKey: string, fieldU
       const fields = orderedPageFieldKeys(catalog, page.key, usages.filter(usage => usage.pages.includes(page.key) && !usage.tool
         && (!page.definition.inlineFieldKeys || page.definition.inlineFieldKeys.includes(usage.field.id)))
         .filter(usage => definitions.has(usage.definitionKey ?? usage.field.id)), collections).map(key => ({ key, name: fieldDisplayName(key, catalog) }));
-      return { ...page, name: page.definition.displayName ?? page.key, flow: page.definition.flow,
+      const sections = catalog.data.pageSections.filter(section => section.pageKey === page.key).sort((a, b) => a.position - b.position).map(section => section.definition);
+      return { ...page, sections, name: page.definition.displayName ?? page.key, flow: page.definition.flow,
       requirement: page.requirement ?? "—",
       fields, fieldGroups: groupPageFields(catalog, page.key, usages, fields.map(field => field.key), modals),
     }; });

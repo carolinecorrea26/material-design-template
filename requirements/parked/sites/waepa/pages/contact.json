@@ -1,0 +1,10 @@
+{
+  "page": "contact",
+  "configurations": {
+    "contact-hide-business-address": true,
+    "contact-hide-correspondence": true,
+    "contact-business-address-products": [
+      "di-short-term"
+    ]
+  }
+}

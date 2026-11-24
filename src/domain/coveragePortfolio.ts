@@ -39,9 +39,7 @@ export async function evaluateCoveragePortfolio(
   if (results.every(r => r.allowed)) {
     const selections = results.map(r => ({ productKey: r.submission!.productKey, amount: r.submission!.mode === "rider-only" ? r.submission!.existingAmount! : r.submission!.amount }));
     const hasLife = selections.some(s => site.configuration.products.find(p => p.productKey === s.productKey)?.catalog?.value.categoryKey === "LI");
-    const participation = site.configuration.lifeAggregateParticipation;
-    const individualOnly = participation.length === 1 && participation[0].value && typeof participation[0].value === "object" && !Array.isArray(participation[0].value) && "mode" in participation[0].value && participation[0].value.mode === "individual-only" && "provisional" in participation[0].value && participation[0].value.provisional === true && !site.configuration.lifeAggregates.length && !site.configuration.products.some(product => product.limits.some(limit => limit.value.categoryKey === "LI" && limit.value.productKey === null));
-    if (hasLife && !individualOnly) {
+    if (hasLife) {
       const aggregate = validateNormalizedLifeAggregate(site, inputs[0].applicantKey, selections, existingLifeAmount);
       if (!aggregate.allowed) (aggregate.status === "needs-information" ? missingFacts : errors).push(aggregate.reason);
     }

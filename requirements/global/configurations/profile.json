@@ -1,0 +1,20 @@
+{
+  "configurations": [
+    {
+      "id": "physician-information",
+      "name": "Show physician information",
+      "status": "confirmed",
+      "type": "boolean",
+      "default": true,
+      "source": "User physician clarification November 16, 2026. Show the complete shared physician section for each applicable adult by default; effective Sites may hide the section as a whole. Its fields, wording, optionality and validation remain global."
+    },
+    {
+      "id": "other-coverage-information",
+      "name": "Show other coverage information",
+      "status": "confirmed",
+      "type": "boolean",
+      "default": true,
+      "source": "User AMA-GI Profile decision November 19, 2026. Shared Other coverage sections are enabled by default; effective Sites may hide the entire section without changing the canonical fields."
+    }
+  ]
+}

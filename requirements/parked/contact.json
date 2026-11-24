@@ -23,7 +23,8 @@
               "components": [
                 {
                   "type": "FieldGroup",
-                  "purpose": "shared responsive address rows and correspondence choice"
+                  "purpose": "shared responsive address rows and correspondence choice",
+                  "partOf": "SectionDivider"
                 }
               ]
             },
@@ -33,8 +34,9 @@
               "purpose": "configured business/employer fields and same-as-home address copying"
             },
             {
-              "type": "SpouseContact",
-              "section": "spouse"
+              "type": "FieldGroup",
+              "section": "spouse",
+              "partOf": "SectionDivider"
             }
           ],
           "mapping": "contact"
@@ -68,7 +70,8 @@
           "state",
           "zip-code",
           "correspondence-to"
-        ]
+        ],
+        "applicantParticipation": "always"
       },
       "business": {
         "id": "contactBusinessInfo",
@@ -89,7 +92,8 @@
           "business-phone": [
             "business-phone-type"
           ]
-        }
+        },
+        "applicantParticipation": "always"
       },
       "spouse": {
         "id": "contactSpouse",
@@ -124,6 +128,11 @@
       "navigation.next",
       "navigation.submitting",
       "navigation.back"
+    ],
+    "wording": [
+      "contact.title",
+      "contact.subhead",
+      "contact.section.business"
     ]
   },
   "fieldMapping": {
@@ -145,6 +154,40 @@
           "overwrite": "if-empty"
         }
       ]
+    }
+  },
+  "businessPolicy": {
+    "employerCoverageCategories": [
+      "DI",
+      "OO"
+    ],
+    "businessCorrespondenceValue": "business",
+    "hiddenCorrespondenceValue": "residential"
+  },
+  "retiredFieldKeys": [
+    "spouse-business-name",
+    "spouse-business-type",
+    "spouse-business-address-same-as-home",
+    "spouse-business-street-address",
+    "spouse-business-apt-suite",
+    "spouse-business-city",
+    "spouse-business-state",
+    "spouse-business-zip-code",
+    "spouse-business-phone",
+    "spouse-business-phone-type"
+  ],
+  "retiredComponentKeys": [
+    "component-spouse-contact"
+  ],
+  "contentSlots": {
+    "contact.title": {
+      "name": "Page title"
+    },
+    "contact.subhead": {
+      "name": "Page introduction"
+    },
+    "contact.section.business": {
+      "name": "Business / Employer section heading"
     }
   }
 }

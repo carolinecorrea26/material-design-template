@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { homeDefaults } from "../defaults";
 import { cmsEntries } from "./cmsEntries";
 import { siteEntities } from "../../data";
 
@@ -81,9 +82,9 @@ describe("cmsEntries", () => {
     );
 
     expect(homeButtons.map((entry) => entry.globalValue)).toEqual([
-      "Start my application",
-      "Continue application",
-      "Learn more about the review process.",
+      homeDefaults.hero.ctaLabel,
+      homeDefaults.hero.secondaryCtaLabel,
+      homeDefaults.reviewProcessLinkLabel,
     ]);
     expect(homeButtons.map((entry) => entry.component)).toEqual([
       "Primary Hero Button",

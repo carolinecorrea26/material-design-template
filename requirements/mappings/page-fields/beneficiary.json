@@ -49,6 +49,66 @@
       "people": [
         "beneficiary"
       ]
+    },
+    {
+      "field": "beneficiary-apply-target",
+      "people": [
+        "beneficiary"
+      ]
     }
-  ]
+  ],
+  "constraints": {
+    "first-name": {
+      "included": true,
+      "required": true
+    },
+    "last-name": {
+      "included": true,
+      "required": true
+    },
+    "beneficiary-information-opt-in": {
+      "included": true,
+      "required": true,
+      "fixedProperties": [
+        "options"
+      ]
+    },
+    "beneficiary-relationship": {
+      "included": true,
+      "required": true
+    },
+    "beneficiary-share": {
+      "included": true,
+      "required": true,
+      "fixedProperties": [
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength"
+      ]
+    },
+    "beneficiary-trust-name": {
+      "included": true,
+      "required": true
+    },
+    "beneficiary-trust-date": {
+      "included": true,
+      "required": true,
+      "fixedProperties": [
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength"
+      ]
+    },
+    "beneficiary-type": {
+      "included": true,
+      "fixedProperties": [
+        "options"
+      ]
+    },
+    "beneficiary-apply-target": {
+      "included": true
+    }
+  }
 }

@@ -19,13 +19,13 @@ export function applyIsitrustTermUnderwritingAdoption(db: DatabaseSchema) {
     if (!priorReview || !isCoverageJourneyPolicy(priorReview.reviewedValue) || JSON.stringify(priorAtpeScope(row.value)) !== JSON.stringify(priorAtpeScope(priorReview.reviewedValue))) throw new Error(`ATPE/shared journey changed outside this general-term approval: ${productKey}`);
     const rules: AssociationUnderwriting[] = associations.flatMap(associationKey => ["member", "spouse"].map(applicantKey => ({ associationKey, applicantKey, bands: productKey === "li-group-term" ? [
       { minimumAgeYears: 18, maximumAgeYears: 54, maximumAmount: 500000, pathway: "QD" as const, healthPage: "health-qd" as const },
-      { minimumAgeYears: 18, maximumAgeYears: 54, minimumAmount: 500000, minimumAmountExclusive: true, pathway: "QD" as const, healthPage: "health-li" as const },
-      { minimumAgeYears: 55, maximumAgeYears: 60, pathway: "QD" as const, healthPage: "health-li" as const },
-      { minimumAgeYears: 61, maximumAgeYears: 64, pathway: "FUW" as const, healthPage: "health-li" as const },
+      { minimumAgeYears: 18, maximumAgeYears: 54, minimumAmount: 500000, minimumAmountExclusive: true, pathway: "QD" as const, healthPage: "health-tele" as const },
+      { minimumAgeYears: 55, maximumAgeYears: 60, pathway: "QD" as const, healthPage: "health-tele" as const },
+      { minimumAgeYears: 61, maximumAgeYears: 64, pathway: "FUW" as const, healthPage: "health-tele" as const },
     ] : productKey === "li-10yr" ? [
-      { minimumAgeYears: 20, maximumAgeYears: 60, pathway: "QD" as const, healthPage: "health-li" as const },
-      { minimumAgeYears: 61, maximumAgeYears: 64, pathway: "FUW" as const, healthPage: "health-li" as const },
-    ] : [{ minimumAgeYears: 20, maximumAgeYears: 54, pathway: "QD" as const, healthPage: "health-li" as const }] })));
+      { minimumAgeYears: 20, maximumAgeYears: 60, pathway: "QD" as const, healthPage: "health-tele" as const },
+      { minimumAgeYears: 61, maximumAgeYears: 64, pathway: "FUW" as const, healthPage: "health-tele" as const },
+    ] : [{ minimumAgeYears: 20, maximumAgeYears: 54, pathway: "QD" as const, healthPage: "health-tele" as const }] })));
     row.value.associationUnderwriting = [...(row.value.associationUnderwriting ?? []).filter(rule => !associations.includes(rule.associationKey)), ...rules];
     // Reconcile the shared owning record only after proving its ATPE and other
     // properties unchanged; the appended general rules have this approval.

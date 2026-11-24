@@ -14,7 +14,7 @@ beforeEach(() => {
 });
 afterEach(() => { vi.clearAllMocks(); vi.unstubAllGlobals(); });
 const status = { username: 'reviewer', displayName: 'Reviewer', email: '', canManageAccounts: false, canEdit: false } as MockAuthStatus;
-it('shows only Library and Storybook navigation while retaining sidebar controls', async () => {
+it('shows Library, Tutorials and Storybook navigation while retaining sidebar controls', async () => {
   expect(new Set(adminNavigation.flatMap(group => group.items.map(item => item.icon))).size).toBe(adminNavigation.flatMap(group => group.items).length);
   const node = document.createElement('div'); document.body.append(node); const root = createRoot(node);
   const signOut = vi.fn();
@@ -22,7 +22,7 @@ it('shows only Library and Storybook navigation while retaining sidebar controls
     await act(async () => root.render(<MemoryRouter initialEntries={['/admin-center/library']}><AccountContext.Provider value={{ status, refresh: async () => {}, changePassword: vi.fn(), signOut }}><Routes><Route path="/admin-center/*" element={<AdminCenterShell />} /></Routes></AccountContext.Provider></MemoryRouter>));
     expect(node.querySelector('nav a[href="/admin-center/administration"]')).toBeNull();
     expect(node.textContent).not.toContain('TPA Admin');
-    expect([...node.querySelectorAll('nav a')].map(link => link.getAttribute('aria-label'))).toEqual(['Portal Library', 'Storybook']);
+    expect([...node.querySelectorAll('nav a')].map(link => link.getAttribute('aria-label'))).toEqual(['Applicant Admin', 'Portal Library', 'Tutorials', 'Storybook']);
     expect(node.querySelector('[aria-label="Account menu"]')).toBeNull();
     await act(async () => node.querySelector<HTMLButtonElement>('button[aria-label="Collapse sidebar"]')!.click());
     expect(localStorage.getItem('adminRailCollapsed')).toBe('true');

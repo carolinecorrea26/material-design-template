@@ -4,6 +4,7 @@ import { Alert, Link } from "@mui/material";
 
 type ExpiringCodeAlertProps = {
   secondsLeft: number;
+  disabled?: boolean;
   kind: "link" | "code";
   onResend: () => void;
   children?: ReactNode;
@@ -15,6 +16,7 @@ type ExpiringCodeAlertProps = {
 /** Shared active/expired/resend alert for resume links and verification codes. */
 export default function ExpiringCodeAlert({
   secondsLeft,
+  disabled = false,
   kind,
   onResend,
   children,
@@ -27,14 +29,16 @@ export default function ExpiringCodeAlert({
       <Alert severity="error">
         {requirementText("application.ui.your")}{kind === "link" ? requirementText("application.ui.secure-link") : requirementText("application.ui.verification-code")} {requirementText("application.ui.has-expired")}{" "}
         <Link
-          href="#"
+          component="button"
+          type="button"
+          disabled={disabled}
           onClick={(event) => {
             event.preventDefault();
             onResend();
           }}
           sx={{ fontSize: "inherit", verticalAlign: "baseline" }}
         >
-          {requirementText("application.ui.resend")}{kind}
+          {requirementText(kind === 'link' ? 'resume.feedback.resend-link' : 'resume.feedback.resend-code')}
         </Link>
       </Alert>
     );

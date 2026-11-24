@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Box } from "@mui/material";
+import presentation from '../../../requirements/global/presentation-tokens.json';
 
 type ConditionalGroupProps = {
   children: ReactNode;
@@ -16,8 +17,10 @@ export default function ConditionalGroup({ children }: ConditionalGroupProps) {
   return (
     <Box
       sx={{
+        display: "grid",
+        rowGap: presentation.formFields.rowGap,
+        minWidth: 0,
         ml: 1,
-        mt: 1,
         px: 2,
         py: 0,
         borderLeft: "4px solid",

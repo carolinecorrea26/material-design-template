@@ -2,8 +2,8 @@ import { useForm } from "react-hook-form";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Box } from "@mui/material";
 import PhysicianInformation from "./PhysicianInformation";
-import { pageSections } from "../../config/pageSections/pageSections";
-import { fieldCatalog } from "../../config/fields";
+import ComponentFixture from '../../../.storybook/fixtures/ComponentFixture';
+import type { FieldDefinition } from '../../domain/fields';
 
 const meta = {
   id: "coverage-commerce-physicianinformation",
@@ -16,24 +16,19 @@ const meta = {
 
 export default meta;
 
-const section = (pageSections.profile ?? []).find(
-  (s) => s.id === "profilePersonalSelfPhysician",
-)!;
-const allFields = Object.values(fieldCatalog);
-
 const nameRow = new Set(["physician-first-name", "physician-last-name"]);
 const addressFieldIds = {
   'street-address': 'medical-facility-street-address', 'apt-suite': 'medical-facility-apt-suite',
   city: 'medical-city', state: 'medical-state', 'zip-code': 'medical-zip-code',
 };
 
-function PhysicianInformationDemo() {
+function PhysicianInformationDemo({ fields, fieldIds }: { fields: FieldDefinition[]; fieldIds: string[] }) {
   const { control, formState } = useForm({ mode: "onChange" });
   return (
     <Box sx={{ maxWidth: 640 }}>
       <PhysicianInformation
-        fieldIds={section.fieldIds}
-        allFields={allFields}
+        fieldIds={fieldIds}
+        allFields={fields}
         control={control}
         errors={formState.errors}
         nameRow={nameRow}
@@ -44,7 +39,7 @@ function PhysicianInformationDemo() {
 }
 
 export const Default: StoryObj = {
-  render: () => <PhysicianInformationDemo />,
+  render: () => <ComponentFixture>{fixture => <PhysicianInformationDemo fields={fixture.fields} fieldIds={fixture.site.configuration.pages.find(page => page.key === 'profile')!.sections.find(section => section.definition.value.id === 'profilePersonalSelfPhysician')!.definition.value.fieldIds} />}</ComponentFixture>,
   parameters: { standalone: true,
     docs: {
       description: {

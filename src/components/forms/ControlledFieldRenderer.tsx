@@ -31,7 +31,6 @@ export default function ControlledFieldRenderer({
       field={field}
       control={control}
       errors={errors}
-      margin="none"
       reserveFeedbackSpace={reserveFeedbackSpace}
       feedback={feedback}
       onValueChange={() => onChange(getValues(field.id))}

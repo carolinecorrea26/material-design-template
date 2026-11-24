@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import AddressFields, { addressFieldNames } from './AddressFields';
 import SectionStoryForm from '../../../.storybook/forms/SectionStoryForm';
-import { fieldCatalog } from '../../config/fields';
+import ComponentFixture from '../../../.storybook/fixtures/ComponentFixture';
 const meta = {
   id: "forms-field-groups-address-fields",
   title: "Components/Forms/Field groups/Address", component: AddressFields,
@@ -15,20 +15,19 @@ const meta = {
   },
 } satisfies Meta<typeof AddressFields>;
 export default meta;
-export const Default: StoryObj = { render: () => <SectionStoryForm fields={addressFieldNames.map(id => fieldCatalog[id])}>{props => <AddressFields fields={props.allFields} control={props.control} errors={props.errors} />}</SectionStoryForm> };
+export const Default: StoryObj = { render: () => <ComponentFixture>{fixture => <SectionStoryForm fields={addressFieldNames.map(id => fixture.fields.find(field => field.id === id)!)}>{props => <AddressFields fields={props.allFields} control={props.control} errors={props.errors} />}</SectionStoryForm>}</ComponentFixture> };
 
 const physicianAddressIds = (prefix = '') => ({
   'street-address': `${prefix}medical-facility-street-address`, 'apt-suite': `${prefix}medical-facility-apt-suite`,
   city: `${prefix}medical-city`, state: `${prefix}medical-state`, 'zip-code': `${prefix}medical-zip-code`,
 });
 const mappedIds = [...Object.values(physicianAddressIds()), ...Object.values(physicianAddressIds('spouse-'))];
-const mappedFields = Object.values(fieldCatalog).filter(field => mappedIds.includes(field.id));
 export const MappedPhysicianAddresses: StoryObj = {
-  render: () => <SectionStoryForm fields={mappedFields} initialValues={{
+  render: () => <ComponentFixture>{fixture => { const mappedFields = fixture.fields.filter(field => mappedIds.includes(field.id)); return <SectionStoryForm fields={mappedFields} initialValues={{
     'medical-facility-street-address': '100 Example Clinic Road',
     'spouse-medical-facility-street-address': '200 Other Clinic Road',
   }}>{props => <>
     <h2>Member physician address</h2><AddressFields {...props} fields={mappedFields} fieldIds={physicianAddressIds()} />
     <h2>Spouse physician address</h2><AddressFields {...props} fields={mappedFields} fieldIds={physicianAddressIds('spouse-')} />
-  </>}</SectionStoryForm>,
+  </>}</SectionStoryForm>; }}</ComponentFixture>,
 };

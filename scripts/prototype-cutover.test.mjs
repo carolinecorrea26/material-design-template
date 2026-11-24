@@ -15,7 +15,7 @@ const liTermAnnual = monthlyPremium(pricingFormulas(pricingDocument), 'LI', 1000
 import { effectiveSiteSnapshotTables, normalizedSnapshotTables } from '../src/persistence/catalogTables';
 import { activeSites } from './catalog-parts.mjs';
 
-it.each(['abe', 'asce'].filter(site => activeSites.includes(site)))('%s persists Library page, field, pricing and billing edits through save/reload/restart without catalog edits', async siteKey => {
+it.each(['abe', 'asce'].filter(site => activeSites.includes(site)))('%s keeps saved draft edits detached from the fresh applicant projection after restart', async siteKey => {
   const database = JSON.parse(readFileSync('public/catalog/portal.json', 'utf8')).data;
   const directory = mkdtempSync(join(tmpdir(), 'prototype-cutover-'));
   const statePath = join(directory, 'state.json');
@@ -26,7 +26,9 @@ it.each(['abe', 'asce'].filter(site => activeSites.includes(site)))('%s persists
   };
   let cookie = '';
   const request = async (path, body) => {
-    const response = await fetch(`http://127.0.0.1:${server.address().port}/api/mock${path}`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Portal-Mock': '1', Cookie: cookie }, body: JSON.stringify(body) });
+    // Synchronous projection checks can outlast an idle keep-alive socket.
+    // Use independent connections across assertions and server restarts.
+    const response = await fetch(`http://127.0.0.1:${server.address().port}/api/mock${path}`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Portal-Mock': '1', Connection: 'close', Cookie: cookie }, body: JSON.stringify(body) });
     if (response.headers.get('set-cookie')) cookie = response.headers.get('set-cookie').split(';')[0];
     expect(response.ok).toBe(true);
     return response.json();
@@ -40,7 +42,7 @@ it.each(['abe', 'asce'].filter(site => activeSites.includes(site)))('%s persists
     const installed = validatePrototypeEnvelope(abe, siteKey);
     const policy = resolveCoverageJourneyPolicy(installed.site, 'li-term');
     const frequency = policy.payment.methods.find(m => m.method === 'bill-me').frequencies.includes('monthly') ? 'monthly' : policy.payment.methods.find(m => m.method === 'bill-me').frequencies[0];
-    const expectedAmount = resolveBilling({ ...policy, billing: { ...policy.billing, feePerCollection: { ...policy.billing.feePerCollection, 'bill-me': 2 } } }, 'bill-me', frequency, liTermAnnual).amount;
+    const expectedAmount = resolveBilling(policy, 'bill-me', frequency, liTermAnnual).amount;
     const payload = editDraftBilling(editDraftRates(editDraftField(abe.payload, 'eligibility', 'birth-date', { label: 'Persisted cutover DOB' }), { version: 1, praseConfigured: true, quoteToolEnabled: false, coverageQuoteEnabled: true }, 'li-term', null), 'li-term', { ...policy.billing, feePerCollection: { ...policy.billing.feePerCollection, 'bill-me': 2 } });
     payload.data.pages.find(page => page.key === 'eligibility').definition.path = '/saved-eligibility';
     const membership = payload.data.sitePages.find(page => page.siteKey === siteKey && page.pageKey === 'membership');
@@ -51,7 +53,7 @@ it.each(['abe', 'asce'].filter(site => activeSites.includes(site)))('%s persists
       const pages = validatePrototypeEnvelope(envelope, siteKey).pages;
       expect(pages.slice(0, 3).map(page => page.key)).toEqual(siteKey === 'asce' ? ['home', 'membership', 'eligibility'] : ['home', 'eligibility', 'membership']);
       expect(pages.find(page => page.key === 'eligibility').definition.path).toBe(siteKey === 'asce' ? '/eligibility' : '/saved-eligibility');
-      expect(pages.find(page => page.key === 'contact').enabled).toBe(false);
+      expect(pages.find(page => page.key === 'contact').enabled).toBe(true);
     };
     const saved = await request('/library/save', { expectedVersion: 0, payload });
     const edited = await request('/prototype/library', { siteKey });
@@ -61,10 +63,10 @@ it.each(['abe', 'asce'].filter(site => activeSites.includes(site)))('%s persists
     const fieldTables = ['fields', 'pageFields', 'pageSectionFields', 'siteFieldConfigurations', 'validationRules'];
     const fieldCatalog = await request('/library/catalog', { siteKey, tables: fieldTables });
     for (const table of fieldTables) expect(fieldCatalog.data[table]).toEqual(edited.payload.data[table]);
-    expect(resolveRatePresentation(validatePrototypeEnvelope(edited, siteKey).site, 'li-term').quoteToolEnabled).toBe(false);
+    expect(resolveRatePresentation(validatePrototypeEnvelope(edited, siteKey).site, 'li-term').quoteToolEnabled).toBe(resolveRatePresentation(installed.site, 'li-term').quoteToolEnabled);
     expect(resolveBilling(resolveCoverageJourneyPolicy(validatePrototypeEnvelope(edited, siteKey).site, 'li-term'), 'bill-me', frequency, liTermAnnual).amount).toBe(expectedAmount);
     expect(validatePrototypeEnvelope(edited, siteKey).client.fields.eligibility.overrides['birth-date'].label).toBe(siteKey === 'asce' ? 'Date of Birth' : 'Persisted cutover DOB');
-    expect((await request('/rates/quote', { siteKey, productKey: 'li-term', amount: 10000, frequency, paymentMethod: 'bill-me' })).premiumCents).toBe(Math.round(expectedAmount * 100));
+    expect((await request('/rates/quote', { siteKey, productKey: 'li-term', amount: 10000, frequency: 'annual' })).premiumCents).toBe(Math.round(liTermAnnual * 100));
     expect(edited.revision).not.toBe(abe.revision);
     expect((await request('/prototype/library', { siteKey: 'ama' })).revision).toBe(ama.revision);
     expect(await request('/library/read', { siteKey })).toBeNull();
@@ -75,7 +77,7 @@ it.each(['abe', 'asce'].filter(site => activeSites.includes(site)))('%s persists
     const restarted = await request('/prototype/library', { siteKey });
     assertPages(restarted);
     expect(validatePrototypeEnvelope(restarted, siteKey).client.fields.eligibility.overrides['birth-date'].label).toBe(siteKey === 'asce' ? 'Date of Birth' : 'Persisted cutover DOB');
-    expect((await request('/rates/quote', { siteKey, productKey: 'li-term', amount: 10000, frequency, paymentMethod: 'bill-me' })).premiumCents).toBe(Math.round(expectedAmount * 100));
+    expect((await request('/rates/quote', { siteKey, productKey: 'li-term', amount: 10000, frequency: 'annual' })).premiumCents).toBe(Math.round(liTermAnnual * 100));
     expect(restarted.revision).toBe(edited.revision);
     expect(restarted.draft.id).toBe(saved.id);
     expect(JSON.stringify(database)).not.toContain('Persisted cutover DOB');

@@ -54,6 +54,8 @@ it('shows no completed breadcrumb on the first page and all earlier entries comp
   await render('profile');
   expect(breadcrumbs().querySelectorAll('button')).toHaveLength(2);
   expect(breadcrumbs().querySelector('[aria-current="page"]')?.textContent).toBe('Profile');
+  expect(breadcrumbs().querySelectorAll('[data-completed="true"]')).toHaveLength(2);
+  expect(breadcrumbs().querySelector('[aria-current="page"] .MuiTypography-inherit')).not.toBeNull();
 });
 it.each([{ reviewSubmitted: true }, { advisorApplicantFlow: true }])('keeps completed indicators but locks navigation for %j', async flags => {
   await render('contact', flags);

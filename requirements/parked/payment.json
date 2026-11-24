@@ -2,7 +2,75 @@
   "page": "payment",
   "components": [
     {
-      "type": "payment"
+      "type": "FormRoutePage",
+      "mapping": "form-route-page",
+      "components": [
+        {
+          "type": "PageHeader",
+          "components": [
+            {
+              "type": "PageHelp",
+              "mapping": "page-help",
+              "components": [
+                {
+                  "type": "PageHelpChips"
+                },
+                {
+                  "type": "PageHelpDrawer",
+                  "components": [
+                    {
+                      "type": "AppDrawer"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "PaymentSections",
+          "mapping": "payment",
+          "components": [
+            {
+              "type": "FieldRenderer",
+              "section": "opt-in",
+              "purpose": "source-defined optional collection control; runtime participation follows effective page requirement"
+            },
+            {
+              "type": "SharedPaymentControls",
+              "section": "payment-elections"
+            },
+            {
+              "type": "CategoryCard",
+              "components": [
+                {
+                  "type": "ProductCard",
+                  "components": [
+                    {
+                      "type": "TotalCostSummary"
+                    }
+                  ]
+                }
+              ],
+              "section": "payment-elections"
+            },
+            {
+              "type": "SectionDivider",
+              "purpose": "one shared bank-detail section, conditional on an active bank-account election",
+              "section": "banking-credit-card-information",
+              "components": [
+                {
+                  "type": "FieldRenderer",
+                  "purpose": "active fields from the shared paymentBank surface"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "PageNav"
+        }
+      ]
     }
   ],
   "definition": {
@@ -15,7 +83,59 @@
     "displayName": "Payment"
   },
   "position": 14,
-  "fieldBindings": [
+  "layout": {
+    "sectionOrder": "payment",
+    "sections": {
+      "opt-in": {
+        "id": "paymentOptIn",
+        "fields": []
+      },
+      "payment-elections": {
+        "id": "paymentElections",
+        "role": "products",
+        "fields": []
+      },
+      "banking-credit-card-information": {
+        "id": "paymentBanking",
+        "title": "payment.bank-label",
+        "fields": []
+      }
+    }
+  },
+  "content": {
+    "wording": [
+      "page.payment.title",
+      "page.payment.subhead",
+      "page.payment.nav-title",
+      "payment.notes"
+    ],
+    "runtime": [
+      "application.ui.you-will-not-be-charged-yet",
+      "application.ui.your-payment-information-is-collected-as-part-of-the-application-but-you-will",
+      "application.ui.no-applied-for-products-were-found-return-to-coverage-options-to-choose-covera",
+      "application.ui.banking-information",
+      "application.ui.quoted-cost-is-the-best-rate-available-based-on-the-information-you-provided-f",
+      "payment.controls-label",
+      "payment.bank-label",
+      "payment.error.shared-method",
+      "payment.error.shared-frequency",
+      "payment.error.all-products",
+      "payment.error.available-choices",
+      "payment.error.policy-choices",
+      "payment.estimated-cost",
+      "payment.help.handling",
+      "payment.shared.no-common-method",
+      "payment.shared.no-common-frequency",
+      "payment.error.products-required"
+    ]
+  },
+  "fieldMapping": {
+    "page": "payment"
+  },
+  "contentRoots": [
+    "payment"
+  ],
+  "controls": [
     "bank-name-on-account",
     "bank-institution",
     "bank-routing-number",
@@ -27,38 +147,94 @@
     "payment-shared-method",
     "payment-shared-frequency"
   ],
-  "looseFields": [
-    "bank-name-on-account",
-    "bank-institution",
-    "bank-routing-number",
-    "bank-account-number",
-    "bank-authorization"
-  ],
-  "layout": {
-    "sections": {}
+  "surfaces": {
+    "paymentControls": {
+      "mapping": {
+        "page": "payment"
+      },
+      "definition": {
+        "label": "payment.controls-label",
+        "fields": [
+          {
+            "fieldKey": "payment-information-opt-in",
+            "valueKey": "payment-information-opt-in"
+          },
+          {
+            "fieldKey": "payment-method",
+            "valueKey": "payment-method"
+          },
+          {
+            "fieldKey": "payment-frequency",
+            "valueKey": "payment-frequency"
+          },
+          {
+            "fieldKey": "payment-shared-method",
+            "valueKey": "payment-shared-method"
+          },
+          {
+            "fieldKey": "payment-shared-frequency",
+            "valueKey": "payment-shared-frequency"
+          }
+        ]
+      }
+    },
+    "paymentBank": {
+      "mapping": {
+        "page": "payment"
+      },
+      "definition": {
+        "label": "payment.bank-label",
+        "fields": [
+          {
+            "fieldKey": "bank-name-on-account",
+            "valueKey": "bank-name-on-account"
+          },
+          {
+            "fieldKey": "bank-institution",
+            "valueKey": "bank-institution"
+          },
+          {
+            "fieldKey": "bank-routing-number",
+            "valueKey": "bank-routing-number"
+          },
+          {
+            "fieldKey": "bank-account-number",
+            "valueKey": "bank-account-number"
+          },
+          {
+            "fieldKey": "bank-authorization",
+            "valueKey": "bank-authorization"
+          }
+        ]
+      }
+    }
   },
-  "content": {
-    "wording": [
-      "page.payment.title",
-      "page.payment.subhead",
-      "page.payment.nav-title"
-    ],
-    "runtime": [
-      "application.ui.payment-authorization-failed",
-      "application.ui.complete-coverage-or-review-against-the-current-library-before-submitting",
-      "application.ui.authorize-payment-for-your-current-selections-before-submitting",
-      "application.ui.authorize-payment",
-      "application.ui.try-declined-payment",
-      "application.ui.payment",
-      "application.ui.elections-changed-authorize-again",
-      "application.ui.estimated",
-      "application.ui.cost",
-      "application.ui.total-estimated-cost",
-      "application.ui.you-will-not-be-charged-yet",
-      "application.ui.your-payment-information-is-collected-as-part-of-the-application-but-you-will",
-      "application.ui.no-applied-for-products-were-found-return-to-coverage-options-to-choose-covera",
-      "application.ui.banking-information",
-      "application.ui.quoted-cost-is-the-best-rate-available-based-on-the-information-you-provided-f"
-    ]
-  }
+  "help": [
+    {
+      "id": "payment-handling",
+      "chip": "payment.help.handling",
+      "title": "payment.help.handling"
+    }
+  ],
+  "contentSlots": {
+    "payment.notes": {
+      "name": "Payment notes shared across products or scoped to selected products",
+      "optional": true,
+      "kind": "notes"
+    },
+    "page.payment.title": {
+      "name": "Page title"
+    },
+    "page.payment.subhead": {
+      "name": "Page introduction"
+    }
+  },
+  "retiredContentKeys": [
+    "application.ui.payment-authorization-failed",
+    "application.ui.complete-coverage-or-review-against-the-current-library-before-submitting",
+    "application.ui.authorize-payment-for-your-current-selections-before-submitting",
+    "application.ui.authorize-payment",
+    "application.ui.try-declined-payment",
+    "application.ui.elections-changed-authorize-again"
+  ]
 }

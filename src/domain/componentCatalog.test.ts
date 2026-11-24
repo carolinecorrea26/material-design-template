@@ -42,7 +42,7 @@ it('uses the approved hierarchy and retains reviewed page sections in the saved 
   expect(saved.find(row => row.definition.name === 'PageHeader')?.definition.section).toBe('Components / Layout / Headings and dividers');
   expect(saved.find(row => row.definition.name === 'AppDrawer')?.definition.section).toBe('Components / Feedback and overlays / Dialogs and drawers / Containers');
   const eligibility = saved.flatMap(row => row.definition.examples ?? []).filter(example => example.pageKey === 'eligibility' && example.position !== 0);
-  expect(eligibility.map(example => example.label).sort()).toEqual(['Children information', 'Covered applicants', 'Spouse information', 'Your information']);
+  expect(eligibility.map(example => example.label).sort()).toEqual(['Children information', 'Spouse information', 'Your information']);
 });
 it('keeps generated and saved definitions identical with stable identities and canonical examples', () => {
   expect(saved.every(row => (row.definition.usages?.length ?? 0) > 0)).toBe(true);

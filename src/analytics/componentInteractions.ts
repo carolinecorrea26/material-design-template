@@ -72,8 +72,8 @@ export const componentInteractions: ComponentInteraction[] = [
   interaction("app-shell", "modal", "terms-of-use", "Terms of use modal", "src/components/layout/AppFooter.tsx", "Terms link activated", ["open", "close"]),
   { ...interaction("app-shell", "button", "resume-application", "Continue Application", "src/components/layout/AppMenu.tsx", "Application menu open"), surface: "Application menu · Continue Saved Application" },
   ...Object.entries(pageHelpChips).flatMap(([page, chips]) => chips.flatMap(chip => [
-    { ...interaction(page, "button", `help-${chip.id}`, chip.label, "src/components/content/HelpChips.tsx", "Page help chips displayed"), surface: "Page header · help chips" },
-    { ...interaction(page, "drawer", `help-drawer-${chip.id}`, chip.label, "src/components/layout/AppDrawer.tsx", `Help chip ${chip.id} activated`), events: ["open", "close"] as AnalyticsEvent[], surface: "Help drawer" },
+    { ...interaction(page, "button", `help-${chip.id}`, chip.label, "src/components/content/PageHelpChips.tsx", "Page help chips displayed"), surface: "Page header · help chips" },
+    { ...interaction(page, "drawer", `help-drawer-${chip.id}`, chip.label, "src/components/content/PageHelpDrawer.tsx", `Help chip ${chip.id} activated`), events: ["open", "close"] as AnalyticsEvent[], surface: "Help drawer" },
   ])),
   ...([ ["resume", "Resume"], ["resume-method", "ResumeMethod"], ["resume-code", "ResumeCode"] ] as const).map(([page, file]) =>
     interaction(page, "button", "continue-resume", page === "resume" ? "Request resume link / Request a new link" : page === "resume-method" ? "Request verification code" : "Recover application", `src/pages/${file}.tsx`, "Resume step displayed")),

@@ -3,15 +3,30 @@ import { resolveSharedFieldDefinition } from "./fieldDefinitionOwnership";
 import type { EffectiveSiteData } from './effectiveSite';
 import type { resolveEffectiveSite } from './effectiveSite';
 import type { FieldDefinition } from './fields';
+import { fieldValidationChecks } from '../utils/fieldValidation';
+import { requirementValidationMessage } from './requirementValidations';
 
 export type FieldCollectionDefinition = {
-  pageKey: string; sectionId: string; storageName: string; label: string; maxItems: number;
+  pageKey: string; sectionId: string; storageName: string; label: string; maxItems: number; minItems?: number;
   libraryGroup?: { label: string; applicant?: "self" | "spouse"; afterFieldKey?: string };
   fields: { fieldKey: string; valueKey: string; grid?: boolean; childConstraint?: 'studentMaximumAgeYears' }[];
 };
-export type ResolvedFieldCollection = { name: string; label: string; maxItems: number; pageKey: string; sectionId: string;
+export type ResolvedFieldCollection = { name: string; label: string; maxItems: number; minItems?: number; pageKey: string; sectionId: string;
   libraryGroup?: FieldCollectionDefinition['libraryGroup'];
   mapping: { fields: FieldDefinition[]; fieldToKey: Record<string, string>; gridFields: string[] } };
+
+/** Validate restored records with the same effective checks used by the item dialog. */
+export function validateFieldCollection(collection: ResolvedFieldCollection, value: unknown): string | undefined {
+  const message = requirementValidationMessage('repeated-entry-values', { label: collection.label });
+  if (!Array.isArray(value) || value.length < (collection.minItems ?? 0) || value.length > collection.maxItems) return message;
+  for (const item of value) {
+    if (!item || typeof item !== 'object' || Array.isArray(item)) return message;
+    for (const field of collection.mapping.fields) {
+      const failed = fieldValidationChecks(field).find(check => !check.validate(item[collection.mapping.fieldToKey[field.id]]));
+      if (failed) return `${message} ${failed.message}`;
+    }
+  }
+}
 const safeKey = (value: unknown): value is string => typeof value === 'string' && /^[a-zA-Z][a-zA-Z0-9]*$/.test(value) && !['constructor', 'prototype', '__proto__'].includes(value);
 const safeValueKey = (value: unknown): value is string => typeof value === 'string' && /^[a-zA-Z][a-zA-Z0-9-]*$/.test(value) && !['constructor', 'prototype', '__proto__'].includes(value);
 
@@ -24,7 +39,8 @@ export function resolveStoredFieldCollections(data: EffectiveSiteData, site: Ret
   for (const key of ['children', 'selfDisabilityCompanies', 'spouseDisabilityCompanies']) if (!Object.hasOwn(definitions, key)) throw new Error(`Missing stored field collection: ${key}`);
   const result: Record<string, ResolvedFieldCollection> = {};
   for (const [key, definition] of Object.entries(definitions)) {
-    if (!safeKey(key) || !definition || !safeKey(definition.storageName) || typeof definition.label !== 'string' || !definition.label.trim() || !Number.isSafeInteger(definition.maxItems) || definition.maxItems < 1 || definition.maxItems > 100 || !Array.isArray(definition.fields) || !definition.fields.length) throw new Error(`Invalid stored collection: ${key}`);
+    if (!safeKey(key) || !definition || !safeValueKey(definition.storageName) || typeof definition.label !== 'string' || !definition.label.trim() || !Number.isSafeInteger(definition.maxItems) || definition.maxItems < 1 || definition.maxItems > 100 || !Array.isArray(definition.fields) || !definition.fields.length) throw new Error(`Invalid stored collection: ${key}`);
+    if (definition.minItems !== undefined && (!Number.isSafeInteger(definition.minItems) || definition.minItems < 0 || definition.minItems > definition.maxItems)) throw new Error(`Invalid stored collection minimum: ${key}`);
     const group = definition.libraryGroup;
     if (group && (typeof group.label !== 'string' || !group.label.trim() || group.applicant !== undefined && !['self', 'spouse'].includes(group.applicant)
       || group.afterFieldKey !== undefined && !data.fields.some(field => field.key === group.afterFieldKey))) throw new Error(`Invalid collection Library group: ${key}`);
@@ -62,7 +78,7 @@ export function resolveStoredFieldCollections(data: EffectiveSiteData, site: Ret
       if (binding.grid) gridFields.push(field.id);
     }
     if (section.definition.value.collectionName) fields.sort((a, b) => section.fields.findIndex(field => field.value.fieldKey === a.id) - section.fields.findIndex(field => field.value.fieldKey === b.id));
-    result[key] = { name: definition.storageName, label: definition.label, maxItems: definition.maxItems, pageKey: definition.pageKey, sectionId: definition.sectionId, libraryGroup: definition.libraryGroup, mapping: { fields, fieldToKey, gridFields } };
+    result[key] = { name: definition.storageName, label: definition.label, maxItems: definition.maxItems, minItems: definition.minItems, pageKey: definition.pageKey, sectionId: definition.sectionId, libraryGroup: definition.libraryGroup, mapping: { fields, fieldToKey, gridFields } };
   }
   return result;
 }

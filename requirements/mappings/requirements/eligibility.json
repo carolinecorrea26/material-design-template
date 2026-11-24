@@ -5,7 +5,10 @@
     "eligible-states",
     "site-people",
     "child-list-maximum",
-    "tpa-integration"
+    "tpa-integration",
+    "child-collection-mode",
+    "tpa-lookup-fields",
+    "tpa-require-address-before-verification"
   ],
   "rules": [
     "state-province-from-postal-code",
@@ -15,7 +18,9 @@
     "applicant-disqualifying-answer",
     "tpa-member-lookup",
     "applicant-product-eligibility",
-    "coverage-tpa-portfolio-access"
+    "coverage-tpa-portfolio-access",
+    "eligibility-shared-feedback-spacing",
+    "eligibility-configuration-boundary"
   ],
   "validations": [
     {
@@ -49,6 +54,16 @@
     },
     {
       "validation": "applicant-ineligible",
+      "trigger": "next",
+      "scope": "page"
+    },
+    {
+      "validation": "field-definition-checks",
+      "trigger": "save-child",
+      "scope": "registered-fields"
+    },
+    {
+      "validation": "repeated-entry-values",
       "trigger": "next",
       "scope": "page"
     }

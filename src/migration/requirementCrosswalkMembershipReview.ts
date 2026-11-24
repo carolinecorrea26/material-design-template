@@ -1,10 +1,10 @@
-import { createHash } from "node:crypto";
+import { recordedFilesMatch } from "./sourceEvidence";
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { DatabaseSchema } from "../persistence/types";
 import type { CrosswalkRow } from "./requirementCrosswalk";
-import { resolveSnapshotSite as resolveEffectiveSite } from "../domain/effectiveSite";
+import { resolveAuditSnapshotSite as resolveEffectiveSite } from "./snapshotSiteResolution";
 
 const evidence: Record<string, string> = {
   "src/app/sections/ConfiguredMembershipHelp.tsx": "d6df8ebefc8a49c5c39be6fcc9d808341dd7367816c8fe0fd36c091aef2c7f5b",
@@ -37,7 +37,7 @@ const evidence: Record<string, string> = {
   "src/domain/applicantExperience.ts": "3e5598f13e9cdd8db95035adb847ceced7fedf1518cb2bc81f204d6f20939747"
 };
 export function reviewedMembershipBasicsCodeMatches(read = (path: string) => readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), "../..", path))) {
-  return Object.keys(evidence).length > 0 && Object.entries(evidence).every(([path, hash]) => createHash("sha256").update(read(path)).digest("hex") === hash);
+  return recordedFilesMatch(evidence, read);
 }
 
 /** Existing collection only: exact fields/labels, explicit Site provenance and

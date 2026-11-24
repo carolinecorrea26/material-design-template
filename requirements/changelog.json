@@ -122,7 +122,7 @@
     },
     {
       "id": "CHG-025",
-      "description": "Approved ASCE Coverage policy rollout: single Yes/No self-employment-under-one-year question; member/spouse 30-hour Disability minimum; spouse ages 17\u201359; member annual income minimum $20,000; additional NC Disability exclusion; Term Life new-applicant minimum $20,000 and age-band caps; AD&D child ages 15 days through 24; member Life required for child benefits. Spouse DI remains selectable below a member benefit of $600; the standard page error alert runs on Next for joint applications below that threshold. Spouse coverage not exceeding member coverage is an informational section note only, with no added validation. Global definitions, scoped site assignments, content and shared adapters feed Library, prototype and Storybook.",
+      "description": "Approved ASCE Coverage policy rollout: single Yes/No self-employment-under-one-year question; member/spouse 30-hour Disability minimum; spouse ages 17–59; member annual income minimum $20,000; additional NC Disability exclusion; Term Life new-applicant minimum $20,000 and age-band caps; AD&D child ages 15 days through 24; member Life required for child benefits. Spouse DI remains selectable below a member benefit of $600; the standard page error alert runs on Next for joint applications below that threshold. Spouse coverage not exceeding member coverage is an informational section note only, with no added validation. Global definitions, scoped site assignments, content and shared adapters feed Library, prototype and Storybook.",
       "reason": "Records approved MCR decisions and user exceptions in the fresh-start JSON model; numeric site values and notes remain separate from reusable behavior."
     },
     {
@@ -174,6 +174,531 @@
       "id": "CHG-035",
       "description": "Made the established global product default sequence explicit in product-presentation.json instead of leaving its list empty and inferring ranks from display names. Category defaults remain LI, AD, DI, OO, SH. Effective-site overrides and featured_prod retain precedence, partial/empty product overrides inherit omitted global defaults, and unlisted products retain incoming order. The Library displays both concrete default lists.",
       "reason": "Ensure defaults are visible, authored once and consistently inherited. The normal registered-product sequence is preserved while renaming or localizing products no longer changes their order. No effective-site-specific sequence is introduced."
+    },
+    {
+      "id": "CHG-036",
+      "description": "Replaced temporary QuickDecision and DocuSign processing screens with a shared full-viewport, click-through prototype handoff. ASCE assigns the supplied two QD images; DocuSign displays Image TBD until its image is supplied. Standard portal skeleton/message transitions and application saving remain in use before and after these screens.",
+      "reason": "User-requested prototype representation; removes temporary processing loaders without introducing a live external integration."
+    },
+    {
+      "id": "CHG-037",
+      "description": "Updated Receipt to the supplied reference: one information/download panel, coverage decisions beside the application receipt and support, visible product separation, and member-only/member-plus-spouse examples. QuickDecision outcomes and badges are restricted to eligible QD products; other products retain the standard review status.",
+      "reason": "Matches the supplied receipt composition while preserving applicant-specific coverage and payment details."
+    },
+    {
+      "id": "CHG-038",
+      "description": "Assigned the supplied DocuSign screenshot to ASCE’s prototype handoff, replacing Image TBD. The global handoff component still fills the viewport and advances through normal saving and transition behavior to Receipt when clicked.",
+      "reason": "Completes the previously deferred DocuSign image assignment without a live signing integration or Site-specific implementation."
+    },
+    {
+      "id": "CHG-039",
+      "description": "Moved requested coverage, estimated payment and payment method into each product/applicant decision card below its decision wording. Removed the separate Receipt summary and its Storybook component; shared application/product and technical support now aligns with the decisions section. Normalized Receipt’s component tree and content under the global fresh-start page definition.",
+      "reason": "Keeps each decision and its selection details together and removes the duplicated sidebar summary."
+    },
+    {
+      "id": "CHG-040",
+      "description": "Closed five Home audit gaps: completed presentation/field-validation applicability; moved shared QuickDecision availability and expansion labels into fresh-start content; aligned the standalone Hero with compiled quote eligibility and the notice overlay with its configured scenario; corrected the quote flow to Home-only entry; reconciled stale Home review documentation. Library, prototype and Storybook use the same compiled fields and shared content.",
+      "reason": "Global template definitions and examples own these corrections. ASCE assignments, supported Home variants, confirmed exceptions, retained draft settings and deferred product policies are unchanged."
+    },
+    {
+      "id": "CHG-041",
+      "description": "Reconciled Home storage: compiled section composition/order/participation, moved complete quote/needs placement into page-owned tool surfaces, modeled notice enablement/content and Hero assets, projected template/artwork defaults and Site values, and added shared runtime/Library variant/template URL contracts. Global definitions/defaults reconstruct without an enrolled Site; stale notice and tool/page placement records cannot drive reviewed consumers. Consolidated identical insurer name/logo/ratings/footnote and corrected the theme reference to a canonical field.",
+      "reason": "Completes the homepage storage audit within the global-template/effective-Site model. User confirmed QuickDecision availability information appears only with assigned QD products. ASCE inherits existing effective settings; retained draft decisions and inactive clients remain unchanged. Active Library regression fixtures now follow fresh-start authority instead of editable generated snapshots."
+    },
+    {
+      "id": "CHG-042",
+      "description": "Normalized Membership through shared nested section/component composition and authored option-outcome conditions. Component placement supplies field groups; Phone Type has an explicit conditional companion binding. Preserved ASCE assignments and its sole yes/no inline stop; other not-eligible outcomes use submission validation. Storybook now compiles meaningful synthetic new/current, category and association assignments and uses compiled section fields, removing unsupported duplicate examples. Generalized enabled-content validation and projected available field configurations and association option sources/outcomes, and moved association-link guidance and the association-specific prompt into shared content. Reconciled Membership review documentation and regenerated consumer artifacts.",
+      "reason": "Closes the Membership comparison gaps once in the global template. Library, prototype and Storybook share the fresh-start projection; no other real Site rollout or email/lead service implementation is included."
+    },
+    {
+      "id": "CHG-043",
+      "description": "Clarified that Membership's confirmed initial-email and nightly abandoned-lead rules describe actual system behavior. The prototype does not execute email delivery or batch processing. Removed wording that characterized these rules as planned integrations or outstanding prototype work.",
+      "reason": "User clarification: retain the actual business rules and distinguish them from the prototype's execution scope."
+    },
+    {
+      "id": "CHG-044",
+      "description": "Completed the Eligibility global/ASCE audit: compiled ordered nested composition and component field placements, generalized repeated-section collection storage, and declared address/method/fictional-question surfaces on the page. Shared configuration defaults and effective Site assignments now control people, residency, child mode/maximum and TPA behavior. Removed stale surface/collection overrides and misleading Storybook examples; added configured synthetic cases. Closed none-mode verification, restored-child submission validation and nested-child policy gaps, preserved shared location feedback space, documented modal validation applicability, and represented repeated records in the application value type. Reconciled requirements and component-review documentation.",
+      "reason": "Library, prototype and Storybook use the same fresh-start projection. ASCE assignments, confirmed exceptions, product policy values and existing draft statuses are preserved. Requirements describe actual system behavior; external service execution is outside the prototype scope."
+    },
+    {
+      "id": "CHG-045",
+      "description": "Completed the Coverage global/ASCE audit: aligned ordered section/component and dialog placements, replaced section-ID/category classifications with projected question roles, and compiled member/spouse/child product controls with effective field overrides. Moved category-question requirements to global ownership and separated global category options from ASCE selections. Recorded reveal/Next validation applicability and saved-answer contracts; corrected detached examples and replaced unsupported product/policy scenarios with supported assignments and source-compiled reference-rate configuration. Reconciled Coverage review documentation.",
+      "reason": "Library, prototype and Storybook consume the same fresh-start source/projection. Existing ASCE policies, confirmed exceptions, deferred existing-policy decisions and draft statuses are preserved. Actual integration rules remain documented without adding real service execution to the prototype."
+    },
+    {
+      "id": "CHG-046",
+      "description": "Resolved and implemented every policy question raised in the Coverage review. Verified existing required base coverage now satisfies covered-person prerequisites without a new primary election; the Term Life new-request minimum stays unchanged. CIR can use the same applicant’s verified existing plus requested matching Term Life. preselect=TRUE now elects all offered base products and participating applicants once, excluding optional riders and preserving subsequent edits/resume; its global URL contract and applied-state storage are documented. Connected the already-defined firstCategory reader through shared ordering. Removed superseded on-hold/TBD statements and added supported examples and focused acceptance checks.",
+      "reason": "User clarified that migration questions must be asked and resolved during review, never silently deferred. Shared behavior and URL definitions remain global; ASCE product/rider assignments and policy values stay under its effective Site source. Prototype service execution remains simulated."
+    },
+    {
+      "id": "CHG-047",
+      "description": "Set the adult Term Life minimum to $10,000 when the configured TPA integration successfully verifies positive existing matching Term Life coverage for the same applicant, and $20,000 otherwise. Added a global minimum definition/evaluator with ASCE member/spouse assignments. Choices, defaults, submission, normalized amount rules and aggregate checks share the same decision. No new-versus-additional question, self-reported insurance or application-mode answer selects the exception. Updated documentation and the verified-member Storybook example; retained increments, age/capacity limits, dependent decisions and removed CIR-only behavior.",
+      "reason": "User confirmed the MCR existing-insured distinction and explicitly required TPA integration as its sole source. Supersedes CHG-046’s initial minimum treatment. Prototype TPA outcomes remain simulated; no external service was added."
+    },
+    {
+      "id": "CHG-048",
+      "description": "Migrated Beneficiary composition, dialog controls, category participation defaults, global rules/validation mappings, canonical content and product presentation to the shared fresh-start source. Save/edit/copy use authored bindings and current-target validation; records exclude duplicate aliases and inactive-type fields. Preserved CHG-009 cross-applicant copying and ASCE required-page/product-note assignments. Replaced stale optional and dormant-client examples with supported source-compiled scenarios and reconciled storage/review documentation.",
+      "reason": "Closes identified modeling gaps without adding another real Site rollout. Review remains open for the explicitly raised Next allocation policy: primary 100%, with contingent optional but 100% when present, versus current partial/contingent-only acceptance. Current acceptance is retained until the user answers; no policy decision is silently deferred or assumed."
+    },
+    {
+      "id": "CHG-049",
+      "description": "Resolved the final Beneficiary allocation question: on Next, each populated primary or contingent designation containing individuals must total exactly 100%, independently per applicable product/applicant. Contingent-only records remain permitted; trust records need no share input. Draft add/edit/copy keeps valid partial allocations so users can assemble each designation. Added global rule/validation/content mappings, submission and authored-binding checks, and reconciled the review documentation.",
+      "reason": "User decision November 13, 2026. Completes the Beneficiary global/ASCE review without imposing a mandatory primary designation or changing effective-Site ownership. Supersedes the open allocation question recorded in CHG-048."
+    },
+    {
+      "id": "CHG-050",
+      "description": "Clarified the global Beneficiary completion rule: each applicable product/applicant must have at least one Primary beneficiary (individual or trust) before Next whenever beneficiary questions are active. Contingent beneficiaries remain optional; Contingent-only records no longer satisfy completion. Individual allocations still total exactly 100% independently within each populated designation. Draft add/edit/copy remains incomplete until Next. Updated rule/validation/content mappings, tests, shared examples and review documentation.",
+      "reason": "User clarification November 13, 2026; supersedes CHG-049 contingent-only acceptance. ASCE inherits the global rule. Optional No and inactive product/applicant records remain exempt."
+    },
+    {
+      "id": "CHG-051",
+      "description": "Set the global Beneficiary page requirement default to optional and configured ASCE as optional. No permits continuation without beneficiary collection checks; Yes activates the existing per-product/applicant Primary requirement and 100% individual designation totals. Registered the source-defined opt-in as a runtime form field so restored Yes/No answers initialize, validate and save correctly. Updated inheritance/override and stale-record checks, actual ASCE No submission coverage, supported Storybook assignments and review documentation.",
+      "reason": "User decision November 13, 2026. Shared behavior/default remains global; ASCE retains its own effective optional assignment. No other real Site is rolled out."
+    },
+    {
+      "id": "CHG-052",
+      "description": "Consolidated prototype/Library error-page presentation into one global frame for HTTP 400/404/500, an uncaught generic technical error, Maintenance and Session expired. Removed standalone saved-application-unavailable/outcome pages, operation-specific payment/submission examples and recovery-alert variants, including stale catalog records. Shared source defines structure, content and actions for Library, prototype and Storybook; effective Site branding/support remains inherited. Production resume privacy and ordinary error/session behavior are documented as rules.",
+      "reason": "User clarified that this pass is presentation and Library documentation only. No new service integration or resume/autosave/payment/submission redirect wiring is included. Payment/business issues use ordinary current-page feedback; they do not have specialized full-page variants."
+    },
+    {
+      "id": "CHG-053",
+      "description": "Changed Questions support to a standard MUI info Alert with AlertTitle everywhere the shared SiteSupport component appears, including Receipt, error, maintenance and session pages. Email-compatible HTML uses matching info-alert colors and layout. Removed the bespoke support-card presentation while preserving shared content, links and effective Site contact resolution.",
+      "reason": "User-requested global support presentation change, not limited to recovery pages. No service or flow wiring is added."
+    },
+    {
+      "id": "CHG-054",
+      "description": "Reduced all recovery page code and font-icon indicators to one global 48px size. Updated HTTP 400/500 and generic technical-error title/description to the confirmed issue copy and HTTP 404 to the confirmed missing-page copy, with no duplicate guidance paragraph.",
+      "reason": "User presentation and content decisions November 13, 2026. Global source applies to Library, prototype and Storybook; effective Site branding/support remains inherited. No failure routing is added."
+    },
+    {
+      "id": "CHG-055",
+      "description": "Added a MUI document-with-X indicator beside HTTP error codes and for generic technical errors. Simplified shared support everywhere: removed the Application or product support heading, replaced visible contact labels with icons and accessible names, and changed the technical-support section to the confirmed sentence with Send an email linked. Page links now use configured MUI Link styling instead of hardcoded underlines; email HTML follows the configured style. Retired the removed heading from the fresh-start projection.",
+      "reason": "User global presentation/content decision November 13, 2026. Library, prototype and Storybook share these definitions; Site contact assignments and failure routing are unchanged."
+    },
+    {
+      "id": "CHG-056",
+      "description": "Confirmed one global redirect-page component with source-defined content cases. Added Magic link expired to the fresh-start page/content/action projection and Storybook, with distinct wording and broken-link icon; Session expired remains the inactivity countdown-to-zero case. Clarified that generic technical-error content applies only when no specific error-code mapping exists. Removed the leading icon from shared support alerts and the X overlay from document indicators.",
+      "reason": "User clarification November 13, 2026. Supersedes the earlier exclusion of magic-link expiry as a preview case; it is content within the existing component, not a separate component type. Existing countdown routing is verified, and no new token validation, service or failure redirect wiring is introduced."
+    },
+    {
+      "id": "CHG-057",
+      "description": "Moved expired/invalid magic-link feedback into an inline Resume page error above the existing email link-request form. Removed the standalone magic-link expiry route, page and redirect-page Storybook case, retired their catalog records, and added the state to the real Resume page Storybook examples. Shared content remains globally owned.",
+      "reason": "User clarification November 13, 2026; supersedes CHG-056 magic-link full-page presentation. Session expiry remains a redirect at countdown zero. Production link landing is documented; this change adds no token validation, automatic request, email delivery or service routing."
+    },
+    {
+      "id": "CHG-058",
+      "description": "Completed the global/ASCE Contact fresh-start audit. Added globally owned Contact rule/validation mappings and product-scope configuration, retired captured Contact rule copies, and rebuilt examples from supported products and synthetic assignments. Owner address sections participate for dependent-only applications; stale spouse elections on unselected products no longer reveal spouse contact. Member employer information also appears for spouse-only DI because coverage depends on member employment. No separate spouse employer fields are collected, and superseded spouse-business bindings cannot return from saved catalogs. Hidden same-as-home drafts no longer overwrite correspondence-only addresses. Content, field ownership, copying, validations, configuration inheritance and scalar storage are documented.",
+      "reason": "User decisions November 13, 2026: dependent-only applications collect the member address and correspondence choice; the corrected spouse-only DI answer retains member employer collection because disability coverage is based on member employment. Shared behavior remains global and ASCE inherits it. No other real Site rollout or service integration is added. Both policy questions are resolved."
+    },
+    {
+      "id": "CHG-059",
+      "description": "Complete the global/ASCE Profile fresh-start audit: active-applicant participation, shared carrier minimum and restored-record validation, product-scoped spouse SSN optionality, financial source predicates/calculations, source-compiled Storybook policy examples, content and storage documentation.",
+      "reason": "One global Profile model drives Library, prototype, application summary and Storybook. ASCE retains its disabled questionnaire feature; spouse DI optional SSN is an effective-Site assignment. User confirmed required carrier records and financial formulas November 13, 2026."
+    },
+    {
+      "id": "CHG-060",
+      "description": "Complete the global/ASCE Review audit: one inherited global legal-policy default, explicit segment composition, source-defined preview scope and active/ordered product/beneficiary readout, effective acknowledgement surfaces, source-compiled Storybook variations and shared IMPORTANT NOTICE viewer with standard/NM/VA documents.",
+      "reason": "Library, prototype and Storybook share fresh-start ownership and projection. User approved the notice viewer November 13, 2026, superseding its earlier deferral. Existing consent/authorization exceptions and the prototype integration boundary remain intact."
+    },
+    {
+      "id": "CHG-061",
+      "description": "Reconcile Review Read & Sign with the MCR state/product matrix. Add a source-owned adult Life/DI/Overhead underwriting flag, independent of online health pages; apply it to medical wording, consent and CT warning. Add missing Virginia QD consent, retain state-before-processing precedence and Minnesota post-consent wording, honor all configured notice slots and place the CT warning directly above the member Review checkbox. Model the shared 14pt supplemental-health attestation without enabling an ASCE product. Add exact-MCR wording, negative/stale-election and rendered-placement checks.",
+      "reason": "User confirmed November 13, 2026 that the MCR product-based underwriting flag supersedes the older ASCE health-participation exception, and that the CT warning belongs above the Review checkbox as well as the production member signature. Retire superseded ASCE decision records from the current projection while retaining historical evidence. Shared definition/default remains global; ASCE inherits it. No real signing or document service is added."
+    },
+    {
+      "id": "CHG-062",
+      "description": "Unify global applicant headings and active participation across forms, Coverage cart, preview and Receipt. Ignore removed products, deselected people and unsupported assignments; recognize elected attached dependent benefits without creating independent applicants. Preserve member-owner requirements for dependent-only applications. Implement the existing applicant URL contract across effective offering amounts, Eligibility and product controls, with Site-scoped route/resume entry context. Add shared source rules, retire captured display-rule copies and add supported Storybook URL variants plus source/behavior checks.",
+      "reason": "User approved the cross-page audit updates November 13, 2026 and confirmed that Coverage Information follows the Site offering narrowed by applicant URL, independently of form selections. Shared rules/defaults remain global; Site product/person assignments retain effective ownership. No other real-Site rollout or service integration is added."
+    },
+    {
+      "id": "CHG-063",
+      "description": "Complete the global/ASCE Advisor and Resume audit: canonical branch/code validation, explicit no-save utility pages, clear applicant state while retaining advisor identity, Continue email handoff, saved advisor edit recipient, original application deadline display, uniform private resume responses, safe inline link/code errors, busy resend controls and wall-clock countdowns. Move confirmed production retention/recovery defaults into shared configuration consumed by Library, prototype, Storybook and the local simulator; retire captured rules and the nine-day confirmation setting. Record content, configuration, storage and integration boundaries.",
+      "reason": "User decisions November 13, 2026: Start new application clears applicant answers and retains advisor email/phone/code; confirmation preserves the original ten-day deadline; existing local recovery limits are confirmed production defaults. Shared behavior/defaults remain global and ASCE inherits them. No real delivery, advisor authentication, nightly batch or additional error-page service wiring is implemented; no decision is deferred."
+    },
+    {
+      "id": "CHG-064",
+      "description": "Reconcile all 18 Rules - Resume workbook entries and six user-confirmed edge cases in the global fresh-start model. Separate one-use email links from fixed MFA sessions; use phone-only ten-minute codes, fixed-session warning, shared rolling request budgets, fixed/resetting cooldowns and immediate application recovery lock. Add distinct source-owned inline messages, tab-local MFA handles and internal continuation URL contract; align the actual pages, Library flow and supported Storybook states. Preserve application retention, verified return routing and normal inactivity expiry.",
+      "reason": "User authorized implementation November 13, 2026 after confirming counters survive link invalidation, first code counts toward five, explicit Next consumes the link, fixed cooldowns reset their counters, only incorrect current unexpired codes spend attempts, and phone-code budgets are shared across the application. Definitions/defaults are global; ASCE inherits them. No real delivery, authentication integration, extra error page or nightly batch is added; no policy question is deferred."
+    },
+    {
+      "id": "CHG-065",
+      "description": "Completed the Health family final fresh-start audit. Health examples compile synthetic source assignments instead of patching resolved models; QuickDecision uses the ASCE effective image assignment. Shared handoff validation, pending-state protection and image-error fallback are implemented. Current rules replace superseded external-QD loader evidence.",
+      "reason": "Keeps Health fields, content, rules, validation, storage and configuration aligned across Library, prototype and Storybook without enabling additional ASCE Health pages or real external services."
+    },
+    {
+      "id": "CHG-066",
+      "description": "Aligned Health to exactly five global pages: SI, TELE, QD, DI SUPP and CIR. TELE owns LI/DI/CI questionnaire variants; the standalone CI page is retired. Self/spouse share each page with independent answers and detail storage. Superseded page identities are removed during compilation; stable saved answer keys are preserved.",
+      "reason": "Applies the user-confirmed final Health taxonomy consistently in the prototype, Library and Storybook. DI SUPP requires explicit participation and is not automatically displayed for ordinary DI TELE processing; ASCE retains its QD-only Health assignment."
+    },
+    {
+      "id": "CHG-067",
+      "description": "Removed Health help chips, drawers, their page-specific component and source-form preview placements. Membership, Beneficiary and Payment now share PageHelp, PageHelpChips and PageHelpDrawer, with topic selections and wording authored in the fresh-start page definitions. Removed the Membership-specific help wrapper and repeated per-page drawer state.",
+      "reason": "Uses one global page-help pattern across the prototype, Library and Storybook while preserving effective content and existing non-Health help topics."
+    },
+    {
+      "id": "CHG-068",
+      "description": "Closed component reuse findings R1–R6 globally: shared text/date presentation, standalone form frame and page feedback; common modal shell with explicit accessibility contracts; unified health answer/detail rendering and page composition; generic contact fields and information alerts. Superseded wrappers are retired in fresh-start page sources.",
+      "reason": "Library, prototype and Storybook share the global component model while preserving field/storage IDs, content, validations, source-specific bounds and effective-Site policies. R7 component declaration reconciliation remains a separate review."
+    },
+    {
+      "id": "CHG-069",
+      "description": "Closed R7 globally: registered PrototypeHandoffPage with canonical single/multiple-screen examples; moved canonical registrations, component dependencies and internal parts into the fresh-start component model; scoped named parts to their owners and removed obsolete component placeholders. Library, prototype and Storybook reconstruct the same component definitions without saved component records.",
+      "reason": "One global component model owns definitions and canonical bindings. Generated source usages/examples remain build annotations. Existing page behavior, service boundaries and effective-Site assignments are preserved."
+    },
+    {
+      "id": "CHG-070",
+      "description": "Complete the global/ASCE Payment final audit: source-defined sections and runtime surfaces, configured defaults and locked frequencies, independent ASCE product choices, validated shared/per-product note content and active payment document filtering. Remove mock authorization/submission actions; normal Next collects and saves details before DocuSign. Record MCR policy reconciliation, banking checks, draft storage and service boundaries.",
+      "reason": "User decisions November 14, 2026: ASCE Payment remains required despite the MCR optional flag; separate product choices; preselect configured defaults; show ASCE Canadian premium taxes as configurable notes without calculating tax. Shared definitions/defaults stay global and ASCE values remain Site-owned. No other real Site rollout or real payment processing is added."
+    },
+    {
+      "id": "CHG-071",
+      "description": "Correct prototype regressions globally: preselect Mobile on Membership, separate its entry-loading copy from forward message pairs, remove duplicated gap around reserved ZIP/State/DOB feedback, omit the member heading on Eligibility, and resolve rider wording per applicant in Coverage and member quote controls.",
+      "reason": "User corrections November 14, 2026. Shared definitions, layout and rules stay global; effective-Site assignments and later-page applicant participation remain intact. No new page family, real Site rollout or service integration."
+    },
+    {
+      "id": "CHG-072",
+      "description": "Align shared estimated-cost styling to the approved mockup: product and summary item prices use 1rem and normal text color; only the final TotalCostSummary amount uses primary color. Keep bold weight and shared loading/rate-state behavior.",
+      "reason": "User styling request November 14, 2026. Global component presentation is shared by Coverage, quotes, cart and Payment; no Site override or calculation changes."
+    },
+    {
+      "id": "CHG-073",
+      "description": "Complete the global/ASCE DocuSign page audit: map the shared handoff, legal-document reuse, storage boundary, required signers and signing-to-submission rules into the fresh-start Library. Retire obsolete simulator wording and reconcile the DocuSign identity and whole-page review metadata. Preserve the existing configured image simulation, shared save/transition lifecycle and Receipt destination.",
+      "reason": "User confirmed November 14, 2026: the member always signs, an applying spouse also signs, no separate child signature is required, and completion of all required signing submits the application and proceeds to Receipt without an extra portal Submit. Requirements/defaults stay global; ASCE retains its effective image assignment. Real signing, document generation and submission are recorded production requirements and are not executed by the prototype. No decision is deferred."
+    },
+    {
+      "id": "CHG-074",
+      "description": "Complete the global/ASCE Receipt audit: source-ordered fieldless sections; shared component and error presentation; explicit four-outcome QD results without order-based fabrication; active-payment-only Payment PDF; conditional ASCE ExamOne note; effective product/applicant order; applicant-scoped rider wording; Site/application confirmation references; and confirmation-only local email previews without render-triggered delivery. Reconstruct reviewed consumers without superseded authored records.",
+      "reason": "User decisions November 14, 2026: missing/unrecognized QD results use existing technical-error handling rather than another decision status; Payment PDF requires active payment information including Bill me; ExamOne guidance appears only for applicable coverage sent for review. Definitions/defaults stay global; ASCE owns its wording assignment. Production submission, signed document generation and email delivery are recorded requirements, not executed services. No Receipt decision is deferred and no other real Site is enabled."
+    },
+    {
+      "id": "CHG-075",
+      "description": "Move standard ExamOne underwriting-review wording into the global Receipt content default and remove the ASCE override. Preserve shared review applicability and supported effective-Site content overrides. Remove the duplicate ASCE-only note story and verify global, ASCE, synthetic-Site and consumer inheritance.",
+      "reason": "User confirmed November 14, 2026: this note is global. The ASCE MCR supplies provenance, not scope. This supersedes CHG-074’s ASCE wording assignment without changing when the note displays or implementing production services."
+    },
+    {
+      "id": "CHG-076",
+      "description": "Declare seven additional client-overridable Home copy slots: hero tagline, How applying works heading/introduction, Coverage options heading/introduction and quote introduction heading/description. Keep the three applying-step titles/descriptions and Home action labels global. Document Home copy/configuration ownership and verify source inheritance, isolated overrides, Library slot discovery and rejected unsupported overrides.",
+      "reason": "User Home copy decisions November 14, 2026. Global definitions/defaults remain the single source; effective Sites may supply only permitted content overrides. ASCE inherits the defaults. Existing components, process structure, navigation, quote/product rules and shared field/branding/product configuration contracts are preserved."
+    },
+    {
+      "id": "CHG-077",
+      "description": "Declare Membership title/introduction, optional information note and non-member guidance as client-overridable copy. Give the note an empty global default and retain ASCE’s profession text in its Site value. Retire the profession-specific global note key, project note overrides consistently, and make the Membership default adapter read the global source. Preserve global blocking/validation/navigation/help wording and existing eligibility behavior.",
+      "reason": "User Membership configurability decisions November 14, 2026. Shared definitions/defaults remain global; Site values and supported overrides stay under their effective Site. No new component, eligibility rule, delivery or batch implementation is introduced."
+    },
+    {
+      "id": "CHG-078",
+      "description": "Declare Eligibility title/introduction and member/spouse/child note overrides. Add the member note with an empty global default and preserve the hidden member heading. Resolve Site note values consistently in the compiler, source adapter and Library rows; use global content in default page projections. Preserve the required child message in notice-only mode through the shared conditional-content contract.",
+      "reason": "User decisions November 15, 2026. Definitions/defaults remain global; effective Sites may supply the five copy values. ASCE inherits defaults. Eligibility, participation, child collection, verification, field configuration, validation/navigation wording and existing shared components retain their owners and behavior."
+    },
+    {
+      "id": "CHG-079",
+      "description": "Apply the approved global-default/client-override header pattern to Coverage, Beneficiary, Contact, Profile, Review, Payment and all five Health pages, sharing the rule with Membership and Eligibility. Keep Coverage limit/eligibility warnings, total/additional instructions and estimate disclaimers global; retain shared product copy ownership. Make remaining approved header default adapters read global content and document the Health QD image-handoff boundary.",
+      "reason": "User decisions November 15, 2026. This approval covers titles/introductions only; other copy still receives page-by-page review. No legal wording, validation, verification, navigation, page enablement, product policy or external-provider images are changed. ASCE inherits header defaults without new Site assignments."
+    },
+    {
+      "id": "CHG-080",
+      "description": "Allow Site wording overrides for the two shared Beneficiary designation statements, retaining global defaults and independent product/applicant note assignments. Resolve assigned note text from effective Site content and reject blank assigned statements. Record the complete four-slot Beneficiary copy/configuration boundary and verify inherited/overridden wording across consumers without changing allocation or participation behavior.",
+      "reason": "User decision November 15, 2026: Site designation wording overrides are allowed. Definitions/defaults remain global; effective values belong to the Site. ASCE inherits the existing wording. No beneficiary rule, record binding, product assignment, component or production service is changed."
+    },
+    {
+      "id": "CHG-081",
+      "description": "Allow an effective Site to override Contact’s Business / Employer Information heading alongside its approved title/introduction. Bind the heading into the shared content projection and reuse it in BusinessInformation for both the page and standalone examples. Preserve section participation, member-owned employer bindings, correspondence and address behavior.",
+      "reason": "User decision November 15, 2026. Global definitions/defaults stay authoritative; ASCE inherits them. This adds a copy slot and shared content binding, not a Site-specific section or employment-rule change."
+    },
+    {
+      "id": "CHG-082",
+      "description": "Record the confirmed copy boundaries for Profile, Review, Payment and all five Health pages. Keep Profile section headings/Other coverage note, Review section headings/descriptions, Payment billing-timing/estimate wording and generic Health numbering/detail headings global. Retain approved page-header overrides, Payment notes and existing shared field, questionnaire, legal-policy and provider contracts. Verify undeclared Site copy is rejected.",
+      "reason": "User copy decisions November 15, 2026. These clarify global ownership without adding copy slots, changing ASCE values, altering page behavior or duplicating shared components. Other pages continue their separate copy/configuration review."
+    },
+    {
+      "id": "CHG-083",
+      "description": "Allow Advisor entry title/introduction overrides with global defaults. Keep both advisor confirmation pages, all three Resume screens and DocuSign portal/handoff wording global. Make confirmation and DocuSign default adapters read global content directly, and verify protected copy rejects Site page overrides.",
+      "reason": "User copy decisions November 15, 2026. Shared page/component/field/policy contracts remain authoritative; ASCE inherits defaults without new values. Advisor access, recovery privacy/deadlines, application reset and external signing behavior are unchanged."
+    },
+    {
+      "id": "CHG-084",
+      "description": "Declare Receipt title/introduction overrides and render the existing introduction through ReceiptConfirmation. Complete individual review of its existing copy slots: retain outcome wording, payment notice, next-step heading, underwriting note and three email wording overrides; remove documents/security note, coverage-decisions introduction and email-reference overrides. Verify all eighteen permitted values and reject protected copy even when superseded Site records exist.",
+      "reason": "User individual Receipt decisions November 15, 2026. Definitions/defaults remain global, effective Site values independent, and ASCE inherits unchanged values. Outcome codes, applicability, documents, email privacy, confirmation-reference substitution and production services retain their existing contracts."
+    },
+    {
+      "id": "CHG-085",
+      "description": "Permit Site Maintenance title/explanation/guidance overrides with global defaults through the existing shared redirect component and content projection. Keep technical errors, 404, Session expired and action/system wording global. Verify page/context/incident rendering, optional empty guidance, inheritance and unsupported overrides; record the completed 28-page copy contract.",
+      "reason": "User variant-by-variant redirect decisions November 15, 2026. No new component, page type, production interception, service integration or automatic error routing is added. ASCE inherits the global wording and existing branding/support configuration."
+    },
+    {
+      "id": "CHG-086",
+      "description": "Apply the supplied Home mockup wording as global defaults with shared Site-name substitutions. Replace hero secondary buttons with a paragraph/link beneath the primary action, retaining routes/reset/notice rules. Reuse QuickDecisionInfoBox with an optional once-per-reveal 1000ms icon scale/jiggle, honoring reduced motion and configured artwork.",
+      "reason": "User mockup and explicit global-default clarification November 15, 2026. Home retains twelve Site copy slots and unchanged ASCE assignments; no duplicate page component or Site-specific behavior is added."
+    },
+    {
+      "id": "CHG-087",
+      "description": "Use the existing shared Session expired page for both application inactivity and Resume MFA session expiry. Update local countdown/service-error/invalid-MFA-context landings, the authored Resume graph and global rules. Retire the old inline MFA-expired copy and duplicate Resume story; retain link and phone-code expiry inline.",
+      "reason": "User session-expiry destination update November 15, 2026 supersedes the prior inline MFA landing decision. Fixed deadlines, privacy, counters, locks and production delivery/authentication boundaries remain unchanged."
+    },
+    {
+      "id": "CHG-088",
+      "description": "Centralize global action tokens at link/button weight 600 with no link underline. Reuse configured MUI Link for inline drawer actions, remove conflicting local weights and align native/email anchors. Remove blank reserved helper paragraphs from the shared ZIP/state/DOB group while retaining real help, feedback and validation.",
+      "reason": "User shared styling and field-spacing correction November 15, 2026. Theme, Library foundations, prototype and Storybook consume the same global definitions; answer bindings and Site configuration values remain unchanged."
+    },
+    {
+      "id": "CHG-089",
+      "description": "Audit Membership non-copy configuration ownership, defaults and effective ASCE values. Reject Site-defined category outcomes outside the semantics declared by the global field configurations, preserving accepted members/joining applicants and ordinary not-eligible handling. Record remaining core-field permission decisions as active review questions.",
+      "reason": "Membership configuration review November 15, 2026. Unknown category outcomes could hide the follow-up fields without triggering the intended stop. This tightens configuration validation without adding Site implementations, changing ASCE values or deciding unanswered override permissions."
+    },
+    {
+      "id": "CHG-090",
+      "description": "Close the three Membership configuration decisions: preserve required applicable core fields, fix email/phone validation to global definitions, and keep Membership the required first application form. Shared mapping constraints and entry-stage validation reject invalid Site assignments before projection; Title and Member ID retain their existing configuration.",
+      "reason": "User decisions November 15, 2026 complete the Membership non-copy configuration review. Definitions and constraints are global; ASCE effective values do not change."
+    },
+    {
+      "id": "CHG-091",
+      "description": "Fix the public page list, definitions and order globally for every Site. Only Beneficiary and Payment allow required/optional/disabled participation settings. Remove redundant ASCE page requirements/positions and Health on/off assignments; preserve product/underwriting/questionnaire-driven participation and the separate-CIR questionnaire gate. Storybook no-health examples now configure product policies rather than disabling pages. The Admin composition editor exposes only the declared Beneficiary/Payment modes, and its mutation handler rejects core-page changes.",
+      "reason": "User clarification November 15, 2026 extends CHG-090 from Membership to all pages. Global source declarations own the constraints; ASCE retains optional Beneficiary, required Payment and its existing applicant Health routes. Shared Library templates remain inspectable under Site filters."
+    },
+    {
+      "id": "CHG-092",
+      "description": "Complete Eligibility non-copy configuration inventory. Preserve Site inclusion/requiredness overrides, fix postal/date validation properties globally, and make configured TPA lookup fields authoritative. Reject unavailable active lookup inputs and incomplete/ambiguous prototype fixtures; keep sample-only extra facts from adding hidden lookup requirements. Membership examples without Member ID use a consistent lookup assignment. Page-specific field overrides now retain precedence when resolved through a component mapping, preserving other page defaults.",
+      "reason": "User Eligibility decisions November 15, 2026. Shared definitions and validation own these boundaries; ASCE’s reviewed field, covered-people, residency, child and TPA values remain unchanged. No live lookup, identity or delivery service is added."
+    },
+    {
+      "id": "CHG-093",
+      "description": "Correct Eligibility collection ownership: member ZIP/state/DOB stay globally included and required, with supported field configuration retained. Add person-scoped dependent field participation and default-off child Armed Forces question alongside student status. Shared validation constraints can target mapped people without duplicating fields; Library, prototype and Storybook use the same source.",
+      "reason": "User clarification November 15, 2026 supersedes CHG-092’s member inclusion/requiredness permissions. ASCE retains default dependent fields plus student status; Armed Forces remains unassigned. No new military eligibility restriction or other real-Site rollout is introduced."
+    },
+    {
+      "id": "CHG-094",
+      "description": "Audit Coverage non-copy configurations and expose shared product/applicant policy definitions under every Library Site filter. Restrict Coverage assignments to explicitly supported setting/product/applicant scopes, validate age bounds per applicant, and use authored product assignments in the requirements checker. Retain supported Site question inclusion/requiredness overrides and policy fact checks. Define the optional global cost-breakdown capability, off by default, using reconciled quote components rather than duplicated display-pricing amounts. Retire captured display pricing and add a source-compiled example.",
+      "reason": "Coverage configuration review November 15, 2026. Unrelated confirmed settings and unsupported product/applicant assignments could pass the compiler, and some shared definitions appeared only through existing Site values. ASCE policy values and behavior remain unchanged; no other real Site is rolled out."
+    },
+    {
+      "id": "CHG-095",
+      "description": "Complete Coverage URL review: category/categories share one parser, campaign resets and canonical saved scope, with category precedence if both are supplied. Require a currently valid product/applicant amt before dprods can lock a control; configured locks remain independent. Register firstCategory with canonical values and mark ctg removed. Reference URL documentation projects reviewed behavior/values from the same global definitions as Library. Reuse the existing restricted-entry Storybook example for the alias.",
+      "reason": "User decisions November 16, 2026. Global URL contracts and shared resolvers own behavior; ASCE supplies its existing G-numbers and policies. No Site-only implementation, new product eligibility, rider election or live integration is introduced."
+    },
+    {
+      "id": "CHG-096",
+      "description": "Retire category expansion from the global model, captured rule associations, configuration definitions/values, legacy display references and type contract. Global application retirement metadata prevents stale catalogs and aliased definitions from restoring the removed capability. Confirm coverage-increase-note as shared additional/total message selection only, with source-owned defaults and options; eligibility, benefit calculations, in-force deductions and validation remain independent. Reuse source-compiled Coverage page examples to verify both messages.",
+      "reason": "User decisions November 16, 2026. Global definitions, retirement declarations and message defaults own this cleanup; ASCE retains its existing values and amount policies. Removing an unused historical flag does not roll out another Site or introduce a service."
+    },
+    {
+      "id": "CHG-097",
+      "description": "Complete Beneficiary non-copy configuration inventory. Keep core applicable fields included/required and structural Yes/No and Individual/Trust choices global, retaining label and relationship-subset overrides. Preserve share/date format contracts and reject noncanonical restored shares. Declare the optional shared participation-policy definition globally. Use effective category defaults for routing as well as page records. Resolve canonical Association context consistently for page and flow participation, respect current applicant URL scope without deleting saved beneficiaries, and reject unsupported product/applicant note/policy assignments. Keep synthetic Storybook Association ownership coherent.",
+      "reason": "User core-collection decision November 16, 2026 and shared configuration audit. Global definitions/defaults/validation own behavior; ASCE retains optional mode, LI/AD defaults, current wording/notes and product policies. No other real-Site rollout or integration service is introduced."
+    },
+    {
+      "id": "CHG-098",
+      "description": "Complete Contact non-copy configuration review. Keep core member address included/required, retain supported conditional spouse/business overrides and preserve global format validation. Separate automatic product-driven business collection from address-only Business correspondence. Effective complete business hiding also hides correspondence and persists Home; all hidden correspondence controls use the global Home value. Current URL-filtered elections determine product exceptions, and hidden same-as-home flags cannot copy over separate addresses. Library, prototype and Storybook share global definitions and effective assignments.",
+      "reason": "User Contact decisions November 16, 2026. Global definitions/defaults and mapping constraints own behavior; ASCE inherits its existing Contact defaults. No other real-Site rollout or live integration is introduced."
+    },
+    {
+      "id": "CHG-099",
+      "description": "Begin Profile non-copy configuration review. Declare financial-questionnaire applicability once in the global Fresh-start source and use it for synthetic Storybook assignments rather than creating a Storybook-only definition. Require a matching active member product even at an inclusive zero threshold. Preserve ASCE’s disabled questionnaire and existing fields, SSN policy and calculations. Record the two active field-permission decisions before completing the page.",
+      "reason": "Profile configuration audit November 16, 2026. Global definition and shared applicability own the fixes; effective Site values remain unchanged. Personal/physician/Other coverage/financial field permissions and carrier-field constraints await user answers; no decisions are deferred."
+    },
+    {
+      "id": "CHG-100",
+      "description": "Complete Profile non-copy configuration boundaries using the corrected user decision: Financial questionnaire and Other coverage questions remain global, while supported personal controls remain configurable. Physician fields, wording and optionality stay global; one shared visibility setting defaults to shown and can hide the whole section. Keep all four carrier fields included/required and retain approved carrier labels. Protect global financial calculations against scoped replacements. Derive same-page field availability dependencies from global predicates so hidden personal questions cannot reveal stale follow-ups; omit empty sections. The same compiled section configuration drives Library, prototype, preview and the meaningful physician-hidden Storybook example. Keep global field placement independent of Site hiding, including fields hidden by every Site, and preserve current applicant/URL scope, ASCE SSN policy and disabled questionnaire.",
+      "reason": "User decisions and correction November 16, 2026 supersede CHG-099’s pending broad field-permission choice. No financial-input hiding policy is needed because questionnaire inputs cannot be overridden. Shared definitions/constraints own behavior; ASCE retains effective values and no other real Site is rolled out. The later physician clarification replaces individual physician field controls with whole-section visibility only."
+    },
+    {
+      "id": "CHG-101",
+      "description": "Complete Review non-copy configuration boundaries. Keep acknowledgement and conditional policy fields global, preserving required adult/dividend acknowledgements and optional dividend identity defaults. Retain existing legal policy overrides and approved header slots. Declare the supported field surface on the global policy definition, validate inactive field references and applicant-type prerequisites, and reject unavailable product/applicant/Association scopes, malformed filters and duplicate active controls. Use canonical Association resolution and consistent jurisdiction normalization with existing URL-scoped elections. Preserve ASCE legal wording, underwriting flag, notice placements and document selections. Update the component-usage inventory reader to follow the router’s shared registry spreads, preserving module bindings and later overrides without changing routing.",
+      "reason": "User Review field decision November 16, 2026. Global contracts and shared resolvers own these changes; ASCE retains its effective values and other real-Site rollouts remain outside scope. Historical intermediate migration validation remains separate from the declared Fresh-start policy contract."
+    },
+    {
+      "id": "CHG-102",
+      "description": "Keep Review Read & Sign fully expanded and show Electronic Consent in the existing shared scrollable disclosure surface, with a 240px global screen limit, keyboard access, working legal-document links and full printing. Project this presentation from the global page definition into the prototype, Library and Storybook. Remove and retire the redundant advisor locked-steps banner while preserving the information alert, advisor handoff, request-edit workflow and applicant continuation. Verify ordinary, restored advisor-applicant and advisor-query edit routes as well as both applicant continuation paths.",
+      "reason": "User Review presentation and advisor workflow request November 16, 2026. Global page presentation, content retirement and shared workflow rules own the changes; effective ASCE values and legal wording remain unchanged."
+    },
+    {
+      "id": "CHG-103",
+      "description": "Complete Payment non-copy configuration boundaries: globally include and require applicable opt-in, product/shared method and frequency controls, bank details and authorization; fix format and canonical choice contracts through shared mapping constraints while retaining Site labels and effective payment-policy settings. Preserve runtime conditional collection, ASCE defaults and independent product elections. Verify shared projection, override rejection, optional/disabled collection, defaults, locks, shared-choice intersections, notes and active-answer storage.",
+      "reason": "User Payment configuration decision November 16, 2026. Shared definitions, placement constraints and rules are global; effective Site collection, product methods/frequencies/defaults/sharing and declared content remain Site assignments. No service or pricing behavior added."
+    },
+    {
+      "id": "CHG-104",
+      "description": "Keep internal Health medical questions and follow-up fields controlled by shared questionnaire definitions. All SI, TELE, DI SUPP and CIR mappings now prevent ordinary Site overrides of medical wording, inclusion, requiredness, options and validation while preserving approved header overrides, effective questionnaire/product/state/applicant applicability, source optionality, independent adult answers and external QD image assignments. Reuse the existing global field constraint resolver and Health components. Resolve Association-scoped questionnaires through the shared effective Association selection rather than raw membership/association answers.",
+      "reason": "User Health configuration decision November 16, 2026. Medical field definitions and constraints are global; effective questionnaire/product assignments, approved header copy and QD prototype images remain Site values. No ASCE medical assignment or provider/service implementation changes."
+    },
+    {
+      "id": "CHG-105",
+      "description": "Set the effective ASCE Payment page to optional, superseding the earlier required exception; Beneficiary remains optional. Retain the global Payment default and use existing Yes/No collection, configured product defaults, required active fields and inactive-answer/document filtering. Update current documentation, source-derived Storybook scenarios and ASCE projection/continuation checks. Apply existing configured defaults when runtime fields first become applicable, preserving saved and explicitly cleared values. Receipt examples with payment now explicitly opt in.",
+      "reason": "User confirmation November 17, 2026. This is an effective-Site page assignment, not a global default or new page implementation. Other payment policy values and real-Site rollouts remain unchanged. The shared form-frame correction implements the existing global default contract for newly applicable controls."
+    },
+    {
+      "id": "CHG-106",
+      "description": "Apply confirmed ASCE Coverage values: $10,000 Term Life minimum for both adults with or without verified existing coverage; CIR requires $100,000 same-applicant verified existing plus requested Term Life, retaining $50,000 member/$25,000 spouse rider minima. Verify Term/10/20 QD participation and inherited additional-coverage instruction. Assign supplied product descriptions, exact spouse notes, bold separate-line level-Term notice, and High-Limit Accident Insurance name. Add global product presentation definitions/projection and reuse ProductCard notice rendering. Replace captured presentation aliases. Enable the shared verified-member spouse cap for each of the three Life policies, comparing same-policy existing plus selected totals only when matching member coverage is TPA-verified; otherwise retain note-only guidance. Move the old general spouse note to its applicable product cards.",
+      "reason": "User decisions November 17, 2026 supersede the ASCE CHG-047 Term minimum distinction and unconditional spouse-Life note-only exception. Shared schema/rendering/validation are global; ASCE policy/copy assignments remain under its Site source. Other product notes are not supplied in this change and retain current values; no other real Site is rolled out and no service integration is added."
+    },
+    {
+      "id": "CHG-107",
+      "description": "Complete Advisor entry and confirmation configuration boundaries. Enforce global inclusion/requiredness of the active entry fields, fixed mode choices/label and email/phone formats. Keep advisor code globally nonblank without Site format/length settings, retaining supported identity labels and the approved header slots. Correct shared required-text handling so whitespace cannot satisfy the code requirement. Move shared SendApplicationDialog defaults, actions, recipient labels and placeholders to global Fresh-start content and derive default handoff copy from that source. Preserve branch validation, reset/retention, confirmation behavior, recipient selection and production authorization/delivery requirements.",
+      "reason": "User Advisor code decision November 17, 2026. Global constraints, field validation and shared dialog content own the changes. ASCE inherits them; no new Site setting, page implementation, authentication or delivery service is introduced."
+    },
+    {
+      "id": "CHG-108",
+      "description": "Protect the shared Resume email, Text/Call delivery selection and six-digit code fields from Site inclusion, requiredness, wording, choice and validation overrides. Derive shared recovery feedback Storybook copy from the same Fresh-start content used by the prototype. Verify reconstruction and agreement across Library, prototype and Storybook without superseded field records. Fix all thirteen retention/recovery values globally at their confirmed defaults. Project a single global value per setting, label the Library boundary explicitly, reject authored Site assignments, discard superseded scoped values, and have the local simulator use the same global source.",
+      "reason": "User configuration decisions November 17, 2026: retention and all recovery timings/limits are fixed globally. Global definitions, mapping constraints, compiler and shared policy source own these changes; ASCE inherits them. This supersedes earlier recovery-policy Site override support. No live delivery, authentication or batch service is added."
+    },
+    {
+      "id": "CHG-109",
+      "description": "Complete DocuSign non-copy configuration review. Author the shared external-prototype-screen configuration definition and Library metadata globally, preserving fixture defaults and effective-Site image sequences. Project that authored definition instead of an anonymous compiler-created definition. Replace superseded definitions by semantic path as well as key so captured aliases cannot conflict with the shared source. Verify global Library visibility under all, ASCE and synthetic Site filters, consumer reconstruction and existing handoff behavior.",
+      "reason": "Configuration audit November 17, 2026. The definition, shared capability and cleanup are global; ASCE retains its supplied image assignment. Required page/order, global copy, signer/completion rules, shared legal/document ownership and prototype-only storage remain as previously confirmed. No new client option, production signing service or submission wiring is added."
+    },
+    {
+      "id": "CHG-110",
+      "description": "Complete Receipt non-copy configuration boundaries and apply the confirmed global payment-notice rule. Show nonempty configured payment guidance only with active allowed payment method/frequency for a selected product/applicant, including Bill me, using the same active-payment projection as Payment PDF availability. Keep the approved eighteen Site copy slots, optional blank notice and independent document/underwriting/support content. Update the existing confirmation examples and verify active, required, optional, disabled, stale, incomplete and invalid cases without adding duplicate stories.",
+      "reason": "User Receipt configuration review and payment-notice decision November 17, 2026. Applicability, shared component behavior, source rule/mapping and validation are global; ASCE inherits them and retains its optional Payment assignment. Site notice wording does not override applicability. No new Site switch, payment processing, document generation or email delivery is added."
+    },
+    {
+      "id": "CHG-111",
+      "description": "Complete shared redirect-template configuration review and confirm application inactivity at 45 minutes with a two-minute warning, fixed globally. Move timing defaults to global Fresh-start configurations with explicit bindings and shared validation; the existing timer reads those same definitions. Replace provisional session-rule records and duplicate documentation constants with confirmed shared rules. Retain one redirect component, three Maintenance copy slots, global error/session copy/actions/layout/code selection, existing session destinations and inline link/code expiry.",
+      "reason": "User confirmation November 17, 2026 closes the application timing decision without deferral. Global definitions/defaults, validation and shared documentation own the change; ASCE inherits them without a Site override. The separate thirty-minute Resume MFA session and its confirmed global limits remain unchanged. No new error type, Site activation switch, availability/session service or automatic failure routing is added."
+    },
+    {
+      "id": "CHG-112",
+      "description": "Begin the approved content/flow audit by removing unreferenced workbook extracts from the active global application source, preserving all 86 definition/value pairs as internal evidence and retiring their content root so saved snapshots cannot restore it. Reconstruct the active Admin Library from authored Fresh-start global records and enrolled Site assignments, leaving captured multi-client imports in operational/migration snapshots. Preserve effective ASCE content, fields and behavior. Keep workbook citations outside visible Library labels, record attributes, nested policy values and source columns; show functional configuration descriptions and implementation owners instead. Label the shared selection Global template and handle unavailable Site links explicitly. Remove orphaned imported plan amount/period rows with their variants. Replace workbook mentions in functional policy prose while preserving internal provenance, and check all functional row text in addition to the initially rendered view.",
+      "reason": "User request November 17, 2026: page-by-page global/effective-ASCE content review, no MCR pathway or references in the Library, followed by flow reconciliation against the new-template advisor tutorial. This change owns global catalog retirement, Library projection and presentation only; no applicant wording, Site policy, authentication, delivery or other real-Site rollout is changed. Saved advisor authentication contacts are confirmed; related advisor screen/signing lifecycle decisions are being reviewed separately before dependent flow changes."
+    },
+    {
+      "id": "CHG-113",
+      "description": "Reconcile the global Advisor and Resume graphs, actor-specific secure recovery, handoff/takeover stages, unfinished DocuSign recovery and submitted-application recovery cutoff. Advisor Continue locates by applicant email then matches the advisor email and phone separately. The canonical flow owns its topology and rule/email references; the new-template tutorial links to the defined flow. Requesting an edit is optional from Review. Reconstruct graphs without obsolete saved nodes; use canonical Resume identity fields and a meaningful Advisor Identity Storybook variation. Local workflow markers simulate lifecycle boundaries separately from answers and production signing evidence. Email descriptions and trigger metadata are authored with the global email definitions, and the supporting Flows Emails tab reuses those canonical records with direct filtered links.",
+      "reason": "User-confirmed Advisor recovery and signing decisions, content/flow audit, and flow-to-tutorial direction clarification November 17, 2026. ASCE inherits the global rules; no real authentication, signing, email or batch delivery is added."
+    },
+    {
+      "id": "CHG-114",
+      "description": "Remove the empty XML placeholder tab and its pending-decision message from the global Flows Library. Export and transmission rules remain with their defined workflows, including abandoned-lead processing. Global and ASCE Library views use the same shared presentation.",
+      "reason": "User decision November 17, 2026: remove the placeholder and keep rules with workflows. No export, schedule, transmission or Site policy change."
+    },
+    {
+      "id": "CHG-115",
+      "description": "Unify the Library Content view across wording, values, images, links and documents. Show one authoring item with all bindings, global default, effective Site value and supported wording configuration. Add Emails as a main Library destination using the existing canonical email view. Consolidate applicant role labels across coverage, health accessibility, portfolio and document summaries; remove superseded authored label records. Replace duplicated common action, help, validation and technical-error wording with explicit shared references, rejecting broken or duplicate authoring. Preserve independently approved Site copy slots even when defaults match.",
+      "reason": "User November 17, 2026: content is one inventory, shared labels and other reusable copy should have one definition, and Emails needs a Library entry. Global definitions and shared projections own the change; ASCE inherits it."
+    },
+    {
+      "id": "CHG-116",
+      "description": "Remove the application-preview prepared-on wording and prop, retire its content and dedicated Yes/No preview records, and use shared field-choice display labels. Present Content in shared-area then fixed page order, with readable page locations in Appears on instead of technical binding paths; keep identifiers searchable without displaying them as row titles. Simplify Flows to one row per step with expandable previews from existing Components records, configured email links and grouped next-step alternatives. Register the existing advisor-edit modal variation on its shared component and derive whole-page example references from actual Storybook modules instead of parallel flow examples.",
+      "reason": "User Content/Flows readability updates November 17, 2026, including explicit request for expandable component previews within flow steps. Global source/projection owns the changes; ASCE inherits them without new runtime integrations."
+    },
+    {
+      "id": "CHG-117",
+      "description": "Audit the Content Library against canonical fresh-start copy and declared site usages. Retire 29 unused diagnostic/status values and stale bindings; keep 50 inspection, form-inventory and administration metadata values outside website copy. Declare shared component locations and display conditions in global content-inventory.json; derive JSON source owners from the content files, retain page-owned placements and supported Site overrides, and show linked Used in locations with expandable source records. Default to the Site channel while retaining existing Receipt email content in the Email channel. Correct the DI SUPP transition identity and enforce complete source classification and retirement through the fresh-start gate.",
+      "reason": "User November 17, 2026: the content table must show actual site content, with systematic JSON storage, an audit of invalid entries such as Challenge failed, and clear CMS-style content locations. Global ownership; no Site policy or separate page-copy approval change."
+    },
+    {
+      "id": "CHG-118",
+      "description": "Finish the six global flow definitions from existing approvals. Replace independent TypeScript topologies with projections of the canonical application JSON. Define optional Consumer steps and edit returns, shared validation/save/recovery branches including the retained local simulator exception, Quote carry-forward/dismissal, and all shared TPA modes/address/verification outcomes. Retire the duplicated ASCE TPA graph while retaining its existing effective configuration values, show linked subflows and effective settings in the Library, and replace obsolete Health routing descriptions with the five current global routes. Validate topology and canonical references and protect reconstruction across consumers.",
+      "reason": "User November 18, 2026: finish the flows efficiently against already reviewed decisions. Global definitions own behavior; effective-Site sources retain values and assignments. No new business-policy decision, graph execution engine or live service integration."
+    },
+    {
+      "id": "CHG-119",
+      "description": "Project ten standalone content-default sections through the canonical JSON binding contract, remove obsolete status-message fallbacks and retire their saved container, and resolve navigation wording at use time. Author progress placements and legacy Library destinations in global navigation JSON; redirect old CMS/SiteDetails/SiteFeatures entrypoints into the current Library. Remove an unreachable header coverage dialog and preserve its eight wording records as planned evidence outside active site copy. Make legal stories read installed content, replace unconditional Home story content patches with named JSON examples compiled through supported assignments, and keep neutral Storybook presentation data in JSON. Add a focused source-propagation regression command and align the capability report with the single active Site source.",
+      "reason": "User November 18, 2026: continue final JSON-to-Library/prototype/Storybook consistency review efficiently without repeating approved page decisions. Global definitions, adapters and isolated example data own these changes; effective ASCE assignments and business policy remain unchanged."
+    },
+    {
+      "id": "CHG-120",
+      "description": "Use standard MUI Alert and AlertTitle for shared email Questions support and saved-application retention warnings. Replace contact emoji and copied advisor SVG paths with MUI icon components. Keep theme-derived inline alert and icon styling in static email fragments so Library and tutorial iframe previews render independently of parent Emotion styles. Reuse SiteSupport and existing alert slots without a second support component or duplicate stories.",
+      "reason": "User November 18, 2026: email icons and Questions/purge notices must use standard MUI components. Global shared email presentation owns the change; wording, retention policy, effective Site contacts and email-only hiding remain unchanged."
+    },
+    {
+      "id": "CHG-121",
+      "description": "Remove historical reviewed-migration export validation from local mock startup. The mock seed command now generates operational examples directly with the existing seed factory, while Library and prototype definitions continue to use public/catalog/portal.json. Keep the standalone seed loader free of listeners, watchers and dependency discovery. Add a command-level regression check for required operational data and an unchanged shared catalog.",
+      "reason": "User November 18, 2026: npm run dev fails on obsolete ABE migration policy validation before the server starts. Global development tooling owns this correction; historical migration tests remain available separately, without changing business policies, effective Site assignments or saved local state."
+    },
+    {
+      "id": "CHG-122",
+      "description": "Keep the technical-support divider, sentence and link on pages only; email Questions alerts retain administrator contacts and available application/confirmation references. Author one shared applicant salutation in JSON and use it across all six applicant-facing templates, including the resume-link and submitted emails. Replace confirmation-only submission copy with the approved gratitude, request-summary introduction, closing and effective TPA-acronym signature. Render current selected products and explicit decisions using the existing ReceiptCoverageDecision component with a compact, self-contained email presentation. Update Receipt document wording and global rules, retire the superseded email-reference sentence, and keep documents/raw form and banking answers out of the email.",
+      "reason": "User email content correction November 18, 2026 explicitly replaces the previous confirmation-only restriction and requests reuse of the Receipt decision component. Global copy, support presentation and component behavior own the change; effective Site contacts and decision/policy values retain their owners. No real email delivery or document generation is added."
+    },
+    {
+      "id": "CHG-123",
+      "description": "Standardize all email body typography through global JSON tokens, reserving smaller text for the shared footer. Replace advisor detail tables with bold-label/value paragraphs and link to the configured Site-scoped Advisor login. Move advisor labels/statuses, portal text and sender wording into canonical content, and example identities/sender metadata into prototype fixtures. Resolve each email footer for its own Site and replace an obsolete deployed-site fallback with the current configured home route. Seed Library Receipt autofill from the existing JSON application and explicit QD example without weakening real missing-result handling. Move Library analytics review prompts into planned JSON and replace a customer-specific Site-search hint with neutral wording.",
+      "reason": "User November 18, 2026: consistent readable email text, simpler advisor notifications and correct return destination; Receipt page preview must work from the Library; check nearby Library code for hardcoded source data. Global presentation, content readers and isolated preview tooling own the changes; effective Site policy and real underwriting results remain unchanged."
+    },
+    {
+      "id": "CHG-124",
+      "description": "Render the canonical Receipt decision descriptions unchanged in the page and submission email. Remove amount/product-name placeholders and expansion from the conditional-approval description, retire obsolete fallback wording, and reject description placeholders in global or effective-Site source records. Add separate advisor and applicant purge templates to the global email registry, with explicit recipient metadata, flow references and tutorial notifications. The advisor email reuses the standard status/detail layout with a Deleted date and Advisor login link; the applicant variation shares consumer deletion wording and directs them to the advisor without Apply or Resume actions. Show canonical recipient metadata in the Library table and author purge wording through the shared JSON projection.",
+      "reason": "User November 18, 2026: Receipt and email must use the same configured decision description without injected amount/product data, and both advisor-flow recipients need deletion notices. Global content/rules and shared email rendering own these changes. Existing retention values and actual underwriting decisions remain unchanged; notification delivery remains a production service contract, with local template previews only."
+    },
+    {
+      "id": "CHG-125",
+      "description": "Continue the final source audit by moving remaining consumer save/invitation/pending/recovery subjects, paragraphs, actions and automated footer text into canonical JSON bindings. Share the saved-application email composition, retain escaped variable emphasis, and reference existing common copy through aliases rather than duplicate authoring. Use the saved expiry for actual autosave previews, omit invented dates when unavailable, and derive named fictional example timelines from the fixed global retention policy. Keep advisor sending/edit examples within the original retention window. Move example URL domain/confirmation metadata to JSON and resolve recovery paths through shared page definitions. Source Coverage Needs calculator wording and default fields from the fresh-start projection and reuse the canonical unavailable-rate wording without changing calculations.",
+      "reason": "User November 18, 2026: continue the final project audit efficiently from recorded open items. Global content/projections and isolated prototype examples own this batch; effective Site policy, literal decision descriptions, purge-recipient behavior and production service boundaries remain unchanged. This implements already confirmed original-save retention rather than creating a new deadline or approval round."
+    },
+    {
+      "id": "CHG-126",
+      "description": "Move generic preview answers, relative date rules, fallback amount/selection count and payment preferences to an isolated JSON fixture. Honor effective field defaults and available options, and constrain fictional payment selections to the current product policy and authored controls. Re-read fields after same-page answers reveal dependencies, replace obsolete bank answer IDs with the current bank surface bindings, and guard absent Coverage/Payment flow positions. Resolve repeated-record Storybook fields, bindings, label and limit at render time from the installed collection; use JSON record samples and the same summary renderer as Profile. Add changed-source and late-revision checks for fields/options/configuration across Library, prototype and Storybook, extending the targeted source-propagation command.",
+      "reason": "User November 18, 2026: continue the final audit efficiently from the recorded autofill and reader findings. Global source consumers and isolated prototype/Storybook fixtures own this batch; effective-Site business policies and reviewed page wording remain unchanged."
+    },
+    {
+      "id": "CHG-127",
+      "description": "Consolidate eleven repeated page-copy/configuration contracts into one template-wide effective-Site resolution rule that applies to every page without per-page mappings. Keep supported values/defaults/constraints in their existing owning definitions. Separate rule usage from identity through the Library Used in column and shared hierarchy; resolve dependency names from canonical requirements. Remove implementation commentary from active system rule/workflow statements, preserve prior records in project evidence, and describe signing/provider evidence and system service obligations independently of local demonstrations. Rename signing-evidence and external-provider workflow identities, retire captured page-contract/simulator rule records with their assignments, and validate requirements against reintroduced project commentary.",
+      "reason": "User November 18, 2026: prioritize whether the Library represents one reusable model for future Sites; define inheritance/configurability once rather than narrating it per page, and keep prototype implementation limitations out of system requirements. Global model documentation and Library projection own this change; effective-Site values and existing runtime configuration constraints are retained."
+    },
+    {
+      "id": "CHG-128",
+      "description": "Add optional templates applicability to shared rule and workflow definitions; omission applies to every supported application layout. Validate nonempty distinct supported subsets through the shared source compiler and requirements checker. Annotate existing single-page layout definitions and expose the principal single-page composition rule in Rules. Add a filterable Applies to layouts column whose layout filters include shared rules. Preserve scoped metadata through executable routing projection and evaluate it against the effective URL/session/Site/default layout at lookup time, without removing shared definitions under Site filters.",
+      "reason": "User approved structured single/multi rule applicability and Library display November 18, 2026. Global definitions and shared rule projection own this change. Sites continue to assign a layout and values; layout-specific behavior is not duplicated per Site."
+    },
+    {
+      "id": "CHG-129",
+      "description": "Source shared inactivity-warning, help-ribbon/scheduling and progress/edit accessibility wording through canonical JSON bindings and installed content, with actual renderer placements in the Content inventory. Remove the fictitious chat destination and expose chat only with its configured URL. Centralize edit-action, help-chip and help-ribbon brand/state styling in the application theme; use existing palette/typography roles for progress, Health detail summaries and rate-toggle icons. Extend the theme reference with the actual shared components.",
+      "reason": "User November 18, 2026: continue auditing active UI for hardcoded values that belong to content, theme or shared definitions. Global content/theme own these changes; effective Site contacts and destinations retain their existing owners. The user explicitly excludes the animated Home illustration from requirements/content migrations alongside Fast Track; its implementation is left untouched."
+    },
+    {
+      "id": "CHG-130",
+      "description": "Present Consumer as an application-stage overview with drill-down diagrams. Reference existing progress placement IDs and canonical applicant-facing progress wording, including Choose your coverage, Your application details, Review your application and E-sign and submit. Preserve every canonical transition across stage diagrams and the existing shared step inspector; edit destinations remain inspectable without a six-way fan-out. Keep shared Save, Resume, Quote and TPA links. Validate stage ownership and reuse the measured FlowDiagram, MUI Stepper and Library inspector.",
+      "reason": "User November 18, 2026: implement Consumer first using the actual application stages, without invented groupings or abbreviated Library labels. Global flow documentation metadata and shared Library presentation own the change; no effective-Site policy or application routing changes."
+    },
+    {
+      "id": "CHG-131",
+      "description": "Apply the shared staged Library presentation to Advisor, using canonical application progress labels and placements. Add explicit advisor/applicant ownership and the existing send/access stages. Present advisor recovery, correction requests and reminders/deletion as related processes, separate from the numbered application sequence. Preserve all 31 steps and 42 transitions, including takeover and start-new branches in the shared inspector. Stage diagrams use measured width and natural page height so longer access paths retain readable text. Keep the Steps table and existing shared flow/component/email/rule links. Show recipient-labelled email previews in each stage, step inspector and Steps table, derived from existing email references. Reuse the tutorial email view as a shared renderer and existing JSON-driven email builders; preserve separate applicant/advisor sent, edit, submission and deletion messages. Record advisor recipient context for the shared secure-link example rather than showing an applicant destination in advisor access.",
+      "reason": "User November 18, 2026: extend the approved Consumer overview and Steps approach to Advisor. Global documentation metadata and the reused Library renderer own this change; application behavior, effective-Site values and graph topology remain unchanged."
+    },
+    {
+      "id": "CHG-132",
+      "description": "Enroll AMA, WAEPA and WAEPA GI in the fresh-start source and prototype bundle alongside ASCE. Restore prior product, applicant, rider, amount, policy, branding/support and application assignments under their Site folders while inheriting global pages, fields, content defaults and flow topology. Promote reusable policy/presentation definitions and optional Membership fields globally, support person-scoped field configurations/options, retain qualification conditions, preserve GI member-only $100,000/no-rider behavior and remove superseded catalog authoring. Use the same source for Library, prototype and Storybook; derive deployment enrollment from the Site sources.",
+      "reason": "User November 19, 2026: restore these three Sites and their earlier assignments while inheriting the reviewed global pages. Site files own effective assignments; shared definitions remain global. Prior confirmed exceptions and provisional prototype statuses are retained; ASCE and the excluded Home illustration/Fast Track demonstrations are unchanged."
+    },
+    {
+      "id": "CHG-133",
+      "description": "Use the existing coverage and rider resolvers with an explicit quote context. Validate the fields already presented by the quote tool, retain configured estimate choices and remove application-only eligibility diagnostics, disabled product/rider choices and generated application fact questions from quotation. Apply hands off to Membership without running application eligibility checks.",
+      "reason": "User November 19, 2026: WAEPA quote must show estimates after the quote questions without demanding military status or other application eligibility answers. This correction belongs to shared global quote behavior, not a WAEPA exception. Application validation retains its normal policy context."
+    },
+    {
+      "id": "CHG-134",
+      "description": "Give the shared Armed Forces field member and child wording, preserving each person’s saved answer and existing participation. Place the optional membership declaration last in both the canonical field mapping and the existing qualification renderer. Give explicitly unselected product cards a very light tint from the effective primary color through the shared product-card surface and global presentation token.",
+      "reason": "User November 19, 2026: correct the child-worded question displayed to WAEPA members, move the declaration checkbox to the end of the form, and tint unselected product cards in Quote and Coverage. Shared definitions, ordering and presentation own these changes; WAEPA retains its existing field selections and eligibility policy."
+    },
+    {
+      "id": "CHG-135",
+      "description": "Move self-employed-under-one-year from global Disability question participation to ASCE’s existing Site question override. Make the shared question reader honor the effective hideSmokerQuestion setting by default, so Coverage and Quote both omit smoking and tobacco follow-ups for WAEPA; assign the same setting to WAEPA GI. Shared fields, components and question resolution remain global.",
+      "reason": "User November 19, 2026: the self-employment question currently applies only to ASCE, and WAEPA Life additional questions must not include smoking in Quote or Coverage. Extend the existing effective-Site participation and visibility settings rather than add isolated implementations."
+    },
+    {
+      "id": "CHG-136",
+      "description": "Remove the cart eligibility warning, its prop, eligibility calculations and special Office Overhead warning path globally. Retire its content keys so saved catalogs cannot restore the removed copy. Add the supplied two-line WAEPA Membership note through the existing Site page-note slot, retaining the shared multiline page alert. Record the intended Eligibility-page product availability handling separately as planned work.",
+      "reason": "User November 19, 2026: the cart must not show eligibility-concern messaging anywhere. Ineligible products should not be offered and no eligible products would produce an Eligibility-page error, but that behavior is not requested for implementation now. The warning removal is global; the supplied Membership note is WAEPA-owned wording."
+    },
+    {
+      "id": "CHG-137",
+      "description": "Shared Quote and Coverage cards reveal rider controls after coverage selection. Quotes apply configured base-amount and rider dependency rules without application-only eligibility requirements. WAEPA keeps CIR available from $50,000 and ABI from $100,000, disables CIR-only elections, makes Beneficiary optional, and assigns the existing financial questionnaire to selected member short-term DI benefits strictly above $5,000.",
+      "reason": "User WAEPA corrections November 19, 2026. Global controls and definitions remain shared; WAEPA supplies only assignments and overrides."
+    },
+    {
+      "id": "CHG-138",
+      "description": "Global form layouts use one 24px vertical field gap and 16px column gap across Home/quote and application pages. FieldRenderer now occupies a real layout box and has no default input margins; existing FieldGrid, FieldGroup and ConditionalGroup own spacing. Shared helper text no longer adds the previous 14px trailing margin. Existing field stacks and record forms use the shared layout.",
+      "reason": "User reported tight quote fields and varying gaps across form pages. Extend the existing field/layout system globally, without Site-specific spacing."
+    },
+    {
+      "id": "CHG-139",
+      "description": "AMA inherits the global Self/Spouse/Child participation setting by removing a conflicting Self/Spouse-only Eligibility override. Existing child product assignments, amount policies and the shared child collection remain authoritative.",
+      "reason": "User reported the missing AMA child dependent button. The Site restriction conflicted with its six assigned child products; no additional product or Site-specific UI was introduced."
+    },
+    {
+      "id": "CHG-140",
+      "description": "Enrolled AMA-GI under the existing AMA Client/TPA and association with the shared single-page flow. The applicant attests Student or Spouse; the shared associated-person fields supply Medical Student Information for Spouse. Assigned Medical Student GI Life ($50,000/$100,000) and GI Disability ($1,000; Student only), no health questions, no Payment, optional Beneficiary and SSN-only Profile. The confirmed webpage state exclusions and 30-day/12-month Disability periods apply; the MCR supplies ages 17–39 and plan/policy identifiers. Hero displays AMA-Sponsored Medical Student Program and the July 1–December 31 enrollment window.",
+      "reason": "User AMA-GI enrollment and confirmations November 19, 2026. Extended the existing application-source enrollment, global Profile section configuration and shared associated-person content slots; Site values remain in requirements/parked/sites/ama-gi/. Preview admission derives from enrollment/catalog identities."
     }
   ]
 }

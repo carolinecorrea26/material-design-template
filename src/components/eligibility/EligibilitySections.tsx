@@ -1,6 +1,7 @@
 import { Alert, Typography } from "@mui/material";
+import { Fragment, type ReactNode } from "react";
 import type { FormRouteRenderProps } from "../../app/RoutePage";
-import { requirementChildCollection } from "../../domain/requirementCollections";
+import type { PageSectionComponent, PageSectionConfig } from "../../config/pageSections/types";
 import FieldRenderer from "../forms/FieldRenderer";
 import EligibilityFields from "../forms/EligibilityFields";
 import DynamicList from "../forms/DynamicList";
@@ -9,141 +10,42 @@ import FieldGrid from "../layout/FieldGrid";
 import { FieldGroup } from "../layout/SectionDivider";
 
 export type EligibilitySectionsProps = FormRouteRenderProps & {
-  childNotice?: string;
-  collection?: { name: string; label: string; maxItems: number; mapping: import("../forms/DynamicList").DynamicListFieldMapping<Record<string, string>> };
+  childMode?: 'details' | 'notice-only';
+  collection?: import('../../domain/fieldCollections').ResolvedFieldCollection;
   sectionNotes?: Record<string, string | undefined>;
   applicantLabels?: import("../../config/clients/types").ClientApplicantLabels;
   eligibleStatesOnly?: boolean;
 };
 
-/** Renders supplied sections; application adapters own participation and Site policy. */
-export default function EligibilitySections({
-  control,
-  errors,
-  watchedValues,
-  allFields,
-  pageSections,
-  setValue,
-  childNotice, collection, sectionNotes = {}, applicantLabels, eligibleStatesOnly,
+/** Requirements own composition and fields; adapters supply effective participation and values. */
+export default function EligibilitySections({ control, errors, watchedValues, allFields, pageSections, setValue,
+  childMode, collection, sectionNotes = {}, applicantLabels, eligibleStatesOnly,
 }: EligibilitySectionsProps) {
-
-  const childCollection = collection ?? requirementChildCollection();
-  return (
-    <>
-      {pageSections.map((section) => {
-
-        const content =
-          section.id === "childSection" && childNotice ? <Alert severity="info">{childNotice}</Alert> : section.id === "childSection" ? (
-            <>
-              <DynamicList
-                control={control}
-                name={childCollection.name}
-                label={childCollection.label}
-                maxItems={childCollection.maxItems}
-                mapping={childCollection.mapping}
-                renderItem={(item) => (
-                  <Typography variant="body2">
-                    {`${item["child-first-name"] ?? ""} ${item["child-last-name"] ?? ""}`.trim().toUpperCase()}
-                  </Typography>
-                )}
-              />
-            </>
-          ) : section.id === "spouseSection" ? (
-            (() => {
-              const nameFields = ["spouse-first-name", "spouse-last-name"];
-              const firstNameIndex = section.fieldIds.findIndex((id) =>
-                nameFields.includes(id),
-              );
-              const beforeName = section.fieldIds.slice(0, firstNameIndex);
-              const afterName = section.fieldIds.filter(
-                (id) => !nameFields.includes(id) && !beforeName.includes(id),
-              );
-
-              return (
-                <>
-                  {beforeName.map((fieldId) => {
-                    const field = allFields.find((f) => f.id === fieldId);
-                    if (!field) return null;
-                    return (
-                      <FieldRenderer
-                        key={field.id}
-                        field={field}
-                        control={control}
-                        errors={errors}
-                      />
-                    );
-                  })}
-
-                  <FieldGrid columns="equal">
-                    {section.fieldIds
-                      .filter((fieldId) => nameFields.includes(fieldId))
-                      .map((fieldId) => {
-                        const field = allFields.find((f) => f.id === fieldId);
-                        if (!field) return null;
-                        return (
-                          <FieldRenderer
-                            key={field.id}
-                            field={field}
-                            control={control}
-                            errors={errors}
-                          />
-                        );
-                      })}
-                  </FieldGrid>
-
-                  {afterName.map((fieldId) => {
-                    const field = allFields.find((f) => f.id === fieldId);
-                    if (!field) return null;
-                    return (
-                      <FieldRenderer
-                        key={field.id}
-                        field={field}
-                        control={control}
-                        errors={errors}
-                      />
-                    );
-                  })}
-                </>
-              );
-            })()
-          ) : section.id === "selfEligibility" ? (
-            <EligibilityFields
-              eligibleStatesOnly={eligibleStatesOnly}
-              form={{ control, errors, watchedValues, setValue }}
-              fields={section.fieldIds.flatMap(id => allFields.filter(field => field.id === id))}
-            />
-          ) : (
-            <>
-              {section.fieldIds.map((fieldId) => {
-                const field = allFields.find((f) => f.id === fieldId);
-                if (!field) return null;
-
-                return (
-                  <FieldRenderer
-                    key={field.id}
-                    field={field}
-                    control={control}
-                    errors={errors}
-                  />
-                );
-              })}
-            </>
-          );
-
-        const note = sectionNotes[section.id];
-        const sectionContent = <>{note && <Alert severity="info" sx={{ mb: 2 }}>{note}</Alert>}<FieldGroup className="FieldGroup-root">{content}</FieldGroup></>;
-        return (
-          <div key={section.id} style={{ marginBottom: 32 }}>
-            {section.applicant && section.applicant !== "self" ? (
-              <ApplicantSectionDivider applicant={section.applicant} labels={applicantLabels}>
-                {sectionContent}
-              </ApplicantSectionDivider>
-            ) : (
-              <>{sectionContent}</>
-            )}
-          </div>
-        );
-      })}
-    </>
-  );
+  const renderComponent = (component: PageSectionComponent, section: PageSectionConfig): ReactNode => {
+    const fields = (component.fieldIds ?? section.fieldIds).flatMap(id => allFields.filter(field => field.id === id));
+    const children = component.components?.flatMap((child, index) => { const content = renderComponent(child, section); return content === null ? [] : [<Fragment key={`${child.type}-${index}`}>{content}</Fragment>]; });
+    if (component.type === 'SectionNote') return sectionNotes[section.id] ? <Alert severity="info" sx={{ mb: 2 }}>{sectionNotes[section.id]}</Alert> : null;
+    if (component.type === 'FieldGroup') return children?.length ? <FieldGroup className="FieldGroup-root">{children}</FieldGroup> : null;
+    if (component.type === 'EligibilityFields') return <EligibilityFields eligibleStatesOnly={eligibleStatesOnly} form={{ control, errors, watchedValues, setValue }} fields={fields} />;
+    if (component.type === 'FieldGrid') return fields.length ? <FieldGrid columns="equal">{fields.map(field => <FieldRenderer key={field.id} field={field} control={control} errors={errors} />)}</FieldGrid> : null;
+    if (component.type === 'FieldRenderer') return fields.length ? <>{fields.map(field => <FieldRenderer key={field.id} field={field} control={control} errors={errors} />)}</> : null;
+    if (component.type !== 'DynamicList') throw new Error(`Unsupported Eligibility component: ${component.type}`);
+    if (childMode === 'notice-only') {
+      if (!sectionNotes[section.id]?.trim()) throw new Error('Missing fresh-start child section notice');
+      return null;
+    }
+    if (childMode !== 'details') throw new Error('Missing fresh-start child collection mode');
+    if (!collection || collection.sectionId !== section.id) throw new Error('Missing fresh-start Eligibility collection');
+    return <DynamicList control={control} name={collection.name} label={collection.label} maxItems={collection.maxItems} mapping={collection.mapping}
+      renderItem={item => <Typography variant="body2">{collection.mapping.gridFields.map(id => item[collection.mapping.fieldToKey[id]] ?? '').join(' ').trim().toUpperCase()}</Typography>} />;
+  };
+  return <>{pageSections.map(section => {
+    if (!section.composition?.length) throw new Error('Missing fresh-start Eligibility composition');
+    const content = section.composition.map((component, index) => <Fragment key={`${component.type}-${index}`}>{renderComponent(component, section)}</Fragment>);
+    return <div key={section.id} style={{ marginBottom: 32 }}>
+      {section.applicant
+        ? <ApplicantSectionDivider applicant={section.applicant} labels={applicantLabels} showLabel={section.applicant !== 'self'}>{content}</ApplicantSectionDivider>
+        : content}
+    </div>;
+  })}</>;
 }

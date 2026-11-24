@@ -1,3 +1,4 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import { afterEach, beforeAll, expect, it, vi } from "vitest";
 import { createReviewedMigrationDatabase } from "./fixtures";
 import { applyTobaccoLookbackAdoption } from "./tobaccoLookbackAdoption";
@@ -5,7 +6,8 @@ import { atpeAssociationKey } from "./atpeAssociationAdoption";
 import { collectRateInputs, isRateInputPolicy, type RateInputPolicy } from "../domain/rateInputPolicy";
 import { tobaccoRateAnswer } from "../domain/tobaccoLookback";
 import { quoteCandidateWithMock, type MockRatingService } from "../domain/mockRating";
-import { installPrototypeLibrary, resolvePrototypeLibrary } from "../domain/prototypeLibrary";
+import { installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import { prototypeRateRequest } from "../app/usePrototypeRates";
 import { validateMigrationDatabase } from "./integrity";
 import type { DatabaseSchema } from "../persistence/types";

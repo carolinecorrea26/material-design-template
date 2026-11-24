@@ -30,12 +30,12 @@ export default function DetailsTable({ rows }: { rows: DetailsTableRow[] }) {
                   fontWeight: 700,
                   color: "text.secondary",
                   width: "40%",
-                  fontSize: 13,
+                  fontSize: "body2.fontSize",
                 }}
               >
                 {row.label}
               </TableCell>
-              <TableCell sx={{ fontSize: 13 }}>{row.value}</TableCell>
+              <TableCell sx={{ fontSize: "body2.fontSize" }}>{row.value}</TableCell>
             </TableRow>
           ))}
         </TableBody>

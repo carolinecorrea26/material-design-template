@@ -18,6 +18,14 @@ it.each(Object.entries(stories).filter(([key]) => key !== 'default'))('renders P
   try {
     await act(async () => root.render(<MemoryRouter>{render({}, { id: name, loaded: { catalog } })}</MemoryRouter>));
     expect(container.textContent).toContain('Quoted cost is the best rate available');
+    if (name === 'Empty') {
+      expect(container.querySelector('input[name="payment-information-opt-in"]')).not.toBeNull();
+      expect(container.querySelector('input[name="bank-name-on-account"]')).toBeNull();
+    }
+    if (name === 'Required') {
+      expect(container.querySelector('input[name="payment-information-opt-in"]')).toBeNull();
+      expect(container.querySelector('input[name="bank-name-on-account"]')).not.toBeNull();
+    }
     if (name === 'RestoredBankAccount') {
       expect(container.querySelector<HTMLInputElement>('input[name="bank-name-on-account"]')?.value).toBe('Jordan Morgan');
       expect(container.querySelector<HTMLInputElement>('input[name="bank-routing-number"]')?.value).toBe('021000021');
@@ -26,7 +34,7 @@ it.each(Object.entries(stories).filter(([key]) => key !== 'default'))('renders P
     }
     if (name === 'BillMe') {
       expect(container.textContent).not.toContain('Banking Information');
-      expect(container.querySelector<HTMLInputElement>('input[name="payment-method:li-group-term"][value="bill-me"]')?.checked).toBe(true);
+      expect(container.querySelector<HTMLInputElement>('input[name="payment-method:li-term"][value="bill-me"]')?.checked).toBe(true);
     }
     if (name === 'OptionalDeferred') {
       expect(container.textContent).not.toContain('You will not be charged yet.');
@@ -35,6 +43,15 @@ it.each(Object.entries(stories).filter(([key]) => key !== 'default'))('renders P
       expect(container.textContent).toContain('You will not be charged yet.');
     }
     if (name === 'NoProducts') expect(container.textContent).toContain('No applied-for products were found');
+    if (name === 'LockedFrequency') {
+      const field = container.querySelector<HTMLInputElement>('input[name="payment-frequency:li-term"]');
+      expect(field?.disabled).toBe(true); expect(field?.value).toBe('monthly');
+    }
+    if (name === 'ProductNotes') {
+      expect(container.textContent?.match(/A configurable note shared/g)).toHaveLength(1);
+      expect(container.textContent?.match(/A configurable note for this product/g)).toHaveLength(1);
+      expect(container.textContent).not.toContain('Ontario and Manitoba');
+    }
     if (name === 'SharedChoices') expect(container.querySelectorAll('input[name="payment-method:all"]')).not.toHaveLength(0);
     expect(JSON.stringify(catalog)).toBe(original);
   } finally { await act(async () => root.unmount()); container.remove(); }

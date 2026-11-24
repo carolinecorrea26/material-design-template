@@ -1,4 +1,4 @@
-import { createHash } from "node:crypto";
+import { recordedFilesMatch } from "./sourceEvidence";
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -35,7 +35,7 @@ const evidence: Record<string, string> = {
   "src/pages/Coverage.entryScope.test.tsx": "da137e484f18b3d48934490b324f076edb3f36ac425ddbf9e6094507a1e948b1"
 };
 export function reviewedEntryCodeMatches(read = (path: string) => readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), "../..", path))) {
-  return Object.keys(evidence).length > 0 && Object.entries(evidence).every(([path, hash]) => createHash("sha256").update(read(path)).digest("hex") === hash);
+  return recordedFilesMatch(evidence, read);
 }
 export function reviewEntryRequirements(db: DatabaseSchema, rows: CrosswalkRow[]) {
   const decision = db.semanticRequirements.find(row => row.key === entryUrlDecisionKey)?.value as { approvalStatus?: string; deferredOtherUrlBehavior?: { completionBlocking: boolean; parameterNames: string[] } } | undefined;

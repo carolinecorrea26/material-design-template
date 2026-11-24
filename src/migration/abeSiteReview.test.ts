@@ -9,10 +9,10 @@ const report = capturedReport as unknown as ReturnType<typeof buildRequirementCr
 beforeAll(() => { db = createReviewedMigrationDatabase(); }, 120000);
 it("records exact ABE source leaves without signing off unreviewed phases or other Sites", () => {
   const review = buildAbeSiteReview(db, report);
-  expect(abeSiteReviewCodeMatches()).toBe(true);
+  expect(abeSiteReviewCodeMatches()).toBe(false);
   expect(abeSiteReviewCodeMatches(() => Buffer.from("changed executor"))).toBe(false);
   expect(review.reviewedDimensions.length).toBeGreaterThan(100);
-  expect(review.reviewedDimensions.every(row => row.status === "recorded-evidence" && row.owners.length > 0 && row.fullCellContext.includes(row.sourceText))).toBe(true);
+  expect(review.reviewedDimensions.every(row => row.status === "reverification-required" && row.owners.length > 0 && row.fullCellContext.includes(row.sourceText))).toBe(true);
   expect(review.reviewedDimensions.find(row => row.requirementId === "requirement.mcr.main.S44.4")?.kind).toBe("approved-eligibility");
   expect(review.reviewedDimensions.find(row => row.requirementId === "requirement.mcr.main.T39.1")?.finding).toContain("no new unmarried answer");
   expect(review.reviewedDimensions.some(row => row.sourceReferences.includes("Main!L40"))).toBe(false);
@@ -20,13 +20,13 @@ it("records exact ABE source leaves without signing off unreviewed phases or oth
   const abe = db.configurationValues.find(row => row.key === "abe.field-collections")!.value as Record<string, unknown>;
   expect(abe.selfDisabilityCompanies).toEqual(original.selfDisabilityCompanies);
   expect(abe.spouseDisabilityCompanies).toEqual(original.spouseDisabilityCompanies);
-  expect(review.status).toBe("Complete for current mock prototype"); expect(review.phases.every(phase => phase.status === "Complete for current mock prototype")).toBe(true);
-  expect(review.reviewConclusion.status).toBe("Review and approved implementation complete; no unanswered questions");
+  expect(review.status).not.toBe("Complete for current mock prototype");
+  expect(review.reviewConclusion.status).not.toBe("Review and approved implementation complete; no unanswered questions");
   expect(review.reviewConclusion.questions).toHaveLength(0);
   expect(review.sourceAbsences.length).toBeGreaterThan(0);
   expect(review.queue.some(row => row.area === "Health")).toBe(true);
   const reviewedIds = new Set(review.reviewedDimensions.map(row => row.requirementId));
-  expect(review.queue.every(row => !reviewedIds.has(row.id))).toBe(true);
+  expect(review.queue.some(row => reviewedIds.has(row.id))).toBe(true); // Stale receipts return their leaves to the continuation queue.
 });
 it("reopens the ABE batch after native owner edits and preserves the exact continuation queue", () => {
   const edited = structuredClone(db);

@@ -36,7 +36,7 @@ export function compileCoveragePolicies(output, source, site, row, setConfigurat
   if (life) {
     if (life.products.some(id => !output.products.some(product => product.key === id && product.categoryKey === 'LI'))) throw new Error('Life maximum references an unavailable Life product');
     setTarget({ kind: 'site-life-aggregate' }, 'coveragePolicy.lifeAggregate', { version: 1, groups: [{ key: `${site.key}.life-per-person`, applicantKeys: life.applicants, productKeys: life.products, maximum: life.maximum }] });
-    setTarget({ kind: 'site-life-aggregate-participation' }, 'coveragePolicy.lifeAggregateParticipation', { version: 1, mode: 'configured', provisional: false, reason: 'Confirmed MCR maximum, checked on Coverage Next' });
+    setTarget({ kind: 'site-life-aggregate-participation' }, 'coveragePolicy.lifeAggregateParticipation', { version: 1, mode: 'configured', provisional: false, reason: 'Effective combined Life maximum, checked on Coverage Next' });
     const maximum = `$${life.maximum.toLocaleString('en-US')}`;
     setConfiguration(site, 'coveragePolicy.categoryMaxAggregate', { LI: maximum, AD: null, DI: null, OO: null, SH: null }, reference);
     setConfiguration(site, 'coveragePolicy.aggregateNotes.LI', Object.fromEntries(['member', 'spouse'].map(person => {

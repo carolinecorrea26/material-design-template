@@ -10,8 +10,12 @@ import {
   type Theme,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import presentation from '../../../requirements/global/presentation-tokens.json';
 
 export const FieldGroup = styled(Box)(({ theme }) => ({
+  display: "grid",
+  minWidth: 0,
+  rowGap: theme.spacing(presentation.formFields.rowGap),
   backgroundColor: theme.palette.background.default,
   borderRadius: theme.spacing(2),
   padding: theme.spacing(1.5),
@@ -62,7 +66,6 @@ export default function SectionDivider({
   const isSmall = size === "small";
   const chipSx = {
     fontWeight: 700,
-    fontSize: isSmall ? "0.75rem" : "0.875rem",
     letterSpacing: "0.06em",
     textTransform: "uppercase",
     padding: isSmall ? "0.25rem 0.5rem" : "1rem 0.75rem",
@@ -87,7 +90,6 @@ export default function SectionDivider({
             variant="caption"
             sx={{
               fontWeight: 700,
-              fontSize: isSmall ? "0.75rem" : "0.875rem",
               color: "text.secondary",
               textTransform: "uppercase",
               letterSpacing: "0.06em",

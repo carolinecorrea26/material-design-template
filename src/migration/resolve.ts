@@ -66,7 +66,7 @@ export function resolveDatabaseSite(db: DatabaseSchema, siteKey: string) {
   };
   const fields = ordered(db.pages).map((page) => {
     const resolved = new Map<string, { included: boolean; field: FieldDefinition }>();
-    for (const assignment of ordered(db.pageFields.filter((r) => r.pageKey === page.key))) resolved.set(assignment.fieldKey, { included: true, field: fieldDefinition(assignment.fieldKey) });
+    for (const row of ordered(db.pageFields.filter(row => row.pageKey === page.key))) if (!resolved.has(row.fieldKey)) resolved.set(row.fieldKey, { included: true, field: fieldDefinition(row.fieldKey) });
     for (const override of scoped(db.siteFieldConfigurations.filter((r) => r.pageKey === page.key), siteKey, client.key)) {
       let value = resolved.get(override.fieldKey);
       if (!value && override.include) value = { included: true, field: fieldDefinition(override.fieldKey) };
@@ -131,7 +131,7 @@ export function databaseCoverageUnlocksPage(db: DatabaseSchema, siteKey: string,
     case "selected-underwriting-type": return (gate.underwritingTypes as string[]).includes(product.underwritingType);
     case "selected-coverage": return gate.categoryId === product.categoryId && gate.underwritingType === product.underwritingType;
     case "selected-rider": return product.riders?.some((r) => r.id === gate.riderId) ?? false;
-    default: throw new Error(`Unknown routing gate ${String(gate.kind)}`);
+    default: throw new Error(`Unknown routing gate ${String((gate as { kind?: unknown }).kind)}`);
   }
 }
 

@@ -1,0 +1,17 @@
+{
+  "description": "Fictional repeated-record values for the existing shared dialog and list examples.",
+  "companies": [
+    {
+      "company": "Example Carrier",
+      "monthlyBenefitAmount": "$1,200",
+      "benefitPeriod": "Age 65",
+      "waitingPeriod": "90 days"
+    },
+    {
+      "company": "Other Example Carrier",
+      "monthlyBenefitAmount": "$800",
+      "benefitPeriod": "5 years",
+      "waitingPeriod": "60 days"
+    }
+  ]
+}

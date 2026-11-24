@@ -2,7 +2,7 @@
 // Runtime consumers use the saved catalog once a Library revision is installed.
 export const defaultApplicationOrder = [
   "home", "membership", "eligibility", "coverage", "beneficiary", "contact", "profile", "review",
-  "health-si", "health-li", "health-qd", "health-di", "health-ci", "health-cir", "payment", "docusign", "receipt",
+  "health-si", "health-tele", "health-qd", "health-di-supp", "health-cir", "payment", "docusign", "receipt",
 ] as const;
 export type PageFlow = "application" | "resume" | "advisor" | "utility" | "internal";
 
@@ -31,23 +31,21 @@ const definitions = [
   { id: "review", path: "/review", type: "form", groupId: "review" },
   { id: "docusign", path: "/docusign", type: "form", groupId: "review" },
   { id: "health-si", path: "/health-si", type: "form", groupId: "health" },
-  { id: "health-li", path: "/health-li", type: "form", groupId: "health" },
+  { id: "health-tele", path: "/health-tele", type: "form", groupId: "health" },
   { id: "health-qd", path: "/health-qd", type: "form", groupId: "health" },
-  { id: "health-di", path: "/health-di", type: "form", groupId: "health" },
-  { id: "health-ci", path: "/health-ci", type: "form", groupId: "health" },
+  { id: "health-di-supp", path: "/health-di-supp", type: "form", groupId: "health" },
   { id: "health-cir", path: "/health-cir", type: "form", groupId: "health" },
   { id: "payment", path: "/payment", type: "form", groupId: "payment" },
   { id: "receipt", path: "/receipt", type: "receipt" },
   { id: "resume", path: "/resume", type: "resume" },
   { id: "resume-method", path: "/resume-method", type: "resume" },
   { id: "resume-code", path: "/resume-code", type: "resume" },
+  { id: "error-400", path: "/400", type: "error" },
   { id: "error-404", path: "/404", type: "error" },
   { id: "error-500", path: "/500", type: "error" },
   { id: "session-expired", path: "/session-expired", type: "error" },
   { id: "technical-error", path: "/technical-error", type: "error" },
   { id: "maintenance", path: "/maintenance", type: "error" },
-  { id: "application-unavailable", path: "/application-unavailable", type: "error" },
-  { id: "outcome-unknown", path: "/outcome-unknown", type: "error" },
   { id: "advisor-login", path: "/advisor-login", type: "form" },
   {
     id: "advisor-send-confirmation",
@@ -102,7 +100,7 @@ const definitions = [
 export const defaultPages = definitions.map(page => ({
   ...page,
   inlineFieldKeys: "inlineFieldKeys" in page ? [...page.inlineFieldKeys] : undefined,
-  displayName: page.id.split("-").map(part => ["si", "li", "qd", "di", "ci", "cir"].includes(part) ? part.toUpperCase() : part.charAt(0).toUpperCase() + part.slice(1)).join(" "),
+  displayName: page.id.split("-").map(part => ["si", "tele", "qd", "di", "supp", "cir"].includes(part) ? part.toUpperCase() : part.charAt(0).toUpperCase() + part.slice(1)).join(" "),
   flow: (page.type === "internal" ? "internal" : page.type === "error" ? "utility" : page.type === "resume" ? "resume"
     : ["advisor-login", "advisor-send-confirmation", "application-edit-confirmation"].includes(page.id) ? "advisor" : "application") as PageFlow,
 })).sort((a, b) => {

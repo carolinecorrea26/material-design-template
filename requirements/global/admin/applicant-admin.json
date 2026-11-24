@@ -1,0 +1,14 @@
+{
+  "status": "prototype",
+  "title": "Applicant Admin",
+  "description": "Track a submitted application and manage the next steps after approval.",
+  "stages": [
+    { "id": "member-review", "label": "Member Review", "owner": "TPA", "description": "The plan administrator reviews membership status and eligibility information." },
+    { "id": "underwriting", "label": "Underwriting", "owner": "New York Life", "description": "The New York Life team reviews detailed records, including financial and medical information when required." },
+    { "id": "final-decision", "label": "Final Decision Status", "owner": "New York Life", "description": "The applicant receives the final decision. Once approved, the member receives a welcome kit and more information about their coverage." }
+  ],
+  "approvedActions": [
+    { "pageId": "payment", "label": "Add payment information" },
+    { "pageId": "beneficiary", "label": "Add beneficiary information" }
+  ]
+}

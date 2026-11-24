@@ -1,3 +1,4 @@
+import { resolveMappedFields } from '../../domain/requirementFields';
 import { useState } from "react";
 import type { Meta } from "@storybook/react-vite";
 import RadioSelectionGroup from "./RadioSelectionGroup";
@@ -11,35 +12,16 @@ const meta = {
 
 export default meta;
 
-const options = [
-  { value: "text", label: "Text message" },
-  { value: "voice", label: "Voice call" },
-];
+const field = resolveMappedFields({ page: 'beneficiary' }, { person: 'beneficiary' }).find(field => field.id === 'beneficiary-type')!;
+const options = field.options!;
 
 export const Interactive = () => {
-  const [value, setValue] = useState("text");
-  return (
-    <RadioSelectionGroup
-      name="delivery-method"
-      label="Delivery method"
-      options={options}
-      value={value}
-      onChange={setValue}
-      required
-    />
-  );
-};
-
-export const BeneficiaryType = () => {
   const [value, setValue] = useState("individual");
   return (
     <RadioSelectionGroup
-      name="beneficiary-type"
-      label="Beneficiary Type"
-      options={[
-        { value: "individual", label: "Individual" },
-        { value: "trust", label: "Trust" },
-      ]}
+      name={field.id}
+      label={field.label}
+      options={options}
       value={value}
       onChange={setValue}
       required
@@ -49,12 +31,9 @@ export const BeneficiaryType = () => {
 
 export const Disabled = () => (
   <RadioSelectionGroup
-    name="beneficiary-type"
-    label="Beneficiary type"
-    options={[
-      { value: "individual", label: "Individual" },
-      { value: "trust", label: "Trust" },
-    ]}
+    name={field.id}
+    label={field.label}
+    options={options}
     value="individual"
     onChange={() => {}}
     disabled

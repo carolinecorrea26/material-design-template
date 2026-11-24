@@ -1,10 +1,11 @@
 import { homeQuoteFieldIds } from '../config/fields/homeQuoteFields';
 import { BENEFICIARY_INDIVIDUAL_FIELDS, BENEFICIARY_TRUST_FIELDS, beneficiaryInfoOptInField } from '../config/fields/beneficiaryFields';
-import { detailsMapping as li } from '../config/fields/healthLiFields';
-import { detailsMapping as si } from '../config/fields/healthSiFields';
-import { QUESTIONS as di } from '../config/fields/healthDiFields';
+import lifePage from '../../requirements/parked/health-tele.json';
+import simplifiedPage from '../../requirements/parked/health-si.json';
+import disabilityPage from '../../requirements/parked/health-di-supp.json';
+import { healthPageSurfaceDefaults } from '../config/fields/healthPageFields';
 import { needsCalculatorFields } from '../config/fields/needsCalculatorFields';
-import { paymentInfoOptInField, paymentMethodOptions, paymentFrequencyOptions } from '../config/fields/paymentFields';
+import { paymentDefaultSurfaces } from '../config/fields/paymentFields';
 import { SECURITY_QUESTIONS } from '../config/fields/verificationFields';
 import { fieldCatalog } from '../config/fields';
 import type { FieldDefinition } from '../domain/fields';
@@ -26,9 +27,10 @@ export function fieldSurfaceDefaults() {
   add('beneficiaryIndividual', 'beneficiary', 'Beneficiary', BENEFICIARY_INDIVIDUAL_FIELDS, 10, 'beneficiary-', ['firstName', 'lastName']);
   add('beneficiaryTrust', 'beneficiary', 'Trust', BENEFICIARY_TRUST_FIELDS, 10, 'beneficiary-');
   add('beneficiaryControls', 'beneficiary', 'Beneficiary', [beneficiaryInfoOptInField, { id: 'beneficiaryType', label: 'Beneficiary Type', inputType: 'radio', options: [{ value: 'individual', label: 'Individual' }, { value: 'trust', label: 'Trust' }] }]);
-  add('healthLiDetails', 'health-li', 'details', li.fields, 10, 'health-li-detail-');
-  add('healthSiDetails', 'health-si', 'details', si.fields, 10, 'health-si-detail-');
-  for (const question of di) add(`healthDi${question.key}Details`, 'health-di', 'details', question.mapping.fields, 10, `health-di-${question.key}-detail-`);
+  for (const page of [lifePage, simplifiedPage, disabilityPage]) {
+    const defaults = healthPageSurfaceDefaults(page);
+    fields.push(...defaults.fields); Object.assign(surfaces, defaults.surfaces);
+  }
   add('needsCalculator', 'home', 'Coverage needs calculator', needsCalculatorFields.map(field => ({ ...field, inputType: field.id === 'needs-years-to-replace' ? 'number' : 'text', maxLength: field.id === 'needs-years-to-replace' ? 2 : 10, inputMode: 'numeric', format: field.id === 'needs-years-to-replace' ? undefined : 'currency', helperText: field.id === 'needs-years-to-replace' ? 'A common recommendation is 10–12 years' : undefined })));
   add('quoteInputs', 'home', 'Quote calculator', [...homeQuoteFieldIds.map(id => fieldCatalog[id]),
     { id: 'quote-selection', label: 'Select for myself', inputType: 'checkbox' },
@@ -37,13 +39,8 @@ export function fieldSurfaceDefaults() {
     { id: 'quote-categories', label: 'Which coverage are you interested in?', inputType: 'checkbox-group', required: true },
     { id: 'quote-rate-frequency', label: 'Toggle between monthly and annual', inputType: 'radio', options: [{ value: 'monthly', label: 'Monthly' }, { value: 'annual', label: 'Annual' }] },
   ]);
-  add('paymentControls', 'payment', 'Payment', [paymentInfoOptInField,
-    { id: 'payment-method', label: 'Payment Method', inputType: 'radio', options: [...paymentMethodOptions, { value: 'credit-card', label: 'Credit card' }] },
-    { id: 'payment-frequency', label: 'Payment Frequency', inputType: 'dropdown', placeholder: 'Select frequency', options: paymentFrequencyOptions.map(({ value, label }) => ({ value, label })) },
-    { id: 'payment-shared-method', label: 'Payment method for all products', inputType: 'radio', required: true, options: [...paymentMethodOptions, { value: 'credit-card', label: 'Credit card' }] },
-    { id: 'payment-shared-frequency', label: 'Payment frequency for all products', inputType: 'dropdown', required: true, placeholder: 'Select frequency', options: paymentFrequencyOptions.map(({ value, label }) => ({ value, label })) },
-  ]);
-  add('paymentBank', 'payment', 'Banking Information', ['bank-name-on-account', 'bank-institution', 'bank-routing-number', 'bank-account-number', 'bank-authorization'].map(id => (fieldCatalog as Record<string, FieldDefinition>)[id]));
+  add('paymentControls', 'payment', 'Payment', paymentDefaultSurfaces.paymentControls);
+  add('paymentBank', 'payment', 'Banking Information', paymentDefaultSurfaces.paymentBank);
   add('verificationControls', 'eligibility', 'Member verification', [{ id: 'verification-method', label: 'Choose how to provide verification', inputType: 'radio', required: true, options: [
     { value: 'text', label: 'Send text code' }, { value: 'voice', label: 'Send voice code' }, { value: 'security-questions', label: 'Answer security questions' }, { value: 'skip', label: 'Skip member verification and apply' },
   ] }]);

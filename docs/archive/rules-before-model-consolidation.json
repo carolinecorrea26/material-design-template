@@ -1,0 +1,1060 @@
+{
+  "reason": "CHG-127: historical review and implementation evidence removed from active system requirements; supported configuration and runtime constraints retain their existing owners.",
+  "records": [
+    {
+      "source": "requirements/global/rules/membership.json",
+      "record": {
+        "id": "membership-client-copy-contract",
+        "name": "Declare Membership client copy and preserve global eligibility behavior",
+        "status": "confirmed",
+        "statement": "Global Membership content owns default page title, introduction and non-member guidance. Effective Sites may override those five strings and an optional page information note through the six declared Membership content slots. The optional note defaults empty globally; ASCE supplies its Civil Engineering profession wording as a Site value, without a Site-specific note definition. Omitted values inherit global defaults; blank note content hides the note. Breadcrumbs, entry/transition loading messages, Next/Back labels, shared help, the additional-section title, eligibility/association-link blocking messages and validation wording remain global. Membership question labels/options, enabled fields and requiredness keep the shared field configuration contract. Guidance copy never changes membership eligibility, inline-stop applicability, hidden follow-ups, disabled Next, saves or navigation. Library, prototype and Storybook consume the same declared slots and projection.",
+        "source": "User Membership configurability decisions November 14, 2026; requirements/parked/membership.json; requirements/global/content/membership.json; requirements/parked/sites/asce/pages/membership.json",
+        "uses": [
+          "application-header-client-copy"
+        ]
+      }
+    },
+    {
+      "source": "requirements/global/rules/membership.json",
+      "record": {
+        "id": "membership-core-configuration-constraints",
+        "name": "Preserve required Membership entry and core recovery fields",
+        "status": "confirmed",
+        "statement": "Membership is the required first application form for every Site. Site assignments cannot skip or move it, or position another application form before or at the same position. The membership question, first name, last name, email, phone and Phone Type remain included and required when applicable. Accepted-answer visibility predicates remain unchanged. Sites cannot make these core fields optional, hide them or add optional-product exceptions. Email format and phone format (10-digit validation), keyboard mode and length constraints retain their global definitions on Membership. Title and Member ID retain their existing supported inclusion, requiredness and field configuration. Shared definitions used on other pages keep their own placement contracts. Library, prototype and Storybook use the same validated fresh-start projection.",
+        "source": "User Membership configuration decisions November 15, 2026; requirements/mappings/components/membership.json#constraints; requirements/parked/pages.json; global-page-configuration-boundary"
+      }
+    },
+    {
+      "source": "requirements/global/rules/coverage-policy.json",
+      "record": {
+        "id": "coverage-url-product-presentation",
+        "name": "Coverage URL product restrictions and featured presentation",
+        "status": "confirmed",
+        "statement": "The Library URL parameter table defines coverage entry behavior: category and its categories alias restrict categories, with explicit category taking precedence when both are supplied (including empty input); prods lists G-number products and requires category or categories; featured_prod prioritizes the named product and its category with a Featured chip; firstCategory replaces ignored legacy ctg to prioritize a category; applicant restricts who may apply. amt sets product amount defaults. dprods disables an amount control only when amt supplies one unambiguous, currently valid positive amount for that product/applicant. Missing, malformed, duplicate or unavailable amounts cannot create a URL lock; Site/product/applicant configuration locks are independent. URL presentation never enables an unavailable product or applicant and does not override eligibility or amount limits. Product/category restrictions, featured presentation and amt/dprods have current prototype readers. firstCategory prioritizes a valid category through the shared ordering resolver; featured_prod takes precedence. Site usage is separate from support: absence of an effective-Site URL assignment does not establish that the parameter is enabled or disabled. preselect=TRUE elects all offered base products and participating applicants on initial Coverage product reveal, respecting Site/URL scope and eligibility. It does not elect optional riders, bypass policy validation or reapply after saved user edits. The applied flag and campaign context persist with the application. Removed mrate and nc parameters are not supported in the new template. Both category names use the same campaign reset behavior, including clearing omitted old product/applicant/order/amount/lock/preselection controls. Captured application scope stores one canonical category key; resume restores that application’s scope. Invalid/empty restrictions do not expand the offering. Global URL definitions and values are authored in requirements/global/products.json; Library and reference documentation project that same source. Existing Storybook page examples exercise the shared alias parser and amount resolver without duplicating page components.",
+        "source": "Admin Center Library URL parameters table; src/content/docs/urlParameters.ts; src/pages/admin/library/UrlParametersLibrary.tsx; src/config/client/coverageCategoryScope.ts; src/config/client/coverageProductScope.ts; confirmed user URL decisions November 16, 2026"
+      }
+    },
+    {
+      "source": "requirements/global/rules/coverage-policy.json",
+      "record": {
+        "id": "coverage-tpa-inforce-amounts",
+        "name": "Available coverage after verified TPA in-force amounts",
+        "status": "confirmed",
+        "statement": "When configured for a product/applicant, use the successfully verified TPA portfolio to deduct that person's existing in-force amount from the applicable product maximum, including applicable age and benefit limits. Also deduct that person's in-force Life amounts from the configured combined Life maximum. Amount dropdowns offer only existing permitted increments within the remaining capacity; exhausted capacity offers no positive amount. Do not deduct spouse amounts from the member or count riders as base coverage. Coverage Next rejects stale/unavailable amounts and combined new Life elections plus verified in-force Life over the same configured maximum. Failed/skipped verification continues as manual review without using portfolio amounts. The prototype uses the same structured fictional portfolio for its drawer and calculations, without a live TPA service. Verified existing base coverage can also satisfy covered-person prerequisites. The configured verified-existing minimum applies only to an applicant with positive matching base coverage established by successful TPA integration; other requests use the new-applicant minimum.",
+        "source": "User-confirmed ASCE Coverage review; requirements/parked/sites/asce/coverage.json; requirements/global/prototype-fixtures/portfolio.json; src/domain/tpaPortfolioAmounts.ts"
+      }
+    },
+    {
+      "source": "requirements/global/rules/coverage-policy.json",
+      "record": {
+        "id": "coverage-tpa-portfolio-access",
+        "name": "Coverage portfolio for a verified existing insured member",
+        "status": "confirmed",
+        "statement": "For a site configured for TPA coverage verification, show the Coverage portfolio action and allow its drawer only when the TPA lookup identifies an existing member with existing active coverage and identity verification succeeds. New or unmatched members, members without existing coverage, failed or skipped verification and incomplete verification outcomes do not receive portfolio access. A failed or skipped identity-verification attempt may continue from Eligibility to Coverage as manual review without portfolio access. The prototype uses configured lookup/verification fixtures and fictional portfolio data. Live TPA integration and use of existing policies for coverage dependencies remain separate; configured amount reductions follow coverage-tpa-inforce-amounts.",
+        "source": "User-confirmed ASCE Coverage review; requirements/parked/sites/asce/eligibility.json; src/domain/tpaIntegration.ts; src/pages/Eligibility.tsx; src/pages/Coverage.tsx; src/app/ApplicationEntry.integration.test.tsx"
+      }
+    },
+    {
+      "source": "requirements/global/rules/coverage-policy.json",
+      "record": {
+        "id": "coverage-configuration-scope",
+        "name": "Separate shared Coverage definitions from effective product/applicant values",
+        "status": "confirmed",
+        "statement": "The global template owns Coverage configuration definitions, defaults, supported assignment scopes and shared page structure. Effective Sites assign products, applicants, policy values and supported presentation overrides. A product/applicant Coverage assignment may use only a confirmed global definition explicitly declaring productApplicantOverrides. Reject unrelated setting IDs, unassigned or disabled products, unsupported applicants, duplicate/overlapping assignments, invalid values and contradictory age bounds for each affected applicant. Omitted policy overrides preserve the assigned product policy; numeric zero defaults on policy-override definitions are unassigned placeholders, not a zero age/benefit limit. Independent product policies retain their own prerequisites and caps. Library Configurations and Rules show shared policy definitions globally under Site filters, separately from Site/product/applicant values. Compiler, prototype adapter and requirements checker use the same assignment parser; source Site product records establish scope, not an editable generated bundle. Existing category/product ordering, amount/URL defaults and locks, in-force deductions, rider/benefit policies, fictional rating, privacy and page-copy contracts remain unchanged. Sites may override supported personal, tobacco and work/income question visibility and requiredness; eligibility and rating policies still require their configured facts. The optional coverage-cost-breakdown setting defaults false and displays only reconciled itemization from the same quote used for the total. Pricing policies, not display settings, own monetary values, fees, modifiers and credits. Missing/invalid optional itemization retains the valid total-only estimate. Labels are global content or configured pricing-component labels. No display configuration creates a charge.",
+        "source": "Coverage configuration audit November 15, 2026; requirements/global/configurations/{coverage-policy,coverage-amount-controls}.json; src/domain/requirementCoverageValidation.mjs; src/domain/requirementCatalog.mjs; src/pages/admin/library/{configurationRows,libraryRequirementRows}.ts"
+      }
+    },
+    {
+      "source": "requirements/global/rules/health.json",
+      "record": {
+        "id": "health-external-qd-boundary",
+        "name": "Keep the external QuickDecision questionnaire separate from portal answers",
+        "status": "confirmed",
+        "statement": "The effective product journey can route QD or FUW processing to the external QuickDecision Health page. The production provider owns its questionnaire, state variations and validation. The prototype displays the effective image sequence through the shared external-prototype-handoff workflow; images do not collect medical answers, verify completion or generate underwriting results. Review statements follow the separately modeled product-based underwriting flag, independent of online Health participation. Shared handoff structure and placeholder defaults are global; supplied image selections belong to the effective Site.",
+        "source": "User external handoff request November 10, 2026; confirmed Review policy CHG-061; Master Client Requirements v78, SUP DI Health questions!A19:F19; requirements/parked/sites/asce/coverage-policies.json; requirements/parked/sites/asce/prototype-handoffs.json"
+      }
+    },
+    {
+      "source": "requirements/global/rules/beneficiary.json",
+      "record": {
+        "id": "beneficiary-client-copy-contract",
+        "name": "Allow Site designation wording without changing beneficiary rules or applicability",
+        "status": "confirmed",
+        "statement": "Global Beneficiary content owns default page title/introduction and designation statements. Effective Sites may override the two header strings and the replaces-prior/new-insurance statement strings through the four declared page content slots. Omitted overrides inherit global defaults; ASCE retains the existing global statement wording. Existing productNotes assignments independently select which statement applies to each product/member-or-spouse combination. A Site statement override applies wherever that content key is assigned on that Site. Assigned statements require nonblank string wording. Wording does not change page requirement/opt-in, participation, record limits, required Primary, optional Contingent, individual allocation totals, trust exclusivity, copy behavior, validation or navigation. Shared help, action labels, record/designation labels and validation wording remain under their existing global/shared field contracts. Library content/configuration rows, the resolved note policy, prototype and Storybook consume the same effective copy.",
+        "uses": [
+          "application-header-client-copy"
+        ],
+        "source": "User Beneficiary wording decision November 15, 2026; requirements/parked/beneficiary.json#contentSlots; requirements/global/content/beneficiary.json; src/domain/requirementCatalog.mjs; src/domain/beneficiaryNotes.ts"
+      }
+    },
+    {
+      "source": "requirements/global/rules/beneficiary.json",
+      "record": {
+        "id": "beneficiary-configuration-boundaries",
+        "name": "Beneficiary configuration boundaries",
+        "status": "confirmed",
+        "statement": "The global template fixes Beneficiary position and shared structure. Effective Sites may select none, optional or required mode; the global default is optional. Effective category defaults and assigned product/applicant/Association participation policies determine applicable adult records. Resolve the current fixed, selected or URL Association through the shared Association context; a membership attestation answer is not an Association ID. Intersect product/applicant availability with current URL scope and explicit elections, preserving inactive saved records. When applicable, individual names, relationship/share, trust name/date and the optional-page opt-in remain included and required. Labels and supported relationship subsets may vary; individual/trust and Yes/No structural choices, whole-percentage and date validation, primary/contingent allocations, record limits and compatible cross-applicant copying remain global. Page title/introduction and designation statement slots retain approved Site overrides, independent of participation and rules. Reject note or participation policies outside assigned product/applicant/Association scope. No real Site rollout or service execution is implied.",
+        "source": "User Beneficiary configuration decision November 16, 2026; shared field constraints and Beneficiary/effective-Site/flow-gate resolvers"
+      }
+    },
+    {
+      "source": "requirements/global/rules/docusign.json",
+      "record": {
+        "id": "docusign-shared-handoff",
+        "name": "Use the shared prototype handoff for DocuSign",
+        "status": "confirmed",
+        "statement": "DocuSign is one globally defined external-signing step. The prototype uses PrototypeHandoffPage and FormRoutePage, without a separate signing widget or portal signature fields. Global image/placeholder defaults are inherited; an effective Site may assign its image sequence. ASCE assigns the supplied DocuSign screen. Intermediate image clicks advance locally; only the final click submits the shared form, saves draft progress and continues through configured transitions to Receipt. Disable advancement while saving or navigating. A failed local save stays on the current screen with shared page feedback and permits retry. An absent/failed image retains the configured placeholder and continue action. This simulates completion; it does not sign or submit an insurance application to a service.",
+        "source": "requirements/parked/docusign.json; requirements/global/prototype-fixtures/handoffs.json; requirements/parked/sites/asce/prototype-handoffs.json; src/components/feedback/PrototypeHandoffPage.tsx"
+      }
+    },
+    {
+      "source": "requirements/global/rules/docusign.json",
+      "record": {
+        "id": "docusign-shared-document-content",
+        "name": "Carry the reviewed legal rules into signing documents",
+        "status": "confirmed",
+        "statement": "Production signing documents use the same effective application answers, active product/applicant participation and Review legal-policy definitions; do not author a second DocuSign copy of state/product notices. Preserve the shared state/product-based underwriting flag and its reviewed consent/authorization precedence. Place the applicable Connecticut underwritten warning immediately above the member e-signature; preserve the applicable supplemental-health 14pt signature-area attestation and other configured signature/document placements. The static prototype image is an illustrative external screen, not a generated document, source of legal policy or record of applicant answers. Review acknowledgements remain separate from electronic signatures.",
+        "uses": [
+          "review-shared-policy",
+          "review-jurisdiction-and-consent",
+          "review-legal-presentation",
+          "applicant-active-participation"
+        ],
+        "source": "MCR v78 Read & Sign!B115:B119 and configured legal placements; user Review decisions November 13, 2026; requirements/global/rules/review.json"
+      }
+    },
+    {
+      "source": "requirements/global/rules/docusign.json",
+      "record": {
+        "id": "docusign-prototype-storage",
+        "name": "Keep prototype progress separate from signing evidence",
+        "status": "confirmed",
+        "statement": "The prototype stores existing application answers and normal saved-page progress through the shared form contract. Image position and image-load failures are local display state and restart when the page remounts. No signature text, signed date, envelope identifier, signed PDF or verified signing-completion status is collected or stored by this page. Do not reinterpret Review acknowledgement booleans, a page save, navigation to Receipt or a prototype confirmation number as production signing evidence. Portal title/introduction and shared handoff messages remain global, with no DocuSign Site page-copy slots. Image paths and alternative text are effective handoff configuration, separate from applicant answers; signed-document wording retains the shared legal/document configuration. Production signing and document generation are required external capabilities; the prototype does not execute them. Separate local workflow metadata records simulated signing-started/submitted boundaries to represent access and recovery rules. These markers are not verified signing status, are never signature evidence and never change the production completion requirement.",
+        "source": "User DocuSign copy decision November 15, 2026; src/pages/DocuSign.tsx; src/components/feedback/PrototypeHandoffPage.tsx; src/app/RoutePage.tsx; src/app/ApplicationFormContext.tsx"
+      }
+    },
+    {
+      "source": "requirements/global/rules/docusign.json",
+      "record": {
+        "id": "docusign-required-signers",
+        "name": "Require the owner and actively applying spouse to sign",
+        "status": "confirmed",
+        "statement": "The global signing requirement is that the member/application owner always signs, including spouse-only and child-only applications. An actively applying spouse also signs for spouse coverage. There is no separate child signature. Resolve spouse participation from currently selected offered coverage and active applicant elections, including applicable attached spouse benefits; Eligibility intent alone, removed products and stale spouse answers do not create a signer. Review acknowledgements are separate answers and never substitute for electronic signatures. These are production signing requirements; the prototype image sequence does not capture signatures.",
+        "uses": [
+          "applicant-active-participation",
+          "applicant-owner-requirements",
+          "review-adult-acknowledgements"
+        ],
+        "source": "User DocuSign decisions November 14, 2026; src/utils/applicantVisibility.ts; requirements/global/rules/applicants.json"
+      }
+    },
+    {
+      "source": "requirements/global/rules/docusign.json",
+      "record": {
+        "id": "docusign-completion-submits",
+        "name": "Submit the application after all required signing is complete",
+        "status": "confirmed",
+        "statement": "Successful completion of all required electronic signatures submits the production application and proceeds to Receipt; do not add a separate portal Submit action after DocuSign. Partial, canceled, declined, expired or failed signing is not completion and must not produce a successful submission or Receipt. Production completion is established by the signing process, not by visiting a URL, saving a draft or selecting a prototype image. The prototype final-image click simulates this successful signing/submission boundary using its existing shared form save, transition and Receipt navigation. It creates no actual envelope, signed document or production submission. Technical/session failures follow the shared error/session model; no signing-specific error page is introduced.",
+        "uses": [
+          "docusign-required-signers",
+          "docusign-prototype-storage",
+          "recovery-technical-failure"
+        ],
+        "source": "User DocuSign decision November 14, 2026; requirements/global/workflows/application.json#external-prototype-handoff"
+      }
+    },
+    {
+      "source": "requirements/global/rules/coverage.json",
+      "record": {
+        "id": "coverage-client-copy-contract",
+        "name": "Keep Coverage policy/system copy global and product copy shared",
+        "status": "confirmed",
+        "statement": "Coverage allows Site title/introduction overrides through the shared application-header contract. Limit and eligibility warnings, total-versus-additional coverage instructions and estimate disclaimers retain global wording driven by effective policies/configuration and derived values. They have no free-form Site copy slots. Product/category/rider copy keeps its existing shared product ownership and effective assignments, not Coverage-specific duplicate definitions. Existing approved content-key note selections remain supported. Copy changes do not modify product availability, applicant/rider participation, category/product/featured ordering, benefit limits or defaults, in-force deductions, calculated estimates, validation or navigation. ASCE inherits the global Coverage header and system copy.",
+        "uses": [
+          "application-header-client-copy"
+        ],
+        "source": "User Coverage copy decision November 15, 2026; requirements/parked/coverage.json; requirements/global/content/coverage.json; shared product/coverage configurations"
+      }
+    },
+    {
+      "source": "requirements/global/rules/contact.json",
+      "record": {
+        "id": "contact-storage-and-validation",
+        "name": "Validate active Contact fields and retain draft answers",
+        "status": "confirmed",
+        "statement": "Persist member address, correspondence, separate business address/employer data and spouse phone/type/email under authored scalar answer keys. A hidden correspondence question persists the global Home value, replacing any retained Business selection; preserve other hidden drafts without reactivating controls. Same-as-home is boolean and copied addresses are separate values. Next uses active effective requiredness, offered-option membership, global postal/email/10-digit phone formats and shared feedback. Hidden controls do not block Next. Production address/delivery integrations are not implemented by the prototype.",
+        "source": "src/app/RoutePage.tsx; src/utils/fieldValidation.ts"
+      }
+    },
+    {
+      "source": "requirements/global/rules/contact.json",
+      "record": {
+        "id": "contact-client-copy-contract",
+        "name": "Configure Contact introductions and business heading through shared content",
+        "status": "confirmed",
+        "statement": "Contact exposes three client copy slots: page title, introduction and Business / Employer Information heading. Global definitions/defaults inherit unless an effective Site supplies values. Shared BusinessInformation reads effective content for the page and standalone examples; copy does not require a Site-specific component or global section-definition edit. Other field labels/options retain their shared field contracts. Applicant labels, navigation, validation and other system wording retain their existing global/shared owners. A heading override never changes section participation, residential address collection, correspondence, same-as-home behavior, or the member employment owner, including spouse-only DI. ASCE inherits the global heading and defaults without a new copy assignment.",
+        "uses": [
+          "application-header-client-copy",
+          "contact-member-employment"
+        ],
+        "source": "User Contact heading decision November 15, 2026; requirements/parked/contact.json#contentSlots; requirements/global/content/contact.json; src/components/contact/BusinessInformation.tsx"
+      }
+    },
+    {
+      "source": "requirements/global/rules/contact.json",
+      "record": {
+        "id": "contact-configuration-boundaries",
+        "name": "Preserve Contact core collection and supported conditional overrides",
+        "status": "confirmed",
+        "statement": "Global Contact mapping constraints keep member street, city, state and ZIP/postal code included and required. Labels and supported state-option configuration remain assignable. Apartment/suite defaults optional. Applicable spouse contact and business/employer fields retain supported Site inclusion and requiredness overrides. Postal, email and phone format properties stay global. A Site-hidden same-as-home checkbox cannot copy or suppress separate editable business fields. ASCE inherits global Contact defaults and has no new Site-only implementation.",
+        "source": "User Contact configuration decisions November 16, 2026; requirements/mappings/page-fields/contact.json; requirements/parked/contact.json#businessPolicy"
+      }
+    },
+    {
+      "source": "requirements/global/rules/eligibility.json",
+      "record": {
+        "id": "tpa-member-lookup",
+        "name": "Look up the applicant with the TPA on Next",
+        "status": "draft",
+        "fields": [
+          "first-name",
+          "last-name",
+          "birth-date"
+        ],
+        "statement": "After the page validates and the standard page save succeeds, sites with TPA integration look up the applicant. In the coverage-verification flow, an existing member with active coverage is prompted for identity verification, collecting an address first when configured. Successful verification enables portfolio access; failed or skipped verification continues as manual review without the portfolio, as recorded in coverage-tpa-portfolio-access. The lookup outcome and submission decision are saved with the application. None performs no lookup, identity verification or portfolio approval. Membership-auto-approval gives new members automatic approval and existing members manual review, without identity verification or portfolio access. The prototype uses fictional records and simulated verification outcomes; no live service or code delivery is performed.",
+        "source": "src/pages/Eligibility.tsx; src/domain/tpaIntegration.ts"
+      }
+    },
+    {
+      "source": "requirements/global/rules/eligibility.json",
+      "record": {
+        "id": "eligibility-client-copy-contract",
+        "name": "Configure Eligibility introductions and applicant notes through shared content slots",
+        "status": "confirmed",
+        "statement": "Global Eligibility owns default title, introduction and member/spouse/child note definitions. Effective Sites may override only these five declared copy slots. The member note defaults empty and is hidden when blank, without introducing a member/You heading. Spouse and child notes retain their global defaults and existing offered/selected applicant participation. Child notice-only mode still requires nonblank child note wording and does not collect child records. Copy overrides never change eligibility, covered people, section participation, child collection/maximum, verification, validation or navigation. Breadcrumbs, loading/navigation labels, validation wording and member-verification dialog copy stay global. Field labels/options and eligibility/TPA settings retain their existing shared configuration owners. Source note adapters, Library configuration values, prototype and Storybook use the same effective content; omitted assignments inherit defaults. ASCE inherits all five values without a new copy assignment.",
+        "source": "User Eligibility configurability decisions November 15, 2026; requirements/parked/eligibility.json#contentSlots; requirements/global/content/eligibility.json; existing EligibilitySections child notice-only guard",
+        "uses": [
+          "application-header-client-copy"
+        ]
+      }
+    },
+    {
+      "source": "requirements/global/rules/eligibility.json",
+      "record": {
+        "id": "eligibility-configuration-boundary",
+        "name": "Keep Eligibility field participation configurable and format validation global",
+        "status": "confirmed",
+        "statement": "The global template owns Eligibility composition, page position, shared fields, section predicates and validation mechanisms. Member ZIP, state and date of birth are global collection requirements: they remain included and required. Effective Sites retain supported field options such as eligible-state filtering. Spouse/child default fields may be hidden per person and retain supported requiredness overrides without changing the member fields. Additional dependent questions use globally defined default-off fields, enabled by Site assignment; student status and active duty in the Armed Forces are available child questions. ASCE retains default spouse/child fields and enables only student status. Enabling a question never invents an eligibility exclusion. Site page fieldParticipation scopes include/hide selections to the named person using canonical field IDs. This does not remove active child-list or other structural participation checks. Postal-code and date format, keyboard mode and length properties retain their global field definitions on this placement; conflicting overrides reject. Spouse membership, child gender/student status, supported field labels/options and verification-method subsets retain their shared field contracts. Covered people, residency filtering, child detail/notice-only mode and maximum, TPA mode, lookup fields and address-before-verification use shared configuration definitions/defaults with Site values. An active TPA lookup uses exactly its configured owner-field list, whose fields must be collected on application forms by Eligibility submission; optional Home quote controls, future forms, dependent fields and later verification-address fields are not lookup inputs. Fictional records must provide those configured facts and have unique normalized signatures; extra fixture facts do not add hidden match requirements. None mode performs no lookup and does not require dormant lookup-field availability. Production integrations and applicant facts are not client-editable copy. Library, prototype and Storybook consume the same projection.",
+        "source": "User Eligibility configuration decisions November 15, 2026; requirements/mappings/components/eligibility.json#constraints; requirements/global/configurations/{people,address}.json; src/domain/requirementCatalog.mjs; src/domain/tpaIntegration.ts; User member/dependent collection clarification November 15, 2026"
+      }
+    },
+    {
+      "source": "requirements/global/rules/advisor-resume.json",
+      "record": {
+        "id": "advisor-entry-and-identity",
+        "name": "Validate the active advisor entry mode and fields",
+        "status": "confirmed",
+        "statement": "Advisor Login uses the global Start/Continue mode field. Start requires advisor email, ten-digit phone and advisor code; Continue requires applicant email and carries it into Resume. Validate only the selected branch and the supported mode. Entry does not save an application or overwrite an existing household. Starting/continuing clears prior applicant state and submitted-session flags while retaining the applicable advisor identity and selected entry mode. The page title and introduction permit effective-Site wording overrides with global defaults. Start/Continue instructions, shared tab/button labels, validation and access behavior retain their existing global/shared contracts. Production must authorize the advisor and their access; the prototype performs shared validation and local routing, with no authentication service. The mode, advisor identity and applicant-email fields are globally included and required whenever their branch is active. Sites cannot hide them, weaken requiredness, change Start/Continue choices or replace the global email/ten-digit phone formats. Advisor code uses global nonblank validation only, with no Site format or length override. Ordinary identity field labels retain supported Site wording overrides; the mode definition and option labels remain global. Required text rejects whitespace-only values through the shared field validator.",
+        "uses": [
+          "application-header-client-copy"
+        ],
+        "source": "User Advisor configuration decision November 17, 2026; User Advisor copy decision November 15, 2026; Advisor final audit November 13, 2026; requirements/parked/advisor-login.json"
+      }
+    },
+    {
+      "source": "requirements/global/rules/advisor-resume.json",
+      "record": {
+        "id": "advisor-handoff-and-return",
+        "name": "Send prepared applications to the applicant and return edits to their advisor",
+        "status": "confirmed",
+        "statement": "After Profile validation in an advisor-prepared flow, the shared SendApplicationDialog shows the applicant recipient. Cancel stays on Profile; Send proceeds to Advisor Send Confirmation. The applicant receives an invitation to Resume, then requests a separate secure email link and completes phone verification for the advisor-prepared Review context. Only successful verification restores answers, then opens Review with earlier advisor-completed steps locked. Review edit requests use the saved advisor email; missing identity displays no invented recipient. Storybook supplies explicit fictional advisor answers. Cancel stays on Review; confirm opens Application Edit Confirmation. Both confirmation pages keep all page copy global, including titles, introductions, success messages, detail labels, deadline wording and actions; neither declares Site page-copy slots. Effective contact/identity and retention values remain independently configured data. Confirmations display stable local event times in the prototype. Production delivery and authorization are system requirements; no real email delivery or authentication is executed. Review retains applicant-facing advisor guidance and the request-edit action, but does not display the redundant Getting Started/Coverage/Profile locked-steps banner. The shared SendApplicationDialog default title/introduction, action labels, recipient labels and missing-value wording are global Fresh-start content; standalone examples and the default adapter read the same definitions. Requesting an advisor correction is an optional branch from Review, not a required application step. Applicants needing no correction continue after required acknowledgements.",
+        "source": "User confirmation copy decision November 15, 2026; Existing Profile/Review decisions; advisor/resume final audit November 13, 2026",
+        "replaces": [
+          "rule-advisor-flow-send-to-applicant-dialog",
+          "rule-advisor-flow-advisor-mode-review-edit-dialog",
+          "rule-progress-navigation-advisor-applicant-steps-locked"
+        ]
+      }
+    },
+    {
+      "source": "requirements/global/rules/advisor-resume.json",
+      "record": {
+        "id": "resume-entry-and-privacy",
+        "name": "Use a uniform public resume confirmation",
+        "status": "confirmed",
+        "statement": "Applicant Resume collects applicant email; Advisor Continue identifies the applicant first, then Resume collects advisor email and phone. Resume returns the same confirmation for matching, missing, expired or recovery-locked applications, sending only when appropriate. Link-request limits count by Site plus normalized entered email, whether or not an application exists. A limit response and its cooldown are identical for matching and missing records, never an existence signal. No application ID, matching flag, answers or raw diagnostics appear in the public response. Session/advisor email may prefill without a lookup. Requests and resends are explicit, not triggered on mount or by displaying an error. The local demo outbox is separate from production delivery.",
+        "source": "portal_inventory.xlsx, Rules - Resume!C2:D19; user clarifications November 13, 2026; fresh-start global model",
+        "uses": [
+          "recovery-resume-privacy"
+        ]
+      }
+    },
+    {
+      "source": "requirements/global/rules/advisor-resume.json",
+      "record": {
+        "id": "resume-retention-and-limits",
+        "name": "Use confirmed production retention and recovery defaults",
+        "status": "confirmed",
+        "statement": "Global production defaults: ten-day application retention from initial save, ten-minute email links, thirty-minute MFA sessions with a two-minute warning, ten-minute phone codes, three incorrect code attempts per MFA session, five total phone-code requests per fifteen minutes per application and five link requests per fifteen minutes per Site plus entered email. Link-request cooldown is ten minutes; phone-code request cooldown and application recovery lock are thirty minutes. All thirteen retention, validity, warning, attempt, request-window, cooldown and lock values are fixed globally at these confirmed defaults; effective Sites inherit them without overrides. This supersedes the earlier supported Site-assignment boundary. Save updates, requests, verification and advisor sending never extend the original application deadline. Advisor confirmation displays its actual deadline. Service deadlines are authoritative; delayed callbacks, navigation, reload or changed query expiry values cannot extend them. These are production requirements represented by the same source in the local prototype, not real delivery/authentication or batch services.",
+        "source": "portal_inventory.xlsx, Rules - Resume!C2:D19; user clarifications November 13, 2026; fresh-start global model; user decision November 17, 2026: all recovery timings and limits, including retention, fixed globally",
+        "replaces": [
+          "rule-persistence-resume-verification"
+        ]
+      }
+    },
+    {
+      "source": "requirements/global/rules/advisor-resume.json",
+      "record": {
+        "id": "advisor-resume-content-and-storage",
+        "name": "Keep advisor and recovery content and storage in fresh start",
+        "status": "confirmed",
+        "statement": "Global page definitions own structure, save participation and content placement; canonical fields own labels, options and checks. Resume request, delivery-method and code-entry screens keep all page copy global, including titles, introductions, privacy-safe confirmations, instructions, expiry/limit messages, validation and actions; none declares Site page-copy slots. All three Resume screens keep their applicable fields included and required globally: email with fixed email validation, Text/Call delivery choices, and a six-digit numeric verification code. Field labels, choices and format/length checks have no ordinary Site override. Recovery-policy definitions and values, including retention, are fixed globally; no Site override is supported. Confirmation copy also remains global; Advisor entry alone permits its two declared header overrides. Advisor identity and applicant-email are separate bindings. Saved answer storage contains no magic-link token, MFA proof or phone code. A separate Site-scoped, tab-local recovery handle stores the MFA proof, original fixed session/code deadlines, masked target, method and UI return context for reload/back continuity, and is cleared on success, terminal recovery errors and new-application reset. Only an opaque MFA session ID, Site and supported flow context are needed in code-page URLs; the consumed email token is removed. The simulator stores hashed link/MFA/code proofs, request timestamps, absolute cooldown/lock deadlines and minimal history of replaced-code hashes separately from applicant answers. Demo outbox content is explicit simulation. Confirmation metadata is not another editable application. Existing technical-error production selection rules remain; no Error-page service interception or real delivery is added.",
+        "source": "User Resume copy decision November 15, 2026; non-copy configuration review November 17, 2026; portal_inventory.xlsx, Rules - Resume!C2:D19; user clarifications November 13, 2026; fresh-start global model"
+      }
+    },
+    {
+      "source": "requirements/global/rules/advisor-resume.json",
+      "record": {
+        "id": "advisor-access-stages",
+        "name": "Apply advisor and applicant access by lifecycle stage",
+        "status": "confirmed",
+        "statement": "During preparation or requested revision, only the saved advisor may recover an advisor-prepared application. After Send, the applicant may recover and the saved advisor may authenticate to take over before DocuSign starts. Successful advisor takeover returns to Eligibility, ends the prior active session and requires a new Send before applicant access resumes. Sending and edit requests invalidate prior recovery proofs. Starting DocuSign ends advisor access; only the applicant may resume unfinished signing. Active-session ownership is distinct from eligibility to authenticate. All submitted, expired or deleted applications are unavailable to both actors through saved-application recovery. Production enforces these authorization transitions; the prototype represents lifecycle metadata separately from answers and production signing evidence.",
+        "source": "Tutorials Advisor model (new template), application-access; user decisions November 17, 2026"
+      }
+    },
+    {
+      "source": "requirements/global/rules/advisor-resume.json",
+      "record": {
+        "id": "resume-signing-and-submission",
+        "name": "Resume unfinished signing and end recovery at submission",
+        "status": "confirmed",
+        "statement": "After successful applicant email-link and phone-code verification, return an advisor-prepared application to Review if signing has not started or to DocuSign when signing is unfinished. Once all required signatures complete and submission succeeds, stop issuing saved-application recovery links; retain the same privacy-safe public confirmation. Existing proofs must no longer restore a submitted application. Do not introduce a read-only Receipt recovery path or another underwriting/error outcome. Local prototype signing-started/submitted lifecycle markers simulate these boundaries and are never production completion evidence; no actual signing, delivery, submission or batch service is implemented.",
+        "source": "User recovery decisions November 17, 2026"
+      }
+    },
+    {
+      "source": "requirements/global/rules/advisor-resume.json",
+      "record": {
+        "id": "advisor-deletion-notifications",
+        "name": "Notify the advisor and applicant when an advisor-prepared application is deleted",
+        "status": "confirmed",
+        "statement": "At the original global retention deadline, an incomplete advisor-prepared application is expired/deleted and cannot be resumed. Notify both the saved advisor and the applicant. The advisor email uses the shared advisor status/details format with a Deleted timestamp and the Site-scoped Advisor login link. The applicant email reuses the consumer deletion wording and shared salutation/footer, directs them to their advisor for assistance, and has no Apply, start-application or Resume action. Its contact destination is the saved advisor; do not invent an advisor contact when unavailable. The consumer deletion email retains its existing new-application action. Templates and flow/tutorial references share canonical global definitions. Production deletion/delivery remain service requirements; local previews do not send messages.",
+        "uses": [
+          "resume-retention-and-limits"
+        ],
+        "source": "User advisor/applicant purge-notification instruction November 18, 2026; requirements/global/application.json; requirements/global/content/emails.json"
+      }
+    },
+    {
+      "source": "requirements/global/rules/application.json",
+      "record": {
+        "id": "abandoned-lead-nightly-batch",
+        "name": "Make incomplete applications available to the nightly TPA lead batch",
+        "status": "confirmed",
+        "fields": [
+          "first-name",
+          "last-name",
+          "email",
+          "phone"
+        ],
+        "statement": "After Membership is successfully validated, submitted and saved, the application's applicant name, email and phone are available for abandoned-lead processing. Applications still incomplete when the nightly batch is prepared are included in batch files for their site's TPA. Merely viewing, editing or failing Membership validation does not qualify an application. These rules describe actual system behavior. The prototype does not execute nightly batch processing, XML generation, scheduling or TPA file transmission.",
+        "source": "docs/requirements-spec/page-review.md; Membership review decision"
+      }
+    },
+    {
+      "source": "requirements/global/rules/application.json",
+      "record": {
+        "id": "membership-initial-autosave-email",
+        "name": "Send the initial autosave email after successful Membership submission",
+        "status": "confirmed",
+        "fields": [
+          "email"
+        ],
+        "statement": "The initial autosave email is triggered for the applicant as soon as Membership is successfully validated, submitted and saved, confirming the start of saved application progress. It is not triggered by viewing the page, entering an email address, failed validation or a failed save. These rules describe actual system behavior. The prototype does not execute email delivery or automatically create a mock email preview on submission.",
+        "source": "docs/requirements-spec/page-review.md; Membership review decision"
+      }
+    },
+    {
+      "source": "requirements/global/rules/application.json",
+      "record": {
+        "id": "profile-financial-questionnaire-applicability",
+        "name": "Require an enabled Site feature and applicable financial policy",
+        "status": "confirmed",
+        "statement": "Profile’s member financial questionnaire requires the effective Site financial-questionnaire feature to be enabled and the applicable product/policy criteria to be satisfied. A disabled Site feature suppresses it even with saved answers or an otherwise satisfied policy. Review uses the same evaluator. Threshold rules require at least one matching currently selected member product, including an inclusive zero threshold. The policy definition is global and remains visible in the Library without a Site assignment; effective Sites assign product groups, thresholds and comparison modes through that definition. Storybook uses the same definition.",
+        "source": "User Profile review; src/domain/financialQuestionnaire.ts",
+        "replaces": [
+          "rule-profile-financial-questionnaire-visibility"
+        ]
+      }
+    },
+    {
+      "source": "requirements/global/rules/application.json",
+      "record": {
+        "id": "health-cir-questionnaire",
+        "name": "Render the assigned questionnaire for the selected CIR rider",
+        "status": "confirmed",
+        "statement": "The internal CIR page requires effective page participation and a selected CIR rider for the applicant. Its effective questionnaire owns order, activities/dwelling follow-ups and required fields. Member and spouse answers are independent. Missing or unresolved assignments block Next. No production questionnaire assignment is added by this migration.",
+        "uses": [
+          "applicant-section-headings",
+          "applicant-active-participation"
+        ],
+        "source": "requirements/parked/health-cir.json; src/config/flowGates.ts; src/domain/configuredHealthQuestionnaire.ts"
+      }
+    },
+    {
+      "source": "requirements/global/rules/application.json",
+      "record": {
+        "id": "payment-configurable-notes",
+        "name": "Show configured shared or product payment notes",
+        "status": "confirmed",
+        "statement": "The global Payment notes content slot defaults to an empty list. A Site may supply stable-id plain-text notes shared once above product cards (empty productKeys) or inside assigned selected product cards (one or more productKeys). Notes appear only while collecting payment and never calculate or change estimates. Effective-Site copy may describe taxes or billing fees. ASCE records Ontario/Manitoba 8% and Saskatchewan 6% premium sales tax as a shared note; no tax amount is added to prototype estimates. Payment has three content slots: page title, introduction and notes. Billing-timing explanation and estimate disclaimer remain global system wording. Field labels, allowed choices, requiredness and payment policy retain their existing shared configuration contracts.",
+        "source": "User Payment copy decision November 15, 2026; User decision November 14, 2026; MCR Main!AJ165; requirements/global/content/payment.json; requirements/parked/sites/asce/pages/payment.json"
+      }
+    },
+    {
+      "source": "requirements/global/rules/application.json",
+      "record": {
+        "id": "application-header-client-copy",
+        "name": "Use consistent client title/introduction overrides on reviewed pages",
+        "status": "confirmed",
+        "statement": "Global content owns page title and introduction definitions/defaults. Membership, Eligibility, Coverage, Beneficiary, Contact, Profile, Review, Payment, all five Health pages, Advisor entry and Receipt allow effective-Site overrides of their declared header slots. Omitted values inherit global defaults. Breadcrumbs, navigation labels, validation and verification wording, legal/authorization/consent content and other page copy are outside this header permission and retain their own reviewed contracts. Copy does not change page assignment, flow, fields or policy. Header display follows the existing shared frame or existing page-owned confirmation composition. Health QD retains its full-screen image handoff over that frame; header overrides do not edit supplied images or the external provider content and do not add another header inside the handoff. Library, prototype, standalone defaults and Storybook resolve the same content source/projection.",
+        "source": "User consistent-header decision November 15, 2026; page contentSlots and requirements/global/content-bindings.json"
+      }
+    },
+    {
+      "source": "requirements/global/rules/application.json",
+      "record": {
+        "id": "shared-action-typography",
+        "name": "Inherit shared link and button presentation",
+        "status": "confirmed",
+        "statement": "Global presentation tokens own weight 600 for links and buttons and no link underline, including hover/focus. The application, Storybook and Library foundation previews use the same MUI theme. Native/email anchors use the same tokens; remove local weight/underline overrides. Inline drawer actions reuse MUI Link with button semantics and a visible focus outline. This is global presentation, not a new Site copy or typography override.",
+        "source": "User shared-control update November 15, 2026; requirements/global/presentation/controls.json; requirements/global/presentation-tokens.json; src/app/theme.ts"
+      }
+    },
+    {
+      "source": "requirements/global/rules/application.json",
+      "record": {
+        "id": "global-page-configuration-boundary",
+        "name": "Inherit the global page list and order",
+        "status": "confirmed",
+        "statement": "The global template owns the complete public page list, routes, structure and order for every Site. Sites cannot add, remove or reorder pages. Only Beneficiary and Payment accept a Site participation setting: required, optional or none (disabled), inheriting their global defaults when omitted. Their positions remain global even when disabled. Membership remains the first required application form. Health pages are global templates required when applicable, not Site on/off options; selected products, underwriting and assigned questionnaires determine which forms and applicants participate. ASCE uses the existing external Life QuickDecision route; DI-only applications do not gain Health questions, and CIR has no separate page without an applicable separate questionnaire assignment. All five Health templates remain documented in the Library. Prototype and Storybook resolve the same fresh-start projection.",
+        "source": "User page-configuration clarification November 15, 2026; requirements/parked/pages.json; src/domain/requirementPagePresentation.mjs; src/config/flowGates.ts"
+      }
+    },
+    {
+      "source": "requirements/global/rules/application.json",
+      "record": {
+        "id": "shared-content-references",
+        "name": "Author shared content once and reference every use",
+        "status": "confirmed",
+        "statement": "A content item has one global authoring owner/default. Repeated uses select that item through declared references and consumer bindings, rather than copied editable strings. References must resolve to an authored owner; cycles, missing owners and a second authored value for a reference are rejected. Preserve separate controls when meaning or approved Site override scope is independent, including Receipt outcomes and separate email subject/title slots. The Library presents wording, images, links and documents in one Content inventory with usage references, global defaults, effective Site values and supported wording overrides. Definitions, values and document storage do not form separate content groups. Emails has its own Library destination and uses the canonical email definitions and previews. Runtime bindings and generated catalog rows are projections of these owners; Library, prototype and Storybook share the same source.",
+        "source": "User Content Library consolidation decision November 17, 2026; requirements/global/content-references.json; requirements/global/content-bindings.json"
+      }
+    },
+    {
+      "source": "requirements/global/rules/review.json",
+      "record": {
+        "id": "review-edit-workflow",
+        "name": "Confirm edits and use the advisor edit-request flow",
+        "status": "confirmed",
+        "statement": "Before Review is submitted, a consumer document Edit opens the shared confirmation dialog; Cancel stays on Review, confirm navigates to the owning page or single-page section. Advisor-prepared applications instead open the configured request-edit dialog and continue to its confirmation. Submitted Review removes Edit actions and uses the established shared navigation lock. Advisor delivery is a production rule; the prototype performs local dialog/navigation behavior only. The shared flow=advisor URL contract selects this context and restores its session flag; unsupported query values do not enable it. The parameter is not an authentication or authorization mechanism. The advisor’s normal preparation/edit stage ends with the Profile send dialog and Advisor Send Confirmation; successfully verified advisor-prepared applicants enter Review. Both ordinary and advisor-prepared applicants continue from Review through their applicable remaining steps after consent. The removed locked-steps warning is not shown; the remaining advisor information and request-edit actions still apply.",
+        "source": "Review final audit November 13, 2026; Master Client Requirements v78, Read & Sign; existing confirmed consent/authorization decisions",
+        "replaces": [
+          "rule-review-edit-confirmation-consumer-flow"
+        ]
+      }
+    },
+    {
+      "source": "requirements/global/rules/review.json",
+      "record": {
+        "id": "review-legal-presentation",
+        "name": "Use two shared legal sections and scoped printing",
+        "status": "confirmed",
+        "statement": "Review has two legal sections: Read & Sign and Electronic Consent. Source blocks honor before-review, before-consent, Read & Sign appendix, after-electronic-consent, before-signature and before-member-signature placements. CT underwritten warning appears immediately above the member Review acknowledgement, and its required production DocuSign/PDF position is immediately above the member e-signature. Supplemental-health attestation is 14pt above the acknowledgement/signature area when applicable. ASCE has no enabled supplemental-health product. Print uses the shared isolated action for the selected disclosure. The Review application preview has no PDF-download action or signature section; production signing/document generation is documented, not executed by this prototype. Read & Sign remains fully expanded. Electronic Consent uses the shared keyboard-focusable rich-text scroll region, globally limited to 240px on screen; both print in full and retain legal-document links. This presentation belongs to the global page definition, not a Site override.",
+        "source": "User CT placement decision November 13, 2026; MCR v78 Read & Sign!B115:B119; Review final audit"
+      }
+    },
+    {
+      "source": "requirements/global/rules/review.json",
+      "record": {
+        "id": "review-configuration-boundaries",
+        "name": "Separate legal policy assignments from immutable Review fields",
+        "status": "confirmed",
+        "statement": "Review page/order and preview scope remain global. Only title and introduction retain their approved Site content slots. Owner/applying-spouse acknowledgements and conditional policy fields have global definitions: Sites cannot hide them, change labels/choices/formats, or alter requiredness. Dividend acknowledgement remains required when applicable; dividend name/DOB remain optional. A shared Review policy assignment may vary supported legal wording, jurisdiction/product/applicant/Association predicates, placements and document selections. Explicit products and product/applicant pairs must be assigned to the effective Site; Associations must be enabled for that Site. All declared policy fields must come from the global policy-field surface, including inactive blocks, and applicant-type prerequisites must reference collected fields and valid options. Malformed/unknown filters and duplicate active field bindings are rejected. Current URL-filtered elections and the canonical Association resolver determine applicability; membership attestation or retained unrelated Association answers do not identify an Association. All jurisdiction selectors normalize the same residence code. Existing saved coverage-mode predicates use their established context, defaulting to new; no new new/additional coverage question is introduced. ASCE inherits its existing legal default and has no new assignments.",
+        "source": "User Review field decision November 16, 2026; requirements/mappings/page-fields/review.json; requirements/global/application.json#shared.review-policy; src/config/reviewExperience.ts; src/domain/reviewPolicy.ts"
+      }
+    },
+    {
+      "source": "requirements/global/rules/recovery.json",
+      "record": {
+        "id": "recovery-shared-layout",
+        "name": "One shared redirect-page component",
+        "status": "confirmed",
+        "statement": "Use one global ApplicationErrorState redirect-page component with source-defined content cases for HTTP errors, a generic technical error, Maintenance, Session expired. Error, Maintenance and Expired access are content groups, not separate page components. Ordered slots are a 48px code/icon indicator, title, message, optional guidance, configured actions and shared SiteSupport, within the minimal recovery header and shared footer. A document icon appears beside a known HTTP code, without an X overlay. Generic technical errors use the document icon without a code; session expiry uses its clock icon. Magic-link expiry is a page error within Resume, not a redirect-page case. These are prototype presentation and Library/Storybook documentation; this review adds no service or business-flow failure wiring.",
+        "source": "User decisions November 13, 2026; requirements/global/recovery.json; src/components/feedback/ApplicationErrorState.tsx"
+      }
+    },
+    {
+      "source": "requirements/global/rules/recovery.json",
+      "record": {
+        "id": "recovery-technical-failure",
+        "name": "Use specific error-code content before generic technical content",
+        "status": "confirmed",
+        "statement": "When a technical failure occurs, use its specific error-code mapping when one is defined. Use the generic technical-error content case only when an error exists but no specific error-code mapping applies. An ordinary correctable field or business issue stays within its current page. Session countdown expiry uses the shared Session expired page. Expired or invalid magic links land on Resume with an inline page error and the email link-request form available. This production selection rule is documented; this template review does not add automatic routing or service integrations.",
+        "source": "User decisions November 13, 2026; requirements/global/recovery.json; src/components/feedback/ApplicationErrorState.tsx",
+        "replaces": [
+          "rule-application-technical-error"
+        ]
+      }
+    },
+    {
+      "source": "requirements/global/rules/recovery.json",
+      "record": {
+        "id": "recovery-resume-privacy",
+        "name": "Do not disclose saved application existence",
+        "status": "confirmed",
+        "statement": "Production resume must never disclose whether a saved application exists before successful verification. Show the same public link-request confirmation regardless of a matching record and send only when appropriate. Never display saved-application-unavailable as a lookup result. Technical errors use the shared error-code/generic Error selection rule. Normal application inactivity uses the session-timeout page; the separate fixed MFA deadline uses the same shared Session expired page. Request-limit feedback is identical for matching and missing emails. These are documented production rules; this error-template review does not change the resume service or wire new redirects.",
+        "source": "User decisions November 13, 2026; requirements/global/recovery.json; src/components/feedback/ApplicationErrorState.tsx"
+      }
+    },
+    {
+      "source": "requirements/global/rules/recovery.json",
+      "record": {
+        "id": "recovery-expired-access",
+        "name": "Separate session redirects from link and verification-code page errors",
+        "status": "confirmed",
+        "statement": "When the application inactivity warning countdown reaches zero, the session expires and redirects to the shared Session expired content case. Keep the existing session timer and redirect behavior. Expired or invalid magic links land directly on Resume, where an inline error explains that the link is no longer valid and the user can enter their email to request another link. Phone verification-code expiry remains an inline page error on the code-entry page, with verification disabled until a new code is requested. Neither magic-link nor phone-code expiry uses the Session expired page or a separate expiry page. No lookup or delivery is triggered automatically by showing the page error. Never disclose saved application existence from a link request; public confirmation remains uniform. The prototype documents and previews the inline state without adding token validation or new service redirect wiring. The fixed MFA verification deadline warns inline without extension and opens the same shared Session expired page at zero. Link and phone-code expiration remain inline on their respective pages.",
+        "source": "User session-expiry destination update November 15, 2026; User decisions November 13, 2026; requirements/global/recovery.json; src/components/feedback/ApplicationErrorState.tsx"
+      }
+    },
+    {
+      "source": "requirements/global/rules/recovery.json",
+      "record": {
+        "id": "recovery-maintenance",
+        "name": "Maintenance uses the shared recovery frame",
+        "status": "confirmed",
+        "statement": "Show Maintenance with the effective Site identity and shared support, without navigation into the unavailable flow. Do not invent a return time or claim unsaved data was saved. Production host availability/fallback requirements must cover an app that cannot load; the prototype represents the page without a live availability service.",
+        "source": "User decisions November 13, 2026; requirements/global/recovery.json; src/components/feedback/ApplicationErrorState.tsx",
+        "replaces": [
+          "rule-application-maintenance"
+        ]
+      }
+    },
+    {
+      "source": "requirements/global/rules/recovery.json",
+      "record": {
+        "id": "recovery-client-copy-contract",
+        "name": "Permit Maintenance wording while retaining global error and expiry copy",
+        "status": "confirmed",
+        "statement": "Maintenance permits effective-Site overrides of its title, explanation and optional guidance, with global definitions/defaults. HTTP 400/404/500, generic unmapped technical errors and Session expired retain global page wording. All recovery action labels, error-code/state mapping, indicator/icon/layout, selection rules, session countdown/redirect behavior and supported actions remain global. Effective Site branding/support contacts retain their existing configuration. Maintenance wording flows through the same fresh-start content projection into the existing ApplicationErrorState; no new component, error type, production interception or service routing is added. Do not invent a return time or claim unsaved data was saved. Link and phone-code expiry remain inline. Application inactivity and Resume MFA session expiry use the same shared Session expired page.",
+        "source": "User variant-by-variant redirect copy decisions November 15, 2026; requirements/parked/maintenance.json; requirements/global/content/recovery.json",
+        "uses": [
+          "recovery-shared-layout",
+          "recovery-technical-failure",
+          "recovery-maintenance",
+          "recovery-expired-access"
+        ]
+      }
+    },
+    {
+      "source": "requirements/global/rules/recovery.json",
+      "record": {
+        "id": "application-session-warning",
+        "name": "Warn before the global application inactivity deadline",
+        "status": "confirmed",
+        "statement": "The global application-session configuration owns the confirmed inactivity limit and warning lead time; no Site override is supported. Before the warning opens, application form activity renews the inactivity deadline. At the warning threshold, show the shared countdown. Once the warning is open, ordinary activity, Escape, navigation and reload cannot extend the deadline; only its explicit Keep session active action can renew an unexpired session. Preserve absolute deadlines across routes and reloads and recheck after background pauses. These are production requirements represented by the existing local timer, without a real session service.",
+        "replaces": [
+          "rule-application-session-warning"
+        ],
+        "source": "User timing confirmation November 17, 2026; requirements/global/configurations/application-session.json; src/app/ApplicationSessionGuard.tsx"
+      }
+    },
+    {
+      "source": "requirements/global/rules/recovery.json",
+      "record": {
+        "id": "application-session-expired",
+        "name": "Use the shared expiration page when the application session ends",
+        "status": "confirmed",
+        "statement": "At the application inactivity deadline, or an application-service expired-session report, stop the form flow and open the shared Session expired page once. Utility pages remain usable. Resume uses secure recovery and starts a new application session after successful verification; Start new application clears local answers and session state. Do not promise retention of unsaved changes. This application inactivity deadline is separate from the fixed Resume MFA deadline, which uses the same expired page. Link/code expiry remains inline. Keep the existing prototype timer and redirect; add no service interception.",
+        "replaces": [
+          "rule-application-session-expired"
+        ],
+        "uses": [
+          "recovery-expired-access",
+          "recovery-resume-privacy"
+        ],
+        "source": "User timing confirmation November 17, 2026; src/app/ApplicationSessionGuard.tsx; src/pages/ErrorPage.tsx; src/app/ApplicationFormContext.tsx"
+      }
+    },
+    {
+      "source": "requirements/global/rules/home.json",
+      "record": {
+        "id": "home-client-copy-contract",
+        "name": "Declare Home client-editable copy and retain global process wording",
+        "status": "confirmed",
+        "statement": "Global Home content owns all defaults. Effective Sites may override the hero tagline, heading, description and image/alternative text; How applying works heading/introduction; Coverage options heading/introduction; quote introduction heading/description; optional About-client content; and optional entry-notice title/text through the declared Home content slots. Omitted assignments inherit global defaults. The three applying-step titles/descriptions and Home action labels (Start my application, Continue application, Get an instant quote) stay global and are not allowed Site content slots. Other Home-owned wording remains global unless explicitly declared as a supported slot. Copy overrides do not change the three-step structure, navigation, quote eligibility, product participation or display rules. Shared branding, field and product/category presentation retain their own existing configuration contracts; Home does not duplicate them. Library configuration rows, prototype and Storybook use the same declared slots and content projection. ASCE inherits the global copy without a Home content assignment.",
+        "source": "User Home configurability decisions November 14, 2026; requirements/parked/home.json#contentSlots; requirements/global/content/home.json; src/pages/admin/library/configurationRows.ts"
+      }
+    },
+    {
+      "source": "requirements/global/rules/home.json",
+      "record": {
+        "id": "home-entry-presentation",
+        "name": "Use global Home mockup copy and shared entry actions",
+        "status": "confirmed",
+        "statement": "The November 15 mockup supplies global Home wording defaults, including hero, quote introduction/action, applying steps, coverage introduction and underwriter description. Site names use the shared client-name/acronym substitutions; ASCE owns no new copy assignment. Existing approved Home content overrides remain supported; action labels/prompts and three-step wording stay global. Hero variants use one primary action and a paragraph with the secondary route link beneath it. Preserve routes, new-application reset and optional notice gating. Home opts into the shared QuickDecision notice icon reveal: one brief 1000ms scale/jiggle when at least half the notice enters view, then normal size, once per mount; honor reduced motion and retain product-driven notice eligibility. No page-specific help/animation component or Site gate is introduced.",
+        "source": "User Home mockup and global-default clarification November 15, 2026; requirements/global/content/home.json; requirements/global/presentation-tokens.json; src/components/home/HomeHero.tsx; src/components/content/QuickDecisionInfoBox.tsx"
+      }
+    },
+    {
+      "source": "requirements/global/rules/profile.json",
+      "record": {
+        "id": "profile-advisor-handoff",
+        "name": "Use the shared advisor handoff before leaving Profile",
+        "status": "confirmed",
+        "statement": "After Profile field and page checks pass, an advisor flow opens the shared SendApplicationDialog for the applicant. Cancel stays on Profile; confirm continues to the existing advisor confirmation destination. Consumer flow continues normally. Production email behavior is recorded by the shared workflow; the prototype dialog does not deliver email.",
+        "source": "User Profile review November 13, 2026; Master Client Requirements v78, Main!R165:S169 and Financial questions!A2:B10; requirements/parked/profile.json"
+      }
+    },
+    {
+      "source": "requirements/global/rules/profile.json",
+      "record": {
+        "id": "profile-configuration-boundaries",
+        "name": "Keep questionnaire definitions global and retain personal field controls",
+        "status": "confirmed",
+        "statement": "The global template owns Financial questionnaire and Other coverage question inclusion, requiredness, wording, choices, formats and financial formulas. Sites retain existing questionnaire enablement and product/amount applicability settings, plus supported personal field inclusion, requiredness, label and option controls. Physician fields stay identical globally, with optional defaults; the physician-information setting only shows or hides the complete section and defaults true. Supplied SSN, phone, postal, currency and license values follow their global format definitions. All four disability-carrier fields remain included and required; labels stay configurable, and existing min-one/max-ten collection rules remain global. Hidden personal questions suppress same-page follow-ups transitively and empty sections are omitted, while saved drafts are retained. Applicant participation and current URL product/applicant restrictions still apply. Global definitions remain present when every effective Site hides a field. ASCE retains its existing field values, spouse-DI SSN exception and disabled financial questionnaire.",
+        "source": "User Profile decisions and correction November 16, 2026; requirements/mappings/page-fields/profile.json; requirements/parked/profile.json; requirements/global/application.json#shared.profile.financialCalculations"
+      }
+    },
+    {
+      "source": "requirements/global/rules/receipt.json",
+      "record": {
+        "id": "receipt-source-composition",
+        "name": "Render the terminal Receipt from the shared source",
+        "status": "confirmed",
+        "statement": "Receipt is a read-only terminal page with two source-ordered sections: confirmation/information/downloads, then product/applicant decisions with shared support. PageShell, FormShell, InformationAlert, ProductCard, applicant headings, EstimatedRate, AppSnackbar and SiteSupport retain shared ownership. There is no separate application summary, portal form entry, Back or Next action. Current selected offered products use the shared effective category/product/featured order; applicants retain member, spouse, child order. Removed products and deselected people do not create decisions. Attached rider benefits remain with their owner’s decision and use applicant-scoped wording. Shared estimate presentation and rate states apply without page-level typography overrides.",
+        "uses": [
+          "application-header-client-copy",
+          "category-product-presentation-order",
+          "applicant-active-participation",
+          "coverage-rider-applicant-wording"
+        ],
+        "source": "requirements/parked/receipt.json; requirements/mappings/page-sections/receipt.json; src/pages/Receipt.tsx; src/utils/coverageDecisions.ts"
+      }
+    },
+    {
+      "source": "requirements/global/rules/receipt.json",
+      "record": {
+        "id": "receipt-confirmation-reference",
+        "name": "Keep a single confirmation reference per submitted application",
+        "status": "confirmed",
+        "statement": "Production Receipt uses the reference returned for the successfully submitted application after required signing. One application reference covers its products and applicants; opening or refreshing a page is not a new submission. The prototype prefers its explicitly supplied mock-submission-id; otherwise it keeps a local reference scoped to the Site and saved application, stable on rerender/revisit and replaced for a different application. Starting over clears the current Site’s local reference. Do not reuse old unscoped references or treat a generated prototype number as production signing/submission evidence.",
+        "uses": [
+          "docusign-completion-submits",
+          "docusign-prototype-storage"
+        ],
+        "source": "src/domain/receiptConfirmation.ts; src/app/ApplicationFormContext.tsx; user DocuSign completion decision November 14, 2026"
+      }
+    },
+    {
+      "source": "requirements/global/rules/receipt.json",
+      "record": {
+        "id": "receipt-confirmation-email",
+        "name": "Confirm submission with the applicant’s product decisions",
+        "status": "confirmed",
+        "statement": "Successful submission triggers the applicant confirmation email once for that submission. Receipt rendering, refresh and revisiting do not trigger another message. Begin with the shared Dear applicant salutation, thank the applicant for trusting the association and New York Life Insurance Company, introduce the request summary, list current selected products/applicants with their explicit decisions using ReceiptCoverageDecision, then show Thank you and the effective TPA acronym Group Sponsored Insurance Program, Insurance Administrator signature. Render the same configured decision descriptions as Receipt literally, without amount or product-name substitution. Email summaries contain product headings and their decision labels/descriptions, without requested amounts, premium estimates or payment details. Never invent a missing QD result. Retain available confirmation-reference context in administrator support. Omit unrelated form answers, bank details and application/payment documents. Documents remain downloads in the application flow. The prototype sends no email and does not automatically create a Receipt email preview; its manually requested preview uses this template with supplied application values. This replaces the earlier confirmation-only email restriction.",
+        "uses": [
+          "docusign-completion-submits",
+          "shared-site-support"
+        ],
+        "source": "User email-copy and shared decision-component instruction November 18, 2026; requirements/global/content/receipt.json; src/utils/mockEmail.ts"
+      }
+    },
+    {
+      "source": "requirements/global/rules/receipt.json",
+      "record": {
+        "id": "receipt-document-boundary",
+        "name": "Separate production documents from prototype download placeholders",
+        "status": "confirmed",
+        "statement": "Production Receipt provides the applicable completed application and payment documentation through its download actions after successful submission. Documents are not emailed. The current prototype download buttons are explicit placeholders using shared information feedback; they do not generate or represent a signed PDF or transfer application/payment data to a service. Do not substitute an unsigned Review preview for a signed application or treat the demonstration DocuSign image as a generated document. Shared payment applicability and inactive-answer filtering remain authoritative for document content. Show Payment PDF only when the active payment projection contains an allowed method and frequency for at least one currently selected product/applicant, including Bill me. Hide it when payment collection is disabled, optional payment is declined, or only stale/inactive/invalid payment choices remain. Receipt and payment document generation use the same active-payment selector.",
+        "uses": [
+          "payment-active-storage",
+          "docusign-shared-document-content"
+        ],
+        "source": "MCR v78 New UX Multi-page Requirements!AU21; src/components/receipt/ReceiptConfirmation.tsx; src/pages/Receipt.tsx; existing Receipt placeholder contract"
+      }
+    },
+    {
+      "source": "requirements/global/rules/receipt.json",
+      "record": {
+        "id": "receipt-result-integrity",
+        "name": "Keep four explicit QD outcomes and use shared technical-error handling for missing results",
+        "status": "confirmed",
+        "statement": "QD results are explicit per product/applicant: conditionally-approved, referred, soft-declined or database-unavailable. Never derive outcomes from card order, a missing value or an unrecognized value. Database unavailable is only the explicit database-failure outcome. Missing/unrecognized QD results and unresolved underwriting data use the existing general technical-error presentation, not a fifth underwriting decision or an invented referral. Non-QD products ignore retained QD results. Prototype examples supply their results explicitly; an absent image-flow result does not constitute a real assessment. Reuse the existing technical-error component without adding a new error page, service or automatic redirect wiring.",
+        "source": "User decision November 14, 2026; MCR v78 Standard Decision Wording!B2:B5; src/domain/receiptPresentation.ts; src/pages/Receipt.tsx"
+      }
+    },
+    {
+      "source": "requirements/global/rules/receipt.json",
+      "record": {
+        "id": "receipt-client-copy-contract",
+        "name": "Separate Receipt Site wording from global system copy",
+        "status": "confirmed",
+        "statement": "Receipt declares eighteen Site content slots: title/introduction; labels and descriptions for standard review, conditional approval, QD referral, decline and database unavailable; payment notice; What happens next heading; the underwriting note; and confirmation-email subject, title and introduction. Global definitions/defaults are inherited; effective Site values are independent. Documents/security note, coverage-decisions introduction and email salutation, summary introduction, closing and signature templates remain global and cannot be Site page-copy overrides. Confirmation-number/download labels, actions, fallback/validation/support wording retain their shared contracts. Wording cannot change outcome codes, active product/applicant participation, underlying decisions, note/document applicability, payment behavior, confirmation-reference substitution or the approved email product/decision summary and document/answer exclusions. Underwriting-note overrides remain appropriate for a genuine provider/wording difference; the shared global default and conditional display rule remain. Header and email-introduction templates retain their supported substitutions. Decision descriptions are literal configured copy without substitutions; requested amounts remain separate page details and are omitted from email; applicant answers and decisions are never editable content.",
+        "source": "User individual Receipt copy decisions November 15, 2026; requirements/parked/receipt.json; requirements/global/content/receipt.json; User decision-description correction November 18, 2026",
+        "uses": [
+          "application-header-client-copy",
+          "receipt-confirmation-email",
+          "receipt-result-integrity",
+          "receipt-underwriting-next-steps"
+        ]
+      }
+    },
+    {
+      "source": "requirements/global/rules/receipt.json",
+      "record": {
+        "id": "receipt-payment-notice-applicability",
+        "name": "Show payment guidance only for active payment information",
+        "status": "confirmed",
+        "statement": "Display the configured nonempty Receipt payment notice only when the shared active-payment projection contains an allowed payment method and frequency for at least one currently selected product/applicant, including Bill me. This uses the same active-payment fact as Payment PDF availability. Omit the notice when collection is disabled, optional payment is declined or unanswered, or only removed, stale, incomplete or disallowed choices remain. Effective Sites may override or omit its approved wording slot, but cannot override this global display rule. Other next-step, underwriting, document/security and support content retain their own applicability and are not hidden by the absence of payment information. This is informational wording, not proof that payment was processed.",
+        "uses": [
+          "payment-active-storage",
+          "receipt-client-copy-contract",
+          "receipt-document-boundary"
+        ],
+        "source": "User Receipt payment-notice decision November 17, 2026; src/domain/paymentAnswers.ts; src/pages/Receipt.tsx; src/components/receipt/ReceiptConfirmation.tsx"
+      }
+    },
+    {
+      "source": "requirements/global/workflows/application.json",
+      "record": {
+        "id": "external-prototype-handoff",
+        "name": "Use images for prototype external handoffs",
+        "status": "confirmed",
+        "statement": "Before entering QuickDecision health or DocuSign, retain the standard portal transition skeleton and messages. Replace the application viewport with the configured prototype image sequence. Each click opens the next image; the final click submits the shared page and continues through configured saving, transitions and routing. Remove temporary processing loaders. An unprovided image uses Image TBD; no live external integration is implied. Disable repeated advancement while submission or navigation is pending. Service-signaled technical failures preserve answers and use the shared Error page; session expiry uses Expired access. A failed local simulated save without a service incident remains on the current screen with the shared page error and permits retry. Correctable validation remains on the current screen. A missing or failed image displays the configured placeholder (or global image-unavailable text) and retains the prototype continue action. Invalid image assignments are rejected by source compilation; an installed projection must supply the configuration.",
+        "source": "User request 2026-11-10; src/components/feedback/PrototypeHandoffPage.tsx; requirements/global/prototype-fixtures/handoffs.json"
+      }
+    },
+    {
+      "source": "requirements/global/application.json",
+      "record": {
+        "id": "rule-persistence-membership-starts-autosave-mock-communication",
+        "key": "rule-persistence-membership-starts-autosave-mock-communication",
+        "definition": {
+          "area": "Persistence",
+          "rule": "Membership starts autosave mock communication",
+          "behavior": "Submitting Membership triggers the current prototype autosave mock-email behavior.",
+          "ref": "src/app/RoutePage.tsx",
+          "id": "rule-persistence-membership-starts-autosave-mock-communication",
+          "type": "behavioral",
+          "organization": {
+            "path": [
+              "application",
+              "persistence",
+              "application-recovery"
+            ],
+            "familyKey": "rules.persistence.application-recovery",
+            "effect": "persistence",
+            "ordering": "review-only"
+          },
+          "documentationStatus": "current",
+          "categories": [
+            "Save and resume"
+          ],
+          "sequence": 7022,
+          "dependsOn": [],
+          "documentedIn": "rules"
+        },
+        "position": 22,
+        "displayId": 87292293037094,
+        "providedBy": null,
+        "sourceReference": "prototype:rules/rule-persistence-membership-starts-autosave-mock-communication"
+      }
+    },
+    {
+      "source": "requirements/global/application.json",
+      "record": {
+        "id": "rule-application-flow-health-waepawl-routing",
+        "key": "rule-application-flow-health-waepawl-routing",
+        "definition": {
+          "area": "Application flow",
+          "rule": "Health WAEPAWL routing",
+          "behavior": "Shown when a Whole Life product with SI and UW flow is selected. (Page not yet implemented in prototype.)",
+          "ref": "src/config/formFlow.ts",
+          "id": "rule-application-flow-health-waepawl-routing",
+          "type": "behavioral",
+          "organization": {
+            "path": [
+              "application",
+              "application-flow",
+              "page-participation"
+            ],
+            "familyKey": "rules.application-flow.page-participation",
+            "effect": "routing",
+            "ordering": "review-only"
+          },
+          "documentationStatus": "planned",
+          "categories": [
+            "Navigation"
+          ],
+          "sequence": 6005,
+          "dependsOn": [],
+          "documentedIn": "rules"
+        },
+        "position": 5,
+        "displayId": 166234185692990,
+        "providedBy": null,
+        "sourceReference": "prototype:rules/rule-application-flow-health-waepawl-routing"
+      }
+    },
+    {
+      "source": "requirements/global/application.json",
+      "record": {
+        "id": "rule-application-flow-health-qd-routing",
+        "key": "rule-application-flow-health-qd-routing",
+        "definition": {
+          "area": "Application flow",
+          "rule": "Health QD routing",
+          "behavior": "Shown for an active applicant whose resolved health page is health-qd, falling back to the captured QD gate when no health-page override exists. Assigned source questionnaires may supersede this page; the external GMA-JI-L questionnaire shows only the approved prototype loading state.",
+          "ref": "src/config/flowGates.ts",
+          "id": "rule-application-flow-health-qd-routing",
+          "type": "behavioral",
+          "organization": {
+            "path": [
+              "application",
+              "application-flow",
+              "page-participation"
+            ],
+            "familyKey": "rules.application-flow.page-participation",
+            "effect": "routing",
+            "ordering": "review-only"
+          },
+          "documentationStatus": "current",
+          "categories": [
+            "Navigation"
+          ],
+          "sequence": 4009,
+          "dependsOn": [],
+          "documentedIn": "rules",
+          "execution": {
+            "kind": "page-routing",
+            "gates": [
+              {
+                "pageId": "health-qd",
+                "gate": {
+                  "kind": "selected-underwriting-type",
+                  "underwritingTypes": [
+                    "QD"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "position": 9,
+        "displayId": 114091267530764,
+        "providedBy": null,
+        "sourceReference": "prototype:rules/rule-application-flow-health-qd-routing"
+      }
+    },
+    {
+      "source": "requirements/global/application.json",
+      "record": {
+        "id": "rule-application-flow-health-qd-cir-routing",
+        "key": "rule-application-flow-health-qd-cir-routing",
+        "definition": {
+          "area": "Application flow",
+          "rule": "Health QD CIR routing",
+          "behavior": "Shown when LI (QD) is selected with a CIR rider. (Page not yet implemented in prototype.)",
+          "ref": "src/config/formFlow.ts",
+          "id": "rule-application-flow-health-qd-cir-routing",
+          "type": "behavioral",
+          "organization": {
+            "path": [
+              "application",
+              "application-flow",
+              "page-participation"
+            ],
+            "familyKey": "rules.application-flow.page-participation",
+            "effect": "routing",
+            "ordering": "review-only"
+          },
+          "documentationStatus": "planned",
+          "categories": [
+            "Navigation"
+          ],
+          "sequence": 6010,
+          "dependsOn": [],
+          "documentedIn": "rules"
+        },
+        "position": 10,
+        "displayId": 256030781134763,
+        "providedBy": null,
+        "sourceReference": "prototype:rules/rule-application-flow-health-qd-cir-routing"
+      }
+    },
+    {
+      "source": "requirements/global/rules/health.json",
+      "record": {
+        "id": "health-participation-and-storage",
+        "name": "Resolve active Health applicants without duplicating answers",
+        "status": "confirmed",
+        "statement": "Effective page requirements, active product/applicant elections and product journey policies determine online Health participation. Combined questionnaire assignments can suppress superseded questionnaires; a child election never creates adult answers. Question grouping shares structure, not answers: generic scalar keys and detail collections remain separate for each adult; configured policies use their stable question, field and collection identities. Hidden answers are retained without validating or treating them as active. Restored active detail rows receive the same field checks and configured collection limits as newly entered rows. Each of the five Health pages permits Site page-title/introduction overrides only; generic question numbering and condition-details headings remain global. Medical questions and follow-up fields are controlled by shared questionnaire definitions. Ordinary Site field overrides cannot change their wording, visibility, requiredness, choices or validation. Assigned questionnaire variants and product/state/applicant rules determine applicability; source-defined optional follow-up fields remain optional. QD screen content remains provider-owned. Health pages and supplied source-form previews do not show page-help chips. External image handoffs replace the portal viewport. Association-scoped questionnaire assignments use the canonical effective Site Association selection (fixed, URL or user-selected), not a Yes/No membership answer or a retained association answer.",
+        "uses": [
+          "applicant-section-headings",
+          "applicant-active-participation",
+          "rule-dynamiclist-add-edit-remove-modal-pattern"
+        ],
+        "source": "User Health configuration decision November 16, 2026; User Health copy decision November 15, 2026; Health final audit November 13, 2026; src/config/flowGates.ts; src/config/healthFollowUps.ts; src/domain/configuredHealthQuestionnaire.ts; src/domain/healthQuestionnaire.ts"
+      }
+    },
+    {
+      "source": "requirements/global/rules/application.json",
+      "record": {
+        "id": "payment-effective-product-elections",
+        "name": "Collect payment for applicable selected products",
+        "status": "confirmed",
+        "statement": "Payment collects details for current selected products/applicants using effective product methods, frequencies, collection and locking. Each product has one election for its participating applicants; separate products retain independent choices unless shared configuration or policy synchronization applies. Required collection has no opt-in; optional collection requires the opt-in answer and collects only on Yes; none collects nothing. Next validates and saves through the shared form frame, then continues to the configured signing step. Payment does not authorize, charge or submit the application. Category/product presentation follows shared configured order. Applicable optional-payment opt-in, product/shared method and frequency, and bank-detail/authorization fields are globally included and required. Fixed field formats and canonical choice definitions cannot be changed through Site field overrides; effective payment policies own available methods, method-specific frequencies, defaults, locking and synchronization. Sites retain field label overrides. Runtime applicability still hides opt-in for required collection, all collection fields for none or optional No, and banking unless an active collecting product selects Bank account.",
+        "uses": [
+          "rule-payment-optional-payment-opt-in",
+          "rule-payment-payment-per-applicable-product",
+          "rule-payment-bank-account-detail-display"
+        ],
+        "source": "src/pages/Payment.tsx; src/domain/sharedPaymentChoices.ts; src/domain/paymentPolicy.ts; requirements/mappings/page-fields/payment.json; User Payment configuration decision November 16, 2026"
+      }
+    },
+    {
+      "source": "requirements/global/rules/review.json",
+      "record": {
+        "id": "review-content-and-storage",
+        "name": "Document Review content and retain stable answers",
+        "status": "confirmed",
+        "statement": "Global content keys own page headings, guidance, remaining-step labels, section labels, edit-dialog copy and field/validation labels. Only the page title and introduction have Review Site content slots. Preview your application and Read and consent section headings/descriptions remain global, as do advisor/remaining-step guidance and system wording. Shared policy configuration owns legal wording/applicability, inherited or overridden by the effective Site, independently of the page copy slots. Acknowledgement and conditional policy-field labels, inclusion, requiredness and formats are global; no Site field overrides are permitted. Existing optional dividend identity defaults remain optional. Review preview-page scope belongs to the global page definition. Store review-self-consent and review-spouse-consent independently, plus applicable canonical policy-field answers. Preview groups and legal text are projections, never a second editable application copy. Application document preview omits the prepared-on timestamp. Boolean readouts use the effective field choice label where available, otherwise the shared global Yes/No choices; they do not have separate document-preview CMS records.",
+        "source": "User Review copy decision November 15, 2026; Review final audit November 13, 2026; Master Client Requirements v78, Read & Sign; existing confirmed consent/authorization decisions"
+      }
+    },
+    {
+      "source": "requirements/global/rules/profile.json",
+      "record": {
+        "id": "profile-content-and-storage",
+        "name": "Keep Profile content and answers in the shared model",
+        "status": "confirmed",
+        "statement": "Global Profile content keys own titles, section names, Other coverage note, modal labels, summary labels, totals and validation copy. Only the page title and introduction have Profile Site content slots. Personal information, Other coverage and Financial questionnaire headings, plus the Other coverage note, remain global and are reused for applicable member/spouse sections. Effective field overrides retain supported personal label, inclusion, requiredness and option changes. Physician fields, Financial questionnaire and Other coverage question definitions are global and reject Site field overrides; carrier labels retain their separately approved configuration while all four record fields stay included/required; physician component wording, legal notices, calculation labels and validation retain their existing shared/global contracts. Stable self/spouse scalar keys and selfDisabilityCompanies/spouseDisabilityCompanies arrays retain independent people and record value mappings. Physician details describe a third party and do not request member browser autofill.",
+        "source": "User Profile copy decision November 15, 2026; User Profile review November 13, 2026; Master Client Requirements v78, Main!R165:S169 and Financial questions!A2:B10; requirements/parked/profile.json"
+      }
+    },
+    {
+      "source": "requirements/global/rules/membership.json",
+      "record": {
+        "id": "membership-attestation-inline-stop",
+        "name": "Stop inline for a disqualifying membership attestation",
+        "status": "confirmed",
+        "fields": [
+          "membership"
+        ],
+        "statement": "On the Membership page, a disqualifying answer to the applicant's yes/no membership attestation (No for ASCE) immediately shows the non-member feedback, hides the follow-up fields and disables Next. An accepted answer restores the follow-up fields and enables Next. This attestation is the only field allowed to stop a page inline. An unanswered attestation, other fields and other page-level business checks use normal submission validation and the page error alert. The spouse membership question on Eligibility does not inherit this exception. Other configurations’ not-eligible outcomes use the page error on submission rather than the yes/no inline exception.",
+        "source": "docs/requirements-spec/page-review.md; src/pages/Membership.tsx; src/components/membership/MembershipStatus.tsx"
+      }
+    },
+    {
+      "source": "requirements/global/rules/coverage.json",
+      "record": {
+        "id": "coverage-client-copy-contract",
+        "name": "Keep Coverage policy/system copy global and product copy shared",
+        "status": "confirmed",
+        "statement": "Coverage allows Site title/introduction overrides through the shared application-header contract. Limit and eligibility warnings, total-versus-additional coverage instructions and estimate disclaimers retain global wording driven by effective policies/configuration and derived values. They have no free-form Site copy slots. Product/category/rider copy keeps its existing shared product ownership and effective assignments, not Coverage-specific duplicate definitions. Existing approved content-key note selections remain supported. Copy changes do not modify product availability, applicant/rider participation, category/product/featured ordering, benefit limits or defaults, in-force deductions, calculated estimates, validation or navigation. ASCE inherits the global Coverage header and system copy.",
+        "uses": [
+          "effective-site-configuration-resolution"
+        ],
+        "source": "User Coverage copy decision November 15, 2026; requirements/parked/coverage.json; requirements/global/content/coverage.json; shared product/coverage configurations"
+      }
+    },
+    {
+      "source": "requirements/global/rules/eligibility.json",
+      "record": {
+        "id": "eligibility-client-copy-contract",
+        "name": "Configure Eligibility introductions and applicant notes through shared content slots",
+        "status": "confirmed",
+        "statement": "Global Eligibility owns default title, introduction and member/spouse/child note definitions. Effective Sites may override only these five declared copy slots. The member note defaults empty and is hidden when blank, without introducing a member/You heading. Spouse and child notes retain their global defaults and existing offered/selected applicant participation. Child notice-only mode still requires nonblank child note wording and does not collect child records. Copy overrides never change eligibility, covered people, section participation, child collection/maximum, verification, validation or navigation. Breadcrumbs, loading/navigation labels, validation wording and member-verification dialog copy stay global. Field labels/options and eligibility/TPA settings retain their existing shared configuration owners. ASCE inherits all five values without a new copy assignment.",
+        "source": "User Eligibility configurability decisions November 15, 2026; requirements/parked/eligibility.json#contentSlots; requirements/global/content/eligibility.json; existing EligibilitySections child notice-only guard",
+        "uses": [
+          "effective-site-configuration-resolution"
+        ]
+      }
+    },
+    {
+      "source": "requirements/global/rules/advisor-resume.json",
+      "record": {
+        "id": "resume-verification-and-return",
+        "name": "Verify before restoring and apply the correct return context",
+        "status": "confirmed",
+        "statement": "Resume requires an email magic link followed by a six-digit phone code, delivered only by Text or Call to the saved phone; Call maps to transport phone. Display only masked phone information with its last four digits. There is no email-code alternative, including in the local simulator or standard examples. Link and MFA proof, Site, recipient, application, expiry and locks are validated by the service. An invalid, expired, consumed or revoked link returns to initial Resume with its configured inline error. Incorrect, expired or replaced codes remain inline on code entry with appropriate feedback and resend. Successful verification consumes the MFA session, rotates writes, restores that application and entry scope, resets application-session flags and uses the service-authorized actor and lifecycle destination: advisor recovery returns to Eligibility; prepared-application applicant recovery returns to Review before signing or unfinished DocuSign after signing starts. Submitted applications cannot recover. UI flow context cannot grant actor identity or choose an authoritative destination. URL flow context is never authorization. Busy and successful states disable duplicate actions.",
+        "source": "portal_inventory.xlsx, Rules - Resume!C2:D19; user clarifications November 13, 2026; fresh-start global model"
+      }
+    },
+    {
+      "source": "requirements/global/rules/application.json",
+      "record": {
+        "id": "payment-collection-service-boundary",
+        "name": "Collect payment details before signing",
+        "status": "confirmed",
+        "statement": "Payment continues to DocuSign through normal form validation and save without a payment authorization, declined-payment simulation or application submission action. Processing and billing occur outside this page; estimates remain fictional and the tax/fee note does not imply calculation, charging, live bank verification or processor integration. Technical failures use the shared error/session model and business or validation issues use page/field feedback, with no separate payment-issue page. The effective Site page requirement controls whether collection is required, optional or disabled; product payment controls apply only when collection is active.",
+        "source": "User Payment decisions November 14, 2026; MCR New UX Multi-page Requirements!AT21; src/pages/Payment.tsx"
+      }
+    },
+    {
+      "source": "requirements/global/rules/review.json",
+      "record": {
+        "id": "review-shared-policy",
+        "name": "Inherit shared Review wording and policy",
+        "status": "confirmed",
+        "statement": "Global Review policy definitions/defaults own fraud, authorization, consent, premium wording and common notice blocks. ASCE explicitly inherits the shared default; an effective Site can assign an override. The compiler resolves the default reference from authored global data, never an older snapshot. Page introduction content is separate and contains no duplicate authorization or consent wording. The global policy definition declares its supported field surface. Policy overrides select legal text, block applicability and documents without redefining shared fields.",
+        "source": "Review final audit November 13, 2026; Master Client Requirements v78, Read & Sign; existing confirmed consent/authorization decisions",
+        "replaces": [
+          "rule-review-jurisdiction-fraud-notices",
+          "rule-review-conditional-consent-blocks"
+        ]
+      }
+    },
+    {
+      "source": "requirements/global/rules/profile.json",
+      "record": {
+        "id": "profile-physician-information",
+        "name": "Use one global physician field set with whole-section visibility",
+        "status": "confirmed",
+        "statement": "Physician field definitions, wording, choices, optionality and validation are global and cannot be overridden or individually hidden by a Site. The shared physician-information boolean defaults true. A Site may set it false to hide the entire section for all otherwise applicable adults. Existing applicant participation still applies; disabling the section hides its saved drafts from page validation and read-only output without deleting them. Library retains the shared definitions and configuration.",
+        "source": "User physician clarification November 16, 2026; requirements/global/configurations/profile.json; requirements/parked/profile.json"
+      }
+    },
+    {
+      "source": "requirements/global/rules/review.json",
+      "record": {
+        "id": "review-jurisdiction-and-consent",
+        "name": "Resolve Review statements from active coverage and residence",
+        "status": "confirmed",
+        "statement": "Use active selected product/applicant elections and member residence. The shared underwriting flag is true for member/spouse Life, Disability or Office/Professional Overhead; child-only Life, AD&D and supplemental-health-only elections do not set it. Medical introduction, authorization, underwritten consent and CT warning follow this flag independently of online health-question participation. Jurisdiction wording precedes processing wording, then defaults: Minnesota authorization and post-consent exclusion; Virginia QD authorization and consent; QD DI or QD Life plus DI processing authorization. NY Life-only omits fraud; non-Life or an active accident rider includes it. Missing residence or configured applicant-type prerequisites block Next. This November 13 user decision supersedes the October 20 ASCE health-participation exceptions; historical evidence and other effective-Site policies remain separate.",
+        "source": "User decision November 13, 2026; MCR v78 Read & Sign!B3:B4, B35:B53, B78:B93 and B118:B119"
+      }
+    },
+    {
+      "source": "requirements/global/rules/profile.json",
+      "record": {
+        "id": "profile-ssn-requiredness",
+        "name": "Resolve SSN requiredness from active product assignments",
+        "status": "confirmed",
+        "statement": "SSN is required by the global field default. A Site can assign optionalForProducts per person: the field becomes optional only when every active product for that applicant is listed. Any additional unlisted election retains the field default. ASCE assigns spouse DI as optional; member SSN remains required. Supplied SSNs always receive the shared format check.",
+        "source": "User Profile review November 13, 2026; Master Client Requirements v78, Main!R165:S169 and Financial questions!A2:B10; requirements/parked/profile.json"
+      }
+    },
+    {
+      "source": "requirements/global/rules/receipt.json",
+      "record": {
+        "id": "receipt-underwriting-next-steps",
+        "name": "Show configured medical-review guidance only for applicable coverage sent for review",
+        "status": "confirmed",
+        "statement": "Global Receipt owns the standard ExamOne underwriting-review note and its wording defaults. Effective Sites inherit this content; an override is appropriate only for a genuine provider or wording difference. Display a nonempty note only if a selected adult coverage meets the shared product-based underwriting applicability flag and is sent for review: FUW/SI/TELE standard review or an explicit QD referred/database-unavailable outcome. Omit it when all outcomes are conditionally approved or declined, for AD&D or child-only coverage without adult medical-review applicability, or for absent/unrecognized results. The shared wording retains may contact rather than promising an exam. ASCE inherits it without a Site assignment; supporting source evidence does not change global ownership.",
+        "source": "User decision November 14, 2026; MCR v78 New UX Multi-page Requirements!AU21; requirements/global/content/receipt.json; src/domain/receiptPresentation.ts; user global ownership correction November 14, 2026"
+      }
+    }
+  ]
+}

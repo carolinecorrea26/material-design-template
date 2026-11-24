@@ -2,12 +2,12 @@ import { componentInteractions, quoteInteractions, type ComponentInteraction } f
 import { analyticsProperties, analyticsTagId, type AnalyticsTag } from "../../../domain/analytics";
 import { resolvePrototypeLibrary } from "../../../domain/prototypeLibrary";
 import { getSiteDetailsPageLabel } from "../../../config/resolvers/resolveClientPages";
-import { getFlowGateDefinition, coverageUnlocksPage } from "../../../config/flowGates";
+import { getFlowGateDefinition, coverageUnlocksPage, libraryFlowContext } from "../../../config/flowGates";
 import type { LibraryCatalog } from "../../../services/libraryCatalogService";
 import type { FieldSurfaceRow } from "./fieldSurfaceRows";
 import type { PageId } from "../../../types";
 import { resolveRatePresentation } from "../../../domain/ratePresentation";
-import { coverageCategories } from "../../../config/coverageCategories";
+import { getCoverageCategories } from "../../../config/coverageCategories";
 
 const areas: Record<string, string> = {
   "src/components/layout/AppMenu.tsx": "Application menu",
@@ -32,7 +32,8 @@ export function renderedControlRows(catalog: LibraryCatalog, siteKey: string, fi
   const sites = siteKey === "all" ? catalog.data.sites.map(site => site.key) : [siteKey];
   for (const site of sites) {
     const library = resolvePrototypeLibrary(catalog.data, site, catalog.revision);
-    const enabledPages = new Set(library.site.configuration.pages.filter(page => page.requirement !== "none" && (!getFlowGateDefinition(page.key as PageId) || library.products.some(product => coverageUnlocksPage(page.key as PageId, product)))).map(page => page.key));
+    const routing = libraryFlowContext(library);
+    const enabledPages = new Set(library.site.configuration.pages.filter(page => page.requirement !== "none" && (!getFlowGateDefinition(page.key as PageId, routing) || library.products.some(product => coverageUnlocksPage(page.key as PageId, product, routing)))).map(page => page.key));
     const quoteEnabled = library.products.some(product => resolveRatePresentation(library.site, product.id).quoteToolEnabled);
     const referenceTables = library.products.flatMap(product => {
       const table = resolveRatePresentation(library.site, product.id).referenceTable;
@@ -42,7 +43,7 @@ export function renderedControlRows(catalog: LibraryCatalog, siteKey: string, fi
     const definitions = [...componentInteractions, ...[...quotePages].flatMap(quoteInteractions)].flatMap(definition => {
       if (["add-product", "remove-product"].includes(definition.key)) return library.products.map(product => ({ ...definition, key: `${definition.key}:${product.id}`, label: definition.key === "remove-product" ? `Remove ${product.name}` : "Add coverage", surface: `Product card · ${product.name}` }));
       if (definition.key === "category-selection") {
-        const categories = coverageCategories.filter(category => library.products.some(product => product.categoryId === category.id));
+        const categories = getCoverageCategories(library.client.coverages.categoryNames).filter(category => library.products.some(product => product.categoryId === category.id));
         return categories.length > 1 ? categories.map(category => ({ ...definition, key: `${definition.key}:${category.id}`, label: category.label, surface: "Coverage categories" })) : [];
       }
       if (definition.key === "share-preset") return [25, 50, 75, 100].map(percent => ({ ...definition, key: `share-preset:${percent}`, label: `${percent}%`, surface: "Add / Edit Beneficiary modal · percentage shortcuts" }));

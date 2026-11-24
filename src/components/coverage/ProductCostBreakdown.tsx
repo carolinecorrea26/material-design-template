@@ -1,9 +1,12 @@
-import { Box, Divider, Link, Stack, Typography } from "@mui/material";
+import { Box, Divider, Stack, Typography } from "@mui/material";
 import type { EstimatedRateFrequency } from "../../config/clients/types";
 import EstimatedRate from "./EstimatedRate";
 import { getDisplayedPremium } from "../../utils/coverageDisplay";
+import { requirementText } from '../../domain/requirementContent';
+import { formatUSD } from '../../utils/formatUSD';
 
 export type ProductCostBreakdownItem = {
+  key?: string;
   label: string;
   amount: number;
 };
@@ -13,7 +16,6 @@ type ProductEstimatedCostBreakdownProps = {
   riderItems: ProductCostBreakdownItem[];
   policyFee?: ProductCostBreakdownItem;
   rateFrequency: EstimatedRateFrequency;
-  helpPhone?: { phone: string; phoneDisplay: string };
 };
 
 function BreakdownRow({
@@ -28,7 +30,8 @@ function BreakdownRow({
       <Typography variant="body2" color="text.secondary">
         {label}
       </Typography>
-      <EstimatedRate amount={getDisplayedPremium(amount, rateFrequency)} />
+      {amount < 0 ? <Typography sx={{ fontSize: '1rem', color: 'text.primary' }}>{formatUSD(getDisplayedPremium(amount, rateFrequency))}</Typography>
+        : <EstimatedRate amount={getDisplayedPremium(amount, rateFrequency)} appearance="product" />}
     </Stack>
   );
 }
@@ -38,7 +41,6 @@ export default function ProductCostBreakdown({
   riderItems,
   policyFee,
   rateFrequency,
-  helpPhone,
 }: ProductEstimatedCostBreakdownProps) {
   const total =
     premiumCost +
@@ -56,18 +58,18 @@ export default function ProductCostBreakdown({
       }}
     >
       <Typography variant="subtitle2" sx={{ mb: 1.25, fontWeight: 700 }}>
-        Estimated Cost Breakdown<sup>1</sup>
+        {requirementText('coverage.cost-breakdown.title')}<sup>1</sup>
       </Typography>
 
       <Stack spacing={0.75}>
         <BreakdownRow
-          label="Premium Cost"
+          label={requirementText('coverage.cost-breakdown.premium')}
           amount={premiumCost}
           rateFrequency={rateFrequency}
         />
         {riderItems.map((item) => (
           <BreakdownRow
-            key={item.label}
+            key={item.key ?? item.label}
             label={item.label}
             amount={item.amount}
             rateFrequency={rateFrequency}
@@ -86,11 +88,10 @@ export default function ProductCostBreakdown({
 
       <Stack direction="row" justifyContent="space-between" spacing={2}>
         <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
-          Total<sup>1</sup>
+          {requirementText('coverage.cost-breakdown.total')}<sup>1</sup>
         </Typography>
-        <EstimatedRate amount={getDisplayedPremium(total, rateFrequency)} suffix={rateSuffix} />
+        <EstimatedRate amount={getDisplayedPremium(total, rateFrequency)} suffix={rateSuffix} appearance="product" />
       </Stack>
-      {helpPhone && <Typography variant="body2" sx={{ mt: 1 }}>Questions? Call <Link href={`tel:${helpPhone.phone}`}>{helpPhone.phoneDisplay}</Link></Typography>}
     </Box>
   );
 }

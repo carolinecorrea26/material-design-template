@@ -1,12 +1,14 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import dayjs from "dayjs";
 import { afterEach, describe, expect, it } from "vitest";
 import { createMigrationDatabase, createReviewedMigrationDatabase } from "./fixtures";
 import { applyWaepaLifeAmountAdoption } from "./waepaLifeAmountAdoption";
 import { mcrSource } from "./mcr";
 import { validateMigrationDatabase } from "./integrity";
-import { resolveEffectiveSite } from "../domain/effectiveSite";
+import { resolveSnapshotSite as resolveEffectiveSite } from "../domain/effectiveSite";
 import { resolveNormalizedAmountCap } from "../domain/amountCapPolicy";
-import { installPrototypeLibrary, resolvePrototypeLibrary } from "../domain/prototypeLibrary";
+import { installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import { resolveApplicationCoverage, validateApplicationCoverages } from "../domain/coverageRuntime";
 import { validateNormalizedCoverageAmount } from "../domain/normalizedCoverageAmounts";
 import { getCoverageAmountChoices } from "../utils/coverageAmounts";

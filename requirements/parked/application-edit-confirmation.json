@@ -5,15 +5,13 @@
       "type": "FormRoutePage",
       "components": [
         {
-          "type": "ConfirmationAlert"
-        },
-        {
           "type": "DetailsTable"
         },
         {
           "type": "Button"
         }
-      ]
+      ],
+      "purpose": "Page-owned native MUI success Alert with configured confirmation copy/icon, followed by DetailsTable and the return action. The alert is inline content in the shared page-content slot."
     }
   ],
   "definition": {
@@ -22,7 +20,8 @@
     "type": "form",
     "flow": "advisor",
     "healthGate": false,
-    "displayName": "Application Edit Confirmation"
+    "displayName": "Application Edit Confirmation",
+    "saveProgress": false
   },
   "position": 22,
   "layout": {
@@ -37,7 +36,8 @@
       "confirmation.edit.message",
       "confirmation.edit.recipient",
       "confirmation.edit.sent",
-      "confirmation.edit.home"
+      "confirmation.edit.home",
+      "confirmation.edit.recipient-unavailable"
     ]
   }
 }

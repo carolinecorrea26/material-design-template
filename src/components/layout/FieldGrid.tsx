@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
-import { Box } from "@mui/material";
+import { Box, type SxProps, type Theme } from "@mui/material";
+import presentation from '../../../requirements/global/presentation-tokens.json';
 
 export type FieldGridColumns =
   | "equal"
@@ -17,6 +18,7 @@ type FieldGridProps = {
   columns?: FieldGridColumns | string;
   gap?: number | { xs: number; sm: number };
   keepColumns?: boolean;
+  sx?: SxProps<Theme>;
 };
 
 /** Fields stack by default. Address, name and other intentionally grouped fields can opt into responsive columns. */
@@ -25,6 +27,7 @@ export default function FieldGrid({
   columns = "1fr",
   gap,
   keepColumns = false,
+  sx,
 }: FieldGridProps) {
   const smColumns =
     columns in columnTemplates
@@ -32,12 +35,14 @@ export default function FieldGrid({
       : columns;
   return (
     <Box
-      sx={{
+      className="FieldGrid-root"
+      sx={[{
         display: "grid",
         gridTemplateColumns: keepColumns ? smColumns : { xs: "1fr", sm: smColumns },
-        columnGap: gap ?? 2,
-        rowGap: gap ?? 0,
-      }}
+        minWidth: 0,
+        columnGap: gap ?? presentation.formFields.columnGap,
+        rowGap: gap ?? presentation.formFields.rowGap,
+      }, ...(sx ? Array.isArray(sx) ? sx : [sx] : [])]}
     >
       {children}
     </Box>

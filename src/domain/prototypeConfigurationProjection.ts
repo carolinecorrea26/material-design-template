@@ -1,3 +1,4 @@
+import { resolveHomePresentation } from "../config/homepagePresentation";
 import { isCoverageProductOrder } from "./coveragePresentation";
 import { isApplicantExperience } from "./applicantExperience";
 import { buildPrototypeAmounts, buildPrototypeRiders } from "./prototypeProductProjection";
@@ -56,11 +57,12 @@ export function buildPrototypeClient(data: EffectiveSiteData, site: EffectiveSit
   }
   client.reviewPolicy = site.configuration.reviewPolicies[0]?.value as ClientConfig['reviewPolicy'];
   const rates = site.configuration.ratePresentationPolicies[0]?.value as { praseConfigured: boolean; quoteToolEnabled: boolean };
-  if (!rates?.praseConfigured || !rates.quoteToolEnabled) client.features = { ...client.features, homePageVariant: 'hero-image' };
+  client.features = { ...client.features, homePageVariant: resolveHomePresentation(client.features.homePageVariant ?? 'default', rates) };
+  const toolSurfaces = Object.values(root.fieldSurfaces as Record<string, { kind?: string; pageKey: string; fields: Array<{ fieldKey: string }> }> ?? {}).filter(surface => surface.kind === 'tool' || surface.kind === 'controls');
   client.fields = Object.fromEntries(site.configuration.pages.map(page => [page.key, {
     hidden: page.fields.filter(field => !field.included).map(field => field.key),
     extra: site.configuration.siteStructureOwnership === "stored-structure"
-      ? page.fields.filter(field => field.included && !data.pageFields.some(placement => placement.pageKey === page.key && placement.fieldKey === field.key)
+      ? page.fields.filter(field => field.included && !toolSurfaces.some(surface => surface.pageKey === page.key && surface.fields.some(binding => binding.fieldKey === field.key)) && !data.pageFields.some(placement => placement.pageKey === page.key && placement.fieldKey === field.key)
         && !data.pageSectionFields.some(placement => placement.fieldKey === field.key && data.pageSections.some(section => section.key === placement.sectionKey && section.pageKey === page.key && !section.definition.collectionName))).map(field => field.key)
       : client.fields[page.key as keyof typeof client.fields]?.extra ?? [],
     overrides: Object.fromEntries(page.fields.map(field => [field.key, field.definition])),

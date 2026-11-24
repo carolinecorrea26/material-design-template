@@ -2,7 +2,6 @@
   "portfolios": [
     {
       "applicant": "self",
-      "label": "coverage.coverage-portfolio-drawer.member",
       "coverages": [
         {
           "name": "Term Life Insurance",
@@ -33,7 +32,6 @@
     },
     {
       "applicant": "spouse",
-      "label": "coverage.coverage-portfolio-drawer.spouse",
       "coverages": [
         {
           "name": "Term Life Insurance",

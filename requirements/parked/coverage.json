@@ -29,19 +29,38 @@
             },
             {
               "type": "FieldGroup",
-              "section": "self-personal"
+              "section": "self-personal",
+              "partOf": "SectionDivider"
             },
             {
               "type": "FieldGroup",
-              "section": "self-work"
+              "section": "self-work",
+              "partOf": "SectionDivider"
             },
             {
               "type": "FieldGroup",
-              "section": "spouse-personal"
+              "section": "self-business",
+              "partOf": "SectionDivider"
             },
             {
               "type": "FieldGroup",
-              "section": "spouse-work"
+              "section": "spouse-personal",
+              "partOf": "SectionDivider"
+            },
+            {
+              "type": "FieldGroup",
+              "section": "spouse-work",
+              "partOf": "SectionDivider"
+            },
+            {
+              "type": "FieldGroup",
+              "section": "self-tobacco",
+              "partOf": "SectionDivider"
+            },
+            {
+              "type": "FieldGroup",
+              "section": "spouse-tobacco",
+              "partOf": "SectionDivider"
             }
           ]
         },
@@ -68,11 +87,12 @@
     },
     {
       "type": "CoveragePortfolioDrawer",
-      "section": "portfolio"
+      "dialog": "portfolio"
     },
     {
       "type": "ConfirmationDialog",
-      "purpose": "dependent-only coverage confirmation"
+      "purpose": "dependent-only coverage confirmation",
+      "dialog": "dependent-coverage"
     },
     {
       "type": "CoverageSelectionFeedback",
@@ -82,10 +102,11 @@
           "purpose": "cart drawer after the first addition"
         },
         {
-          "type": "Snackbar",
+          "type": "AppSnackbar",
           "purpose": "feedback after later additions"
         }
-      ]
+      ],
+      "dialog": "selection-feedback"
     }
   ],
   "content": {
@@ -160,9 +181,6 @@
       "coverage.coverage-cart.applying-for",
       "coverage.coverage-cart.only",
       "coverage.coverage-cart.cost-calculated-after-amount-selection",
-      "coverage.coverage-cart.eligibility-concern",
-      "coverage.coverage-cart.based-on-your-answers-you-may-not-be",
-      "coverage.coverage-cart.you-may-still-continue-with-your-other-selected",
       "coverage.coverage-cart.quoted-cost-is-the-best-rate-available-final",
       "coverage.coverage-cart.remove-coverage",
       "coverage.coverage-cart.remove",
@@ -177,12 +195,9 @@
       "coverage.estimated-rate.rate-provided-separately",
       "coverage.estimated-rate.recalculating-estimated-cost",
       "coverage.total-cost-summary.total",
-      "coverage.coverage-portfolio-drawer.member",
-      "coverage.coverage-portfolio-drawer.spouse",
       "coverage.rider.child-fallback",
       "coverage.increase.total-note",
       "coverage.increase.additional-note",
-      "coverage.policy-fee",
       "coverage.rider.only-label",
       "coverage.category.section-title"
     ],
@@ -229,6 +244,64 @@
     "lifeMaximumNotes": [
       "coverage.note.life-member-maximum",
       "coverage.note.life-spouse-maximum"
+    ],
+    "wording": [
+      "coverage.title",
+      "coverage.subhead"
+    ],
+    "cost-breakdown": [
+      "coverage.cost-breakdown.title",
+      "coverage.cost-breakdown.premium",
+      "coverage.cost-breakdown.total",
+      "coverage.cost-breakdown.adjustment",
+      "coverage.cost-breakdown.fee"
+    ],
+    "product-presentation": [
+      "coverage.product.li-term.name",
+      "coverage.product.li-term.definition",
+      "coverage.product.li-10yr.name",
+      "coverage.product.li-10yr.definition",
+      "coverage.product.li-10yr.description",
+      "coverage.product.li-20yr.name",
+      "coverage.product.li-20yr.definition",
+      "coverage.product.li-20yr.description",
+      "coverage.product.li-add.name",
+      "coverage.product.li-add.definition",
+      "coverage.product.di-ltd.name",
+      "coverage.product.di-ltd.definition",
+      "coverage.product.di-ltd.description",
+      "coverage.product.li-15yr.name",
+      "coverage.product.li-15yr.definition",
+      "coverage.product.li-50plus.name",
+      "coverage.product.li-50plus.definition",
+      "coverage.product.li-preferred.name",
+      "coverage.product.li-preferred.definition",
+      "coverage.product.li-premier-accident.name",
+      "coverage.product.li-premier-accident.definition",
+      "coverage.product.li-group-term.name",
+      "coverage.product.li-group-term.definition",
+      "coverage.product.li-group-term.description",
+      "coverage.product.di-ltd-plus.name",
+      "coverage.product.di-ltd-plus.definition",
+      "coverage.product.di-mtd.name",
+      "coverage.product.di-mtd.definition",
+      "coverage.product.di-step-rated.name",
+      "coverage.product.di-step-rated.definition",
+      "coverage.product.di-level-rated.name",
+      "coverage.product.di-level-rated.definition",
+      "coverage.product.di-short-term.name",
+      "coverage.product.di-short-term.definition",
+      "coverage.product.oo-professional.name",
+      "coverage.product.oo-professional.definition",
+      "coverage.product.oo-office-overhead.name",
+      "coverage.product.oo-office-overhead.definition",
+      "coverage.product.sh-critical-illness.name",
+      "coverage.product.sh-critical-illness.definition",
+      "coverage.product.sh-hospital-money.name",
+      "coverage.product.sh-hospital-money.definition",
+      "coverage.product.sh-hospital-income.name",
+      "coverage.product.sh-hospital-income.definition",
+      "coverage.product.sh-hospital-income.description"
     ]
   },
   "fieldMapping": {
@@ -245,8 +318,30 @@
   "position": 3,
   "layout": {
     "sections": {
-      "portfolio": {},
-      "categories": {},
+      "portfolio": {
+        "role": "portfolio",
+        "id": "coveragePortfolio",
+        "fields": [],
+        "display": {
+          "label": "Verified coverage portfolio",
+          "templates": [
+            "multi",
+            "single"
+          ]
+        }
+      },
+      "categories": {
+        "role": "categories",
+        "id": "coverageCategories",
+        "fields": [],
+        "display": {
+          "label": "Coverage categories",
+          "templates": [
+            "multi",
+            "single"
+          ]
+        }
+      },
       "self-personal": {
         "id": "selfCoverageQuestions",
         "for": "self",
@@ -254,7 +349,8 @@
         "fields": [
           "gender",
           "smoker"
-        ]
+        ],
+        "role": "questions"
       },
       "self-tobacco": {
         "id": "selfCoverageTobacco",
@@ -267,7 +363,8 @@
           "field": "smoker",
           "equals": "yes"
         },
-        "presentation": "conditional"
+        "presentation": "conditional",
+        "role": "questions"
       },
       "self-work": {
         "id": "selfCoverageWorkIncome",
@@ -276,8 +373,13 @@
         "fields": [
           "hours-worked-per-week",
           "average-monthly-income",
-          "self-employed-under-one-year"
-        ]
+          "self-employed-under-one-year",
+          "actively-at-work",
+          "applicant-class",
+          "existing-step-rated-monthly-benefit",
+          "existing-level-rated-monthly-benefit"
+        ],
+        "role": "questions"
       },
       "spouse-personal": {
         "id": "spouseCoverageQuestions",
@@ -290,7 +392,8 @@
         "when": {
           "field": "dependents",
           "includes": "spouse"
-        }
+        },
+        "role": "questions"
       },
       "spouse-tobacco": {
         "id": "spouseCoverageTobacco",
@@ -303,7 +406,8 @@
           "field": "spouse-smoker",
           "equals": "yes"
         },
-        "presentation": "conditional"
+        "presentation": "conditional",
+        "role": "questions"
       },
       "spouse-work": {
         "id": "spouseCoverageWorkIncome",
@@ -316,15 +420,62 @@
         "when": {
           "field": "dependents",
           "includes": "spouse"
+        },
+        "role": "questions"
+      },
+      "reveal": {
+        "role": "reveal",
+        "id": "coverageReveal",
+        "fields": [],
+        "display": {
+          "label": "Reveal coverage options",
+          "templates": [
+            "multi",
+            "single"
+          ]
         }
       },
-      "reveal": {},
-      "products": {},
-      "summary": {}
+      "products": {
+        "role": "products",
+        "id": "coverageProducts",
+        "fields": [],
+        "display": {
+          "label": "Products",
+          "templates": [
+            "multi",
+            "single"
+          ]
+        }
+      },
+      "summary": {
+        "role": "summary",
+        "id": "coverageSummary",
+        "fields": [],
+        "display": {
+          "label": "Combined estimate",
+          "templates": [
+            "multi",
+            "single"
+          ]
+        }
+      },
+      "self-business": {
+        "id": "selfCoverageBusinessExpenses",
+        "for": "self",
+        "title": "coverage.section.business",
+        "fields": [
+          "monthly-business-expenses",
+          "business-expense-responsibility"
+        ],
+        "role": "questions"
+      }
     },
     "dialogs": {
-      "dependent-coverage": {}
-    }
+      "dependent-coverage": {},
+      "portfolio": {},
+      "selection-feedback": {}
+    },
+    "sectionOrder": "coverage"
   },
   "dialogs": {
     "dependent-coverage": {
@@ -343,5 +494,159 @@
     "rider",
     "rider-amount",
     "rate-frequency"
+  ],
+  "surfaces": {
+    "coverageControls": {
+      "kind": "controls",
+      "mapping": {
+        "page": "coverage"
+      },
+      "for": "self",
+      "definition": {
+        "label": "coverage.controls.label",
+        "fields": [
+          {
+            "fieldKey": "coverage-categories",
+            "valueKey": "coverage-categories"
+          },
+          {
+            "fieldKey": "coverage-amount",
+            "valueKey": "coverage-amount"
+          },
+          {
+            "fieldKey": "add-coverage",
+            "valueKey": "add-coverage"
+          },
+          {
+            "fieldKey": "waiting-period",
+            "valueKey": "waiting-period"
+          },
+          {
+            "fieldKey": "benefit-option",
+            "valueKey": "benefit-option"
+          },
+          {
+            "fieldKey": "rider",
+            "valueKey": "rider"
+          },
+          {
+            "fieldKey": "rider-amount",
+            "valueKey": "rider-amount"
+          },
+          {
+            "fieldKey": "rate-frequency",
+            "valueKey": "rate-frequency"
+          }
+        ],
+        "libraryGroup": {
+          "label": "coverage.controls.label"
+        }
+      }
+    },
+    "coverageSpouseControls": {
+      "kind": "controls",
+      "mapping": {
+        "page": "coverage"
+      },
+      "for": "spouse",
+      "definition": {
+        "label": "coverage.controls.label",
+        "fields": [
+          {
+            "fieldKey": "spouse-coverage-amount",
+            "valueKey": "coverage-amount"
+          },
+          {
+            "fieldKey": "spouse-add-coverage",
+            "valueKey": "add-coverage"
+          },
+          {
+            "fieldKey": "spouse-waiting-period",
+            "valueKey": "waiting-period"
+          },
+          {
+            "fieldKey": "spouse-benefit-option",
+            "valueKey": "benefit-option"
+          },
+          {
+            "fieldKey": "spouse-rider",
+            "valueKey": "rider"
+          },
+          {
+            "fieldKey": "spouse-rider-amount",
+            "valueKey": "rider-amount"
+          }
+        ],
+        "libraryGroup": {
+          "label": "coverage.controls.label"
+        }
+      },
+      "aliases": {
+        "spouse-coverage-amount": {
+          "field": "coverage-amount"
+        },
+        "spouse-add-coverage": {
+          "field": "add-coverage"
+        },
+        "spouse-waiting-period": {
+          "field": "waiting-period"
+        },
+        "spouse-benefit-option": {
+          "field": "benefit-option"
+        },
+        "spouse-rider": {
+          "field": "rider"
+        },
+        "spouse-rider-amount": {
+          "field": "rider-amount"
+        }
+      }
+    },
+    "coverageChildControls": {
+      "kind": "controls",
+      "mapping": {
+        "page": "coverage"
+      },
+      "for": "child",
+      "definition": {
+        "label": "coverage.controls.label",
+        "fields": [
+          {
+            "fieldKey": "child-coverage-amount",
+            "valueKey": "coverage-amount"
+          },
+          {
+            "fieldKey": "child-add-coverage",
+            "valueKey": "add-coverage"
+          }
+        ],
+        "libraryGroup": {
+          "label": "coverage.controls.label"
+        }
+      },
+      "aliases": {
+        "child-coverage-amount": {
+          "field": "coverage-amount"
+        },
+        "child-add-coverage": {
+          "field": "add-coverage"
+        }
+      }
+    }
+  },
+  "contentSlots": {
+    "coverage.title": {
+      "name": "Page title"
+    },
+    "coverage.subhead": {
+      "name": "Page introduction"
+    }
+  },
+  "retiredContentKeys": [
+    "coverage.policy-fee",
+    "coverage.note.spouse-member-maximum",
+    "coverage.coverage-cart.eligibility-concern",
+    "coverage.coverage-cart.based-on-your-answers-you-may-not-be",
+    "coverage.coverage-cart.you-may-still-continue-with-your-other-selected"
   ]
 }

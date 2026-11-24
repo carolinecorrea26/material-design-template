@@ -115,5 +115,61 @@
         "self"
       ]
     }
-  ]
+  ],
+  "constraints": {
+    "street-address": {
+      "included": true,
+      "required": true
+    },
+    "city": {
+      "included": true,
+      "required": true
+    },
+    "state": {
+      "included": true,
+      "required": true
+    },
+    "zip-code": {
+      "included": true,
+      "required": true,
+      "fixedProperties": [
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength"
+      ]
+    },
+    "email": {
+      "fixedProperties": [
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength"
+      ]
+    },
+    "phone": {
+      "fixedProperties": [
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength"
+      ]
+    },
+    "business-phone": {
+      "fixedProperties": [
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength"
+      ]
+    },
+    "business-zip-code": {
+      "fixedProperties": [
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength"
+      ]
+    }
+  }
 }

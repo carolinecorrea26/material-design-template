@@ -1,3 +1,4 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import { createCoverageJourneyFixture } from "./coverageJourneyExceptionAcceptance";
 import { resolveCoverageJourneyPolicy } from "../domain/coverageJourneyPolicy";
 import { evaluateCoverageJourney } from "../domain/coverageJourney";
@@ -9,7 +10,8 @@ import { afterEach, beforeAll, expect, it, vi } from "vitest";
 import { createReviewedMigrationDatabase } from "./fixtures";
 import { applyBeneficiaryParticipationAdoption } from "./beneficiaryParticipationAdoption";
 import { collectsBeneficiaries, isBeneficiaryParticipationPolicy } from "../domain/beneficiaryParticipation";
-import { installPrototypeLibrary, resolvePrototypeLibrary } from "../domain/prototypeLibrary";
+import { installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import { applicantParticipatesInPage, resolveFlowGate } from "../config/flowGates";
 import { validateMigrationDatabase } from "./integrity";
 import { atpeAssociationKey } from "./atpeAssociationAdoption";
@@ -81,7 +83,7 @@ it("renders ATPE CI beneficiary cards and omits its excluded products on the rea
   vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true);
   window.history.replaceState(null, "", "/?site=isitrust");
   const library = resolvePrototypeLibrary(db, "isitrust", "rendered-beneficiary-scope"); installPrototypeLibrary(library);
-  form.values = { membership: atpeAssociationKey, coverageSelections: ["li-add", "li-50plus", "sh-critical-illness"], productApplicants: { "li-add": ["member"], "li-50plus": ["member"], "sh-critical-illness": ["member"] }, coverageAmounts: { "li-add:member": 100000, "li-50plus:member": 10000, "sh-critical-illness:member": 10000 } };
+  form.values = { "beneficiary-information-opt-in": "yes", membership: atpeAssociationKey, coverageSelections: ["li-add", "li-50plus", "sh-critical-illness"], productApplicants: { "li-add": ["member"], "li-50plus": ["member"], "sh-critical-illness": ["member"] }, coverageAmounts: { "li-add:member": 100000, "li-50plus:member": 10000, "sh-critical-illness:member": 10000 } };
   const container = document.createElement("div"), root = createRoot(container); document.body.append(container);
   try {
     await act(async () => root.render(<MemoryRouter><Beneficiary /></MemoryRouter>));

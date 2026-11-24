@@ -78,13 +78,6 @@
       ]
     },
     {
-      "field": "outside-us-months",
-      "people": [
-        "self",
-        "spouse"
-      ]
-    },
-    {
       "field": "outside-us-country",
       "people": [
         "self",
@@ -372,5 +365,533 @@
         "self"
       ]
     }
-  ]
+  ],
+  "constraints": {
+    "social-security-number": {
+      "fixedProperties": [
+        "format",
+        "inputMode"
+      ]
+    },
+    "drivers-license-number": {
+      "fixedProperties": [
+        "format",
+        "inputMode"
+      ]
+    },
+    "physician-phone": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "medical-zip-code": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "existing-life-insurance-amount": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "pending-life-insurance-amount": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "di-company-name": {
+      "included": true,
+      "required": true
+    },
+    "di-company-monthly-benefit": {
+      "included": true,
+      "required": true,
+      "fixedProperties": [
+        "format",
+        "inputMode"
+      ]
+    },
+    "di-company-benefit-period": {
+      "included": true,
+      "required": true
+    },
+    "di-company-waiting-period": {
+      "included": true,
+      "required": true
+    },
+    "disability-replacement-amount": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "total-net-worth": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "total-annual-unearned-income": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "sole-proprietor-gross-income": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "sole-proprietor-gross-earnings": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "sole-proprietor-business-expenses": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "professional-corporation-annual-salary": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "professional-corporation-s-corp-distribution": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "professional-corporation-dividends": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "professional-corporation-bonus": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "professional-corporation-commission": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "professional-corporation-benefits-cost": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "has-other-life-insurance": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "is-replacing-disability-insurance": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "work-from-home": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "pending-life-insurance-company": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "years-self-employed": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "has-disability-insurance": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "commission-payment-frequency": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "has-pending-life-insurance-applications": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "work-location-details": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "bonus-payment-frequency": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "has-work-location-outside-home": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "is-replacing-life-insurance": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "is-self-employed": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "is-professional-corporation": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "is-sole-proprietor": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "physician-first-name": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "physician-last-name": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "medical-facility-name": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "medical-facility-street-address": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "medical-facility-apt-suite": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "medical-city": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "medical-state": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    }
+  }
 }

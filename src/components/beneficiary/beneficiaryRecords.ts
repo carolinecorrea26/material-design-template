@@ -1,3 +1,4 @@
+import { requirementText } from "../../domain/requirementContent";
 export type BeneficiaryDesignation = "primary" | "contingent";
 export type BeneficiaryType = "individual" | "trust";
 
@@ -14,7 +15,7 @@ export type BeneficiaryItem = {
 };
 
 export function getBeneficiaryDisplayName(item: BeneficiaryItem) {
-  const formatDisplay = (value: string) => value.trim().toUpperCase();
+  const formatDisplay = (value: string) => String(value ?? "").trim().toUpperCase();
 
   if (item.beneficiaryType === "trust") {
     return formatDisplay(item.trustName);
@@ -24,14 +25,14 @@ export function getBeneficiaryDisplayName(item: BeneficiaryItem) {
 }
 
 export function getDesignationLabel(designation: BeneficiaryDesignation) {
-  return designation === "primary" ? "Primary" : "Contingent";
+  return requirementText(`beneficiary.designation.${designation}`);
 }
 
-export function getRelationshipLabel(item: BeneficiaryItem) {
+export function getRelationshipLabel(item: BeneficiaryItem, options?: readonly { value: string; label: string }[]) {
   if (item.beneficiaryType === "trust") {
-    return "Trust";
+    return requirementText("beneficiary.trust-label");
   }
 
-  return item.relationship || "Relationship not provided";
+  return options?.find(option => option.value === item.relationship)?.label || item.relationship || requirementText("beneficiary.relationship-not-provided");
 }
 

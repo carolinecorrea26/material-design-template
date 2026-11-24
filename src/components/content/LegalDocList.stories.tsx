@@ -20,12 +20,11 @@ const meta = {
 
 export default meta;
 
-const footerContent = getContent().footer;
 
 export const TermsOfUse: StoryObj = {
   render: () => (
     <Box sx={{ maxWidth: 640 }}>
-      <LegalDocList doc={footerContent.termsOfUseContent} />
+      <LegalDocList doc={getContent().footer.termsOfUseContent} />
     </Box>
   ),
 };
@@ -33,7 +32,7 @@ export const TermsOfUse: StoryObj = {
 export const PrivacyNotice: StoryObj = {
   render: () => (
     <Box sx={{ maxWidth: 640 }}>
-      <LegalDocList doc={footerContent.privacyNoticeContent} />
+      <LegalDocList doc={getContent().footer.privacyNoticeContent} />
     </Box>
   ),
   parameters: {

@@ -1,3 +1,4 @@
+import { resolveMappedFields } from '../../domain/requirementFields';
 import { useState } from "react";
 import ControlledFieldRenderer from "../forms/ControlledFieldRenderer";
 import type { Meta } from "@storybook/react-vite";
@@ -15,34 +16,37 @@ export default meta;
 
 export const StackedFields = () => (
   <FieldGrid>
-    <ExampleField field={{ id: "first-name", label: "First name", inputType: "text" }} />
-    <ExampleField field={{ id: "last-name", label: "Last name", inputType: "text" }} />
+    <ExampleField id="first-name" />
+    <ExampleField id="last-name" />
   </FieldGrid>
 );
 
-export const NameFields = () => (
+export const EqualColumns = () => (
   <FieldGrid columns="equal">
-    <ExampleField field={{ id: "first-name", label: "First name", inputType: "text" }} />
-    <ExampleField field={{ id: "last-name", label: "Last name", inputType: "text" }} />
+    <ExampleField id="first-name" />
+    <ExampleField id="last-name" />
   </FieldGrid>
 );
 
 export const StreetAndApartment = () => (
   <FieldGrid columns="wide-narrow">
-    <ExampleField field={{ id: "street-address", label: "Street address", inputType: "text" }} />
-    <ExampleField field={{ id: "apt--suite", label: "Apt / Suite", inputType: "text" }} />
+    <ExampleField id="street-address" />
+    <ExampleField id="apt-suite" />
   </FieldGrid>
 );
 
 export const CityStateAndZip = () => (
   <FieldGrid columns="wide-two-narrow">
-    <ExampleField field={{ id: "city", label: "City", inputType: "text" }} />
-    <ExampleField field={{ id: "state", label: "State", inputType: "text" }} />
-    <ExampleField field={{ id: "zip", label: "ZIP", inputType: "text" }} />
+    <ExampleField id="city" />
+    <ExampleField id="state" />
+    <ExampleField id="zip-code" />
   </FieldGrid>
 );
 
-function ExampleField(props: Omit<React.ComponentProps<typeof ControlledFieldRenderer>, "value" | "onChange">) {
+const fields = [...resolveMappedFields({ component: 'membership' }, { includeAll: true }), ...resolveMappedFields({ page: 'contact' }, { includeAll: true })];
+function ExampleField({ id }: { id: string }) {
+  const field = fields.find(field => field.id === id);
+  if (!field) throw new Error(`Missing fresh-start layout field: ${id}`);
   const [value, setValue] = useState<string | boolean | string[]>("");
-  return <ControlledFieldRenderer {...props} value={value} onChange={setValue} />;
+  return <ControlledFieldRenderer field={field} value={value} onChange={setValue} />;
 }

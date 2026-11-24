@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Box, Button } from "@mui/material";
 import CoverageQuestions from "./CoverageQuestions";
 import type { CoverageCategoryId } from "../../config/coverages/types";
-import { coverageCategories } from "../../config/coverageCategories";
+import { getCoverageCategories } from "../../config/coverageCategories";
 
 import ComponentFixture from "../../../.storybook/fixtures/ComponentFixture";
 import type { PrototypeLibrary } from "../../domain/prototypeLibrary";
@@ -35,16 +35,17 @@ function CoverageQuestionsForm({ initialCategories, hasSpouse, fixture }: { init
   const { control, formState, trigger, watch } = useForm<Record<string, string | boolean | string[]>>({ defaultValues: { dependents: hasSpouse ? ["spouse"] : [] }, mode: "onChange" });
   const watchedValues = watch();
   const [selectedCategories, setSelectedCategories] = useState(initialCategories);
-  const visible = (target: { visibilityConditionId?: string }) => !target.visibilityConditionId || fixture.site.configuration.conditions.some(condition => condition.value.definition.id === target.visibilityConditionId && evaluateCondition(condition.value.definition, watchedValues));
+  const visible = (target: { visibilityConditionId?: string }) => !target.visibilityConditionId || fixture.site.configuration.conditions.some(condition => condition.value.definition.id === target.visibilityConditionId && evaluateCondition(condition.value.definition, watchedValues, page.fields.map(row => row.definition)));
   const page = fixture.site.configuration.pages.find(page => page.key === "coverage")!;
   const fields = page.fields.filter(row => row.included && visible(row.definition)).map(row => row.definition);
   const sections = resolveCoverageQuestionSections({ sections: page.sections.map(section => section.definition.value), selectedCategories, coverageQuestions: fixture.client.coverageQuestions }, fixture).filter(visible);
   const products = fixture.products.filter(product => selectedCategories.includes(product.categoryId));
-  const factIds = coverageFactFieldIds(products, watchedValues);
+  const factIds = coverageFactFieldIds(products, watchedValues, "selected", fixture);
 
   return (
     <Box sx={{ maxWidth: 640 }}>
       <CoverageQuestions
+        categoryField={fixture.fieldSurfaces.coverageControls.mapping.fields.find(field => field.id === "coverage-categories")}
         control={control}
         errors={formState.errors}
         watchedValues={watchedValues ?? {}}
@@ -52,7 +53,7 @@ function CoverageQuestionsForm({ initialCategories, hasSpouse, fixture }: { init
         pageSections={sections}
         selectedCategories={selectedCategories}
         hasSpouse={hasSpouse}
-        availableCategories={coverageCategories.filter(category => fixture.products.some(product => product.categoryId === category.id))}
+        availableCategories={getCoverageCategories(fixture.client.coverages.categoryNames).filter(category => fixture.products.some(product => product.categoryId === category.id))}
         categoryProducts={products}
         factFields={fields.filter(field => factIds.includes(field.id as typeof factIds[number]) && !sections.some(section => section.fieldIds.some(id => id === field.id)))}
         applicantLabels={fixture.client.applicantLabels}
@@ -98,13 +99,4 @@ export const WithSpouse: StoryObj = {
       },
     },
   },
-};
-
-export const OfficeOverheadSelected: StoryObj = {
-  name: "Office overhead (business-expense follow-ups)",
-  render: () => <CoverageQuestionsDemo selectedCategories={["OO"]} />,
-};
-export const SupplementalHealthSelected: StoryObj = {
-  name: "Supplemental health follow-ups",
-  render: () => <CoverageQuestionsDemo selectedCategories={["SH"]} />,
 };

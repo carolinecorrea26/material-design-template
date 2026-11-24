@@ -10,7 +10,7 @@ type ApplicantQuestionFields = Partial<
 >;
 
 /** Canonical coverage-category → application-question relationship. */
-export const coverageQuestionRequirements: Record<CoverageCategoryId, ApplicantQuestionFields> = { OO: {}, SH: {}, ...authoredCoverageQuestions } as Record<CoverageCategoryId, ApplicantQuestionFields>;
+export const coverageQuestionRequirements: Record<CoverageCategoryId, ApplicantQuestionFields> = authoredCoverageQuestions as Record<CoverageCategoryId, ApplicantQuestionFields>;
 
 const smokerQuestionIds = new Set<FieldId>([
   "smoker",
@@ -28,11 +28,13 @@ export function getCategoryQuestionFieldIds(
   library: PrototypeLibrary | null = getPrototypeLibrary(),
 ): FieldId[] {
   const policy = library?.settings.coveragePolicy as { questionRequirements: typeof coverageQuestionRequirements; questionOverrides?: Partial<typeof coverageQuestionRequirements> } | undefined;
+  if (library && !policy?.questionRequirements) throw new Error("Missing fresh-start Coverage question requirements");
   const catalog = policy?.questionRequirements ?? coverageQuestionRequirements;
+  const hideSmokerQuestion = options?.hideSmokerQuestion ?? library?.client.coverages.hideSmokerQuestion ?? false;
   const fields = new Set<FieldId>();
   for (const categoryId of selectedCategories) {
     for (const fieldId of policy?.questionOverrides?.[categoryId]?.[applicant] ?? catalog[categoryId]?.[applicant] ?? []) {
-      if (options?.hideSmokerQuestion && smokerQuestionIds.has(fieldId)) continue;
+      if (hideSmokerQuestion && smokerQuestionIds.has(fieldId)) continue;
       fields.add(fieldId);
     }
   }

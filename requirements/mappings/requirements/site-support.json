@@ -1,0 +1,7 @@
+{
+  "component": "site-support",
+  "rules": [
+    "shared-site-support",
+    "shared-action-typography"
+  ]
+}

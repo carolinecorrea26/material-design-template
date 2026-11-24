@@ -1,25 +1,21 @@
+import AppModal from "../layout/AppModal";
 import verificationFixture from "../../../requirements/global/prototype-fixtures/verification.json";
 import { requirementText, requirementTextList } from "../../domain/requirementContent";
-import { getSurfaceField, getSurfaceFields } from "../../config/fields/storedSurfaces";
+import { getSurfaceFields } from "../../config/fields/storedSurfaces";
+import { getPrototypeLibrary } from '../../domain/prototypeLibrary';
+import type { FieldDefinition } from '../../domain/fields';
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import FieldRenderer from "../forms/FieldRenderer";
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import CancelRoundedIcon from "@mui/icons-material/CancelRounded";
 import {
   Box,
   Button,
-  Dialog,
-  DialogContent,
-  DialogTitle,
   Divider,
-  IconButton,
   MobileStepper,
   Stack,
   Typography,
-  useMediaQuery,
-  useTheme,
 } from "@mui/material";
 
 // ---------------------------------------------------------------------------
@@ -29,6 +25,14 @@ import {
 
 
 const NONE_ANSWER = verificationFixture.failureAnswer;
+type VerificationPresentation = { method: FieldDefinition; questions: FieldDefinition[] };
+export function verificationPresentation(library = getPrototypeLibrary()): VerificationPresentation {
+  if (!library) throw new Error('Missing fresh-start verification presentation');
+  const method = getSurfaceFields('verificationControls', library).find(field => field.id === 'verification-method');
+  const questions = getSurfaceFields('verificationQuestions', library);
+  if (!method || !questions.length) throw new Error('Missing fresh-start verification fields');
+  return { method, questions };
+}
 
 // ---------------------------------------------------------------------------
 // Sub-step 0: method selection
@@ -37,11 +41,11 @@ const NONE_ANSWER = verificationFixture.failureAnswer;
 type VerificationMethod = "text" | "voice" | "security-questions" | "skip";
 
 function MethodStep({
-  onNext,
+  onNext, field,
 }: {
   onNext: (method: VerificationMethod) => void;
+  field: FieldDefinition;
 }) {
-  const field = getSurfaceField("verificationControls", "verification-method")!;
   const form = useForm<Record<string, string | boolean | string[]>>({
     defaultValues: { [field.id]: "" },
   });
@@ -74,11 +78,11 @@ function MethodStep({
 // ---------------------------------------------------------------------------
 
 function SecurityQuestionsStep({
-  onNext,
+  onNext, questions,
 }: {
   onNext: (passed: boolean) => void;
+  questions: FieldDefinition[];
 }) {
-  const questions = getSurfaceFields("verificationQuestions");
   const form = useForm<Record<string, string | boolean | string[]>>({
     defaultValues: Object.fromEntries(questions.map(question => [question.id, ""])),
   });
@@ -170,14 +174,13 @@ function ResultStep({
 type MemberVerificationProps = {
   open: boolean;
   onClose: (verified: boolean) => void;
+  presentation?: VerificationPresentation;
 };
 
 export default function MemberVerification({
   open,
-  onClose,
+  onClose, presentation: suppliedPresentation,
 }: MemberVerificationProps) {
-  const theme = useTheme();
-  const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
 
   // Steps: 0 = method selection, 1 = security questions (or skip), 2 = result
   const [step, setStep] = useState(0);
@@ -212,43 +215,20 @@ export default function MemberVerification({
     }, 300);
   }
 
-  const stepCount = 3;
   const stepLabels = requirementTextList('eligibility.verification.steps');
+  const presentation = suppliedPresentation ?? (open ? verificationPresentation() : undefined);
+  if (!presentation) return null;
   // For non-security-question flows the stepper still shows 3 dots but we skip
   // directly to step 2 without rendering step 1 content.
 
   return (
-    <Dialog
-      open={open}
-      onClose={handleClose}
-      maxWidth={false}
-      fullWidth
-      fullScreen={!isDesktop}
-      PaperProps={{
-        sx: isDesktop ? { maxWidth: 560, minHeight: "auto" } : {},
-      }}
-    >
-      <DialogTitle
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: 2,
-          pb: 1,
-        }}
-      >
-        <Typography component="span" variant="h5">{requirementText("eligibility.verification.title")}</Typography>
-        <IconButton onClick={handleClose} aria-label={requirementText("eligibility.verification.close")} size="small">
-          <CloseRoundedIcon />
-        </IconButton>
-      </DialogTitle>
-
-      {/* Dot stepper */}
-      <MobileStepper
+    <AppModal open={open} onClose={handleClose} maxWidth={560} minHeight="auto"
+      title={requirementText("eligibility.verification.title")} closeLabel={requirementText("eligibility.verification.close")}
+      headerContent={      <MobileStepper
         role="group"
         aria-label={stepLabels[step]}
         variant="dots"
-        steps={stepCount}
+        steps={stepLabels.length}
         position="static"
         activeStep={step}
         nextButton={null}
@@ -260,12 +240,10 @@ export default function MemberVerification({
           pt: 0.5,
           "& .MuiMobileStepper-dot": { mx: 0.5 },
         }}
-      />
-
-      <DialogContent dividers>
-        {step === 0 && <MethodStep onNext={handleMethodNext} />}
+      />}>
+        {step === 0 && <MethodStep field={presentation.method} onNext={handleMethodNext} />}
         {step === 1 && method === "security-questions" && (
-          <SecurityQuestionsStep onNext={handleQuestionsNext} />
+          <SecurityQuestionsStep questions={presentation.questions} onNext={handleQuestionsNext} />
         )}
         {step === 2 && (
           <ResultStep
@@ -273,8 +251,7 @@ export default function MemberVerification({
             onClose={handleClose}
           />
         )}
-      </DialogContent>
-    </Dialog>
+    </AppModal>
   );
 }
 

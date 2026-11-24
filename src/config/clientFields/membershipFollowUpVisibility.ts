@@ -1,25 +1,10 @@
-import type {
-  ActiveAssociationResolution,
-  AssociationSelectionMode,
-} from "../../data";
+import type { FieldDefinition } from '../../domain/fields';
 
-export function shouldShowMembershipFollowUpFields({
-  membershipOptions,
-  selectionMode,
-  membershipValue,
-  associationStatus,
-}: {
-  membershipOptions: string[];
-  selectionMode?: AssociationSelectionMode;
-  membershipValue: unknown;
-  associationStatus: ActiveAssociationResolution["status"];
-}): boolean {
-  if (selectionMode === "select") {
-    return associationStatus === "resolved";
-  }
-  if (membershipOptions.includes("physician") || membershipOptions.includes("spouse")) return membershipOptions.includes(String(membershipValue));
-  if (membershipOptions.includes("current") || membershipOptions.includes("new")) {
-    return membershipValue === "current" || membershipValue === "new" || membershipValue === "yes";
-  }
-  return membershipValue === "yes";
+export function membershipOutcome(field: FieldDefinition | undefined, value: unknown) {
+  return field?.options?.find(option => option.value === value)?.outcome;
+}
+
+/** The confirmed inline exception applies only to the yes/no attestation. */
+export function isMembershipAttestationStop(field: FieldDefinition | undefined, value: unknown) {
+  return field?.configuration === 'yes-no' && membershipOutcome(field, value) === 'not-eligible';
 }

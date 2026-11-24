@@ -1,9 +1,10 @@
+import { composeReadAndSign, resolveReviewLegalSections } from '../../config/reviewExperience';
+import { requirementText } from '../../domain/requirementContent';
 import { fn } from 'storybook/test';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import ReviewSections from './ReviewSections';
 import SectionStoryForm from '../../../.storybook/forms/SectionStoryForm';
-import { fieldCatalog } from '../../config/fields';
-import { getContent } from '../../content';
+import ComponentFixture from '../../../.storybook/fixtures/ComponentFixture';
 import ApplicationDocumentPreview from '../content/ApplicationDocumentPreview';
 
 const meta = {
@@ -16,16 +17,15 @@ const meta = {
 } satisfies Meta<typeof ReviewSections>;
 export default meta;
 function SectionsExample({ spouse = false, advisor = false }: { spouse?: boolean; advisor?: boolean }) {
-  const reviewContent = getContent().review;
-  return <SectionStoryForm fields={Object.values(fieldCatalog)}>{props => <>
-    <ReviewSections {...props} reviewContent={reviewContent}
-      documentPreview={<ApplicationDocumentPreview sections={[{ title: 'Membership', groups: [{ entries: [{ label: 'Name', value: 'Jordan Morgan' }] }] }]} associationName="Example Association" signatureName="" signedDate="" currentDate="10/28/2026" hideSignature />}
-      isAdvisorApplicantFlow={advisor} showHealthQuestionsNote={false} showSelfLabel={spouse}
-      readAndSignText={reviewContent.readAndSignContent}
+  return <ComponentFixture>{fixture => { const reviewContent = fixture.content.review; const policy = fixture.client.reviewPolicy!; return <SectionStoryForm fields={fixture.fields}>{props => <>
+    <ReviewSections {...props} reviewContent={reviewContent} legalSections={resolveReviewLegalSections(fixture)}
+      documentPreview={<ApplicationDocumentPreview sections={[{ title: 'Membership', groups: [{ entries: [{ label: 'Name', value: 'Jordan Morgan' }] }] }]} associationName="Example Association" signatureName="" signedDate="" hideSignature />}
+      isAdvisorApplicantFlow={advisor} legalDocuments={policy.documentLinks?.map(link => ({ ...link, document: link.document === 'important-notice' ? reviewContent.importantNotices![policy.importantNotice!.defaultDocument] : fixture.content.footer.privacyNoticeContent }))} remainingSteps={['review.remaining-steps.payment', 'review.remaining-steps.docusign'].map(key => requirementText(key))} showSelfLabel={spouse}
+      readAndSignText={composeReadAndSign(reviewContent.readAndSignContent, policy.fraud.defaultText, policy.consent!.underwrittenText, true, { introductoryStatement: policy.authorization!.introductoryStatement, text: policy.authorization!.wording!.defaultText }, policy.premiumContributionStatement)}
       beforeConsentNotices={[]} blocks={[]} additionalFields={[]}
-      selfConsentField={fieldCatalog['review-self-consent']} spouseConsentField={spouse ? fieldCatalog['review-spouse-consent'] : undefined}
+      selfConsentField={fixture.fields.find(field => field.id === 'review-self-consent')!} spouseConsentField={spouse ? fixture.fields.find(field => field.id === 'review-spouse-consent')! : undefined}
       onPrint={fn()} />
-  </>}</SectionStoryForm>;
+  </>}</SectionStoryForm>; }}</ComponentFixture>;
 }
 export const Default: StoryObj = { render: () => <SectionsExample /> };
 export const MemberAndSpouse: StoryObj = { render: () => <SectionsExample spouse /> };

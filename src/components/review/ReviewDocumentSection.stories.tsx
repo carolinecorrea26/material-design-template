@@ -11,5 +11,5 @@ const meta = { title: 'Components/Pages/Review/Sections/Application document', c
 export default meta;
 export const Default: StoryObj = { render: (_args, context) => <ApplicationPageExample key={context.id} catalog={context.loaded.catalog as SharedCatalog}
   scenario={{ capability: 'multipleTerms', description: 'Review’s actual document adapter and saved field grouping, with fictional answers.', values }}>
-  <ConfiguredApplicationDocumentPreview values={values} signatureName="" signedDate="" currentDate="11/04/2026" hideSignature />
+  <ConfiguredApplicationDocumentPreview values={values} signatureName="" signedDate="" hideSignature />
 </ApplicationPageExample> };

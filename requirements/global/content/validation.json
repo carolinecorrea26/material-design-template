@@ -14,5 +14,18 @@
   "validation.field.number": "Enter a valid nonnegative number.",
   "validation.page.ineligible": "Unfortunately you are ineligible for coverage. Please contact the Administrator for more information about eligibility.",
   "validation.field.minimum-length": "{{label}} must be at least {{minimumLength}} characters.",
-  "validation.field.digits": "{{label}} must contain digits only."
+  "validation.field.digits": "{{label}} must contain digits only.",
+  "validation.field.alphanumeric": "{{label}} must contain letters and digits only.",
+  "validation.field.numeric-range": "{{label}} must be {{bound}} {{limit}}.",
+  "validation.health.answer": "Answer {{label}}",
+  "validation.health.add-details": "Add details for {{label}}",
+  "validation.health.update-details": "Update details for {{label}}",
+  "validation.health.maximum-records": "Use at most {{maximum}} detail records for {{label}}",
+  "validation.health.detail-error": "{{message}} ({{label}})",
+  "validation.health.value": "Enter a valid value for {{label}}.",
+  "validation.health.date": "Enter a valid date for {{label}}.",
+  "validation.health.month-year": "Enter a valid month and year for {{label}}.",
+  "validation.health.questionnaire-unresolved": "No unique valid health questionnaire is assigned.",
+  "validation.health.ci-unassigned": "No critical illness questionnaire is assigned.",
+  "validation.collection.review": "Please review the {{label}} entries."
 }

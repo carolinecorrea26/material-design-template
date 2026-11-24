@@ -66,6 +66,8 @@ export type CoverageUnderwritingType =
   | "TELE";
 
 export type RiderDefinition = {
+  /** Wording for an applicant-specific election; generic description remains for overviews. */
+  applicantDescriptions?: Partial<Record<CoverageApplicantId, string>>;
   /** Applicants who may elect this rider without requesting new base coverage. */
   riderOnlyApplicants?: CoverageApplicantId[];
   /** Beneficiary role can differ from the base election owner. */
@@ -154,6 +156,8 @@ export type CoverageDefinition = {
   underwritingType: CoverageUnderwritingType;
   definition: string;
   description?: string;
+  /** Product notice shown in bold on its own line after the description. */
+  descriptionNotice?: string;
   /** Note displayed per-applicant inside the product card (supports {maxAmount} placeholder) */
   coverageNote?: string;
   /** Per-applicant info notes displayed above the applicant fields */

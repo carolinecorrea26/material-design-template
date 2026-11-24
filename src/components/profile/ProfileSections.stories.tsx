@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { configuredComponent } from '../../domain/componentDisplayNames';
 import ProfileSections from './ProfileSections';
 import SectionStoryForm from '../../../.storybook/forms/SectionStoryForm';
-import { fieldCatalog } from '../../config/fields';
-import { pageSections } from '../../config/pageSections/pageSections';
+import ComponentFixture from '../../../.storybook/fixtures/ComponentFixture';
 
 const meta = {
   id: "pages-profile-sections",
@@ -20,25 +20,27 @@ const meta = {
         { label: 'Shared repeated records', storyId: 'forms-dynamiclist--populated' },
       ],
     },
-    docs: { description: { component: 'Personal information, physician details, other coverage and the member financial questionnaire. The page supplies visible sections, applicant labels, coverage flags, notice wording and collection configuration. Local answers reveal follow-ups; DynamicList owns carrier record dialogs.' } },
+    docs: { description: { component: configuredComponent('ProfileSections').description } },
   },
 } satisfies Meta<typeof ProfileSections>;
 export default meta;
 
-const fields = Object.values(fieldCatalog);
-const example = (sectionIds: string[], initialValues: Record<string, unknown> = {}): StoryObj => ({
-  render: () => <SectionStoryForm fields={fields} sections={(pageSections.profile ?? []).filter(section => sectionIds.includes(section.id))} initialValues={initialValues}>
-    {props => <ProfileSections {...props} selfHasLife selfHasDisability spouseHasLife spouseHasDisability showApplicantLabels={{ spouse: true }} />}
-  </SectionStoryForm>,
+const example = (sectionIds?: string[], initialValues: Record<string, unknown> = {}): StoryObj => ({
+  render: () => <ComponentFixture>{fixture => {
+    const page = fixture.site.configuration.pages.find(page => page.key === 'profile')!;
+    const fields = page.fields.filter(row => row.included).map(row => row.definition);
+    const sections = page.sections.map(section => section.definition.value).filter(section => !sectionIds || sectionIds.includes(section.id));
+    return <SectionStoryForm fields={fields} sections={sections} initialValues={initialValues}>
+      {props => <ProfileSections {...props} selfHasLife selfHasDisability spouseHasLife spouseHasDisability applicantLabels={fixture.client.applicantLabels} showApplicantLabels={{ spouse: true }} financialCalculations={fixture.client.applicantExperience?.profile?.financialCalculations} lifeReplacementNotice={fixture.client.applicantExperience?.profile?.lifeReplacementNotice} sectionNotes={fixture.content.pages.profile?.sectionNotes} disabilityCollections={{ self: fixture.fieldCollections.selfDisabilityCompanies, spouse: fixture.fieldCollections.spouseDisabilityCompanies }} />}
+    </SectionStoryForm>;
+  }}</ComponentFixture>,
 });
 export const PersonalInformation = example(['profilePersonalSelf']);
 export const PersonalFollowups = example(['profilePersonalSelf'], { 'has-drivers-license': 'yes', 'intend-live-outside-us': 'yes', 'travel-outside-us-six-months': 'yes' });
 export const OtherCoverage = example(['profileFinancialSelf']);
 export const ExistingDisabilityRecords = example(['profileFinancialSelf'], { 'has-disability-insurance': 'yes', selfDisabilityCompanies: [{ company: 'Example Carrier', monthlyBenefitAmount: '1200', benefitPeriod: 'Age 65', waitingPeriod: '90 days' }] });
 export const FinancialQuestionnaire = example(['profileFinancialQuestionnaireSelf']);
-export const SelfEmployment = example(['profileFinancialQuestionnaireSelf'], { 'is-self-employed': 'yes', 'is-sole-proprietor': true, 'is-professional-corporation': true, 'has-work-location-outside-home': 'yes' });
+export const SelfEmployment = example(['profileFinancialQuestionnaireSelf'], { 'is-self-employed': 'yes', 'is-sole-proprietor': true, 'is-professional-corporation': true, 'work-from-home': 'yes', 'has-work-location-outside-home': 'yes' });
 export const SpouseInformation = example(['profilePersonalSpouse', 'profilePersonalSpousePhysician', 'profileFinancialSpouse']);
-export const MemberPhysician = example(['profilePersonalSelfPhysician']);
-export const SpousePhysician = example(['profilePersonalSpousePhysician']);
-export const SpouseOtherCoverage = example(['profileFinancialSpouse']);
-export const AllSections = example((pageSections.profile ?? []).map(section => section.id));
+
+export const AllSections = example();

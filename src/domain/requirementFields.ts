@@ -1,7 +1,9 @@
+import { requirementContentValues } from './requirementContent';
 import fieldIds from "../../requirements/global/fields.json";
 import fieldDetails from "../../requirements/parked/field-details.json";
 import optionLists from "../../requirements/global/option-lists.json";
 import { resolveMappedFields as resolveRequirementFields } from "./requirementFieldDefinitions.mjs";
+import { getPrototypeLibrary, type PrototypeLibrary } from "./prototypeLibrary";
 import type { FieldDefinition } from "./fields";
 
 /** A page or component mapping under requirements/mappings. */
@@ -13,8 +15,10 @@ export type RequirementFieldSource = {
   optionLists: unknown;
   mappings: unknown[];
   sites: Record<string, unknown>;
-  /** Site page files (`parked/sites/<site>/pages/<page>.json`): `include` default-off fields, `hide` default-on ones. */
+  /** Site page files: include/hide mapped fields globally or through person-scoped fieldParticipation. */
   sitePages?: Record<string, Record<string, unknown>>;
+  /** Primary page mappings keep person-scoped selection separate from dialog surfaces. */
+  pageMappings?: Record<string, RequirementMapping>;
 };
 
 const jsonModules = (modules: Record<string, unknown>) => Object.values(modules).map(module => (module as { default?: unknown }).default ?? module);
@@ -22,6 +26,9 @@ export const defaultRequirementFieldSource = (): RequirementFieldSource => ({
   fieldIds,
   fieldDetails,
   optionLists,
+  pageMappings: Object.fromEntries(jsonModules(import.meta.glob('../../requirements/parked/*.json', { eager: true }))
+    .filter((page): page is { page: string; fieldMapping: RequirementMapping } => object(page) && typeof page.page === 'string' && object(page.fieldMapping))
+    .map(page => [page.page, page.fieldMapping])),
   mappings: [
     ...jsonModules(import.meta.glob("../../requirements/mappings/components/*.json", { eager: true })),
     ...jsonModules(import.meta.glob("../../requirements/mappings/page-fields/*.json", { eager: true })),
@@ -64,16 +71,13 @@ export function parseRequirementAnswerKey(key: string, source: RequirementFieldS
 }
 
 /** Pages whose saved field definitions come from the requirements JSON. A page is added once its JSON review is agreed. */
-export const requirementPages: Record<string, RequirementMapping> = {
-  home: { component: "home" },
-  membership: { component: "membership" },
-  eligibility: { component: "eligibility" },
-  coverage: { page: "coverage" },
-  beneficiary: { page: "beneficiary" },
-  contact: { page: "contact" },
-};
+export const requirementPages: Record<string, RequirementMapping> = Object.fromEntries(
+  jsonModules(import.meta.glob('../../requirements/parked/*.json', { eager: true }))
+    .filter((page): page is { page: string; fieldMapping: RequirementMapping } => object(page) && typeof page.page === 'string' && object(page.fieldMapping))
+    .map(page => [page.page, page.fieldMapping]),
+);
 
-const requirementContent = (): Record<string, unknown> => Object.assign({}, ...jsonModules(import.meta.glob("../../requirements/global/content/*.json", { eager: true })));
+const requirementContent = requirementContentValues;
 const requirementPageFiles = () => jsonModules(import.meta.glob("../../requirements/parked/*.json", { eager: true }));
 
 /** Optional info alert below a page header; a site chooses a content key, never copied text. */
@@ -90,7 +94,9 @@ export function requirementPageNote(
   const key = sitePage?.note ?? page?.note;
   if (!key) return undefined;
   if (typeof content[key] !== "string") throw new Error(`Page note ${key} for ${pageKey} is not in the requirements content`);
-  return content[key] as string;
+  const override = (source.sitePages?.[siteId]?.[pageKey] as { content?: Record<string, unknown> } | undefined)?.content?.[key];
+  if (override !== undefined && typeof override !== 'string') throw new Error(`Invalid Site content value: ${key}`);
+  return override ?? content[key] as string;
 }
 
 // Runtime section ids for the requirements' section ids, per rolled-out page with section notes.
@@ -113,13 +119,16 @@ export function requirementSectionNotes(
   const sections = runtimeSections[pageKey];
   if (!sections || !requirementPages[pageKey] || !siteUsesRequirementFields(siteId, source)) return undefined;
   const page = pages.find(file => object(file) && file.page === pageKey) as { sections?: Record<string, { note?: string }> } | undefined;
-  const siteNotes = (source.sitePages?.[siteId]?.[pageKey] as { notes?: Record<string, string> } | undefined)?.notes ?? {};
+  const sitePage = source.sitePages?.[siteId]?.[pageKey] as { notes?: Record<string, string>; content?: Record<string, unknown> } | undefined;
+  const siteNotes = sitePage?.notes ?? {};
   const notes: Record<string, string> = {};
   for (const [section, runtimeId] of Object.entries(sections)) {
     const key = siteNotes[section] ?? page?.sections?.[section]?.note;
     if (!key) continue;
     if (typeof content[key] !== "string") throw new Error(`Section note ${key} for ${pageKey}/${section} is not in the requirements content`);
-    notes[runtimeId] = content[key] as string;
+    const override = sitePage?.content?.[key];
+    if (override !== undefined && typeof override !== 'string') throw new Error(`Invalid Site content value: ${key}`);
+    notes[runtimeId] = override ?? content[key] as string;
   }
   return notes;
 }
@@ -150,7 +159,14 @@ export function withRequirementFields(
 }
 
 /** Definitions for generated product controls; only the answer binding and policy options vary. */
-export function requirementCoverageControl(id: string, applicant: "member" | "spouse" | "child" = "member") {
+export function requirementCoverageControl(id: string, applicant: "member" | "spouse" | "child" = "member", library: PrototypeLibrary | null = getPrototypeLibrary()): FieldDefinition {
+  if (library) {
+    const name = applicant === "member" ? "coverageControls" : applicant === "spouse" ? "coverageSpouseControls" : "coverageChildControls";
+    const surface = library.fieldSurfaces[name];
+    const field = surface?.mapping.fields.find(field => surface.mapping.fieldToKey[field.id] === id);
+    if (!field) throw new Error(`Missing fresh-start Coverage control: ${id}/${applicant}`);
+    return field;
+  }
   const person = applicant === "member" ? "self" : applicant;
   const definition = resolveMappedFields({ page: "coverage" }, { person }).find(field => field.id === id);
   if (!definition) throw new Error(`Unmapped Coverage control: ${id}/${person}`);

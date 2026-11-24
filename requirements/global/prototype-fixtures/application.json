@@ -1,7 +1,4 @@
 {
-  "savedApplicationLifetimeMs": 864000000,
-  "resumeLinkValidityMs": 600000,
-  "resumeCodeValidityMs": 300000,
   "resumeTransitionMs": 1200,
   "processingTimeoutMs": 15000
 }

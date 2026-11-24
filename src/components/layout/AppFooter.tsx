@@ -9,6 +9,8 @@ import { getContent } from "../../content";
 import AppModal from "../layout/AppModal";
 import LegalDocList from "../content/LegalDocList";
 import { getFormTemplate } from "../../config/template/resolveTemplate";
+import PrintAction from '../content/PrintAction';
+import { requirementText } from '../../domain/requirementContent';
 
 type AppFooterProps = {
   client: ClientConfig;
@@ -17,7 +19,8 @@ type AppFooterProps = {
 export default function AppFooter({ client }: AppFooterProps) {
   const [showTermsOfUse, setShowTermsOfUse] = useState(false);
   const [showPrivacyNotice, setShowPrivacyNotice] = useState(false);
-  const footerContent = getContent().footer;
+  const content = getContent();
+  const footerContent = content.footer;
 
   useEffect(() => {
     const handleOpenPrivacyNotice = () => setShowPrivacyNotice(true);
@@ -226,8 +229,8 @@ export default function AppFooter({ client }: AppFooterProps) {
               <Box sx={{ flexShrink: 0 }}>
                 <Box
                   component="img"
-                  src="/logo.svg"
-                  alt="New York Life Logo"
+                  src={content.shared.insurerLogo.src}
+                  alt={content.shared.insurerLogo.alt}
                   sx={{ height: 50, width: "auto" }}
                 />
               </Box>
@@ -247,10 +250,10 @@ export default function AppFooter({ client }: AppFooterProps) {
 
                 <Typography
                   variant="caption"
-                  sx={{ display: "block", mt: 1, fontSize: "0.75rem" }}
+                  sx={{ display: "block", mt: 1 }}
                 >
-                  <sup>{footerContent.ratingsAsOf.split(" ")[0]}</sup>{" "}
-                  {footerContent.ratingsAsOf.split(" ").slice(1).join(" ")}
+                  <sup>1</sup>{" "}
+                  {footerContent.ratingsAsOf}
                 </Typography>
               </Box>
             </Box>
@@ -265,6 +268,7 @@ export default function AppFooter({ client }: AppFooterProps) {
                 {text}
               </Typography>
             ))}
+            <Box component="img" src={requirementText('footer.security-seal.src')} alt={requirementText('footer.security-seal.alt')} sx={{ width: 140, height: 'auto', alignSelf: 'flex-end', mt: 1 }} />
           </Stack>
         </Box>
       </Box>
@@ -275,6 +279,7 @@ export default function AppFooter({ client }: AppFooterProps) {
         onClose={() => setShowTermsOfUse(false)}
         title={footerContent.termsOfUseContent.title}
         maxWidth={700}
+        footerActions={<PrintAction targetId="footer-terms-print" />}
         actions={[
           {
             label: "Close",
@@ -283,7 +288,7 @@ export default function AppFooter({ client }: AppFooterProps) {
           },
         ]}
       >
-        <LegalDocList doc={footerContent.termsOfUseContent} />
+        <Box id="footer-terms-print" aria-label={footerContent.termsOfUseContent.title}><LegalDocList doc={footerContent.termsOfUseContent} /></Box>
       </AppModal>
 
       {/* Privacy Notice modal */}
@@ -292,6 +297,7 @@ export default function AppFooter({ client }: AppFooterProps) {
         onClose={() => setShowPrivacyNotice(false)}
         title={footerContent.privacyNoticeContent.title}
         maxWidth={700}
+        footerActions={<PrintAction targetId="footer-privacy-print" />}
         actions={[
           {
             label: "Close",
@@ -300,7 +306,7 @@ export default function AppFooter({ client }: AppFooterProps) {
           },
         ]}
       >
-        <LegalDocList doc={footerContent.privacyNoticeContent} />
+        <Box id="footer-privacy-print" aria-label={footerContent.privacyNoticeContent.title}><LegalDocList doc={footerContent.privacyNoticeContent} /></Box>
       </AppModal>
     </Box>
   );

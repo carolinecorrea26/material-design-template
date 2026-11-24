@@ -3,7 +3,7 @@
     {
       "id": "date-value-format",
       "name": "Check the supplied date format",
-      "status": "draft",
+      "status": "confirmed",
       "check": "date-format",
       "statement": "A supplied date must be a valid calendar date in internal YYYY-MM-DD format. Age eligibility is a separate business check.",
       "source": "src/utils/fieldValidation.ts",

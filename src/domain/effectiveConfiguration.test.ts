@@ -2,12 +2,12 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { createMigrationDatabase, migrationSiteKeys } from "../migration/fixtures";
 import { resolveDatabaseSite } from "../migration/resolve";
 import type { DatabaseSchema } from "../persistence/types";
-import { resolveEffectiveEligibility, resolveEffectiveUnderwriting, resolveEffectiveSite } from "./effectiveSite";
+import { resolveEffectiveEligibility, resolveEffectiveUnderwriting, resolveSnapshotSite as resolveEffectiveSite } from "./effectiveSite";
 import { effectiveConfigurationTables, resolveEffectiveAmount } from "./effectiveConfiguration";
 
 let db: DatabaseSchema;
-beforeAll(() => { db = createMigrationDatabase(); });
-describe("Phase 6B normalized domain configuration", () => {
+beforeAll(() => { db = createMigrationDatabase(); }, 120000);
+describe("Historical normalized snapshot configuration (explicit archival boundary)", () => {
   for (const siteKey of migrationSiteKeys) it(`${siteKey}: configuration parity and provenance`, () => {
     const site = resolveEffectiveSite(db, siteKey), actual = site.configuration;
     const expected = resolveDatabaseSite(db, siteKey);
@@ -15,7 +15,13 @@ describe("Phase 6B normalized domain configuration", () => {
     expect(Object.fromEntries(actual.support.map(r => [r.key, r.value]))).toEqual(expected.support);
     expect(actual.pages.map(p => [p.key, p.requirement])).toEqual(expected.pages.map(p => [p.id, p.requirement]));
     for (const page of actual.pages) {
-      expect(page.fields.map(f => ({ included: f.included, field: f.definition }))).toEqual(expected.fields.find(f => f.pageId === page.key)?.fields ?? []);
+      const captured = expected.fields.find(field => field.pageId === page.key)?.fields ?? [];
+      const directKeys = new Set(captured.map(row => row.field.id));
+      expect(page.fields.filter(field => directKeys.has(field.key)).map(field => ({ included: field.included, field: field.definition }))).toEqual(captured);
+      // The shared resolver also includes inline section placements absent from
+      // the old direct-field inspector. Collection rows have their own scope.
+      const inlineSections = new Set(db.pageSections.filter(section => section.pageKey === page.key && !section.definition.collectionName).map(section => section.key));
+      for (const field of page.fields.filter(field => !directKeys.has(field.key))) expect(db.pageSectionFields.some(row => inlineSections.has(row.sectionKey) && row.fieldKey === field.key)).toBe(true);
       expect(page.provenance[0].table).toBe("sitePages");
       for (const field of page.fields) expect(field.provenance.some(p => p.table === "fields")).toBe(true);
     }

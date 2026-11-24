@@ -1,0 +1,6 @@
+{
+  "page": "membership",
+  "include": [
+    "nurse-type"
+  ]
+}

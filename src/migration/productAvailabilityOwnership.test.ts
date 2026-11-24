@@ -1,7 +1,8 @@
+// Historical normalization: assertions resolve the captured snapshot explicitly.
 import { expect, it } from "vitest";
 import { createReviewedMigrationDatabase } from "./fixtures";
 import { consolidateProductAvailabilityOwnership } from "./productAvailabilityOwnership";
-import { resolvePrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import { activeSiteMigrationScope } from "./activeSiteScope";
 
 const db = createReviewedMigrationDatabase();

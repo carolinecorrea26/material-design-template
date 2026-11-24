@@ -4,9 +4,47 @@
     "eligible-states-only",
     "eligible-states",
     "contact-hide-business-address",
-    "contact-hide-correspondence"
+    "contact-hide-correspondence",
+    "contact-business-address-products"
   ],
   "presentation": [
     "eligible-state-options"
+  ],
+  "rules": [
+    "contact-owner-address",
+    "contact-business-participation",
+    "contact-same-as-home",
+    "contact-spouse-participation",
+    "contact-location-carry-forward",
+    "contact-storage-and-validation",
+    "browser-autofill-self-only",
+    "contact-member-employment"
+  ],
+  "validations": [
+    {
+      "validation": "required-fields",
+      "trigger": "next",
+      "scope": "visible-fields"
+    },
+    {
+      "validation": "postal-code-format",
+      "trigger": "next",
+      "scope": "visible-fields"
+    },
+    {
+      "validation": "available-selection",
+      "trigger": "next",
+      "scope": "visible-fields"
+    },
+    {
+      "validation": "field-email",
+      "trigger": "next",
+      "scope": "visible-fields"
+    },
+    {
+      "validation": "field-phone",
+      "trigger": "next",
+      "scope": "visible-fields"
+    }
   ]
 }

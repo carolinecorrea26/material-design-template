@@ -1,14 +1,15 @@
 import type { CoverageDefinition } from "../../domain/coverage";
 import type { EffectiveSite } from "../../domain/effectiveSite";
 import { resolveCoverageJourneyPolicy } from "../../domain/coverageJourneyPolicy";
+import { coverageCategoryParameter } from './coverageCategoryScope';
 
-const entryParameters = [["category", "coverage-category-scope"], ["prods", "coverage-product-scope"], ["featured_prod", "coverage-featured-product"], ["amt", "coverage-amount-defaults"], ["dprods", "coverage-amount-locks"]] as const;
+const entryParameters = [["applicant", "coverage-applicant-scope"], ["category", "coverage-category-scope"], ["prods", "coverage-product-scope"], ["featured_prod", "coverage-featured-product"], ["amt", "coverage-amount-defaults"], ["dprods", "coverage-amount-locks"], ["preselect", "coverage-preselect"], ["firstCategory", "coverage-first-category"]] as const;
 
 /** Preserve amount campaign controls across routes and saved-application resume. */
 export function captureCoverageAmountParameters(siteKey: string) {
   const params = new URLSearchParams(window.location.search);
-  if (!["category", "prods", "amt", "dprods"].some(key => params.has(key))) return;
-  for (const [parameter, prefix] of entryParameters.filter(([parameter]) => parameter === "amt" || parameter === "dprods")) {
+  if (coverageCategoryParameter(params) === null && !["prods", "amt", "dprods", "preselect"].some(key => params.has(key))) return;
+  for (const [parameter, prefix] of entryParameters.filter(([parameter]) => parameter === "amt" || parameter === "dprods" || parameter === "preselect")) {
     if (params.has(parameter)) window.sessionStorage.setItem(`${prefix}:${siteKey}`, params.get(parameter)!);
     else window.sessionStorage.removeItem(`${prefix}:${siteKey}`);
   }
@@ -29,12 +30,12 @@ export function activeCoverageProductRestriction(siteKey: string) {
   const key = `coverage-product-scope:${siteKey}`, params = new URLSearchParams(window.location.search);
   if (params.has("prods")) {
     // A product-only entry must not reuse another campaign's stored category.
-    const value = params.has("category") && params.get("category")!.trim() ? params.get("prods")! : "";
+    const value = coverageCategoryParameter(params)?.trim() ? params.get("prods")! : "";
     window.sessionStorage.setItem(key, value); return value;
   }
   // An explicit category starts a new campaign; omitted products means all
   // currently available products in that category. Plain routes retain scope.
-  if (params.has("category")) { window.sessionStorage.removeItem(key); return null; }
+  if (coverageCategoryParameter(params) !== null) { window.sessionStorage.removeItem(key); return null; }
   return window.sessionStorage.getItem(key);
 }
 
@@ -44,7 +45,16 @@ export function activeFeaturedProduct(siteKey: string) {
   if (params.has("featured_prod")) {
     const value = params.get("featured_prod") ?? ""; window.sessionStorage.setItem(key, value); return value;
   }
-  if (params.has("category") || params.has("prods")) { window.sessionStorage.removeItem(key); return null; }
+  if (coverageCategoryParameter(params) !== null || params.has("prods")) { window.sessionStorage.removeItem(key); return null; }
+  return window.sessionStorage.getItem(key);
+}
+
+export function activeFirstCoverageCategory(siteKey: string) {
+  const key = `coverage-first-category:${siteKey}`, params = new URLSearchParams(window.location.search);
+  if (params.has("firstCategory")) {
+    const value = params.get("firstCategory")!; window.sessionStorage.setItem(key, value); return value;
+  }
+  if (coverageCategoryParameter(params) !== null || params.has("prods")) { window.sessionStorage.removeItem(key); return null; }
   return window.sessionStorage.getItem(key);
 }
 
@@ -68,7 +78,8 @@ export function withCapturedCoverageEntryScope<T extends Record<string, unknown>
  * opened for the same Site. Legacy saves have an unrestricted context. */
 export function restoreCoverageEntryScope(siteKey: string, value: unknown) {
   const validObject = value !== null && typeof value === "object" && !Array.isArray(value);
-  const scope = validObject ? value as Record<string, unknown> : value === undefined || value === null ? {} : { category: "", prods: "" };
+  const original = validObject ? value as Record<string, unknown> : value === undefined || value === null ? {} : { category: "", prods: "" };
+  const scope = Object.hasOwn(original, 'category') || !Object.hasOwn(original, 'categories') ? original : { ...original, category: original.categories };
   for (const [parameter, prefix] of entryParameters) {
     const key = `${prefix}:${siteKey}`;
     if (typeof scope[parameter] === "string") window.sessionStorage.setItem(key, scope[parameter]);

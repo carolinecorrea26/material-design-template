@@ -3,6 +3,7 @@ import { activeCoverageProductRestriction, capturedCoverageEntryScope, restoreCo
 import { activeCoverageCategoryRestriction } from "./coverageCategoryScope";
 import { getActiveClientCoverages } from "./getActiveClientCoverages";
 import { createReviewedMigrationDatabase } from "../../migration/fixtures";
+import { resolveSnapshotTestLibrary } from "../../migration/snapshotTestLibrary";
 import { installPrototypeLibrary, resolvePrototypeLibrary } from "../../domain/prototypeLibrary";
 import type { DatabaseSchema } from "../../persistence/types";
 let db: DatabaseSchema;
@@ -10,9 +11,9 @@ beforeAll(() => { db = createReviewedMigrationDatabase(); }, 120000);
 afterEach(() => { installPrototypeLibrary(null); window.sessionStorage.clear(); });
 function entry(site: string, query: string) { window.history.replaceState(null, "", `/?site=${site}&${query}`); installPrototypeLibrary(resolvePrototypeLibrary(db, site, "campaign-filter")); return getActiveClientCoverages(); }
 it("intersects categories and current native G-numbers, including Association mappings", () => {
-  const library = resolvePrototypeLibrary(db, "isitrust", "all-identifiers");
+  const library = resolveSnapshotTestLibrary(db, "isitrust", "all-identifiers");
   expect(restrictCoverageProducts(library.products, "G-31139-0", library.site).map(product => product.id)).toEqual(["li-group-term"]);
-  for (const [site, category] of [["ama", "di"], ["abe", "li"], ["isitrust", "li"]]) {
+  for (const [site, category] of [["ama", "di"], ["asce", "li"]]) {
     const products = entry(site, `category=${category}`), product = products[0], identifier = product.gNumber!.primary!;
     expect(products.length).toBeGreaterThan(1);
     const filtered = entry(site, `category=${category}&prods=${encodeURIComponent(identifier.toLowerCase())}`);

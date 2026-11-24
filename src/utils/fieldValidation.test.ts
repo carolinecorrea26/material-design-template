@@ -3,6 +3,14 @@ import { fieldValidationChecks, getFieldValidationRules } from "./fieldValidatio
 import { resolveMappedFields } from '../domain/requirementFields';
 
 describe("shared form and Library validation", () => {
+  it('rejects whitespace-only required text without adding a code format or length restriction', () => {
+    const field = resolveMappedFields({ page: 'advisor-login' }).find(field => field.id === 'advisor-code')!;
+    const rules = getFieldValidationRules(field);
+    for (const value of ['', ' ', '\t\n']) expect(rules.validate!(value)).toBe('Advisor code is required.');
+    for (const value of ['A', '00', 'A-1 / example', 'X'.repeat(500)]) expect(rules.validate!(value)).toBe(true);
+    expect(fieldValidationChecks(field)[0].validate(' ')).toBe(false);
+    expect(getFieldValidationRules({ ...field, required: false }).validate).toBeUndefined();
+  });
   it.each(["radio", "dropdown", "searchable-select"] as const)("validates restored %s answers against the configured choices", inputType => {
     const field = { id: "choice", label: "Choice", inputType, options: [{ value: "rn", label: "RN" }] };
     const validate = getFieldValidationRules(field).validate!;
@@ -44,6 +52,22 @@ describe("shared form and Library validation", () => {
   });
 });
 
+it.each([
+  ['bank-routing-number', '021000021', '12345678', '1234567890'],
+  ['bank-account-number', '00012345678901234', '12a456', '123456789012345678'],
+  ['height-feet', '3', '2', '9'],
+  ['height-inches', '0', '12', '123'],
+  ['weight-lbs', '125', '1a2', '1234'],
+  ['weight-12-months-ago-lbs', '125', '1a2', '1234'],
+  ['drivers-license-number', 'AB0123456789', 'ABC-123', 'A'.repeat(31)],
+])('applies the shared authored constraints for %s', (id, valid, invalid, tooLong) => {
+  const field = resolveMappedFields({ page: id.startsWith('bank-') ? 'payment' : 'profile' }).find(field => field.id === id)!;
+  const validate = getFieldValidationRules(field).validate!;
+  expect(validate(valid)).toBe(true);
+  expect(validate(invalid)).not.toBe(true);
+  expect(validate(tooLong)).not.toBe(true);
+});
+
 it('applies ASCE identifier restrictions without restricting global alphanumeric identifiers', () => {
   const id = (siteId?: string) => resolveMappedFields({ component: 'membership' }, { siteId, includeAll: true }).find(field => field.id === 'member-id')!;
   expect(id('asce')).toMatchObject({ inputType: 'text', format: 'digits', inputMode: 'numeric', minLength: 6 });
@@ -52,7 +76,8 @@ it('applies ASCE identifier restrictions without restricting global alphanumeric
   expect(validate('12345')).toBe('Membership ID must be at least 6 characters.');
   expect(validate('ABC123')).toBe('Membership ID must contain digits only.');
   expect(id()).not.toHaveProperty('format');
-  expect(getFieldValidationRules(id()).validate).toBeUndefined();
+  expect(getFieldValidationRules(id()).validate!('ABC123')).toBe(true);
+  expect(getFieldValidationRules(id()).validate!('A'.repeat(16))).not.toBe(true);
 });
 
 it.each(['10001', '10001-1234', '100011234', 'K1A 0B1', 'k1a0b1', '00901', '00000'])('accepts ZIP/postal format %s independently of location lookup', value => {

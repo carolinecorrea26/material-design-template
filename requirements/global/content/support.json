@@ -1,0 +1,13 @@
+{
+  "support.title": "Questions? We’re here to help.",
+  "support.technical-title": "Experiencing issues with the site? {{emailLink}} to our technical team and we will get back to you shortly",
+  "support.technical-email-label": "Send an email",
+  "support.technical-email-address": "portalsupport@newyorklife.com",
+  "support.administrator-suffix": "Insurance Administrator",
+  "support.call-label": "Call",
+  "support.email-label": "Email",
+  "support.website-label": "Website",
+  "support.application-reference": "Please include your application ID for reference when contacting support:",
+  "support.confirmation-reference": "Please include your confirmation ID for reference when contacting support:",
+  "support.email-subject": "Application support ({{reference}})"
+}

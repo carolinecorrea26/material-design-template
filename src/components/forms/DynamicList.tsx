@@ -226,6 +226,7 @@ export default function DynamicList<T extends Record<string, string>>({
             handleSubmit(handleSave)(e);
           }}
         >
+          <FieldGrid>
           {gridFields.length > 0 && (
             <FieldGrid columns="equal">
               {gridFields.map((f) => (
@@ -262,6 +263,7 @@ export default function DynamicList<T extends Record<string, string>>({
               }
             />
           ))}
+          </FieldGrid>
         </Box>
       </AppModal>
 

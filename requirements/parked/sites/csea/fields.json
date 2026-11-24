@@ -1,0 +1,15 @@
+{
+  "fields": {
+    "coverage-categories": {
+      "options": [
+        "AD",
+        "DI"
+      ]
+    },
+    "membership": {
+      "label": {
+        "self": "Are you a member of the CSEA and presently performing all the duties of your occupation according to your regular schedule?"
+      }
+    }
+  }
+}

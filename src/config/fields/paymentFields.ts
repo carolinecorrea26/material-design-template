@@ -1,27 +1,23 @@
-// Shared by the page renderer and the Library inspection inventory.
-import type { FieldDefinition } from "./types";
+import paymentOrder from '../../../requirements/mappings/page-sections/payment.json';
+import type { RequirementPage } from '../../domain/requirementCatalog.mjs';
+import { requirementPageSections } from '../../domain/requirementPagePresentation.mjs';
+import { requirementText } from '../../domain/requirementContent';
+import type { PageSectionConfig } from '../pageSections/types';
+import payment from '../../../requirements/parked/payment.json';
+import { resolveMappedFields } from '../../domain/requirementFields';
+import type { FieldDefinition } from './types';
 
-export const paymentMethodOptions = [
-  { value: "bill-me", label: "Bill me" },
-  { value: "bank-account", label: "Bank account" },
-] as const;
+type PaymentFieldId = 'payment-information-opt-in' | 'payment-method' | 'payment-frequency' | 'payment-shared-method' | 'payment-shared-frequency' | 'bank-name-on-account' | 'bank-institution' | 'bank-routing-number' | 'bank-account-number' | 'bank-authorization';
+/** Inspection/default adapter of the same fields compiled into Payment's surfaces. */
+export const paymentFieldDefinitions = Object.fromEntries(resolveMappedFields(payment.fieldMapping).map(field => [field.id, field])) as Record<PaymentFieldId, FieldDefinition>;
+export const paymentMethodOptions = paymentFieldDefinitions['payment-method'].options!;
+export const paymentFrequencyOptions = paymentFieldDefinitions['payment-frequency'].options!;
+export const PAYMENT_INFO_OPT_IN_FIELD_ID = 'payment-information-opt-in';
+export const paymentInfoOptInField = paymentFieldDefinitions[PAYMENT_INFO_OPT_IN_FIELD_ID];
+export const paymentDefaultSurfaces = Object.fromEntries(Object.entries(payment.surfaces).map(([name, surface]) => [name, surface.definition.fields.map(binding => paymentFieldDefinitions[binding.fieldKey as PaymentFieldId])]));
 
-export const paymentFrequencyOptions = [
-  { value: "monthly", label: "Monthly" },
-  { value: "quarterly", label: "Quarterly" },
-  { value: "semiannually", label: "Semiannually" },
-  { value: "annually", label: "Annually" },
-] as const;
-
-export const PAYMENT_INFO_OPT_IN_FIELD_ID = "payment-information-opt-in";
-
-export const paymentInfoOptInField: FieldDefinition = {
-  id: PAYMENT_INFO_OPT_IN_FIELD_ID,
-  label: "Do you want to add payment information?",
-  inputType: "radio",
-  required: true,
-  options: [
-    { value: "yes", label: "Yes" },
-    { value: "no", label: "No" },
-  ],
-};
+/** Source-only placement projection for standalone examples; application pages use compiled sections. */
+export const paymentDefaultSections = requirementPageSections(payment as RequirementPage, { payment: paymentOrder.sections }).map(([, section]) => ({
+  id: section.id as PageSectionConfig['id'], pageId: 'payment' as const, fieldIds: [],
+  ...(section.title ? { title: requirementText(section.title) } : {}),
+}));

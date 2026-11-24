@@ -96,7 +96,7 @@ export default function ApplicantSectionDivider({
   }
 
   return (
-    <Box sx={{ mb: 2, mt: 1 }}>
+    <Box data-applicant-section={applicant} sx={{ mb: 2, mt: 1 }}>
       <ApplicantSectionLabel label={title} icon={Icon} sx={{ mb: 2 }} />
 
       {note && (

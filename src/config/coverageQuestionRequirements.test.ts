@@ -8,15 +8,8 @@ describe("canonical coverage question requirements", () => {
   it.each([
     ["LI", ["gender", "smoker", "tobacco-last-used", "tobacco-products"]],
     ["DI", ["gender", "average-monthly-income", "hours-worked-per-week"]],
-    [
-      "OO",
-      [
-        "hours-worked-per-week",
-        "monthly-business-expenses",
-        "business-expense-responsibility",
-      ],
-    ],
-    ["SH", ["smoker", "tobacco-last-used", "tobacco-products"]],
+    ["OO", ["hours-worked-per-week", "monthly-business-expenses", "business-expense-responsibility"]],
+    ["SH", []],
   ] as const)("resolves %s member questions", (category, expected) => {
     expect(getCategoryQuestionFieldIds([category], "self")).toEqual(expected);
   });
@@ -37,7 +30,8 @@ describe("canonical coverage question requirements", () => {
   });
 
   it("derives convenience flags and filters smoker fields as an override", () => {
-    expect(getCategoryRequirements(["OO"]).needsHours).toBe(true);
+    expect(getCategoryRequirements(["DI"]).needsHours).toBe(true);
+    expect(getCategoryRequirements(["OO"]).needsAdditionalFields).toBe(true);
     expect(
       getCategoryQuestionFieldIds(["LI", "SH"], "self", {
         hideSmokerQuestion: true,

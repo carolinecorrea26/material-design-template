@@ -4,6 +4,7 @@ import { getPhoneTypeFieldId, validatePhoneFieldBindings } from './phoneFields';
 import { fieldCatalog } from '../config/fields';
 import { validateSharedCatalog } from '../persistence/sharedCatalog';
 import { resolvePrototypeLibrary } from './prototypeLibrary';
+import { withFreshStartCatalog } from './freshStartCatalog';
 import { pageCatalogRows } from '../pages/admin/library/pageCatalogRows';
 const saved = () => JSON.parse(readFileSync('public/catalog/portal.json', 'utf8'));
 it('defaults companion IDs to the individual number field and rejects reused bindings', () => {
@@ -36,9 +37,14 @@ it('preserves independent phone definitions and Library companion rows across ev
   }
 });
 it('rejects a Site override that reconnects business phone to the member type', () => {
-  const catalog = validateSharedCatalog(saved());
-  const override = catalog.data.siteFieldConfigurations.find(row => row.fieldKey === 'business-phone' && row.siteKey === 'abe');
-  if (override) override.values = { ...override.values, phoneTypeFieldId: 'phone-type' };
-  else catalog.data.siteFieldConfigurations.push({ id: 'test-business-type', key: 'test-business-type', displayId: 999999, providedBy: null, sourceReference: null, scope: 'site', siteKey: 'abe', clientKey: null, pageKey: 'contact', fieldKey: 'business-phone', position: 99999, include: true, hidden: false, values: { phoneTypeFieldId: 'phone-type' } });
-  expect(() => resolvePrototypeLibrary(catalog.data, 'abe', 'bad-binding')).toThrow('Shared phone type binding');
+  const data = withFreshStartCatalog(validateSharedCatalog(saved()).data, 'asce');
+  data.sites.find(row => row.key === 'asce')!.key = 'phone-test';
+  for (const rows of Object.values(data)) for (const row of rows) {
+    if ('siteKey' in row && row.siteKey === 'asce') row.siteKey = 'phone-test';
+  }
+  // Establish a valid inherited synthetic Site before testing its invalid override.
+  expect(() => resolvePrototypeLibrary(data, 'phone-test', 'valid-binding')).not.toThrow();
+  const override = data.siteFieldConfigurations.find(row => row.siteKey === 'phone-test' && row.pageKey === 'contact' && row.fieldKey === 'business-phone')!;
+  override.values = { ...override.values, phoneTypeFieldId: 'phone-type' };
+  expect(() => resolvePrototypeLibrary(data, 'phone-test', 'bad-binding')).toThrow('Shared phone type binding');
 });

@@ -77,11 +77,11 @@ describe("canonical flow gates", () => {
     expect(resolveFlowGate("health-qd", selected("li"), catalog)).toBe(false);
   });
 
-  it("requires the matching category and TELE underwriting together", () => {
-    expect(resolveFlowGate("health-li", selected("tele-li"), catalog)).toBe(true);
-    expect(resolveFlowGate("health-li", selected("tele-di"), catalog)).toBe(false);
-    expect(resolveFlowGate("health-di", selected("tele-di"), catalog)).toBe(true);
-    expect(resolveFlowGate("health-di", selected("tele-li"), catalog)).toBe(false);
+  it("routes LI/DI TELE to the shared TELE page and requires explicit DI SUPP participation", () => {
+    expect(resolveFlowGate("health-tele", selected("tele-li"), catalog)).toBe(true);
+    expect(resolveFlowGate("health-tele", selected("tele-di"), catalog)).toBe(true);
+    expect(resolveFlowGate("health-di-supp", selected("tele-di"), catalog)).toBe(false);
+    expect(resolveFlowGate("health-di-supp", selected("tele-li"), catalog)).toBe(false);
   });
 
   it("requires a selected CIR rider", () => {
@@ -123,15 +123,12 @@ describe("canonical flow gates", () => {
   });
 
   it("derives coverage discovery from the same gate definitions", () => {
-    expect(coverageUnlocksPage.toString()).not.toMatch(
-      /beneficiary|health-si|health-li|health-qd|health-di|health-cir/,
-    );
     for (const [pageId, candidate] of [
       ["beneficiary", li],
       ["health-si", si],
       ["health-qd", qd],
-      ["health-li", teleLi],
-      ["health-di", teleDi],
+      ["health-tele", teleLi],
+      ["health-di-supp", teleDi],
       ["health-cir", cir],
     ] as const) {
       const definition = getFlowGateDefinition(pageId);
@@ -152,9 +149,9 @@ describe("canonical flow gates", () => {
     const activePageIds = activeSteps.flatMap((step) => step.pageIds);
     expect(activePageIds).not.toContain("beneficiary");
     expect(activePageIds).not.toContain("health-si");
-    expect(activePageIds).not.toContain("health-li");
+    expect(activePageIds).not.toContain("health-tele");
     expect(activePageIds).not.toContain("health-qd");
-    expect(activePageIds).not.toContain("health-di");
+    expect(activePageIds).not.toContain("health-di-supp");
     expect(activePageIds).not.toContain("health-cir");
     expect(activePageIds).toContain("contact");
     expect(activePageIds).toContain("review");

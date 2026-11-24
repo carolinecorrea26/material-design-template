@@ -1,16 +1,5 @@
-import type { SharedContent } from "../types";
-import {
-  applicantLabels,
-  applicantSectionTitles,
-} from "../../config/formSectionTitle";
+import type { SharedContent } from '../types';
+import { requirementContentSection } from '../../domain/requirementContent';
 
-export const sharedDefaults: SharedContent = {
-  applicantLabels: { ...applicantLabels },
-  applicantSectionTitles: { ...applicantSectionTitles },
-  cookieBanner: {
-    message:
-      "New York Life uses cookies to enhance your experience and analyze site performance. By continuing, you agree to our use of cookies.",
-    learnMoreLabel: "Privacy Notice",
-    learnMoreHref: "https://www.newyorklife.com/privacy",
-  },
-};
+/** Read-only defaults projected from the canonical content bindings. */
+export const sharedDefaults = requirementContentSection<SharedContent>('shared');

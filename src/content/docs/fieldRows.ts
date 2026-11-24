@@ -8,7 +8,7 @@
 // ---------------------------------------------------------------------------
 
 import { fieldCatalog } from "../../config/fields";
-import { pageSections, sectionLabels } from "../../config/pageSections";
+import { getPageSections, sectionLabels } from "../../config/pageSections";
 import { applicantSectionTitles } from "../../config/formSectionTitle";
 import type { FieldDefinition } from "../../config/fields/types";
 import {
@@ -560,7 +560,7 @@ export function getCustomPageFieldRows(pageId: PageId): FieldRow[] | null {
           visibleWhen: "Any health-si question = Yes",
         },
       ];
-    case "health-li":
+    case "health-tele":
       return [
         {
           sectionId: "health-questions",
@@ -774,7 +774,7 @@ export function getCustomPageFieldRows(pageId: PageId): FieldRow[] | null {
           visibleWhen: "Any health-li question = Yes",
         },
       ];
-    case "health-di":
+    case "health-di-supp":
       return [
         {
           sectionId: "health-questions",
@@ -1232,7 +1232,7 @@ export function getPageFieldRows(pageId: PageId): FieldRow[] {
     });
   }
 
-  const sections = pageSections[pageId] ?? [];
+  const sections = getPageSections(pageId);
   if (sections.length === 0) return [];
   const rows = sections.flatMap((section) => {
     if (section.fieldIds.length === 0) {

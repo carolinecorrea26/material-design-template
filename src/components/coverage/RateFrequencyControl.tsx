@@ -19,8 +19,9 @@ export default function RateFrequencyControl({
   onChange,
   justifyContent = "center",
   field,
-  ariaLabel = requirementCoverageControl("rate-frequency").label,
+  ariaLabel,
 }: RateFrequencyControlProps) {
+  const definition = field ?? requirementCoverageControl("rate-frequency");
   return (
     <Stack
       direction="row"
@@ -33,19 +34,19 @@ export default function RateFrequencyControl({
         fontWeight={700}
         color={value === "monthly" ? "primary.main" : "text.secondary"}
       >
-        {field?.options?.find(option => option.value === "monthly")?.label ?? requirementCoverageControl("rate-frequency").options!.find(option => option.value === "monthly")!.label}
+        {definition.options!.find(option => option.value === "monthly")!.label}
       </Typography>
       <RateFrequencyToggle
         checked={value === "annual"}
         onChange={(event) => onChange(event.target.checked ? "annual" : "monthly")}
-        slotProps={{ input: { "aria-label": field?.label ?? ariaLabel } }}
+        slotProps={{ input: { "aria-label": ariaLabel ?? definition.label } }}
       />
       <Typography
         variant="caption"
         fontWeight={700}
         color={value === "annual" ? "primary.main" : "text.secondary"}
       >
-        {field?.options?.find(option => option.value === "annual")?.label ?? requirementCoverageControl("rate-frequency").options!.find(option => option.value === "annual")!.label}
+        {definition.options!.find(option => option.value === "annual")!.label}
       </Typography>
     </Stack>
   );

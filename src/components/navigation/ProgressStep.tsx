@@ -1,3 +1,4 @@
+import { useInterfaceText } from '../content/useInterfaceText';
 import { getPagePath } from "../../config/pages";
 import { useEffect, useState, type ReactNode } from "react";
 import {
@@ -91,6 +92,7 @@ function getBreadcrumbEntries(
 }
 
 export function Breadcrumbs({ pageId }: { pageId: PageId }) {
+  const text = useInterfaceText();
   const navigate = useNavigate();
   const singlePageFlow = useSinglePageFlow();
   const { values } = useApplicationForm();
@@ -140,7 +142,7 @@ export function Breadcrumbs({ pageId }: { pageId: PageId }) {
 
   return (
     <MuiBreadcrumbs
-      aria-label="Breadcrumbs"
+      aria-label={text('breadcrumbs')}
       separator={
         <ArrowRightRoundedIcon sx={{ fontSize: 16, display: "block" }} />
       }
@@ -154,7 +156,7 @@ export function Breadcrumbs({ pageId }: { pageId: PageId }) {
         },
         "& .MuiBreadcrumbs-separator": {
           mx: 0.5,
-          color: "#94a3b8",
+          color: "text.disabled",
           cursor: "default",
           lineHeight: 1,
         },
@@ -177,8 +179,9 @@ export function Breadcrumbs({ pageId }: { pageId: PageId }) {
             key={entry.id}
             component={isClickable ? ButtonBase : "span"}
             onClick={isClickable ? () => singlePageFlow ? singlePageFlow.goToSection(entry.navigateTo) : navigate(getPagePath(entry.navigateTo)) : undefined}
-            aria-label={isClickable ? `Go to ${entry.label}` : undefined}
+            aria-label={isClickable ? text('go-to-step', { label: entry.label }) : undefined}
             aria-current={isCurrentEntry ? "page" : undefined}
+            data-completed={isCompleted ? "true" : undefined}
             sx={{
               display: "inline-flex",
               alignItems: "center",
@@ -189,11 +192,10 @@ export function Breadcrumbs({ pageId }: { pageId: PageId }) {
             }}
           >
             <Typography
-              variant="caption"
+              variant="inherit"
               sx={{
                 color:
-                  isCompleted || isCurrentEntry ? "primary.main" : "#94a3b8",
-                fontWeight: isCompleted || isCurrentEntry ? undefined : 500,
+                  isCompleted || isCurrentEntry ? "primary.main" : "text.disabled",
               }}
             >
               {entry.label}
@@ -287,7 +289,7 @@ export default function ProgressStep({
                 ? "text.primary"
                 : isCompleted
                   ? "text.secondary"
-                  : "#94a3b8";
+                  : "text.disabled";
               const label = (
                 <Typography
                   variant="body1" component="span"

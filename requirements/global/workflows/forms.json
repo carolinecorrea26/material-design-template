@@ -11,7 +11,7 @@
       "id": "form-next-save",
       "name": "Save before completing a form page",
       "status": "draft",
-      "statement": "Await the configured save before advancing; preserve answers and show recovery guidance if saving fails.",
+      "statement": "Await the configured save before advancing. On a service-signaled technical failure, preserve current answers and redirect to the shared Error page, or Expired access for session expiry. A failed save shows neither a special autosave failure alert nor successful-save feedback. A rejected local simulated save without a service incident retains the current page and shared technical-error wording, permitting retry; this does not add service-failure interception.",
       "source": "src/app/RoutePage.tsx; src/app/RoutePage.persistence.test.tsx"
     },
     {

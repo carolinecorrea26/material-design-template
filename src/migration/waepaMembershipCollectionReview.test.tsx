@@ -1,10 +1,13 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import { act } from "react";
 import { createRoot } from "react-dom/client";
 import { MemoryRouter } from "react-router-dom";
 import { afterAll, afterEach, beforeAll, expect, it, vi } from "vitest";
 import { createReviewedMigrationDatabase } from "./fixtures";
 import { applyWaepaMembershipCollectionReview } from "./waepaMembershipCollectionReview";
-import { installPrototypeLibrary, resolvePrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolvePrototypeLibrary as resolveFreshPrototypeLibrary } from "../domain/prototypeLibrary";
+import { installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import { getClientPageFields } from "../config/clientFields/getClientPageFields";
 import { waepaQualifications } from "../domain/membershipQualifications";
 import { fieldValidationChecks } from "../utils/fieldValidation";
@@ -47,7 +50,7 @@ it("preserves the required New Member declaration, six choices, guarded employee
 });
 it("renders the source membership explanation for new members and validates the established checkbox", async () => {
   vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true); window.history.replaceState(null, "", "/membership?site=waepa");
-  installPrototypeLibrary(resolvePrototypeLibrary(db, "waepa", "render"));
+  installPrototypeLibrary(resolveFreshPrototypeLibrary(db, "waepa", "render"));
   const note = "Applying for coverage will make you a WAEPA member. Please provide the following information to complete your membership.";
   const container = document.createElement("div"), root = createRoot(container); document.body.append(container);
   try {

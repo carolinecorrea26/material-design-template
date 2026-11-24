@@ -1,0 +1,18 @@
+{
+  "fields": {
+    "coverage-categories": {
+      "options": [
+        "LI",
+        "AD",
+        "DI",
+        "OO",
+        "SH"
+      ]
+    },
+    "membership": {
+      "label": {
+        "self": "Are you an active member of a State, Local, or Specialty Bar Association?"
+      }
+    }
+  }
+}

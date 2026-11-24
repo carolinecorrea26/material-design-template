@@ -1,7 +1,8 @@
 {
   "page": "beneficiary",
   "sections": [
-    "opt-in",
-    "records"
+    "participation",
+    "self",
+    "spouse"
   ]
 }

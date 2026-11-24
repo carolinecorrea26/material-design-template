@@ -11,8 +11,21 @@
           "type": "PageHeader",
           "components": [
             {
-              "type": "HelpChip",
-              "purpose": "beneficiary definition and percentage share help"
+              "type": "PageHelp",
+              "mapping": "page-help",
+              "components": [
+                {
+                  "type": "PageHelpChips"
+                },
+                {
+                  "type": "PageHelpDrawer",
+                  "components": [
+                    {
+                      "type": "AppDrawer"
+                    }
+                  ]
+                }
+              ]
             }
           ]
         },
@@ -23,7 +36,8 @@
         {
           "type": "FieldGroup",
           "section": "participation",
-          "purpose": "optional-page opt-in control"
+          "purpose": "optional-page opt-in control",
+          "partOf": "SectionDivider"
         },
         {
           "type": "BeneficiaryProductRecords",
@@ -32,7 +46,8 @@
           "components": [
             {
               "type": "SectionNote",
-              "purpose": "effective-site product note selection"
+              "purpose": "effective-site product note selection",
+              "partOf": "BeneficiaryProductRecords"
             },
             {
               "type": "DynamicList",
@@ -47,7 +62,8 @@
           "components": [
             {
               "type": "SectionNote",
-              "purpose": "effective-site product note selection"
+              "purpose": "effective-site product note selection",
+              "partOf": "BeneficiaryProductRecords"
             },
             {
               "type": "DynamicList",
@@ -57,6 +73,39 @@
         },
         {
           "type": "PageNav"
+        }
+      ],
+      "mapping": "beneficiary"
+    },
+    {
+      "type": "AppModal",
+      "dialog": "add-edit",
+      "components": [
+        {
+          "type": "ControlledFieldRenderer",
+          "purpose": "individual or trust selector"
+        },
+        {
+          "type": "FieldGrid",
+          "purpose": "canonical individual name fields"
+        },
+        {
+          "type": "FieldRenderer",
+          "purpose": "individual or trust record fields"
+        }
+      ],
+      "purpose": "add/edit primary or contingent individual/trust records using designation tabs"
+    },
+    {
+      "type": "AppModal",
+      "dialog": "apply-to-other-coverages",
+      "components": [
+        {
+          "type": "ApplicantSectionDivider"
+        },
+        {
+          "type": "ControlledFieldRenderer",
+          "purpose": "eligible product targets"
         }
       ]
     }
@@ -76,12 +125,26 @@
       "participation": {
         "id": "beneficiaryParticipation",
         "for": "self",
-        "fields": []
+        "fields": [],
+        "display": {
+          "label": "Beneficiary participation",
+          "templates": [
+            "multi",
+            "single"
+          ]
+        }
       },
       "self": {
         "id": "selfBeneficiaries",
         "for": "self",
-        "fields": []
+        "fields": [],
+        "display": {
+          "label": "Member beneficiaries",
+          "templates": [
+            "multi",
+            "single"
+          ]
+        }
       },
       "spouse": {
         "id": "spouseBeneficiaries",
@@ -90,6 +153,13 @@
         "when": {
           "field": "dependents",
           "includes": "spouse"
+        },
+        "display": {
+          "label": "Spouse beneficiaries",
+          "templates": [
+            "multi",
+            "single"
+          ]
         }
       }
     },
@@ -107,9 +177,14 @@
         ]
       },
       "apply-to-other-coverages": {
-        "fields": []
-      }
-    }
+        "for": "beneficiary",
+        "fields": [
+          "beneficiary-apply-target"
+        ]
+      },
+      "help": {}
+    },
+    "sectionOrder": "beneficiary"
   },
   "content": {
     "wording": [
@@ -149,7 +224,19 @@
       "beneficiary.error.designation-full",
       "beneficiary.error.trust-exists",
       "beneficiary.error.one-trust",
-      "beneficiary.error.individual-exists"
+      "beneficiary.error.individual-exists",
+      "beneficiary.relationship-not-provided",
+      "beneficiary.error.record",
+      "beneficiary.error.record-type",
+      "beneficiary.error.maximum",
+      "beneficiary.error.mixed-types",
+      "beneficiary.error.shares",
+      "beneficiary.error.share-positive",
+      "beneficiary.error.share-exceeds",
+      "beneficiary.error.available-option",
+      "beneficiary.error.coverage-unavailable",
+      "beneficiary.error.allocation-total",
+      "beneficiary.error.primary-required"
     ]
   },
   "fieldMapping": {
@@ -281,7 +368,7 @@
       "for": "beneficiary",
       "definition": {
         "label": "beneficiary.trust-label",
-        "maxItems": 10,
+        "maxItems": 1,
         "fields": [
           {
             "fieldKey": "beneficiary-trustName",
@@ -333,7 +420,62 @@
         "beneficiaryType": {
           "field": "beneficiary-type"
         }
+      },
+      "kind": "controls"
+    },
+    "beneficiaryCopyControls": {
+      "kind": "controls",
+      "mapping": {
+        "page": "beneficiary"
+      },
+      "for": "beneficiary",
+      "dialog": "apply-to-other-coverages",
+      "definition": {
+        "label": "beneficiary.apply.title",
+        "fields": [
+          {
+            "fieldKey": "beneficiaryApplyTarget",
+            "valueKey": "beneficiaryApplyTarget"
+          }
+        ],
+        "libraryGroup": {
+          "label": "beneficiary.apply.title"
+        }
+      },
+      "aliases": {
+        "beneficiaryApplyTarget": {
+          "field": "beneficiary-apply-target"
+        }
       }
+    }
+  },
+  "help": [
+    {
+      "id": "beneficiary-basics",
+      "chip": "beneficiary.help.what-is",
+      "title": "beneficiary.help.what-is"
+    },
+    {
+      "id": "beneficiary-share",
+      "chip": "beneficiary.help.share",
+      "title": "beneficiary.help.share"
+    }
+  ],
+  "retiredComponentKeys": [
+    "component-help-chips"
+  ],
+  "contentSlots": {
+    "beneficiary.title": {
+      "name": "Page title"
+    },
+    "beneficiary.subhead": {
+      "name": "Page introduction"
+    },
+    "beneficiary.note.replaces-prior": {
+      "name": "Designation statement: replaces prior beneficiaries"
+    },
+    "beneficiary.note.new-insurance": {
+      "name": "Designation statement: new insurance only"
     }
   }
 }

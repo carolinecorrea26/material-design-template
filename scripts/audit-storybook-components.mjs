@@ -62,10 +62,13 @@ const legacyExamples = analyzer.module('src/content/docs/componentInventory.ts')
  const row = Object.fromEntries(item.properties.filter(property => property.name && property.initializer).map(property => [property.name.getText(), property.initializer.text]));
  return { name:row.name, source:row.sourcePath, storyId:row.storybookId, sourceExists:fs.existsSync(row.sourcePath), storyExists:storyReach.has(row.storybookId), rendersSource:storyReach.get(row.storybookId)?.has(row.sourcePath) ?? false };
 });
-const router = analyzer.module('src/app/router.tsx');
-const pageMap = router.top.get('pageComponents');
+// The shared application registry owns these renderers. The router also adds
+// internal/admin pages and spreads this registry; it is not another inventory.
+const registry = analyzer.module('src/app/pageComponents.tsx');
+const pageMap = registry.top.get('applicationPageComponents');
 const pages = pageMap.properties.map(property => {
- const pageId = property.name.getText().replace(/^['"]|['"]$/g, ''), binding = property.initializer.getText(), source = router.imports.get(binding)?.source;
+ const pageId = property.name.getText().replace(/^['"]|['"]$/g, ''), binding = property.initializer.getText();
+ const source = registry.imports.get(binding)?.source ?? analyzer.trace('src/app/pageComponents.tsx', property.initializer).components[0]?.source;
  const definition = catalog.data.pages.find(page => page.key === pageId)?.definition;
  const descendants = reachable([source]);
  return { pageId, source, path: definition?.path ?? null, type: definition?.type ?? 'not-in-saved-page-catalog',
@@ -73,18 +76,22 @@ const pages = pageMap.properties.map(property => {
   missingComponentExamples: components.filter(component => component.disposition === 'missing-story' && descendants.has(component.source)).map(component => component.source),
   boundary: definition?.type === 'internal' ? 'Internal reference route, not an applicant component example.' : 'Real page composition; shared component examples do not certify the whole page or all business branches.' };
 });
-pages.push({ pageId:'error-pages', source:'src/pages/ErrorPage.tsx', path:'/404, /500, *', type:'error', directStories:[], missingComponentExamples:[], boundary:'Real shared 404/500 page. No dedicated page-composition examples.' });
 const errors = [
  ...stories.filter(story => story.unresolved.length).map(story => ({ type:'unresolved-story-binding', story:story.id, details:story.unresolved })),
  ...stories.filter(story => !actualExample(story) && !noteStories[story.id]).map(story => ({ type:'story-without-real-source-render', story:story.id })),
  ...legacyExamples.filter(row => !row.sourceExists || !row.storyExists || !row.rendersSource).map(row => ({ type:'invalid-legacy-inventory-example', ...row })),
  ...catalogExamples.filter(row => !row.sourceExists || !row.storyExists || !row.rendersSource).map(row => ({ type:'invalid-catalog-example', ...row })),
 ];
-const stateGaps = [
- { source:'src/components/layout/AppShell.tsx', missingExamples:['advisorSend','resumeEmailCode'], evidence:'AppShell.stories.tsx demonstrates applicationForm, homepage and advisorLogin only.' },
- { source:'src/components/content/ClientCategoryIcon.tsx', missingExamples:['Client artwork','Broken artwork fallback'], evidence:'The factory is wired through real category configuration; stock-icon stories do not establish these states.' },
- { source:'src/app/SinglePageApplication.tsx', missingExamples:['Embedded single-page application and section navigation'], evidence:'SinglePageSections and StepEditButton have no Storybook composition reference.' },
+const representativeStates = [
+ { source:'src/components/layout/AppShell.tsx', examples:['layout-appshell--advisor-login-variant'], boundary:'advisorLogin, advisorSend and resumeEmailCode use the same utility chrome. One canonical example covers that shared treatment; page examples cover their different content.' },
+ { source:'src/components/content/ClientCategoryIcon.tsx', examples:['content-client-category-icon--configured-artwork', 'content-client-category-icon--broken-artwork'], boundary:'Artwork and image-error fallback are distinct states of the existing factory; stock icons are already composed in Coverage examples.' },
+ { source:'src/app/SinglePageApplication.tsx', examples:['layout-single-page-application--embedded'], boundary:'One real embedded application demonstrates shared section navigation; individual page controls retain their canonical examples.' },
 ];
+const stateGaps = representativeStates.flatMap(row => {
+ const missingExamples = row.examples.filter(id => !storyReach.get(id)?.has(row.source));
+ return missingExamples.length ? [{ ...row, missingExamples }] : [];
+});
+for (const gap of stateGaps) errors.push({ type:'missing-representative-state', ...gap });
 let built = { status:'not-checked' };
 if (process.argv.includes('--verify-built')) {
  const index = JSON.parse(fs.readFileSync('storybook-static/index.json', 'utf8'));
@@ -105,7 +112,7 @@ const report = {
  theme:{ preview:'.storybook/preview.tsx', source:'src/app/theme.ts', status:'Shared createAppTheme, ThemeProvider and CssBaseline are used; preset switching changes theme only, not the selected Site or production integration data.' },
  fixtures:'Story-local form values, callbacks, provider values and sample content are test fixtures. They are not replacement component implementations and do not certify production service integration or every Site policy.',
  savedCatalogComponentsSha256:crypto.createHash('sha256').update(JSON.stringify(catalog.data.components)).digest('hex'),
- built, errors, components, catalogExamples, legacyExamples, stateGaps, pages,
+ built, errors, components, catalogExamples, legacyExamples, representativeStates, stateGaps, pages,
  applicationInfrastructure:sourceElements.filter(row => row.source.startsWith('src/app/')).map(row => ({ source:row.source, directStories:stories.filter(story => story.components.some(component => component.source === row.source)).map(story => story.id) })),
  otherUiSources:allFiles.filter(source => !analyzer.uiSource(source)).map(source => ({ source, disposition:/\/(components|pages)\/admin\//.test(source) ? 'admin-center-excluded' : source.startsWith('src/dev/') ? 'developer-tooling' : 'internal-reference-or-documentation' })),
  stories:stories.map(story => ({ ...story, status:actualExample(story) ? 'real-source-render' : noteStories[story.id] ? 'commentary-only' : 'needs-review', ...(noteStories[story.id] ? { note:noteStories[story.id] } : {}) })),

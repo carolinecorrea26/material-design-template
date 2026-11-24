@@ -1,6 +1,7 @@
 import { afterEach, expect, it } from "vitest";
 import { createReviewedMigrationDatabase } from "../migration/fixtures";
-import { installPrototypeLibrary, resolvePrototypeLibrary } from "./prototypeLibrary";
+import { installPrototypeLibrary } from "./prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "../migration/snapshotTestLibrary";
 import { getRiderOnlyOptions, changeCoverageAmount, selectedRiderOnly } from "./coverageRiderOnly";
 import { applicationUnderwriting, validateApplicationCoverages } from "./coverageRuntime";
 import { getClientCoverages } from "../config/client/getActiveClientCoverages";

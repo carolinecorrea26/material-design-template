@@ -1,0 +1,14 @@
+{
+  "page": "membership",
+  "content": {
+    "membership.page-note": "Applying for coverage will make you a new member if you are not currently a WAEPA member."
+  },
+  "hide": [
+    "title"
+  ],
+  "include": [
+    "membership-referral-source",
+    "membership-status",
+    "active-military"
+  ]
+}

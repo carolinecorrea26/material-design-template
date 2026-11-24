@@ -1,7 +1,7 @@
 import { getFieldInventory } from "../../../config/fields/inspectionInventory";
 import { getApplicableSiteRules } from "../../../content/docs/siteRules";
 import { resolveSiteCoverage, resolveSitePages } from "../../../data";
-import { getFlowGateDefinition, coverageUnlocksPage } from "../../../config/flowGates";
+import { getFlowGateDefinition, coverageUnlocksPage, siteFlowContext } from "../../../config/flowGates";
 import { getPrototypeLibrary } from "../../../domain/prototypeLibrary";
 import { resolvePageCatalog } from "../../../domain/pageCatalog";
 import { getPageCategory } from "../../../config/resolvers/resolveClientPages";
@@ -61,7 +61,8 @@ export function getLibraryPages(scope: LibraryScope, siteId: string) {
     .filter(page => page.definition.flow !== "internal" && (scope === "global" || page.enabled)).map(page => page.definition);
   const orderedLibraryPages = getOrderedLibraryPages();
   if (scope === "global") return orderedLibraryPages;
+  const routing = siteFlowContext(siteId);
   const resolutions = resolveSitePages(siteId);
   const products = resolveSiteCoverage(siteId).filter(row => row.status !== "disabled").map(row => row.effective);
-  return orderedLibraryPages.filter(page => !["internal", "advisor"].includes(getPageCategory(page)) && resolutions.find(row => row.id === page.id)?.effective.included && (!getFlowGateDefinition(page.id) || products.some(product => coverageUnlocksPage(page.id, product))));
+  return orderedLibraryPages.filter(page => !["internal", "advisor"].includes(getPageCategory(page)) && resolutions.find(row => row.id === page.id)?.effective.included && (!getFlowGateDefinition(page.id, routing) || products.some(product => coverageUnlocksPage(page.id, product, routing))));
 }

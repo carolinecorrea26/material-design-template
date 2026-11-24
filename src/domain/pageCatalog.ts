@@ -22,6 +22,9 @@ export function resolvePageCatalog(data: PageData, siteKey?: string) {
       || !["home", "form", "receipt", "resume", "error", "internal"].includes(definition.type)
       || typeof definition.path !== "string" || !/^\/(?!\/)[^?#\s]*$/.test(definition.path)
       || routes.has(definition.path) || !Number.isSafeInteger(row.position) || row.position < 0) throw new Error(`Invalid stored page definition: ${row.key}`);
+    if (definition.saveProgress !== undefined && typeof definition.saveProgress !== 'boolean') throw new Error(`Invalid stored page save policy: ${row.key}`);
+    if (definition.previewPageIds !== undefined && (!Array.isArray(definition.previewPageIds) || new Set(definition.previewPageIds).size !== definition.previewPageIds.length || definition.previewPageIds.some(id => id === row.key || !data.pages.some(page => page.key === id)))) throw new Error(`Invalid stored document preview pages: ${row.key}`);
+    if (definition.help !== undefined && (!Array.isArray(definition.help) || new Set(definition.help.map(item => item?.id)).size !== definition.help.length || definition.help.some(item => !item || [item.id, item.label, item.title].some(value => typeof value !== 'string' || !value.trim())))) throw new Error(`Invalid stored page help: ${row.key}`);
     definitions.add(row.key); routes.add(definition.path);
     const assignment = assignments.find(item => item.pageKey === row.key);
     return { ...row, position: assignment?.position ?? row.position, assigned: !siteKey || !!assignment,

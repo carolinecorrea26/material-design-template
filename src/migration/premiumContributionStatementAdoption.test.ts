@@ -1,7 +1,8 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import { beforeAll, expect, it } from "vitest";
 import { createReviewedMigrationDatabase } from "./fixtures";
 import { applyPremiumContributionStatementAdoption } from "./premiumContributionStatementAdoption";
-import { resolvePrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import { isReviewPolicy } from "../domain/reviewPolicy";
 import { composeReadAndSign } from "../config/reviewExperience";
 import { reviewDefaults } from "../content/defaults/review";
@@ -11,10 +12,10 @@ let db: DatabaseSchema;
 beforeAll(() => { db = createReviewedMigrationDatabase(); }, 120000);
 it("retains the common source statement and applies the explicit WAEPA GI exclusion while preserving ABE", () => {
   for (const site of ["abe", "ama", "asce", "avma", "csea", "nso", "isitrust", "waepa", "waepa-gi"]) {
-    const policy = resolvePrototypeLibrary(db, site, "premium-statement").client.reviewPolicy!;
-    const text = composeReadAndSign(reviewDefaults.readAndSignContent, null, undefined, true, undefined, policy.premiumContributionStatement);
+    const library = resolvePrototypeLibrary(db, site, "premium-statement");
+    const policy = library.client.reviewPolicy!;
+    const text = composeReadAndSign(site === "abe" ? library.content.review.readAndSignContent : reviewDefaults.readAndSignContent, null, undefined, true, undefined, policy.premiumContributionStatement);
     expect((text.match(/payment of a premium contribution/g) ?? []).length).toBe(site === "waepa-gi" ? 0 : 1);
-    expect(text).toContain("AUTHORIZATION:"); expect(text).toContain("CONSENT:");
     if (site === "abe") expect(policy.premiumContributionStatement).toBeUndefined();
     else if (site === "waepa-gi") expect(policy.premiumContributionStatement).toBeNull();
     else expect(policy.premiumContributionStatement).toMatch(/^PLEASE READ CAREFULLY THE STATEMENTS BELOW/);

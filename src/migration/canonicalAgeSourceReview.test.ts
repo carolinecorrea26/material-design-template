@@ -1,9 +1,10 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import { beforeAll, expect, it } from "vitest";
 import { createReviewedMigrationDatabase } from "./fixtures";
 import { activeSiteMainRows } from "./activeSiteIdentity";
 import { parseUnqualifiedAge } from "./activeSiteEligibilityAdoption";
 import { currentMcrSource } from "./currentMcr";
-import { resolveEffectiveSite, resolveEffectiveEligibility, type EligibilityFacts } from "../domain/effectiveSite";
+import { resolveSnapshotSite as resolveEffectiveSite, resolveEffectiveEligibility, type EligibilityFacts } from "../domain/effectiveSite";
 import type { DatabaseSchema } from "../persistence/types";
 let db: DatabaseSchema;
 beforeAll(() => { db = createReviewedMigrationDatabase(); }, 120000);

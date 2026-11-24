@@ -5,7 +5,7 @@ import { useLibraryCatalog } from './LibraryCatalogContext';
 import { withFreshStartCatalog } from '../../../domain/freshStartCatalog';
 
 export function urlParameterRows(catalog: LibraryCatalog, siteKey: string) {
-  const data = withFreshStartCatalog(catalog.data);
+  const data = withFreshStartCatalog(catalog.data, undefined, catalog.siteScope);
   if (siteKey !== 'all' && !data.sites.some(row => row.key === siteKey)) return [];
   return data.urlParameters.map(parameter => {
     const assignments = data.siteUrlParameters.filter(row => row.urlParameterKey === parameter.key && (siteKey === 'all' || row.siteKey === siteKey));
@@ -25,7 +25,6 @@ export default function UrlParametersLibrary({ siteKey }: { siteKey: string }) {
       { id: 'values', label: 'Allowed values', width: 240, value: row => row.values.join('\n') || 'Not specified' },
       { id: 'settings', label: siteKey === 'all' ? 'Site settings' : 'Site setting / default', width: 300, value: row => row.siteSettings },
       { id: 'status', label: 'Status', width: 180, value: row => row.status, filter: true },
-      { id: 'source', label: 'Source', width: 280, value: row => row.sourceReference ?? 'Source not recorded' },
     ]} />
   </Stack>;
 }

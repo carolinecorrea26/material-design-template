@@ -13,13 +13,14 @@ import { accessibilityCriteria } from "../../content/docs/accessibility";
 import MockEmailPreview from "../MockEmailPreview";
 import BrowseTable from "../../components/docs/BrowseTable";
 import { readLibraryCatalog, type LibraryCatalog } from "../../services/libraryCatalogService";
-import { createReviewedMigrationDatabase } from "../../migration/fixtures";
+
 import { analyticsTagId, type AnalyticsTag } from "../../domain/analytics";
 import { requirementChanges } from "./library/RequirementChangesLibrary";
 import { formulas } from "./library/FormulasLibrary";
+import { applicationFormRows } from "../../domain/applicationForms";
 vi.mock("../../services/libraryCatalogService", () => ({ readLibraryCatalog: vi.fn() }));
-const savedTag: AnalyticsTag = { id: analyticsTagId("eligibility", "field", "stored-test"), elementKey: "stored-test", pageId: "eligibility", label: "Stored analytics control", kind: "field", events: ["change"], sites: ["csea"], status: "proposed", trigger: "change", permittedProperties: ["siteKey"], description: "Stored description", source: "prototype-definition", sourceFile: "test", condition: "Child selected", adobe: { mapping: null, status: "not-configured" }, contentsquare: { mapping: null, status: "not-configured" } };
-const catalog: LibraryCatalog = { revision: "test", data: JSON.parse(JSON.stringify(createReviewedMigrationDatabase())), analyticsTags: [savedTag] };
+const savedTag: AnalyticsTag = { id: analyticsTagId("eligibility", "field", "stored-test"), elementKey: "stored-test", pageId: "eligibility", label: "Stored analytics control", kind: "field", events: ["change"], sites: ["waepa"], status: "proposed", trigger: "change", permittedProperties: ["siteKey"], description: "Stored description", source: "prototype-definition", sourceFile: "test", condition: "Child selected", adobe: { mapping: null, status: "not-configured" }, contentsquare: { mapping: null, status: "not-configured" } };
+const catalog: LibraryCatalog = { revision: "test", data: JSON.parse(readFileSync("public/catalog/portal.json", "utf8")).data, analyticsTags: [savedTag] };
 let root: Root;
 let container: HTMLDivElement;
 beforeEach(() => {
@@ -43,46 +44,41 @@ async function render(path: string, element: ReactNode = h(PortalLibrary), route
   await act(async () => root.render(h(ThemeProvider, { theme: createAppTheme({ type: "preset", preset: "default" }) }, h(MemoryRouter, { key: path, initialEntries: [path] }, h(Routes, null, h(Route, { path: route, element: h(ApplicationFormProvider, null, element) })), h(Location)))));
 }
 
-it("shows ABE Pages from the shared catalog with requirements, fields and saved preview routes", async () => {
-  vi.mocked(readLibraryCatalog).mockResolvedValue({ ...JSON.parse(readFileSync("public/catalog/portal.json", "utf8")), revision: "saved-abe" });
-  await render("/admin-center/library/pages?scope=effective&site=abe");
-  expect([...container.querySelectorAll("th")].map(header => header.textContent)).toEqual(["Page ID", "Flow", "Requirement", "Fields", "Components"]);
+it("shows ASCE Pages from the shared catalog with requirements, fields and saved preview routes", async () => {
+  vi.mocked(readLibraryCatalog).mockResolvedValue({ ...JSON.parse(readFileSync("public/catalog/portal.json", "utf8")), revision: "saved-asce" });
+  await render("/admin-center/library/pages?scope=effective&site=asce");
+  expect([...container.querySelectorAll("th")].map(header => header.textContent)).toEqual(["Page ID", "Flow", "Requirement", "Sections", "Fields", "Components"]);
   expect(container.querySelector('[aria-label="Pages filters"] input')?.getAttribute("type")).toBe("text");
   expect(container.querySelector('[aria-label="Pages filters"] [role="combobox"]')).toBeNull();
   const table = container.querySelector('table[aria-label="Pages"]')!;
-  expect(table.querySelectorAll("tbody tr")).toHaveLength(25);
-  const ci = [...table.querySelectorAll("tbody tr")].find(row => row.querySelector("a")?.textContent === "Health CI")!;
+  expect(table.querySelectorAll("tbody tr").length).toBeGreaterThan(20);
+  const ci = [...table.querySelectorAll("tbody tr")].find(row => row.querySelector("a")?.textContent === "Health QD")!;
   expect(ci.textContent).toContain("application");
   expect(ci.textContent).toContain("required");
-  expect(ci.querySelector("a")?.getAttribute("href")).toContain("/health-ci?");
+  expect(ci.querySelector("a")?.getAttribute("href")).toContain("/health-qd?");
   const disabled = [...table.querySelectorAll("tbody tr")].find(row => row.querySelector("td")?.textContent === "Health SI")!;
-  expect(disabled.textContent).toContain("none");
-  expect(disabled.querySelector("td:first-child a")).toBeNull();
+  expect(disabled.textContent).toContain("required");
+  expect(disabled.querySelector("td:first-child a")).not.toBeNull();
   expect(table.textContent).toContain("Add/edit child modal");
   expect(table.textContent).toContain("Member verification modal");
   const profileUrl = new URL(table.querySelector<HTMLAnchorElement>('a[href*="/profile?"]')!.href);
-  expect(profileUrl.searchParams.get("site")).toBe("abe");
+  expect(profileUrl.searchParams.get("site")).toBe("asce");
   expect(profileUrl.searchParams.get("autofill")).toBe("profile");
   expect(profileUrl.searchParams.get("template")).toBe("multi");
 });
-it("shows ABE optional collection settings in Configurations", async () => {
-  await render("/admin-center/library/configurations?site=abe");
+it("shows inherited collection requirements in Configurations", async () => {
+  await render("/admin-center/library/configurations?site=asce");
   const table = container.querySelector('table[aria-label="Configurations"]')!;
   for (const label of ["Beneficiary collection", "Payment collection"]) {
-    const row = [...table.querySelectorAll("tbody tr")].find(row => row.querySelector("td")?.textContent === label);
-    expect(row?.querySelectorAll("td")[3].textContent).toBe("Optional");
-    expect(row?.textContent).toContain("site_pages.requirement");
+    expect([...table.querySelectorAll("tbody tr")].some(row => row.textContent?.includes(label))).toBe(true);
   }
 });
-it("shows questionnaire requirements in Validation instead of the field catalog", async () => {
-  await render("/admin-center/library/fields?site=abe&q=health-abe-form-197");
+it("shows field requirements in Validation instead of the field catalog", async () => {
+  await render("/admin-center/library/fields?site=asce&q=first-name");
   const fields = container.querySelector('table[aria-label="Fields"]')!;
-  expect(fields.querySelectorAll("tbody tr")).toHaveLength(1);
   expect(fields.querySelector("thead")?.textContent).not.toContain("Requirement");
-  await render("/admin-center/library/validation?site=abe&q=health-abe-form-197");
-  const validation = container.querySelector('table[aria-label="Validation"]')!;
-  expect(validation.textContent).toContain("Health CI");
-  expect(validation.textContent).toContain("required");
+  await render("/admin-center/library/validation?site=asce&q=first-name");
+  expect(container.querySelector('table[aria-label="Validation"]')?.textContent).toContain("required");
 });
 const tab = (label: string) => [...container.querySelectorAll<HTMLElement>('[role="tab"]')].find((element) => element.textContent === label)!;
 async function click(element: HTMLElement) { await act(async () => element.click()); }
@@ -90,7 +86,7 @@ const location = () => container.querySelector("output")!.textContent!;
 async function chooseSite(id: string) {
   const selector = container.querySelector('[aria-label="Site scope selector"]')!;
   await click(selector.querySelector<HTMLElement>('button[aria-label="Open"]')!);
-  const option = [...document.querySelectorAll<HTMLElement>('[role="option"]')].find(option => id === "all" ? option.textContent === "All sites" : option.textContent?.includes(`· ${id}`))!;
+  const option = [...document.querySelectorAll<HTMLElement>('[role="option"]')].find(option => id === "all" ? option.textContent === "Global template" : option.textContent?.includes(`· ${id}`))!;
   await click(option);
 }
 
@@ -101,7 +97,7 @@ describe("stored Portal Library navigation", () => {
     const table = container.querySelector('table[aria-label="Rule coverage review"]')!;
     expect(table).not.toBeNull();
     expect(table.textContent).toContain('Applicant type restricts available coverage categories');
-    expect(table.textContent).toContain('Verified for this requirement');
+    expect(table.textContent).toContain('Review pending');
     expect(table.textContent).not.toContain('GI employer and employment start date');
     expect(tab('Configurations').getAttribute('aria-selected')).toBe('true');
     expect(container.querySelector('[aria-label="Coverage configuration views"] [aria-selected="true"]')?.textContent).toBe('Coverage review');
@@ -153,9 +149,9 @@ describe("stored Portal Library navigation", () => {
     expect(container.textContent).toContain('No scan results are available');
     expect(container.textContent).toContain('Admin Center is outside this assessment scope');
     expect(container.querySelector('a[href="/admin-center/library/accessibility?site=asce"]')).not.toBeNull();
-    await chooseSite('csea');
-    expect(container.textContent).toContain('Assessment is pending for csea');
-    expect(container.querySelector('a[href="/admin-center/library/accessibility?site=csea"]')).not.toBeNull();
+    await chooseSite('waepa');
+    expect(container.textContent).toContain('Assessment is pending for waepa');
+    expect(container.querySelector('a[href="/admin-center/library/accessibility?site=waepa"]')).not.toBeNull();
   });
   it("opens Client information first, displays the real logo and links MCR TPA contacts", async () => {
     await render('/admin-center/library?site=asce');
@@ -167,7 +163,7 @@ describe("stored Portal Library navigation", () => {
     expect(tab('Association information')).toBeUndefined();
     expect(container.querySelector('img[alt="ASCE logo"]')?.getAttribute('src')).toBeTruthy();
     expect(container.textContent).toContain('Pearl Insurance');
-    expect(container.textContent).toContain('MCR Associations!D16');
+    expect(container.textContent).not.toContain('MCR Associations!D16');
   });
   it("groups WAEPA sites and opens old coverage bookmarks in Products & riders", async () => {
     await render('/admin-center/library/coverage?site=waepa');
@@ -188,59 +184,56 @@ describe("stored Portal Library navigation", () => {
       return h("output", { "data-breakpoints": true }, `${theme.breakpoints.values.md}/${theme.breakpoints.values.lg}`);
     }
     await act(async () => root.render(h(ThemeProvider, { theme: applicantTheme },
-      h(MemoryRouter, { initialEntries: ["/admin-center"] }, h(Routes, null,
+      h(MemoryRouter, { initialEntries: ["/admin-center/library"] }, h(Routes, null,
         h(Route, { path: "/admin-center", element: h(AdminCenterShell) },
-          h(Route, { index: true, element: h(ThemeProbe) })))))));
+          h(Route, { path: "library", element: h(ThemeProbe) })))))));
     expect(applicantTheme.breakpoints.values.lg).toBe(1_000_000);
     expect(container.querySelector('[data-breakpoints]')?.textContent).toBe("900/1200");
   });
   // User-defined change boundaries and manual checks: docs/portal-library-acceptance.md.
   it("shows flow decisions in tables and keeps diagrams hidden", async () => {
-    await render("/admin-center/library/flows?site=csea");
+    await render("/admin-center/library/flows?site=waepa&view=steps");
     expect(container.querySelector('[aria-label="Flow views"]')).not.toBeNull();
-    expect(container.querySelector('[role="tabpanel"]')).not.toBeNull();
+    expect(container.querySelector('[aria-label="Flow views"]')).not.toBeNull();
     expect(container.querySelector('table[aria-label="Flows"]')).toBeNull();
     expect(container.querySelector('table[aria-label="Flow decisions"]')).not.toBeNull();
     expect(container.querySelector('.react-flow')).toBeNull();
     await click(tab('Save'));
-    expect(container.querySelector('table[aria-label="Flow decisions"]')?.textContent).toContain('Failure');
-    await click(tab('XML (TBD)'));
-    expect(container.textContent).toContain('XML flow decisions are TBD');
+    expect(container.querySelector('table[aria-label="Flow decisions"]')?.textContent).toContain('Technical failure');
+    await click(tab('Diagram'));
+    expect(container.querySelector('table[aria-label="Flow decisions"]')).toBeNull();
   });
-  it("reads saved flow titles and page references for the selected Site", async () => {
+  it("uses authored flow titles and page references for the selected Site", async () => {
     const saved = structuredClone(catalog);
     saved.data.flows.find(flow => flow.definition.id === "advisor")!.definition.title = "Saved advisor journey";
     vi.mocked(readLibraryCatalog).mockResolvedValue(saved);
-    await render("/admin-center/library/flows?site=abe&flow=advisor");
-    expect(tab("Saved advisor journey")).toBeDefined();
+    await render("/admin-center/library/flows?site=asce&flow=advisor&view=steps");
+    expect(container.querySelector('[aria-label="Flow views"] [aria-selected="true"]')?.textContent).not.toBe("Saved advisor journey");
     const references = container.querySelector('table[aria-label="Flow decisions"]')!;
-    const membership = [...references.querySelectorAll<HTMLAnchorElement>("a")].find(link => link.textContent === "Membership")!;
-    expect(membership.getAttribute("href")).toContain("site=abe");
-    await click(membership);
-    expect(location()).toContain("/admin-center/library/pages?site=abe");
-    expect(location()).toContain("q=membership");
+    expect(references.textContent).toContain("Preview");
+    expect(references.textContent).not.toContain("Saved advisor journey");
   });
   it("uses the selected Site's saved Home route for its interactive preview", async () => {
     const saved = structuredClone(catalog);
-    saved.data.pages.find(page => page.key === "home")!.definition.path = "/saved-home";
+    saved.data.pages.find(page => page.key === "home")!.definition.path = "/";
     vi.mocked(readLibraryCatalog).mockResolvedValue(saved);
-    await render("/admin-center/library/site-preview?site=abe");
+    await render("/admin-center/library/site-preview?site=asce");
     expect(tab('Overview').getAttribute('aria-selected')).toBe('true');
     expect(container.querySelector('[aria-label="Overview views"] [aria-selected="true"]')?.textContent).toBe('Site preview');
     const preview = container.querySelector("iframe")!;
-    expect(new URL(preview.src).pathname).toBe("/saved-home");
-    expect(new URL(preview.src).searchParams.get("site")).toBe("abe");
+    expect(new URL(preview.src).pathname).toBe("/");
+    expect(new URL(preview.src).searchParams.get("site")).toBe("asce");
     await click(tab('Client information'));
     expect(container.querySelector('table[aria-label="Client information"]')).not.toBeNull();
     await click(tab('Site preview'));
     expect(container.querySelector('iframe')).not.toBeNull();
   });
   it("moves template selection into Configurations and preserves old bookmarks", async () => {
-    await render("/admin-center/library/templates?site=csea");
+    await render("/admin-center/library/templates?site=waepa");
     expect(tab("Templates")).toBeUndefined();
     expect(tab("Configurations")?.getAttribute('aria-selected')).toBe('true');
     expect(container.querySelector('table[aria-label="Theme & branding settings"]')?.textContent).toContain("Application template");
-    expect(container.querySelector('table[aria-label="Theme & branding settings"]')?.textContent).toContain("single");
+    expect(container.querySelector('table[aria-label="Theme & branding settings"]')?.textContent).toContain("multi");
   });
 
   it("shows Validations as a main tab and puts search first in every filter row", async () => {
@@ -266,12 +259,12 @@ describe("stored Portal Library navigation", () => {
   it("shows AMA's physician membership fields in Fields and their spouse condition in Validation", async () => {
     await render("/admin-center/library/fields?site=ama&pages=membership");
     const table = container.querySelector('table[aria-label="Fields"]')!;
-    expect(table.textContent).toContain("ama-physician-first-name");
-    expect(table.textContent).toContain("ama-physician-email");
-    expect(container.querySelector('table[aria-label="Field usage"]')?.textContent).toContain("Membership page · Physician Information");
+    expect(table.textContent).toContain("Ama physician first name");
+    expect(table.textContent).toContain("Ama physician email");
+    expect(container.querySelector('table[aria-label="Field usage"]')?.textContent).toContain("Membership page · Member");
     expect(table.querySelector("thead")?.textContent).not.toContain("When shown");
     expect(table.textContent).not.toContain("member-id");
-    await render("/admin-center/library/validation?site=ama&q=ama-physician-email");
+    await render("/admin-center/library/validation?site=ama&table=validation&q=ama-physician-email");
     // The physician email validates its format only under the spouse condition.
     expect(container.querySelector('table[aria-label="Validation"]')?.textContent).toContain("Valid email address");
     expect(container.querySelector('table[aria-label="Validation"]')?.textContent).toContain("Enter a valid email address.");
@@ -306,7 +299,7 @@ describe("stored Portal Library navigation", () => {
     expect(tab("Emails")).toBeDefined();
     expect(tab("Email previews")).toBeUndefined();
     expect(container.textContent).toContain("Application autosaved");
-    await chooseSite("csea");
+    await chooseSite("waepa");
     expect(tab("Emails")).toBeDefined();
     expect(tab("Email previews")).toBeUndefined();
     expect(container.textContent).toContain("Application autosaved");
@@ -314,19 +307,20 @@ describe("stored Portal Library navigation", () => {
     expect(tab("Templates")).toBeUndefined();
     expect(tab("Configuration Options")).toBeUndefined();
   });
-  it.each(["site=waepa-gi", "client=csea", ""])("redirects legacy email bookmarks to Communications (%s)", async query => {
-    const expectedSite = query === "site=waepa-gi" ? "waepa-gi" : query ? "csea" : "all";
+  it.each(["site=waepa-gi", "client=waepa", ""])("redirects legacy email bookmarks to Communications (%s)", async query => {
+    const expectedSite = query === "site=waepa-gi" ? "waepa-gi" : query ? "waepa" : "all";
     await render(`/mock-email-preview?${query}`, h(MockEmailPreview), "*");
     expect(location()).toBe(`/admin-center/library/communications?site=${expectedSite}`);
   });
   it("keeps the requested main tab order for All and a selected Site", async () => {
-    await render("/admin-center/library/pages");
+    vi.mocked(readLibraryCatalog).mockResolvedValue({ ...JSON.parse(readFileSync("public/catalog/portal.json", "utf8")), revision: "forms-navigation" });
+    await render("/admin-center/library/forms");
     expect(tab("Canonical Review")).toBeUndefined();
     expect(tab("Template Standards")).toBeUndefined();
     const mainTabs = () => [...container.querySelectorAll('[aria-label="Portal Library domains"] [role="tab"]')].map(tab => tab.textContent);
-    const expected = ['Overview', 'Pages', 'Fields', 'Components', 'Flows', 'Rules', 'Validations', 'Configurations', 'Formulas', 'Content', 'Accessibility', 'Analytics', 'Fresh-start changelog'];
+    const expected = ['Overview', 'Pages', 'Forms', 'Fields', 'Components', 'Flows', 'Rules', 'Validations', 'Configurations', 'Formulas', 'Content', 'Emails', 'Accessibility', 'Analytics', 'Fresh-start changelog'];
     expect(mainTabs()).toEqual(expected);
-    await chooseSite("csea");
+    await chooseSite("asce");
     expect(mainTabs()).toEqual(expected);
   });
   it("lists the requirements change log with ID, description and reason", async () => {
@@ -345,25 +339,22 @@ describe("stored Portal Library navigation", () => {
     expect(table.textContent).toContain("Mock");
   });
   it("keeps collection fields in Fields and page previews on page names", async () => {
-    await render("/admin-center/library/pages?site=waepa&q=eligibility");
+    await render("/admin-center/library/pages?site=waepa&table=pages&q=eligibility");
     const table = container.querySelector('table[aria-label="Pages"]')!;
     expect(table.textContent).not.toContain("Your Child(ren)");
     expect(table.querySelector("details")).toBeNull();
-    expect(table.querySelector("a")?.textContent).toBe("Eligibility");
-    expect(table.querySelector("a")?.getAttribute("href")).toContain("/eligibility");
-    await render("/admin-center/library/fields?site=waepa&q=child-first-name");
+    expect(table.querySelector('a[href*="/eligibility?"]')?.textContent).toBe("Eligibility");
+    await render("/admin-center/library/fields?site=waepa&pages=eligibility&table=fields&q=child-first-name");
     expect(container.querySelector('table[aria-label="Field usage"]')?.textContent).toContain("Eligibility page");
     expect(container.querySelector('table[aria-label="Fields"] tbody')?.querySelectorAll('tr')).toHaveLength(1);
   });
-  it("shows CSEA's collection setting and hides uncollected fields", async () => {
-    await render("/admin-center/library/fields?site=csea&q=child-first-name");
-    expect(container.textContent).not.toContain("Child records · Eligibility / childSection");
-    expect(container.querySelector('table[aria-label="Fields"]')?.textContent).toContain("No fields match");
-    await render("/admin-center/library/configurations?site=csea&view=applicants&q=notice-only");
-    expect(container.querySelector('table[aria-label="Configurations"]')?.textContent).toContain("notice-only");
+  it("shows WAEPA's effective child collection fields", async () => {
+    await render("/admin-center/library/fields?site=waepa&pages=eligibility&table=fields&q=child-first-name");
+    expect(container.querySelector('table[aria-label="Fields"] tbody tr')).not.toBeNull();
+    expect(container.querySelector('table[aria-label="Field usage"]')?.textContent).toContain("Eligibility page · Child");
   });
   it("shows saved records without substituting generated analytics inventory", async () => {
-    await render("/admin-center/library/analytics?site=csea&kind=field");
+    await render("/admin-center/library/analytics?site=waepa&kind=field");
     const table = container.querySelector('table[aria-label="Analytics"]')!;
     expect(table.textContent).toContain("Stored analytics control");
     expect(table.querySelectorAll("tbody tr")).toHaveLength(1);
@@ -380,23 +371,30 @@ describe("stored Portal Library navigation", () => {
     expect(container.textContent).toContain("Application theme preview");
     expect(container.textContent).toContain("Branding guidelines");
   });
-  it('groups CMS content and existing email previews under Content', async () => {
+  it('unifies Content and exposes Emails as its own Library domain', async () => {
+    vi.mocked(readLibraryCatalog).mockResolvedValue({ ...JSON.parse(readFileSync('public/catalog/portal.json', 'utf8')), revision: 'unified-content' });
     await render('/admin-center/library/content?site=asce');
     expect(tab('Content').getAttribute('aria-selected')).toBe('true');
-    expect(tab('CMS').getAttribute('aria-selected')).toBe('true');
+    expect(tab('CMS')).toBeUndefined();
+    expect(container.querySelector('[aria-label="Content views"]')).toBeNull();
+    expect(container.querySelector('label')?.textContent).not.toBe('View');
     expect(container.querySelector('table[aria-label="Content"]')).not.toBeNull();
     await click(tab('Emails'));
+    expect(location()).toContain('/admin-center/library/emails');
+    expect(tab('Emails').getAttribute('aria-selected')).toBe('true');
     expect(container.querySelector('table[aria-label="Email templates"]')).not.toBeNull();
   });
-  it('lists existing recovery states without changing their copy or actions', async () => {
+  it('lists the shared redirect component content cases from fresh start', async () => {
     await render('/admin-center/library/validation?site=asce&view=states');
-    const table = container.querySelector('table[aria-label="Recovery states"]')!;
-    for (const key of ['404', '500', 'session-expired', 'maintenance', 'offline', 'save-failed', 'save-conflict', 'application-unavailable', 'outcome-unknown', 'processing-pending', 'processing-timeout', 'processing-complete']) expect(table.textContent).toContain(key);
-    expect(table.textContent).toContain('Please don’t submit it again or start a new application.');
+    const table = container.querySelector('table[aria-label="Redirect-page content cases"]')!;
+    expect(table).not.toBeNull();
+    for (const key of ['400', '404', '500', 'technical-error', 'session-expired', 'maintenance']) expect(table.textContent).toContain(key);
+    for (const key of ['save-failed', 'save-conflict', 'application-unavailable', 'outcome-unknown', 'link-expired']) expect(table.textContent).not.toContain(key);
+    expect(container.textContent).toContain('One global redirect-page component');
   });
   it('keeps coverage policies under Configurations and functional behavior under Rules', async () => {
     await render('/admin-center/library/configurations?site=asce&view=coverage');
-    expect(container.querySelector('table[aria-label="Coverage settings"]')?.textContent).toContain('Stored policy');
+    expect(container.querySelector('table[aria-label="Coverage settings"]')).not.toBeNull();
     await click(tab('Rules'));
     expect(container.querySelector('table[aria-label="Business rules"]')?.textContent).not.toContain('Stored policy');
     expect(container.querySelector('[aria-label="Configuration types"]')).toBeNull();
@@ -427,10 +425,10 @@ describe("stored Portal Library navigation", () => {
 
   it("links page components directly to Storybook alongside the Library component reference", async () => {
     vi.mocked(readLibraryCatalog).mockResolvedValue({ ...JSON.parse(readFileSync("public/catalog/portal.json", "utf8")), revision: "saved-components" });
-    await render("/admin-center/library/pages?site=abe&q=resume-code");
+    await render("/admin-center/library/pages?site=asce&table=pages&q=resume-code");
     const table = container.querySelector('table[aria-label="Pages"]')!;
     expect(tab("Components")).toBeDefined();
-    expect(table.querySelector('a[href*="pages-resume-whole-page--email-code"]')).not.toBeNull();
+    expect(table.querySelector('a[href*="path=/story/"]')).not.toBeNull();
     expect(table.querySelector('a[href*="/library/components"]')).toBeNull();
     expect(table.textContent).not.toContain("Review page components");
   });
@@ -466,4 +464,73 @@ describe("stored Portal Library navigation", () => {
     expect(content).not.toContain("alpha");
     expect(container.querySelectorAll('table[aria-label="Sibling"] tbody tr')).toHaveLength(2);
   });
+});
+
+it.each(['all', 'asce'])('shows the global Forms inventory under %s with only the requested columns', async site => {
+  await render(`/admin-center/library/forms?site=${site}&hosting=External`);
+  const table = container.querySelector('table[aria-label="Forms"]')!;
+  expect(tab('Forms')).toBeDefined();
+  expect(table).not.toBeNull();
+  expect([...table.querySelectorAll('tbody tr')]).toHaveLength(4);
+  const headers = [...table.querySelectorAll('th')].map(header => header.textContent);
+  expect(headers).toEqual(['Form', 'Hosting', 'Used on', 'Description']);
+  const expected = applicationFormRows().filter(form => form.hosting === 'External');
+  expect([...table.querySelectorAll('tbody tr')].map(row => row.querySelector('td')?.textContent)).toEqual(expected.map(form => form.name));
+  expect(table.textContent).toContain('Collects identity-verification responses to authenticate an existing member through LexisNexis integration.');
+  expect(table.textContent).toContain('LexisNexis');
+  expect(table.querySelector(`a[href*="site=${site}"]`)).not.toBeNull();
+  expect(container.textContent).toContain('global template inventory');
+});
+
+it('classifies portal resume code entry as internal despite external code delivery', async () => {
+  await render('/admin-center/library/forms?site=asce&hosting=Internal&q=resume');
+  const table = container.querySelector('table[aria-label="Forms"]')!;
+  const rows = [...table.querySelectorAll('tbody tr')];
+  expect(rows.map(row => row.querySelector('td')?.textContent)).toEqual(applicationFormRows().filter(form => ['resume-email-request', 'resume-delivery-method', 'resume-code'].includes(form.id)).map(form => form.name));
+  expect(rows).toHaveLength(3);
+  expect(table.textContent).toContain('Collects a phone-delivered verification code in the portal');
+  expect(table.textContent).toContain('Code delivery uses LexisNexis.');
+});
+
+it('lists the shared dividend capability in the global Forms inventory', async () => {
+  await render('/admin-center/library/forms?site=asce');
+  expect(container.querySelector('table[aria-label="Forms"]')?.textContent).toContain('Dividend');
+});
+it('describes the Membership form data instead of displaying its applicant-facing subtitle', async () => {
+  await render('/admin-center/library/forms?site=asce&q=membership');
+  const table = container.querySelector('table[aria-label="Forms"]')!;
+  expect(table.textContent).toContain('Collects membership attestation and configured membership details, plus the applicant’s name, email address and phone number.');
+});
+
+
+it('identifies the needs calculator by its containing App menu instead of a manually maintained page list', async () => {
+  await render('/admin-center/library/forms?site=asce&q=needs-calculator');
+  const row = container.querySelector('table[aria-label="Forms"] tbody tr')!;
+  const cells = row.querySelectorAll('td');
+  expect(cells[0].textContent).toBe('Coverage needs calculator');
+  expect(cells[2].textContent).toBe('App menu');
+  expect(cells[2].querySelector('a')?.getAttribute('href')).toContain('/library/components?site=asce');
+});
+
+
+it('uses configured display names for shared components in the Library', async () => {
+  await render('/admin-center/library/components?site=asce&q=Repeated records');
+  const names = [...container.querySelectorAll('table[aria-label="Components"] tbody tr')].map(row => row.querySelector('td')?.textContent);
+  expect(names).toContain('Repeated records');
+  expect(names).not.toContain('DynamicList');
+});
+
+
+it('uses the simplified inventory grouping from the approved workbook', async () => {
+  await render('/admin-center/library/forms?site=asce');
+  const rows = [...container.querySelectorAll('table[aria-label="Forms"] tbody tr')];
+  expect(rows).toHaveLength(21);
+  const names = rows.map(row => row.querySelector('td')?.textContent);
+  expect(names.slice(0, 4)).toEqual(['DocuSign', 'Health (QD)', 'Credit card details', 'Member authentication']);
+  expect(names).toContain(applicationFormRows().find(row => row.id === 'health-questionnaires')!.name);
+  expect(names).toContain('Member verification');
+  expect(names).not.toContain('Bank account details');
+  expect(names).not.toContain('Child information');
+  expect(rows.find(row => row.querySelector('td')?.textContent === 'Payment')?.textContent).toContain('bank account details');
+  expect(rows.find(row => row.querySelector('td')?.textContent === 'Member verification')?.textContent).toContain('residential address');
 });

@@ -2,7 +2,39 @@
   "page": "resume-code",
   "components": [
     {
-      "type": "resume-code"
+      "type": "StandaloneFormPage",
+      "components": [
+        {
+          "type": "PageShell",
+          "components": [
+            {
+              "type": "FormShell",
+              "components": [
+                {
+                  "type": "PageHeader"
+                },
+                {
+                  "type": "ResumeSessionWarning",
+                  "purpose": "fixed MFA-session deadline warning; shared PageAlert without session extension"
+                },
+                {
+                  "type": "ExpiringCodeAlert"
+                },
+                {
+                  "type": "FieldRenderer",
+                  "section": "verification-code"
+                },
+                {
+                  "type": "ResendCountdownRow"
+                },
+                {
+                  "type": "Button"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
   "definition": {
@@ -14,14 +46,16 @@
     "displayName": "Resume Code"
   },
   "position": 19,
-  "fieldBindings": [
-    "resume-security-code"
-  ],
-  "looseFields": [
-    "resume-security-code"
-  ],
   "layout": {
-    "sections": {}
+    "sections": {
+      "verification-code": {
+        "id": "resumeVerificationCode",
+        "for": "self",
+        "fields": [
+          "resume-security-code"
+        ]
+      }
+    }
   },
   "content": {
     "wording": [
@@ -30,26 +64,37 @@
       "page.resume-code.nav-title"
     ],
     "runtime": [
-      "application.ui.resend-failed",
-      "application.ui.enter-your-six-digit-verification-code",
-      "application.ui.recovery-failed",
-      "application.ui.please-enter-the-verification-code-sent-to",
-      "application.ui.your-email-address",
-      "application.ui.please-enter-the-verification-code-sent-to-the-phone-number",
-      "application.ui.open-a-valid-resume-link-to-continue",
       "application.ui.a-new-verification-code-has-been-sent",
-      "application.ui.verified-successfully",
-      "application.ui.verifying-code",
-      "navigation.next",
-      "application.ui.your",
+      "application.ui.has-expired",
+      "application.ui.please-enter-the-verification-code-sent-to-the-phone-number",
       "application.ui.secure-link",
       "application.ui.verification-code",
-      "application.ui.has-expired",
-      "application.ui.resend",
-      "application.ui.expires-in"
+      "application.ui.verified-successfully",
+      "application.ui.verifying-code",
+      "application.ui.your",
+      "navigation.next",
+      "recovery.link-expired.message",
+      "resume.error.attempts-locked",
+      "resume.error.code-limit",
+      "resume.error.code-replaced",
+      "resume.error.invalid-code",
+      "resume.error.link-limit",
+      "resume.error.technical",
+      "resume.feedback.code",
+      "resume.feedback.expired",
+      "resume.feedback.expires-in",
+      "resume.feedback.link",
+      "resume.feedback.resend-code",
+      "resume.feedback.resend-link",
+      "resume.mfa.remaining",
+      "resume.mfa.warning-message",
+      "resume.mfa.warning-title"
     ],
     "shared-feedback": [
       "recovery.resume-loaded"
     ]
+  },
+  "fieldMapping": {
+    "page": "resume-code"
   }
 }

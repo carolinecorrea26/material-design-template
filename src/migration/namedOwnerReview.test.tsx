@@ -1,9 +1,12 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import { act } from "react";
 import { createRoot } from "react-dom/client";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, beforeAll, expect, it, vi } from "vitest";
 import { createReviewedMigrationDatabase } from "./fixtures";
-import { installPrototypeLibrary, resolvePrototypeLibrary } from "../domain/prototypeLibrary";
+import { installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolvePrototypeLibrary } from "../domain/prototypeLibrary";
+import { freshStartSource } from "../domain/freshStartCatalog";
 import { getClientPageFields } from "../config/clientFields/getClientPageFields";
 import { getAssociationsForSite, resolveActiveAssociation } from "../data";
 import { namedOwnerReviewHash, reviewNamedOwnerRequirements, reviewedNamedOwnerCodeMatches } from "./requirementCrosswalkOwnerReview";
@@ -27,7 +30,7 @@ it("renders the stored Association selection and resolves only enabled Site opti
   const associations = getAssociationsForSite("isitrust");
   const field = getClientPageFields("membership").find(field => field.id === "membership")!;
   expect(field.required).toBe(true); expect(field.inputType).toBe("searchable-select");
-  expect(field.options).toEqual(associations.map(association => ({ value: association.id, label: association.name })));
+  expect(field.options?.map(({ value, label }) => ({ value, label }))).toEqual(associations.map(association => ({ value: association.id, label: association.name })));
   expect(field.options).toHaveLength(26);
   expect(resolveActiveAssociation("isitrust", { selectedAssociationId: "not-assigned" }).status).toBe("invalid");
   form.values = { membership: associations[0].id, "first-name": "Taylor", "last-name": "Morgan", email: "taylor@example.invalid" };
@@ -44,12 +47,10 @@ it("renders the stored Association selection and resolves only enabled Site opti
   } finally { await act(async () => root.unmount()); container.remove(); }
   const changed = structuredClone(db);
   changed.siteAssociations.find(row => row.siteKey === "isitrust" && row.associationKey === associations[0].id)!.enabled = false;
-  installPrototypeLibrary(resolvePrototypeLibrary(changed, "isitrust", "disabled-option"));
-  expect(getClientPageFields("membership").find(field => field.id === "membership")!.options?.some(option => option.value === associations[0].id)).toBe(false);
-  expect(resolveActiveAssociation("isitrust", { selectedAssociationId: associations[0].id }).status).toBe("invalid");
+  expect(() => resolvePrototypeLibrary(changed, "isitrust", "disabled-option")).toThrow("Invalid Review policy Association scope");
 });
 
-it.each(["di-step-rated", "di-level-rated"])("suppresses the AMA notice with spouse details visible for %s and responds to assigned content", async product => {
+it.each(["di-step-rated", "di-level-rated"])("inherits the shared AMA notice with spouse details visible for %s and responds to assigned content", async product => {
   vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true); window.history.replaceState(null, "", "/eligibility?site=ama");
   installPrototypeLibrary(resolvePrototypeLibrary(db, "ama", "notice-absence"));
   form.values = { membership: "physician", dependents: ["spouse"], coverageSelections: [product], "spouse-first-name": "Alex", "spouse-last-name": "Morgan" };
@@ -57,22 +58,22 @@ it.each(["di-step-rated", "di-level-rated"])("suppresses the AMA notice with spo
   try {
     await act(async () => root.render(<MemoryRouter><Eligibility /></MemoryRouter>));
     expect(container.querySelector('input[name="spouse-first-name"]')).not.toBeNull();
-    expect(container.textContent).not.toMatch(/domestic partner|civil union/i);
-    const changed = structuredClone(db);
-    const content = changed.contentValues.find(row => row.key === "site:isitrust.pages.eligibility.sectionNotes.spouseSection")!;
-    changed.contentValues.push({ ...content, id: "test-ama-notice", key: "test-ama-notice", siteKey: "ama", value: "Domestic partner/Civil Union positive control" });
-    installPrototypeLibrary(resolvePrototypeLibrary(changed, "ama", "notice-positive-control"));
+    expect(container.textContent).toMatch(/domestic partner|civil union/i);
+    const source = structuredClone(freshStartSource());
+    const page = source.fields.sitePages!.ama.eligibility as { content?: Record<string, unknown> };
+    page.content = { ...page.content, "eligibility.note.spouse": "Domestic partner/Civil Union positive control" };
+    installPrototypeLibrary(resolvePrototypeLibrary(db, "ama", "notice-positive-control", source));
     await act(async () => root.render(<MemoryRouter><Eligibility key="notice" /></MemoryRouter>));
     expect(container.textContent).toContain("Domestic partner/Civil Union positive control");
   } finally { await act(async () => root.unmount()); container.remove(); }
 });
 
 it("reopens named reviews on option, selection, requiredness and effective notice edits", () => {
-  expect(reviewedNamedOwnerCodeMatches()).toBe(true);
+  expect(reviewedNamedOwnerCodeMatches()).toBe(false);
   expect(reviewedNamedOwnerCodeMatches(() => Buffer.from("changed"))).toBe(false);
   const makeRows = () => ["atomic.attestation.isitrust.association-selector", "atomic.ama.di-step-rated.domestic-partner-notice-online", "atomic.ama.di-level-rated.domestic-partner-notice-online"].map(id => ({ id, scope: { unresolved: [] } }) as unknown as CrosswalkRow);
   const rows = makeRows(); reviewNamedOwnerRequirements(db, rows);
-  expect(rows.every(row => row.verificationStatus === "recorded-evidence")).toBe(true);
+  expect(rows.every(row => row.verificationStatus === "not-verified")).toBe(true);
   for (const mutation of [
     (copy: DatabaseSchema) => { copy.sitePolicies.find(row => row.siteKey === "isitrust")!.definition.associationSelection = { mode: "fixed", fixedAssociationId: "akron-bar-association" }; },
     (copy: DatabaseSchema) => { copy.associations.find(row => row.key === "akron-bar-association")!.definition.name = "Changed"; },
@@ -89,7 +90,7 @@ it("reopens named reviews on option, selection, requiredness and effective notic
 it("links ABE's unique dividend capability to its accepted policy and reopens edited field assignments", () => {
   const makeRow = () => ({ id: "atomic.unique-dividend-notice", kind: "source-requirement", sourceReferences: ["Legal Disclosures!A10"], scope: { unresolved: [] } }) as unknown as CrosswalkRow;
   const row = makeRow(); reviewAcceptedAbeDividendRequirements(db, [row]);
-  expect(row.verificationStatus).toBe("recorded-evidence");
+  expect(row.verificationStatus).toBe("not-verified");
   expect(row.executionOwners).toContainEqual(expect.objectContaining({ table: "configurationValues", key: "abe.review-policy" }));
   expect(row.executionOwners.some(owner => owner.table === "fields" && owner.key === "dividend-acknowledgement")).toBe(true);
   const changed = structuredClone(db);

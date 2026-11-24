@@ -1,0 +1,23 @@
+{
+  "rules": [
+    {
+      "id": "health-participation-and-storage",
+      "name": "Resolve active Health applicants without duplicating answers",
+      "status": "confirmed",
+      "statement": "Resolve online Health participation from current product/applicant elections and effective journey/questionnaire assignments. A combined questionnaire may supersede another questionnaire; a child election never creates adult answers. Shared question structure does not share answers: each adult has separate scalar keys and detail collections. Retain hidden drafts without validating or treating them as active. Apply the same field checks and collection limits to restored active rows as to newly entered rows. Medical content and follow-ups come from the assigned questionnaire; the external provider owns its questionnaire content. Health pages omit page-help chips. Resolve Association-scoped assignments through the effective Site Association context, not a membership attestation or unrelated retained answer.",
+      "uses": [
+        "applicant-section-headings",
+        "applicant-active-participation",
+        "rule-dynamiclist-add-edit-remove-modal-pattern"
+      ],
+      "source": "User Health configuration decision November 16, 2026; User Health copy decision November 15, 2026; Health final audit November 13, 2026; src/config/flowGates.ts; src/config/healthFollowUps.ts; src/domain/configuredHealthQuestionnaire.ts; src/domain/healthQuestionnaire.ts"
+    },
+    {
+      "id": "health-external-qd-boundary",
+      "name": "Keep provider-owned Health questionnaires separate from portal answers",
+      "status": "confirmed",
+      "statement": "The effective product journey may route Health processing to the external QuickDecision provider. That provider owns its questionnaire, state variations and validation. Provider completion and underwriting outcomes must come from verified results, not portal navigation. Review statements follow the separately modeled product-based underwriting flag, independently of online Health participation.",
+      "source": "User external handoff request November 10, 2026; confirmed Review policy CHG-061; Master Client Requirements v78, SUP DI Health questions!A19:F19; requirements/parked/sites/asce/coverage-policies.json; requirements/parked/sites/asce/prototype-handoffs.json"
+    }
+  ]
+}

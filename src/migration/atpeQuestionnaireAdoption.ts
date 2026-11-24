@@ -70,7 +70,7 @@ export function applyAtpeQuestionnaireAdoption(db: DatabaseSchema) {
       subquestions.forEach((label, part) => ciOnly.push(question(`ci.4l-${part + 1}`, `${prefix} Other health or physical impairment including ${label.replace(/^\(i+\)\s*/, "").trim()}`, "B84", medical, { repeated: true })));
     } else ciOnly.push(question(`ci.4${"abcdefghijkl"[index]}`, `${prefix} ${cleaned}`, "B84", medical, { repeated: true }));
   }
-  const policy: HealthQuestionnairePolicy = { version: 1, associationKeys: [atpeAssociationKey], pageId: "health-li", variants: [
+  const policy: HealthQuestionnairePolicy = { version: 1, associationKeys: [atpeAssociationKey], pageId: "health-tele", variants: [
     { key: "life", when: { none: ["sh-critical-illness"] }, items: full },
     { key: "ci-only", when: { only: ["sh-critical-illness"] }, items: ciOnly },
     { key: "ci-mixed", when: { any: ["sh-critical-illness"], otherThan: ["sh-critical-illness"] }, items: [...full, ...ciExtra], supersededPages: ["health-si"] },

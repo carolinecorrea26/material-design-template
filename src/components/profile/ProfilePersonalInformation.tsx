@@ -18,7 +18,7 @@ export default function ProfilePersonalInformation({ applicant = "self", fieldId
     `${prefix}travel-outside-us-six-months`,
   ]);
 
-  function renderField(fieldId: string, margin: "none" | "normal" = "normal") {
+  function renderField(fieldId: string, margin: "none" | "normal" = "none") {
     const field = allFields.find((f) => f.id === fieldId);
     if (!field) return null;
     return (
@@ -34,11 +34,11 @@ export default function ProfilePersonalInformation({ applicant = "self", fieldId
 
   return (
     <>
-      <FieldGrid columns="1fr 1fr" gap={2} keepColumns>
+      {fieldIds.some(id => heightFields.has(id) && allFields.some(field => field.id === id)) && <FieldGrid columns="1fr 1fr" gap={2} keepColumns>
         {fieldIds
           .filter((id) => heightFields.has(id))
           .map((fieldId) => renderField(fieldId, "none"))}
-      </FieldGrid>
+      </FieldGrid>}
 
       {/* Remaining fields rendered normally */}
       {fieldIds
@@ -56,7 +56,6 @@ export default function ProfilePersonalInformation({ applicant = "self", fieldId
       {renderField(`${prefix}intend-live-outside-us`)}
       {watchedValues[`${prefix}intend-live-outside-us`] === "yes" && (
         <ConditionalGroup>
-          {renderField(`${prefix}outside-us-months`)}
           {renderField(`${prefix}outside-us-country`)}
         </ConditionalGroup>
       )}

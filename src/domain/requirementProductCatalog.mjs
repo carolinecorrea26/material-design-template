@@ -18,6 +18,7 @@ export function validateProductCatalog(catalog, scope) {
     for (const row of rows) {
       if (!object(row) || typeof row.id !== 'string' || !row.id || typeof identity(row) !== 'string' || !identity(row) || ids.has(row.id) || keys.has(identity(row))) throw new Error(`Invalid fresh-start product identity: ${table}`);
       ids.add(row.id); keys.add(identity(row));
+      if (table === 'riders' && row.definition?.applicantDescriptions !== undefined && (!object(row.definition.applicantDescriptions) || Object.entries(row.definition.applicantDescriptions).some(([applicant, text]) => !['member', 'spouse', 'child'].includes(applicant) || typeof text !== 'string' || !text.trim()))) throw new Error(`Invalid rider applicant descriptions: ${identity(row)}`);
       if (scope === 'global' && (row.siteKey != null || row.siteId != null || row.clientKey != null || row.scope && row.scope !== 'global')) throw new Error(`Site assignment in global product definitions: ${table}/${identity(row)}`);
       if (scope === 'site' && (row.siteKey != null && row.siteKey !== '{{site}}' || row.siteId != null && row.siteId !== '{{siteId}}' || row.clientKey != null || row.scope && row.scope !== 'site')) throw new Error(`Invalid effective-Site product assignment: ${table}/${identity(row)}`);
     }
@@ -48,7 +49,16 @@ export function compileProductCatalog(data, source, sites) {
     output[table] = [...output[table].filter(row => !keys.has(identity(row))), ...records.map(record => ({ ...libraryMetadata(table, identity(record)), ...structuredClone(record), sourceReference: `${reference}#${table}/${identity(record)}${record.sourceReference ? `; ${record.sourceReference}` : ''}` }))];
   };
   const global = validateProductCatalog(source.products.catalog, 'global');
+  // The one global template owns URL definitions and value contracts in full.
+  // Superseded contracts cannot survive as additional saved-catalog records.
+  for (const table of ['urlParameters', 'urlParameterValues']) if (Array.isArray(output[table])) output[table] = [];
   const definitions = new Map(global.configurationDefinitions.map(row => [row.key, row.definition]));
+  // Declared presentation definitions replace older aliases for the same
+  // product/property, so saved catalogs cannot create competing copy bindings.
+  const presentationTargets = new Set(global.configurationDefinitions.filter(row => row.key.startsWith('products.presentation.') && row.definition.target?.kind === 'product-presentation').map(row => targetIdentity(row.definition)));
+  const retiredPresentation = new Set(output.configurationDefinitions.filter(row => !definitions.has(row.key) && presentationTargets.has(targetIdentity(row.definition))).map(row => row.key));
+  output.configurationDefinitions = output.configurationDefinitions.filter(row => !retiredPresentation.has(row.key));
+  output.configurationValues = output.configurationValues.filter(row => !retiredPresentation.has(row.configurationKey));
   const globalProducts = new Set(global.products.map(row => row.key));
   for (const product of source.products.products) if (!globalProducts.has(product.id)) throw new Error(`Missing fresh-start product definition: ${product.id}`);
   for (const value of global.configurationValues) if (!definitions.has(value.configurationKey)) throw new Error(`Missing fresh-start configuration definition: ${value.configurationKey}`);

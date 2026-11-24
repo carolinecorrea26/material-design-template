@@ -8,7 +8,7 @@ export default function ReferenceRateTableLink({ table }: { table: ReferenceRate
   const [open, setOpen] = useState(false);
   if (!isReferenceRateTable(table)) return null;
   return <>
-    <Link component="button" type="button" variant="body2" onClick={() => setOpen(true)} sx={{ fontWeight: 400, fontStyle: "normal", textTransform: "none", textAlign: "left" }}>View rate table</Link>
+    <Link component="button" type="button" variant="body2" onClick={() => setOpen(true)} sx={{ fontStyle: "normal", textTransform: "none", textAlign: "left" }}>View rate table</Link>
     <AppDrawer open={open} onClose={() => setOpen(false)} title={table.title}>
       <Typography variant="body2" sx={{ mb: 2 }}>Reference rates. Your actual premium may depend on the plan and applicant details.</Typography>
       {table.kind === "image" && <Box component="img" src={table.url} alt={table.title} sx={{ width: "100%", height: "auto" }} />}

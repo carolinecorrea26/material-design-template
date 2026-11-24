@@ -10,6 +10,6 @@ export function configuredHealthQuestionEntries({ questionnaire, applicant, cont
 } & Pick<FormRouteRenderProps, 'control' | 'errors'>): HealthQuestionEntry[] {
   return questionnaire.items.map(item => ({
     key: item.groupKey ?? item.key, order: item.position, applicant,
-    content: <HealthQuestion item={item} control={control} errors={errors} />,
+    content: <HealthQuestion item={{ ...item, maxItems: Number.MAX_SAFE_INTEGER }} control={control} errors={errors} />,
   }));
 }

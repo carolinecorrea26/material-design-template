@@ -8,7 +8,8 @@ import HowApplyingWorksPanel from "./HowApplyingWorksPanel";
  * narrower `drawer` variant (AppMenu), which also manages its own
  * QuickDecision/Application-Review sub-drawers when the step text contains
  * a linked term. The page variant defaults to regular images; clients can select an animated
- * application preview; the drawer keeps a compact text-only shape.
+ * application preview; the drawer always uses the illustrated small-viewport
+ * layout, stacking each image above its step text.
  */
 const meta = {
   id: "coverage-commerce-howapplyingworkspanel",
@@ -39,7 +40,7 @@ export const DrawerVariant: StoryObj = {
     docs: {
       description: {
         story:
-          'In drawer variant, the "review your application" and QuickDecision℠ links inside step text open their own nested AppDrawer sub-panels — try clicking one.',
+          'The drawer shares the landing-page illustrations and steps, with each image stacked above its text at every viewport width. The "review your application" and QuickDecision℠ links open nested AppDrawer sub-panels.',
       },
     },
   },

@@ -1,5 +1,6 @@
+import { requirementText } from "../../domain/requirementContent";
 import ApplicationDocumentPreview, { type ApplicationDocumentPreviewProps } from "../../components/content/ApplicationDocumentPreview";
-import { buildDocumentSections, documentPages } from "../../components/content/applicationDocumentSections";
+import { buildDocumentSections, getDocumentPages } from "../../components/content/applicationDocumentSections";
 import { getActiveClient } from "../../config/client/getActiveClient";
 import type { ApplicationFormValues } from "../ApplicationFormContext";
 import { paymentPeriodSuffix, useApplicationEstimates } from "../estimates/useApplicationEstimates";
@@ -13,9 +14,9 @@ export default function ConfiguredApplicationDocumentPreview({ values, ...props 
     groups: section.groups.map(group => {
       const estimate = "coverageKey" in group ? estimates.items.find(item => item.id === group.coverageKey) : undefined;
       return estimate && estimate.display.status !== "hidden" && estimate.display.status !== "needs-information" ? {
-        ...group, entries: [...group.entries, { label: "Estimated rate", value: <EstimatedRate appearance="inline" display={estimate.display} suffix={paymentPeriodSuffix(estimate.period)} /> }],
+        ...group, entries: [...group.entries, { label: requirementText("application.document-preview.estimated-rate"), value: <EstimatedRate appearance="inline" display={estimate.display} suffix={paymentPeriodSuffix(estimate.period)} /> }],
       } : group;
     }),
   }));
-  return <ApplicationDocumentPreview {...props} sections={sections} associationName={getActiveClient().branding.name} sectionPages={documentPages} />;
+  return <ApplicationDocumentPreview {...props} sections={sections} associationName={getActiveClient().branding.name} sectionPages={getDocumentPages()} />;
 }

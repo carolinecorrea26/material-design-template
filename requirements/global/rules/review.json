@@ -1,0 +1,81 @@
+{
+  "rules": [
+    {
+      "id": "review-shared-policy",
+      "name": "Reuse legal policy across Review and signing",
+      "status": "confirmed",
+      "statement": "Use one effective legal policy for fraud, authorization, consent, premium wording and common notice blocks across Review and signing documents. Keep the page introduction separate from legal text. Policy assignments select supported legal text, applicability and documents while retaining the shared field definitions.",
+      "source": "Review final audit November 13, 2026; Master Client Requirements v78, Read & Sign; existing confirmed consent/authorization decisions",
+      "replaces": [
+        "rule-review-jurisdiction-fraud-notices",
+        "rule-review-conditional-consent-blocks"
+      ]
+    },
+    {
+      "id": "review-jurisdiction-and-consent",
+      "name": "Resolve Review statements from active coverage and residence",
+      "status": "confirmed",
+      "statement": "Use active selected product/applicant elections and member residence. The shared underwriting flag is true for member/spouse Life, Disability or Office/Professional Overhead; child-only Life, AD&D and supplemental-health-only elections do not set it. Medical introduction, authorization, underwritten consent and CT warning follow this flag independently of online health-question participation. Jurisdiction wording precedes processing wording, then defaults: Minnesota authorization and post-consent exclusion; Virginia QD authorization and consent; QD DI or QD Life plus DI processing authorization. NY Life-only omits fraud; non-Life or an active accident rider includes it. Missing residence or configured applicant-type prerequisites block Next.",
+      "source": "User decision November 13, 2026; MCR v78 Read & Sign!B3:B4, B35:B53, B78:B93 and B118:B119"
+    },
+    {
+      "id": "review-adult-acknowledgements",
+      "name": "Require owner and active spouse acknowledgements",
+      "status": "confirmed",
+      "statement": "The member/application owner acknowledges Review for every application, including dependent-only applications. An actively applying spouse independently acknowledges; removed-product spouse maps do not reveal or require a spouse acknowledgement. Global field definitions fix acknowledgement wording and requiredness; effective Sites cannot hide or relax them; the source surfaces preserve the two established answer keys.",
+      "source": "Review final audit November 13, 2026; Master Client Requirements v78, Read & Sign; existing confirmed consent/authorization decisions"
+    },
+    {
+      "id": "review-remaining-steps",
+      "name": "Describe only the remaining applicable application steps",
+      "status": "confirmed",
+      "statement": "Guidance follows effective ordered flow participation after Review: applicable health pages collapse to one health step, followed by Payment and DocuSign when enabled. Do not infer health participation from a static underwriting label or show disabled steps.",
+      "source": "Review final audit November 13, 2026; Master Client Requirements v78, Read & Sign; existing confirmed consent/authorization decisions"
+    },
+    {
+      "id": "review-edit-workflow",
+      "name": "Confirm edits and use the advisor edit-request flow",
+      "status": "confirmed",
+      "statement": "Before Review is submitted, a consumer document Edit opens the shared confirmation dialog; Cancel stays on Review, confirm navigates to the owning page or single-page section. Advisor-prepared applications instead open the configured request-edit dialog and continue to its confirmation. Submitted Review removes Edit actions and uses the established shared navigation lock. Advisor delivery is a rule. The shared flow=advisor URL contract selects this context and restores its session flag; unsupported query values do not enable it. The parameter is not an authentication or authorization mechanism. The advisor’s normal preparation/edit stage ends with the Profile send dialog and Advisor Send Confirmation; successfully verified advisor-prepared applicants enter Review. Both ordinary and advisor-prepared applicants continue from Review through their applicable remaining steps after consent. The removed locked-steps warning is not shown; the remaining advisor information and request-edit actions still apply.",
+      "source": "Review final audit November 13, 2026; Master Client Requirements v78, Read & Sign; existing confirmed consent/authorization decisions",
+      "replaces": [
+        "rule-review-edit-confirmation-consumer-flow"
+      ]
+    },
+    {
+      "id": "review-policy-fields",
+      "name": "Restore and validate active policy controls",
+      "status": "confirmed",
+      "statement": "Restore owner/spouse acknowledgements and active policy fields through the shared runtime-field contract, independently of scalar page placement. Effective fresh-start field surfaces own the definitions. Active required acknowledgements and supplied field values receive the same shared checks as other forms, including valid calendar dates. Hidden/inapplicable block fields do not render or block Next.",
+      "source": "Review final audit November 13, 2026; Master Client Requirements v78, Read & Sign; existing confirmed consent/authorization decisions"
+    },
+    {
+      "id": "review-legal-presentation",
+      "name": "Use two shared legal sections and scoped printing",
+      "status": "confirmed",
+      "statement": "Review has two legal sections: Read & Sign and Electronic Consent. Source blocks honor before-review, before-consent, Read & Sign appendix, after-electronic-consent, before-signature and before-member-signature placements. CT underwritten warning appears immediately above the member Review acknowledgement, and its required DocuSign/PDF position is immediately above the member e-signature. Supplemental-health attestation is 14pt above the acknowledgement/signature area when applicable. Print uses the shared isolated action for the selected disclosure. The Review application preview has no PDF-download action or signature section. Read & Sign remains fully expanded. Electronic Consent uses the shared keyboard-focusable rich-text scroll region, globally limited to 240px on screen; both print in full and retain legal-document links. This presentation belongs to the global page definition, not a Site override.",
+      "source": "User CT placement decision November 13, 2026; MCR v78 Read & Sign!B115:B119; Review final audit"
+    },
+    {
+      "id": "review-content-and-storage",
+      "name": "Document Review content and retain stable answers",
+      "status": "confirmed",
+      "statement": "Store owner and spouse acknowledgements independently, together with applicable canonical policy-field answers. Preview groups and legal text are projections of the saved application, not another editable copy. The application preview omits a prepared-on timestamp. Boolean readouts use the effective field-choice label or the shared Yes/No choices; they do not require separate document-preview content records.",
+      "source": "User Review copy decision November 15, 2026; Review final audit November 13, 2026; Master Client Requirements v78, Read & Sign; existing confirmed consent/authorization decisions"
+    },
+    {
+      "id": "review-important-notice-viewer",
+      "name": "Open the applicable Important Notice in the shared legal viewer",
+      "status": "confirmed",
+      "statement": "Each IMPORTANT NOTICE reference in Review legal text opens the existing AppModal and LegalDocList viewer with a configured document. The shared policy selects the standard notice, the standard notice plus New Mexico protected-person/abuse-information paragraphs for NM, or the Virginia document for VA. Shared PrintAction prints only the displayed notice; Close returns to Review without changing acknowledgement answers. Document definitions, link token and jurisdiction defaults are global; the effective Site selects/overrides its Review policy. No separate page, read-tracking field or acknowledgement is introduced. This confirms implementation and supersedes the October 20 notice-viewer deferral. Electronic Consent Important Notice references open the same jurisdiction-selected document; its New York Life Online Privacy Notice references open the existing shared Footer Privacy Notice in that same viewer. Section-specific link tokens leave the generic IMPORTANT NOTICE warning heading as plain text. No Privacy Notice wording is duplicated.",
+      "source": "User decision November 13, 2026; Master Client Requirements v78, Read & Sign!B142:B162 and B187; requirements/global/content/review-notices.json"
+    },
+    {
+      "id": "review-configuration-boundaries",
+      "name": "Validate legal policy assignments against the effective Site",
+      "status": "confirmed",
+      "statement": "Legal policy assignments may select supported wording, predicates, placements and documents. Explicit products and product/applicant pairs must be assigned to the effective Site; Associations must be enabled for it. Policy fields must reference the shared policy-field surface, including inactive blocks. Applicant-type prerequisites must reference collected fields and valid options. Reject unknown filters and duplicate active field bindings. Use current URL-filtered elections, the canonical Association context and normalized residence code. Membership attestation and retained unrelated Association answers do not establish Association identity. Existing coverage-mode predicates retain their established context and default to new.",
+      "source": "User Review field decision November 16, 2026; requirements/mappings/page-fields/review.json; requirements/global/application.json#shared.review-policy; src/config/reviewExperience.ts; src/domain/reviewPolicy.ts"
+    }
+  ]
+}

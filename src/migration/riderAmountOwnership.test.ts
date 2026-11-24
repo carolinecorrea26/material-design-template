@@ -1,9 +1,10 @@
+// Historical normalization: assertions resolve the captured snapshot explicitly.
 import { beforeAll, expect, it } from "vitest";
 import { mcrSource } from "./mcr";
 import { createReviewedMigrationDatabase } from "./fixtures";
 import { consolidateRiderAmountOwnership } from "./riderAmountOwnership";
-import { resolveEffectiveSite } from "../domain/effectiveSite";
-import { resolvePrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotSite as resolveEffectiveSite } from "../domain/effectiveSite";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import { isSelectionPolicy, reconcileCoverageSelection } from "../domain/coverageSelectionPolicy";
 import { createLibraryDraft, editDraftRiders } from "../domain/libraryDraft";
 import { createSiteBuild } from "../domain/siteBuild";

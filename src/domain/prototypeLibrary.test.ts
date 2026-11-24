@@ -1,9 +1,10 @@
+// Historical captured-record regression; live source parity is tested by test:fresh-start.
 import { effectiveSiteSnapshotTables } from "../repositories/portalDataRepository";
 import { afterEach, describe, expect, it } from 'vitest';
 import { createReviewedMigrationDatabase } from '../migration/fixtures';
 import { migrationSiteKeys } from '../migration/fixtures';
-import { resolvePrototypeLibrary, installPrototypeLibrary, validatePrototypeEnvelope } from './prototypeLibrary';
-import { editDraftField, editDraftRates } from './libraryDraft';
+import { installPrototypeLibrary, validatePrototypeEnvelope } from "./prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "../migration/snapshotTestLibrary";
 import { getResolvedFieldsForSite } from '../config/fields/resolvedFieldRegistry';
 import { resolveReviewExperience } from '../config/reviewExperience';
 import { resolveRatePresentation } from './ratePresentation';
@@ -33,11 +34,19 @@ describe('persisted Library prototype cutover', () => {
   it('Library field and rate edits change the actual applicant resolvers with no catalog mutation', () => {
     const before = JSON.stringify(db);
     const draft = { formatVersion: 1 as const, siteKey: 'abe', baseRevision: `local:v1:sha256:${'a'.repeat(64)}`, editVersion: 0, data: db };
-    const edited = editDraftRates(editDraftField(draft, 'eligibility', 'birth-date', { label: 'Library cutover DOB', required: true }), { version: 1, praseConfigured: false, quoteToolEnabled: false, coverageQuoteEnabled: false }, 'li-term', null);
-    const installed = validatePrototypeEnvelope({ mode: 'mock', revision: 'saved-draft:1', payload: JSON.parse(JSON.stringify(edited)) }, 'abe');
+    const edited = { ...draft, data: structuredClone(draft.data) };
+    const key = 'captured.abe.birth-date-edit';
+    edited.data.siteFieldConfigurations.push({ ...edited.data.siteFieldConfigurations[0], id: key, key, scope: 'site', siteKey: 'abe', clientKey: null, pageKey: 'eligibility', fieldKey: 'birth-date', include: true, hidden: false, values: { label: 'Library cutover DOB', required: true }, position: 99999 });
+    const previous = resolvePrototypeLibrary(db, 'abe', 'before');
+    const rateKey = previous.site.configuration.ratePresentationPolicies[0].key;
+    const override = edited.data.configurationValues.find(row => row.scope === 'site' && row.siteKey === 'abe' && row.configurationKey === rateKey);
+    const value = { version: 1, praseConfigured: false, quoteToolEnabled: false, coverageQuoteEnabled: false };
+    if (override) override.value = value;
+    else edited.data.configurationValues.push({ ...edited.data.configurationValues[0], id: 'captured.abe.rates-edit', key: 'captured.abe.rates-edit', configurationKey: rateKey, scope: 'site', siteKey: 'abe', clientKey: null, value, position: 99999 });
+    const installed = resolvePrototypeLibrary(JSON.parse(JSON.stringify(edited.data)), 'abe', 'saved-draft:1');
     installPrototypeLibrary(installed);
     expect(getResolvedFieldsForSite('eligibility', 'abe').find(f => f.id === 'birth-date')).toMatchObject({ label: 'Library cutover DOB', required: true });
-    expect(resolveRatePresentation(resolvePrototypeLibrary(db, 'abe', 'before').site, 'li-term').coverageQuoteEnabled).toBe(true);
+    expect(resolveRatePresentation(previous.site, 'li-term').coverageQuoteEnabled).toBe(true);
     expect(resolveRatePresentation(installed.site, 'li-term').coverageQuoteEnabled).toBe(false);
     expect(JSON.stringify(db)).toBe(before);
     expect(() => validatePrototypeEnvelope({ mode: 'mock', revision: 'test', payload: edited }, 'ama')).toThrow();

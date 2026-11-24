@@ -1,3 +1,4 @@
+import navigation from '../../requirements/global/navigation.json';
 import type { PageId } from "../types";
 import type { ApplicationFormValues } from "../app/ApplicationFormContext";
 import { getResolvedFormFlow, shouldSkipPage } from "./formFlow";
@@ -9,53 +10,19 @@ export type ProgressStep = {
   pageIds: PageId[];
 };
 
-/** Pages that belong to the consolidated "Health" breadcrumb */
-export const HEALTH_PAGE_IDS: PageId[] = [
-  "health-si",
-  "health-li",
-  "health-qd",
-  "health-di",
-  "health-ci", "health-cir",
-];
+/** Structure is global JSON; wording resolves when read, after a revision is installed. */
+export const progressSteps: ProgressStep[] = navigation.progressSteps.map(step => ({
+  id: step.id,
+  get label() {
+    const value = getContent().navigation.progressStepLabels[step.id];
+    if (typeof value !== 'string' || !value.trim()) throw new Error(`Missing progress-step wording: ${step.id}`);
+    return value;
+  },
+  pageIds: step.pages as PageId[],
+}));
 
-export const progressSteps: ProgressStep[] = (() => {
-  const labels = getContent().navigation.progressStepLabels;
-  return [
-    {
-      id: "getting-started",
-      label: labels["getting-started"] ?? "Eligibility",
-      pageIds: ["membership", "eligibility"],
-    },
-    {
-      id: "coverage-options",
-      label: labels["coverage-options"] ?? "Coverage",
-      pageIds: ["coverage"],
-    },
-    {
-      id: "profile",
-      label: labels["profile"] ?? "Profile",
-      pageIds: ["beneficiary", "contact", "profile"],
-    },
-    {
-      id: "application-review",
-      label: labels["application-review"] ?? "Review",
-      pageIds: [
-        "review",
-        "health-si",
-        "health-li",
-        "health-qd",
-        "health-di",
-        "health-ci", "health-cir",
-        "payment",
-      ],
-    },
-    {
-      id: "esign-submit",
-      label: labels["esign-submit"] ?? "E-sign",
-      pageIds: ["docusign"],
-    },
-  ];
-})();
+/** Health consolidation uses the same global navigation placements. */
+export const HEALTH_PAGE_IDS = progressSteps.flatMap(step => step.pageIds).filter(page => page.startsWith('health-'));
 
 export function getProgressStepIndex(pageId: PageId) {
   return progressSteps.findIndex((step) => step.pageIds.includes(pageId));

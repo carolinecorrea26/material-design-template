@@ -10,6 +10,7 @@ vi.mock('../app/ApplicationSessionContext', () => ({ useApplicationSession: () =
 vi.mock('../app/SinglePageFlowContext', () => ({ useSinglePageFlow: () => null }));
 // This integration checks the handoff and real form navigation; questionnaire
 // validation is covered by Profile's field/collection tests.
+vi.mock('../domain/profileValidation', () => ({ validateProfile: () => undefined }));
 vi.mock('../config/clientFields/getClientPageFields', () => ({ getClientPageFields: () => [] }));
 vi.mock('../config/pageSections', async original => ({ ...await original<typeof import('../config/pageSections')>(), getPageSections: () => [] }));
 vi.mock('../config/client/getActiveClientCoverages', async original => ({ ...await original<typeof import('../config/client/getActiveClientCoverages')>(), getActiveClientCoverages: () => [] }));

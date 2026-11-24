@@ -34,11 +34,11 @@ describe("implemented field inventory", () => {
     for (const [id,key] of [["child-first-name","child-first-name"],["child-last-name","child-last-name"],["child-birth-date","child-birth-date"],["child-gender","child-gender"]]) {
       expect(rows.find(r=>r.pageId==="eligibility" && r.field.id===id)?.storage).toBe(`children[].${key}`);
     }
-    for (const page of ["health-si","health-li","health-di"] as const) {
+    for (const page of ["health-si","health-tele","health-di-supp"] as const) {
       const available=products.some(p=>coverageUnlocksPage(page,p));
       const answers=rows.filter(r=>r.pageId===page && r.area==="self");
-      expect(answers.length,`${siteId} ${page}`).toBe(available ? (page==="health-si" ? siAnswers("self") : page==="health-li" ? createQuestionFields("self") : diAnswers("self")).length : 0);
-      if (available && page==="health-di") for (const question of QUESTIONS) for (const field of question.mapping.fields) expect(rows.some(r=>r.storage===`health-di-${question.key}-details[].${field.id}`)).toBe(true);
+      expect(answers.length,`${siteId} ${page}`).toBe(available ? (page==="health-si" ? siAnswers("self") : page==="health-tele" ? createQuestionFields("self") : diAnswers("self")).length : 0);
+      if (available && page==="health-di-supp") for (const question of QUESTIONS) for (const field of question.mapping.fields) expect(rows.some(r=>r.storage===`health-di-${question.key}-details[].${field.id}`)).toBe(true);
     }
     for (const page of ["payment","beneficiary"] as const) {
       const requirement=getClientPageRequirement(page,client);

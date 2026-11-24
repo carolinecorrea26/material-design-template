@@ -1,3 +1,4 @@
+import { resolveMappedFields } from '../../domain/requirementFields';
 import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import ControlledFieldRenderer from './ControlledFieldRenderer';
@@ -7,6 +8,6 @@ const meta = { id: "forms-controlled-field-adapter",
 export default meta;
 function Demo() {
   const [value, setValue] = useState<string | boolean | string[]>('');
-  return <ControlledFieldRenderer field={{ id: 'controlled-example', label: 'First name', inputType: 'text' }} value={value} onChange={setValue} />;
+  return <ControlledFieldRenderer field={resolveMappedFields({ component: 'membership' }).find(field => field.id === 'first-name')!} value={value} onChange={setValue} />;
 }
 export const Default: StoryObj = { render: () => <Demo /> };

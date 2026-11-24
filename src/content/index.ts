@@ -20,7 +20,6 @@ import {
   pagesDefaults,
   beneficiaryDefaults,
   dialogsDefaults,
-  statusMessagesDefaults,
 } from "./defaults";
 import { siteContentOverrides } from "./clients";
 
@@ -114,10 +113,7 @@ export function buildContent(siteId: SiteId): SiteContent {
       dialogsDefaults,
       overrides?.dialogs as DeepPartial<typeof dialogsDefaults>,
     ),
-    statusMessages: deepMerge(
-      statusMessagesDefaults,
-      overrides?.statusMessages as DeepPartial<typeof statusMessagesDefaults>,
-    ),
+
   };
 }
 
@@ -149,6 +145,12 @@ export function getContent(): SiteContent {
  * - {{clientAcronym}} - Active client's acronym
  * - {{associationName}} - Active canonical Association, falling back to Client name
  */
+export function resolveBrandingTemplate(template: string, branding: { name: string; acronym?: string }, associationName = branding.name): string {
+  return template.replace(/\{\{clientName\}\}/g, branding.name)
+    .replace(/\{\{clientAcronym\}\}/g, branding.acronym ?? branding.name)
+    .replace(/\{\{associationName\}\}/g, associationName);
+}
+
 export function resolveTemplate(
   template: string,
   associationId?: AssociationId | null,
@@ -160,10 +162,7 @@ export function resolveTemplate(
         (candidate) => candidate.id === associationId,
       )
     : undefined;
-  return template
-    .replace(/\{\{clientName\}\}/g, client.name)
-    .replace(/\{\{clientAcronym\}\}/g, client.acronym)
-    .replace(/\{\{associationName\}\}/g, association?.name ?? client.name);
+  return resolveBrandingTemplate(template, client, association?.name ?? client.name);
 }
 
 /** Temporary adapter for Storybook/design previews that still supply a legacy config ID. */

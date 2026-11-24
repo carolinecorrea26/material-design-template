@@ -54,7 +54,7 @@ export default function ValidationLibrary({ siteKey }: { siteKey: string }) {
   rows.push(...requirementsFieldValidationRows(usages));
   const authoredPageRows = pages.flatMap(page => requirementPageValidations(page).map(definition => ({
     id: `requirements:page:${page}:${definition.id}`, page, field: null, label: 'Page', level: 'Page',
-    rule: definition.name, message: requirementValidationMessage(definition.id), when: definition.statement, required: null,
+    rule: definition.name, message: definition.message ? requirementValidationMessage(definition.id) : "Determined by the effective product policy.", when: definition.statement, required: null,
   })));
   rows.push(...authoredPageRows);
   const authoredPages = new Set(authoredPageRows.map(row => row.page));

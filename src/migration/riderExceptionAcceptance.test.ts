@@ -1,6 +1,7 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import { describe, expect, it } from "vitest";
 import { createReviewedMigrationDatabase } from "./fixtures";
-import { resolveEffectiveSite } from "../domain/effectiveSite";
+import { resolveSnapshotTestLibrary } from "./snapshotTestLibrary";
 import { resolveCoverageJourneyPolicy } from "../domain/coverageJourneyPolicy";
 import { isSelectionPolicy, reconcileCoverageSelection } from "../domain/coverageSelectionPolicy";
 import { createCoverageJourneyFixture } from "./coverageJourneyExceptionAcceptance";
@@ -11,7 +12,7 @@ describe("retained rider exception contracts after persistence", () => {
   it("accepts each applicable retained rider, cleans stale choices, and emits captured codes", async () => {
     let checked = 0;
     for (const row of db.sites) {
-      const site = resolveEffectiveSite(db, row.key);
+      const site = resolveSnapshotTestLibrary(db, row.key, "rider-exceptions").site;
       for (const product of site.configuration.products) {
         const policy = resolveCoverageJourneyPolicy(site, product.productKey)!;
         const selection = product.selectionPolicies[0].value;

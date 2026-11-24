@@ -1,0 +1,22 @@
+{
+  "senderEmail": "gmad_tpa_portal@ntlab.newyorklife.com",
+  "resumeDisplayDomain": "nylinsure.com",
+  "receiptConfirmationNumber": "CONF-2026-001234",
+  "timelines": {
+    "autosave": {
+      "savedDaysAgo": 0
+    },
+    "pending": {
+      "savedDaysAgo": 3
+    },
+    "advisor": {
+      "savedDaysAgo": 3,
+      "sentDaysAgo": 2,
+      "editRequestedDaysAgo": 1
+    },
+    "deleted": {
+      "deletedDaysAgo": 0,
+      "sentAfterSaveDays": 1
+    }
+  }
+}

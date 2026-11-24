@@ -1,0 +1,50 @@
+{
+  "site": "csea",
+  "assignments": [
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "di-ltd",
+      "applicants": [
+        "member"
+      ],
+      "value": 17,
+      "source": "docs/step3-provisional-decisions.md"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "di-ltd",
+      "applicants": [
+        "member"
+      ],
+      "value": 65,
+      "source": "docs/step3-provisional-decisions.md"
+    },
+    {
+      "configuration": "coverage-minimum-work-hours",
+      "product": "di-ltd",
+      "applicants": [
+        "member"
+      ],
+      "value": 40,
+      "source": "docs/step3-provisional-decisions.md"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-add",
+      "applicants": [
+        "member"
+      ],
+      "value": 18,
+      "source": "docs/archive/step3-journey-adoption.md"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-add",
+      "applicants": [
+        "member"
+      ],
+      "value": 64,
+      "source": "docs/archive/step3-journey-adoption.md"
+    }
+  ]
+}

@@ -145,7 +145,7 @@
     {
       "table": "amountBands",
       "file": "public/catalog/rules/rules.json",
-      "rowCount": 518,
+      "rowCount": 473,
       "rowType": "AmountBands",
       "properties": [
         {
@@ -274,7 +274,7 @@
     {
       "table": "amountOptions",
       "file": "public/catalog/rules/rules.json",
-      "rowCount": 169,
+      "rowCount": 172,
       "rowType": "AmountOptions",
       "properties": [
         {
@@ -1264,7 +1264,7 @@
     {
       "table": "benefitPeriodOptions",
       "file": "public/catalog/rules/rules.json",
-      "rowCount": 47,
+      "rowCount": 49,
       "rowType": "BenefitPeriodOptions",
       "properties": [
         {
@@ -1415,7 +1415,7 @@
     {
       "table": "brandingProfiles",
       "file": "public/catalog/configurations/themes.json",
-      "rowCount": 10,
+      "rowCount": 16,
       "rowType": "BrandingProfileRow",
       "properties": [
         {
@@ -1737,7 +1737,7 @@
     {
       "table": "components",
       "file": "public/catalog/components/components.json",
-      "rowCount": 111,
+      "rowCount": 110,
       "rowType": "ComponentRow",
       "properties": [
         {
@@ -1777,7 +1777,7 @@
           "name": "definition",
           "required": true,
           "nullable": false,
-          "type": "{ name: string; description: string; section: string; storyId: string; storybookPath: string; source: string; role: import(\"src/persistence/types\").ComponentRole; contains: string[]; parts: import(\"src/persistence/types\").ComponentPart[]; packageImport?: { module: string; symbol: string; }; usages?: import(\"src/persistence/types\").ComponentUsage[]; examples?: { label: string; storyId: string; section: string; pageKey?: string; position?: number; }[]; }",
+          "type": "{ name: string; displayName?: string; description: string; section: string; storyId: string; storybookPath: string; source: string; role: import(\"src/persistence/types\").ComponentRole; contains: string[]; parts: import(\"src/persistence/types\").ComponentPart[]; packageImport?: { module: string; symbol: string; }; usages?: import(\"src/persistence/types\").ComponentUsage[]; examples?: { key?: string; label: string; storyId: string; section: string; pageKey?: string; position?: number; }[]; }",
           "description": "Typed definition payload. Follow the linked TypeScript declarations for nested properties.",
           "declaration": {
             "file": "src/persistence/types/catalog.ts",
@@ -1795,6 +1795,17 @@
               "required": true,
               "nullable": false,
               "type": "string",
+              "description": "See the property declaration and owning domain contract.",
+              "declaration": {
+                "file": "src/persistence/types/library.ts",
+                "line": 24
+              }
+            },
+            {
+              "name": "displayName",
+              "required": false,
+              "nullable": false,
+              "type": "string | undefined",
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/persistence/types/library.ts",
@@ -2041,7 +2052,7 @@
               "name": "examples",
               "required": false,
               "nullable": false,
-              "type": "{ label: string; storyId: string; section: string; pageKey?: string; position?: number; }[] | undefined",
+              "type": "{ key?: string; label: string; storyId: string; section: string; pageKey?: string; position?: number; }[] | undefined",
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/persistence/types/library.ts",
@@ -2126,7 +2137,7 @@
     {
       "table": "conditions",
       "file": "public/catalog/rules/rules.json",
-      "rowCount": 29,
+      "rowCount": 78,
       "rowType": "ConditionRow",
       "properties": [
         {
@@ -2290,7 +2301,7 @@
     {
       "table": "configurationDefinitions",
       "file": "public/catalog/configurations/configurations.json",
-      "rowCount": 928,
+      "rowCount": 553,
       "rowType": "ConfigurationDefinitionRow",
       "properties": [
         {
@@ -2460,7 +2471,7 @@
     {
       "table": "configurationValues",
       "file": "public/catalog/configurations/configurations.json",
-      "rowCount": 1016,
+      "rowCount": 1184,
       "rowType": "ConfigurationValueRow",
       "properties": [
         {
@@ -2589,7 +2600,7 @@
     {
       "table": "contentEntries",
       "file": "public/catalog/content/content.json",
-      "rowCount": 708,
+      "rowCount": 862,
       "rowType": "ContentEntryRow",
       "properties": [
         {
@@ -2629,7 +2640,7 @@
           "name": "definition",
           "required": true,
           "nullable": false,
-          "type": "{ path: string[] | null; }",
+          "type": "{ path: string[] | null; sourceKey?: string; }",
           "description": "Typed definition payload. Follow the linked TypeScript declarations for nested properties.",
           "declaration": {
             "file": "src/persistence/types/catalog.ts",
@@ -2690,6 +2701,17 @@
                   "line": 19
                 }
               ]
+            },
+            {
+              "name": "sourceKey",
+              "required": false,
+              "nullable": false,
+              "type": "string | undefined",
+              "description": "See the property declaration and owning domain contract.",
+              "declaration": {
+                "file": "src/persistence/types/content.ts",
+                "line": 39
+              }
             }
           ]
         },
@@ -2731,7 +2753,7 @@
     {
       "table": "contentValues",
       "file": "public/catalog/content/content.json",
-      "rowCount": 719,
+      "rowCount": 9467,
       "rowType": "ContentValueRow",
       "properties": [
         {
@@ -2860,7 +2882,7 @@
     {
       "table": "coverageAmountPatterns",
       "file": "public/catalog/rules/rules.json",
-      "rowCount": 1113,
+      "rowCount": 1070,
       "rowType": "CoverageAmountPatterns",
       "properties": [
         {
@@ -3606,7 +3628,7 @@
     {
       "table": "eligibilityConstraints",
       "file": "public/catalog/rules/rules.json",
-      "rowCount": 759,
+      "rowCount": 713,
       "rowType": "EligibilityConstraints",
       "properties": [
         {
@@ -3757,7 +3779,7 @@
     {
       "table": "emailTemplates",
       "file": "public/catalog/content/emails.json",
-      "rowCount": 10,
+      "rowCount": 12,
       "rowType": "EmailTemplateRow",
       "properties": [
         {
@@ -3797,7 +3819,7 @@
           "name": "definition",
           "required": true,
           "nullable": false,
-          "type": "{ rendererKey: string; source: string; }",
+          "type": "{ rendererKey: string; source: string; supportComponent?: string; }",
           "description": "Typed definition payload. Follow the linked TypeScript declarations for nested properties.",
           "declaration": {
             "file": "src/persistence/types/catalog.ts",
@@ -3826,6 +3848,17 @@
               "required": true,
               "nullable": false,
               "type": "string",
+              "description": "See the property declaration and owning domain contract.",
+              "declaration": {
+                "file": "src/persistence/types/content.ts",
+                "line": 40
+              }
+            },
+            {
+              "name": "supportComponent",
+              "required": false,
+              "nullable": false,
+              "type": "string | undefined",
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/persistence/types/content.ts",
@@ -3998,7 +4031,7 @@
     {
       "table": "fields",
       "file": "public/catalog/fields/fields.json",
-      "rowCount": 520,
+      "rowCount": 563,
       "rowType": "FieldRow",
       "properties": [
         {
@@ -4047,7 +4080,7 @@
           "typeDeclarations": [
             {
               "file": "src/domain/fields.ts",
-              "line": 216
+              "line": 219
             }
           ],
           "properties": [
@@ -4059,7 +4092,57 @@
               "description": "Stored row identity. Preserve existing values.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 217
+                "line": 220
+              }
+            },
+            {
+              "name": "configuration",
+              "required": false,
+              "nullable": false,
+              "type": "string | undefined",
+              "description": "Selected configuration of this shared field, when it has variants.",
+              "declaration": {
+                "file": "src/domain/fields.ts",
+                "line": 222
+              }
+            },
+            {
+              "name": "configurations",
+              "required": false,
+              "nullable": false,
+              "type": "Record<string, { inputType: FieldInputType; label: string; placeholder?: string; labelVariant?: \"floating\" | \"standard\"; options?: FieldOption[]; optionSource?: string; optionOutcome?: string; }> | undefined",
+              "description": "Supported shared variants, projected from the field's authored configurations.",
+              "declaration": {
+                "file": "src/domain/fields.ts",
+                "line": 224
+              },
+              "typeDeclarations": [
+                {
+                  "file": "node_modules/typescript/lib/lib.es5.d.ts",
+                  "line": 1613
+                }
+              ]
+            },
+            {
+              "name": "optionSource",
+              "required": false,
+              "nullable": false,
+              "type": "string | undefined",
+              "description": "See the property declaration and owning domain contract.",
+              "declaration": {
+                "file": "src/domain/fields.ts",
+                "line": 225
+              }
+            },
+            {
+              "name": "optionOutcome",
+              "required": false,
+              "nullable": false,
+              "type": "string | undefined",
+              "description": "See the property declaration and owning domain contract.",
+              "declaration": {
+                "file": "src/domain/fields.ts",
+                "line": 226
               }
             },
             {
@@ -4070,7 +4153,7 @@
               "description": "Stable catalog name, separate from applicant-facing input copy.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 219
+                "line": 228
               }
             },
             {
@@ -4081,7 +4164,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 220
+                "line": 229
               }
             },
             {
@@ -4092,7 +4175,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 221
+                "line": 230
               }
             },
             {
@@ -4103,7 +4186,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 222
+                "line": 231
               }
             },
             {
@@ -4114,12 +4197,12 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 223
+                "line": 232
               },
               "typeDeclarations": [
                 {
                   "file": "src/domain/fields.ts",
-                  "line": 14
+                  "line": 16
                 }
               ]
             },
@@ -4131,7 +4214,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 224
+                "line": 233
               }
             },
             {
@@ -4142,7 +4225,7 @@
               "description": "Optional authored limit, measured in unformatted characters.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 226
+                "line": 235
               }
             },
             {
@@ -4153,8 +4236,162 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 227
+                "line": 236
               }
+            },
+            {
+              "name": "minimum",
+              "required": false,
+              "nullable": false,
+              "type": "number | undefined",
+              "description": "See the property declaration and owning domain contract.",
+              "declaration": {
+                "file": "src/domain/fields.ts",
+                "line": 237
+              }
+            },
+            {
+              "name": "maximum",
+              "required": false,
+              "nullable": false,
+              "type": "number | undefined",
+              "description": "See the property declaration and owning domain contract.",
+              "declaration": {
+                "file": "src/domain/fields.ts",
+                "line": 238
+              }
+            },
+            {
+              "name": "underwritingVariants",
+              "required": false,
+              "nullable": false,
+              "type": "Partial<Record<\"default\" | \"QD\", { label?: string; hidden?: boolean; }>> | undefined",
+              "description": "See the property declaration and owning domain contract.",
+              "declaration": {
+                "file": "src/domain/fields.ts",
+                "line": 239
+              },
+              "typeDeclarations": [
+                {
+                  "file": "node_modules/typescript/lib/lib.es5.d.ts",
+                  "line": 1585
+                }
+              ]
+            },
+            {
+              "name": "coverageCategories",
+              "required": false,
+              "nullable": false,
+              "type": "string[] | undefined",
+              "description": "See the property declaration and owning domain contract.",
+              "declaration": {
+                "file": "src/domain/fields.ts",
+                "line": 240
+              },
+              "typeDeclarations": [
+                {
+                  "file": "node_modules/typescript/lib/lib.es5.d.ts",
+                  "line": 1325
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es5.d.ts",
+                  "line": 1524
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.core.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.iterable.d.ts",
+                  "line": 76
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts",
+                  "line": 92
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2016.array.include.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2019.array.d.ts",
+                  "line": 53
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2022.array.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2023.array.d.ts",
+                  "line": 19
+                }
+              ]
+            },
+            {
+              "name": "optionalForProducts",
+              "required": false,
+              "nullable": false,
+              "type": "string[] | undefined",
+              "description": "Optional only when every active election for this person is listed.",
+              "declaration": {
+                "file": "src/domain/fields.ts",
+                "line": 242
+              },
+              "typeDeclarations": [
+                {
+                  "file": "node_modules/typescript/lib/lib.es5.d.ts",
+                  "line": 1325
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es5.d.ts",
+                  "line": 1524
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.core.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.iterable.d.ts",
+                  "line": 76
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts",
+                  "line": 92
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2016.array.include.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2019.array.d.ts",
+                  "line": 53
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2022.array.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2023.array.d.ts",
+                  "line": 19
+                }
+              ]
+            },
+            {
+              "name": "helperTextWhen",
+              "required": false,
+              "nullable": false,
+              "type": "{ values: string[]; text: string; marker?: string; } | undefined",
+              "description": "See the property declaration and owning domain contract.",
+              "declaration": {
+                "file": "src/domain/fields.ts",
+                "line": 243
+              },
+              "typeDeclarations": [
+                {
+                  "file": "src/domain/fields.ts",
+                  "line": 243
+                }
+              ]
             },
             {
               "name": "allowDecimal",
@@ -4164,7 +4401,7 @@
               "description": "Permit fractional numeric facts, such as years of employment.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 229
+                "line": 245
               }
             },
             {
@@ -4175,7 +4412,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 230
+                "line": 246
               }
             },
             {
@@ -4186,7 +4423,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 231
+                "line": 247
               }
             },
             {
@@ -4197,7 +4434,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 232
+                "line": 248
               },
               "typeDeclarations": [
                 {
@@ -4246,7 +4483,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 233
+                "line": 249
               },
               "typeDeclarations": [
                 {
@@ -4295,7 +4532,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 234
+                "line": 250
               }
             },
             {
@@ -4306,18 +4543,18 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 235
+                "line": 251
               }
             },
             {
               "name": "format",
               "required": false,
               "nullable": false,
-              "type": "\"percent\" | \"email\" | \"phone\" | \"ssn\" | \"currency\" | \"month-year\" | \"digits\" | \"postal-code\" | undefined",
+              "type": "\"percent\" | \"email\" | \"phone\" | \"ssn\" | \"currency\" | \"month-year\" | \"digits\" | \"postal-code\" | \"alphanumeric\" | undefined",
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 236
+                "line": 252
               }
             },
             {
@@ -4328,7 +4565,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 237
+                "line": 253
               }
             },
             {
@@ -4339,7 +4576,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 238
+                "line": 254
               }
             },
             {
@@ -4350,7 +4587,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 239
+                "line": 255
               }
             },
             {
@@ -4361,7 +4598,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 240
+                "line": 256
               }
             },
             {
@@ -4372,7 +4609,7 @@
               "description": "Override the companion field ID (default: \"<number-field-id>-type\"); distinct answers must not share it",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 242
+                "line": 258
               }
             },
             {
@@ -4383,7 +4620,7 @@
               "description": "Whether to show the companion phone type selector (default: true)",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 244
+                "line": 260
               }
             },
             {
@@ -4394,8 +4631,57 @@
               "description": "Canonical executable visibility source for any configurable field.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 246
+                "line": 262
               }
+            },
+            {
+              "name": "visibilityDependencies",
+              "required": false,
+              "nullable": false,
+              "type": "string[] | undefined",
+              "description": "Same-page questions that must remain visible before this follow-up can participate.",
+              "declaration": {
+                "file": "src/domain/fields.ts",
+                "line": 264
+              },
+              "typeDeclarations": [
+                {
+                  "file": "node_modules/typescript/lib/lib.es5.d.ts",
+                  "line": 1325
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es5.d.ts",
+                  "line": 1524
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.core.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.iterable.d.ts",
+                  "line": 76
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts",
+                  "line": 92
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2016.array.include.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2019.array.d.ts",
+                  "line": 53
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2022.array.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2023.array.d.ts",
+                  "line": 19
+                }
+              ]
             }
           ]
         },
@@ -4931,7 +5217,7 @@
     {
       "table": "flows",
       "file": "public/catalog/flows/flows.json",
-      "rowCount": 8,
+      "rowCount": 7,
       "rowType": "FlowRow",
       "properties": [
         {
@@ -4992,7 +5278,7 @@
               "description": "Stored row identity. Preserve existing values.",
               "declaration": {
                 "file": "src/domain/flows.ts",
-                "line": 48
+                "line": 61
               },
               "typeDeclarations": [
                 {
@@ -5009,7 +5295,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/flows.ts",
-                "line": 49
+                "line": 62
               }
             },
             {
@@ -5020,7 +5306,7 @@
               "description": "Framing prose, rendered once above the diagram.",
               "declaration": {
                 "file": "src/domain/flows.ts",
-                "line": 51
+                "line": 64
               }
             }
           ]
@@ -5063,7 +5349,7 @@
     {
       "table": "flowSteps",
       "file": "public/catalog/flows/flows.json",
-      "rowCount": 74,
+      "rowCount": 89,
       "rowType": "FlowStepRow",
       "properties": [
         {
@@ -5181,7 +5467,7 @@
               "name": "pageId",
               "required": false,
               "nullable": false,
-              "type": "\"resume\" | \"home\" | \"membership\" | \"eligibility\" | \"coverage\" | \"beneficiary\" | \"contact\" | \"profile\" | \"review\" | \"docusign\" | \"health-si\" | \"health-li\" | \"health-qd\" | \"health-di\" | \"health-ci\" | \"health-cir\" | \"payment\" | \"receipt\" | \"resume-method\" | \"resume-code\" | \"error-404\" | \"error-500\" | \"session-expired\" | \"technical-error\" | \"maintenance\" | \"application-unavailable\" | \"outcome-unknown\" | \"advisor-login\" | \"advisor-send-confirmation\" | \"application-edit-confirmation\" | \"mock-email-preview\" | \"site-features\" | \"site-details\" | \"design-system\" | \"portal-admin\" | \"cms\" | \"portal-template-project\" | \"portal-requirements-project\" | undefined",
+              "type": "\"payment\" | \"beneficiary\" | \"resume\" | \"home\" | \"membership\" | \"eligibility\" | \"coverage\" | \"contact\" | \"profile\" | \"review\" | \"docusign\" | \"health-si\" | \"health-tele\" | \"health-qd\" | \"health-di-supp\" | \"health-cir\" | \"receipt\" | \"resume-method\" | \"resume-code\" | \"error-400\" | \"error-404\" | \"error-500\" | \"session-expired\" | \"technical-error\" | \"maintenance\" | \"advisor-login\" | \"advisor-send-confirmation\" | \"application-edit-confirmation\" | \"mock-email-preview\" | \"site-features\" | \"site-details\" | \"design-system\" | \"portal-admin\" | \"cms\" | \"portal-template-project\" | \"portal-requirements-project\" | undefined",
               "description": "Only present when kind === \"page\" — the real page this node represents.",
               "declaration": {
                 "file": "src/domain/flows.ts",
@@ -5192,12 +5478,290 @@
               "name": "pageGroupId",
               "required": false,
               "nullable": false,
-              "type": "\"get-started\" | \"coverage\" | \"profile\" | \"review\" | \"health\" | \"payment\" | undefined",
+              "type": "\"payment\" | \"get-started\" | \"coverage\" | \"profile\" | \"review\" | \"health\" | undefined",
               "description": "A summary of the enabled saved pages in this group; never expands the graph.",
               "declaration": {
                 "file": "src/domain/flows.ts",
                 "line": 30
               }
+            },
+            {
+              "name": "emailTemplateKeys",
+              "required": false,
+              "nullable": false,
+              "type": "string[] | undefined",
+              "description": "Canonical email and rule references for auditing the authored graph.",
+              "declaration": {
+                "file": "src/domain/flows.ts",
+                "line": 32
+              },
+              "typeDeclarations": [
+                {
+                  "file": "node_modules/typescript/lib/lib.es5.d.ts",
+                  "line": 1325
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es5.d.ts",
+                  "line": 1524
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.core.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.iterable.d.ts",
+                  "line": 76
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts",
+                  "line": 92
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2016.array.include.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2019.array.d.ts",
+                  "line": 53
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2022.array.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2023.array.d.ts",
+                  "line": 19
+                }
+              ]
+            },
+            {
+              "name": "emailRecipient",
+              "required": false,
+              "nullable": false,
+              "type": "\"Advisor\" | \"Applicant\" | undefined",
+              "description": "Actor context when a shared email is used by more than one recipient role.",
+              "declaration": {
+                "file": "src/domain/flows.ts",
+                "line": 34
+              }
+            },
+            {
+              "name": "componentKey",
+              "required": false,
+              "nullable": false,
+              "type": "string | undefined",
+              "description": "Canonical shared UI for a dialog/drawer step. Pages retain pageId.",
+              "declaration": {
+                "file": "src/domain/flows.ts",
+                "line": 36
+              }
+            },
+            {
+              "name": "componentExampleKey",
+              "required": false,
+              "nullable": false,
+              "type": "string | undefined",
+              "description": "See the property declaration and owning domain contract.",
+              "declaration": {
+                "file": "src/domain/flows.ts",
+                "line": 37
+              }
+            },
+            {
+              "name": "ruleKeys",
+              "required": false,
+              "nullable": false,
+              "type": "string[] | undefined",
+              "description": "See the property declaration and owning domain contract.",
+              "declaration": {
+                "file": "src/domain/flows.ts",
+                "line": 38
+              },
+              "typeDeclarations": [
+                {
+                  "file": "node_modules/typescript/lib/lib.es5.d.ts",
+                  "line": 1325
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es5.d.ts",
+                  "line": 1524
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.core.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.iterable.d.ts",
+                  "line": 76
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts",
+                  "line": 92
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2016.array.include.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2019.array.d.ts",
+                  "line": 53
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2022.array.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2023.array.d.ts",
+                  "line": 19
+                }
+              ]
+            },
+            {
+              "name": "workflowKeys",
+              "required": false,
+              "nullable": false,
+              "type": "string[] | undefined",
+              "description": "See the property declaration and owning domain contract.",
+              "declaration": {
+                "file": "src/domain/flows.ts",
+                "line": 39
+              },
+              "typeDeclarations": [
+                {
+                  "file": "node_modules/typescript/lib/lib.es5.d.ts",
+                  "line": 1325
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es5.d.ts",
+                  "line": 1524
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.core.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.iterable.d.ts",
+                  "line": 76
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts",
+                  "line": 92
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2016.array.include.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2019.array.d.ts",
+                  "line": 53
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2022.array.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2023.array.d.ts",
+                  "line": 19
+                }
+              ]
+            },
+            {
+              "name": "flowIds",
+              "required": false,
+              "nullable": false,
+              "type": "FlowId[] | undefined",
+              "description": "Shared subflows are linked rather than copied into each caller's graph.",
+              "declaration": {
+                "file": "src/domain/flows.ts",
+                "line": 41
+              },
+              "typeDeclarations": [
+                {
+                  "file": "node_modules/typescript/lib/lib.es5.d.ts",
+                  "line": 1325
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es5.d.ts",
+                  "line": 1524
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.core.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.iterable.d.ts",
+                  "line": 76
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts",
+                  "line": 92
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2016.array.include.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2019.array.d.ts",
+                  "line": 53
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2022.array.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2023.array.d.ts",
+                  "line": 19
+                }
+              ]
+            },
+            {
+              "name": "configurationPaths",
+              "required": false,
+              "nullable": false,
+              "type": "string[] | undefined",
+              "description": "Links to existing definitions; effective values are resolved, never copied into graphs.",
+              "declaration": {
+                "file": "src/domain/flows.ts",
+                "line": 43
+              },
+              "typeDeclarations": [
+                {
+                  "file": "node_modules/typescript/lib/lib.es5.d.ts",
+                  "line": 1325
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es5.d.ts",
+                  "line": 1524
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.core.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.iterable.d.ts",
+                  "line": 76
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts",
+                  "line": 92
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2016.array.include.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2019.array.d.ts",
+                  "line": 53
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2022.array.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2023.array.d.ts",
+                  "line": 19
+                }
+              ]
             }
           ]
         },
@@ -5239,7 +5803,7 @@
     {
       "table": "flowTransitions",
       "file": "public/catalog/flows/flows.json",
-      "rowCount": 77,
+      "rowCount": 123,
       "rowType": "FlowTransitionRow",
       "properties": [
         {
@@ -5321,7 +5885,7 @@
           "typeDeclarations": [
             {
               "file": "src/domain/flows.ts",
-              "line": 38
+              "line": 51
             }
           ],
           "properties": [
@@ -5333,7 +5897,7 @@
               "description": "Stored row identity. Preserve existing values.",
               "declaration": {
                 "file": "src/domain/flows.ts",
-                "line": 39
+                "line": 52
               }
             },
             {
@@ -5344,7 +5908,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/flows.ts",
-                "line": 40
+                "line": 53
               }
             },
             {
@@ -5355,7 +5919,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/flows.ts",
-                "line": 41
+                "line": 54
               }
             },
             {
@@ -5366,7 +5930,7 @@
               "description": "Branch label, e.g. \"Send\", \"Cancel\", \"Text code\", \"Unsuccessful\". Undefined for unconditional edges.",
               "declaration": {
                 "file": "src/domain/flows.ts",
-                "line": 43
+                "line": 56
               }
             },
             {
@@ -5377,12 +5941,12 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/flows.ts",
-                "line": 44
+                "line": 57
               },
               "typeDeclarations": [
                 {
                   "file": "src/domain/flows.ts",
-                  "line": 33
+                  "line": 46
                 }
               ]
             }
@@ -5882,7 +6446,7 @@
     {
       "table": "pageFields",
       "file": "public/catalog/fields/fields.json",
-      "rowCount": 199,
+      "rowCount": 226,
       "rowType": "PageFieldRow",
       "properties": [
         {
@@ -5978,7 +6542,7 @@
     {
       "table": "pages",
       "file": "public/catalog/pages/pages.json",
-      "rowCount": 38,
+      "rowCount": 36,
       "rowType": "PageRow",
       "properties": [
         {
@@ -6026,14 +6590,80 @@
           },
           "properties": [
             {
+              "name": "legalSections",
+              "required": false,
+              "nullable": false,
+              "type": "Record<string, { maxHeight: number | null; }> | undefined",
+              "description": "See the property declaration and owning domain contract.",
+              "declaration": {
+                "file": "src/domain/pages.ts",
+                "line": 7
+              },
+              "typeDeclarations": [
+                {
+                  "file": "node_modules/typescript/lib/lib.es5.d.ts",
+                  "line": 1613
+                }
+              ]
+            },
+            {
+              "name": "help",
+              "required": false,
+              "nullable": false,
+              "type": "PageHelpDefinition[] | undefined",
+              "description": "See the property declaration and owning domain contract.",
+              "declaration": {
+                "file": "src/domain/pages.ts",
+                "line": 7
+              },
+              "typeDeclarations": [
+                {
+                  "file": "node_modules/typescript/lib/lib.es5.d.ts",
+                  "line": 1325
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es5.d.ts",
+                  "line": 1524
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.core.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.iterable.d.ts",
+                  "line": 76
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts",
+                  "line": 92
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2016.array.include.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2019.array.d.ts",
+                  "line": 53
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2022.array.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2023.array.d.ts",
+                  "line": 19
+                }
+              ]
+            },
+            {
               "name": "id",
               "required": true,
               "nullable": false,
-              "type": "\"resume\" | \"home\" | \"membership\" | \"eligibility\" | \"coverage\" | \"beneficiary\" | \"contact\" | \"profile\" | \"review\" | \"docusign\" | \"health-si\" | \"health-li\" | \"health-qd\" | \"health-di\" | \"health-ci\" | \"health-cir\" | \"payment\" | \"receipt\" | \"resume-method\" | \"resume-code\" | \"error-404\" | \"error-500\" | \"session-expired\" | \"technical-error\" | \"maintenance\" | \"application-unavailable\" | \"outcome-unknown\" | \"advisor-login\" | \"advisor-send-confirmation\" | \"application-edit-confirmation\" | \"mock-email-preview\" | \"site-features\" | \"site-details\" | \"design-system\" | \"portal-admin\" | \"cms\" | \"portal-template-project\" | \"portal-requirements-project\"",
+              "type": "\"payment\" | \"beneficiary\" | \"resume\" | \"home\" | \"membership\" | \"eligibility\" | \"coverage\" | \"contact\" | \"profile\" | \"review\" | \"docusign\" | \"health-si\" | \"health-tele\" | \"health-qd\" | \"health-di-supp\" | \"health-cir\" | \"receipt\" | \"resume-method\" | \"resume-code\" | \"error-400\" | \"error-404\" | \"error-500\" | \"session-expired\" | \"technical-error\" | \"maintenance\" | \"advisor-login\" | \"advisor-send-confirmation\" | \"application-edit-confirmation\" | \"mock-email-preview\" | \"site-features\" | \"site-details\" | \"design-system\" | \"portal-admin\" | \"cms\" | \"portal-template-project\" | \"portal-requirements-project\"",
               "description": "Stored row identity. Preserve existing values.",
               "declaration": {
                 "file": "src/domain/pages.ts",
-                "line": 6
+                "line": 7
               }
             },
             {
@@ -6044,7 +6674,18 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/pages.ts",
-                "line": 6
+                "line": 7
+              }
+            },
+            {
+              "name": "saveProgress",
+              "required": false,
+              "nullable": false,
+              "type": "boolean | undefined",
+              "description": "See the property declaration and owning domain contract.",
+              "declaration": {
+                "file": "src/domain/pages.ts",
+                "line": 7
               }
             },
             {
@@ -6055,7 +6696,56 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/pages.ts",
-                "line": 6
+                "line": 7
+              },
+              "typeDeclarations": [
+                {
+                  "file": "node_modules/typescript/lib/lib.es5.d.ts",
+                  "line": 1325
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es5.d.ts",
+                  "line": 1524
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.core.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.iterable.d.ts",
+                  "line": 76
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts",
+                  "line": 92
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2016.array.include.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2019.array.d.ts",
+                  "line": 53
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2022.array.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2023.array.d.ts",
+                  "line": 19
+                }
+              ]
+            },
+            {
+              "name": "previewPageIds",
+              "required": false,
+              "nullable": false,
+              "type": "(\"payment\" | \"beneficiary\" | \"resume\" | \"home\" | \"membership\" | \"eligibility\" | \"coverage\" | \"contact\" | \"profile\" | \"review\" | \"docusign\" | \"health-si\" | \"health-tele\" | \"health-qd\" | \"health-di-supp\" | \"health-cir\" | \"receipt\" | \"resume-method\" | \"resume-code\" | \"error-400\" | \"error-404\" | \"error-500\" | \"session-expired\" | \"technical-error\" | \"maintenance\" | \"advisor-login\" | \"advisor-send-confirmation\" | \"application-edit-confirmation\" | \"mock-email-preview\" | \"site-features\" | \"site-details\" | \"design-system\" | \"portal-admin\" | \"cms\" | \"portal-template-project\" | \"portal-requirements-project\")[] | undefined",
+              "description": "See the property declaration and owning domain contract.",
+              "declaration": {
+                "file": "src/domain/pages.ts",
+                "line": 7
               },
               "typeDeclarations": [
                 {
@@ -6100,11 +6790,11 @@
               "name": "groupId",
               "required": false,
               "nullable": false,
-              "type": "\"get-started\" | \"coverage\" | \"profile\" | \"review\" | \"health\" | \"payment\" | undefined",
+              "type": "\"payment\" | \"get-started\" | \"coverage\" | \"profile\" | \"review\" | \"health\" | undefined",
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/pages.ts",
-                "line": 6
+                "line": 7
               }
             },
             {
@@ -6115,7 +6805,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/pages.ts",
-                "line": 6
+                "line": 7
               }
             },
             {
@@ -6126,7 +6816,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/pages.ts",
-                "line": 6
+                "line": 7
               }
             },
             {
@@ -6137,7 +6827,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/pages.ts",
-                "line": 6
+                "line": 7
               },
               "typeDeclarations": [
                 {
@@ -6197,7 +6887,7 @@
     {
       "table": "pageSectionFields",
       "file": "public/catalog/fields/fields.json",
-      "rowCount": 139,
+      "rowCount": 229,
       "rowType": "PageSectionFields",
       "properties": [
         {
@@ -6293,7 +6983,7 @@
     {
       "table": "pageSections",
       "file": "public/catalog/pages/pages.json",
-      "rowCount": 33,
+      "rowCount": 58,
       "rowType": "PageSectionRow",
       "properties": [
         {
@@ -6353,10 +7043,196 @@
           "typeDeclarations": [
             {
               "file": "src/config/pageSections/types.ts",
-              "line": 38
+              "line": 43
             }
           ],
           "properties": [
+            {
+              "name": "role",
+              "required": false,
+              "nullable": false,
+              "type": "\"summary\" | \"questions\" | \"categories\" | \"portfolio\" | \"reveal\" | \"products\" | undefined",
+              "description": "See the property declaration and owning domain contract.",
+              "declaration": {
+                "file": "src/config/pageSections/types.ts",
+                "line": 44
+              }
+            },
+            {
+              "name": "components",
+              "required": false,
+              "nullable": false,
+              "type": "string[] | undefined",
+              "description": "See the property declaration and owning domain contract.",
+              "declaration": {
+                "file": "src/config/pageSections/types.ts",
+                "line": 45
+              },
+              "typeDeclarations": [
+                {
+                  "file": "node_modules/typescript/lib/lib.es5.d.ts",
+                  "line": 1325
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es5.d.ts",
+                  "line": 1524
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.core.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.iterable.d.ts",
+                  "line": 76
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts",
+                  "line": 92
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2016.array.include.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2019.array.d.ts",
+                  "line": 53
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2022.array.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2023.array.d.ts",
+                  "line": 19
+                }
+              ]
+            },
+            {
+              "name": "composition",
+              "required": false,
+              "nullable": false,
+              "type": "PageSectionComponent[] | undefined",
+              "description": "See the property declaration and owning domain contract.",
+              "declaration": {
+                "file": "src/config/pageSections/types.ts",
+                "line": 46
+              },
+              "typeDeclarations": [
+                {
+                  "file": "node_modules/typescript/lib/lib.es5.d.ts",
+                  "line": 1325
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es5.d.ts",
+                  "line": 1524
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.core.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.iterable.d.ts",
+                  "line": 76
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts",
+                  "line": 92
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2016.array.include.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2019.array.d.ts",
+                  "line": 53
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2022.array.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2023.array.d.ts",
+                  "line": 19
+                }
+              ]
+            },
+            {
+              "name": "display",
+              "required": false,
+              "nullable": false,
+              "type": "{ label: string; templates: Array<\"single\" | \"multi\">; excludeVariants?: string[]; } | undefined",
+              "description": "See the property declaration and owning domain contract.",
+              "declaration": {
+                "file": "src/config/pageSections/types.ts",
+                "line": 47
+              },
+              "typeDeclarations": [
+                {
+                  "file": "src/config/pageSections/types.ts",
+                  "line": 47
+                }
+              ]
+            },
+            {
+              "name": "coverageCategories",
+              "required": false,
+              "nullable": false,
+              "type": "string[] | undefined",
+              "description": "See the property declaration and owning domain contract.",
+              "declaration": {
+                "file": "src/config/pageSections/types.ts",
+                "line": 48
+              },
+              "typeDeclarations": [
+                {
+                  "file": "node_modules/typescript/lib/lib.es5.d.ts",
+                  "line": 1325
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es5.d.ts",
+                  "line": 1524
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.core.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.iterable.d.ts",
+                  "line": 76
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts",
+                  "line": 92
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2016.array.include.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2019.array.d.ts",
+                  "line": 53
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2022.array.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2023.array.d.ts",
+                  "line": 19
+                }
+              ]
+            },
+            {
+              "name": "enabledByConfiguration",
+              "required": false,
+              "nullable": false,
+              "type": "string | undefined",
+              "description": "Shared configuration controlling this complete section; resolved during projection.",
+              "declaration": {
+                "file": "src/config/pageSections/types.ts",
+                "line": 50
+              }
+            },
             {
               "name": "id",
               "required": true,
@@ -6365,7 +7241,7 @@
               "description": "Stored row identity. Preserve existing values.",
               "declaration": {
                 "file": "src/config/pageSections/types.ts",
-                "line": 39
+                "line": 51
               },
               "typeDeclarations": [
                 {
@@ -6378,11 +7254,11 @@
               "name": "pageId",
               "required": true,
               "nullable": false,
-              "type": "\"resume\" | \"home\" | \"membership\" | \"eligibility\" | \"coverage\" | \"beneficiary\" | \"contact\" | \"profile\" | \"review\" | \"docusign\" | \"health-si\" | \"health-li\" | \"health-qd\" | \"health-di\" | \"health-ci\" | \"health-cir\" | \"payment\" | \"receipt\" | \"resume-method\" | \"resume-code\" | \"error-404\" | \"error-500\" | \"session-expired\" | \"technical-error\" | \"maintenance\" | \"application-unavailable\" | \"outcome-unknown\" | \"advisor-login\" | \"advisor-send-confirmation\" | \"application-edit-confirmation\" | \"mock-email-preview\" | \"site-features\" | \"site-details\" | \"design-system\" | \"portal-admin\" | \"cms\" | \"portal-template-project\" | \"portal-requirements-project\"",
+              "type": "\"payment\" | \"beneficiary\" | \"resume\" | \"home\" | \"membership\" | \"eligibility\" | \"coverage\" | \"contact\" | \"profile\" | \"review\" | \"docusign\" | \"health-si\" | \"health-tele\" | \"health-qd\" | \"health-di-supp\" | \"health-cir\" | \"receipt\" | \"resume-method\" | \"resume-code\" | \"error-400\" | \"error-404\" | \"error-500\" | \"session-expired\" | \"technical-error\" | \"maintenance\" | \"advisor-login\" | \"advisor-send-confirmation\" | \"application-edit-confirmation\" | \"mock-email-preview\" | \"site-features\" | \"site-details\" | \"design-system\" | \"portal-admin\" | \"cms\" | \"portal-template-project\" | \"portal-requirements-project\"",
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/config/pageSections/types.ts",
-                "line": 40
+                "line": 52
               }
             },
             {
@@ -6393,7 +7269,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/config/pageSections/types.ts",
-                "line": 41
+                "line": 53
               }
             },
             {
@@ -6404,7 +7280,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/config/pageSections/types.ts",
-                "line": 42
+                "line": 54
               }
             },
             {
@@ -6415,7 +7291,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/config/pageSections/types.ts",
-                "line": 43
+                "line": 55
               },
               "typeDeclarations": [
                 {
@@ -6425,6 +7301,17 @@
               ]
             },
             {
+              "name": "applicantParticipation",
+              "required": false,
+              "nullable": false,
+              "type": "\"applying\" | \"always\" | undefined",
+              "description": "Always collect owner/household sections even without a coverage election.",
+              "declaration": {
+                "file": "src/config/pageSections/types.ts",
+                "line": 57
+              }
+            },
+            {
               "name": "fieldIds",
               "required": true,
               "nullable": false,
@@ -6432,7 +7319,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/config/pageSections/types.ts",
-                "line": 44
+                "line": 58
               },
               "typeDeclarations": [
                 {
@@ -6481,7 +7368,7 @@
               "description": "Persisted repeatable form collection restored with this section.",
               "declaration": {
                 "file": "src/config/pageSections/types.ts",
-                "line": 46
+                "line": 60
               }
             },
             {
@@ -6492,7 +7379,7 @@
               "description": "Canonical executable WHEN; the section itself is the WHAT target.",
               "declaration": {
                 "file": "src/config/pageSections/types.ts",
-                "line": 48
+                "line": 62
               }
             },
             {
@@ -6503,7 +7390,7 @@
               "description": "Rendering treatment owned by the section, independent of its condition ID.",
               "declaration": {
                 "file": "src/config/pageSections/types.ts",
-                "line": 50
+                "line": 64
               }
             }
           ]
@@ -7679,7 +8566,7 @@
     {
       "table": "productAmountRules",
       "file": "public/catalog/rules/rules.json",
-      "rowCount": 759,
+      "rowCount": 676,
       "rowType": "ProductAmountRules",
       "properties": [
         {
@@ -7830,7 +8717,7 @@
     {
       "table": "productApplicantEligibility",
       "file": "public/catalog/rules/rules.json",
-      "rowCount": 1155,
+      "rowCount": 1062,
       "rowType": "ProductApplicantEligibility",
       "properties": [
         {
@@ -8140,7 +9027,7 @@
     {
       "table": "productIdentifiers",
       "file": "public/catalog/configurations/products.json",
-      "rowCount": 858,
+      "rowCount": 862,
       "rowType": "ProductIdentifierRow",
       "properties": [
         {
@@ -8483,7 +9370,7 @@
     {
       "table": "productRiders",
       "file": "public/catalog/configurations/products.json",
-      "rowCount": 162,
+      "rowCount": 144,
       "rowType": "ProductRiderRow",
       "properties": [
         {
@@ -8678,7 +9565,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 145
+                "line": 147
               }
             },
             {
@@ -8689,7 +9576,7 @@
               "description": "Stored row identity. Preserve existing values.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 142
+                "line": 144
               }
             },
             {
@@ -8700,7 +9587,7 @@
               "description": "Reviewed fresh-start site assignments; numeric values are authored in requirements JSON.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 138
+                "line": 140
               },
               "typeDeclarations": [
                 {
@@ -8749,12 +9636,12 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 139
+                "line": 141
               },
               "typeDeclarations": [
                 {
                   "file": "src/domain/coverage.ts",
-                  "line": 102
+                  "line": 104
                 }
               ]
             },
@@ -8766,7 +9653,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 140
+                "line": 142
               },
               "typeDeclarations": [
                 {
@@ -8815,7 +9702,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 141
+                "line": 143
               }
             },
             {
@@ -8826,7 +9713,7 @@
               "description": "Policy-issuing jurisdiction; independent from residency availability rules.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 150
+                "line": 152
               }
             },
             {
@@ -8837,7 +9724,7 @@
               "description": "External product brochure or certificate URL.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 152
+                "line": 154
               }
             },
             {
@@ -8848,7 +9735,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 153
+                "line": 155
               }
             },
             {
@@ -8859,7 +9746,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 154
+                "line": 156
               },
               "typeDeclarations": [
                 {
@@ -8876,7 +9763,7 @@
               "description": "Typed definition payload. Follow the linked TypeScript declarations for nested properties.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 155
+                "line": 157
               }
             },
             {
@@ -8887,7 +9774,18 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 156
+                "line": 158
+              }
+            },
+            {
+              "name": "descriptionNotice",
+              "required": false,
+              "nullable": false,
+              "type": "string | undefined",
+              "description": "Product notice shown in bold on its own line after the description.",
+              "declaration": {
+                "file": "src/domain/coverage.ts",
+                "line": 160
               }
             },
             {
@@ -8898,7 +9796,7 @@
               "description": "Note displayed per-applicant inside the product card (supports {maxAmount} placeholder)",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 158
+                "line": 162
               }
             },
             {
@@ -8909,7 +9807,7 @@
               "description": "Per-applicant info notes displayed above the applicant fields",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 160
+                "line": 164
               },
               "typeDeclarations": [
                 {
@@ -8926,12 +9824,12 @@
               "description": "Product-level alert displayed below the product description",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 162
+                "line": 166
               },
               "typeDeclarations": [
                 {
                   "file": "src/domain/coverage.ts",
-                  "line": 162
+                  "line": 166
                 }
               ]
             },
@@ -8943,7 +9841,7 @@
               "description": "Structured content block displayed below the product warning",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 168
+                "line": 172
               },
               "typeDeclarations": [
                 {
@@ -8992,7 +9890,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 174
+                "line": 178
               },
               "typeDeclarations": [
                 {
@@ -9041,7 +9939,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 175
+                "line": 179
               },
               "typeDeclarations": [
                 {
@@ -9090,7 +9988,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 176
+                "line": 180
               },
               "typeDeclarations": [
                 {
@@ -9139,7 +10037,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 183
+                "line": 187
               },
               "typeDeclarations": [
                 {
@@ -9188,7 +10086,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 184
+                "line": 188
               },
               "typeDeclarations": [
                 {
@@ -9205,7 +10103,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 187
+                "line": 191
               },
               "typeDeclarations": [
                 {
@@ -9254,7 +10152,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 188
+                "line": 192
               },
               "typeDeclarations": [
                 {
@@ -10461,7 +11359,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 80
+                "line": 82
               }
             },
             {
@@ -10472,7 +11370,7 @@
               "description": "Stored row identity. Preserve existing values.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 79
+                "line": 81
               }
             },
             {
@@ -10483,7 +11381,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 81
+                "line": 83
               }
             },
             {
@@ -10494,7 +11392,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 85
+                "line": 87
               },
               "typeDeclarations": [
                 {
@@ -10543,7 +11441,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 84
+                "line": 86
               },
               "typeDeclarations": [
                 {
@@ -10585,6 +11483,23 @@
               ]
             },
             {
+              "name": "applicantDescriptions",
+              "required": false,
+              "nullable": false,
+              "type": "Partial<Record<CoverageApplicantId, string>> | undefined",
+              "description": "Wording for an applicant-specific election; generic description remains for overviews.",
+              "declaration": {
+                "file": "src/domain/coverage.ts",
+                "line": 70
+              },
+              "typeDeclarations": [
+                {
+                  "file": "node_modules/typescript/lib/lib.es5.d.ts",
+                  "line": 1585
+                }
+              ]
+            },
+            {
               "name": "riderOnlyApplicants",
               "required": false,
               "nullable": false,
@@ -10592,7 +11507,7 @@
               "description": "Applicants who may elect this rider without requesting new base coverage.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 70
+                "line": 72
               },
               "typeDeclarations": [
                 {
@@ -10641,7 +11556,7 @@
               "description": "Beneficiary role can differ from the base election owner.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 72
+                "line": 74
               }
             },
             {
@@ -10652,7 +11567,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 73
+                "line": 75
               }
             },
             {
@@ -10663,7 +11578,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 74
+                "line": 76
               }
             },
             {
@@ -10674,7 +11589,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 75
+                "line": 77
               }
             },
             {
@@ -10685,7 +11600,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 76
+                "line": 78
               }
             },
             {
@@ -10696,7 +11611,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 77
+                "line": 79
               }
             },
             {
@@ -10707,7 +11622,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 78
+                "line": 80
               },
               "typeDeclarations": [
                 {
@@ -10724,7 +11639,7 @@
               "description": "If true, the rider also has a coverage amount selection",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 83
+                "line": 85
               }
             },
             {
@@ -10778,7 +11693,7 @@
     {
       "table": "ruleActions",
       "file": "public/catalog/rules/rules.json",
-      "rowCount": 101,
+      "rowCount": 78,
       "rowType": "RuleActionRow",
       "properties": [
         {
@@ -10874,7 +11789,7 @@
     {
       "table": "ruleAssignments",
       "file": "public/catalog/rules/rules.json",
-      "rowCount": 109,
+      "rowCount": 72,
       "rowType": "RuleAssignmentRow",
       "properties": [
         {
@@ -10992,7 +11907,7 @@
     {
       "table": "ruleConditions",
       "file": "public/catalog/rules/rules.json",
-      "rowCount": 18,
+      "rowCount": 12,
       "rowType": "RuleConditionRow",
       "properties": [
         {
@@ -11313,7 +12228,7 @@
     {
       "table": "rules",
       "file": "public/catalog/rules/rules.json",
-      "rowCount": 120,
+      "rowCount": 83,
       "rowType": "RuleRow",
       "properties": [
         {
@@ -11374,42 +12289,8 @@
               "description": "Stored row identity. Preserve existing values.",
               "declaration": {
                 "file": "src/domain/rules.ts",
-                "line": 24
+                "line": 25
               }
-            },
-            {
-              "name": "organization",
-              "required": false,
-              "nullable": false,
-              "type": "import(\"src/domain/ruleOrganization\").RuleOrganization | undefined",
-              "description": "See the property declaration and owning domain contract.",
-              "declaration": {
-                "file": "src/domain/rules.ts",
-                "line": 22
-              },
-              "typeDeclarations": [
-                {
-                  "file": "src/domain/ruleOrganization.ts",
-                  "line": 3
-                }
-              ]
-            },
-            {
-              "name": "execution",
-              "required": false,
-              "nullable": false,
-              "type": "import(\"src/domain/routingRules\").RoutingRuleExecution | undefined",
-              "description": "See the property declaration and owning domain contract.",
-              "declaration": {
-                "file": "src/domain/rules.ts",
-                "line": 23
-              },
-              "typeDeclarations": [
-                {
-                  "file": "src/domain/routingRules.ts",
-                  "line": 12
-                }
-              ]
             },
             {
               "name": "categories",
@@ -11419,7 +12300,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/rules.ts",
-                "line": 25
+                "line": 26
               },
               "typeDeclarations": [
                 {
@@ -11461,6 +12342,89 @@
               ]
             },
             {
+              "name": "templates",
+              "required": false,
+              "nullable": false,
+              "type": "import(\"src/config/template/resolveTemplate\").FormTemplate[] | undefined",
+              "description": "See the property declaration and owning domain contract.",
+              "declaration": {
+                "file": "src/domain/rules.ts",
+                "line": 22
+              },
+              "typeDeclarations": [
+                {
+                  "file": "node_modules/typescript/lib/lib.es5.d.ts",
+                  "line": 1325
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es5.d.ts",
+                  "line": 1524
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.core.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.iterable.d.ts",
+                  "line": 76
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts",
+                  "line": 92
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2016.array.include.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2019.array.d.ts",
+                  "line": 53
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2022.array.d.ts",
+                  "line": 19
+                },
+                {
+                  "file": "node_modules/typescript/lib/lib.es2023.array.d.ts",
+                  "line": 19
+                }
+              ]
+            },
+            {
+              "name": "organization",
+              "required": false,
+              "nullable": false,
+              "type": "import(\"src/domain/ruleOrganization\").RuleOrganization | undefined",
+              "description": "See the property declaration and owning domain contract.",
+              "declaration": {
+                "file": "src/domain/rules.ts",
+                "line": 23
+              },
+              "typeDeclarations": [
+                {
+                  "file": "src/domain/ruleOrganization.ts",
+                  "line": 3
+                }
+              ]
+            },
+            {
+              "name": "execution",
+              "required": false,
+              "nullable": false,
+              "type": "import(\"src/domain/routingRules\").RoutingRuleExecution | undefined",
+              "description": "See the property declaration and owning domain contract.",
+              "declaration": {
+                "file": "src/domain/rules.ts",
+                "line": 24
+              },
+              "typeDeclarations": [
+                {
+                  "file": "src/domain/routingRules.ts",
+                  "line": 13
+                }
+              ]
+            },
+            {
               "name": "documentationStatus",
               "required": false,
               "nullable": false,
@@ -11468,7 +12432,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/rules.ts",
-                "line": 26
+                "line": 27
               }
             },
             {
@@ -11479,7 +12443,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/rules.ts",
-                "line": 27
+                "line": 28
               }
             },
             {
@@ -11490,7 +12454,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/rules.ts",
-                "line": 28
+                "line": 29
               },
               "typeDeclarations": [
                 {
@@ -11539,7 +12503,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/rules.ts",
-                "line": 29
+                "line": 30
               }
             },
             {
@@ -11550,7 +12514,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/rules.ts",
-                "line": 30
+                "line": 31
               }
             },
             {
@@ -11561,7 +12525,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/rules.ts",
-                "line": 31
+                "line": 32
               }
             },
             {
@@ -11572,7 +12536,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/rules.ts",
-                "line": 32
+                "line": 33
               }
             },
             {
@@ -11583,7 +12547,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/rules.ts",
-                "line": 33
+                "line": 34
               }
             },
             {
@@ -11594,7 +12558,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/rules.ts",
-                "line": 34
+                "line": 35
               }
             }
           ]
@@ -11637,7 +12601,7 @@
     {
       "table": "semanticRequirements",
       "file": "public/catalog/evidence/evidence.json",
-      "rowCount": 7565,
+      "rowCount": 7560,
       "rowType": "SemanticRequirements",
       "properties": [
         {
@@ -11766,7 +12730,7 @@
     {
       "table": "siteAssociationContexts",
       "file": "public/catalog/overview/sites.json",
-      "rowCount": 35,
+      "rowCount": 34,
       "rowType": "SiteAssociationContext",
       "properties": [
         {
@@ -11851,7 +12815,7 @@
     {
       "table": "siteAssociations",
       "file": "public/catalog/overview/sites.json",
-      "rowCount": 31,
+      "rowCount": 32,
       "rowType": "SiteAssociationRow",
       "properties": [
         {
@@ -11958,7 +12922,7 @@
     {
       "table": "siteDocuments",
       "file": "public/catalog/content/content.json",
-      "rowCount": 70,
+      "rowCount": 65,
       "rowType": "SiteDocumentRow",
       "properties": [
         {
@@ -12414,7 +13378,7 @@
     {
       "table": "siteFieldConfigurations",
       "file": "public/catalog/fields/fields.json",
-      "rowCount": 233,
+      "rowCount": 3325,
       "rowType": "SiteFieldConfigurationRow",
       "properties": [
         {
@@ -12582,7 +13546,7 @@
     {
       "table": "siteFlows",
       "file": "public/catalog/flows/flows.json",
-      "rowCount": 8,
+      "rowCount": 6,
       "rowType": "SiteFlowRow",
       "properties": [
         {
@@ -12711,7 +13675,7 @@
     {
       "table": "sitePages",
       "file": "public/catalog/pages/pages.json",
-      "rowCount": 380,
+      "rowCount": 328,
       "rowType": "SitePageRow",
       "properties": [
         {
@@ -12929,7 +13893,7 @@
               "typeDeclarations": [
                 {
                   "file": "src/domain/paymentPolicy.ts",
-                  "line": 4
+                  "line": 8
                 }
               ]
             }
@@ -12973,7 +13937,7 @@
     {
       "table": "siteProductApplicants",
       "file": "public/catalog/rules/rules.json",
-      "rowCount": 375,
+      "rowCount": 278,
       "rowType": "SiteProductApplicantRow",
       "properties": [
         {
@@ -13080,7 +14044,7 @@
     {
       "table": "siteProducts",
       "file": "public/catalog/rules/rules.json",
-      "rowCount": 200,
+      "rowCount": 135,
       "rowType": "SiteProduct",
       "properties": [
         {
@@ -13198,7 +14162,7 @@
     {
       "table": "siteRiders",
       "file": "public/catalog/configurations/products.json",
-      "rowCount": 34,
+      "rowCount": 15,
       "rowType": "SiteRider",
       "properties": [
         {
@@ -13720,7 +14684,7 @@
     {
       "table": "supportProfiles",
       "file": "public/catalog/overview/clients.json",
-      "rowCount": 9,
+      "rowCount": 16,
       "rowType": "SupportProfileRow",
       "properties": [
         {
@@ -13963,7 +14927,7 @@
     {
       "table": "underwritingBands",
       "file": "public/catalog/rules/rules.json",
-      "rowCount": 357,
+      "rowCount": 359,
       "rowType": "UnderwritingBands",
       "properties": [
         {
@@ -14169,7 +15133,7 @@
     {
       "table": "urlParameters",
       "file": "public/catalog/configurations/url-parameters.json",
-      "rowCount": 19,
+      "rowCount": 24,
       "rowType": "UrlParameters",
       "properties": [
         {
@@ -14265,7 +15229,7 @@
     {
       "table": "urlParameterValues",
       "file": "public/catalog/configurations/url-parameters.json",
-      "rowCount": 38,
+      "rowCount": 48,
       "rowType": "UrlParameterValues",
       "properties": [
         {
@@ -14350,7 +15314,7 @@
     {
       "table": "validationRules",
       "file": "public/catalog/validations/validation.json",
-      "rowCount": 36,
+      "rowCount": 9,
       "rowType": "ValidationRuleRow",
       "properties": [
         {
@@ -14429,7 +15393,7 @@
               "name": "format",
               "required": false,
               "nullable": false,
-              "type": "\"percent\" | \"email\" | \"phone\" | \"ssn\" | \"currency\" | \"month-year\" | \"digits\" | \"postal-code\" | undefined",
+              "type": "\"percent\" | \"email\" | \"phone\" | \"ssn\" | \"currency\" | \"month-year\" | \"digits\" | \"postal-code\" | \"alphanumeric\" | undefined",
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/persistence/types/template.ts",
@@ -14449,7 +15413,7 @@
               "typeDeclarations": [
                 {
                   "file": "src/domain/fields.ts",
-                  "line": 14
+                  "line": 16
                 }
               ]
             }

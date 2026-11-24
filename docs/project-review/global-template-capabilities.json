@@ -11,94 +11,29 @@
   "rows": [
     {
       "capability": "standard",
-      "sourceProvenance": "demo",
+      "selection": "synthetic global example; no enrolled Site assignment",
+      "sourceProvenance": null,
       "globalTemplateKey": "storybook-template",
+      "exampleScope": "Shared structure; effective Site values are verified separately",
       "examples": [
         "pages-membership-whole-page--standard-membership",
-        "pages-home-hero--standard-quote",
-        "coverage-commerce-coveragequestions--supplemental-health-selected"
+        "pages-home-hero--standard-quote"
       ],
-      "pages": {
-        "home": [],
-        "membership": [
-          "email",
-          "first-name",
-          "last-name",
-          "membership",
-          "phone"
-        ],
-        "eligibility": [
-          "birth-date",
-          "child-birth-date",
-          "child-first-name",
-          "child-gender",
-          "child-last-name",
-          "dependents",
-          "spouse-birth-date",
-          "spouse-first-name",
-          "spouse-last-name",
-          "spouse-membership",
-          "state-province",
-          "zip-postal-code"
-        ],
-        "coverage": [
-          "actively-at-work",
-          "average-monthly-income",
-          "business-expense-responsibility",
-          "gender",
-          "hours-worked-per-week",
-          "monthly-business-expenses",
-          "smoker",
-          "spouse-average-monthly-income",
-          "spouse-gender",
-          "spouse-hours-worked-per-week",
-          "spouse-smoker",
-          "spouse-tobacco-last-used",
-          "spouse-tobacco-products",
-          "tobacco-last-used",
-          "tobacco-products"
-        ],
-        "beneficiary": [],
-        "contact": [
-          "apt-suite",
-          "business-address-same-as-home",
-          "business-apt-suite",
-          "business-city",
-          "business-name",
-          "business-phone",
-          "business-state",
-          "business-street-address",
-          "business-type",
-          "business-zip-code",
-          "city",
-          "correspondence-to",
-          "spouse-email",
-          "spouse-phone",
-          "state",
-          "street-address",
-          "zip-code"
-        ]
-      }
+      "pages": {}
     },
     {
       "capability": "optionalBeneficiaries",
+      "selection": "matched",
       "sourceProvenance": "abe",
       "globalTemplateKey": "storybook-template",
+      "exampleScope": "Shared structure; effective Site values are verified separately",
       "examples": [
-        "pages-membership-additional-membership-information--optional-member-reference",
-        "pages-eligibility-children-information--child-service-eligibility",
         "pages-beneficiary-whole-page--optional-participation",
-        "pages-home-whole-page--entry-notice"
+        "pages-membership-additional-membership-information--member-id"
       ],
       "pages": {
         "home": [
-          "average-monthly-income",
           "birth-date",
-          "business-expense-responsibility",
-          "gender",
-          "hours-worked-per-week",
-          "monthly-business-expenses",
-          "smoker",
           "state-province",
           "zip-postal-code"
         ],
@@ -108,182 +43,8 @@
           "first-name",
           "last-name",
           "membership",
-          "phone"
-        ],
-        "eligibility": [
-          "birth-date",
-          "child-birth-date",
-          "child-first-name",
-          "child-gender",
-          "child-honorably-discharged-service-member",
-          "child-last-name",
-          "dependents",
-          "spouse-birth-date",
-          "spouse-first-name",
-          "spouse-last-name",
-          "spouse-membership",
-          "state-province",
-          "zip-postal-code"
-        ],
-        "coverage": [
-          "actively-at-work",
-          "average-monthly-income",
-          "business-expense-responsibility",
-          "firm-member-count",
-          "gender",
-          "hours-worked-per-week",
-          "monthly-business-expenses",
-          "smoker",
-          "spouse-average-monthly-income",
-          "spouse-gender",
-          "spouse-hours-worked-per-week",
-          "spouse-smoker",
-          "spouse-tobacco-last-used",
-          "spouse-tobacco-products",
-          "tobacco-last-used",
-          "tobacco-products"
-        ],
-        "beneficiary": [],
-        "contact": [
-          "apt-suite",
-          "business-address-same-as-home",
-          "business-apt-suite",
-          "business-city",
-          "business-name",
-          "business-phone",
-          "business-state",
-          "business-street-address",
-          "business-type",
-          "business-zip-code",
-          "city",
-          "correspondence-to",
-          "spouse-email",
-          "spouse-phone",
-          "state",
-          "street-address",
-          "zip-code"
-        ]
-      }
-    },
-    {
-      "capability": "multipleTerms",
-      "sourceProvenance": "asce",
-      "globalTemplateKey": "storybook-template",
-      "examples": [
-        "pages-membership-additional-membership-information--member-id",
-        "pages-eligibility-children-information--child-student-and-marital-status",
-        "pages-contact-whole-page--business-same-as-home",
-        "coverage-commerce-quotecalculator--multiple-term-products"
-      ],
-      "pages": {
-        "home": [
-          "average-monthly-income",
-          "birth-date",
-          "gender",
-          "hours-worked-per-week",
-          "smoker",
-          "state-province",
-          "zip-postal-code"
-        ],
-        "membership": [
-          "email",
-          "first-name",
-          "last-name",
-          "member-id",
-          "membership",
-          "phone"
-        ],
-        "eligibility": [
-          "birth-date",
-          "child-birth-date",
-          "child-first-name",
-          "child-full-time-student",
-          "child-gender",
-          "child-last-name",
-          "dependents",
-          "spouse-birth-date",
-          "spouse-first-name",
-          "spouse-last-name",
-          "spouse-membership",
-          "state-province",
-          "zip-postal-code"
-        ],
-        "coverage": [
-          "actively-at-work",
-          "average-monthly-income",
-          "business-expense-responsibility",
-          "gender",
-          "hours-worked-per-week",
-          "is-self-employed",
-          "monthly-business-expenses",
-          "smoker",
-          "spouse-average-monthly-income",
-          "spouse-gender",
-          "spouse-hours-worked-per-week",
-          "spouse-smoker",
-          "spouse-tobacco-last-used",
-          "spouse-tobacco-products",
-          "tobacco-last-used",
-          "tobacco-products",
-          "years-self-employed"
-        ],
-        "beneficiary": [],
-        "contact": [
-          "apt-suite",
-          "business-address-same-as-home",
-          "business-apt-suite",
-          "business-city",
-          "business-name",
-          "business-phone",
-          "business-state",
-          "business-street-address",
-          "business-type",
-          "business-zip-code",
-          "city",
-          "correspondence-to",
-          "spouse-email",
-          "spouse-phone",
-          "state",
-          "street-address",
-          "zip-code"
-        ]
-      }
-    },
-    {
-      "capability": "physicianMembership",
-      "sourceProvenance": "ama",
-      "globalTemplateKey": "storybook-template",
-      "examples": [
-        "pages-membership-whole-page--professional-membership",
-        "pages-membership-additional-membership-information--physician-spouse",
-        "pages-membership-member-information--with-title",
-        "pages-contact-whole-page--member-and-spouse"
-      ],
-      "pages": {
-        "home": [
-          "actively-at-work",
-          "average-monthly-income",
-          "birth-date",
-          "business-expense-responsibility",
-          "gender",
-          "hours-worked-per-week",
-          "monthly-business-expenses",
-          "smoker",
-          "state-province",
-          "zip-postal-code"
-        ],
-        "membership": [
-          "ama-physician-birth-date",
-          "ama-physician-email",
-          "ama-physician-first-name",
-          "ama-physician-last-name",
-          "ama-physician-title",
-          "ama-physician-type",
-          "email",
-          "first-name",
-          "last-name",
-          "membership",
           "phone",
+          "phone-type",
           "title"
         ],
         "eligibility": [
@@ -307,20 +68,7 @@
           "gender",
           "hours-worked-per-week",
           "monthly-business-expenses",
-          "prototype-fact:di-level-rated:member:applicantClass",
-          "prototype-fact:di-level-rated:member:existingMonthlyBenefit",
-          "prototype-fact:di-level-rated:member:membership",
-          "prototype-fact:di-step-rated:member:applicantClass",
-          "prototype-fact:di-step-rated:member:existingMonthlyBenefit",
-          "prototype-fact:di-step-rated:member:membership",
-          "prototype-fact:li-10yr:member:membership",
-          "prototype-fact:li-15yr:member:membership",
-          "prototype-fact:li-20yr:member:membership",
-          "prototype-fact:li-preferred:member:membership",
-          "prototype-fact:li-premier-accident:member:membership",
-          "prototype-fact:li-term:member:membership",
-          "prototype-fact:oo-office-overhead:member:membership",
-          "prototype-fact:sh-hospital-income:member:membership",
+          "self-employed-under-one-year",
           "smoker",
           "spouse-average-monthly-income",
           "spouse-gender",
@@ -339,6 +87,7 @@
           "business-city",
           "business-name",
           "business-phone",
+          "business-phone-type",
           "business-state",
           "business-street-address",
           "business-type",
@@ -347,6 +96,7 @@
           "correspondence-to",
           "spouse-email",
           "spouse-phone",
+          "spouse-phone-type",
           "state",
           "street-address",
           "zip-code"
@@ -354,169 +104,29 @@
       }
     },
     {
-      "capability": "professionalEducation",
-      "sourceProvenance": "avma",
+      "capability": "multipleTerms",
+      "selection": "matched",
+      "sourceProvenance": "asce",
       "globalTemplateKey": "storybook-template",
+      "exampleScope": "Shared structure; effective Site values are verified separately",
       "examples": [
-        "pages-membership-additional-membership-information--professional-information"
+        "pages-eligibility-children-information--additional-child-questions",
+        "coverage-commerce-quotecalculator--multiple-term-products"
       ],
       "pages": {
-        "home": [],
-        "membership": [
-          "avma-graduation-year",
-          "avma-occupation",
-          "avma-vet-college",
-          "email",
-          "first-name",
-          "last-name",
-          "membership",
-          "phone"
-        ],
-        "eligibility": [
+        "home": [
           "birth-date",
-          "child-birth-date",
-          "child-first-name",
-          "child-gender",
-          "child-last-name",
-          "dependents",
-          "spouse-birth-date",
-          "spouse-first-name",
-          "spouse-last-name",
-          "spouse-membership",
           "state-province",
           "zip-postal-code"
         ],
-        "coverage": [
-          "actively-at-work",
-          "average-employees-6-months",
-          "average-monthly-income",
-          "business-expense-responsibility",
-          "gender",
-          "hours-worked-per-week",
-          "monthly-business-expenses",
-          "prototype-fact:di-ltd-plus:member:monthlyLoanPayment",
-          "prototype-fact:oo-professional:member:eligibleExpenseFraction",
-          "smoker",
-          "spouse-average-monthly-income",
-          "spouse-gender",
-          "spouse-hours-worked-per-week",
-          "spouse-smoker",
-          "spouse-tobacco-last-used",
-          "spouse-tobacco-products",
-          "tobacco-last-used",
-          "tobacco-products"
-        ],
-        "beneficiary": [],
-        "contact": [
-          "apt-suite",
-          "business-address-same-as-home",
-          "business-apt-suite",
-          "business-city",
-          "business-name",
-          "business-phone",
-          "business-state",
-          "business-street-address",
-          "business-type",
-          "business-zip-code",
-          "city",
-          "correspondence-to",
-          "spouse-email",
-          "spouse-phone",
-          "state",
-          "street-address",
-          "zip-code"
-        ]
-      }
-    },
-    {
-      "capability": "occupationAndChildNotice",
-      "sourceProvenance": "csea",
-      "globalTemplateKey": "storybook-template",
-      "examples": [
-        "pages-membership-additional-membership-information--occupation-group",
-        "pages-eligibility-children-information--notice-only",
-        "pages-eligibility-your-information--allowed-residency-options",
-        "coverage-reference-rate-table--pdf"
-      ],
-      "pages": {
-        "home": [],
-        "membership": [
-          "csea-occupation-group",
-          "email",
-          "first-name",
-          "last-name",
-          "membership",
-          "phone"
-        ],
-        "eligibility": [
-          "birth-date",
-          "child-birth-date",
-          "child-first-name",
-          "child-gender",
-          "child-last-name",
-          "dependents",
-          "spouse-birth-date",
-          "spouse-first-name",
-          "spouse-last-name",
-          "spouse-membership",
-          "state-province",
-          "zip-postal-code"
-        ],
-        "coverage": [
-          "actively-at-work",
-          "average-monthly-income",
-          "business-expense-responsibility",
-          "gender",
-          "hours-worked-per-week",
-          "monthly-business-expenses",
-          "smoker",
-          "spouse-average-monthly-income",
-          "spouse-gender",
-          "spouse-hours-worked-per-week",
-          "spouse-smoker",
-          "spouse-tobacco-last-used",
-          "spouse-tobacco-products",
-          "tobacco-last-used",
-          "tobacco-products"
-        ],
-        "beneficiary": [],
-        "contact": [
-          "apt-suite",
-          "business-address-same-as-home",
-          "business-apt-suite",
-          "business-city",
-          "business-name",
-          "business-phone",
-          "business-state",
-          "business-street-address",
-          "business-type",
-          "business-zip-code",
-          "city",
-          "correspondence-to",
-          "spouse-email",
-          "spouse-phone",
-          "state",
-          "street-address",
-          "zip-code"
-        ]
-      }
-    },
-    {
-      "capability": "nursingMembership",
-      "sourceProvenance": "nso",
-      "globalTemplateKey": "storybook-template",
-      "examples": [
-        "pages-membership-additional-membership-information--nurse-type"
-      ],
-      "pages": {
-        "home": [],
         "membership": [
           "email",
           "first-name",
           "last-name",
+          "member-id",
           "membership",
-          "nurse-type",
-          "phone"
+          "phone",
+          "phone-type"
         ],
         "eligibility": [
           "birth-date",
@@ -540,6 +150,7 @@
           "gender",
           "hours-worked-per-week",
           "monthly-business-expenses",
+          "self-employed-under-one-year",
           "smoker",
           "spouse-average-monthly-income",
           "spouse-gender",
@@ -558,6 +169,7 @@
           "business-city",
           "business-name",
           "business-phone",
+          "business-phone-type",
           "business-state",
           "business-street-address",
           "business-type",
@@ -566,6 +178,7 @@
           "correspondence-to",
           "spouse-email",
           "spouse-phone",
+          "spouse-phone-type",
           "state",
           "street-address",
           "zip-code"
@@ -573,30 +186,36 @@
       }
     },
     {
-      "capability": "associationSelection",
-      "sourceProvenance": "isitrust",
+      "capability": "physicianMembership",
+      "selection": "matched",
+      "sourceProvenance": "ama",
       "globalTemplateKey": "storybook-template",
+      "exampleScope": "Shared structure; effective Site values are verified separately",
       "examples": [
-        "pages-membership-membership-status--association-selection"
+        "pages-membership-whole-page--category-membership",
+        "components-forms-field-groups-name--with-title",
+        "pages-contact-whole-page--member-and-spouse"
       ],
       "pages": {
         "home": [
-          "average-monthly-income",
           "birth-date",
-          "business-expense-responsibility",
-          "gender",
-          "hours-worked-per-week",
-          "monthly-business-expenses",
-          "smoker",
           "state-province",
           "zip-postal-code"
         ],
         "membership": [
+          "ama-physician-birth-date",
+          "ama-physician-email",
+          "ama-physician-first-name",
+          "ama-physician-last-name",
+          "ama-physician-title",
+          "ama-physician-type",
           "email",
           "first-name",
           "last-name",
           "membership",
-          "phone"
+          "phone",
+          "phone-type",
+          "title"
         ],
         "eligibility": [
           "birth-date",
@@ -608,16 +227,21 @@
           "spouse-birth-date",
           "spouse-first-name",
           "spouse-last-name",
+          "spouse-membership",
           "state-province",
           "zip-postal-code"
         ],
         "coverage": [
           "actively-at-work",
+          "applicant-class",
           "average-monthly-income",
           "business-expense-responsibility",
+          "existing-level-rated-monthly-benefit",
+          "existing-step-rated-monthly-benefit",
           "gender",
           "hours-worked-per-week",
           "monthly-business-expenses",
+          "self-employed-under-one-year",
           "smoker",
           "spouse-average-monthly-income",
           "spouse-gender",
@@ -636,6 +260,7 @@
           "business-city",
           "business-name",
           "business-phone",
+          "business-phone-type",
           "business-state",
           "business-street-address",
           "business-type",
@@ -644,6 +269,333 @@
           "correspondence-to",
           "spouse-email",
           "spouse-phone",
+          "spouse-phone-type",
+          "state",
+          "street-address",
+          "zip-code"
+        ]
+      }
+    },
+    {
+      "capability": "professionalEducation",
+      "selection": "matched",
+      "sourceProvenance": "avma",
+      "globalTemplateKey": "storybook-template",
+      "exampleScope": "Shared structure; effective Site values are verified separately",
+      "examples": [
+        "pages-membership-additional-membership-information--professional-education"
+      ],
+      "pages": {
+        "home": [
+          "birth-date",
+          "state-province",
+          "zip-postal-code"
+        ],
+        "membership": [
+          "avma-graduation-year",
+          "avma-occupation",
+          "avma-vet-college",
+          "email",
+          "first-name",
+          "last-name",
+          "membership",
+          "phone",
+          "phone-type",
+          "title"
+        ],
+        "eligibility": [
+          "birth-date",
+          "child-birth-date",
+          "child-first-name",
+          "child-gender",
+          "child-last-name",
+          "dependents",
+          "spouse-birth-date",
+          "spouse-first-name",
+          "spouse-last-name",
+          "spouse-membership",
+          "state-province",
+          "zip-postal-code"
+        ],
+        "coverage": [
+          "actively-at-work",
+          "average-monthly-income",
+          "business-expense-responsibility",
+          "gender",
+          "hours-worked-per-week",
+          "monthly-business-expenses",
+          "self-employed-under-one-year",
+          "smoker",
+          "spouse-average-monthly-income",
+          "spouse-gender",
+          "spouse-hours-worked-per-week",
+          "spouse-smoker",
+          "spouse-tobacco-last-used",
+          "spouse-tobacco-products",
+          "tobacco-last-used",
+          "tobacco-products"
+        ],
+        "beneficiary": [],
+        "contact": [
+          "apt-suite",
+          "business-address-same-as-home",
+          "business-apt-suite",
+          "business-city",
+          "business-name",
+          "business-phone",
+          "business-phone-type",
+          "business-state",
+          "business-street-address",
+          "business-type",
+          "business-zip-code",
+          "city",
+          "correspondence-to",
+          "spouse-email",
+          "spouse-phone",
+          "spouse-phone-type",
+          "state",
+          "street-address",
+          "zip-code"
+        ]
+      }
+    },
+    {
+      "capability": "occupationAndChildNotice",
+      "selection": "matched",
+      "sourceProvenance": "csea",
+      "globalTemplateKey": "storybook-template",
+      "exampleScope": "Shared structure; effective Site values are verified separately",
+      "examples": [
+        "pages-eligibility-children-information--notice-only",
+        "pages-eligibility-your-information--allowed-residency-options"
+      ],
+      "pages": {
+        "home": [
+          "birth-date",
+          "state-province",
+          "zip-postal-code"
+        ],
+        "membership": [
+          "csea-occupation-group",
+          "email",
+          "first-name",
+          "last-name",
+          "membership",
+          "phone",
+          "phone-type",
+          "title"
+        ],
+        "eligibility": [
+          "birth-date",
+          "child-birth-date",
+          "child-first-name",
+          "child-gender",
+          "child-last-name",
+          "dependents",
+          "spouse-birth-date",
+          "spouse-first-name",
+          "spouse-last-name",
+          "spouse-membership",
+          "state-province",
+          "zip-postal-code"
+        ],
+        "coverage": [
+          "actively-at-work",
+          "average-monthly-income",
+          "business-expense-responsibility",
+          "gender",
+          "hours-worked-per-week",
+          "monthly-business-expenses",
+          "self-employed-under-one-year",
+          "smoker",
+          "spouse-average-monthly-income",
+          "spouse-gender",
+          "spouse-hours-worked-per-week",
+          "spouse-smoker",
+          "spouse-tobacco-last-used",
+          "spouse-tobacco-products",
+          "tobacco-last-used",
+          "tobacco-products"
+        ],
+        "beneficiary": [],
+        "contact": [
+          "apt-suite",
+          "business-address-same-as-home",
+          "business-apt-suite",
+          "business-city",
+          "business-name",
+          "business-phone",
+          "business-phone-type",
+          "business-state",
+          "business-street-address",
+          "business-type",
+          "business-zip-code",
+          "city",
+          "correspondence-to",
+          "spouse-email",
+          "spouse-phone",
+          "spouse-phone-type",
+          "state",
+          "street-address",
+          "zip-code"
+        ]
+      }
+    },
+    {
+      "capability": "nursingMembership",
+      "selection": "matched",
+      "sourceProvenance": "nso",
+      "globalTemplateKey": "storybook-template",
+      "exampleScope": "Shared structure; effective Site values are verified separately",
+      "examples": [
+        "pages-membership-additional-membership-information--nursing-qualification"
+      ],
+      "pages": {
+        "home": [
+          "birth-date",
+          "state-province",
+          "zip-postal-code"
+        ],
+        "membership": [
+          "email",
+          "first-name",
+          "last-name",
+          "membership",
+          "nurse-type",
+          "phone",
+          "phone-type",
+          "title"
+        ],
+        "eligibility": [
+          "birth-date",
+          "child-birth-date",
+          "child-first-name",
+          "child-gender",
+          "child-last-name",
+          "dependents",
+          "spouse-birth-date",
+          "spouse-first-name",
+          "spouse-last-name",
+          "spouse-membership",
+          "state-province",
+          "zip-postal-code"
+        ],
+        "coverage": [
+          "actively-at-work",
+          "average-monthly-income",
+          "business-expense-responsibility",
+          "gender",
+          "hours-worked-per-week",
+          "monthly-business-expenses",
+          "self-employed-under-one-year",
+          "smoker",
+          "spouse-average-monthly-income",
+          "spouse-gender",
+          "spouse-hours-worked-per-week",
+          "spouse-smoker",
+          "spouse-tobacco-last-used",
+          "spouse-tobacco-products",
+          "tobacco-last-used",
+          "tobacco-products"
+        ],
+        "beneficiary": [],
+        "contact": [
+          "apt-suite",
+          "business-address-same-as-home",
+          "business-apt-suite",
+          "business-city",
+          "business-name",
+          "business-phone",
+          "business-phone-type",
+          "business-state",
+          "business-street-address",
+          "business-type",
+          "business-zip-code",
+          "city",
+          "correspondence-to",
+          "spouse-email",
+          "spouse-phone",
+          "spouse-phone-type",
+          "state",
+          "street-address",
+          "zip-code"
+        ]
+      }
+    },
+    {
+      "capability": "associationSelection",
+      "selection": "matched",
+      "sourceProvenance": "isitrust",
+      "globalTemplateKey": "storybook-template",
+      "exampleScope": "Shared structure; effective Site values are verified separately",
+      "examples": [
+        "pages-membership-membership-status--association-selection"
+      ],
+      "pages": {
+        "home": [
+          "birth-date",
+          "state-province",
+          "zip-postal-code"
+        ],
+        "membership": [
+          "email",
+          "first-name",
+          "last-name",
+          "membership",
+          "phone",
+          "phone-type",
+          "title"
+        ],
+        "eligibility": [
+          "birth-date",
+          "child-birth-date",
+          "child-first-name",
+          "child-gender",
+          "child-last-name",
+          "dependents",
+          "spouse-birth-date",
+          "spouse-first-name",
+          "spouse-last-name",
+          "spouse-membership",
+          "state-province",
+          "zip-postal-code"
+        ],
+        "coverage": [
+          "actively-at-work",
+          "average-monthly-income",
+          "business-expense-responsibility",
+          "gender",
+          "hours-worked-per-week",
+          "monthly-business-expenses",
+          "self-employed-under-one-year",
+          "smoker",
+          "spouse-average-monthly-income",
+          "spouse-gender",
+          "spouse-hours-worked-per-week",
+          "spouse-smoker",
+          "spouse-tobacco-last-used",
+          "spouse-tobacco-products",
+          "tobacco-last-used",
+          "tobacco-products"
+        ],
+        "beneficiary": [],
+        "contact": [
+          "apt-suite",
+          "business-address-same-as-home",
+          "business-apt-suite",
+          "business-city",
+          "business-name",
+          "business-phone",
+          "business-phone-type",
+          "business-state",
+          "business-street-address",
+          "business-type",
+          "business-zip-code",
+          "city",
+          "correspondence-to",
+          "spouse-email",
+          "spouse-phone",
+          "spouse-phone-type",
           "state",
           "street-address",
           "zip-code"
@@ -652,26 +604,17 @@
     },
     {
       "capability": "employmentMembership",
+      "selection": "matched",
       "sourceProvenance": "waepa",
       "globalTemplateKey": "storybook-template",
+      "exampleScope": "Shared structure; effective Site values are verified separately",
       "examples": [
-        "pages-membership-whole-page--new-membership",
-        "pages-membership-whole-page--current-membership",
-        "pages-membership-additional-membership-information--new-member",
-        "pages-membership-additional-membership-information--active-federal-employee",
-        "pages-membership-additional-membership-information--former-federal-employee",
-        "pages-membership-additional-membership-information--associate-member",
-        "pages-membership-additional-membership-information--adult-child-associate",
-        "pages-membership-additional-membership-information--parent-associate",
-        "pages-membership-additional-membership-information--sibling-associate",
+        "pages-membership-whole-page--new-or-current-membership",
         "pages-contact-whole-page--product-scoped-business-information"
       ],
       "pages": {
         "home": [
-          "average-monthly-income",
           "birth-date",
-          "gender",
-          "hours-worked-per-week",
           "state-province",
           "zip-postal-code"
         ],
@@ -683,6 +626,7 @@
           "membership",
           "membership-referral-source",
           "phone",
+          "phone-type",
           "waepa-attestation",
           "waepa-declaration",
           "waepa-employer",
@@ -715,6 +659,7 @@
           "gender",
           "hours-worked-per-week",
           "monthly-business-expenses",
+          "self-employed-under-one-year",
           "smoker",
           "spouse-average-monthly-income",
           "spouse-gender",
@@ -733,6 +678,7 @@
           "business-city",
           "business-name",
           "business-phone",
+          "business-phone-type",
           "business-state",
           "business-street-address",
           "business-type",
@@ -741,6 +687,7 @@
           "correspondence-to",
           "spouse-email",
           "spouse-phone",
+          "spouse-phone-type",
           "state",
           "street-address",
           "zip-code"
@@ -749,35 +696,33 @@
     },
     {
       "capability": "membershipStatus",
+      "selection": "matched",
       "sourceProvenance": "waepa-gi",
       "globalTemplateKey": "storybook-template",
+      "exampleScope": "Shared structure; effective Site values are verified separately",
       "examples": [
-        "pages-membership-whole-page--membership-status-and-referral",
-        "pages-membership-additional-membership-information--membership-status-and-referral",
+        "pages-membership-membership-status--new-or-current-member",
         "pages-contact-whole-page--business-information-hidden"
       ],
       "pages": {
-        "home": [],
+        "home": [
+          "birth-date",
+          "state-province",
+          "zip-postal-code"
+        ],
         "membership": [
+          "active-military",
           "email",
           "first-name",
           "last-name",
           "membership",
           "membership-referral-source",
           "membership-status",
-          "phone"
+          "phone",
+          "phone-type"
         ],
         "eligibility": [
           "birth-date",
-          "child-birth-date",
-          "child-first-name",
-          "child-gender",
-          "child-last-name",
-          "dependents",
-          "spouse-birth-date",
-          "spouse-first-name",
-          "spouse-last-name",
-          "spouse-membership",
           "state-province",
           "zip-postal-code"
         ],
@@ -788,7 +733,7 @@
           "gender",
           "hours-worked-per-week",
           "monthly-business-expenses",
-          "prototype-fact:li-group-term:member:activeMilitary",
+          "self-employed-under-one-year",
           "smoker",
           "spouse-average-monthly-income",
           "spouse-gender",
@@ -807,6 +752,7 @@
           "business-city",
           "business-name",
           "business-phone",
+          "business-phone-type",
           "business-state",
           "business-street-address",
           "business-type",
@@ -815,6 +761,7 @@
           "correspondence-to",
           "spouse-email",
           "spouse-phone",
+          "spouse-phone-type",
           "state",
           "street-address",
           "zip-code"

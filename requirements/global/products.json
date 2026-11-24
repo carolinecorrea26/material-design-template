@@ -99,6 +99,128 @@
         "definition": "coverage.product.di-ltd.definition",
         "description": "coverage.product.di-ltd.description"
       }
+    },
+    {
+      "id": "li-15yr",
+      "category": "LI",
+      "content": {
+        "name": "coverage.product.li-15yr.name",
+        "definition": "coverage.product.li-15yr.definition"
+      }
+    },
+    {
+      "id": "li-50plus",
+      "category": "LI",
+      "content": {
+        "name": "coverage.product.li-50plus.name",
+        "definition": "coverage.product.li-50plus.definition"
+      }
+    },
+    {
+      "id": "li-preferred",
+      "category": "LI",
+      "content": {
+        "name": "coverage.product.li-preferred.name",
+        "definition": "coverage.product.li-preferred.definition"
+      }
+    },
+    {
+      "id": "li-premier-accident",
+      "category": "AD",
+      "content": {
+        "name": "coverage.product.li-premier-accident.name",
+        "definition": "coverage.product.li-premier-accident.definition"
+      }
+    },
+    {
+      "id": "li-group-term",
+      "category": "LI",
+      "content": {
+        "name": "coverage.product.li-group-term.name",
+        "definition": "coverage.product.li-group-term.definition",
+        "description": "coverage.product.li-group-term.description"
+      }
+    },
+    {
+      "id": "di-ltd-plus",
+      "category": "DI",
+      "content": {
+        "name": "coverage.product.di-ltd-plus.name",
+        "definition": "coverage.product.di-ltd-plus.definition"
+      }
+    },
+    {
+      "id": "di-mtd",
+      "category": "DI",
+      "content": {
+        "name": "coverage.product.di-mtd.name",
+        "definition": "coverage.product.di-mtd.definition"
+      }
+    },
+    {
+      "id": "di-step-rated",
+      "category": "DI",
+      "content": {
+        "name": "coverage.product.di-step-rated.name",
+        "definition": "coverage.product.di-step-rated.definition"
+      }
+    },
+    {
+      "id": "di-level-rated",
+      "category": "DI",
+      "content": {
+        "name": "coverage.product.di-level-rated.name",
+        "definition": "coverage.product.di-level-rated.definition"
+      }
+    },
+    {
+      "id": "di-short-term",
+      "category": "DI",
+      "content": {
+        "name": "coverage.product.di-short-term.name",
+        "definition": "coverage.product.di-short-term.definition"
+      }
+    },
+    {
+      "id": "oo-professional",
+      "category": "OO",
+      "content": {
+        "name": "coverage.product.oo-professional.name",
+        "definition": "coverage.product.oo-professional.definition"
+      }
+    },
+    {
+      "id": "oo-office-overhead",
+      "category": "OO",
+      "content": {
+        "name": "coverage.product.oo-office-overhead.name",
+        "definition": "coverage.product.oo-office-overhead.definition"
+      }
+    },
+    {
+      "id": "sh-critical-illness",
+      "category": "SH",
+      "content": {
+        "name": "coverage.product.sh-critical-illness.name",
+        "definition": "coverage.product.sh-critical-illness.definition"
+      }
+    },
+    {
+      "id": "sh-hospital-money",
+      "category": "SH",
+      "content": {
+        "name": "coverage.product.sh-hospital-money.name",
+        "definition": "coverage.product.sh-hospital-money.definition"
+      }
+    },
+    {
+      "id": "sh-hospital-income",
+      "category": "SH",
+      "content": {
+        "name": "coverage.product.sh-hospital-income.name",
+        "definition": "coverage.product.sh-hospital-income.definition",
+        "description": "coverage.product.sh-hospital-income.description"
+      }
     }
   ],
   "catalog": {
@@ -1036,20 +1158,6 @@
         "sourceReference": "prototype:configurationDefinitions/coveragePolicy.aggregateNotes.SH"
       },
       {
-        "id": "field-surfaces",
-        "key": "field-surfaces",
-        "displayId": 44158004410138,
-        "providedBy": null,
-        "sourceReference": "Stored field surface upgrade",
-        "position": 278,
-        "definition": {
-          "path": [
-            "fieldSurfaces"
-          ],
-          "metadata": null
-        }
-      },
-      {
         "id": "field-collections",
         "key": "field-collections",
         "displayId": 267261207667295,
@@ -1093,7 +1201,8 @@
           "path": null,
           "metadata": {
             "version": 1,
-            "fullPolicyAcceptance": "pending"
+            "fullPolicyAcceptance": "pending",
+            "description": " Shared dependent-policy rules support memberCapRequiresVerifiedCoverage. When enabled for a spouse cap, only verified matching member coverage activates the cap, and verified existing spouse coverage reduces the remaining requested amount."
           },
           "target": {
             "kind": "product-dependent-policy",
@@ -1112,7 +1221,8 @@
           "path": null,
           "metadata": {
             "version": 1,
-            "fullPolicyAcceptance": "pending"
+            "fullPolicyAcceptance": "pending",
+            "description": " Shared dependent-policy rules support memberCapRequiresVerifiedCoverage. When enabled for a spouse cap, only verified matching member coverage activates the cap, and verified existing spouse coverage reduces the remaining requested amount."
           },
           "target": {
             "kind": "product-dependent-policy",
@@ -1131,7 +1241,8 @@
           "path": null,
           "metadata": {
             "version": 1,
-            "fullPolicyAcceptance": "pending"
+            "fullPolicyAcceptance": "pending",
+            "description": " Shared dependent-policy rules support memberCapRequiresVerifiedCoverage. When enabled for a spouse cap, only verified matching member coverage activates the cap, and verified existing spouse coverage reduces the remaining requested amount."
           },
           "target": {
             "kind": "product-dependent-policy",
@@ -1150,7 +1261,8 @@
           "path": null,
           "metadata": {
             "version": 1,
-            "fullPolicyAcceptance": "pending"
+            "fullPolicyAcceptance": "pending",
+            "description": " Shared dependent-policy rules support memberCapRequiresVerifiedCoverage. When enabled for a spouse cap, only verified matching member coverage activates the cap, and verified existing spouse coverage reduces the remaining requested amount."
           },
           "target": {
             "kind": "product-dependent-policy",
@@ -2035,6 +2147,3617 @@
         "displayId": 23697767076226,
         "providedBy": null,
         "sourceReference": "prototype:configurationDefinitions/coverages.overrides.di-ltd.brochureUrl"
+      },
+      {
+        "id": "shared.profile-financial-questionnaire",
+        "key": "shared.profile-financial-questionnaire",
+        "position": 0,
+        "definition": {
+          "target": {
+            "kind": "site-financial-questionnaire"
+          },
+          "metadata": {
+            "reusable": true,
+            "label": "Financial questionnaire applicability",
+            "description": "Optional effective-Site member-product thresholds. The enabled financial-questionnaire feature and a matching active member product are required. No policy assignment retains assigned financial question-set applicability.",
+            "group": "Profile policy",
+            "scope": "Global template",
+            "usedIn": "Profile and application preview",
+            "options": "enabled; member product groups; minimumAmount >= 0; inclusive/exclusive threshold"
+          }
+        },
+        "sourceReference": "requirements/global/rules/application.json#profile-financial-questionnaire-applicability; requirements/global/rules/profile.json; User Profile review November 13, 2026"
+      },
+      {
+        "id": "products.presentation.li-term.name",
+        "key": "products.presentation.li-term.name",
+        "position": 102,
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "li-term",
+            "name"
+          ],
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "li-term",
+            "property": "name"
+          },
+          "metadata": {
+            "label": "Product name",
+            "description": "Shared product presentation definition. Effective Sites may supply wording; description notices render in bold on a separate line and applicant notes follow their applicant."
+          }
+        }
+      },
+      {
+        "id": "products.presentation.li-term.description",
+        "key": "products.presentation.li-term.description",
+        "position": 103,
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "li-term",
+            "description"
+          ],
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "li-term",
+            "property": "description"
+          },
+          "metadata": {
+            "label": "Product description",
+            "description": "Shared product presentation definition. Effective Sites may supply wording; description notices render in bold on a separate line and applicant notes follow their applicant."
+          }
+        }
+      },
+      {
+        "id": "products.presentation.li-term.descriptionNotice",
+        "key": "products.presentation.li-term.descriptionNotice",
+        "position": 104,
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "li-term",
+            "descriptionNotice"
+          ],
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "li-term",
+            "property": "descriptionNotice"
+          },
+          "metadata": {
+            "label": "Product description notice (bold separate line)",
+            "description": "Shared product presentation definition. Effective Sites may supply wording; description notices render in bold on a separate line and applicant notes follow their applicant."
+          }
+        }
+      },
+      {
+        "id": "products.presentation.li-term.applicantNotes",
+        "key": "products.presentation.li-term.applicantNotes",
+        "position": 105,
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "li-term",
+            "applicantNotes"
+          ],
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "li-term",
+            "property": "applicantNotes"
+          },
+          "metadata": {
+            "label": "Applicant-specific product notes",
+            "description": "Shared product presentation definition. Effective Sites may supply wording; description notices render in bold on a separate line and applicant notes follow their applicant."
+          }
+        }
+      },
+      {
+        "id": "products.presentation.li-10yr.name",
+        "key": "products.presentation.li-10yr.name",
+        "position": 106,
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "li-10yr",
+            "name"
+          ],
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "li-10yr",
+            "property": "name"
+          },
+          "metadata": {
+            "label": "Product name",
+            "description": "Shared product presentation definition. Effective Sites may supply wording; description notices render in bold on a separate line and applicant notes follow their applicant."
+          }
+        }
+      },
+      {
+        "id": "products.presentation.li-10yr.description",
+        "key": "products.presentation.li-10yr.description",
+        "position": 107,
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "li-10yr",
+            "description"
+          ],
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "li-10yr",
+            "property": "description"
+          },
+          "metadata": {
+            "label": "Product description",
+            "description": "Shared product presentation definition. Effective Sites may supply wording; description notices render in bold on a separate line and applicant notes follow their applicant."
+          }
+        }
+      },
+      {
+        "id": "products.presentation.li-10yr.descriptionNotice",
+        "key": "products.presentation.li-10yr.descriptionNotice",
+        "position": 108,
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "li-10yr",
+            "descriptionNotice"
+          ],
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "li-10yr",
+            "property": "descriptionNotice"
+          },
+          "metadata": {
+            "label": "Product description notice (bold separate line)",
+            "description": "Shared product presentation definition. Effective Sites may supply wording; description notices render in bold on a separate line and applicant notes follow their applicant."
+          }
+        }
+      },
+      {
+        "id": "products.presentation.li-10yr.applicantNotes",
+        "key": "products.presentation.li-10yr.applicantNotes",
+        "position": 109,
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "li-10yr",
+            "applicantNotes"
+          ],
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "li-10yr",
+            "property": "applicantNotes"
+          },
+          "metadata": {
+            "label": "Applicant-specific product notes",
+            "description": "Shared product presentation definition. Effective Sites may supply wording; description notices render in bold on a separate line and applicant notes follow their applicant."
+          }
+        }
+      },
+      {
+        "id": "products.presentation.li-20yr.name",
+        "key": "products.presentation.li-20yr.name",
+        "position": 110,
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "li-20yr",
+            "name"
+          ],
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "li-20yr",
+            "property": "name"
+          },
+          "metadata": {
+            "label": "Product name",
+            "description": "Shared product presentation definition. Effective Sites may supply wording; description notices render in bold on a separate line and applicant notes follow their applicant."
+          }
+        }
+      },
+      {
+        "id": "products.presentation.li-20yr.description",
+        "key": "products.presentation.li-20yr.description",
+        "position": 111,
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "li-20yr",
+            "description"
+          ],
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "li-20yr",
+            "property": "description"
+          },
+          "metadata": {
+            "label": "Product description",
+            "description": "Shared product presentation definition. Effective Sites may supply wording; description notices render in bold on a separate line and applicant notes follow their applicant."
+          }
+        }
+      },
+      {
+        "id": "products.presentation.li-20yr.descriptionNotice",
+        "key": "products.presentation.li-20yr.descriptionNotice",
+        "position": 112,
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "li-20yr",
+            "descriptionNotice"
+          ],
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "li-20yr",
+            "property": "descriptionNotice"
+          },
+          "metadata": {
+            "label": "Product description notice (bold separate line)",
+            "description": "Shared product presentation definition. Effective Sites may supply wording; description notices render in bold on a separate line and applicant notes follow their applicant."
+          }
+        }
+      },
+      {
+        "id": "products.presentation.li-20yr.applicantNotes",
+        "key": "products.presentation.li-20yr.applicantNotes",
+        "position": 113,
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "li-20yr",
+            "applicantNotes"
+          ],
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "li-20yr",
+            "property": "applicantNotes"
+          },
+          "metadata": {
+            "label": "Applicant-specific product notes",
+            "description": "Shared product presentation definition. Effective Sites may supply wording; description notices render in bold on a separate line and applicant notes follow their applicant."
+          }
+        }
+      },
+      {
+        "id": "products.presentation.li-add.name",
+        "key": "products.presentation.li-add.name",
+        "position": 114,
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "li-add",
+            "name"
+          ],
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "li-add",
+            "property": "name"
+          },
+          "metadata": {
+            "label": "Product name",
+            "description": "Shared product presentation definition. Effective Sites may supply wording; description notices render in bold on a separate line and applicant notes follow their applicant."
+          }
+        }
+      },
+      {
+        "id": "products.presentation.li-add.description",
+        "key": "products.presentation.li-add.description",
+        "position": 115,
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "li-add",
+            "description"
+          ],
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "li-add",
+            "property": "description"
+          },
+          "metadata": {
+            "label": "Product description",
+            "description": "Shared product presentation definition. Effective Sites may supply wording; description notices render in bold on a separate line and applicant notes follow their applicant."
+          }
+        }
+      },
+      {
+        "id": "products.presentation.li-add.descriptionNotice",
+        "key": "products.presentation.li-add.descriptionNotice",
+        "position": 116,
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "li-add",
+            "descriptionNotice"
+          ],
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "li-add",
+            "property": "descriptionNotice"
+          },
+          "metadata": {
+            "label": "Product description notice (bold separate line)",
+            "description": "Shared product presentation definition. Effective Sites may supply wording; description notices render in bold on a separate line and applicant notes follow their applicant."
+          }
+        }
+      },
+      {
+        "id": "products.presentation.li-add.applicantNotes",
+        "key": "products.presentation.li-add.applicantNotes",
+        "position": 117,
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "li-add",
+            "applicantNotes"
+          ],
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "li-add",
+            "property": "applicantNotes"
+          },
+          "metadata": {
+            "label": "Applicant-specific product notes",
+            "description": "Shared product presentation definition. Effective Sites may supply wording; description notices render in bold on a separate line and applicant notes follow their applicant."
+          }
+        }
+      },
+      {
+        "id": "coverages.productOrder",
+        "key": "coverages.productOrder",
+        "definition": {
+          "path": [
+            "coverages",
+            "productOrder"
+          ],
+          "metadata": {
+            "scope": "Global template"
+          },
+          "target": null
+        }
+      },
+      {
+        "id": "products.presentation.li-15yr.description",
+        "key": "products.presentation.li-15yr.description",
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "li-15yr",
+            "description"
+          ],
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "li-15yr",
+            "property": "description"
+          },
+          "metadata": {
+            "scope": "Global template"
+          }
+        }
+      },
+      {
+        "id": "products.presentation.li-preferred.description",
+        "key": "products.presentation.li-preferred.description",
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "li-preferred",
+            "description"
+          ],
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "li-preferred",
+            "property": "description"
+          },
+          "metadata": {
+            "scope": "Global template"
+          }
+        }
+      },
+      {
+        "id": "products.presentation.li-premier-accident.description",
+        "key": "products.presentation.li-premier-accident.description",
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "li-premier-accident",
+            "description"
+          ],
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "li-premier-accident",
+            "property": "description"
+          },
+          "metadata": {
+            "scope": "Global template"
+          }
+        }
+      },
+      {
+        "id": "products.presentation.di-step-rated.description",
+        "key": "products.presentation.di-step-rated.description",
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "di-step-rated",
+            "description"
+          ],
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "di-step-rated",
+            "property": "description"
+          },
+          "metadata": {
+            "scope": "Global template"
+          }
+        }
+      },
+      {
+        "id": "products.presentation.di-level-rated.description",
+        "key": "products.presentation.di-level-rated.description",
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "di-level-rated",
+            "description"
+          ],
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "di-level-rated",
+            "property": "description"
+          },
+          "metadata": {
+            "scope": "Global template"
+          }
+        }
+      },
+      {
+        "id": "products.presentation.oo-office-overhead.description",
+        "key": "products.presentation.oo-office-overhead.description",
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "oo-office-overhead",
+            "description"
+          ],
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "oo-office-overhead",
+            "property": "description"
+          },
+          "metadata": {
+            "scope": "Global template"
+          }
+        }
+      },
+      {
+        "id": "products.presentation.sh-hospital-income.description",
+        "key": "products.presentation.sh-hospital-income.description",
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "sh-hospital-income",
+            "description"
+          ],
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "sh-hospital-income",
+            "property": "description"
+          },
+          "metadata": {
+            "scope": "Global template"
+          }
+        }
+      },
+      {
+        "id": "products.presentation.li-15yr.name",
+        "key": "products.presentation.li-15yr.name",
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "li-15yr",
+            "name"
+          ],
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "li-15yr",
+            "property": "name"
+          },
+          "metadata": {
+            "scope": "Global template"
+          }
+        }
+      },
+      {
+        "id": "products.presentation.li-15yr.applicants",
+        "key": "products.presentation.li-15yr.applicants",
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "li-15yr",
+            "applicants"
+          ],
+          "metadata": {
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "li-15yr",
+            "property": "applicants"
+          }
+        }
+      },
+      {
+        "id": "products.presentation.li-term.featured",
+        "key": "products.presentation.li-term.featured",
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "li-term",
+            "featured"
+          ],
+          "metadata": {
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "li-term",
+            "property": "featured"
+          }
+        }
+      },
+      {
+        "id": "products.presentation.li-preferred.name",
+        "key": "products.presentation.li-preferred.name",
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "li-preferred",
+            "name"
+          ],
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "li-preferred",
+            "property": "name"
+          },
+          "metadata": {
+            "scope": "Global template"
+          }
+        }
+      },
+      {
+        "id": "products.presentation.li-preferred.applicants",
+        "key": "products.presentation.li-preferred.applicants",
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "li-preferred",
+            "applicants"
+          ],
+          "metadata": {
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "li-preferred",
+            "property": "applicants"
+          }
+        }
+      },
+      {
+        "id": "products.presentation.li-premier-accident.name",
+        "key": "products.presentation.li-premier-accident.name",
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "li-premier-accident",
+            "name"
+          ],
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "li-premier-accident",
+            "property": "name"
+          },
+          "metadata": {
+            "scope": "Global template"
+          }
+        }
+      },
+      {
+        "id": "products.presentation.li-premier-accident.applicants",
+        "key": "products.presentation.li-premier-accident.applicants",
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "li-premier-accident",
+            "applicants"
+          ],
+          "metadata": {
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "li-premier-accident",
+            "property": "applicants"
+          }
+        }
+      },
+      {
+        "id": "products.presentation.di-step-rated.name",
+        "key": "products.presentation.di-step-rated.name",
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "di-step-rated",
+            "name"
+          ],
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "di-step-rated",
+            "property": "name"
+          },
+          "metadata": {
+            "scope": "Global template"
+          }
+        }
+      },
+      {
+        "id": "coverages.overrides.di-step-rated.requirements.eligibility",
+        "key": "coverages.overrides.di-step-rated.requirements.eligibility",
+        "definition": {
+          "path": [
+            "coverages",
+            "overrides",
+            "di-step-rated",
+            "requirements",
+            "eligibility"
+          ],
+          "metadata": {
+            "scope": "Global template"
+          },
+          "target": null
+        }
+      },
+      {
+        "id": "products.presentation.di-step-rated.applicants",
+        "key": "products.presentation.di-step-rated.applicants",
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "di-step-rated",
+            "applicants"
+          ],
+          "metadata": {
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "di-step-rated",
+            "property": "applicants"
+          }
+        }
+      },
+      {
+        "id": "products.presentation.di-step-rated.waitingPeriodOptions",
+        "key": "products.presentation.di-step-rated.waitingPeriodOptions",
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "di-step-rated",
+            "waitingPeriodOptions"
+          ],
+          "metadata": {
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "di-step-rated",
+            "property": "waitingPeriodOptions"
+          }
+        }
+      },
+      {
+        "id": "products.presentation.di-level-rated.name",
+        "key": "products.presentation.di-level-rated.name",
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "di-level-rated",
+            "name"
+          ],
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "di-level-rated",
+            "property": "name"
+          },
+          "metadata": {
+            "scope": "Global template"
+          }
+        }
+      },
+      {
+        "id": "products.presentation.di-level-rated.applicants",
+        "key": "products.presentation.di-level-rated.applicants",
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "di-level-rated",
+            "applicants"
+          ],
+          "metadata": {
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "di-level-rated",
+            "property": "applicants"
+          }
+        }
+      },
+      {
+        "id": "products.presentation.di-level-rated.waitingPeriodOptions",
+        "key": "products.presentation.di-level-rated.waitingPeriodOptions",
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "di-level-rated",
+            "waitingPeriodOptions"
+          ],
+          "metadata": {
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "di-level-rated",
+            "property": "waitingPeriodOptions"
+          }
+        }
+      },
+      {
+        "id": "products.presentation.oo-office-overhead.name",
+        "key": "products.presentation.oo-office-overhead.name",
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "oo-office-overhead",
+            "name"
+          ],
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "oo-office-overhead",
+            "property": "name"
+          },
+          "metadata": {
+            "scope": "Global template"
+          }
+        }
+      },
+      {
+        "id": "products.presentation.oo-office-overhead.applicants",
+        "key": "products.presentation.oo-office-overhead.applicants",
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "oo-office-overhead",
+            "applicants"
+          ],
+          "metadata": {
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "oo-office-overhead",
+            "property": "applicants"
+          }
+        }
+      },
+      {
+        "id": "products.presentation.oo-office-overhead.waitingPeriodOptions",
+        "key": "products.presentation.oo-office-overhead.waitingPeriodOptions",
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "oo-office-overhead",
+            "waitingPeriodOptions"
+          ],
+          "metadata": {
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "oo-office-overhead",
+            "property": "waitingPeriodOptions"
+          }
+        }
+      },
+      {
+        "id": "products.presentation.oo-office-overhead.maxBenefitPeriodOptions",
+        "key": "products.presentation.oo-office-overhead.maxBenefitPeriodOptions",
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "oo-office-overhead",
+            "maxBenefitPeriodOptions"
+          ],
+          "metadata": {
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "oo-office-overhead",
+            "property": "maxBenefitPeriodOptions"
+          }
+        }
+      },
+      {
+        "id": "products.presentation.sh-hospital-income.name",
+        "key": "products.presentation.sh-hospital-income.name",
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "sh-hospital-income",
+            "name"
+          ],
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "sh-hospital-income",
+            "property": "name"
+          },
+          "metadata": {
+            "scope": "Global template"
+          }
+        }
+      },
+      {
+        "id": "products.presentation.sh-hospital-income.applicants",
+        "key": "products.presentation.sh-hospital-income.applicants",
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "sh-hospital-income",
+            "applicants"
+          ],
+          "metadata": {
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "sh-hospital-income",
+            "property": "applicants"
+          }
+        }
+      },
+      {
+        "id": "template.product-benefit-policy.di-step-rated",
+        "key": "template.product-benefit-policy.di-step-rated",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1,
+            "adoptedDimension": "benefits",
+            "fullPolicyAcceptance": "pending",
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-benefit-policy",
+            "productKey": "di-step-rated"
+          }
+        }
+      },
+      {
+        "id": "template.product-benefit-policy.di-level-rated",
+        "key": "template.product-benefit-policy.di-level-rated",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1,
+            "adoptedDimension": "benefits",
+            "fullPolicyAcceptance": "pending",
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-benefit-policy",
+            "productKey": "di-level-rated"
+          }
+        }
+      },
+      {
+        "id": "template.product-benefit-policy.oo-office-overhead",
+        "key": "template.product-benefit-policy.oo-office-overhead",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1,
+            "adoptedDimension": "benefits",
+            "fullPolicyAcceptance": "pending",
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-benefit-policy",
+            "productKey": "oo-office-overhead"
+          }
+        }
+      },
+      {
+        "id": "template.product-dependent-policy.sh-hospital-income",
+        "key": "template.product-dependent-policy.sh-hospital-income",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1,
+            "fullPolicyAcceptance": "pending",
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-dependent-policy",
+            "productKey": "sh-hospital-income"
+          }
+        }
+      },
+      {
+        "id": "template.product-dependent-policy.li-premier-accident",
+        "key": "template.product-dependent-policy.li-premier-accident",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1,
+            "fullPolicyAcceptance": "pending",
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-dependent-policy",
+            "productKey": "li-premier-accident"
+          }
+        }
+      },
+      {
+        "id": "template.product-rating-adjustments.li-term",
+        "key": "template.product-rating-adjustments.li-term",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-rating-adjustments",
+            "productKey": "li-term"
+          }
+        }
+      },
+      {
+        "id": "template.product-rate-outcome.li-15yr",
+        "key": "template.product-rate-outcome.li-15yr",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-rate-outcome",
+            "productKey": "li-15yr"
+          }
+        }
+      },
+      {
+        "id": "template.product-rate-outcome.li-preferred",
+        "key": "template.product-rate-outcome.li-preferred",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-rate-outcome",
+            "productKey": "li-preferred"
+          }
+        }
+      },
+      {
+        "id": "template.product-rate-outcome.li-premier-accident",
+        "key": "template.product-rate-outcome.li-premier-accident",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-rate-outcome",
+            "productKey": "li-premier-accident"
+          }
+        }
+      },
+      {
+        "id": "template.product-rate-outcome.di-step-rated",
+        "key": "template.product-rate-outcome.di-step-rated",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-rate-outcome",
+            "productKey": "di-step-rated"
+          }
+        }
+      },
+      {
+        "id": "template.product-rate-outcome.di-level-rated",
+        "key": "template.product-rate-outcome.di-level-rated",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-rate-outcome",
+            "productKey": "di-level-rated"
+          }
+        }
+      },
+      {
+        "id": "template.product-rate-outcome.oo-office-overhead",
+        "key": "template.product-rate-outcome.oo-office-overhead",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-rate-outcome",
+            "productKey": "oo-office-overhead"
+          }
+        }
+      },
+      {
+        "id": "template.product-rate-outcome.sh-hospital-income",
+        "key": "template.product-rate-outcome.sh-hospital-income",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-rate-outcome",
+            "productKey": "sh-hospital-income"
+          }
+        }
+      },
+      {
+        "id": "template.product-selection-policy.li-15yr",
+        "key": "template.product-selection-policy.li-15yr",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-selection-policy",
+            "productKey": "li-15yr"
+          }
+        }
+      },
+      {
+        "id": "template.product-journey-policy.li-15yr",
+        "key": "template.product-journey-policy.li-15yr",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-journey-policy",
+            "productKey": "li-15yr"
+          }
+        }
+      },
+      {
+        "id": "template.product-residency-policy.li-15yr",
+        "key": "template.product-residency-policy.li-15yr",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-residency-policy",
+            "productKey": "li-15yr"
+          }
+        }
+      },
+      {
+        "id": "template.product-selection-policy.li-preferred",
+        "key": "template.product-selection-policy.li-preferred",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-selection-policy",
+            "productKey": "li-preferred"
+          }
+        }
+      },
+      {
+        "id": "template.product-journey-policy.li-preferred",
+        "key": "template.product-journey-policy.li-preferred",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-journey-policy",
+            "productKey": "li-preferred"
+          }
+        }
+      },
+      {
+        "id": "template.product-residency-policy.li-preferred",
+        "key": "template.product-residency-policy.li-preferred",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-residency-policy",
+            "productKey": "li-preferred"
+          }
+        }
+      },
+      {
+        "id": "template.product-selection-policy.li-premier-accident",
+        "key": "template.product-selection-policy.li-premier-accident",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-selection-policy",
+            "productKey": "li-premier-accident"
+          }
+        }
+      },
+      {
+        "id": "template.product-journey-policy.li-premier-accident",
+        "key": "template.product-journey-policy.li-premier-accident",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-journey-policy",
+            "productKey": "li-premier-accident"
+          }
+        }
+      },
+      {
+        "id": "template.product-residency-policy.li-premier-accident",
+        "key": "template.product-residency-policy.li-premier-accident",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-residency-policy",
+            "productKey": "li-premier-accident"
+          }
+        }
+      },
+      {
+        "id": "template.product-selection-policy.di-step-rated",
+        "key": "template.product-selection-policy.di-step-rated",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-selection-policy",
+            "productKey": "di-step-rated"
+          }
+        }
+      },
+      {
+        "id": "template.product-journey-policy.di-step-rated",
+        "key": "template.product-journey-policy.di-step-rated",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-journey-policy",
+            "productKey": "di-step-rated"
+          }
+        }
+      },
+      {
+        "id": "template.product-residency-policy.di-step-rated",
+        "key": "template.product-residency-policy.di-step-rated",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-residency-policy",
+            "productKey": "di-step-rated"
+          }
+        }
+      },
+      {
+        "id": "template.product-selection-policy.di-level-rated",
+        "key": "template.product-selection-policy.di-level-rated",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-selection-policy",
+            "productKey": "di-level-rated"
+          }
+        }
+      },
+      {
+        "id": "template.product-journey-policy.di-level-rated",
+        "key": "template.product-journey-policy.di-level-rated",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-journey-policy",
+            "productKey": "di-level-rated"
+          }
+        }
+      },
+      {
+        "id": "template.product-residency-policy.di-level-rated",
+        "key": "template.product-residency-policy.di-level-rated",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-residency-policy",
+            "productKey": "di-level-rated"
+          }
+        }
+      },
+      {
+        "id": "template.product-selection-policy.oo-office-overhead",
+        "key": "template.product-selection-policy.oo-office-overhead",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-selection-policy",
+            "productKey": "oo-office-overhead"
+          }
+        }
+      },
+      {
+        "id": "template.product-journey-policy.oo-office-overhead",
+        "key": "template.product-journey-policy.oo-office-overhead",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-journey-policy",
+            "productKey": "oo-office-overhead"
+          }
+        }
+      },
+      {
+        "id": "template.product-residency-policy.oo-office-overhead",
+        "key": "template.product-residency-policy.oo-office-overhead",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-residency-policy",
+            "productKey": "oo-office-overhead"
+          }
+        }
+      },
+      {
+        "id": "template.product-selection-policy.sh-hospital-income",
+        "key": "template.product-selection-policy.sh-hospital-income",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-selection-policy",
+            "productKey": "sh-hospital-income"
+          }
+        }
+      },
+      {
+        "id": "template.product-journey-policy.sh-hospital-income",
+        "key": "template.product-journey-policy.sh-hospital-income",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-journey-policy",
+            "productKey": "sh-hospital-income"
+          }
+        }
+      },
+      {
+        "id": "template.product-residency-policy.sh-hospital-income",
+        "key": "template.product-residency-policy.sh-hospital-income",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-residency-policy",
+            "productKey": "sh-hospital-income"
+          }
+        }
+      },
+      {
+        "id": "template.product-rate-modifier-policy.li-15yr",
+        "key": "template.product-rate-modifier-policy.li-15yr",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-rate-modifier-policy",
+            "productKey": "li-15yr"
+          }
+        }
+      },
+      {
+        "id": "template.product-rate-input-policy.li-15yr",
+        "key": "template.product-rate-input-policy.li-15yr",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-rate-input-policy",
+            "productKey": "li-15yr"
+          }
+        }
+      },
+      {
+        "id": "template.product-rate-modifier-policy.li-preferred",
+        "key": "template.product-rate-modifier-policy.li-preferred",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-rate-modifier-policy",
+            "productKey": "li-preferred"
+          }
+        }
+      },
+      {
+        "id": "template.product-rate-input-policy.li-preferred",
+        "key": "template.product-rate-input-policy.li-preferred",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-rate-input-policy",
+            "productKey": "li-preferred"
+          }
+        }
+      },
+      {
+        "id": "template.product-rate-modifier-policy.li-premier-accident",
+        "key": "template.product-rate-modifier-policy.li-premier-accident",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-rate-modifier-policy",
+            "productKey": "li-premier-accident"
+          }
+        }
+      },
+      {
+        "id": "template.product-rate-input-policy.li-premier-accident",
+        "key": "template.product-rate-input-policy.li-premier-accident",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-rate-input-policy",
+            "productKey": "li-premier-accident"
+          }
+        }
+      },
+      {
+        "id": "template.product-rate-modifier-policy.di-step-rated",
+        "key": "template.product-rate-modifier-policy.di-step-rated",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-rate-modifier-policy",
+            "productKey": "di-step-rated"
+          }
+        }
+      },
+      {
+        "id": "template.product-rate-input-policy.di-step-rated",
+        "key": "template.product-rate-input-policy.di-step-rated",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-rate-input-policy",
+            "productKey": "di-step-rated"
+          }
+        }
+      },
+      {
+        "id": "template.product-rate-modifier-policy.di-level-rated",
+        "key": "template.product-rate-modifier-policy.di-level-rated",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-rate-modifier-policy",
+            "productKey": "di-level-rated"
+          }
+        }
+      },
+      {
+        "id": "template.product-rate-input-policy.di-level-rated",
+        "key": "template.product-rate-input-policy.di-level-rated",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-rate-input-policy",
+            "productKey": "di-level-rated"
+          }
+        }
+      },
+      {
+        "id": "template.product-rate-modifier-policy.oo-office-overhead",
+        "key": "template.product-rate-modifier-policy.oo-office-overhead",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-rate-modifier-policy",
+            "productKey": "oo-office-overhead"
+          }
+        }
+      },
+      {
+        "id": "template.product-rate-input-policy.oo-office-overhead",
+        "key": "template.product-rate-input-policy.oo-office-overhead",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-rate-input-policy",
+            "productKey": "oo-office-overhead"
+          }
+        }
+      },
+      {
+        "id": "template.product-rate-modifier-policy.sh-hospital-income",
+        "key": "template.product-rate-modifier-policy.sh-hospital-income",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-rate-modifier-policy",
+            "productKey": "sh-hospital-income"
+          }
+        }
+      },
+      {
+        "id": "template.product-rate-input-policy.sh-hospital-income",
+        "key": "template.product-rate-input-policy.sh-hospital-income",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-rate-input-policy",
+            "productKey": "sh-hospital-income"
+          }
+        }
+      },
+      {
+        "id": "template.product-rider-set.di-level-rated",
+        "key": "template.product-rider-set.di-level-rated",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "authority": "User-confirmed relational rider ownership, October 19, 2026",
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-rider-set",
+            "productKey": "di-level-rated"
+          }
+        }
+      },
+      {
+        "id": "template.product-rider-set.di-step-rated",
+        "key": "template.product-rider-set.di-step-rated",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "authority": "User-confirmed relational rider ownership, October 19, 2026",
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-rider-set",
+            "productKey": "di-step-rated"
+          }
+        }
+      },
+      {
+        "id": "template.product-rider-set.li-15yr",
+        "key": "template.product-rider-set.li-15yr",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "authority": "User-confirmed relational rider ownership, October 19, 2026",
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-rider-set",
+            "productKey": "li-15yr"
+          }
+        }
+      },
+      {
+        "id": "template.product-rider-set.li-preferred",
+        "key": "template.product-rider-set.li-preferred",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "authority": "User-confirmed relational rider ownership, October 19, 2026",
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-rider-set",
+            "productKey": "li-preferred"
+          }
+        }
+      },
+      {
+        "id": "template.product-rider-set.li-premier-accident",
+        "key": "template.product-rider-set.li-premier-accident",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "authority": "User-confirmed relational rider ownership, October 19, 2026",
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-rider-set",
+            "productKey": "li-premier-accident"
+          }
+        }
+      },
+      {
+        "id": "template.product-rider-set.oo-office-overhead",
+        "key": "template.product-rider-set.oo-office-overhead",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "authority": "User-confirmed relational rider ownership, October 19, 2026",
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-rider-set",
+            "productKey": "oo-office-overhead"
+          }
+        }
+      },
+      {
+        "id": "template.product-rider-set.sh-hospital-income",
+        "key": "template.product-rider-set.sh-hospital-income",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "authority": "User-confirmed relational rider ownership, October 19, 2026",
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-rider-set",
+            "productKey": "sh-hospital-income"
+          }
+        }
+      },
+      {
+        "id": "coveragePolicy.questionOverrides",
+        "key": "coveragePolicy.questionOverrides",
+        "definition": {
+          "path": [
+            "coveragePolicy",
+            "questionOverrides"
+          ],
+          "metadata": {
+            "authority": "Main!R118/R119; User decision October 20, 2026",
+            "scope": "Global template"
+          }
+        }
+      },
+      {
+        "id": "template.product-eligibility-facts.di-step-rated.member",
+        "key": "template.product-eligibility-facts.di-step-rated.member",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "authority": "Main!R118/R119; User decision October 20, 2026",
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-eligibility-facts",
+            "productKey": "di-step-rated",
+            "applicantKey": "member"
+          }
+        }
+      },
+      {
+        "id": "template.product-eligibility-facts.di-level-rated.member",
+        "key": "template.product-eligibility-facts.di-level-rated.member",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "authority": "Main!R118/R119; User decision October 20, 2026",
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-eligibility-facts",
+            "productKey": "di-level-rated",
+            "applicantKey": "member"
+          }
+        }
+      },
+      {
+        "id": "template.site-category-eligibility",
+        "key": "template.site-category-eligibility",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "authority": "Attestation Online and PDF!C3; User decision October 20, 2026",
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "site-category-eligibility"
+          }
+        }
+      },
+      {
+        "id": "products.presentation.li-group-term.description",
+        "key": "products.presentation.li-group-term.description",
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "li-group-term",
+            "description"
+          ],
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "li-group-term",
+            "property": "description"
+          },
+          "metadata": {
+            "scope": "Global template"
+          }
+        }
+      },
+      {
+        "id": "products.presentation.di-short-term.description",
+        "key": "products.presentation.di-short-term.description",
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "di-short-term",
+            "description"
+          ],
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "di-short-term",
+            "property": "description"
+          },
+          "metadata": {
+            "scope": "Global template"
+          }
+        }
+      },
+      {
+        "id": "products.presentation.li-group-term.underwritingType",
+        "key": "products.presentation.li-group-term.underwritingType",
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "li-group-term",
+            "underwritingType"
+          ],
+          "metadata": {
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "li-group-term",
+            "property": "underwritingType"
+          }
+        }
+      },
+      {
+        "id": "coverages.overrides.li-group-term.productWarning.severity",
+        "key": "coverages.overrides.li-group-term.productWarning.severity",
+        "definition": {
+          "path": [
+            "coverages",
+            "overrides",
+            "li-group-term",
+            "productWarning",
+            "severity"
+          ],
+          "metadata": {
+            "scope": "Global template"
+          },
+          "target": null
+        }
+      },
+      {
+        "id": "coverages.overrides.li-group-term.productWarning.title",
+        "key": "coverages.overrides.li-group-term.productWarning.title",
+        "definition": {
+          "path": [
+            "coverages",
+            "overrides",
+            "li-group-term",
+            "productWarning",
+            "title"
+          ],
+          "metadata": {
+            "scope": "Global template"
+          },
+          "target": null
+        }
+      },
+      {
+        "id": "coverages.overrides.li-group-term.productWarning.message",
+        "key": "coverages.overrides.li-group-term.productWarning.message",
+        "definition": {
+          "path": [
+            "coverages",
+            "overrides",
+            "li-group-term",
+            "productWarning",
+            "message"
+          ],
+          "metadata": {
+            "scope": "Global template"
+          },
+          "target": null
+        }
+      },
+      {
+        "id": "products.presentation.di-short-term.underwritingType",
+        "key": "products.presentation.di-short-term.underwritingType",
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "di-short-term",
+            "underwritingType"
+          ],
+          "metadata": {
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "di-short-term",
+            "property": "underwritingType"
+          }
+        }
+      },
+      {
+        "id": "coverages.hideSmokerQuestion",
+        "key": "coverages.hideSmokerQuestion",
+        "definition": {
+          "path": [
+            "coverages",
+            "hideSmokerQuestion"
+          ],
+          "metadata": {
+            "scope": "Global template"
+          },
+          "target": null
+        }
+      },
+      {
+        "id": "products.presentation.li-group-term.name",
+        "key": "products.presentation.li-group-term.name",
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "li-group-term",
+            "name"
+          ],
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "li-group-term",
+            "property": "name"
+          },
+          "metadata": {
+            "scope": "Global template"
+          }
+        }
+      },
+      {
+        "id": "products.presentation.di-short-term.name",
+        "key": "products.presentation.di-short-term.name",
+        "definition": {
+          "path": [
+            "products",
+            "presentation",
+            "di-short-term",
+            "name"
+          ],
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "di-short-term",
+            "property": "name"
+          },
+          "metadata": {
+            "scope": "Global template"
+          }
+        }
+      },
+      {
+        "id": "template.product-benefit-policy.di-short-term",
+        "key": "template.product-benefit-policy.di-short-term",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1,
+            "adoptedDimension": "benefits",
+            "fullPolicyAcceptance": "pending",
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-benefit-policy",
+            "productKey": "di-short-term"
+          }
+        }
+      },
+      {
+        "id": "template.product-dependent-policy.li-group-term",
+        "key": "template.product-dependent-policy.li-group-term",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1,
+            "fullPolicyAcceptance": "pending",
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-dependent-policy",
+            "productKey": "li-group-term"
+          }
+        }
+      },
+      {
+        "id": "template.product-rate-outcome.li-group-term",
+        "key": "template.product-rate-outcome.li-group-term",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-rate-outcome",
+            "productKey": "li-group-term"
+          }
+        }
+      },
+      {
+        "id": "template.product-rate-outcome.di-short-term",
+        "key": "template.product-rate-outcome.di-short-term",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-rate-outcome",
+            "productKey": "di-short-term"
+          }
+        }
+      },
+      {
+        "id": "template.product-amount-cap-policy.li-group-term",
+        "key": "template.product-amount-cap-policy.li-group-term",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "authority": "User-confirmed MCR amount authority and WAEPA Life decision, October 19, 2026",
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-amount-cap-policy",
+            "productKey": "li-group-term"
+          }
+        }
+      },
+      {
+        "id": "template.product-residency-policy.li-group-term",
+        "key": "template.product-residency-policy.li-group-term",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "fullPolicyAcceptance": "pending",
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-residency-policy",
+            "productKey": "li-group-term"
+          }
+        }
+      },
+      {
+        "id": "template.product-residency-policy.di-short-term",
+        "key": "template.product-residency-policy.di-short-term",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "fullPolicyAcceptance": "pending",
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-residency-policy",
+            "productKey": "di-short-term"
+          }
+        }
+      },
+      {
+        "id": "template.product-selection-policy.li-group-term",
+        "key": "template.product-selection-policy.li-group-term",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-selection-policy",
+            "productKey": "li-group-term"
+          }
+        }
+      },
+      {
+        "id": "template.product-journey-policy.li-group-term",
+        "key": "template.product-journey-policy.li-group-term",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-journey-policy",
+            "productKey": "li-group-term"
+          }
+        }
+      },
+      {
+        "id": "template.product-selection-policy.di-short-term",
+        "key": "template.product-selection-policy.di-short-term",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-selection-policy",
+            "productKey": "di-short-term"
+          }
+        }
+      },
+      {
+        "id": "template.product-journey-policy.di-short-term",
+        "key": "template.product-journey-policy.di-short-term",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-journey-policy",
+            "productKey": "di-short-term"
+          }
+        }
+      },
+      {
+        "id": "template.product-rate-modifier-policy.li-group-term",
+        "key": "template.product-rate-modifier-policy.li-group-term",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-rate-modifier-policy",
+            "productKey": "li-group-term"
+          }
+        }
+      },
+      {
+        "id": "template.product-rate-input-policy.li-group-term",
+        "key": "template.product-rate-input-policy.li-group-term",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-rate-input-policy",
+            "productKey": "li-group-term"
+          }
+        }
+      },
+      {
+        "id": "template.product-rate-modifier-policy.di-short-term",
+        "key": "template.product-rate-modifier-policy.di-short-term",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-rate-modifier-policy",
+            "productKey": "di-short-term"
+          }
+        }
+      },
+      {
+        "id": "template.product-rate-input-policy.di-short-term",
+        "key": "template.product-rate-input-policy.di-short-term",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1,
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-rate-input-policy",
+            "productKey": "di-short-term"
+          }
+        }
+      },
+      {
+        "id": "template.product-rider-set.di-short-term",
+        "key": "template.product-rider-set.di-short-term",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "authority": "User-confirmed relational rider ownership, October 19, 2026",
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-rider-set",
+            "productKey": "di-short-term"
+          }
+        }
+      },
+      {
+        "id": "template.product-rider-set.li-group-term",
+        "key": "template.product-rider-set.li-group-term",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "authority": "User-confirmed relational rider ownership, October 19, 2026",
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-rider-set",
+            "productKey": "li-group-term"
+          }
+        }
+      },
+      {
+        "id": "template.product-eligibility-facts.li-group-term.spouse",
+        "key": "template.product-eligibility-facts.li-group-term.spouse",
+        "definition": {
+          "path": null,
+          "target": {
+            "kind": "product-eligibility-facts",
+            "productKey": "li-group-term",
+            "applicantKey": "spouse"
+          },
+          "metadata": {
+            "reusable": true,
+            "assignmentRequired": true,
+            "scope": "Global template"
+          }
+        }
+      },
+      {
+        "id": "template.product-eligibility-facts.li-group-term.member",
+        "key": "template.product-eligibility-facts.li-group-term.member",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "scope": "Global template"
+          },
+          "target": {
+            "kind": "product-eligibility-facts",
+            "productKey": "li-group-term",
+            "applicantKey": "member"
+          }
+        }
+      },
+      {
+        "id": "products.riders.li-group-term.rider.waepa.r34.riderOnlyApplicants",
+        "key": "products.riders.li-group-term.rider.waepa.r34.riderOnlyApplicants",
+        "position": 0,
+        "definition": {
+          "target": {
+            "kind": "product-rider-override",
+            "productKey": "li-group-term",
+            "riderKey": "rider.waepa.r34",
+            "property": "riderOnlyApplicants"
+          },
+          "metadata": {
+            "reusable": true,
+            "label": "CIR standalone applicants",
+            "description": "Effective-Site applicant types permitted to elect CIR without base Group Term Life coverage. An empty selection disables standalone CIR.",
+            "group": "Rider policy",
+            "scope": "Global template",
+            "usedIn": "Coverage and application validation",
+            "options": "member; spouse; child; empty selection"
+          }
+        },
+        "sourceReference": "User WAEPA correction November 19, 2026"
+      },
+      {
+        "id": "products.presentation.di-short-term.brochureUrl",
+        "key": "products.presentation.di-short-term.brochureUrl",
+        "position": 0,
+        "definition": {
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "di-short-term",
+            "property": "brochureUrl"
+          },
+          "metadata": {
+            "reusable": true,
+            "scope": "Global template",
+            "label": "Disability coverage details URL"
+          }
+        },
+        "sourceReference": "User AMA-GI product links November 19, 2026"
+      },
+      {
+        "id": "template.di-ltd-plus.reviewed-benefit-policy",
+        "key": "template.di-ltd-plus.reviewed-benefit-policy",
+        "sourceReference": "Main!H44; Main!I44; Main!J44; Disability!A21; Disability!D21; Disability!D22; Disability!A23; Disability!D23; Disability!F21",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1,
+            "adoptedDimension": "benefits",
+            "fullPolicyAcceptance": "pending"
+          },
+          "target": {
+            "kind": "product-benefit-policy",
+            "productKey": "di-ltd-plus"
+          }
+        },
+        "position": 0
+      },
+      {
+        "id": "template.di-mtd.reviewed-benefit-policy",
+        "key": "template.di-mtd.reviewed-benefit-policy",
+        "sourceReference": "Main!H46; Main!I46; Main!J46; Disability!A21; Disability!D21; Disability!D22; Disability!A23; Disability!D23; Disability!F21",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1,
+            "adoptedDimension": "benefits",
+            "fullPolicyAcceptance": "pending"
+          },
+          "target": {
+            "kind": "product-benefit-policy",
+            "productKey": "di-mtd"
+          }
+        },
+        "position": 0
+      },
+      {
+        "id": "template.oo-professional.reviewed-benefit-policy",
+        "key": "template.oo-professional.reviewed-benefit-policy",
+        "sourceReference": "Main!H48; Main!I48; Main!J48",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1,
+            "adoptedDimension": "benefits",
+            "fullPolicyAcceptance": "pending"
+          },
+          "target": {
+            "kind": "product-benefit-policy",
+            "productKey": "oo-professional"
+          }
+        },
+        "position": 0
+      },
+      {
+        "id": "template.li-50plus.reviewed-dependent-policy",
+        "key": "template.li-50plus.reviewed-dependent-policy",
+        "sourceReference": "Main!I42; Main!J42",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1,
+            "fullPolicyAcceptance": "pending"
+          },
+          "target": {
+            "kind": "product-dependent-policy",
+            "productKey": "li-50plus"
+          }
+        },
+        "position": 0
+      },
+      {
+        "id": "template.sh-critical-illness.reviewed-dependent-policy",
+        "key": "template.sh-critical-illness.reviewed-dependent-policy",
+        "sourceReference": "Main!I47; Main!J47",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1,
+            "fullPolicyAcceptance": "pending"
+          },
+          "target": {
+            "kind": "product-dependent-policy",
+            "productKey": "sh-critical-illness"
+          }
+        },
+        "position": 0
+      },
+      {
+        "id": "template.sh-hospital-money.reviewed-dependent-policy",
+        "key": "template.sh-hospital-money.reviewed-dependent-policy",
+        "sourceReference": "Main!I49; Main!J49",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1,
+            "fullPolicyAcceptance": "pending"
+          },
+          "target": {
+            "kind": "product-dependent-policy",
+            "productKey": "sh-hospital-money"
+          }
+        },
+        "position": 0
+      },
+      {
+        "id": "template.li-50plus.provisional-rate-outcome",
+        "key": "template.li-50plus.provisional-rate-outcome",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true
+          },
+          "target": {
+            "kind": "product-rate-outcome",
+            "productKey": "li-50plus"
+          }
+        },
+        "position": 0
+      },
+      {
+        "id": "template.di-ltd-plus.provisional-rate-outcome",
+        "key": "template.di-ltd-plus.provisional-rate-outcome",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true
+          },
+          "target": {
+            "kind": "product-rate-outcome",
+            "productKey": "di-ltd-plus"
+          }
+        },
+        "position": 0
+      },
+      {
+        "id": "template.di-mtd.provisional-rate-outcome",
+        "key": "template.di-mtd.provisional-rate-outcome",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true
+          },
+          "target": {
+            "kind": "product-rate-outcome",
+            "productKey": "di-mtd"
+          }
+        },
+        "position": 0
+      },
+      {
+        "id": "template.oo-professional.provisional-rate-outcome",
+        "key": "template.oo-professional.provisional-rate-outcome",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true
+          },
+          "target": {
+            "kind": "product-rate-outcome",
+            "productKey": "oo-professional"
+          }
+        },
+        "position": 0
+      },
+      {
+        "id": "template.sh-critical-illness.provisional-rate-outcome",
+        "key": "template.sh-critical-illness.provisional-rate-outcome",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true
+          },
+          "target": {
+            "kind": "product-rate-outcome",
+            "productKey": "sh-critical-illness"
+          }
+        },
+        "position": 0
+      },
+      {
+        "id": "template.sh-hospital-money.provisional-rate-outcome",
+        "key": "template.sh-hospital-money.provisional-rate-outcome",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true
+          },
+          "target": {
+            "kind": "product-rate-outcome",
+            "productKey": "sh-hospital-money"
+          }
+        },
+        "position": 0
+      },
+      {
+        "id": "template.li-50plus.selection-policy",
+        "key": "template.li-50plus.selection-policy",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true
+          },
+          "target": {
+            "kind": "product-selection-policy",
+            "productKey": "li-50plus"
+          }
+        }
+      },
+      {
+        "id": "template.li-50plus.journey-policy",
+        "key": "template.li-50plus.journey-policy",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true
+          },
+          "target": {
+            "kind": "product-journey-policy",
+            "productKey": "li-50plus"
+          }
+        }
+      },
+      {
+        "id": "template.li-50plus.journey-residency",
+        "key": "template.li-50plus.journey-residency",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true
+          },
+          "target": {
+            "kind": "product-residency-policy",
+            "productKey": "li-50plus"
+          }
+        }
+      },
+      {
+        "id": "template.di-ltd-plus.selection-policy",
+        "key": "template.di-ltd-plus.selection-policy",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true
+          },
+          "target": {
+            "kind": "product-selection-policy",
+            "productKey": "di-ltd-plus"
+          }
+        }
+      },
+      {
+        "id": "template.di-ltd-plus.journey-policy",
+        "key": "template.di-ltd-plus.journey-policy",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true
+          },
+          "target": {
+            "kind": "product-journey-policy",
+            "productKey": "di-ltd-plus"
+          }
+        }
+      },
+      {
+        "id": "template.di-ltd-plus.journey-residency",
+        "key": "template.di-ltd-plus.journey-residency",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true
+          },
+          "target": {
+            "kind": "product-residency-policy",
+            "productKey": "di-ltd-plus"
+          }
+        }
+      },
+      {
+        "id": "template.di-mtd.selection-policy",
+        "key": "template.di-mtd.selection-policy",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true
+          },
+          "target": {
+            "kind": "product-selection-policy",
+            "productKey": "di-mtd"
+          }
+        }
+      },
+      {
+        "id": "template.di-mtd.journey-policy",
+        "key": "template.di-mtd.journey-policy",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true
+          },
+          "target": {
+            "kind": "product-journey-policy",
+            "productKey": "di-mtd"
+          }
+        }
+      },
+      {
+        "id": "template.di-mtd.journey-residency",
+        "key": "template.di-mtd.journey-residency",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true
+          },
+          "target": {
+            "kind": "product-residency-policy",
+            "productKey": "di-mtd"
+          }
+        }
+      },
+      {
+        "id": "template.oo-professional.selection-policy",
+        "key": "template.oo-professional.selection-policy",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true
+          },
+          "target": {
+            "kind": "product-selection-policy",
+            "productKey": "oo-professional"
+          }
+        }
+      },
+      {
+        "id": "template.oo-professional.journey-policy",
+        "key": "template.oo-professional.journey-policy",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true
+          },
+          "target": {
+            "kind": "product-journey-policy",
+            "productKey": "oo-professional"
+          }
+        }
+      },
+      {
+        "id": "template.oo-professional.journey-residency",
+        "key": "template.oo-professional.journey-residency",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true
+          },
+          "target": {
+            "kind": "product-residency-policy",
+            "productKey": "oo-professional"
+          }
+        }
+      },
+      {
+        "id": "template.sh-critical-illness.selection-policy",
+        "key": "template.sh-critical-illness.selection-policy",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true
+          },
+          "target": {
+            "kind": "product-selection-policy",
+            "productKey": "sh-critical-illness"
+          }
+        }
+      },
+      {
+        "id": "template.sh-critical-illness.journey-policy",
+        "key": "template.sh-critical-illness.journey-policy",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true
+          },
+          "target": {
+            "kind": "product-journey-policy",
+            "productKey": "sh-critical-illness"
+          }
+        }
+      },
+      {
+        "id": "template.sh-critical-illness.journey-residency",
+        "key": "template.sh-critical-illness.journey-residency",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true
+          },
+          "target": {
+            "kind": "product-residency-policy",
+            "productKey": "sh-critical-illness"
+          }
+        }
+      },
+      {
+        "id": "template.sh-hospital-money.selection-policy",
+        "key": "template.sh-hospital-money.selection-policy",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true
+          },
+          "target": {
+            "kind": "product-selection-policy",
+            "productKey": "sh-hospital-money"
+          }
+        }
+      },
+      {
+        "id": "template.sh-hospital-money.journey-policy",
+        "key": "template.sh-hospital-money.journey-policy",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true
+          },
+          "target": {
+            "kind": "product-journey-policy",
+            "productKey": "sh-hospital-money"
+          }
+        }
+      },
+      {
+        "id": "template.sh-hospital-money.journey-residency",
+        "key": "template.sh-hospital-money.journey-residency",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true
+          },
+          "target": {
+            "kind": "product-residency-policy",
+            "productKey": "sh-hospital-money"
+          }
+        }
+      },
+      {
+        "id": "template.li-50plus.rate-modifier-policy",
+        "key": "template.li-50plus.rate-modifier-policy",
+        "sourceReference": "docs/archive/step3-review-and-rating.md",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1
+          },
+          "target": {
+            "kind": "product-rate-modifier-policy",
+            "productKey": "li-50plus"
+          }
+        }
+      },
+      {
+        "id": "template.li-50plus.rate-input-policy",
+        "key": "template.li-50plus.rate-input-policy",
+        "sourceReference": "docs/archive/step3-review-and-rating.md",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1
+          },
+          "target": {
+            "kind": "product-rate-input-policy",
+            "productKey": "li-50plus"
+          }
+        }
+      },
+      {
+        "id": "template.di-ltd-plus.rate-modifier-policy",
+        "key": "template.di-ltd-plus.rate-modifier-policy",
+        "sourceReference": "docs/archive/step3-review-and-rating.md",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1
+          },
+          "target": {
+            "kind": "product-rate-modifier-policy",
+            "productKey": "di-ltd-plus"
+          }
+        }
+      },
+      {
+        "id": "template.di-ltd-plus.rate-input-policy",
+        "key": "template.di-ltd-plus.rate-input-policy",
+        "sourceReference": "docs/archive/step3-review-and-rating.md",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1
+          },
+          "target": {
+            "kind": "product-rate-input-policy",
+            "productKey": "di-ltd-plus"
+          }
+        }
+      },
+      {
+        "id": "template.di-mtd.rate-modifier-policy",
+        "key": "template.di-mtd.rate-modifier-policy",
+        "sourceReference": "docs/archive/step3-review-and-rating.md",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1
+          },
+          "target": {
+            "kind": "product-rate-modifier-policy",
+            "productKey": "di-mtd"
+          }
+        }
+      },
+      {
+        "id": "template.di-mtd.rate-input-policy",
+        "key": "template.di-mtd.rate-input-policy",
+        "sourceReference": "docs/archive/step3-review-and-rating.md",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1
+          },
+          "target": {
+            "kind": "product-rate-input-policy",
+            "productKey": "di-mtd"
+          }
+        }
+      },
+      {
+        "id": "template.oo-professional.rate-modifier-policy",
+        "key": "template.oo-professional.rate-modifier-policy",
+        "sourceReference": "docs/archive/step3-review-and-rating.md",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1
+          },
+          "target": {
+            "kind": "product-rate-modifier-policy",
+            "productKey": "oo-professional"
+          }
+        }
+      },
+      {
+        "id": "template.oo-professional.rate-input-policy",
+        "key": "template.oo-professional.rate-input-policy",
+        "sourceReference": "docs/archive/step3-review-and-rating.md",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1
+          },
+          "target": {
+            "kind": "product-rate-input-policy",
+            "productKey": "oo-professional"
+          }
+        }
+      },
+      {
+        "id": "template.sh-critical-illness.rate-modifier-policy",
+        "key": "template.sh-critical-illness.rate-modifier-policy",
+        "sourceReference": "docs/archive/step3-review-and-rating.md",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1
+          },
+          "target": {
+            "kind": "product-rate-modifier-policy",
+            "productKey": "sh-critical-illness"
+          }
+        }
+      },
+      {
+        "id": "template.sh-critical-illness.rate-input-policy",
+        "key": "template.sh-critical-illness.rate-input-policy",
+        "sourceReference": "docs/archive/step3-review-and-rating.md",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1
+          },
+          "target": {
+            "kind": "product-rate-input-policy",
+            "productKey": "sh-critical-illness"
+          }
+        }
+      },
+      {
+        "id": "template.sh-hospital-money.rate-modifier-policy",
+        "key": "template.sh-hospital-money.rate-modifier-policy",
+        "sourceReference": "docs/archive/step3-review-and-rating.md",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1
+          },
+          "target": {
+            "kind": "product-rate-modifier-policy",
+            "productKey": "sh-hospital-money"
+          }
+        }
+      },
+      {
+        "id": "template.sh-hospital-money.rate-input-policy",
+        "key": "template.sh-hospital-money.rate-input-policy",
+        "sourceReference": "docs/archive/step3-review-and-rating.md",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "version": 1
+          },
+          "target": {
+            "kind": "product-rate-input-policy",
+            "productKey": "sh-hospital-money"
+          }
+        }
+      },
+      {
+        "id": "template.ownership.abe.di-ltd-plus.rider-set",
+        "key": "template.ownership.abe.di-ltd-plus.rider-set",
+        "sourceReference": "User-confirmed relational rider ownership, October 19, 2026",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "authority": "User-confirmed relational rider ownership, October 19, 2026"
+          },
+          "target": {
+            "kind": "product-rider-set",
+            "productKey": "di-ltd-plus"
+          }
+        }
+      },
+      {
+        "id": "template.ownership.abe.di-mtd.rider-set",
+        "key": "template.ownership.abe.di-mtd.rider-set",
+        "sourceReference": "User-confirmed relational rider ownership, October 19, 2026",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "authority": "User-confirmed relational rider ownership, October 19, 2026"
+          },
+          "target": {
+            "kind": "product-rider-set",
+            "productKey": "di-mtd"
+          }
+        }
+      },
+      {
+        "id": "template.ownership.abe.li-50plus.rider-set",
+        "key": "template.ownership.abe.li-50plus.rider-set",
+        "sourceReference": "User-confirmed relational rider ownership, October 19, 2026",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "authority": "User-confirmed relational rider ownership, October 19, 2026"
+          },
+          "target": {
+            "kind": "product-rider-set",
+            "productKey": "li-50plus"
+          }
+        }
+      },
+      {
+        "id": "template.ownership.abe.oo-professional.rider-set",
+        "key": "template.ownership.abe.oo-professional.rider-set",
+        "sourceReference": "User-confirmed relational rider ownership, October 19, 2026",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "authority": "User-confirmed relational rider ownership, October 19, 2026"
+          },
+          "target": {
+            "kind": "product-rider-set",
+            "productKey": "oo-professional"
+          }
+        }
+      },
+      {
+        "id": "template.ownership.abe.sh-critical-illness.rider-set",
+        "key": "template.ownership.abe.sh-critical-illness.rider-set",
+        "sourceReference": "User-confirmed relational rider ownership, October 19, 2026",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "authority": "User-confirmed relational rider ownership, October 19, 2026"
+          },
+          "target": {
+            "kind": "product-rider-set",
+            "productKey": "sh-critical-illness"
+          }
+        }
+      },
+      {
+        "id": "template.ownership.abe.sh-hospital-money.rider-set",
+        "key": "template.ownership.abe.sh-hospital-money.rider-set",
+        "sourceReference": "User-confirmed relational rider ownership, October 19, 2026",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "authority": "User-confirmed relational rider ownership, October 19, 2026"
+          },
+          "target": {
+            "kind": "product-rider-set",
+            "productKey": "sh-hospital-money"
+          }
+        }
+      },
+      {
+        "id": "template.shared.oo-professional.firm-member-eligibility",
+        "key": "template.shared.oo-professional.firm-member-eligibility",
+        "sourceReference": "Main!R48; user decision October 21, 2026: collect firm-member count on Coverage for ABE Professional Overhead and require 1\u20135",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "reusable": true,
+            "assignmentRequired": true
+          },
+          "target": {
+            "kind": "product-eligibility-facts",
+            "productKey": "oo-professional",
+            "applicantKey": "member"
+          }
+        }
+      },
+      {
+        "id": "template.shared.sh-hospital-money.child-service-age-extension",
+        "key": "template.shared.sh-hospital-money.child-service-age-extension",
+        "sourceReference": "User decision October 21, 2026: adopt later effective ABE adult Life ages and workbook dependent ages, including Hospital Money's honorable-discharge extension; retain DI spouse 30-hour minimum; retain the existing child eligibility informational note only",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "reusable": true,
+            "assignmentRequired": true
+          },
+          "target": {
+            "kind": "product-eligibility-facts",
+            "productKey": "sh-hospital-money",
+            "applicantKey": "child"
+          }
+        }
+      },
+      {
+        "id": "template.shared.abe-source-forms.health-tele",
+        "key": "template.shared.abe-source-forms.health-tele",
+        "sourceReference": "User decisions October 22, 2026: use MCR CI questions and health_forms_questions for forms and corresponding questions. CI has its own Health page; smoker stays on Coverage and is excluded from CI forms. Supplemental DI uses the supplied workbook on the existing DI Health page.",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "reusable": true,
+            "assignmentRequired": true
+          },
+          "target": {
+            "kind": "site-health-questionnaires"
+          }
+        }
+      },
+      {
+        "id": "template.li-add.description",
+        "key": "template.li-add.description",
+        "sourceReference": "User clarification October 5, 2026; supplied AD&D rate table",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "authority": "User clarification October 5, 2026"
+          },
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "li-add",
+            "property": "definition"
+          }
+        }
+      },
+      {
+        "id": "template.li-add.options",
+        "key": "template.li-add.options",
+        "sourceReference": "User clarification October 5, 2026; supplied AD&D rate table",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "authority": "User clarification October 5, 2026"
+          },
+          "target": {
+            "kind": "product-presentation",
+            "productKey": "li-add",
+            "property": "options"
+          }
+        }
+      },
+      {
+        "id": "template.li-add.reference-table",
+        "key": "template.li-add.reference-table",
+        "sourceReference": "User clarification October 5, 2026; supplied AD&D rate table",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "authority": "User clarification October 5, 2026"
+          },
+          "target": {
+            "kind": "product-reference-rate-table",
+            "productKey": "li-add"
+          }
+        }
+      },
+      {
+        "id": "template.di-ltd.provisional-reference-table",
+        "key": "template.di-ltd.provisional-reference-table",
+        "sourceReference": "docs/archive/step3-major-outstanding-items.md",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true,
+            "authority": "User supplied reference table, October 5, 2026"
+          },
+          "target": {
+            "kind": "product-reference-rate-table",
+            "productKey": "di-ltd"
+          }
+        },
+        "position": 0
+      },
+      {
+        "id": "template.li-50plus.provisional-billing-fee",
+        "key": "template.li-50plus.provisional-billing-fee",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true
+          },
+          "target": {
+            "kind": "product-rating-adjustments",
+            "productKey": "li-50plus"
+          }
+        },
+        "position": 0
+      },
+      {
+        "id": "template.li-add.provisional-billing-fee",
+        "key": "template.li-add.provisional-billing-fee",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true
+          },
+          "target": {
+            "kind": "product-rating-adjustments",
+            "productKey": "li-add"
+          }
+        },
+        "position": 0
+      },
+      {
+        "id": "template.di-ltd.provisional-billing-fee",
+        "key": "template.di-ltd.provisional-billing-fee",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true
+          },
+          "target": {
+            "kind": "product-rating-adjustments",
+            "productKey": "di-ltd"
+          }
+        },
+        "position": 0
+      },
+      {
+        "id": "template.li-10yr.provisional-billing-fee",
+        "key": "template.li-10yr.provisional-billing-fee",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true
+          },
+          "target": {
+            "kind": "product-rating-adjustments",
+            "productKey": "li-10yr"
+          }
+        },
+        "position": 0
+      },
+      {
+        "id": "template.li-20yr.provisional-billing-fee",
+        "key": "template.li-20yr.provisional-billing-fee",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "definition": {
+          "path": null,
+          "metadata": {
+            "provisional": true,
+            "revisit": true
+          },
+          "target": {
+            "kind": "product-rating-adjustments",
+            "productKey": "li-20yr"
+          }
+        },
+        "position": 0
+      },
+      {
+        "id": "template.shared.li-10yr.association-eligibility",
+        "key": "template.shared.li-10yr.association-eligibility",
+        "sourceReference": "User approval October 20, 2026: add ATPE to ISITRUST with all seven ATPE products; Group Term uses current Main!N179",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "reusable": true,
+            "assignmentRequired": true
+          },
+          "target": {
+            "kind": "product-association-eligibility",
+            "productKey": "li-10yr"
+          }
+        }
+      },
+      {
+        "id": "template.shared.li-20yr.association-eligibility",
+        "key": "template.shared.li-20yr.association-eligibility",
+        "sourceReference": "User approval October 20, 2026: add ATPE to ISITRUST with all seven ATPE products; Group Term uses current Main!N179",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "reusable": true,
+            "assignmentRequired": true
+          },
+          "target": {
+            "kind": "product-association-eligibility",
+            "productKey": "li-20yr"
+          }
+        }
+      },
+      {
+        "id": "template.shared.li-group-term.association-eligibility",
+        "key": "template.shared.li-group-term.association-eligibility",
+        "sourceReference": "User approval October 20, 2026: add ATPE to ISITRUST with all seven ATPE products; Group Term uses current Main!N179",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "reusable": true,
+            "assignmentRequired": true
+          },
+          "target": {
+            "kind": "product-association-eligibility",
+            "productKey": "li-group-term"
+          }
+        }
+      },
+      {
+        "id": "template.shared.li-add.association-eligibility",
+        "key": "template.shared.li-add.association-eligibility",
+        "sourceReference": "User approval October 20, 2026: add ATPE to ISITRUST with all seven ATPE products; Group Term uses current Main!N179",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "reusable": true,
+            "assignmentRequired": true
+          },
+          "target": {
+            "kind": "product-association-eligibility",
+            "productKey": "li-add"
+          }
+        }
+      },
+      {
+        "id": "template.shared.sh-hospital-income.association-eligibility",
+        "key": "template.shared.sh-hospital-income.association-eligibility",
+        "sourceReference": "User approval October 20, 2026: add ATPE to ISITRUST with all seven ATPE products; Group Term uses current Main!N179",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "reusable": true,
+            "assignmentRequired": true
+          },
+          "target": {
+            "kind": "product-association-eligibility",
+            "productKey": "sh-hospital-income"
+          }
+        }
+      },
+      {
+        "id": "template.shared.sh-critical-illness.association-eligibility",
+        "key": "template.shared.sh-critical-illness.association-eligibility",
+        "sourceReference": "User approval October 20, 2026: add ATPE to ISITRUST with all seven ATPE products; Group Term uses current Main!N179",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "reusable": true,
+            "assignmentRequired": true
+          },
+          "target": {
+            "kind": "product-association-eligibility",
+            "productKey": "sh-critical-illness"
+          }
+        }
+      },
+      {
+        "id": "template.shared.li-50plus.association-eligibility",
+        "key": "template.shared.li-50plus.association-eligibility",
+        "sourceReference": "User approval October 20, 2026: add ATPE to ISITRUST with all seven ATPE products; Group Term uses current Main!N179",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "reusable": true,
+            "assignmentRequired": true
+          },
+          "target": {
+            "kind": "product-association-eligibility",
+            "productKey": "li-50plus"
+          }
+        }
+      },
+      {
+        "id": "template.shared.li-group-term.association-amounts",
+        "key": "template.shared.li-group-term.association-amounts",
+        "sourceReference": "User approval October 20, 2026: add ATPE to ISITRUST with all seven ATPE products; Group Term uses current Main!N179",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "reusable": true,
+            "assignmentRequired": true
+          },
+          "target": {
+            "kind": "product-association-amounts",
+            "productKey": "li-group-term"
+          }
+        }
+      },
+      {
+        "id": "template.shared.li-10yr.association-amounts",
+        "key": "template.shared.li-10yr.association-amounts",
+        "sourceReference": "User approval October 20, 2026: add ATPE to ISITRUST with all seven ATPE products; Group Term uses current Main!N179",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "reusable": true,
+            "assignmentRequired": true
+          },
+          "target": {
+            "kind": "product-association-amounts",
+            "productKey": "li-10yr"
+          }
+        }
+      },
+      {
+        "id": "template.shared.li-20yr.association-amounts",
+        "key": "template.shared.li-20yr.association-amounts",
+        "sourceReference": "User approval October 20, 2026: add ATPE to ISITRUST with all seven ATPE products; Group Term uses current Main!N179",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "reusable": true,
+            "assignmentRequired": true
+          },
+          "target": {
+            "kind": "product-association-amounts",
+            "productKey": "li-20yr"
+          }
+        }
+      },
+      {
+        "id": "template.shared.li-add.association-amounts",
+        "key": "template.shared.li-add.association-amounts",
+        "sourceReference": "User approval October 20, 2026: add ATPE to ISITRUST with all seven ATPE products; Group Term uses current Main!N179",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "reusable": true,
+            "assignmentRequired": true
+          },
+          "target": {
+            "kind": "product-association-amounts",
+            "productKey": "li-add"
+          }
+        }
+      },
+      {
+        "id": "template.shared.sh-hospital-income.association-amounts",
+        "key": "template.shared.sh-hospital-income.association-amounts",
+        "sourceReference": "User approval October 20, 2026: add ATPE to ISITRUST with all seven ATPE products; Group Term uses current Main!N179",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "reusable": true,
+            "assignmentRequired": true
+          },
+          "target": {
+            "kind": "product-association-amounts",
+            "productKey": "sh-hospital-income"
+          }
+        }
+      },
+      {
+        "id": "template.shared.sh-critical-illness.association-amounts",
+        "key": "template.shared.sh-critical-illness.association-amounts",
+        "sourceReference": "User approval October 20, 2026: add ATPE to ISITRUST with all seven ATPE products; Group Term uses current Main!N179",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "reusable": true,
+            "assignmentRequired": true
+          },
+          "target": {
+            "kind": "product-association-amounts",
+            "productKey": "sh-critical-illness"
+          }
+        }
+      },
+      {
+        "id": "template.shared.li-50plus.association-amounts",
+        "key": "template.shared.li-50plus.association-amounts",
+        "sourceReference": "User approval October 20, 2026: add ATPE to ISITRUST with all seven ATPE products; Group Term uses current Main!N179",
+        "position": 0,
+        "definition": {
+          "path": null,
+          "metadata": {
+            "reusable": true,
+            "assignmentRequired": true
+          },
+          "target": {
+            "kind": "product-association-amounts",
+            "productKey": "li-50plus"
+          }
+        }
       }
     ],
     "configurationValues": [
@@ -2123,377 +5846,6 @@
         "sourceReference": "prototype:configurationValues/global:*.coveragePolicy.aggregateNotes.SH"
       },
       {
-        "id": "global.field-surfaces",
-        "key": "global.field-surfaces",
-        "displayId": 55087997345581,
-        "providedBy": null,
-        "sourceReference": "Stored field surface upgrade",
-        "position": 455,
-        "configurationKey": "field-surfaces",
-        "scope": "global",
-        "clientKey": null,
-        "siteKey": null,
-        "value": {
-          "healthLiDetails": {
-            "pageKey": "health-li",
-            "label": "details",
-            "maxItems": 10,
-            "fields": [
-              {
-                "fieldKey": "health-li-detail-onset",
-                "valueKey": "onset"
-              },
-              {
-                "fieldKey": "health-li-detail-conditionsDetails",
-                "valueKey": "conditionsDetails"
-              },
-              {
-                "fieldKey": "health-li-detail-physicianAddress",
-                "valueKey": "physicianAddress"
-              }
-            ],
-            "libraryGroup": {
-              "label": "Condition details modal"
-            }
-          },
-          "healthSiDetails": {
-            "pageKey": "health-si",
-            "label": "details",
-            "maxItems": 10,
-            "fields": [
-              {
-                "fieldKey": "health-si-detail-onset",
-                "valueKey": "onset"
-              },
-              {
-                "fieldKey": "health-si-detail-conditionsDetails",
-                "valueKey": "conditionsDetails"
-              },
-              {
-                "fieldKey": "health-si-detail-physicianAddress",
-                "valueKey": "physicianAddress"
-              }
-            ],
-            "libraryGroup": {
-              "label": "Condition details modal"
-            }
-          },
-          "healthDiq1Details": {
-            "pageKey": "health-di",
-            "label": "details",
-            "maxItems": 10,
-            "fields": [
-              {
-                "fieldKey": "health-di-q1-detail-assistanceType",
-                "valueKey": "assistanceType"
-              },
-              {
-                "fieldKey": "health-di-q1-detail-onset",
-                "valueKey": "onset"
-              },
-              {
-                "fieldKey": "health-di-q1-detail-conditionsDetails",
-                "valueKey": "conditionsDetails"
-              },
-              {
-                "fieldKey": "health-di-q1-detail-physicianAddress",
-                "valueKey": "physicianAddress"
-              }
-            ],
-            "libraryGroup": {
-              "label": "Condition details modal"
-            }
-          },
-          "healthDiq2Details": {
-            "pageKey": "health-di",
-            "label": "details",
-            "maxItems": 10,
-            "fields": [
-              {
-                "fieldKey": "health-di-q2-detail-fallType",
-                "valueKey": "fallType"
-              },
-              {
-                "fieldKey": "health-di-q2-detail-onset",
-                "valueKey": "onset"
-              },
-              {
-                "fieldKey": "health-di-q2-detail-conditionsDetails",
-                "valueKey": "conditionsDetails"
-              },
-              {
-                "fieldKey": "health-di-q2-detail-physicianAddress",
-                "valueKey": "physicianAddress"
-              }
-            ],
-            "libraryGroup": {
-              "label": "Condition details modal"
-            }
-          },
-          "healthDiq3Details": {
-            "pageKey": "health-di",
-            "label": "details",
-            "maxItems": 10,
-            "fields": [
-              {
-                "fieldKey": "health-di-q3-detail-onset",
-                "valueKey": "onset"
-              },
-              {
-                "fieldKey": "health-di-q3-detail-conditionsDetails",
-                "valueKey": "conditionsDetails"
-              },
-              {
-                "fieldKey": "health-di-q3-detail-physicianAddress",
-                "valueKey": "physicianAddress"
-              }
-            ],
-            "libraryGroup": {
-              "label": "Condition details modal"
-            }
-          },
-          "healthDiq4Details": {
-            "pageKey": "health-di",
-            "label": "details",
-            "maxItems": 10,
-            "fields": [
-              {
-                "fieldKey": "health-di-q4-detail-onset",
-                "valueKey": "onset"
-              },
-              {
-                "fieldKey": "health-di-q4-detail-conditionsDetails",
-                "valueKey": "conditionsDetails"
-              },
-              {
-                "fieldKey": "health-di-q4-detail-physicianAddress",
-                "valueKey": "physicianAddress"
-              }
-            ],
-            "libraryGroup": {
-              "label": "Condition details modal"
-            }
-          },
-          "healthDiq5Details": {
-            "pageKey": "health-di",
-            "label": "details",
-            "maxItems": 10,
-            "fields": [
-              {
-                "fieldKey": "health-di-q5-detail-onset",
-                "valueKey": "onset"
-              },
-              {
-                "fieldKey": "health-di-q5-detail-conditionsDetails",
-                "valueKey": "conditionsDetails"
-              },
-              {
-                "fieldKey": "health-di-q5-detail-physicianAddress",
-                "valueKey": "physicianAddress"
-              }
-            ],
-            "libraryGroup": {
-              "label": "Condition details modal"
-            }
-          },
-          "healthDiq6Details": {
-            "pageKey": "health-di",
-            "label": "details",
-            "maxItems": 10,
-            "fields": [
-              {
-                "fieldKey": "health-di-q6-detail-onset",
-                "valueKey": "onset"
-              },
-              {
-                "fieldKey": "health-di-q6-detail-conditionsDetails",
-                "valueKey": "conditionsDetails"
-              },
-              {
-                "fieldKey": "health-di-q6-detail-physicianAddress",
-                "valueKey": "physicianAddress"
-              }
-            ],
-            "libraryGroup": {
-              "label": "Condition details modal"
-            }
-          },
-          "healthDiq7Details": {
-            "pageKey": "health-di",
-            "label": "details",
-            "maxItems": 10,
-            "fields": [
-              {
-                "fieldKey": "health-di-q7-detail-details",
-                "valueKey": "details"
-              }
-            ],
-            "libraryGroup": {
-              "label": "Condition details modal"
-            }
-          },
-          "needsCalculator": {
-            "pageKey": "home",
-            "label": "Coverage needs calculator",
-            "fields": [
-              {
-                "fieldKey": "needs-annual-income",
-                "valueKey": "needs-annual-income"
-              },
-              {
-                "fieldKey": "needs-years-to-replace",
-                "valueKey": "needs-years-to-replace"
-              },
-              {
-                "fieldKey": "needs-outstanding-debts",
-                "valueKey": "needs-outstanding-debts"
-              },
-              {
-                "fieldKey": "needs-existing-coverage",
-                "valueKey": "needs-existing-coverage"
-              }
-            ],
-            "inspectionLabel": "Needs calculator"
-          },
-          "quoteInputs": {
-            "pageKey": "home",
-            "label": "Quote calculator",
-            "fields": [
-              {
-                "fieldKey": "zip-postal-code",
-                "valueKey": "zip-postal-code"
-              },
-              {
-                "fieldKey": "state-province",
-                "valueKey": "state-province"
-              },
-              {
-                "fieldKey": "birth-date",
-                "valueKey": "birth-date"
-              },
-              {
-                "fieldKey": "gender",
-                "valueKey": "gender"
-              },
-              {
-                "fieldKey": "smoker",
-                "valueKey": "smoker"
-              },
-              {
-                "fieldKey": "average-monthly-income",
-                "valueKey": "average-monthly-income"
-              },
-              {
-                "fieldKey": "hours-worked-per-week",
-                "valueKey": "hours-worked-per-week"
-              },
-              {
-                "fieldKey": "actively-at-work",
-                "valueKey": "actively-at-work"
-              },
-              {
-                "fieldKey": "monthly-business-expenses",
-                "valueKey": "monthly-business-expenses"
-              },
-              {
-                "fieldKey": "business-expense-responsibility",
-                "valueKey": "business-expense-responsibility"
-              },
-              {
-                "fieldKey": "quote-selection",
-                "valueKey": "quote-selection"
-              },
-              {
-                "fieldKey": "quote-amount",
-                "valueKey": "quote-amount"
-              },
-              {
-                "fieldKey": "quote-monthly-amount",
-                "valueKey": "quote-monthly-amount"
-              },
-              {
-                "fieldKey": "quote-categories",
-                "valueKey": "quote-categories"
-              },
-              {
-                "fieldKey": "quote-rate-frequency",
-                "valueKey": "quote-rate-frequency"
-              }
-            ],
-            "inspectionLabel": "Quote calculator",
-            "inspectionOrder": {
-              "birth-date": 3,
-              "zip-postal-code": 1,
-              "state-province": 2,
-              "gender": 4,
-              "smoker": 5,
-              "average-monthly-income": 6,
-              "hours-worked-per-week": 7,
-              "actively-at-work": 8,
-              "monthly-business-expenses": 9,
-              "business-expense-responsibility": 10,
-              "quote-selection": 100,
-              "quote-amount": 100,
-              "quote-monthly-amount": 100,
-              "quote-categories": 0,
-              "quote-rate-frequency": 200
-            }
-          },
-          "paymentControls": {
-            "pageKey": "payment",
-            "label": "Payment",
-            "fields": [
-              {
-                "fieldKey": "payment-information-opt-in",
-                "valueKey": "payment-information-opt-in"
-              },
-              {
-                "fieldKey": "payment-method",
-                "valueKey": "payment-method"
-              },
-              {
-                "fieldKey": "payment-frequency",
-                "valueKey": "payment-frequency"
-              },
-              {
-                "fieldKey": "payment-shared-method",
-                "valueKey": "payment-shared-method"
-              },
-              {
-                "fieldKey": "payment-shared-frequency",
-                "valueKey": "payment-shared-frequency"
-              }
-            ]
-          },
-          "paymentBank": {
-            "pageKey": "payment",
-            "label": "Banking Information",
-            "fields": [
-              {
-                "fieldKey": "bank-name-on-account",
-                "valueKey": "bank-name-on-account"
-              },
-              {
-                "fieldKey": "bank-institution",
-                "valueKey": "bank-institution"
-              },
-              {
-                "fieldKey": "bank-routing-number",
-                "valueKey": "bank-routing-number"
-              },
-              {
-                "fieldKey": "bank-account-number",
-                "valueKey": "bank-account-number"
-              },
-              {
-                "fieldKey": "bank-authorization",
-                "valueKey": "bank-authorization"
-              }
-            ]
-          }
-        }
-      },
-      {
         "id": "global.field-collections",
         "key": "global.field-collections",
         "displayId": 31307061048886,
@@ -2504,68 +5856,7 @@
         "scope": "global",
         "clientKey": null,
         "siteKey": null,
-        "value": {
-          "selfDisabilityCompanies": {
-            "pageKey": "profile",
-            "sectionId": "profileFinancialSelf",
-            "storageName": "selfDisabilityCompanies",
-            "label": "Company",
-            "maxItems": 10,
-            "fields": [
-              {
-                "fieldKey": "di-company-name",
-                "valueKey": "company"
-              },
-              {
-                "fieldKey": "di-company-monthly-benefit",
-                "valueKey": "monthlyBenefitAmount"
-              },
-              {
-                "fieldKey": "di-company-benefit-period",
-                "valueKey": "benefitPeriod"
-              },
-              {
-                "fieldKey": "di-company-waiting-period",
-                "valueKey": "waitingPeriod"
-              }
-            ],
-            "libraryGroup": {
-              "label": "Member disability insurance details modal",
-              "applicant": "self",
-              "afterFieldKey": "has-disability-insurance"
-            }
-          },
-          "spouseDisabilityCompanies": {
-            "pageKey": "profile",
-            "sectionId": "profileFinancialSpouse",
-            "storageName": "spouseDisabilityCompanies",
-            "label": "Company",
-            "maxItems": 10,
-            "fields": [
-              {
-                "fieldKey": "di-company-name",
-                "valueKey": "company"
-              },
-              {
-                "fieldKey": "di-company-monthly-benefit",
-                "valueKey": "monthlyBenefitAmount"
-              },
-              {
-                "fieldKey": "di-company-benefit-period",
-                "valueKey": "benefitPeriod"
-              },
-              {
-                "fieldKey": "di-company-waiting-period",
-                "valueKey": "waitingPeriod"
-              }
-            ],
-            "libraryGroup": {
-              "label": "Spouse disability insurance details modal",
-              "applicant": "spouse",
-              "afterFieldKey": "spouse-has-disability-insurance"
-            }
-          }
-        }
+        "value": {}
       },
       {
         "id": "rates.reviewed-presentation.global",
@@ -2751,8 +6042,6 @@
           "id": "li-15yr",
           "code": "15TL",
           "categoryId": "LI",
-          "name": "15-Year Level Term",
-          "definition": "Provides level term life coverage for 15 years.",
           "applicants": [
             "member",
             "spouse",
@@ -2821,8 +6110,6 @@
           "id": "li-50plus",
           "code": "50PLUS",
           "categoryId": "LI",
-          "name": "50+ Life",
-          "definition": "Provides life coverage designed for eligible applicants age 50 and over.",
           "applicants": [
             "member",
             "spouse"
@@ -2877,8 +6164,6 @@
           "id": "li-preferred",
           "code": "PREF",
           "categoryId": "LI",
-          "name": "Preferred Life",
-          "definition": "Provides life coverage with product terms specific to the preferred offering.",
           "applicants": [
             "member",
             "spouse"
@@ -2933,8 +6218,6 @@
           "id": "li-premier-accident",
           "code": "PA",
           "categoryId": "AD",
-          "name": "Premier Accident",
-          "definition": "Provides accident coverage with benefits for covered accidental injuries.",
           "coverageAmounts": [
             {
               "scope": {
@@ -3003,9 +6286,6 @@
           "id": "li-group-term",
           "code": "GTL",
           "categoryId": "LI",
-          "name": "Group Term Life",
-          "definition": "Provides group term life coverage for eligible applicants.",
-          "description": "Annually renewable coverage designed to provide protection for both you and your family.",
           "applicants": [
             "member",
             "spouse",
@@ -3082,8 +6362,6 @@
               }
             ]
           },
-          "name": "Long-Term Disability Plus",
-          "definition": "Provides long-term disability income protection.",
           "applicants": [
             "member"
           ],
@@ -3127,8 +6405,6 @@
               }
             ]
           },
-          "name": "Mid-Term Disability",
-          "definition": "Provides disability income protection for a mid-term benefit period.",
           "applicants": [
             "member"
           ],
@@ -3172,8 +6448,6 @@
               }
             ]
           },
-          "name": "Step-Rated Disability",
-          "definition": "Provides disability income protection with step-rated premium structure.",
           "applicants": [
             "member"
           ],
@@ -3217,8 +6491,6 @@
               }
             ]
           },
-          "name": "Level-Rated Disability",
-          "definition": "Provides disability income protection with level premium structure.",
           "applicants": [
             "member"
           ],
@@ -3262,8 +6534,6 @@
               }
             ]
           },
-          "name": "Short-Term Disability",
-          "definition": "Provides short-term disability income protection.",
           "applicants": [
             "member"
           ],
@@ -3307,8 +6577,6 @@
               }
             ]
           },
-          "name": "Office Overhead",
-          "definition": "Helps cover eligible office overhead expenses if the insured becomes disabled.",
           "applicants": [
             "member"
           ],
@@ -3352,8 +6620,6 @@
               }
             ]
           },
-          "name": "Office Overhead",
-          "definition": "Helps cover eligible office overhead expenses if the insured becomes disabled.",
           "applicants": [
             "member"
           ],
@@ -3389,8 +6655,6 @@
           "id": "sh-critical-illness",
           "code": "CI",
           "categoryId": "SH",
-          "name": "Critical Illness",
-          "definition": "Provides a benefit for covered critical illnesses.",
           "applicants": [
             "member",
             "spouse",
@@ -3459,8 +6723,6 @@
           "id": "sh-hospital-money",
           "code": "HI",
           "categoryId": "SH",
-          "name": "Hospital Money",
-          "definition": "Provides benefits related to covered hospital stays.",
           "applicants": [
             "member",
             "spouse",
@@ -3529,9 +6791,6 @@
           "id": "sh-hospital-income",
           "code": "HI",
           "categoryId": "SH",
-          "name": "Hospital Income",
-          "definition": "Provides benefits related to covered hospital confinement.",
-          "description": "Helps provide extra financial support if you're hospitalized due to a covered illness or injury.",
           "applicants": [
             "member",
             "spouse",
@@ -3679,7 +6938,7 @@
         "providedBy": null,
         "sourceReference": "src/content/docs/urlParameters.ts",
         "parameter": "applicant",
-        "behavior": "member: Only the member can apply. The Eligibility Page question “Would you like to add dependent coverage?” is hidden. Content that communicates dependent availability is also hidden, including the “Available for: You, Your Spouse, Your Child(ren)” sentence in the About Coverage component.\nmember,spouse: Only the member and/or spouse can apply. On the Eligibility Page, the “Child” option is hidden from the “Would you like to add dependent coverage?” question. Content that communicates child availability is also hidden, including the “Available for: You, Your Spouse, Your Child(ren)” sentence in the About Coverage component.",
+        "behavior": "Restrict the effective Site offering to supported member or member,spouse applicants. applicant=member hides the Eligibility dependent question and spouse/child availability rows. applicant=member,spouse hides Child from Eligibility and child availability rows. Coverage Information retains the allowed applicant amount rows independently of form choices. Product controls, applicable sections, cart, preview and Receipt honor the same restriction. The URL never enables people/products absent from Site assignments. Site-scoped entry context persists across routes and resume; a new category/product campaign without applicant clears an older applicant restriction. Unsupported values clear the URL restriction while retaining Site/product limits.",
         "status": "Modified"
       },
       {
@@ -3687,9 +6946,9 @@
         "key": "category",
         "displayId": 182663066127268,
         "providedBy": null,
-        "sourceReference": "src/content/docs/urlParameters.ts",
+        "sourceReference": "Global Coverage URL review November 16, 2026; shared runtime and confirmed user decisions",
         "parameter": "category",
-        "behavior": "Restricts the site to the listed coverage category or categories. Only the specified category/categories are displayed throughout the site and Quote Tool. Supports either a single category or multiple comma-separated categories. AD is supported as a separate coverage category.",
+        "behavior": "Restricts the effective Site offering to the listed categories, including comma-separated categories. categories is an equivalent alias. If both names are supplied, category takes precedence, including an empty value. Values are trimmed and case-insensitive; all clears the category restriction. Unknown or empty category scope offers no matching products rather than expanding the offering. Product and applicant restrictions still intersect. Both names start a new category campaign and clear omitted previous campaign controls. Saved entry context uses the canonical category key and persists across routes and resume.",
         "status": "Modified"
       },
       {
@@ -3697,9 +6956,9 @@
         "key": "categories",
         "displayId": 139272639120656,
         "providedBy": null,
-        "sourceReference": "src/content/docs/urlParameters.ts",
+        "sourceReference": "Global Coverage URL review November 16, 2026; shared runtime and confirmed user decisions",
         "parameter": "categories",
-        "behavior": "Has the same functionality as the category parameter in the new template. Restricts the site to the listed coverage category or categories, using comma-separated values for multiple categories.",
+        "behavior": "Equivalent alias of category, including comma-separated values, all, product intersection and campaign reset/persistence. category wins when both names are present, including an empty category. The application stores one canonical category value; this is not a separate Site setting.",
         "status": "Migrated"
       },
       {
@@ -3707,9 +6966,9 @@
         "key": "prods",
         "displayId": 139587300858718,
         "providedBy": null,
-        "sourceReference": "src/content/docs/urlParameters.ts",
+        "sourceReference": "Global Coverage URL review November 16, 2026; shared runtime and confirmed user decisions",
         "parameter": "prods",
-        "behavior": "Restricts product display to the listed product(s) throughout the site on pages/components that display products, including the Landing Page, Coverage Page, and application menu.",
+        "behavior": "Restricts product display throughout the site to assigned products matching the listed G-numbers. Requires a nonempty category or categories parameter on entry. Product/category/applicant scopes intersect; unavailable or malformed IDs never enable products. Multiple G-numbers are comma-separated. A product-only entry cannot reuse a previous campaign category. Saved application scope persists across routes and resume.",
         "status": "Migrated"
       },
       {
@@ -3717,9 +6976,9 @@
         "key": "dprods",
         "displayId": 178021570866978,
         "providedBy": null,
-        "sourceReference": "src/content/docs/urlParameters.ts",
+        "sourceReference": "Global Coverage URL review November 16, 2026; shared runtime and confirmed user decisions",
         "parameter": "dprods",
-        "behavior": "Disables the coverage amount dropdown for the listed product(s) on the Coverage Page.",
+        "behavior": "Disables the listed products\u2019 Coverage amount dropdowns only when amt supplies one valid, unambiguous, currently permitted positive amount for that product/applicant. Missing, malformed, duplicate or unavailable amt values do not create a URL-driven lock. Fixed child benefits and other applicants validate independently. This does not select coverage, enable products or waive eligibility/amount limits. Explicit Site/product/applicant amount-lock configuration remains independent.",
         "status": "Migrated"
       },
       {
@@ -3727,20 +6986,20 @@
         "key": "featured_prod",
         "displayId": 173621440327702,
         "providedBy": null,
-        "sourceReference": "src/content/docs/urlParameters.ts",
+        "sourceReference": "Global Coverage URL review November 16, 2026; shared runtime and confirmed user decisions",
         "parameter": "featured_prod",
-        "behavior": "Displays a “Featured” chip on the listed product on the Coverage Page. The featured product’s coverage category section is displayed first among the category sections, and the listed product is prioritized within that section.",
+        "behavior": "Displays a Featured chip on the listed available product on Coverage and prioritizes that product and its category across shared product/category displays. It takes precedence over firstCategory and configured ordering. It does not enable a product, change eligibility or elect coverage. Unmatched values do not change ordering; campaign presentation persists across routes and resume.",
         "status": "Modified"
       },
       {
-        "id": "preselect (TBD)",
-        "key": "preselect (TBD)",
+        "id": "preselect",
+        "key": "preselect",
         "displayId": 159512586506588,
         "providedBy": null,
         "sourceReference": "src/content/docs/urlParameters.ts",
-        "parameter": "preselect (TBD)",
-        "behavior": "TBD. Proposed behavior: the \"Add coverage\" checkbox would be preselected on the Coverage Page for all applicants/products.",
-        "status": "TBD"
+        "parameter": "preselect",
+        "behavior": "When preselect=TRUE, initially select all base products and participating applicants offered on Coverage, within effective Site, URL and eligibility constraints. Do not select optional riders or bypass validation. Apply once per application; preserve subsequent edits and restored selections.",
+        "status": "Modified"
       },
       {
         "id": "qt",
@@ -3767,9 +7026,9 @@
         "key": "amt",
         "displayId": 208095189030670,
         "providedBy": null,
-        "sourceReference": "src/content/docs/urlParameters.ts",
+        "sourceReference": "Global Coverage URL review November 16, 2026; shared runtime and confirmed user decisions",
         "parameter": "amt",
-        "behavior": "Sets the Coverage Page amount dropdown for the listed product(s) to the specified amount(s).",
+        "behavior": "Sets Coverage amount defaults for the listed G-number products using comma-separated G-number_amount pairs. Apply a specified amount only where it is currently permitted for the applicant; otherwise retain the valid configured default or minimum. Missing/malformed/duplicate values do not expand allowed choices. Defaults do not elect coverage or riders. Preserve saved editable choices; a valid dprods lock enforces its currently valid amt. Campaign values persist with the application.",
         "status": "Migrated"
       },
       {
@@ -3807,10 +7066,10 @@
         "key": "ctg",
         "displayId": 279563568773700,
         "providedBy": null,
-        "sourceReference": "src/content/docs/urlParameters.ts",
+        "sourceReference": "Global Coverage URL review November 16, 2026; shared runtime and confirmed user decisions",
         "parameter": "ctg",
-        "behavior": "The listed category is displayed first throughout the site wherever coverage categories are presented, including the Landing Page and Coverage Page.",
-        "status": "Modified"
+        "behavior": "Legacy parameter replaced by firstCategory. ctg is ignored by the new template.",
+        "status": "Removed"
       },
       {
         "id": "nc",
@@ -3841,6 +7100,46 @@
         "parameter": "app",
         "behavior": "TBD",
         "status": "Migrated"
+      },
+      {
+        "id": "variant",
+        "key": "variant",
+        "parameter": "variant",
+        "behavior": "Home preview override. default and hero-image are supported Site configurations; welcome-back and quoteFirst are retained preview modes only. A valid URL value overrides the requested Home presentation, subject to rate/quote availability. Invalid values use the effective Site/default presentation. Does not enable products or quoting.",
+        "status": "Implemented",
+        "sourceReference": "Global Home/template URL contract; src/pages/Home.tsx; src/config/template/resolveTemplate.ts"
+      },
+      {
+        "id": "template",
+        "key": "template",
+        "parameter": "template",
+        "behavior": "Valid URL selection overrides the session and Site template and is stored for the session. Otherwise use a valid stored selection, the effective Site template and the global default, in that order.",
+        "status": "Implemented",
+        "sourceReference": "Global Home/template URL contract; src/pages/Home.tsx; src/config/template/resolveTemplate.ts"
+      },
+      {
+        "id": "flow",
+        "key": "flow",
+        "parameter": "flow",
+        "behavior": "flow=advisor identifies the advisor-prepared applicant UI context. A supplied recovery link proceeds through verification; it does not load answers or authorize access. After successful verification, open Review and persist the advisor-applicant navigation flag. Ordinary/advisor-edit resume returns to Eligibility. Missing or other values do not enable advisor-applicant context. Profile handoff and Review edit requests retain their shared rules. This is UI context only; the production service must authorize recovery independently.",
+        "status": "Implemented",
+        "sourceReference": "Existing Review/resume advisor handoff; Review final audit November 13, 2026; src/pages/Review.tsx"
+      },
+      {
+        "id": "mfaSessionId",
+        "key": "mfaSessionId",
+        "parameter": "mfaSessionId",
+        "behavior": "Internal Resume continuation context, not a campaign setting. Identifies the Site-scoped tab-local MFA handle after delivery-method Next consumes the email link. Code and method-return URLs contain this opaque session ID instead of the consumed email token; the MFA secret stays in the separate recovery handle. Presence, guessing or changing the ID does not authorize recovery, restore answers, reset attempts or extend deadlines. Missing or mismatched tab context returns to Resume with the MFA-expired page error. The service independently validates MFA proof, Site, recipient, deadlines and application locks.",
+        "status": "Implemented",
+        "sourceReference": "Global Resume URL contract; requirements/global/rules/advisor-resume.json; src/services/applicantSaveService.ts"
+      },
+      {
+        "id": "firstCategory",
+        "key": "firstCategory",
+        "parameter": "firstCategory",
+        "behavior": "Prioritizes the named available category wherever coverage categories are presented. Uses a single category ID, case-insensitive. featured_prod takes precedence, then firstCategory, then effective configured/global ordering. Unknown or unavailable categories do not expand the offering or change elections. Replaces ctg; presentation persists across routes and resume.",
+        "status": "Implemented",
+        "sourceReference": "Global Coverage URL review November 16, 2026; replaces legacy ctg"
       }
     ],
     "urlParameterValues": [
@@ -4043,31 +7342,31 @@
         "value": "G-0000-0"
       },
       {
-        "id": "preselect (TBD).TBD",
-        "key": "preselect (TBD).TBD",
+        "id": "preselect.TRUE",
+        "key": "preselect.TRUE",
         "displayId": 55235234992637,
         "providedBy": null,
         "sourceReference": "src/content/docs/urlParameters.ts",
-        "urlParameterKey": "preselect (TBD)",
-        "value": "TBD"
+        "urlParameterKey": "preselect",
+        "value": "TRUE"
       },
       {
-        "id": "qt.—",
-        "key": "qt.—",
+        "id": "qt.\u2014",
+        "key": "qt.\u2014",
         "displayId": 205221196034376,
         "providedBy": null,
         "sourceReference": "src/content/docs/urlParameters.ts",
         "urlParameterKey": "qt",
-        "value": "—"
+        "value": "\u2014"
       },
       {
-        "id": "pmt.—",
-        "key": "pmt.—",
+        "id": "pmt.\u2014",
+        "key": "pmt.\u2014",
         "displayId": 220633988712614,
         "providedBy": null,
         "sourceReference": "src/content/docs/urlParameters.ts",
         "urlParameterKey": "pmt",
-        "value": "—"
+        "value": "\u2014"
       },
       {
         "id": "amt.G-0000-0_2000000",
@@ -4088,13 +7387,13 @@
         "value": "Multiple product/amount pairs: comma-separated"
       },
       {
-        "id": "mrate.—",
-        "key": "mrate.—",
+        "id": "mrate.\u2014",
+        "key": "mrate.\u2014",
         "displayId": 209701170515326,
         "providedBy": null,
         "sourceReference": "src/content/docs/urlParameters.ts",
         "urlParameterKey": "mrate",
-        "value": "—"
+        "value": "\u2014"
       },
       {
         "id": "association.A canonical Association ID assigned to the active Site (for example, akron-bar-association).",
@@ -4115,49 +7414,13 @@
         "value": "abc"
       },
       {
-        "id": "ctg.firstCategory=ad",
-        "key": "ctg.firstCategory=ad",
-        "displayId": 187458992170289,
-        "providedBy": null,
-        "sourceReference": "src/content/docs/urlParameters.ts",
-        "urlParameterKey": "ctg",
-        "value": "firstCategory=ad"
-      },
-      {
-        "id": "ctg.firstCategory=di",
-        "key": "ctg.firstCategory=di",
-        "displayId": 203951665646459,
-        "providedBy": null,
-        "sourceReference": "src/content/docs/urlParameters.ts",
-        "urlParameterKey": "ctg",
-        "value": "firstCategory=di"
-      },
-      {
-        "id": "ctg.firstCategory=oo",
-        "key": "ctg.firstCategory=oo",
-        "displayId": 175364365463178,
-        "providedBy": null,
-        "sourceReference": "src/content/docs/urlParameters.ts",
-        "urlParameterKey": "ctg",
-        "value": "firstCategory=oo"
-      },
-      {
-        "id": "ctg.firstCategory=sh",
-        "key": "ctg.firstCategory=sh",
-        "displayId": 178662896559831,
-        "providedBy": null,
-        "sourceReference": "src/content/docs/urlParameters.ts",
-        "urlParameterKey": "ctg",
-        "value": "firstCategory=sh"
-      },
-      {
-        "id": "nc.—",
-        "key": "nc.—",
+        "id": "nc.\u2014",
+        "key": "nc.\u2014",
         "displayId": 123908698067978,
         "providedBy": null,
         "sourceReference": "src/content/docs/urlParameters.ts",
         "urlParameterKey": "nc",
-        "value": "—"
+        "value": "\u2014"
       },
       {
         "id": "URLClickedFrom.email",
@@ -4185,6 +7448,91 @@
         "sourceReference": "src/content/docs/urlParameters.ts",
         "urlParameterKey": "app",
         "value": "ABI"
+      },
+      {
+        "id": "variant.default",
+        "key": "variant.default",
+        "urlParameterKey": "variant",
+        "value": "default"
+      },
+      {
+        "id": "variant.hero-image",
+        "key": "variant.hero-image",
+        "urlParameterKey": "variant",
+        "value": "hero-image"
+      },
+      {
+        "id": "variant.welcome-back",
+        "key": "variant.welcome-back",
+        "urlParameterKey": "variant",
+        "value": "welcome-back"
+      },
+      {
+        "id": "variant.quoteFirst",
+        "key": "variant.quoteFirst",
+        "urlParameterKey": "variant",
+        "value": "quoteFirst"
+      },
+      {
+        "id": "template.single",
+        "key": "template.single",
+        "urlParameterKey": "template",
+        "value": "single"
+      },
+      {
+        "id": "template.multi",
+        "key": "template.multi",
+        "urlParameterKey": "template",
+        "value": "multi"
+      },
+      {
+        "id": "flow.advisor",
+        "key": "flow.advisor",
+        "urlParameterKey": "flow",
+        "value": "advisor",
+        "sourceReference": "Shared advisor-prepared applicant context"
+      },
+      {
+        "id": "category.all",
+        "key": "category.all",
+        "urlParameterKey": "category",
+        "value": "all"
+      },
+      {
+        "id": "categories.all",
+        "key": "categories.all",
+        "urlParameterKey": "categories",
+        "value": "all"
+      },
+      {
+        "id": "firstCategory.li",
+        "key": "firstCategory.li",
+        "urlParameterKey": "firstCategory",
+        "value": "li"
+      },
+      {
+        "id": "firstCategory.ad",
+        "key": "firstCategory.ad",
+        "urlParameterKey": "firstCategory",
+        "value": "ad"
+      },
+      {
+        "id": "firstCategory.di",
+        "key": "firstCategory.di",
+        "urlParameterKey": "firstCategory",
+        "value": "di"
+      },
+      {
+        "id": "firstCategory.oo",
+        "key": "firstCategory.oo",
+        "urlParameterKey": "firstCategory",
+        "value": "oo"
+      },
+      {
+        "id": "firstCategory.sh",
+        "key": "firstCategory.sh",
+        "urlParameterKey": "firstCategory",
+        "value": "sh"
       }
     ],
     "riders": [
@@ -4232,7 +7580,209 @@
             "member",
             "spouse"
           ],
+          "premiumFactor": 0.05,
+          "applicantDescriptions": {
+            "member": "Chronic illness coverage from $50,000 to $1,000,000 for members.",
+            "spouse": "Chronic illness coverage from $25,000 to $1,000,000 for spouses."
+          }
+        }
+      },
+      {
+        "id": "rider.ama.r59",
+        "key": "rider.ama.r59",
+        "sourceReference": "Main!L119",
+        "position": 0,
+        "definition": {
+          "id": "true-own-specialty",
+          "name": "True Own-Specialty Disability Definition Rider",
+          "description": "Coverage with a true own-specialty definition of disability pays full benefits if you cannot perform the work of your medical specialty even if you are gainfully employed in another occupation.",
           "premiumFactor": 0.05
+        }
+      },
+      {
+        "id": "rider.ama.r4a",
+        "key": "rider.ama.r4a",
+        "sourceReference": "Main!L119",
+        "position": 0,
+        "definition": {
+          "id": "cola",
+          "name": "Cost of Living Adjustment (COLA)",
+          "description": "Provides that on the anniversary of a continuing disability, the monthly benefit for the next 12 months is increased to reflect changes in the CPI-U for the previous 12 months, subject to a maximum increase for a single disability.",
+          "premiumFactor": 0.05
+        }
+      },
+      {
+        "id": "rider.ama.r22",
+        "key": "rider.ama.r22",
+        "sourceReference": "Main!L119",
+        "position": 0,
+        "definition": {
+          "id": "catastrophic",
+          "name": "Catastrophic Disability Benefit",
+          "description": "Provides additional monthly benefits for certain conditions that require extra care.",
+          "premiumFactor": 0.05
+        }
+      },
+      {
+        "id": "rider.ama.r39",
+        "key": "rider.ama.r39",
+        "sourceReference": "Main!L120",
+        "position": 0,
+        "definition": {
+          "id": "add",
+          "name": "Accidental Death & Dismemberment",
+          "description": "If you die as a result of an accident, the life insurance company will double the original death benefit of your policy.",
+          "premiumFactor": 0.05
+        }
+      },
+      {
+        "id": "rider.ama.r38",
+        "key": "rider.ama.r38",
+        "sourceReference": "Main!L120",
+        "position": 0,
+        "definition": {
+          "id": "wop",
+          "name": "Waiver of Premium Rider",
+          "description": "Waives your premium payments should you become totally disabled before age 60; see brochure/certificate for details.",
+          "premiumFactor": 0.05
+        }
+      },
+      {
+        "id": "rider.ama.r40",
+        "key": "rider.ama.r40",
+        "sourceReference": "Main!L124",
+        "position": 0,
+        "definition": {
+          "id": "add",
+          "name": "Accidental Death & Dismemberment (AD&D) Rider",
+          "description": "If you die as a result of an accident, the life insurance company will double the original death benefit of your policy.",
+          "premiumFactor": 0.05
+        }
+      },
+      {
+        "id": "rider.waepa.r34",
+        "key": "rider.waepa.r34",
+        "sourceReference": "Main!L379",
+        "position": 0,
+        "definition": {
+          "id": "cir",
+          "name": "Chronic Illness Rider (CIR)",
+          "description": "Accelerate up to 50% of the portion of your life insurance subject to the Chronic Illness Rider should you be permanently unable to perform 2 out of 6 activities of daily living or require substantial care due to permanent cognitive impairment.",
+          "premiumFactor": 0.05,
+          "riderOnlyApplicants": [
+            "member",
+            "spouse"
+          ]
+        }
+      },
+      {
+        "id": "rider.waepa.r16a",
+        "key": "rider.waepa.r16a",
+        "sourceReference": "Main!L379",
+        "position": 0,
+        "definition": {
+          "id": "abi",
+          "name": "Automatic Benefit Increase Rider (ABI)",
+          "description": "Automatic benefit increase of $25,000 per year for up to 10 years, with no additional medical underwriting required. Subject to increased premium due with each annual increase.",
+          "premiumFactor": 0.05
+        }
+      },
+      {
+        "id": "rider.abe.r28",
+        "key": "rider.abe.r28",
+        "sourceReference": "Main!L39",
+        "position": 0,
+        "definition": {
+          "id": "cir",
+          "name": "Chronic Illness Rider (CIR)",
+          "description": "Accelerate up to 50% of the portion of your life insurance subject to the Chronic Illness Rider should you be permanently unable to perform 2 out of 6 activities of daily living or require substantial care due to permanent cognitive impairment.",
+          "premiumFactor": 0.05
+        }
+      },
+      {
+        "id": "rider.avma.r32",
+        "key": "rider.avma.r32",
+        "sourceReference": "Main!L192",
+        "position": 0,
+        "definition": {
+          "id": "fpo",
+          "name": "Future Purchase Option (FPO)",
+          "description": "Source-linked candidate rider; rates unavailable.",
+          "premiumFactor": null,
+          "applicants": [
+            "member",
+            "spouse"
+          ]
+        }
+      },
+      {
+        "id": "rider.avma.r44",
+        "key": "rider.avma.r44",
+        "sourceReference": "Main!L187",
+        "position": 0,
+        "definition": {
+          "id": "cir",
+          "name": "Chronic Illness Rider (CIR)",
+          "description": "Source-linked candidate rider; rates unavailable.",
+          "premiumFactor": null,
+          "applicants": [
+            "member",
+            "spouse"
+          ]
+        }
+      },
+      {
+        "id": "csea.spouse-accident",
+        "key": "csea.spouse-accident",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "position": 0,
+        "definition": {
+          "id": "csea.spouse-accident",
+          "name": "Accident Disability",
+          "dependentApplicant": "spouse",
+          "description": "Optional spouse Accident Disability coverage.",
+          "hasAmount": true,
+          "defaultAmount": 500,
+          "amountLabel": "Spouse Monthly Benefit",
+          "coverageAmounts": [
+            {
+              "scope": {
+                "applicantType": "member"
+              },
+              "selections": [
+                {
+                  "type": "amountList",
+                  "values": [
+                    500,
+                    1000
+                  ]
+                }
+              ]
+            }
+          ],
+          "applicants": [
+            "member"
+          ],
+          "defaultSelected": true,
+          "premiumFactor": null
+        }
+      },
+      {
+        "id": "csea.child-outpatient",
+        "key": "csea.child-outpatient",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "position": 0,
+        "definition": {
+          "id": "csea.child-outpatient",
+          "name": "Outpatient Emergency Room Benefit",
+          "dependentApplicant": "child",
+          "description": "Optional Dependent Child(ren) Emergency Accident Benefit pays $50 for a covered outpatient accident visit for children under age 19. Limited to two visits per calendar year; includes hospital, ambulatory surgical center, urgent care or private licensed physician's office.",
+          "hasAmount": false,
+          "applicants": [
+            "member"
+          ],
+          "defaultSelected": true,
+          "premiumFactor": null
         }
       }
     ],
@@ -4565,7 +8115,7 @@
         "definition": {
           "name": "Online medical questions + instant decisions",
           "descriptionHtml": "Presents health questions on the pages that require them, based on the coverage and underwriting type selected, and returns an instant decision immediately after: Conditionally Approved, Unable to Offer, or Sent for Review. Simplified Issue and Tele-Supplemental (Life and Disability) present questions directly in the application; QuickDecision hands the applicant to a separate underwriting system to answer questions; Guaranteed Issue and non-underwritten products require none. Fully underwritten and Tele-Supplemental applications are always sent for review, even after answering questions online.",
-          "impactedAreasHtml": "Health question pages (Simplified Issue, Tele-Supplemental Life/Disability, QuickDecision, Chronic Illness Rider) and the Receipt page — determines what health questions an applicant sees and what decision they receive immediately after submitting."
+          "impactedAreasHtml": "Health question pages (Simplified Issue, Tele-Supplemental Life/Disability, QuickDecision, Chronic Illness Rider) and the Receipt page \u2014 determines what health questions an applicant sees and what decision they receive immediately after submitting."
         },
         "position": 0,
         "displayId": 102508563315207,
@@ -4604,7 +8154,7 @@
         "definition": {
           "name": "Monthly/annual rate toggle",
           "descriptionHtml": "Lets an applicant switch a displayed estimated premium between a monthly amount and an annual amount, so they can compare cost the way that&#x27;s meaningful to them.",
-          "impactedAreasHtml": "Coverage cart and quote tools — affects how an estimated cost is displayed; does not change the actual payment frequency, which is chosen separately on the Payment page."
+          "impactedAreasHtml": "Coverage cart and quote tools \u2014 affects how an estimated cost is displayed; does not change the actual payment frequency, which is chosen separately on the Payment page."
         },
         "position": 3,
         "displayId": 80875534624090,
@@ -4617,7 +8167,7 @@
         "definition": {
           "name": "Coverage brochure panel",
           "descriptionHtml": "Shows a brief description, amount range, and eligibility (who it&#x27;s available for) for each coverage category and product, with access to the full brochure/certificate for more detail, plus a QuickDecision callout for products eligible for an instant decision.",
-          "impactedAreasHtml": "Landing page (&quot;Your coverage options&quot;) and the application menu&#x27;s &quot;About Coverage&quot; option — lets prospective and in-progress applicants explore what&#x27;s available without starting or interrupting an application."
+          "impactedAreasHtml": "Landing page (&quot;Your coverage options&quot;) and the application menu&#x27;s &quot;About Coverage&quot; option \u2014 lets prospective and in-progress applicants explore what&#x27;s available without starting or interrupting an application."
         },
         "position": 4,
         "displayId": 82714018518586,
@@ -4629,7 +8179,7 @@
         "key": "feature-coverage-portfolio",
         "definition": {
           "name": "Coverage portfolio",
-          "descriptionHtml": "Shows an applicant a summary of their existing in-force coverage, grouped by covered person, once their membership has been verified — so they can see what they already have before deciding what else to apply for.",
+          "descriptionHtml": "Shows an applicant a summary of their existing in-force coverage, grouped by covered person, once their membership has been verified \u2014 so they can see what they already have before deciding what else to apply for.",
           "impactedAreasHtml": "Coverage page, available after eligibility/membership verification succeeds."
         },
         "position": 5,
@@ -4642,8 +8192,8 @@
         "key": "feature-page-helpers",
         "definition": {
           "name": "Page helpers",
-          "descriptionHtml": "Gives applicants quick access to contextual help — such as cost estimates, coverage explanations, or process questions — directly from the page they&#x27;re on, without leaving the application or losing progress.",
-          "impactedAreasHtml": "Membership, Eligibility, Coverage, Beneficiary, Health, and Payment pages — reduces drop-off caused by needing outside information to answer a question."
+          "descriptionHtml": "Gives applicants quick access to contextual help \u2014 such as cost estimates, coverage explanations, or process questions \u2014 directly from the page they&#x27;re on, without leaving the application or losing progress.",
+          "impactedAreasHtml": "Membership, Eligibility, Coverage, Beneficiary, Health, and Payment pages \u2014 reduces drop-off caused by needing outside information to answer a question."
         },
         "position": 6,
         "displayId": 47685270770106,
@@ -4656,7 +8206,7 @@
         "definition": {
           "name": "Advisor-led application",
           "descriptionHtml": "Lets a licensed advisor start or continue an application on behalf of an applicant, complete the portions they&#x27;re permitted to fill in, and hand the application to the applicant to review, complete any remaining sensitive information, and sign.",
-          "impactedAreasHtml": "Advisor login and hand-off pages, plus Profile and Review, which branch depending on whether an advisor or the applicant is completing them — supports an assisted sales channel alongside direct self-service applications."
+          "impactedAreasHtml": "Advisor login and hand-off pages, plus Profile and Review, which branch depending on whether an advisor or the applicant is completing them \u2014 supports an assisted sales channel alongside direct self-service applications."
         },
         "position": 7,
         "displayId": 185036601029946,
@@ -4669,7 +8219,7 @@
         "definition": {
           "name": "Abandoned leads",
           "descriptionHtml": "Identifies applicants who start an application but don&#x27;t complete it, so they can be followed up with and given the opportunity to finish.",
-          "impactedAreasHtml": "Applies across the entire application flow — surfaces incomplete applications for outreach rather than losing them silently."
+          "impactedAreasHtml": "Applies across the entire application flow \u2014 surfaces incomplete applications for outreach rather than losing them silently."
         },
         "position": 8,
         "displayId": 130852517068897,
@@ -4682,7 +8232,7 @@
         "definition": {
           "name": "Autosaved application",
           "descriptionHtml": "Saves an applicant&#x27;s progress automatically after they submit the first page of the application, so they don&#x27;t lose their work if they leave and come back.",
-          "impactedAreasHtml": "Applies from the first application page onward — removes the need for an applicant to complete an application in one sitting."
+          "impactedAreasHtml": "Applies from the first application page onward \u2014 removes the need for an applicant to complete an application in one sitting."
         },
         "position": 9,
         "displayId": 97816458019407,
@@ -4694,8 +8244,8 @@
         "key": "feature-reminder-emails",
         "definition": {
           "name": "Reminder emails",
-          "descriptionHtml": "Sends the applicant email reminders throughout the application process — confirming that progress has been saved, and prompting them to return and finish if their application is left incomplete.",
-          "impactedAreasHtml": "Sent after key milestones such as progress being saved and applications left pending completion — keeps applicants engaged and reduces abandonment. See <a href=\"/mock-email-preview\" data-discover=\"true\">Mock Email Preview</a> for example email content."
+          "descriptionHtml": "Sends the applicant email reminders throughout the application process \u2014 confirming that progress has been saved, and prompting them to return and finish if their application is left incomplete.",
+          "impactedAreasHtml": "Sent after key milestones such as progress being saved and applications left pending completion \u2014 keeps applicants engaged and reduces abandonment. See <a href=\"/mock-email-preview\" data-discover=\"true\">Mock Email Preview</a> for example email content."
         },
         "position": 10,
         "displayId": 190024623030471,
@@ -4708,7 +8258,7 @@
         "definition": {
           "name": "Resume with MFA",
           "descriptionHtml": "Lets an applicant return to and continue a previously started application by verifying their identity with their email and phone number.",
-          "impactedAreasHtml": "Resume entry and verification pages — lets an applicant safely pick up an incomplete application from a new session."
+          "impactedAreasHtml": "Resume entry and verification pages \u2014 lets an applicant safely pick up an incomplete application from a new session."
         },
         "position": 11,
         "displayId": 34996325697198,
@@ -4721,7 +8271,7 @@
         "definition": {
           "name": "TPA integration",
           "descriptionHtml": "Matches an applicant against their organization&#x27;s member roster to verify eligibility and membership, streamlining the application and unlocking access to their existing coverage information.",
-          "impactedAreasHtml": "Eligibility (verification step) and Coverage (unlocks the coverage portfolio) — reduces manual eligibility entry for members whose group maintains a roster."
+          "impactedAreasHtml": "Eligibility (verification step) and Coverage (unlocks the coverage portfolio) \u2014 reduces manual eligibility entry for members whose group maintains a roster."
         },
         "position": 12,
         "displayId": 106627025590771,
@@ -4734,7 +8284,7 @@
         "definition": {
           "name": "Online financial questionnaire",
           "descriptionHtml": "Collects additional income and net-worth information from an applicant when their requested Disability coverage amount is large enough to require closer underwriting review.",
-          "impactedAreasHtml": "Profile page — appears only for applicants requesting higher Disability coverage amounts, with additional self-employment detail collected when applicable."
+          "impactedAreasHtml": "Profile page \u2014 appears only for applicants requesting higher Disability coverage amounts, with additional self-employment detail collected when applicable."
         },
         "position": 13,
         "displayId": 261287703773212,
@@ -4747,7 +8297,7 @@
         "definition": {
           "name": "Optional online payment",
           "descriptionHtml": "Lets an applicant provide payment information as part of the application, or skip it, depending on what&#x27;s configured for their organization. When collected, payment isn&#x27;t charged unless and until the application is approved.",
-          "impactedAreasHtml": "Payment page — can be configured as required, optional, or excluded per client, changing whether and how payment is collected during the application."
+          "impactedAreasHtml": "Payment page \u2014 can be configured as required, optional, or excluded per client, changing whether and how payment is collected during the application."
         },
         "position": 14,
         "displayId": 4066620384101,
@@ -4760,7 +8310,7 @@
         "definition": {
           "name": "Optional online beneficiary",
           "descriptionHtml": "Lets an applicant designate who should receive benefits for the Life/Accidental Death coverage they&#x27;ve selected, or skip it, depending on what&#x27;s configured for their organization. Supports multiple primary and contingent beneficiaries, individuals or trusts.",
-          "impactedAreasHtml": "Beneficiary page — appears only for applicable Life/AD products, and can be configured as required, optional, or excluded per client."
+          "impactedAreasHtml": "Beneficiary page \u2014 appears only for applicable Life/AD products, and can be configured as required, optional, or excluded per client."
         },
         "position": 15,
         "displayId": 154235860704554,

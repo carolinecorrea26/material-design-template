@@ -1,3 +1,4 @@
+import { applicationRecovery } from '../content/applicationRecovery';
 import { act, useEffect, useState } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
@@ -53,10 +54,10 @@ it("awaits a successful Membership save, retains fields and shows progress feedb
   expect(container.querySelector('[role="status"]')?.textContent).toContain("Progress saved");
 });
 
-it("keeps a failed save on the current page without success feedback or mock communication", async () => {
+it("keeps ordinary page feedback for a simulated save failure without wiring recovery navigation", async () => {
   save.mockRejectedValue(new Error("Test storage unavailable"));
   await render(); await change(); await submit();
-  expect(container.textContent).toContain("We couldn’t save your latest changes.");
+  expect(container.textContent).toContain(applicationRecovery['technical-error'].message);
   expect(container.textContent).not.toContain("Test storage unavailable");
   expect(container.querySelector("[data-path]")?.textContent).toBe("/membership");
   expect(container.textContent).not.toContain("Progress saved");
@@ -91,12 +92,13 @@ it("saves before expanding the next single-page section and shows success withou
   expect(container.querySelector('[role="status"]')?.textContent).toContain("Progress saved");
 });
 
-it("keeps a failed single-page save in the current section without success feedback", async () => {
+it("keeps ordinary page feedback for a simulated single-page save failure", async () => {
   save.mockRejectedValue(new Error("Test storage unavailable"));
   await render("membership", true); await change(); await submit();
   expect(container.querySelector("#membership-form")).not.toBeNull();
   expect(container.querySelector("#eligibility-form")).toBeNull();
-  expect(container.textContent).toContain("We couldn’t save your latest changes.");
+  expect(container.querySelector("[data-path]")?.textContent).toBe("/membership");
+  expect(container.textContent).toContain(applicationRecovery['technical-error'].message);
   expect(container.textContent).not.toContain("Test storage unavailable");
   expect(container.textContent).not.toContain("Progress saved");
 });

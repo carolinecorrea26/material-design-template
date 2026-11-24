@@ -3,7 +3,7 @@ import { createReviewedMigrationDatabase } from '../migration/fixtures';
 import { effectiveSiteSnapshotTables } from '../repositories/portalDataRepository';
 import { isLibraryDraft, type LibraryDraft } from './libraryDraft';
 import { legacyPagePositions, migratePageCatalogSnapshot } from './pageCatalogMigration';
-import { resolvePrototypeLibrary } from './prototypeLibrary';
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from '../migration/snapshotTestLibrary';
 
 let baseline: LibraryDraft;
 beforeAll(() => {
@@ -59,7 +59,7 @@ it('preserves existing flow labels and refuses malformed or ambiguous snapshots'
   const ambiguous = legacy(); ambiguous.data.sitePages.find(row => row.siteKey === 'ama' && row.pageKey === 'membership')!.position = 0;
   expect(() => migratePageCatalogSnapshot(ambiguous)).toThrow();
   const laterCollision = legacy();
-  laterCollision.data.pages.find(page => page.key === 'health-ci')!.position = 12;
+  laterCollision.data.pages.find(page => page.key === 'health-tele')!.position = 12;
   expect(() => migratePageCatalogSnapshot(laterCollision)).toThrow('Ambiguous stored page order');
   expect(() => migratePageCatalogSnapshot({ formatVersion: 2 })).toThrow();
 });

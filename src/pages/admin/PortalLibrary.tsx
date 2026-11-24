@@ -1,3 +1,4 @@
+import CommunicationsLibrary from './library/CommunicationsLibrary';
 import { Link as RouterLink, useParams, useSearchParams } from "react-router-dom";
 import { Box, Stack, Tab, Tabs, useMediaQuery, Typography } from "@mui/material";
 import { Workspace } from "../../components/admin/AdminPrimitives";
@@ -19,12 +20,14 @@ import ConfigurationsLibrary from "./library/ConfigurationsLibrary";
 import ValidationLibrary from "./library/ValidationLibrary";
 import AccessibilityLibrary from "./library/AccessibilityLibrary";
 import RequirementChangesLibrary from "./library/RequirementChangesLibrary";
+import FormsLibrary from "./library/FormsLibrary";
 import FormulasLibrary from "./library/FormulasLibrary";
 import ComponentCatalogTable from "../../components/docs/ComponentCatalogTable";
 
 export const libraryTabs = [
   { id: "overview", label: "Overview" },
   { id: "pages", label: "Pages" },
+  { id: "forms", label: "Forms" },
   { id: "fields", label: "Fields" },
   { id: "components", label: "Components" },
   { id: "flows", label: "Flows" },
@@ -33,6 +36,7 @@ export const libraryTabs = [
   { id: "configurations", label: "Configurations" },
   { id: "formulas", label: "Formulas" },
   { id: "content", label: "Content" },
+  { id: "emails", label: "Emails" },
   { id: "accessibility", label: "Accessibility" },
   { id: "analytics", label: "Analytics" },
   { id: "changes", label: "Fresh-start changelog" },
@@ -40,6 +44,7 @@ export const libraryTabs = [
 const domainDescriptions: Record<string, string> = {
   overview: "Client, association and TPA information, with an interactive Site preview.",
   pages: "Browse pages by flow, requirement and available fields, grouped by page, modal and drawer. Select a Site to see its configured requirements, including pages set to none. Page sequence is defined by the navigation rules for each flow.",
+  forms: "Inventory of application pages, calculators, dialogs and embedded forms, with internal or external hosting, providers and prototype implementation.",
   fields: "Browse field IDs, input labels, types, Storybook components, keyboards, options, defaults and helper text. Page and section usage is listed below the field catalog.",
   components: "The complete shared component reference used by Storybook, with examples and application placements.",
   validation: "Page errors, field errors, and application recovery and processing states.",
@@ -51,15 +56,15 @@ const domainDescriptions: Record<string, string> = {
   patterns: "Review reusable integration, calculation, and coverage patterns.",
   flags: "Review configured and derived flags, scopes, and decision values.",
   rules: "Functional rules describing how the Site behaves, including navigation and conditional actions.",
-  flows: "Review application journeys and their decisions in table format.",
+  flows: "Explore application journeys as branching diagrams or detailed steps.",
   features: "Browse documented portal capabilities and impacted areas. Site-specific settings are listed in Configurations.",
   configurations: "Applicant, coverage, theme and portal settings for the selected scope.",
   "url-parameters": "Review supported URL parameters, their behavior, and recorded Site usage.",
-  content: "CMS content, images, links, documents and email templates for the selected scope.",
-  communications: "Inspect transactional email templates and their contact configuration.",
+  content: "Shared wording, images, links and documents, with global defaults, effective Site values and all usage references.",
+  emails: "Inspect transactional email templates and their contact configuration.",
   themes: "Inspect branding, icons and design foundations, with interactive theme previews for the selected scope.",
 };
-const aliases: Record<string, string> = { "client-information": "overview", "site-preview": "overview", templates: "configurations", themes: "configurations", products: "configurations", coverage: "configurations", "coverage-review": "configurations", "url-parameters": "configurations", features: "configurations", emails: "content", communications: "content", documents: "content", "pages-fields": "pages", "site-details": "pages", "site-overview": "pages", patterns: "rules", flags: "rules", validations: "validation" };
+const aliases: Record<string, string> = { "client-information": "overview", "site-preview": "overview", templates: "configurations", themes: "configurations", products: "configurations", coverage: "configurations", "coverage-review": "configurations", "url-parameters": "configurations", features: "configurations", communications: "emails", documents: "content", "pages-fields": "pages", "site-details": "pages", "site-overview": "pages", patterns: "rules", flags: "rules", validations: "validation" };
 
 function LibraryComponents() {
   const { data } = useLibraryCatalog();
@@ -91,7 +96,7 @@ export default function PortalLibrary() {
   const [selection, setSelection] = useLibrarySelection();
   const scope: LibraryScope = selection === "all" ? "global" : "effective";
   const domains = libraryTabs;
-  const requested = aliases[domainId ?? ""] ?? domainId;
+  const requested = domainId === "content" && search.get("view") === "emails" ? "emails" : aliases[domainId ?? ""] ?? domainId;
   const domain = domains.find(entry => entry.id === requested) ?? libraryTabs[0];
   return <Workspace>
     <Typography component="h1" variant="h5" sx={{ fontWeight: 800 }}>Portal Library</Typography>
@@ -107,7 +112,7 @@ export default function PortalLibrary() {
           <Typography variant="body2" color="text.secondary">{domainDescriptions[domain.id]}</Typography>
         </Stack>
         {domain.id === "accessibility" ? <AccessibilityLibrary siteKey={selection} /> : domain.id === "changes" ? <RequirementChangesLibrary /> : domain.id === "formulas" ? <FormulasLibrary /> : <LibraryCatalogProvider siteKey={selection}>
-          {domain.id === "components" ? <LibraryComponents /> : domain.id === "pages" ? <StoredPagesLibrary siteKey={selection} /> : domain.id === "fields" ? <StoredFieldsLibrary siteKey={selection} /> : domain.id === "overview" ? <LibraryOverview siteKey={selection} legacyPreview={domainId === "site-preview"} /> : domain.id === "rules" ? <RulesLibrary siteKey={selection} /> : domain.id === "configurations" ? <ConfigurationsLibrary domain={domainId} siteKey={selection} /> : domain.id === "flows" ? <StoredFlowsLibrary siteKey={selection} /> : domain.id === "analytics" ? <AnalyticsLibrary siteKey={selection} /> : domain.id === "content" ? <ContentLibrary domain={domainId} siteKey={selection} /> : domain.id === "validation" ? <ValidationLibrary siteKey={selection} /> : <StoredLibraryDomain domain={domain.id} siteKey={selection} />}
+          {domain.id === "forms" ? <FormsLibrary /> : domain.id === "components" ? <LibraryComponents /> : domain.id === "pages" ? <StoredPagesLibrary siteKey={selection} /> : domain.id === "fields" ? <StoredFieldsLibrary siteKey={selection} /> : domain.id === "overview" ? <LibraryOverview siteKey={selection} legacyPreview={domainId === "site-preview"} /> : domain.id === "rules" ? <RulesLibrary siteKey={selection} /> : domain.id === "configurations" ? <ConfigurationsLibrary domain={domainId} siteKey={selection} /> : domain.id === "flows" ? <StoredFlowsLibrary siteKey={selection} /> : domain.id === "analytics" ? <AnalyticsLibrary siteKey={selection} /> : domain.id === "content" ? <ContentLibrary siteKey={selection} /> : domain.id === "emails" ? <CommunicationsLibrary siteKey={selection} /> : domain.id === "validation" ? <ValidationLibrary siteKey={selection} /> : <StoredLibraryDomain domain={domain.id} siteKey={selection} />}
         </LibraryCatalogProvider>}
       </Stack>
       </Box>

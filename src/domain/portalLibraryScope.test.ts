@@ -1,3 +1,4 @@
+import { requirementComponentDefinitions } from './requirementComponents.mjs';
 import type { FieldId } from "./fields";
 import { beforeAll, describe, expect, it } from 'vitest';
 import { createReviewedMigrationDatabase } from '../migration/fixtures';
@@ -37,7 +38,7 @@ describe('portal catalog scope', () => {
   });
   it('stores every portal Storybook component in the snapshot and returns detached rows', async () => {
     const snapshot = await new LocalStorageAdapter(db).readSnapshot(['components']);
-    expect(snapshot.data.components).toHaveLength(67);
+    expect(snapshot.data.components.map(row => row.definition.name).sort()).toEqual(requirementComponentDefinitions().map(row => row.name).sort());
     expect(snapshot.data.components.every(row => row.definition.name && row.definition.description && row.definition.storybookPath.startsWith('?path=/story/'))).toBe(true);
     expect(snapshot.data.components.some(row => /\/(admin|docs)\//.test(row.definition.source))).toBe(false);
     snapshot.data.components[0].definition.name = 'Changed copy';

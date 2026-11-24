@@ -1,0 +1,13 @@
+{
+  "page": "membership",
+  "include": [
+    "ama-physician-first-name",
+    "ama-physician-last-name",
+    "ama-physician-birth-date",
+    "ama-physician-email"
+  ],
+  "content": {
+    "membership.physician.title": "Medical Student Information",
+    "membership.physician.note": "Please provide the medical student's information below."
+  }
+}

@@ -1,9 +1,11 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import { act, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { afterEach, beforeAll, expect, it, vi } from "vitest";
 import dayjs from "dayjs";
 import { createReviewedMigrationDatabase } from "./fixtures";
-import { installPrototypeLibrary, resolvePrototypeLibrary } from "../domain/prototypeLibrary";
+import { installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import { resolveEffectiveEligibility } from "../domain/effectiveSite";
 import { resolveApplicationCoverage } from "../domain/coverageRuntime";
 import { categoryEligibility, readCategoryEligibilityPolicy, reconcileCategoryElections } from "../domain/categoryEligibilityPolicy";

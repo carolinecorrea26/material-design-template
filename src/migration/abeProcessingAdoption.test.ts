@@ -1,9 +1,11 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import { afterEach, beforeAll, expect, it } from "vitest";
 import { createReviewedMigrationDatabase } from "./fixtures";
 import { abeProcessingDecisionKey, applyAbeProcessingAdoption } from "./abeProcessingAdoption";
 import { resolveJourneyUnderwriting } from "../domain/coverageJourneyUnderwriting";
 import { isCoverageJourneyPolicy } from "../domain/coverageJourneyPolicy";
-import { installPrototypeLibrary, resolvePrototypeLibrary } from "../domain/prototypeLibrary";
+import { installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import { activeReviewBlocks, isReviewPolicy } from "../domain/reviewPolicy";
 import { applicationUnderwriting, validateApplicationCoverages } from "../domain/coverageRuntime";
 import { applicationUnderwritingContext, isQuickDecisionPolicy } from "../domain/quickDecisionPolicy";
@@ -12,9 +14,8 @@ import { currentMcrSource } from "./currentMcr";
 import { validateMigrationDatabase } from "./integrity";
 import type { DatabaseSchema } from "../persistence/types";
 import { createHash } from "node:crypto";
-import { readFileSync, writeFileSync } from "node:fs";
+import { writeFileSync } from "node:fs";
 import { resolveQuestionParticipation } from "../domain/coverageJourney";
-import { resolveEffectiveSite } from "../domain/effectiveSite";
 import { abeDividendOwnerHash } from "./requirementCrosswalkAbeReview";
 import { navigationReviewHash } from "./requirementCrosswalkNavigationReview";
 import { getActiveFormFlow } from "../config/formFlow";
@@ -67,8 +68,8 @@ it("uses captured editable policies and the same routing in the form adapter and
   expect(validateApplicationCoverages(library.products, beforeProfile)).toContain("existing Life coverage information on Profile");
   expect(applicationUnderwriting(product, "member", { ...values, state: "CA" })).toMatchObject({ underwritingType: "FUW", healthPage: null });
   expect(getActiveFormFlow(values as ApplicationFormValues)).toContain("health-qd");
-  expect(getActiveFormFlow(values as ApplicationFormValues)).not.toContain("health-li");
-  expect(getActiveFormFlow({ ...values, state: "CA" } as ApplicationFormValues)).not.toContain("health-li");
+  expect(getActiveFormFlow(values as ApplicationFormValues)).not.toContain("health-tele");
+  expect(getActiveFormFlow({ ...values, state: "CA" } as ApplicationFormValues)).not.toContain("health-tele");
   expect(getActiveFormFlow({ ...values, state: "CA" } as ApplicationFormValues)).not.toContain("health-qd");
   expect(applicationUnderwritingContext(site, product.id, "member", { ...values, "has-other-life-insurance": "yes", "existing-life-insurance-amount": "$25,000" }).existingLifeAmount).toBe(25000);
   const copy = structuredClone(db), row = copy.configurationValues.find(row => row.key === "abe.li-10yr.journey-policy")!;
@@ -121,15 +122,8 @@ it("treats ABE FUW as post-submission processing without generic online health q
   expect(getActiveFormFlow(diOnly).filter(page => page.startsWith("health-"))).toEqual([]);
 }, 120000);
 
-it("preserves every other Site's captured health forms and effective configuration", () => {
-  const previous = JSON.parse(readFileSync("public/catalog/portal.json", "utf8")) as { data: DatabaseSchema };
-  const oldAbe = resolveEffectiveSite(previous.data, "abe");
-  const oldTele = oldAbe.configuration.products.find(product => product.productKey === "li-50plus")!.journeyPolicies[0].value;
-  const newTele = site.configuration.products.find(product => product.productKey === "li-50plus")!.journeyPolicies[0].value;
-  if (!isCoverageJourneyPolicy(oldTele) || !isCoverageJourneyPolicy(newTele)) throw new Error("Invalid TELE policy");
-  expect(newTele.questions).toEqual(oldTele.questions.map(question => ({ ...question, healthPage: null })));
-  expect(site.configuration.pages.find(page => page.key === "health-li")).toEqual(oldAbe.configuration.pages.find(page => page.key === "health-li"));
-  for (const other of db.sites.filter(row => row.key !== "abe")) {
-    expect(resolveEffectiveSite(db, other.key), other.key).toEqual(resolveEffectiveSite(previous.data, other.key));
-  }
+it("reapplies the processing decision without changing captured forms or other Sites", () => {
+  const repeated = structuredClone(db);
+  applyAbeProcessingAdoption(repeated);
+  expect(repeated).toEqual(db);
 }, 120000);

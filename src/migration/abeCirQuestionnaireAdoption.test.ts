@@ -1,7 +1,9 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import { afterEach, beforeAll, expect, it } from "vitest";
 import { createReviewedMigrationDatabase } from "./fixtures";
 import { applyAbeCirQuestionnaireAdoption } from "./abeCirQuestionnaireAdoption";
-import { installPrototypeLibrary, resolvePrototypeLibrary, type PrototypeLibrary } from "../domain/prototypeLibrary";
+import { installPrototypeLibrary, type PrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import { configuredHealthQuestionnaire, validateConfiguredHealthQuestionnaire } from "../domain/configuredHealthQuestionnaire";
 import { applicantParticipatesInPage, resolvePageParticipation } from "../config/flowGates";
 import { getClientPageFields } from "../config/clientFields/getClientPageFields";
@@ -61,7 +63,7 @@ it("skips CIR on ABE and requires both Site enablement and that adult's CIR sele
   expect(getClientPageFields("health-cir", values)).toHaveLength(12);
   expect(getClientPageFields("health-cir", values).every(field => field.id.endsWith("-member"))).toBe(true);
   expect(getActiveFormFlow(values)).toEqual(expect.arrayContaining(["health-qd", "health-cir"]));
-  expect(getActiveFormFlow(values)).not.toContain("health-li");
+  expect(getActiveFormFlow(values)).not.toContain("health-tele");
   const removed = { ...values, coverageSelections: [] };
   expect(resolvePageParticipation("health-cir", removed)).toBe(false);
   expect(configuredHealthQuestionnaire(enabled.site, "health-cir", "member", removed).status).toBe("unassigned");

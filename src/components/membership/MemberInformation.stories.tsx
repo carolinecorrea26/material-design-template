@@ -11,11 +11,6 @@ const meta = {
 export default meta;
 export const Default: StoryObj = {
   render: () => <MembershipStoryForm>
-    {({ control, errors, allFields }) => <MemberInformation fields={allFields} control={control} errors={errors} />}
-  </MembershipStoryForm>,
-};
-export const WithTitle: StoryObj = {
-  render: () => <MembershipStoryForm capability="physicianMembership">
-    {({ control, errors, allFields }) => <MemberInformation fields={allFields} control={control} errors={errors} />}
+    {({ control, errors, componentFields }) => <MemberInformation fields={componentFields('MemberInformation')} control={control} errors={errors} />}
   </MembershipStoryForm>,
 };

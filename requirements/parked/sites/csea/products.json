@@ -1,0 +1,1745 @@
+{
+  "products": {},
+  "catalog": {
+    "configurationValues": [
+      {
+        "id": "{{site}}.di-ltd.reviewed-benefit-policy",
+        "key": "{{site}}.di-ltd.reviewed-benefit-policy",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "position": 0,
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "configurationKey": "template.di-ltd.reviewed-benefit-policy",
+        "value": {
+          "version": 2,
+          "applicants": [
+            {
+              "applicantKey": "member",
+              "applicantClass": "clerical",
+              "income": {
+                "fraction": 0.6,
+                "subtractExisting": false
+              },
+              "waitingPeriods": [
+                {
+                  "key": "0-day-accident-7-day-sickness",
+                  "accidentDays": 0,
+                  "sicknessDays": 7
+                }
+              ],
+              "benefitPeriods": [
+                "12-months"
+              ],
+              "amountRuleKey": "{{site}}.di-ltd.amount.0"
+            },
+            {
+              "applicantKey": "member",
+              "applicantClass": "non-clerical",
+              "income": {
+                "fraction": 0.6,
+                "subtractExisting": false
+              },
+              "waitingPeriods": [
+                {
+                  "key": "180-days",
+                  "accidentDays": 180,
+                  "sicknessDays": 180
+                }
+              ],
+              "benefitPeriods": [
+                "2-years",
+                "5-years"
+              ],
+              "amountRuleKey": "{{site}}.di-ltd.benefit-amount.member.non-clerical.rule"
+            }
+          ],
+          "exclusiveProducts": [],
+          "provisional": true,
+          "revisit": [
+            "Office-work yes maps to clerical, no to non-clerical (Main R246). Clerical uses the supplied October 5 table schedule and 0-day Accident/7-day Sickness, 12-month period. Non-clerical retains the Disability D45 working schedule pending its table; reconcile program identity before publication.",
+            "Income cap 60% remains provisional; no existing-disability subtraction or invented collection question is applied. Occupation-specific differences await authoritative benefit table.",
+            "User supplied clerical DI and AD&D reference assets October 5, 2026; rates remain reference-only. Reconcile the provisional benefit schedule against the supplied 12-month plan before production pricing.",
+            "Spouse Accident Disability and child Outpatient Emergency Room Benefit are attached elections; document identifiers remain subject to reconciliation."
+          ],
+          "amountSource": "product-amount-rules"
+        }
+      },
+      {
+        "id": "{{site}}.li-add.name",
+        "key": "{{site}}.li-add.name",
+        "sourceReference": "User clarification October 5, 2026; supplied AD&D rate table",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "products.presentation.li-add.name",
+        "value": "Group Accidental Death and Dismemberment"
+      },
+      {
+        "id": "{{site}}.li-add.description",
+        "key": "{{site}}.li-add.description",
+        "sourceReference": "User clarification October 5, 2026; supplied AD&D rate table",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.li-add.description",
+        "value": "Optional member AD&D coverage. Choose a principal sum of $10,000, $30,000, $50,000 or $100,000. $5,000 Basic AD&D coverage is already included in the DI plan."
+      },
+      {
+        "id": "{{site}}.li-add.options",
+        "key": "{{site}}.li-add.options",
+        "sourceReference": "User clarification October 5, 2026; supplied AD&D rate table",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.li-add.options",
+        "value": [
+          {
+            "id": "amount",
+            "type": "amount",
+            "label": "Principal Sum",
+            "choices": [
+              10000,
+              30000,
+              50000,
+              100000
+            ]
+          }
+        ]
+      },
+      {
+        "id": "{{site}}.li-add.reference-table",
+        "key": "{{site}}.li-add.reference-table",
+        "sourceReference": "User clarification October 5, 2026; supplied AD&D rate table",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.li-add.reference-table",
+        "value": {
+          "version": 1,
+          "kind": "html-table",
+          "title": "CSEA Group Accidental Death and Dismemberment \u2014 Office / Clerical rates",
+          "columns": [
+            "Principal sum",
+            "Bi-weekly rate"
+          ],
+          "rows": [
+            [
+              "$10,000",
+              "$0.27"
+            ],
+            [
+              "$30,000",
+              "$0.81"
+            ],
+            [
+              "$50,000",
+              "$1.35"
+            ],
+            [
+              "$100,000",
+              "$2.70"
+            ]
+          ],
+          "notes": [
+            "$5,000 Basic AD&D coverage is included with Disability coverage. Optional amounts are available at additional cost.",
+            "The supplied AD&D PDF also describes the loss/benefit schedule and exclusions. Loss must occur within 90 days; only the largest benefit is payable for losses from one accident. See the complete source document."
+          ],
+          "sources": [
+            {
+              "kind": "pdf",
+              "url": "/client/csea/rates/ADDBenefits.pdf",
+              "label": "Supplied AD&D benefits PDF"
+            },
+            {
+              "kind": "image",
+              "url": "/client/csea/rates/ADD-Clerical.png",
+              "label": "Supplied AD&D rate image"
+            }
+          ]
+        }
+      },
+      {
+        "id": "{{site}}.li-add.residency",
+        "key": "{{site}}.li-add.residency",
+        "sourceReference": "User clarification October 5, 2026; supplied AD&D rate table",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.li-add.journey-residency",
+        "value": {
+          "version": 1,
+          "allowedJurisdictions": [
+            "US-NY",
+            "US-NJ",
+            "US-VT",
+            "US-PA",
+            "US-CT"
+          ],
+          "excludeActiveMilitary": false,
+          "provisional": true,
+          "revisit": [
+            "Member-only AD product and states confirmed by user; product documents and identifiers require reconciliation."
+          ]
+        }
+      },
+      {
+        "id": "{{site}}.li-add.provisional-rate-outcome",
+        "key": "{{site}}.li-add.provisional-rate-outcome",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "configurationKey": "template.li-add.provisional-rate-outcome",
+        "value": {
+          "status": "unavailable",
+          "reason": "Authoritative base premiums are not supplied",
+          "provisional": true,
+          "revisit": true
+        },
+        "position": 0
+      },
+      {
+        "id": "{{site}}.di-ltd.provisional-rate-outcome",
+        "key": "{{site}}.di-ltd.provisional-rate-outcome",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "configurationKey": "template.di-ltd.provisional-rate-outcome",
+        "value": {
+          "status": "unavailable",
+          "reason": "Authoritative base premiums are not supplied",
+          "provisional": true,
+          "revisit": true
+        },
+        "position": 0
+      },
+      {
+        "id": "{{site}}.di-ltd.reviewed-residency",
+        "key": "{{site}}.di-ltd.reviewed-residency",
+        "sourceReference": "Main!M246; Main!N246",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.coveragePolicy.residency.di-ltd",
+        "value": {
+          "version": 1,
+          "allowedJurisdictions": [
+            "US-NY",
+            "US-NJ",
+            "US-VT",
+            "US-PA",
+            "US-CT"
+          ],
+          "excludeActiveMilitary": false,
+          "provisional": true,
+          "revisit": [
+            "MainM246 explicitly allows NY/NJ/VT/PA/CT; MainN246 repeats these states under exclusions. Prefer the explicit allowlist provisionally and reconcile the standard/GI row label."
+          ]
+        },
+        "position": 0
+      },
+      {
+        "id": "rates.reviewed-presentation.{{site}}",
+        "key": "rates.reviewed-presentation.{{site}}",
+        "sourceReference": "docs/archive/step3-major-outstanding-items.md",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "configurationKey": "rates.reviewed-presentation",
+        "value": {
+          "version": 1,
+          "praseConfigured": false,
+          "quoteToolEnabled": false,
+          "coverageQuoteEnabled": false
+        },
+        "position": 0
+      },
+      {
+        "id": "{{site}}.di-ltd.provisional-reference-table",
+        "key": "{{site}}.di-ltd.provisional-reference-table",
+        "sourceReference": "docs/archive/step3-major-outstanding-items.md",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "configurationKey": "template.di-ltd.provisional-reference-table",
+        "value": {
+          "version": 1,
+          "kind": "html-table",
+          "title": "CSEA Disability Income \u2014 Office / Clerical rates",
+          "columns": [
+            "Annual salary",
+            "Monthly benefit",
+            "Age <30",
+            "Age 30\u201339",
+            "Age 40\u201349",
+            "Age 50\u201359",
+            "Age 60\u201364**"
+          ],
+          "rows": [
+            [
+              "$22,000\u2013$25,999",
+              "$1,000",
+              "$15.49",
+              "$19.34",
+              "$24.56",
+              "$34.23",
+              "$39.41"
+            ],
+            [
+              "$26,000\u2013$27,499",
+              "$1,200",
+              "$18.53",
+              "$23.15",
+              "$29.42",
+              "$40.99",
+              "$47.21"
+            ],
+            [
+              "$27,500\u2013$29,999",
+              "$1,300",
+              "$20.06",
+              "$25.06",
+              "$31.85",
+              "$44.38",
+              "$51.11"
+            ],
+            [
+              "$30,000\u2013$32,499",
+              "$1,400",
+              "$21.58",
+              "$26.96",
+              "$34.28",
+              "$47.76",
+              "$55.01"
+            ],
+            [
+              "$35,000\u2013$37,499",
+              "$1,600",
+              "$24.63",
+              "$30.78",
+              "$39.14",
+              "$54.53",
+              "$62.81"
+            ],
+            [
+              "$35,000\u2013$37,499",
+              "$1,700",
+              "$26.15",
+              "$32.68",
+              "$41.57",
+              "$57.91",
+              "$66.71"
+            ],
+            [
+              "$37,500\u2013$39,999",
+              "$1,800",
+              "$27.68",
+              "$34.59",
+              "$44.00",
+              "$61.30",
+              "$70.61"
+            ],
+            [
+              "$40,000\u2013$42,499",
+              "$1,900",
+              "$29.20",
+              "$36.50",
+              "$46.43",
+              "$64.68",
+              "$74.51"
+            ],
+            [
+              "$42,500\u2013$44,999",
+              "$2,000",
+              "$30.73",
+              "$38.41",
+              "$48.86",
+              "$68.07",
+              "$78.42"
+            ]
+          ],
+          "notes": [
+            "Rates current as of April 2025. All rates include $5,000 Basic AD&D Coverage.",
+            "Office or clerical work: 0-day Accident / 7-day Sickness waiting period; benefits payable up to 12 months. Pregnancy has a 7-day waiting period.",
+            "Rates are based on attained age on the first day of an insurance period and increase at a new age bracket. Notify Pearl Insurance of a job classification change immediately, within 90 days.",
+            "The supplied table repeats the $35,000\u2013$37,499 salary band for $1,600 and $1,700 benefits; retained as supplied pending clarification. The source does not explain the ** marker or the collection frequency of the DI rate columns. No premium is calculated from this reference table.",
+            "Rates and benefits may change for an entire class. Refer to the policy brochure for eligibility, benefits, exclusions, limitations and termination provisions. Underwritten by New York Life, Policy Form GMR."
+          ],
+          "sources": [
+            {
+              "kind": "pdf",
+              "url": "/client/csea/rates/DI-Clerical.pdf",
+              "label": "Supplied DI PDF"
+            },
+            {
+              "kind": "image",
+              "url": "/client/csea/rates/DI-Clerical.png",
+              "label": "Supplied DI image"
+            }
+          ]
+        },
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-add.selection-policy",
+        "key": "{{site}}.li-add.selection-policy",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.li-add.selection-policy",
+        "value": {
+          "version": 1,
+          "modes": [
+            "new",
+            "increase"
+          ],
+          "amountMeaning": "resulting-total",
+          "existingPolicyRequired": true,
+          "riderOnlyApplicants": [],
+          "riders": [],
+          "childSchedule": null,
+          "skipPaymentForExisting": true,
+          "skipPaymentForChildOnly": false,
+          "healthForRiderOnly": false,
+          "provisional": true,
+          "revisit": [
+            "Existing-policy verification requires a service; a supplied verification fact is candidate input only. Resulting-total amount semantics are provisional for increase mode.",
+            "Preserve current rider assignments provisionally. Unspecified rider caps, dependencies and incompatibilities require product document review; empty lists are explicit working choices.",
+            "Mock verification replaces the caller boolean at the journey boundary. Real policy lookup and effective-date/billing acceptance await integration.",
+            "Added source-linked CIR, WOP, AD&D, CAT and AVMA FPO caps are candidate rules; unresolved rider definitions remain explicitly provisional."
+          ]
+        }
+      },
+      {
+        "id": "{{site}}.li-add.journey-policy",
+        "key": "{{site}}.li-add.journey-policy",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.li-add.journey-policy",
+        "value": {
+          "underwritingByApplicant": {},
+          "version": 1,
+          "applicants": [
+            "member"
+          ],
+          "associationChoices": [],
+          "defaultUnderwritingPathway": "NA",
+          "membershipRequired": true,
+          "ageBasis": "age-last-birthday-on-application-date",
+          "payment": {
+            "collection": "none",
+            "defaultMethod": null,
+            "defaultFrequency": null,
+            "frequencyLocked": false,
+            "synchronizeAcrossProducts": true,
+            "methods": []
+          },
+          "billing": {
+            "annualFactors": {
+              "annual": 1,
+              "semiannual": 0.5,
+              "quarterly": 0.25,
+              "monthly": 0.08333333333333333
+            },
+            "feePerCollection": {
+              "bank-account": 0,
+              "credit-card": 0,
+              "bill-me": 0
+            },
+            "annualCredit": 0,
+            "currency": "USD"
+          },
+          "dependentElections": [],
+          "questions": [
+            {
+              "applicantKey": "member",
+              "modes": [
+                "new"
+              ],
+              "healthPage": null,
+              "financialFields": [],
+              "tobaccoFields": [],
+              "attestationKey": "{{site}}.li-add.member.new.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            },
+            {
+              "applicantKey": "member",
+              "modes": [
+                "increase"
+              ],
+              "healthPage": null,
+              "financialFields": [],
+              "tobaccoFields": [],
+              "attestationKey": "{{site}}.li-add.member.increase.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            }
+          ],
+          "mappings": [
+            {
+              "when": {
+                "applicantKey": "member",
+                "mode": "new"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "mock:csea:li-add:gNumber",
+                  "rating": "mock:csea:li-add:gNumber",
+                  "issue": "mock:csea:li-add:gNumber",
+                  "xml": "mock:csea:li-add:gNumber",
+                  "pdf": "mock:csea:li-add:gNumber",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "mock:csea:li-add:planCode",
+                  "rating": "mock:csea:li-add:planCode",
+                  "issue": "mock:csea:li-add:planCode",
+                  "xml": "mock:csea:li-add:planCode",
+                  "pdf": "mock:csea:li-add:planCode",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            },
+            {
+              "when": {
+                "applicantKey": "member",
+                "mode": "increase"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "mock:csea:li-add:gNumber",
+                  "rating": "mock:csea:li-add:gNumber",
+                  "issue": "mock:csea:li-add:gNumber",
+                  "xml": "mock:csea:li-add:gNumber",
+                  "pdf": "mock:csea:li-add:gNumber",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "mock:csea:li-add:planCode",
+                  "rating": "mock:csea:li-add:planCode",
+                  "issue": "mock:csea:li-add:planCode",
+                  "xml": "mock:csea:li-add:planCode",
+                  "pdf": "mock:csea:li-add:planCode",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {}
+            }
+          ],
+          "provisional": true,
+          "revisit": [
+            "Use current ISI association list, all enabled plans for each association and common identifiers provisionally. ATPE is not enabled; no ATPE exception is silently applied.",
+            "Membership is an explicit applicant declaration for candidate acceptance, not a verified external membership service. Age is last birthday on application date; revisit source-specific age conventions.",
+            "Reuse current health fields without adding medical rejection criteria. Health pathway, financial/tobacco triggers and synthetic attestation require current product-specific question/document review.",
+            "PRASE unavailable remains a null premium. Non-AMA modal factors use pro rata annual fractions, fees and credits are zero; WAEPA card conflict uses the agreed mock card option. Existing billing remains unchanged only after policy verification.",
+            "Submission is a mock-coverage-v1 role mapping, not insurer XML/PDF service certification. Unspecified roles use the primary identifier provisionally; portal dummy identifiers never enter issue/rating/XML/PDF by default."
+          ]
+        }
+      },
+      {
+        "id": "{{site}}.di-ltd.selection-policy",
+        "key": "{{site}}.di-ltd.selection-policy",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.di-ltd.selection-policy",
+        "value": {
+          "version": 2,
+          "modes": [
+            "new",
+            "increase"
+          ],
+          "amountMeaning": "resulting-total",
+          "existingPolicyRequired": true,
+          "riderOnlyApplicants": [],
+          "riders": [
+            {
+              "key": "{{site}}.spouse-accident",
+              "applicants": [
+                "member"
+              ],
+              "included": false,
+              "minimumBase": 0,
+              "maximumAge": null,
+              "requires": [],
+              "incompatible": [],
+              "amount": {
+                "kind": "rule",
+                "key": "ownership.csea.di-ltd.csea.spouse-accident.all.choices",
+                "default": 500
+              },
+              "excludedJurisdictions": []
+            },
+            {
+              "key": "{{site}}.child-outpatient",
+              "applicants": [
+                "member"
+              ],
+              "included": false,
+              "minimumBase": 0,
+              "maximumAge": null,
+              "requires": [],
+              "incompatible": [],
+              "amount": {
+                "kind": "none"
+              },
+              "excludedJurisdictions": []
+            }
+          ],
+          "childSchedule": null,
+          "skipPaymentForExisting": true,
+          "skipPaymentForChildOnly": false,
+          "healthForRiderOnly": false,
+          "provisional": true,
+          "revisit": [
+            "Existing-policy verification requires a service; a supplied verification fact is candidate input only. Resulting-total amount semantics are provisional for increase mode.",
+            "Preserve current rider assignments provisionally. Unspecified rider caps, dependencies and incompatibilities require product document review; empty lists are explicit working choices.",
+            "Mock verification replaces the caller boolean at the journey boundary. Real policy lookup and effective-date/billing acceptance await integration.",
+            "Added source-linked CIR, WOP, AD&D, CAT and AVMA FPO caps are candidate rules; unresolved rider definitions remain explicitly provisional."
+          ],
+          "amountSource": "rider-amount-rules"
+        }
+      },
+      {
+        "id": "{{site}}.di-ltd.journey-policy",
+        "key": "{{site}}.di-ltd.journey-policy",
+        "sourceReference": "docs/archive/step3-journey-adoption.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.di-ltd.journey-policy",
+        "value": {
+          "underwritingByApplicant": {
+            "member": "NA"
+          },
+          "version": 1,
+          "applicants": [
+            "member"
+          ],
+          "associationChoices": [],
+          "defaultUnderwritingPathway": "FUW",
+          "membershipRequired": true,
+          "ageBasis": "age-last-birthday-on-application-date",
+          "payment": {
+            "collection": "none",
+            "defaultMethod": null,
+            "defaultFrequency": null,
+            "frequencyLocked": false,
+            "synchronizeAcrossProducts": true,
+            "methods": []
+          },
+          "billing": {
+            "annualFactors": {
+              "annual": 1,
+              "semiannual": 0.5,
+              "quarterly": 0.25,
+              "monthly": 0.08333333333333333
+            },
+            "feePerCollection": {
+              "bank-account": 0,
+              "credit-card": 0,
+              "bill-me": 0
+            },
+            "annualCredit": 0,
+            "currency": "USD"
+          },
+          "dependentElections": [
+            {
+              "key": "spouse-accident-disability",
+              "applicantKey": "spouse",
+              "defaultSelected": true,
+              "amountChoices": [
+                500,
+                1000
+              ],
+              "fixedAmount": null,
+              "maximumAgeYears": null,
+              "attestation": "I elect accident disability coverage for my spouse.",
+              "signatureRequired": false,
+              "visitsPerYear": null
+            },
+            {
+              "key": "child-outpatient-accident",
+              "applicantKey": "child",
+              "defaultSelected": true,
+              "amountChoices": [],
+              "fixedAmount": 50,
+              "maximumAgeYears": 18,
+              "attestation": "My child(ren) is/are under age 19 as of the date of this application.",
+              "signatureRequired": false,
+              "visitsPerYear": 2
+            }
+          ],
+          "questions": [
+            {
+              "applicantKey": "member",
+              "modes": [
+                "new"
+              ],
+              "healthPage": "health-di-supp",
+              "financialFields": [
+                "average-monthly-income",
+                "hours-worked-per-week"
+              ],
+              "tobaccoFields": [],
+              "attestationKey": "{{site}}.di-ltd.member.new.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            },
+            {
+              "applicantKey": "member",
+              "modes": [
+                "increase"
+              ],
+              "healthPage": "health-di-supp",
+              "financialFields": [
+                "average-monthly-income",
+                "hours-worked-per-week"
+              ],
+              "tobaccoFields": [],
+              "attestationKey": "{{site}}.di-ltd.member.increase.attestation",
+              "attestationText": "Provisional mock attestation: I confirm the information supplied for this application is accurate. Replace with the approved product attestation before publication."
+            }
+          ],
+          "mappings": [
+            {
+              "when": {
+                "applicantKey": "member",
+                "mode": "new",
+                "applicantClass": "clerical",
+                "waitingPeriod": "0-day-accident-7-day-sickness",
+                "benefitPeriod": "12-months"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-11628-0",
+                  "rating": "G-11628-0",
+                  "issue": "G-11628-0",
+                  "xml": "G-11628-0",
+                  "pdf": "G-11628-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "601",
+                  "rating": "601",
+                  "issue": "601",
+                  "xml": "601",
+                  "pdf": "601",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {
+                "csea.spouse-accident": "mock:csea.spouse-accident",
+                "csea.child-outpatient": "mock:csea.child-outpatient"
+              }
+            },
+            {
+              "when": {
+                "applicantKey": "member",
+                "mode": "new",
+                "applicantClass": "non-clerical",
+                "waitingPeriod": "180-days",
+                "benefitPeriod": "2-years"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-11628-0",
+                  "rating": "G-11628-0",
+                  "issue": "G-11628-0",
+                  "xml": "G-11628-0",
+                  "pdf": "G-11628-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "601",
+                  "rating": "601",
+                  "issue": "601",
+                  "xml": "601",
+                  "pdf": "601",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {
+                "csea.spouse-accident": "mock:csea.spouse-accident",
+                "csea.child-outpatient": "mock:csea.child-outpatient"
+              }
+            },
+            {
+              "when": {
+                "applicantKey": "member",
+                "mode": "new",
+                "applicantClass": "non-clerical",
+                "waitingPeriod": "180-days",
+                "benefitPeriod": "5-years"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-11628-0",
+                  "rating": "G-11628-0",
+                  "issue": "G-11628-0",
+                  "xml": "G-11628-0",
+                  "pdf": "G-11628-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "601",
+                  "rating": "601",
+                  "issue": "601",
+                  "xml": "601",
+                  "pdf": "601",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {
+                "csea.spouse-accident": "mock:csea.spouse-accident",
+                "csea.child-outpatient": "mock:csea.child-outpatient"
+              }
+            },
+            {
+              "when": {
+                "applicantKey": "member",
+                "mode": "increase",
+                "applicantClass": "clerical",
+                "waitingPeriod": "0-day-accident-7-day-sickness",
+                "benefitPeriod": "12-months"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-11628-0",
+                  "rating": "G-11628-0",
+                  "issue": "G-11628-0",
+                  "xml": "G-11628-0",
+                  "pdf": "G-11628-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "601",
+                  "rating": "601",
+                  "issue": "601",
+                  "xml": "601",
+                  "pdf": "601",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {
+                "csea.spouse-accident": "mock:csea.spouse-accident",
+                "csea.child-outpatient": "mock:csea.child-outpatient"
+              }
+            },
+            {
+              "when": {
+                "applicantKey": "member",
+                "mode": "increase",
+                "applicantClass": "non-clerical",
+                "waitingPeriod": "180-days",
+                "benefitPeriod": "2-years"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-11628-0",
+                  "rating": "G-11628-0",
+                  "issue": "G-11628-0",
+                  "xml": "G-11628-0",
+                  "pdf": "G-11628-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "601",
+                  "rating": "601",
+                  "issue": "601",
+                  "xml": "601",
+                  "pdf": "601",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {
+                "csea.spouse-accident": "mock:csea.spouse-accident",
+                "csea.child-outpatient": "mock:csea.child-outpatient"
+              }
+            },
+            {
+              "when": {
+                "applicantKey": "member",
+                "mode": "increase",
+                "applicantClass": "non-clerical",
+                "waitingPeriod": "180-days",
+                "benefitPeriod": "5-years"
+              },
+              "identifiers": {
+                "gNumber": {
+                  "display": "G-11628-0",
+                  "rating": "G-11628-0",
+                  "issue": "G-11628-0",
+                  "xml": "G-11628-0",
+                  "pdf": "G-11628-0",
+                  "portalDummy": null
+                },
+                "planCode": {
+                  "display": "601",
+                  "rating": "601",
+                  "issue": "601",
+                  "xml": "601",
+                  "pdf": "601",
+                  "portalDummy": null
+                }
+              },
+              "riderCodes": {
+                "csea.spouse-accident": "mock:csea.spouse-accident",
+                "csea.child-outpatient": "mock:csea.child-outpatient"
+              }
+            }
+          ],
+          "provisional": true,
+          "revisit": [
+            "Use current ISI association list, all enabled plans for each association and common identifiers provisionally. ATPE is not enabled; no ATPE exception is silently applied.",
+            "Membership is an explicit applicant declaration for candidate acceptance, not a verified external membership service. Age is last birthday on application date; revisit source-specific age conventions.",
+            "Reuse current health fields without adding medical rejection criteria. Health pathway, financial/tobacco triggers and synthetic attestation require current product-specific question/document review.",
+            "PRASE unavailable remains a null premium. Non-AMA modal factors use pro rata annual fractions, fees and credits are zero; WAEPA card conflict uses the agreed mock card option. Existing billing remains unchanged only after policy verification.",
+            "Submission is a mock-coverage-v1 role mapping, not insurer XML/PDF service certification. Unspecified roles use the primary identifier provisionally; portal dummy identifiers never enter issue/rating/XML/PDF by default."
+          ]
+        }
+      },
+      {
+        "id": "{{site}}.life-aggregate-participation",
+        "key": "{{site}}.life-aggregate-participation",
+        "sourceReference": "docs/archive/step3-review-and-rating.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.coveragePolicy.lifeAggregateParticipation",
+        "value": {
+          "version": 1,
+          "mode": "individual-only",
+          "provisional": true,
+          "reason": "No joint life cap established in candidate: retain individual product limits provisionally; source reconciliation required before publication",
+          "authority": "User, October 2, 2026: \"these can all be ignored for now (take whatever value if a value is needed and note in docs it needs to be revisited)\""
+        }
+      },
+      {
+        "id": "{{site}}.li-add.rate-modifier-policy",
+        "key": "{{site}}.li-add.rate-modifier-policy",
+        "sourceReference": "docs/archive/step3-review-and-rating.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.li-add.rate-modifier-policy",
+        "value": {
+          "version": 1,
+          "rules": [],
+          "provisional": true,
+          "revisit": [
+            "Synthetic base prices; volume discounts without supplied percentages remain zero; child flat premiums and modifier ordering require source reconciliation before publication"
+          ]
+        }
+      },
+      {
+        "id": "{{site}}.li-add.rate-input-policy",
+        "key": "{{site}}.li-add.rate-input-policy",
+        "sourceReference": "docs/archive/step3-review-and-rating.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.li-add.rate-input-policy",
+        "value": {
+          "version": 1,
+          "rateClass": {
+            "sourceReferences": [
+              "prototype:rate-class-assumption"
+            ],
+            "sourceText": "",
+            "classes": [
+              "Prototype default"
+            ],
+            "selection": "single",
+            "provisional": true,
+            "revisit": "No complete quote-class mapping adopted; synthetic mock assumption only. Source text retained for reconciliation."
+          },
+          "dimensions": {
+            "amount": "required",
+            "applicant": "required",
+            "age": "provisional",
+            "jurisdiction": "provisional",
+            "gender": "provisional",
+            "tobacco": "ignored",
+            "rateClass": "required"
+          },
+          "sourceReferences": [
+            "prototype:rating-input-assumption"
+          ],
+          "authority": "provisional"
+        }
+      },
+      {
+        "id": "{{site}}.di-ltd.rate-modifier-policy",
+        "key": "{{site}}.di-ltd.rate-modifier-policy",
+        "sourceReference": "docs/archive/step3-review-and-rating.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.di-ltd.rate-modifier-policy",
+        "value": {
+          "version": 1,
+          "rules": [],
+          "provisional": true,
+          "revisit": [
+            "Synthetic base prices; volume discounts without supplied percentages remain zero; child flat premiums and modifier ordering require source reconciliation before publication"
+          ]
+        }
+      },
+      {
+        "id": "{{site}}.di-ltd.rate-input-policy",
+        "key": "{{site}}.di-ltd.rate-input-policy",
+        "sourceReference": "docs/archive/step3-review-and-rating.md",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.di-ltd.rate-input-policy",
+        "value": {
+          "version": 1,
+          "rateClass": {
+            "sourceReferences": [
+              "prototype:rate-class-assumption"
+            ],
+            "sourceText": "",
+            "classes": [
+              "Prototype default"
+            ],
+            "selection": "single",
+            "provisional": true,
+            "revisit": "No complete quote-class mapping adopted; synthetic mock assumption only. Source text retained for reconciliation."
+          },
+          "dimensions": {
+            "amount": "required",
+            "applicant": "required",
+            "age": "provisional",
+            "jurisdiction": "provisional",
+            "gender": "provisional",
+            "tobacco": "ignored",
+            "waitingPeriod": "provisional",
+            "benefitPeriod": "provisional",
+            "rateClass": "required"
+          },
+          "sourceReferences": [
+            "prototype:rating-input-assumption"
+          ],
+          "authority": "provisional"
+        }
+      },
+      {
+        "id": "ownership.{{site}}.di-ltd.rider-set",
+        "key": "ownership.{{site}}.di-ltd.rider-set",
+        "sourceReference": "User-confirmed relational rider ownership, October 19, 2026",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "position": 0,
+        "configurationKey": "template.di-ltd.rider-set",
+        "value": {
+          "version": 2,
+          "source": "productRiders"
+        }
+      },
+      {
+        "id": "ownership.{{site}}.li-add.rider-set",
+        "key": "ownership.{{site}}.li-add.rider-set",
+        "sourceReference": "User-confirmed relational rider ownership, October 19, 2026",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "position": 0,
+        "configurationKey": "template.li-add.rider-set",
+        "value": {
+          "version": 2,
+          "source": "productRiders"
+        }
+      },
+      {
+        "id": "ownership.{{site}}.page-participation",
+        "key": "ownership.{{site}}.page-participation",
+        "sourceReference": "Site page participation ownership, October 19, 2026",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "configurationKey": "template.page-participation",
+        "value": {
+          "version": 2,
+          "source": "sitePages"
+        }
+      },
+      {
+        "id": "ownership.{{site}}.product-availability",
+        "key": "ownership.{{site}}.product-availability",
+        "sourceReference": "Site product availability ownership, October 19, 2026",
+        "position": 0,
+        "configurationKey": "template.product-availability",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "value": {
+          "version": 2,
+          "source": "siteProducts"
+        }
+      },
+      {
+        "id": "ownership.{{site}}.site-structure",
+        "key": "ownership.{{site}}.site-structure",
+        "sourceReference": "Stored field placement and template mode ownership, October 19, 2026",
+        "position": 0,
+        "configurationKey": "template.site-structure",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "value": {
+          "version": 2,
+          "source": "stored-structure"
+        }
+      }
+    ],
+    "siteProducts": [
+      {
+        "id": "{{site}}--li-add--product",
+        "siteId": "{{siteId}}",
+        "productKey": "li-add",
+        "enabled": true,
+        "key": "{{site}}.li-add",
+        "sourceReference": "prototype:siteProducts/csea.li-add"
+      },
+      {
+        "id": "{{site}}--di-ltd--product",
+        "siteId": "{{siteId}}",
+        "productKey": "di-ltd",
+        "enabled": true,
+        "key": "{{site}}.di-ltd",
+        "sourceReference": "prototype:siteProducts/csea.di-ltd"
+      }
+    ],
+    "siteProductApplicants": [
+      {
+        "id": "{{site}}.di-ltd.member",
+        "key": "{{site}}.di-ltd.member",
+        "siteKey": "{{site}}",
+        "productKey": "di-ltd",
+        "applicantKey": "member",
+        "position": 0,
+        "sourceReference": "prototype:siteProductApplicants/csea.di-ltd.member"
+      },
+      {
+        "id": "{{site}}.li-add.member",
+        "key": "{{site}}.li-add.member",
+        "sourceReference": "User clarification October 5, 2026; supplied AD&D rate table",
+        "siteKey": "{{site}}",
+        "productKey": "li-add",
+        "applicantKey": "member",
+        "position": 0
+      }
+    ],
+    "productApplicantEligibility": [
+      {
+        "id": "{{site}}.di-ltd.member",
+        "key": "{{site}}.di-ltd.member",
+        "sourceReference": "prototype:csea.di-ltd",
+        "productKey": "di-ltd",
+        "applicantTypeKey": "member",
+        "siteKey": "{{site}}",
+        "eligible": true,
+        "conditionKey": null
+      },
+      {
+        "id": "{{site}}.li-add.member.member",
+        "key": "{{site}}.li-add.member.member",
+        "sourceReference": "User clarification October 5, 2026; supplied AD&D rate table",
+        "siteKey": "{{site}}",
+        "productKey": "li-add",
+        "applicantTypeKey": "member",
+        "eligible": true,
+        "conditionKey": null
+      },
+      {
+        "id": "{{site}}.li-add.member.spouse",
+        "key": "{{site}}.li-add.member.spouse",
+        "sourceReference": "User clarification October 5, 2026; supplied AD&D rate table",
+        "siteKey": "{{site}}",
+        "productKey": "li-add",
+        "applicantTypeKey": "spouse",
+        "eligible": false,
+        "conditionKey": null
+      },
+      {
+        "id": "{{site}}.li-add.member.child",
+        "key": "{{site}}.li-add.member.child",
+        "sourceReference": "User clarification October 5, 2026; supplied AD&D rate table",
+        "siteKey": "{{site}}",
+        "productKey": "li-add",
+        "applicantTypeKey": "child",
+        "eligible": false,
+        "conditionKey": null
+      }
+    ],
+    "underwritingBands": [],
+    "coverageDependencies": [],
+    "maximumPlanRules": [],
+    "aggregateLimits": [],
+    "benefitPeriodOptions": [
+      {
+        "id": "{{site}}.di-ltd.waiting.all.0",
+        "key": "{{site}}.di-ltd.waiting.all.0",
+        "sourceReference": "prototype:csea.di-ltd",
+        "productKey": "di-ltd",
+        "siteKey": "{{site}}",
+        "applicantTypeKey": null,
+        "kind": "waiting",
+        "label": "90 days",
+        "value": "90",
+        "days": 90,
+        "position": 0
+      },
+      {
+        "id": "{{site}}.di-ltd.waiting.all.1",
+        "key": "{{site}}.di-ltd.waiting.all.1",
+        "sourceReference": "prototype:csea.di-ltd",
+        "productKey": "di-ltd",
+        "siteKey": "{{site}}",
+        "applicantTypeKey": null,
+        "kind": "waiting",
+        "label": "180 days",
+        "value": "180",
+        "days": 180,
+        "position": 1
+      }
+    ],
+    "productAmountRules": [
+      {
+        "id": "{{site}}.li-add.amount-pattern.rule",
+        "key": "{{site}}.li-add.amount-pattern.rule",
+        "sourceReference": "User clarification October 5, 2026; supplied AD&D rate table",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "productKey": "li-add",
+        "applicantTypeKey": "member",
+        "applicantClass": null,
+        "amountPatternKey": "{{site}}.li-add.amount-pattern",
+        "conditionKey": null,
+        "position": 0
+      },
+      {
+        "id": "{{site}}.di-ltd.amount.0",
+        "key": "{{site}}.di-ltd.amount.0",
+        "sourceReference": "prototype:csea.di-ltd.amount.0",
+        "productKey": "di-ltd",
+        "applicantTypeKey": "member",
+        "applicantClass": "clerical",
+        "amountPatternKey": "{{site}}.di-ltd.benefit-amount.member.clerical.pattern",
+        "conditionKey": null,
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "position": 0
+      },
+      {
+        "id": "{{site}}.di-ltd.benefit-amount.member.non-clerical.rule",
+        "key": "{{site}}.di-ltd.benefit-amount.member.non-clerical.rule",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "productKey": "di-ltd",
+        "applicantTypeKey": "member",
+        "applicantClass": "non-clerical",
+        "amountPatternKey": "{{site}}.di-ltd.benefit-amount.member.non-clerical.pattern",
+        "conditionKey": null,
+        "position": 1
+      }
+    ],
+    "productIdentifiers": [
+      {
+        "id": "{{site}}.li-add.mock-gNumber",
+        "key": "{{site}}.li-add.mock-gNumber",
+        "sourceReference": "User clarification October 5, 2026; supplied AD&D rate table",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "productKey": "li-add",
+        "kind": "gNumber",
+        "definition": {
+          "primary": "mock:csea:li-add:gNumber"
+        }
+      },
+      {
+        "id": "{{site}}.li-add.mock-planCode",
+        "key": "{{site}}.li-add.mock-planCode",
+        "sourceReference": "User clarification October 5, 2026; supplied AD&D rate table",
+        "position": 0,
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "productKey": "li-add",
+        "kind": "planCode",
+        "definition": {
+          "primary": "mock:csea:li-add:planCode"
+        }
+      },
+      {
+        "id": "{{site}}.di-ltd.provisional-identity.gNumber",
+        "key": "{{site}}.di-ltd.provisional-identity.gNumber",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "productKey": "di-ltd",
+        "kind": "gNumber",
+        "definition": {
+          "primary": "G-11628-0"
+        },
+        "position": 0
+      },
+      {
+        "id": "{{site}}.di-ltd.provisional-identity.planCode",
+        "key": "{{site}}.di-ltd.provisional-identity.planCode",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "scope": "site",
+        "clientKey": null,
+        "siteKey": "{{site}}",
+        "productKey": "di-ltd",
+        "kind": "planCode",
+        "definition": {
+          "primary": "601"
+        },
+        "position": 0
+      }
+    ],
+    "productRiders": [
+      {
+        "id": "{{site}}.di-ltd.csea.spouse-accident",
+        "key": "{{site}}.di-ltd.csea.spouse-accident",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "productKey": "di-ltd",
+        "riderKey": "csea.spouse-accident",
+        "position": 0
+      },
+      {
+        "id": "{{site}}.di-ltd.csea.child-outpatient",
+        "key": "{{site}}.di-ltd.csea.child-outpatient",
+        "scope": "site",
+        "siteKey": "{{site}}",
+        "clientKey": null,
+        "productKey": "di-ltd",
+        "riderKey": "csea.child-outpatient",
+        "position": 1
+      }
+    ],
+    "siteRiders": [
+      {
+        "id": "ownership.{{site}}.{{site}}.spouse-accident",
+        "key": "ownership.{{site}}.{{site}}.spouse-accident",
+        "sourceReference": "Main!L246",
+        "siteId": "{{siteId}}",
+        "riderKey": "{{site}}.spouse-accident",
+        "enabled": true
+      },
+      {
+        "id": "ownership.{{site}}.{{site}}.child-outpatient",
+        "key": "ownership.{{site}}.{{site}}.child-outpatient",
+        "sourceReference": "Main!L246",
+        "siteId": "{{siteId}}",
+        "riderKey": "{{site}}.child-outpatient",
+        "enabled": true
+      }
+    ],
+    "riderAmountRules": [
+      {
+        "id": "ownership.csea.di-ltd.csea.spouse-accident.all.choices",
+        "key": "ownership.csea.di-ltd.csea.spouse-accident.all.choices",
+        "sourceReference": "Preserved provisional CSEA attached spouse accident benefit; src/migration/cseaBenefitAdoption.ts",
+        "riderKey": "csea.spouse-accident",
+        "baseProductKey": "di-ltd",
+        "applicantTypeKey": null,
+        "amountPatternKey": "ownership.csea.di-ltd.csea.spouse-accident.all.choices.pattern",
+        "conditionKey": null
+      }
+    ],
+    "benefitCaps": [],
+    "coverageAmountPatterns": [
+      {
+        "id": "ownership.csea.di-ltd.csea.spouse-accident.all.choices.pattern",
+        "key": "ownership.csea.di-ltd.csea.spouse-accident.all.choices.pattern",
+        "sourceReference": "Preserved provisional CSEA attached spouse accident benefit; src/migration/cseaBenefitAdoption.ts",
+        "patternKey": "coverage-amount-options",
+        "amountType": "range",
+        "minimum": null,
+        "maximum": null,
+        "increment": null,
+        "formula": null,
+        "baseProductKey": null,
+        "baseApplicantKey": null,
+        "baseApplicantClass": null,
+        "multiplier": null
+      },
+      {
+        "id": "{{site}}.di-ltd.benefit-amount.member.clerical.pattern",
+        "key": "{{site}}.di-ltd.benefit-amount.member.clerical.pattern",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "patternKey": "coverage-amount-options",
+        "amountType": "set",
+        "minimum": null,
+        "maximum": null,
+        "increment": 100,
+        "formula": null,
+        "baseProductKey": null,
+        "baseApplicantKey": null,
+        "baseApplicantClass": null,
+        "multiplier": null
+      },
+      {
+        "id": "{{site}}.li-add.amount-pattern",
+        "key": "{{site}}.li-add.amount-pattern",
+        "sourceReference": "User clarification October 5, 2026; supplied AD&D rate table",
+        "patternKey": "coverage-amount-options",
+        "amountType": "set",
+        "minimum": 10000,
+        "maximum": 100000,
+        "increment": null,
+        "formula": null,
+        "baseProductKey": null,
+        "baseApplicantKey": null,
+        "baseApplicantClass": null,
+        "multiplier": null
+      },
+      {
+        "id": "{{site}}.di-ltd.benefit-amount.member.non-clerical.pattern",
+        "key": "{{site}}.di-ltd.benefit-amount.member.non-clerical.pattern",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "patternKey": "coverage-amount-options",
+        "amountType": "range",
+        "minimum": null,
+        "maximum": null,
+        "increment": null,
+        "formula": null,
+        "baseProductKey": null,
+        "baseApplicantKey": null,
+        "baseApplicantClass": null,
+        "multiplier": null
+      }
+    ],
+    "amountBands": [
+      {
+        "id": "ownership.csea.di-ltd.csea.spouse-accident.all.choices.pattern.band",
+        "key": "ownership.csea.di-ltd.csea.spouse-accident.all.choices.pattern.band",
+        "sourceReference": "Preserved provisional CSEA attached spouse accident benefit; src/migration/cseaBenefitAdoption.ts",
+        "amountPatternKey": "ownership.csea.di-ltd.csea.spouse-accident.all.choices.pattern",
+        "minimum": 500,
+        "maximum": 1000,
+        "increment": 500,
+        "conditionKey": null,
+        "position": 0
+      },
+      {
+        "id": "{{site}}.di-ltd.benefit-amount.member.non-clerical.pattern.band",
+        "key": "{{site}}.di-ltd.benefit-amount.member.non-clerical.pattern.band",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "amountPatternKey": "{{site}}.di-ltd.benefit-amount.member.non-clerical.pattern",
+        "minimum": 1100,
+        "maximum": 3400,
+        "increment": 100,
+        "conditionKey": null,
+        "position": 0
+      }
+    ],
+    "amountOptions": [
+      {
+        "id": "{{site}}.di-ltd.benefit-amount.member.clerical.pattern.1000",
+        "key": "{{site}}.di-ltd.benefit-amount.member.clerical.pattern.1000",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "amountPatternKey": "{{site}}.di-ltd.benefit-amount.member.clerical.pattern",
+        "value": "1000",
+        "label": "1000",
+        "position": 0
+      },
+      {
+        "id": "{{site}}.di-ltd.benefit-amount.member.clerical.pattern.1200",
+        "key": "{{site}}.di-ltd.benefit-amount.member.clerical.pattern.1200",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "amountPatternKey": "{{site}}.di-ltd.benefit-amount.member.clerical.pattern",
+        "value": "1200",
+        "label": "1200",
+        "position": 1
+      },
+      {
+        "id": "{{site}}.di-ltd.benefit-amount.member.clerical.pattern.1300",
+        "key": "{{site}}.di-ltd.benefit-amount.member.clerical.pattern.1300",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "amountPatternKey": "{{site}}.di-ltd.benefit-amount.member.clerical.pattern",
+        "value": "1300",
+        "label": "1300",
+        "position": 2
+      },
+      {
+        "id": "{{site}}.di-ltd.benefit-amount.member.clerical.pattern.1400",
+        "key": "{{site}}.di-ltd.benefit-amount.member.clerical.pattern.1400",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "amountPatternKey": "{{site}}.di-ltd.benefit-amount.member.clerical.pattern",
+        "value": "1400",
+        "label": "1400",
+        "position": 3
+      },
+      {
+        "id": "{{site}}.di-ltd.benefit-amount.member.clerical.pattern.1600",
+        "key": "{{site}}.di-ltd.benefit-amount.member.clerical.pattern.1600",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "amountPatternKey": "{{site}}.di-ltd.benefit-amount.member.clerical.pattern",
+        "value": "1600",
+        "label": "1600",
+        "position": 4
+      },
+      {
+        "id": "{{site}}.di-ltd.benefit-amount.member.clerical.pattern.1700",
+        "key": "{{site}}.di-ltd.benefit-amount.member.clerical.pattern.1700",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "amountPatternKey": "{{site}}.di-ltd.benefit-amount.member.clerical.pattern",
+        "value": "1700",
+        "label": "1700",
+        "position": 5
+      },
+      {
+        "id": "{{site}}.di-ltd.benefit-amount.member.clerical.pattern.1800",
+        "key": "{{site}}.di-ltd.benefit-amount.member.clerical.pattern.1800",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "amountPatternKey": "{{site}}.di-ltd.benefit-amount.member.clerical.pattern",
+        "value": "1800",
+        "label": "1800",
+        "position": 6
+      },
+      {
+        "id": "{{site}}.di-ltd.benefit-amount.member.clerical.pattern.1900",
+        "key": "{{site}}.di-ltd.benefit-amount.member.clerical.pattern.1900",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "amountPatternKey": "{{site}}.di-ltd.benefit-amount.member.clerical.pattern",
+        "value": "1900",
+        "label": "1900",
+        "position": 7
+      },
+      {
+        "id": "{{site}}.di-ltd.benefit-amount.member.clerical.pattern.2000",
+        "key": "{{site}}.di-ltd.benefit-amount.member.clerical.pattern.2000",
+        "sourceReference": "docs/step3-provisional-decisions.md",
+        "amountPatternKey": "{{site}}.di-ltd.benefit-amount.member.clerical.pattern",
+        "value": "2000",
+        "label": "2000",
+        "position": 8
+      },
+      {
+        "id": "{{site}}.li-add.amount-pattern.10000",
+        "key": "{{site}}.li-add.amount-pattern.10000",
+        "sourceReference": "User clarification October 5, 2026; supplied AD&D rate table",
+        "amountPatternKey": "{{site}}.li-add.amount-pattern",
+        "value": "10000",
+        "label": "10000",
+        "position": 0
+      },
+      {
+        "id": "{{site}}.li-add.amount-pattern.30000",
+        "key": "{{site}}.li-add.amount-pattern.30000",
+        "sourceReference": "User clarification October 5, 2026; supplied AD&D rate table",
+        "amountPatternKey": "{{site}}.li-add.amount-pattern",
+        "value": "30000",
+        "label": "30000",
+        "position": 1
+      },
+      {
+        "id": "{{site}}.li-add.amount-pattern.50000",
+        "key": "{{site}}.li-add.amount-pattern.50000",
+        "sourceReference": "User clarification October 5, 2026; supplied AD&D rate table",
+        "amountPatternKey": "{{site}}.li-add.amount-pattern",
+        "value": "50000",
+        "label": "50000",
+        "position": 2
+      },
+      {
+        "id": "{{site}}.li-add.amount-pattern.100000",
+        "key": "{{site}}.li-add.amount-pattern.100000",
+        "sourceReference": "User clarification October 5, 2026; supplied AD&D rate table",
+        "amountPatternKey": "{{site}}.li-add.amount-pattern",
+        "value": "100000",
+        "label": "100000",
+        "position": 3
+      }
+    ],
+    "siteFeatures": [
+      {
+        "id": "{{site}}.feature-health-flows",
+        "key": "{{site}}.feature-health-flows",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-health-flows",
+        "enabled": true,
+        "position": 0,
+        "sourceReference": "prototype:siteFeatures/csea.feature-health-flows"
+      },
+      {
+        "id": "{{site}}.feature-instant-quote",
+        "key": "{{site}}.feature-instant-quote",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-instant-quote",
+        "enabled": true,
+        "position": 1,
+        "sourceReference": "prototype:siteFeatures/csea.feature-instant-quote"
+      },
+      {
+        "id": "{{site}}.feature-ecart",
+        "key": "{{site}}.feature-ecart",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-ecart",
+        "enabled": true,
+        "position": 2,
+        "sourceReference": "prototype:siteFeatures/csea.feature-ecart"
+      },
+      {
+        "id": "{{site}}.feature-rate-toggle",
+        "key": "{{site}}.feature-rate-toggle",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-rate-toggle",
+        "enabled": true,
+        "position": 3,
+        "sourceReference": "prototype:siteFeatures/csea.feature-rate-toggle"
+      },
+      {
+        "id": "{{site}}.feature-coverage-brochure",
+        "key": "{{site}}.feature-coverage-brochure",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-coverage-brochure",
+        "enabled": true,
+        "position": 4,
+        "sourceReference": "prototype:siteFeatures/csea.feature-coverage-brochure"
+      },
+      {
+        "id": "{{site}}.feature-coverage-portfolio",
+        "key": "{{site}}.feature-coverage-portfolio",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-coverage-portfolio",
+        "enabled": true,
+        "position": 5,
+        "sourceReference": "prototype:siteFeatures/csea.feature-coverage-portfolio"
+      },
+      {
+        "id": "{{site}}.feature-page-helpers",
+        "key": "{{site}}.feature-page-helpers",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-page-helpers",
+        "enabled": true,
+        "position": 6,
+        "sourceReference": "prototype:siteFeatures/csea.feature-page-helpers"
+      },
+      {
+        "id": "{{site}}.feature-advisor-flow",
+        "key": "{{site}}.feature-advisor-flow",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-advisor-flow",
+        "enabled": true,
+        "position": 7,
+        "sourceReference": "prototype:siteFeatures/csea.feature-advisor-flow"
+      },
+      {
+        "id": "{{site}}.feature-abandoned-leads",
+        "key": "{{site}}.feature-abandoned-leads",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-abandoned-leads",
+        "enabled": true,
+        "position": 8,
+        "sourceReference": "prototype:siteFeatures/csea.feature-abandoned-leads"
+      },
+      {
+        "id": "{{site}}.feature-autosave",
+        "key": "{{site}}.feature-autosave",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-autosave",
+        "enabled": true,
+        "position": 9,
+        "sourceReference": "prototype:siteFeatures/csea.feature-autosave"
+      },
+      {
+        "id": "{{site}}.feature-reminder-emails",
+        "key": "{{site}}.feature-reminder-emails",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-reminder-emails",
+        "enabled": true,
+        "position": 10,
+        "sourceReference": "prototype:siteFeatures/csea.feature-reminder-emails"
+      },
+      {
+        "id": "{{site}}.feature-resume",
+        "key": "{{site}}.feature-resume",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-resume",
+        "enabled": true,
+        "position": 11,
+        "sourceReference": "prototype:siteFeatures/csea.feature-resume"
+      },
+      {
+        "id": "{{site}}.feature-tpa-integration",
+        "key": "{{site}}.feature-tpa-integration",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-tpa-integration",
+        "enabled": true,
+        "position": 12,
+        "sourceReference": "prototype:siteFeatures/csea.feature-tpa-integration"
+      },
+      {
+        "id": "{{site}}.feature-financial-questionnaire",
+        "key": "{{site}}.feature-financial-questionnaire",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-financial-questionnaire",
+        "enabled": true,
+        "position": 13,
+        "sourceReference": "prototype:siteFeatures/csea.feature-financial-questionnaire"
+      },
+      {
+        "id": "{{site}}.feature-online-payment",
+        "key": "{{site}}.feature-online-payment",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-online-payment",
+        "enabled": true,
+        "position": 14,
+        "sourceReference": "prototype:siteFeatures/csea.feature-online-payment"
+      },
+      {
+        "id": "{{site}}.feature-online-beneficiary",
+        "key": "{{site}}.feature-online-beneficiary",
+        "siteKey": "{{site}}",
+        "featureKey": "feature-online-beneficiary",
+        "enabled": true,
+        "position": 15,
+        "sourceReference": "prototype:siteFeatures/csea.feature-online-beneficiary"
+      }
+    ],
+    "siteUrlParameters": [],
+    "sitePolicies": [
+      {
+        "id": "{{site}}",
+        "key": "{{site}}",
+        "definition": {},
+        "position": 0,
+        "siteKey": "{{site}}",
+        "sourceReference": "prototype:sitePolicies/csea"
+      }
+    ]
+  }
+}

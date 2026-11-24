@@ -1,0 +1,56 @@
+{
+  "page": "error-400",
+  "components": [
+    {
+      "type": "ApplicationErrorState",
+      "components": [
+        {
+          "type": "SiteSupport",
+          "mapping": "site-support"
+        }
+      ],
+      "mapping": "recovery"
+    }
+  ],
+  "definition": {
+    "id": "error-400",
+    "path": "/400",
+    "type": "error",
+    "displayName": "Error 400",
+    "flow": "utility",
+    "healthGate": false,
+    "recoveryFamily": "error"
+  },
+  "position": 30,
+  "layout": {
+    "sections": {}
+  },
+  "content": {
+    "wording": [
+      "recovery.400.title",
+      "recovery.400.message",
+      "recovery.400.guidance"
+    ],
+    "actions": [
+      "recovery.action.home",
+      "recovery.action.resume",
+      "recovery.action.start-new"
+    ],
+    "contextual": [
+      "recovery.page.failed"
+    ],
+    "support": [
+      "support.title",
+      "support.technical-title",
+      "support.technical-email-label",
+      "support.technical-email-address",
+      "support.administrator-suffix",
+      "support.call-label",
+      "support.email-label",
+      "support.website-label",
+      "support.application-reference",
+      "support.confirmation-reference",
+      "support.email-subject"
+    ]
+  }
+}

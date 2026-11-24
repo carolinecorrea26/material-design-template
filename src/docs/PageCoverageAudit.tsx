@@ -94,7 +94,7 @@ export const AllRoutes = () => (
         The eight known repeated patterns are now canonical components/hooks:
         RateFrequencyControl; useCountdown with
         ExpiringCodeAlert/ResendCountdownRow; ProcessingStatusPage; FieldGrid;
-        IconListItem; YesNoDetailList; DetailsTable; and RadioSelectionGroup.
+        HealthQuestion; DetailsTable; and RadioSelectionGroup.
         The resume pages now use the shared page composition, and Profile's
         height grid collapses correctly on mobile.
       </Typography>

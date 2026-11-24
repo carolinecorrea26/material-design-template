@@ -1,121 +1,90 @@
-import { describe, expect, it } from "vitest";
-import { mkdirSync, writeFileSync } from "node:fs";
-import { resolve } from "node:path";
-import { createReviewedMigrationDatabase, createMigrationDatabase } from "./fixtures";
-import { applyCoverageJourneyAdoption } from "./coverageJourneyAdoption";
-import { activeSiteMigrationScope } from "./activeSiteScope";
-import { resolveEffectiveSite, type EffectiveSite } from "../domain/effectiveSite";
-import { isSelectionPolicy, reconcileCoverageSelection, type SelectionPolicy } from "../domain/coverageSelectionPolicy";
-import { isCoverageJourneyPolicy, resolveCoverageJourneyPolicy, resolveSubmissionMapping, reconcileDependentElections, resolveBilling } from "../domain/coverageJourneyPolicy";
-import { applicantAge, evaluateCoverageJourney, resolveQuestionParticipation, resolveScheduledChildren, resolveJourneyUnderwriting, type CoverageJourneyInput } from "../domain/coverageJourney";
-import { createMockPolicyVerificationService, type VerifiedPolicy } from "../domain/policyVerification";
-import { validateMigrationDatabase } from "./integrity";
-import { resolveRatePresentation } from "../domain/ratePresentation";
-import { resolveNormalizedResidency } from "../domain/residencyPolicy";
-import { atpeAssociationKey } from "./atpeAssociationAdoption";
-import { completeSourceHealthFixture } from "./sourceQuestionnaireFixture";
+import { describe, expect, it } from 'vitest';
+import { freshStartLibraryData } from '../domain/freshStartLibraryData';
+import { isSelectionPolicy, reconcileCoverageSelection, type SelectionPolicy } from '../domain/coverageSelectionPolicy';
+import { isCoverageJourneyPolicy, resolveCoverageJourneyPolicy, resolveSubmissionMapping, reconcileDependentElections } from '../domain/coverageJourneyPolicy';
+import { applicantAge, evaluateCoverageJourney, resolveQuestionParticipation, resolveScheduledChildren, resolveJourneyUnderwriting, type CoverageJourneyInput } from '../domain/coverageJourney';
+import { createMockPolicyVerificationService, type VerifiedPolicy } from '../domain/policyVerification';
+import { resolveNormalizedResidency } from '../domain/residencyPolicy';
+import { effectiveHealthFollowUps } from '../config/fields/healthPageFields';
+import { createCoverageJourneyFixture } from './coverageJourneyExceptionAcceptance';
+import { journeySite as site, journeySiteKeys, journeyCatalog, journeyAssignment, journeyLibrary, riderOnlyJourneySite, syntheticJourneySource } from './freshStartJourneyFixtures';
 
-const db = createReviewedMigrationDatabase();
-const now = () => Date.parse("2026-10-02T12:00:00Z");
-const site = (key: string) => resolveEffectiveSite(JSON.parse(JSON.stringify(db)), key);
-const policyFixture = (s: EffectiveSite, productKey: string, applicantKey = "member"): VerifiedPolicy => ({ policyId: "mock-existing-1", ownerReference: "mock-owner", siteKey: s.siteKey, productKey, applicantKey, status: "active", amount: 100000, riders: [], permittedChanges: ["increase", "rider-only"], billing: { method: "bank-account", frequency: "monthly" }, effectiveDate: "2026-10-02", expiresAt: now() + 300000 });
-function answers(s: EffectiveSite, input: CoverageJourneyInput): CoverageJourneyInput {
-  const p = resolveCoverageJourneyPolicy(s, input.productKey)!;
-  const q = p.questions.find(q => q.applicantKey === input.applicantKey && q.modes.includes(input.mode))!;
-  const healthPage = input.election.riders.some(key => s.configuration.products.find(p => p.productKey === input.productKey)!.riders.find(r => r.key === key)?.definition?.value.id === "cir") ? "health-li" : q.healthPage;
-  const fields = s.configuration.pages.flatMap(p => p.fields).filter(f => q.financialFields.includes(f.key) || q.tobaccoFields.includes(f.key) || healthPage && f.key.startsWith(`${healthPage}-q`) && f.key.endsWith("-spouse") === (input.applicantKey === "spouse"));
-  const result: CoverageJourneyInput = { ...input, answers: Object.fromEntries(fields.map(f => [f.key, f.definition.options?.find(o => o.value === "no")?.value ?? f.definition.options?.[0]?.value ?? (f.definition.inputType === "number" ? 100000 : "mock-answer")])), attestations: [q.attestationKey] };
-  result.answers = completeSourceHealthFixture(s, result);
-  return result;
-}
-const inputForRider = (s: EffectiveSite, productKey: string, key: string, applicantKey = "member") => answers(s, { productKey, applicantKey, mode: "rider-only", amount: 0, membershipConfirmed: true, eligibility: { ageYears: 40, workHoursPerWeek: 40, activeMilitary: false, selectedPlans: [{ productKey, categoryKey: "LI", applicantKey: "member" }] }, jurisdiction: "US-PA", election: { riders: [key], riderAmounts: { [key]: 50000 } }, existingPolicy: { policyId: "mock-existing-1", ownerReference: "mock-owner" } });
+const now = () => Date.parse('2026-10-02T12:00:00Z');
+const policyFixture = (siteKey: string): VerifiedPolicy => ({ policyId: 'mock-existing-1', ownerReference: 'mock-owner', siteKey, productKey: 'li-term', applicantKey: 'member', status: 'active', amount: 100000, riders: [], permittedChanges: ['increase', 'rider-only'], billing: { method: 'bank-account', frequency: 'monthly' }, effectiveDate: '2026-10-02', expiresAt: now() + 300000 });
 
-describe("Step 3 candidate acceptance after persistence", () => {
-  it("captures all enabled products/applicants/modes across ten Sites with provenance and complete mock submission roles", () => {
-    const report = [];
-    expect(validateMigrationDatabase(db)).toEqual([]);
-    for (const scope of activeSiteMigrationScope.sites) {
-      const s = site(scope.key);
+describe('fresh-start effective journey acceptance', () => {
+  it('resolves enabled applicants, modes and submission identifiers for every enrolled Site', () => {
+    for (const key of journeySiteKeys) {
+      const s = site(key);
       for (const product of s.configuration.products) {
         const p = resolveCoverageJourneyPolicy(s, product.productKey)!;
-        expect(isCoverageJourneyPolicy(p), `${scope.key}/${product.productKey}`).toBe(true);
+        expect(isCoverageJourneyPolicy(p), `${key}/${product.productKey}`).toBe(true);
         expect(product.journeyPolicies).toHaveLength(1);
         expect(product.journeyPolicies[0].provenance.length).toBeGreaterThan(0);
         const selection = product.selectionPolicies[0].value as SelectionPolicy;
         expect(isSelectionPolicy(selection)).toBe(true);
         for (const applicant of s.products.find(x => x.productKey === product.productKey)!.applicants) {
-          expect(applicant.constraints?.value.minimumAgeYears !== null || applicant.constraints?.value.minimumAgeDays !== null).toBe(true);
+          expect(applicant.constraints, `${key}/${product.productKey}/${applicant.applicantKey}`).not.toBeNull();
           expect(applicant.constraints?.value.maximumAgeYears).not.toBeNull();
-          for (const mode of selection.modes.filter(m => m !== "rider-only" || selection.riderOnlyApplicants.includes(applicant.applicantKey))) {
-            expect(p.mappings.some(m => m.when.applicantKey === applicant.applicantKey && m.when.mode === mode)).toBe(true);
-            expect(p.questions.filter(q => q.applicantKey === applicant.applicantKey && q.modes.includes(mode))).toHaveLength(1);
+          for (const mode of selection.modes.filter(m => m !== 'rider-only' || selection.riderOnlyApplicants.includes(applicant.applicantKey))) {
+            expect(p.mappings.some(m => m.when.applicantKey === applicant.applicantKey && m.when.mode === mode), `${key}/${product.productKey}/${applicant.applicantKey}/${mode}`).toBe(true);
+            expect(p.questions.filter(q => q.applicantKey === applicant.applicantKey && q.modes.includes(mode))).toHaveLength(p.questions.length ? 1 : 0);
+            if (!p.questions.length) expect(p).toMatchObject({ defaultUnderwritingPathway: 'GI', healthPageByUnderwriting: { GI: null } });
           }
         }
         for (const mapping of p.mappings) {
-          expect(resolveSubmissionMapping(p, mapping.when)).toMatchObject({ status: "resolved", mapping });
-          for (const value of Object.values(mapping.identifiers)) for (const role of ["display", "rating", "issue", "xml", "pdf"] as const) expect(value[role]).toBeTruthy();
+          expect(resolveSubmissionMapping(p, mapping.when)).toMatchObject({ status: 'resolved', mapping });
+          for (const value of Object.values(mapping.identifiers)) for (const role of ['display', 'rating', 'issue', 'xml', 'pdf'] as const) expect(value[role]).toBeTruthy();
           expect(Object.keys(mapping.riderCodes).sort()).toEqual(selection.riders.map(r => r.key).sort());
         }
-        expect(resolveBilling(p, p.payment.defaultMethod ?? "bank-account", p.payment.defaultFrequency ?? "monthly", null).displayPrice).toBe(false);
-        expect(resolveNormalizedResidency(s, product.productKey, p.applicants[0], {}).status).toBe("needs-information");
-        expect(resolveNormalizedResidency(s, product.productKey, p.applicants[0], { jurisdiction: "FR-Paris", activeMilitary: false }).allowed).toBe(false);
-        report.push({ siteKey: s.siteKey, productKey: product.productKey, applicants: p.applicants, modes: selection.modes, mappings: p.mappings.length, executableContract: "passed", sourceApproval: scope.mcrRequired ? "provisional-revisit" : "synthetic", publicationReady: false });
+        expect(resolveNormalizedResidency(s, product.productKey, p.applicants[0], {}).status).toBe('needs-information');
       }
     }
-    expect(new Set(report.map(r => r.siteKey)).size).toBe(10);
-    if (process.env.STEP3_ACCEPTANCE_DIR) {
-      mkdirSync(resolve(process.env.STEP3_ACCEPTANCE_DIR), { recursive: true });
-      writeFileSync(resolve(process.env.STEP3_ACCEPTANCE_DIR, "step3-contract-acceptance.json"), JSON.stringify({ scope: "persisted contracts and conditional mappings; scenario tests are separate", products: report, sourceApproval: "deferred", fullProductAcceptance: "pending", runtimeActivation: "pending" }, null, 2) + "\n");
+  });
+  it('retains confirmed ASCE and WAEPA standalone-rider exclusions', async () => {
+    for (const [key, productKey] of [['asce', 'li-term'], ['waepa', 'li-group-term']]) {
+      const s = site(key), p = s.configuration.products.find(p => p.productKey === productKey)!;
+      expect(p.selectionPolicies[0].value).toMatchObject({ riderOnlyApplicants: [] });
+      expect((p.selectionPolicies[0].value as SelectionPolicy).modes).not.toContain('rider-only');
+      const { input, policies } = createCoverageJourneyFixture(s, productKey, { applicantKey: 'member', mode: 'new' });
+      expect(await evaluateCoverageJourney(s, { ...input, mode: 'rider-only', amount: 0 }, { policies })).toMatchObject({ allowed: false, submission: null });
     }
   });
-  it("asce offers CIR only as a normal rider, never on its own (CHG-007)", () => {
-    const selection = site("asce").configuration.products.find(p => p.productKey === "li-term")!.selectionPolicies[0].value as { modes: string[]; riderOnlyApplicants: string[] };
-    expect(selection.modes).not.toContain("rider-only");
-    expect(selection.riderOnlyApplicants).toEqual([]);
+  it('exercises verified rider-only applications once using a synthetic authored Site assignment', async () => {
+    const s = riderOnlyJourneySite();
+    const { input } = createCoverageJourneyFixture(s, 'li-term', { applicantKey: 'member', mode: 'rider-only' });
+    input.existingPolicy = { policyId: 'mock-existing-1', ownerReference: 'mock-owner' };
+    const policies = createMockPolicyVerificationService([policyFixture(s.siteKey)], now);
+    const result = await evaluateCoverageJourney(s, input, { policies, now, existingLifeAmount: 0 });
+    expect(result, JSON.stringify(result)).toMatchObject({ allowed: true, skipPayment: true, skipBeneficiary: true, submission: { amount: 0, existingAmount: 100000, existingPolicyId: 'mock-existing-1' } });
+    expect(result.submission?.riders).toHaveLength(1);
+    for (const patch of [{ existingPolicy: undefined }, { amount: 100000 }, { jurisdiction: 'FR-Paris' }, { attestations: [] }]) expect(await evaluateCoverageJourney(s, { ...input, ...patch }, { policies, now })).toMatchObject({ allowed: false, submission: null });
   });
-  for (const [siteKey, productKey] of [["avma", "li-group-term"], ["waepa", "li-group-term"]]) {
-    it(`${siteKey} verifies and maps CIR-only without new base life or new billing`, async () => {
-      const s = site(siteKey);
-      const rider = s.configuration.products.find(p => p.productKey === productKey)!.riders.find(r => r.definition?.value.id === "cir")!.key;
-      const input = inputForRider(s, productKey, rider);
-      const policies = createMockPolicyVerificationService([policyFixture(s, productKey)], now);
-      const result = await evaluateCoverageJourney(s, input, { policies, now });
-      expect(result, JSON.stringify(result)).toMatchObject({ allowed: true, skipPayment: true, skipBeneficiary: true, submission: { amount: 0, existingAmount: 100000, existingPolicyId: "mock-existing-1", riders: [{ code: siteKey === "avma" ? "R44" : "R34" }] } });
-      expect((await evaluateCoverageJourney(s, { ...input, existingPolicy: undefined }, { policies, now })).allowed).toBe(false);
-      expect((await evaluateCoverageJourney(s, { ...input, amount: 100000 }, { policies, now })).allowed).toBe(false);
-      expect((await evaluateCoverageJourney(s, { ...input, jurisdiction: "US-CT" }, { policies, now })).allowed).toBe(false);
-      expect((await evaluateCoverageJourney(s, { ...input, existingPolicy: { ...input.existingPolicy!, ownerReference: "wrong" } }, { policies, now })).errors).toContain("Policy verification mismatch");
-    });
-  }
-  it("rejects inactive, expired, wrong-scope, disallowed and failed policy verification", async () => {
-    const s = site("avma"), key = s.configuration.products.find(p => p.productKey === "li-group-term")!.riders.find(r => r.definition?.value.id === "cir")!.key;
-    const input = inputForRider(s, "li-group-term", key);
-    for (const patch of [{ status: "lapsed" as const }, { expiresAt: now() }, { siteKey: "asce" }, { permittedChanges: [] }]) {
-      const policies = createMockPolicyVerificationService([{ ...policyFixture(s, "li-group-term"), ...patch }], now);
-      expect((await evaluateCoverageJourney(s, input, { policies, now })).allowed).toBe(false);
+  it('verifies increases against service evidence and rejects stale, inactive, wrong-scope or failed verification', async () => {
+    const s = site('asce'), { input } = createCoverageJourneyFixture(s, 'li-term', { applicantKey: 'member', mode: 'increase' });
+    input.amount = 150000; input.existingPolicy = { policyId: 'mock-existing-1', ownerReference: 'mock-owner' };
+    const record = policyFixture(s.siteKey);
+    for (const patch of [{ status: 'lapsed' as const }, { expiresAt: now() }, { siteKey: 'waepa' }, { permittedChanges: [] }]) {
+      const policies = createMockPolicyVerificationService([{ ...record, ...patch }], now);
+      expect(await evaluateCoverageJourney(s, input, { policies, now })).toMatchObject({ allowed: false, submission: null });
     }
-    expect((await evaluateCoverageJourney(s, input, { policies: { verify: async () => { throw new Error("offline"); } }, now })).errors).toContain("Policy verification unavailable");
-    const forged = { ...policyFixture(s, "li-group-term"), productKey: "li-add" };
-    expect((await evaluateCoverageJourney(s, input, { policies: { verify: async () => ({ status: "verified", source: "mock", policy: forged }) }, now })).allowed).toBe(false);
-  });
-  it("requires existing-policy increase totals above verified amount, ignores a caller's old amount", async () => {
-    const s = site("avma");
-    const fixture = policyFixture(s, "li-group-term");
-    const policies = createMockPolicyVerificationService([fixture], now);
-    const input = answers(s, { ...inputForRider(s, "li-group-term", s.configuration.products.find(p => p.productKey === "li-group-term")!.riders.find(r => r.definition?.value.id === "cir")!.key), mode: "increase", amount: 150000, payment: { method: "bank-account", frequency: "monthly" } });
+    expect((await evaluateCoverageJourney(s, input, { policies: { verify: async () => { throw new Error('offline'); } }, now })).errors).toContain('Policy verification unavailable');
+    expect((await evaluateCoverageJourney(s, input, { policies: { verify: async () => ({ status: 'verified', source: 'mock', policy: { ...record, productKey: 'li-add' } }) }, now })).allowed).toBe(false);
+    const policies = createMockPolicyVerificationService([record], now);
     expect((await evaluateCoverageJourney(s, input, { policies, now })).allowed).toBe(true);
-    expect((await evaluateCoverageJourney(s, { ...input, amount: 100000 }, { policies, now })).allowed).toBe(false);
+    expect((await evaluateCoverageJourney(s, { ...input, amount: record.amount }, { policies, now })).allowed).toBe(false);
   });
-  it("executes CSEA dependent elections, attestation, defaults, withdrawal cleanup and reference table", () => {
-    const s = site("csea"), p = resolveCoverageJourneyPolicy(s, "di-ltd")!;
-    const initial = reconcileDependentElections(p, {}, true);
-    expect(initial.elections).toMatchObject({ "spouse-accident-disability": { selected: true, amount: 500, signatureRequired: false }, "child-outpatient-accident": { selected: true, amount: 50, signatureRequired: false } });
-    expect(initial.allowed).toBe(false);
-    expect(reconcileDependentElections(p, { "spouse-accident-disability": { selected: true, amount: 1000, attested: true }, "child-outpatient-accident": { selected: true, attested: true } }).allowed).toBe(true);
-    expect(reconcileDependentElections(p, { "spouse-accident-disability": { selected: true, amount: 750, attested: true } }).allowed).toBe(false);
-    expect(reconcileDependentElections(p, { "child-outpatient-accident": { selected: false, amount: 500, attested: true }, orphan: { selected: true, amount: 100 } }).elections).toMatchObject({ "child-outpatient-accident": { selected: false, amount: null, attested: false } });
-    expect(resolveRatePresentation(s, "di-ltd")).toMatchObject({ rateArea: "reference-link", hideCalculatedRates: true, quoteToolEnabled: false, referenceTable: { kind: "html-table" } });
-    expect(p.payment.collection).toBe("none");
+  it('resolves synthetic dependent defaults, attestations and withdrawal cleanup through the compiler', () => {
+    const source = syntheticJourneySource(), p = journeyAssignment(source, 'example', 'li-term');
+    p.dependentElections = [
+      { key: 'dependent-choice', applicantKey: 'spouse', defaultSelected: true, amountChoices: [500, 1000], fixedAmount: null, maximumAgeYears: null, attestation: 'Confirm dependent election', signatureRequired: false, visitsPerYear: null },
+      { key: 'dependent-fixed', applicantKey: 'child', defaultSelected: true, amountChoices: [], fixedAmount: 50, maximumAgeYears: null, attestation: 'Confirm child election', signatureRequired: false, visitsPerYear: 1 },
+    ];
+    const policy = resolveCoverageJourneyPolicy(journeyLibrary('example', source).site, 'li-term')!;
+    expect(reconcileDependentElections(policy, {}, true)).toMatchObject({ allowed: false, elections: { 'dependent-choice': { selected: true, amount: 500 }, 'dependent-fixed': { selected: true, amount: 50 } } });
+    expect(reconcileDependentElections(policy, { 'dependent-choice': { selected: true, amount: 1000, attested: true }, 'dependent-fixed': { selected: true, attested: true } }).allowed).toBe(true);
+    expect(reconcileDependentElections(policy, { 'dependent-choice': { selected: true, amount: 750, attested: true } }).allowed).toBe(false);
+    expect(reconcileDependentElections(policy, { 'dependent-fixed': { selected: false, amount: 500, attested: true }, orphan: { selected: true, amount: 100 } }).elections).toEqual({ 'dependent-choice': { selected: false, amount: null, attested: false, signatureRequired: false }, 'dependent-fixed': { selected: false, amount: null, attested: false, signatureRequired: false } });
   });
   it("evaluates WAEPA children individually on schedule/calendar boundaries and spouse-only primary coverage", () => {
     const s = site("waepa");
@@ -136,82 +105,76 @@ describe("Step 3 candidate acceptance after persistence", () => {
     expect(result).toMatchObject({ allowed: true, skipPayment: true, questions: { healthPage: null }, submission: { amount: 5000, payment: null } });
     expect((await evaluateCoverageJourney(s, { ...input, spouseAmount: undefined }, { policies: createMockPolicyVerificationService([]) })).allowed).toBe(false);
   });
-  it("limits AVMA FPO by age, requested benefit, combined policy cap and new-applicant minimum", () => {
-    const s = site("avma"), p = s.configuration.products.find(p => p.productKey === "di-ltd")!.selectionPolicies[0].value as SelectionPolicy;
-    const key = p.riders[0].key, election = { riders: [key], riderAmounts: { [key]: 7000 } };
-    const facts = { mode: "new" as const, applicantKey: "member", baseAmount: 10000, ageYears: 49 };
+
+  it('retains approved ASCE underwriting bands and the assigned QD questionnaire for QD and FUW', () => {
+    const s = site('asce');
+    expect(resolveJourneyUnderwriting(s, 'li-10yr', 'member', 40, 500000)).toMatchObject({ status: 'resolved', pathway: 'QD', healthPage: 'health-qd' });
+    expect(resolveJourneyUnderwriting(s, 'li-10yr', 'member', 61, 500001)).toMatchObject({ status: 'resolved', pathway: 'FUW', healthPage: 'health-qd' });
+    expect(resolveJourneyUnderwriting(s, 'li-10yr', 'member', 65, 100000)).toMatchObject({ status: 'resolved', pathway: 'FUW' });
+    expect(resolveJourneyUnderwriting(s, 'li-10yr', 'member', 70, 100000).status).toBe('unresolved');
+    const q = resolveCoverageJourneyPolicy(s, 'li-10yr')!.questions.find(q => q.applicantKey === 'member' && q.modes.includes('new'))!;
+    for (const pathway of ['QD', 'FUW']) expect(resolveQuestionParticipation(s, 'li-10yr', 'member', 'new', { smoker: 'no' }, [q.attestationKey], [], pathway)).toMatchObject({ allowed: true, healthPage: 'health-qd' });
+  });
+  it('checks shared rider age, combined-benefit and new-applicant floors with a synthetic policy', () => {
+    // A unit-policy input retains the former FPO boundary coverage without
+    // enrolling an obsolete Site or asserting its historical values as defaults.
+    const effective = site('asce').configuration.products.find(p => p.productKey === 'li-term')!.selectionPolicies[0].value as SelectionPolicy;
+    const p = structuredClone(effective), rider = p.riders[0];
+    p.riders = [{ ...rider, included: false, applicants: ['member'], requires: [], incompatible: [], excludedJurisdictions: [], minimumBase: 0, maximumBase: undefined, minimumAge: undefined, baseAmountSource: undefined, maximumAge: 49, amount: { kind: 'choices', values: [100, 500, 1000, 7000], default: 500 }, amountByApplicant: undefined, amountCap: { baseFraction: 0.25, combinedMaximum: 12500, minimumNewAmount: 500 } }];
+    const key = rider.key, election = { riders: [key], riderAmounts: { [key]: 7000 } };
+    const facts = { mode: 'new' as const, applicantKey: 'member', baseAmount: 10000, ageYears: 49 };
     expect(reconcileCoverageSelection(p, facts, election).election.riderAmounts[key]).toBe(500);
     expect(reconcileCoverageSelection(p, { ...facts, baseAmount: 12400 }, election).election.riders).toEqual([]);
     expect(reconcileCoverageSelection(p, { ...facts, ageYears: 50 }, election).election.riders).toEqual([]);
     expect(reconcileCoverageSelection(p, { ...facts, baseAmount: 2000 }, { riders: [key], riderAmounts: { [key]: 100 } }).election.riderAmounts[key]).toBe(500);
   });
-  it("requires an enabled ISI association and maps every retained association explicitly", () => {
-    const s = site("isitrust"), p = resolveCoverageJourneyPolicy(s, "li-group-term")!;
-    expect(p.associationChoices).toHaveLength(26);
-    expect(resolveSubmissionMapping(p, { applicantKey: "member", mode: "new" }).status).toBe("needs-information");
-    expect(resolveSubmissionMapping(p, { applicantKey: "member", mode: "new", associationKey: "ATPE" }).status).toBe("unresolved");
-    for (const choice of p.associationChoices) {
-      const gNumber = choice.key === atpeAssociationKey ? "G-31139-0" : "G-31136-0";
-      expect(resolveSubmissionMapping(p, { applicantKey: "member", mode: "new", associationKey: choice.key })).toMatchObject({ status: "resolved", mapping: { identifiers: { gNumber: { issue: gNumber, xml: gNumber }, planCode: { issue: "101" } } } });
-    }
-    const avma = resolveCoverageJourneyPolicy(site("avma"), "di-ltd")!;
-    expect(avma.mappings[0].identifiers.gNumber).toMatchObject({ portalDummy: "G-14884-11", issue: "G-14884-0" });
-    expect(resolveSubmissionMapping(resolveCoverageJourneyPolicy(site("csea"), "di-ltd")!, { applicantKey: "member", mode: "new", applicantClass: "unknown" }).status).toBe("unresolved");
+  it('requires association/class mapping dimensions and preserves independent identifier roles once', () => {
+    const p = structuredClone(resolveCoverageJourneyPolicy(site('asce'), 'li-term')!);
+    p.associationChoices = [{ key: 'synthetic-association', label: 'Synthetic association' }];
+    const mapping = structuredClone(p.mappings[0]);
+    mapping.when = { applicantKey: 'member', mode: 'new', associationKey: 'synthetic-association', applicantClass: 'synthetic-class' };
+    mapping.identifiers.gNumber = { display: 'Display', rating: 'Rating', issue: 'Issue', xml: 'XML', pdf: 'PDF', portalDummy: 'Dummy' };
+    p.mappings = [mapping];
+    expect(resolveSubmissionMapping(p, { applicantKey: 'member', mode: 'new' }).status).toBe('needs-information');
+    expect(resolveSubmissionMapping(p, { ...mapping.when, associationKey: 'unknown' }).status).toBe('unresolved');
+    expect(resolveSubmissionMapping(p, { ...mapping.when, applicantClass: undefined }).status).toBe('needs-information');
+    expect(resolveSubmissionMapping(p, { ...mapping.when, applicantClass: 'unknown' }).status).toBe('unresolved');
+    expect(resolveSubmissionMapping(p, mapping.when)).toEqual({ status: 'resolved', mapping });
   });
-  it("retains approved ASCE underwriting bands and requests the corresponding health questions", () => {
-    const s = site("asce");
-    expect(resolveJourneyUnderwriting(s, "li-10yr", "member", 40, 500000)).toMatchObject({ status: "resolved", pathway: "QD" });
-    expect(resolveJourneyUnderwriting(s, "li-10yr", "member", 61, 500001)).toMatchObject({ status: "resolved", pathway: "FUW" });
-    expect(resolveJourneyUnderwriting(s, "li-10yr", "member", 65, 100000)).toMatchObject({ status: "resolved", pathway: "FUW" });
-    expect(resolveJourneyUnderwriting(s, "li-10yr", "member", 70, 100000).status).toBe("unresolved");
-    const q = resolveCoverageJourneyPolicy(s, "li-10yr")!.questions.find(q => q.applicantKey === "member" && q.modes.includes("new"))!;
-    expect(resolveQuestionParticipation(s, "li-10yr", "member", "new", { smoker: "no" }, [q.attestationKey], [], "QD").healthPage).toBe("health-qd");
-    expect(resolveQuestionParticipation(s, "li-10yr", "member", "new", { smoker: "no" }, [q.attestationKey], [], "FUW").missingFacts).toContain("health-li-q1");
+  it('retains the ASCE spouse-only residency exception', () => {
+    const s = site('asce');
+    expect(resolveNormalizedResidency(s, 'di-ltd', 'member', { jurisdiction: 'US-NH' }).allowed).toBe(true);
+    expect(resolveNormalizedResidency(s, 'di-ltd', 'spouse', { jurisdiction: 'US-NH' }).allowed).toBe(false);
+    expect(resolveNormalizedResidency(s, 'di-ltd', 'member', { jurisdiction: 'US-VT' }).allowed).toBe(false);
   });
-  it("persists ASCE spouse-only residency exceptions without excluding the member", () => {
-    const s = site("asce");
-    expect(resolveNormalizedResidency(s, "di-ltd", "member", { jurisdiction: "US-NH" }).allowed).toBe(true);
-    expect(resolveNormalizedResidency(s, "di-ltd", "spouse", { jurisdiction: "US-NH" }).allowed).toBe(false);
-    expect(resolveNormalizedResidency(s, "di-ltd", "member", { jurisdiction: "US-VT" }).allowed).toBe(false);
+  it('uses stable authored health aliases and the same repeatable detail contract as the UI', () => {
+    const source = syntheticJourneySource(), p = journeyAssignment(source, 'example', 'li-term');
+    p.healthPageByUnderwriting = { QD: 'health-tele', FUW: 'health-tele' };
+    const s = journeyLibrary('example', source).site;
+    const { input } = createCoverageJourneyFixture(s, 'li-term', { applicantKey: 'member', mode: 'new' });
+    const question = effectiveHealthFollowUps(s, 'health-tele', 'self')[0];
+    const answers = { ...input.answers, [question.answer.id]: 'yes', 'health-li-q1-spouse': 'yes', unused: 'discard', 'tobacco-products': ['cigarettes'] };
+    const resolve = (a: Record<string, unknown>) => resolveQuestionParticipation(s, 'li-term', 'member', 'new', a, input.attestations, [], 'QD');
+    const missing = resolve(answers);
+    expect(missing.missingFacts).toContain(question.collection);
+    for (const key of ['health-li-q1-spouse', 'unused', 'tobacco-products']) expect(missing.cleanedAnswers).not.toHaveProperty(key);
+    const details = Object.fromEntries(question.fields.map(field => [question.fieldToKey[field.id], field.options?.[0]?.value ?? (field.inputType === 'date' ? '2020-01-01' : field.format === 'month-year' ? '01/2020' : field.format === 'phone' ? '2025550123' : 'Mock detail')]));
+    const accepted = resolve({ ...answers, [question.collection]: [{ ...details, orphan: 'discard' }] });
+    expect(accepted, JSON.stringify(accepted)).toMatchObject({ allowed: true });
+    expect(accepted.cleanedAnswers).toHaveProperty(question.collection, [details]);
+    expect(resolve({ ...answers, [question.collection]: 'legacy text' }).allowed).toBe(false);
+    expect(resolve({ ...answers, [question.collection]: [{}] }).allowed).toBe(false);
   });
-  it("retains method-specific payment choices, handles unavailable rates and applies modal factors after annual credit", () => {
-    const ama = resolveCoverageJourneyPolicy(site("ama"), "li-term")!;
-    expect(resolveBilling(ama, "bank-account", "monthly", 1200)).toMatchObject({ status: "resolved", amount: 99.6 });
-    expect(resolveBilling(ama, "bank-account", "annual", 1200).status).toBe("unresolved");
-    expect(resolveBilling(ama, "bill-me", "semiannual", 1200).amount).toBe(624);
-    const p = structuredClone(ama); p.billing.annualCredit = 100; p.billing.feePerCollection["bill-me"] = 5;
-    expect(resolveBilling(p, "bill-me", "quarterly", 1100).amount).toBe(270);
-    expect(resolveBilling(p, "bill-me", "quarterly", null)).toMatchObject({ status: "unavailable", amount: null, displayPrice: false });
-    expect(resolveBilling(p, "bill-me", "quarterly", NaN).displayPrice).toBe(false);
+  it('recompiles authored records idempotently without superseded captured product/application records', () => {
+    const projected = freshStartLibraryData(journeyCatalog.data);
+    const compiled = freshStartLibraryData(projected);
+    for (const table of ['configurationDefinitions', 'configurationValues', 'riders', 'productRiders', 'eligibilityConstraints'] as const) { const different = compiled[table].filter(row => JSON.stringify(row) !== JSON.stringify(projected[table].find(original => original.id === row.id))); expect(different, JSON.stringify(different.slice(0, 1))).toEqual([]); }
   });
-  it("requires scoped health answers and attestations, clears inactive tobacco and orphan answers, and requests yes details", async () => {
-    const s = site("avma"), key = s.configuration.products.find(p => p.productKey === "li-group-term")!.riders.find(r => r.definition?.value.id === "cir")!.key;
-    const input = inputForRider(s, "li-group-term", key);
-    const answer = { ...input.answers, "health-li-q1": "yes", "health-li-q1-spouse": "yes", "unused": "discard", "tobacco-products": ["cigarettes"] };
-    const q = resolveQuestionParticipation(s, "li-group-term", "member", "rider-only", answer, input.attestations, [key]);
-    expect(q.allowed).toBe(false); expect(q.missingFacts).toContain("health-li-q1.details");
-    expect(q.cleanedAnswers).not.toHaveProperty("health-li-q1-spouse");
-    expect(q.cleanedAnswers).not.toHaveProperty("unused");
-    expect(q.cleanedAnswers).not.toHaveProperty("tobacco-products");
-    expect(resolveQuestionParticipation(s, "li-group-term", "member", "rider-only", { ...answer, "health-li-q1.details": "mock details" }, input.attestations, [key]).allowed).toBe(true);
-    const policies = createMockPolicyVerificationService([policyFixture(s, "li-group-term")], now);
-    expect((await evaluateCoverageJourney(s, { ...input, attestations: [] }, { policies, now })).allowed).toBe(false);
-  });
-  it("reapplies journey adoption without duplicate riders, shifted mappings or changed records", () => {
-    const copy = structuredClone(db);
-    applyCoverageJourneyAdoption(copy);
-    for (const table of ["configurationDefinitions", "configurationValues", "semanticRequirements", "riders", "productRiders", "eligibilityConstraints"] as const) {
-      const expected = [...db[table]].sort((a,b) => a.id.localeCompare(b.id));
-      const actual = [...copy[table]].sort((a,b) => a.id.localeCompare(b.id));
-      expect(actual.map(r => JSON.stringify(r)), table).toEqual(expected.map(r => JSON.stringify(r)));
-    }
-  }, 15000);
-  it("fails closed on invalid persisted versions and retains compatibility/live fixture boundaries", () => {
-    const copy = structuredClone(db);
-    copy.configurationValues.find(r => r.key === "isitrust.li-group-term.journey-policy")!.value = { version: 9 };
-    expect(validateMigrationDatabase(copy).some(error => error.includes("Invalid executable journey"))).toBe(true);
-    expect(resolveCoverageJourneyPolicy(resolveEffectiveSite(copy, "isitrust"), "li-group-term")).toBeNull();
-    expect(createMigrationDatabase().configurationDefinitions.some(r => r.definition.target?.kind === "product-journey-policy")).toBe(false);
-    expect(site("avma").runtimeActivation).toBe("pending-phase-6");
+  it('fails closed on invalid authored versions or missing non-GI question assignments', () => {
+    const source = syntheticJourneySource(), p = journeyAssignment(source, 'example', 'li-term');
+    p.version = 9 as 1;
+    expect(() => journeyLibrary('example', source)).toThrow();
+    p.version = 1; p.questions = [];
+    expect(resolveQuestionParticipation(journeyLibrary('example', source).site, 'li-term', 'member', 'new').allowed).toBe(false);
   });
 });

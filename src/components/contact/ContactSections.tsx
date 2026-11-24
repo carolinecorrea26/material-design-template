@@ -5,7 +5,6 @@ import type { ApplicantSectionId } from '../../config/formSectionTitle';
 import ApplicantSectionDivider from '../layout/ApplicantSectionDivider';
 import ResidentialAddress from './ResidentialAddress';
 import BusinessInformation from './BusinessInformation';
-import SpouseContact from './SpouseContact';
 import SectionDivider, { FieldGroup } from '../layout/SectionDivider';
 
 export type ContactSectionsProps = Pick<FormRouteRenderProps, 'control' | 'errors' | 'watchedValues' | 'allFields' | 'pageSections' | 'setValue'> & {
@@ -25,11 +24,7 @@ export default function ContactSections({ control, errors, watchedValues, allFie
       if (section.id === 'contactResidentialAddress') return <ApplicantSectionDivider key={section.id} applicant="self" labels={applicantLabels} showLabel={showApplicantLabels.self ?? false}>
         <ResidentialAddress fields={fieldsFor(section.id)} control={control} errors={errors} />
         {showBusinessSection && pageSections.some(section => section.id === 'contactBusinessInfo') && <BusinessInformation fields={fieldsFor('contactBusinessInfo')} control={control} errors={errors}
-          watchedValues={watchedValues} setValue={setValue} sameAsHome={sameAsHome} showEmployerDetails={hasDiOrOo}
-          title={pageSections.find(section => section.id === 'contactBusinessInfo')?.description ?? pageSections.find(section => section.id === 'contactBusinessInfo')?.title} />}
-      </ApplicantSectionDivider>;
-      if (section.id === 'contactSpouse') return <ApplicantSectionDivider key={section.id} applicant="spouse" labels={applicantLabels} showLabel={showApplicantLabels.spouse ?? true}>
-        <SpouseContact fields={fieldsFor(section.id)} control={control} errors={errors} />
+          watchedValues={watchedValues} setValue={setValue} sameAsHome={sameAsHome} showEmployerDetails={hasDiOrOo} />}
       </ApplicantSectionDivider>;
       if (section.id === 'contactBusinessInfo') return null;
       const inputs = fieldsFor(section.id).map(field => <FieldRenderer key={field.id} field={field} control={control} errors={errors} />);

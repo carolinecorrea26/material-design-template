@@ -90,8 +90,7 @@ export default function DocsSidebarNav({
                   borderLeft: "2px solid",
                   borderColor: isActive ? "primary.main" : "transparent",
                   color: isActive ? "primary.main" : "text.secondary",
-                  fontWeight: isActive ? 700 : 500,
-                  fontSize: "0.8125rem",
+                  fontSize: "caption.fontSize",
                   transition: "color 120ms ease, border-color 120ms ease",
                   "&:hover": { color: "primary.main" },
                 }}

@@ -1,6 +1,13 @@
 {
   "page": "payment",
-  "requirement": "required",
-  "position": 14,
-  "fieldOverrides": []
+  "requirement": "optional",
+  "content": {
+    "payment.notes": [
+      {
+        "id": "canadian-premium-tax",
+        "text": "For residents of Ontario and Manitoba, an 8% premium sales tax applies. For residents of Saskatchewan, a 6% premium sales tax applies.",
+        "productKeys": []
+      }
+    ]
+  }
 }

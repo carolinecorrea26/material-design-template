@@ -6,7 +6,8 @@ import type { DatabaseSchema } from './types';
 import { validateIdentityCatalog } from './identityCatalog';
 import { validateComponentStructure } from '../domain/componentCatalog';
 
-export type SharedCatalog = {
+export type CatalogScope = { siteScope?: readonly string[] };
+export type SharedCatalog = CatalogScope & {
   formatVersion: 1;
   data: Pick<DatabaseSchema, SnapshotTable>;
   analyticsTags: AnalyticsTag[];
@@ -16,7 +17,8 @@ export const sharedCatalogPath = 'catalog/portal.json';
 /** A public configuration catalog, with no operational or account tables. */
 export function validateSharedCatalog(value: unknown): SharedCatalog {
   const catalog = value as SharedCatalog;
-  if (!catalog || catalog.formatVersion !== 1 || Object.keys(catalog).some(key => !['formatVersion', 'data', 'analyticsTags'].includes(key)) || !Array.isArray(catalog.analyticsTags)) throw new Error('Invalid shared JSON catalog.');
+  if (!catalog || catalog.formatVersion !== 1 || Object.keys(catalog).some(key => !['formatVersion', 'data', 'analyticsTags', 'siteScope'].includes(key)) || !Array.isArray(catalog.analyticsTags)) throw new Error('Invalid shared JSON catalog.');
+  if (catalog.siteScope !== undefined && (!Array.isArray(catalog.siteScope) || catalog.siteScope.some(key => typeof key !== 'string' || !key.trim()) || new Set(catalog.siteScope).size !== catalog.siteScope.length)) throw new Error('Invalid catalog Site scope');
   validateSnapshotData(catalog.data, [...new Set(normalizedSnapshotTables)]);
   validateIdentityCatalog(catalog.data);
   validateComponentStructure(catalog.data.components);
@@ -39,7 +41,7 @@ export function validateSharedCatalog(value: unknown): SharedCatalog {
 }
 
 export function prototypeCatalogData(catalog: SharedCatalog) {
-  return Object.fromEntries([...new Set(effectiveSiteSnapshotTables)].map(table => [table, catalog.data[table]])) as Pick<DatabaseSchema, typeof effectiveSiteSnapshotTables[number]>;
+  return Object.fromEntries([...new Set([...effectiveSiteSnapshotTables, 'components'] as const)].map(table => [table, catalog.data[table]])) as Pick<DatabaseSchema, typeof effectiveSiteSnapshotTables[number] | 'components'>;
 }
 
 /** One fetch per document load keeps the prototype and Library on one revision. */

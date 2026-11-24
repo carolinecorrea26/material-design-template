@@ -5,64 +5,75 @@ import { componentRoleLabels, componentRoles } from '../src/domain/componentCata
 
 // Review decisions reference canonical component names; this is not another inventory.
 const families = [
-  { name: 'Receipt sections', members: ['ReceiptConfirmation', 'ReceiptCoverageDecision', 'ReceiptDecisions', 'ReceiptNextSteps', 'ReceiptApplicationSummary'], assessment: 'Keep', next: 'Receipt resolves submission identity, product/applicant decisions, document actions and client payment guidance; sections render explicit content and callbacks.' },
-  { name: 'Payment composition', members: ['PaymentSections', 'SharedPaymentControls'], assessment: 'Keep', next: 'Page resolves collection, product policy, field definitions, rate display and submission. Standalone sections and shared controls receive explicit inputs; canonical per-product bindings remain independent.' },
+  { name: 'Receipt sections', members: ['ReceiptConfirmation', 'ReceiptCoverageDecision', 'ReceiptDecisions'], assessment: 'Keep', next: 'Receipt resolves submission identity, product/applicant decisions, document actions and client payment guidance; sections render explicit content and callbacks.' },
+  { name: 'Payment composition', members: ['PaymentSections', 'SharedPaymentControls'], assessment: 'Keep', next: 'Page resolves collection, product policy, field definitions, rate display, configurable notes and normal form continuation. Standalone sections and shared controls receive explicit inputs; canonical per-product bindings remain independent.' },
   { name: 'Site chrome', members: ['AppShell', 'AppBody', 'AppHeader', 'AppFooter', 'AppMenu', 'ClientHelpBanner', 'OfflineBanner'], assessment: 'Keep', next: 'Distinct site chrome responsibilities; keep program support separate from help-ribbon/sales actions.' },
-  { name: 'Page layout and navigation', members: ['FormRoutePage', 'PageShell', 'FormShell', 'PageHeader', 'PageTitle', 'PageNav', 'ProgressStep'], assessment: 'Keep', next: 'Preserve layout, application state and navigation boundaries.' },
+  { name: 'Page layout and navigation', members: ['FormRoutePage', 'StandaloneFormPage', 'PageShell', 'FormShell', 'PageHeader', 'PageTitle', 'PageNav', 'ProgressStep'], assessment: 'Keep', next: 'Preserve layout, application state and navigation boundaries.' },
   { name: 'Section surfaces', members: ['ApplicantSectionDivider', 'SectionDivider', 'CategoryCard', 'CategoryHeader', 'ProductCard', 'DetailsTable', 'FieldGrid'], assessment: 'Keep', next: 'Use shared surfaces and data-driven labels; retain applicant/category semantics.' },
   { name: 'Generic form controls', members: ['PhoneField', 'AddressFields', 'Button', 'Link', 'FieldRenderer', 'ControlledFieldRenderer', 'SelectionGroup', 'RadioSelectionGroup', 'ConditionalGroup'], assessment: 'Keep', next: 'Use FieldRenderer for application fields; adapters/compositions must reuse its controls. Buttons and links use the existing MUI owners under Actions.' },
-  { name: 'Repeated records', members: ['BeneficiaryProductRecords', 'DynamicList', 'DynamicListItem', 'YesNoDetailList', 'HealthQuestion', 'HealthQuestionList'], assessment: 'Keep', next: 'YesNoDetailList already composes DynamicList; DynamicList already composes DynamicListItem and FieldRenderer.' },
+  { name: 'Repeated records', members: ['BeneficiaryProductRecords', 'DynamicList', 'DynamicListItem', 'HealthQuestion', 'HealthQuestionList'], assessment: 'Keep', next: 'HealthQuestion renders direct and repeated details for configured/default questionnaires; DynamicList composes DynamicListItem and FieldRenderer. Independent policies, bindings, mappings, summaries and limits stay explicit.' },
   { name: 'Quote and coverage', members: ['CoverageCart', 'CoverageCategorySelector', 'CoverageNeedsCalculator', 'CoverageOptionsPanel', 'CoverageQuestions', 'EstimatorProductCard', 'EligibilityFields', 'ProductCatalog', 'ProductCostBreakdown', 'QuoteCalculator', 'RateFrequencyControl', 'RateFrequencyToggle', 'TotalCostSummary', 'EstimatedRate', 'FeaturedBadge'], assessment: 'Keep', next: 'Preserve quote/full-application differences; share field, price and summary primitives.' },
   { name: 'QuickDecision content and marks', members: ['QuickDecisionExplainer', 'QuickDecisionIndicator', 'QuickDecisionInfoBox'], assessment: 'Keep', next: 'Shared explainer/brand mark with distinct compact indicator, expandable panel and full explanation.' },
-  { name: 'Content and documents', members: ['HealthInformationHelp', 'ApplicationReviewDrawerContent', 'ApplicationDocumentPreview', 'HelpChips', 'LegalDocList', 'ReferenceRateTableLink'], assessment: 'Keep', next: 'Distinct preview, contextual-help and disclosure-list tasks.' },
-  { name: 'Feedback and recovery', members: ['ApplicationErrorState', 'ApplicationRecoveryActions', 'SiteSupport', 'SessionExpiryAlert', 'RecoveryAlert', 'PageAlert', 'AppSnackbar', 'ProgressSavedSnackbar', 'EmptyState', 'ExpiringCodeAlert', 'ResendCountdownRow', 'CoverageSelectionFeedback'], assessment: 'Keep', next: 'Use the common recovery vocabulary, actions and Site support; preserve feedback timing and scope.' },
-  { name: 'Transitions', members: ['PageTransitionSkeleton', 'ProcessingStatusPage'], assessment: 'Keep', next: 'Distinguish layout-preserving navigation placeholders from external-operation processing.' },
-  { name: 'Dialogs and drawers', members: ['AppDrawer', 'AppModal', 'ConfirmationDialog', 'CookieDialog', 'SendApplicationDialog', 'CoveragePortfolioDrawer', 'MemberVerification'], assessment: 'Keep', next: 'Keep one modal/drawer foundation; domain workflows compose it rather than become shell variants.' },
+  { name: 'Content and documents', members: ['PageHelp', 'PageHelpDrawer', 'ApplicationReviewDrawerContent', 'ApplicationDocumentPreview', 'PageHelpChips', 'PrintAction', 'LegalDocList', 'ReferenceRateTableLink'], assessment: 'Keep', next: 'Distinct preview, contextual-help and disclosure-list tasks.' },
+  { name: 'Feedback and recovery', members: ['ApplicationErrorState', 'ApplicationRecoveryActions', 'SiteSupport', 'SessionExpiryAlert', 'PageAlert', 'InformationAlert', 'AppSnackbar', 'ProgressSavedSnackbar', 'EmptyState', 'ExpiringCodeAlert', 'ResendCountdownRow', 'ResumeSessionWarning', 'CoverageSelectionFeedback'], assessment: 'Keep', next: 'Use the common recovery vocabulary, actions and Site support; preserve feedback timing and scope.' },
+  { name: 'Transitions', members: ['PageTransitionSkeleton', 'PrototypeHandoffPage'], assessment: 'Keep', next: 'Distinguish layout-preserving navigation placeholders from external-operation processing.' },
+  { name: 'Dialogs and drawers', members: ['AppDrawer', 'AppModal', 'ConfirmationDialog', 'CookieDialog', 'SendApplicationDialog', 'CoveragePortfolioDrawer', 'MemberVerification', 'VerificationAddress'], assessment: 'Keep', next: 'Keep one modal/drawer foundation; domain workflows compose it rather than become shell variants.' },
   { name: 'Reviewed Home sections', members: ['HomeHero', 'HomeCoverageSection', 'AssociationIntroduction', 'UnderwriterCredentials', 'HowApplyingWorksPanel', 'ApplicationPreview', 'MobilePreviewFrame'], assessment: 'Keep', next: 'Match actual Home composition and clearly identify illustrative content.' },
-  { name: 'Reviewed Membership sections', members: ['MembershipHelp', 'MembershipStatus', 'MemberInformation', 'AdditionalMembershipInformation'], assessment: 'Keep', next: 'These are sections of one page, not competing form libraries.' },
+  { name: 'Reviewed Membership sections', members: ['MembershipStatus', 'MemberInformation', 'AdditionalMembershipInformation'], assessment: 'Keep', next: 'These are sections of one page, not competing form libraries.' },
   { name: 'Profile personal fields', members: ['ProfilePersonalInformation'], assessment: 'Keep', next: 'Shared adult personal-field composition with independent member/spouse IDs and local license/residence/travel follow-ups.' },
   { name: 'Review composition', members: ['ReviewSections', 'ReviewStatement', 'LegalReviewSection'], assessment: 'Keep', next: 'Page controller resolves saved legal/coverage policy and edit routes. Standalone sections receive copy/fields/callbacks; both legal sections share one surface.' },
   { name: 'Profile sections', members: ['ProfileSections'], assessment: 'Keep', next: 'One production composition for personal, physician, Other coverage and financial questionnaire sections. Page resolves participation and coverage policy; standalone examples receive explicit inputs.' },
-  { name: 'Reviewed Contact sections', members: ['ContactSections', 'ResidentialAddress', 'BusinessInformation', 'SpouseContact'], assessment: 'Keep', next: 'Standalone residential, business/employer and spouse views share AddressFields. ContactSections composes supplied sections; application adapters resolve participation.' },
+  { name: 'Reviewed Contact sections', members: ['ContactSections', 'ResidentialAddress', 'BusinessInformation'], assessment: 'Keep', next: 'Residential and business views share AddressFields; supplied spouse fields use the generic ContactSections field-section path. ContactSections composes supplied sections; application adapters resolve participation.' },
   { name: 'Eligibility and physician sections', members: ['EligibilitySections', 'PhysicianInformation'], assessment: 'Keep', next: 'Keep page-specific policy and applicant structure above shared fields; PhysicianInformation has canonical member/spouse fields; Profile composition and scenarios are documented in profile-component-review.md.' },
 ];
 
 const decisions = {
+  StandaloneFormPage: ["Shared; R2 complete", "Pure PageShell/FormShell/PageHeader layout. Resume request/method/code controllers keep independent state, callbacks and security policies."],
+
+  InformationAlert: ["Shared; R5 complete", "Generic supplied heading, description and content; ReceiptConfirmation owns receipt rules and text selection."],
+
+  PageHelpDrawer: ["Shared; aligned", "One controlled title/content wrapper over AppDrawer; pages supply topic data rather than another help component."],
+  PageHelpChips: ["Shared; aligned", "One source-driven chip-row owner with explicit items and callbacks, independent of page/person/Site identity."],
+  PageHelp: ["Shared; aligned", "CHG-067 unified page-help state and source-compiled topics across Membership, Beneficiary and Payment. Health has no help chips."],
+  PageAlert: ["Shared; R6 complete", "PageShell, Resume request/sent, ResumeMethod and CIR load failures use PageAlert. Inline and overlay alerts retain their distinct placement."],
+  HealthQuestion: ["Shared; R4 complete", "One renderer handles configured/default answers, direct/repeated details, mappings, summaries and explicit record bounds. ConfiguredHealthPage shares SI/TELE/DI SUPP composition while policy resolution and participation remain independent."],
+  SessionExpiryAlert: ["Shared; R3 complete", "Composes AppModal with non-dismissal, alertdialog, labelled description and autofocus; inactivity-extension behavior remains separate from fixed MFA expiry."],
+  MemberVerification: ["Shared; R3 complete", "Composes AppModal with a generic staged-header slot; its own verification state, validations and callbacks remain independent."],
+  AppHeader: ["Shared; R3 complete", "Coverage details use AppModal; product content, selection and navigation remain owned by the header."],
+  AppModal: ["Shared; R3 complete", "Home notices, header coverage details, scheduling, verification and session warnings share the shell. Generic slots and dismissal/focus/mobile options preserve their contracts."],
+  FieldRenderer: ["Shared; R1 complete", "Date and month-year use TextLikeField with independent format/storage adapters, validation and unchanged answer bindings."],
   ProductCard: ['Composition; aligned', 'Owns the shared product title, weight 800, optional brochure link/QD mark, description and content slot across Coverage, Beneficiary, Payment, quote estimates and Receipt.'],
-  PageHeader: ['Consolidate next', 'Make PageHeader the single title/subtitle/back/help composition used by PageShell and FormRoutePage.'],
-  PageTitle: ['Consolidate next', 'Retain as an internal heading primitive if needed; avoid two public header APIs with overlapping title/back/subhead props.'],
-  PageShell: ['Consolidate next', 'Delegate its duplicate header/error/help arrangement to PageHeader and PageAlert; keep width/actions/layout ownership here.'],
-  FormShell: ['Internal primitive', 'A styled Paper with width only. Keep internal to the page composition rather than implying a second form engine.'],
+  PageHeader: ["Shared; R2 complete", "PageShell and standalone/application form frames share the title, help and feedback owner; PageTitle remains its internal primitive."],
+  PageTitle: ["Internal primitive", "Shared heading/back/subtitle primitive beneath PageHeader; keep this layering. Do not create person/page copies."],
+  PageShell: ["Shared; R2 complete", "Uses PageHeader and PageAlert. StandaloneFormPage shares Resume layout without application autosave/security effects."],
+  FormShell: ["Internal primitive", "Shared styled Paper with responsive radius/padding. Preserve it as a view surface, separate from form-state engines."],
   FieldGrid: ['Composition; approved exceptions', 'Stack fields by default; address and name groups may use explicit responsive rows. Preserve other intentional groups as they are reviewed; do not enforce an address-only exception.'],
   ControlledFieldRenderer: ['Adapter; aligned', 'Moved to Forms with its own adapter example. It already calls FieldRenderer; keep one field/control implementation.'],
   RadioSelectionGroup: ['Composition; already shared', 'Already composes SelectionGroup. Keep radio semantics, labels and helper/error state separate from the visual row.'],
   DynamicListItem: ['Internal primitive', 'Already used by DynamicList. Keep as its record-summary/action row instead of another list manager.'],
   DynamicList: ['Keep; grouping aligned', 'The add/edit dialog retains configured first/last-name rows on larger screens and stacks them on mobile. Other fields remain stacked. Retain one list editor and existing remove confirmation.'],
-  YesNoDetailList: ['Composition; already shared', 'Already uses FieldRenderer and DynamicList for yes/no follow-up records. Do not reimplement medical list controls.'],
   EligibilityFields: ['Composition; aligned', 'The application Eligibility page and quote tools share ZIP/State/Birthday rendering and manual-State behavior; their adapters retain value and validation ownership.'],
   CoverageSelectionFeedback: ['Composition; aligned', 'Shared AppDrawer/CoverageCart for the first addition and AppSnackbar for subsequent additions; keep selection state and feedback timing at the caller.'],
   ReferenceRateTableLink: ['Composition; aligned', 'One shared drawer supports saved image, PDF, HTML table, link and XML reference formats; preserve reference pricing separately from calculated estimates.'],
-  EstimatorProductCard: ['Consolidate selectively', 'Share the product surface, stored field controls and EstimatedRate. Keep its member-only quote behavior distinct from ProductCatalog.'],
-  ProductCatalog: ['Consolidate selectively', 'Owns applicant/rider/product policy. Extract repeated view fragments only; do not turn the quote card into the full business-policy orchestrator.'],
+  EstimatorProductCard: ["Keep distinct; shared primitives", "Already uses ProductCard, ControlledFieldRenderer and EstimatedRate. Quote selection/rider callbacks differ from full application policy orchestration."],
+  ProductCatalog: ["Keep distinct; shared primitives", "Owns product/applicant/rider selection composition while reusing shared product surfaces, fields and prices. No reason to merge it with quote or receipt controllers."],
   RateFrequencyToggle: ['Internal primitive', 'Styled switch inside RateFrequencyControl; expose monthly/annual examples through the labeled control rather than treating both as separate workflows.'],
   RateFrequencyControl: ['Composition; already shared', 'Already owns labels/options and delegates to RateFrequencyToggle. Keep as the public coverage-frequency control.'],
   EstimatedRate: ['Composition; already shared', 'Already handles amount/unavailable/calculating across cards and totals, including reserved dimensions. Reuse this instead of local price spinners.'],
-  ProductCostBreakdown: ['Consolidate selectively', 'Line items and fees differ from a grand-total summary. Share label/value/amount rows if their markup drifts; retain fee/disclosure semantics.'],
-  TotalCostSummary: ['Consolidate selectively', 'Keep its product/grand-total role. EstimatedRate is already shared with breakdown/card prices.'],
+  ProductCostBreakdown: ["Keep distinct; shared prices", "Fee/rider breakdown rows use EstimatedRate. Their line-item semantics differ from a grand total; no additional consolidation established."],
+  TotalCostSummary: ["Keep distinct; shared prices", "Aggregate cost presentation already uses EstimatedRate and frequency primitives. Do not merge its policy or total semantics with individual product cards."],
   QuickDecisionIndicator: ['Internal primitive', 'Thin preset around QuickDecisionIcon. Keep one configured artwork source; this is a useful compact semantic preset, not a new brand implementation.'],
-  QuickDecisionInfoBox: ['Consolidate selectively', 'Already reuses the explainer/mark, but its promotional lead sentence is local. Put shared explanation copy in one content source when the Coverage page is reviewed.'],
+  QuickDecisionInfoBox: ["Shared; aligned", "Current content comes from the shared content context; assigned-product availability and expand/collapse distinguish this view from the full explainer and compact mark."],
   ProgressSavedSnackbar: ['Internal primitive', 'A semantic AppSnackbar preset. Keep confirmed-save timing at callers; do not show Saved for an unacknowledged request.'],
-  RecoveryAlert: ['Composition; aligned', 'One RecoveryAlert uses stable local codes and approved copy, preserves answers/focus, and carries the same opaque support reference into the full page and support drawer.'],
   ApplicationErrorState: ['Composition; aligned', 'One card-contained utility-page layout renders large primary-colored error codes or state icons, messages, plain recovery links and the standard SiteSupport card. Maintenance has no navigation actions; 404 Home/Resume links preserve application state.'],
-  SiteSupport: ['Consolidated now', 'Receipt, maintenance and errors share the standard support card. Emails share its resolver/copy while retaining table markup suitable for email clients.'],
+  SiteSupport: ["Shared; aligned", "Receipt and redirect templates share the configured MUI info alert. Email keeps appropriate table markup while sharing contact/copy resolution."],
   ApplicationRecoveryActions: ['Composition; aligned', 'One compact responsive action row. Maintenance has no navigation actions. Only explicit Start new invokes the reset callback; retries require an explicit local callback.'],
-  ProcessingStatusPage: ['Composition; aligned', 'A bounded local status now leads to completion or recovery feedback. Unconfirmed payment/submission examples use the full recovery page without repeat actions.'],
   PageTransitionSkeleton: ['Keep distinct', 'Preserves form layout during navigation. It serves a different purpose from a generic spinner or long-running operation status.'],
   MobilePreviewFrame: ['Illustration infrastructure', 'Used inside the Home illustration. It is not the applicant viewport or form layout; group its examples with decorative Home content.'],
   ApplicationPreview: ['Illustration', 'Decorative simulated controls do not collect answers. Keep separate from real form controls and do not count them as field coverage.'],
   OfflineBanner: ['Keep distinct', 'AppShell owns the full-width connection bar above the header. Initial browser connectivity, online/offline events and reported OFFLINE incidents control visibility; no support reference or navigation actions.'],
-  ClientHelpBanner: ['Keep distinct', 'Compact global help ribbon may use a help-specific number, chat or scheduling; SiteSupport uses the administrator contact. Do not replace one contact role with another.'],
-  AppFooter: ['Consolidate selectively', 'Keep legal/underwriter identity and address content. Share contact resolution for any Questions card, without merging the complete footer into that card.'],
+  ClientHelpBanner: ["Shared; R3 complete", "Scheduling composes AppModal with supplied iframe content; sales/help contact behavior remains independent."],
+  AppFooter: ["Keep distinct; shared contact data", "Footer legal identity and compact links differ from support alerts and menu tools. Preserve shared contact resolution without treating matching MUI Stack markup as the same composition."],
 };
 
 const catalog = readCatalogParts();
@@ -82,10 +93,12 @@ const referenced = new Set(rows.map(row => row.name));
 for (const family of families) for (const name of family.members) if (!referenced.has(name)) throw new Error(`Reviewed component no longer exists: ${name}`);
 
 const cell = value => String(value).replaceAll('|', '\\|').replaceAll('\n', ' ');
-const changes = rows.filter(row => /Consolidate|Clarify|Reference|Illustration|aligned|corrected/.test(row.assessment));
+const changes = rows.filter(row => /^(Consolidate|Generalize|Standardize)/.test(row.assessment));
 const markdown = `# Component representation and consolidation review
 
 Reviewed ${rows.length} canonical component records from public/catalog/components/components.json against their source modules and generated production placement references. Every component has an explicit family and review decision. This is a source review; source paths include conditional variants and do not prove that every variant has been visually reviewed or mounted. Review source hashes and regenerate with npm run components:review after changes.
+
+Current implementation findings and scope are recorded in [the component-reuse audit](component-reuse-audit.md). A Keep decision preserves a meaningful boundary; it does not certify a complete state, policy or integration review.
 
 ## Component structure
 
@@ -103,7 +116,7 @@ ${rows.map(row => `| ${row.name} | ${componentRoleLabels[row.role]} | ${row.cont
 
 - Consolidated now: SiteSupport replaces the receipt's local Questions block and appears on maintenance and every error page. Email and site share contact resolution/copy. Existing email transport markup remains separate.
 - Aligned now: shared recovery copy/actions prevent different recovery wording and duplicate alerts on the full page; local incident context carries safe support references without service calls. The controlled field adapter is documented under Forms. Configured name groups share a responsive row on larger screens and stack on mobile, with no extra vertical grid gap.
-- Highest-value next consolidation: PageHeader/PageTitle/PageShell header APIs and legacy grid metadata/address layout naming. LoadingOverlay was deleted because it had no production usage; catalog generation now rejects unused components. ProcessingStatusPage has bounded pending, complete and timeout variants.
+- R1–R7 complete: shared rendering/frame/dialog changes are implemented; global component registrations, composition and parts are the source for the Library and Storybook projection. PrototypeHandoffPage has one canonical owner. Superseded component placeholders are removed; named exports and native elements remain documented parts.
 - Already shared: radio rows use SelectionGroup; controlled fields use FieldRenderer; yes/no detail records use DynamicList; frequency control uses its styled switch; modal workflows use shared shells; price surfaces use EstimatedRate. These are layers of composition, not independent duplicate implementations.
 - Preserve distinctions: help-ribbon contact vs administrator support; quote card vs full applicant/rider catalog; transient snackbar vs persistent page alert; skeleton vs external processing; business policy vs visual surface. Merge only repeated markup/data that has the same meaning.
 - ApplicationPreview and MobilePreviewFrame represent decorative Home artwork. Their simulated fields are not application answers or actual applicant screen layouts.
@@ -125,10 +138,10 @@ ${rows.map(row => `| ${fs.existsSync(row.source) ? `[${row.name}](../../${row.so
 
 ## Next review sequence
 
-1. Continue the remaining state matrix in recovery-state-plan.md using the implemented shared recovery contract.
-2. Consolidate page header APIs with focused before/after examples, preserving catalog identities or providing explicit aliases.
-3. Review the prepared Review whole-page scenarios, then continue Health, Payment, E-sign and Receipt. Beneficiary examples and the prior-page structure checkpoint are documented in their page reviews. Capture empty, populated, invalid, loading, unavailable and recovery variants where meaningful for each page.
-4. Promote a new shared component only when repeated production markup/behavior establishes the need. A small semantic preset or an adapter can remain internal to its family.
+1. Close the seven source-confirmed reuse/model findings in component-reuse-audit.md; retain existing rules, field IDs and effective-Site assignments.
+2. Verify each shared change through its canonical example and affected page integrations; run fresh-start/source/build checks when required by the repository contract.
+3. Receipt final page review is complete in CHG-074. Preserve shared owners and do not enable other real Sites.
+4. Keep meaningful workflow controllers, binding adapters and semantic presets. Shared MUI primitives alone do not justify a new abstraction or another approval round.
 `;
 const json = JSON.stringify({ componentCount: rows.length, reviewType: 'source-and-composition', rows }, null, 2) + '\n';
 const outputs = [['docs/project-review/component-consolidation-review.md', markdown], ['docs/project-review/component-consolidation-review.json', json]];

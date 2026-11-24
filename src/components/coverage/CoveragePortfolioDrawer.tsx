@@ -1,3 +1,5 @@
+import { getResolvedApplicantLabels } from '../../config/formSectionTitle';
+import { getActiveClient } from '../../config/client/getActiveClient';
 import { requirementText } from "../../domain/requirementContent";
 import {
   Box,
@@ -48,7 +50,7 @@ export default function CoveragePortfolioDrawer({
               color="text.secondary"
               sx={{ fontWeight: 700, letterSpacing: "0.08em" }}
             >
-              {requirementText(portfolio.label)}
+              {getResolvedApplicantLabels(getActiveClient().applicantLabels)[portfolio.applicant === "self" ? "member" : "spouse"]}
             </Typography>
             <Stack spacing={2} sx={{ mt: 1 }}>
               {portfolio.coverages.map((coverage) => (
@@ -95,7 +97,6 @@ export default function CoveragePortfolioDrawer({
                           label={rider.amount != null ? `${rider.name}: ${formatUSD(rider.amount, 0)}` : rider.name}
                           size="small"
                           variant="outlined"
-                          sx={{ fontSize: "0.6875rem" }}
                         />
                       ))}
                     </Stack>

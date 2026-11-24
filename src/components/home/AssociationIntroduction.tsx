@@ -3,7 +3,7 @@ import type { SiteContent } from "../../content/types";
 import type { ClientConfig } from "../../config/clients/types";
 
 export default function AssociationIntroduction({ content, effectiveBranding }: { content: SiteContent; effectiveBranding: ClientConfig["branding"] }) {
-  if (!content.home.clientSection) return null;
+  if (!content.home.clientSection || !content.home.clientSection.tagline.trim() && !content.home.clientSection.paragraphs.some(paragraph => paragraph.trim())) return null;
   return (
                 <Stack spacing={2}>
                   <Stack direction="column" spacing={2} alignItems="start">

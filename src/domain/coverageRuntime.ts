@@ -1,5 +1,8 @@
+import { requirementText } from './requirementContent';
+import { verifiedPortfolioAmount, verifiedCoverageElections } from "./tpaPortfolioAmounts";
+import { applicationRiderOptions } from "./applicationRiders";
 import { applicantPortfolioProcessing, applicantPortfolioProducts, portfolioLifeHealthPage } from "./portfolioHealthParticipation";
-import { getPrototypeLibrary } from "./prototypeLibrary";
+import { getPrototypeLibrary, type PrototypeLibrary } from "./prototypeLibrary";
 import { resolveJourneyUnderwriting } from "./coverageJourney";
 import { prototypeApplicantOperand } from "./prototypeApplicantOperands";
 import { prototypeCoverageDecision } from "./prototypeCoverageDecision";
@@ -15,18 +18,19 @@ import { resolveCoverageJourneyPolicy } from "./coverageJourneyPolicy";
 import { applicationUnderwritingContext } from "./quickDecisionPolicy";
 import { requirementCoverageAmounts, requirementCoverageEligibility, requirementCoverageFacts, requirementCoverageResidencyMessage } from "./requirementCoveragePolicy";
 import { getCoverageAmountControl } from "./coveragePresentation";
+import { selectedApplicationApplicants } from './applicantParticipation';
+import { coverageLifeMaximumError } from './coverageSubmitValidation';
+import { requirementCoverageSubmitAlert } from './requirementCoveragePolicy';
 
-export function applicationCoverageName(product: CoverageDefinition, values: Record<string, unknown>) {
-  const library = getPrototypeLibrary();
+export function applicationCoverageName(product: CoverageDefinition, values: Record<string, unknown>, library: PrototypeLibrary | null = getPrototypeLibrary()) {
   const association = values.association ?? values.membership;
   const policy = library ? resolveCoverageJourneyPolicy(library.site, product.id) : null;
   return typeof association === "string" ? policy?.associationDisplayNames?.[association] ?? product.name : product.name;
 }
 
 export type ResolutionStatus = "no-rule" | "resolved" | "needs-information" | "unresolved";
-export type UnderwritingOutcome = { status: ResolutionStatus; underwritingType?: CoverageUnderwritingType; healthPage?: "health-li" | "health-di" | "health-si" | "health-qd" | "health-ci" | null; missingFacts?: string[] };
-export function applicationUnderwriting(product: CoverageDefinition, applicant: CoverageApplicantId, values: Record<string, unknown>): UnderwritingOutcome {
-  const library = getPrototypeLibrary();
+export type UnderwritingOutcome = { status: ResolutionStatus; underwritingType?: CoverageUnderwritingType; healthPage?: "health-tele" | "health-di-supp" | "health-si" | "health-qd" | null; missingFacts?: string[] };
+export function applicationUnderwriting(product: CoverageDefinition, applicant: CoverageApplicantId, values: Record<string, unknown>, library: PrototypeLibrary | null = getPrototypeLibrary()): UnderwritingOutcome {
   if (selectedRiderOnly(product, applicant, values)) {
     if (!library) return { status: "no-rule", underwritingType: product.underwritingType };
     const policies = library.site.configuration.products.find(row => row.productKey === product.id)?.selectionPolicies ?? [];
@@ -41,7 +45,7 @@ export function applicationUnderwriting(product: CoverageDefinition, applicant: 
     if (outcomes.some(outcome => outcome.status === "unresolved")) return { status: "unresolved" };
     if (outcomes.some(outcome => outcome.status === "needs-information")) return { status: "needs-information", missingFacts: [...new Set(outcomes.flatMap(outcome => "missingFacts" in outcome ? outcome.missingFacts : ["applicant-information"]))] };
     const pathways = [...new Set(outcomes.map(outcome => outcome.pathway))];
-    const portfolioPage = resolveCoverageJourneyPolicy(library.site, product.id)?.healthPageForPortfolio ? portfolioLifeHealthPage(library.site, product.id, applicant, pathways[0], applicantPortfolioProducts(applicant, values), applicantPortfolioProcessing(library.site, applicant, values)) : { status: "unmatched" as const };
+    const portfolioPage = resolveCoverageJourneyPolicy(library.site, product.id)?.healthPageForPortfolio ? portfolioLifeHealthPage(library.site, product.id, applicant, pathways[0], applicantPortfolioProducts(library.site, applicant, values), applicantPortfolioProcessing(library.site, applicant, values)) : { status: "unmatched" as const };
     if (portfolioPage.status === "needs-information") return { status: "needs-information" };
     const healthPages = portfolioPage.status === "matched" ? [portfolioPage.healthPage] : [...new Set(outcomes.flatMap(outcome => "healthPage" in outcome ? [outcome.healthPage] : []))];
     return pathways.length === 1 && pathways[0] && healthPages.length <= 1 ? { status: "resolved", underwritingType: pathways[0] as CoverageUnderwritingType, ...(healthPages.length ? { healthPage: healthPages[0] } : {}) } : { status: "unresolved" };
@@ -57,7 +61,8 @@ export function applicationUnderwriting(product: CoverageDefinition, applicant: 
     : { status: "unresolved" };
 }
 
-export function resolveApplicationCoverage(product: CoverageDefinition, applicant: CoverageApplicantId, values: Record<string, unknown>, products: CoverageDefinition[] = [product], options?: { deferUnansweredMembership?: boolean }) {
+/** Shared product participation decision. Missing later-page facts stay unresolved. */
+export function applicationProductEligibility(product: CoverageDefinition, applicant: CoverageApplicantId, values: Record<string, unknown>, deferUnansweredMembership = false) {
   const facts = requirementCoverageFacts(product, applicationApplicantFacts(values, applicant));
   const library = getPrototypeLibrary();
   const eligibilityResults = applicationApplicantFactSet(values, applicant, product.id).flatMap(fact => {
@@ -68,27 +73,45 @@ export function resolveApplicationCoverage(product: CoverageDefinition, applican
   });
   const categoryPolicy = readCategoryEligibilityPolicy(getPrototypeLibrary()?.site.configuration.categoryEligibilityPolicies ?? []);
   eligibilityResults.push(requirementCoverageEligibility(product, applicant, facts));
-  eligibilityResults.push(categoryEligibility(categoryPolicy, categoryPolicy ? values[categoryPolicy.fieldId] : undefined, product.categoryId, options?.deferUnansweredMembership));
-  const eligibility = eligibilityResults.includes("ineligible") ? "ineligible" : eligibilityResults.includes("needs-information") ? "needs-information" : "eligible";
-  const limit = resolveBenefitLimit(product.requirements, applicant, facts);
-  let amounts = getCoverageAmountChoices(product, applicant).filter(amount => amount > 0 && (!limit || (limit.maximum !== undefined && amount <= limit.maximum)));
-  const selections = { ...((values.productApplicants ?? {}) as Record<string, CoverageApplicantId[]>) };
-  if (Array.isArray(values.coverageSelections)) {
-    for (const id of Object.keys(selections)) if (!values.coverageSelections.includes(id)) delete selections[id];
-  }
+  eligibilityResults.push(categoryEligibility(categoryPolicy, categoryPolicy ? values[categoryPolicy.fieldId] : undefined, product.categoryId, deferUnansweredMembership));
+  return eligibilityResults.includes("ineligible") ? "ineligible" : eligibilityResults.includes("needs-information") ? "needs-information" : "eligible";
+}
+
+export function noEligibleProductsMessage(products: CoverageDefinition[], values: Record<string, unknown>) {
+  const people = new Set(['member', ...(Array.isArray(values.dependents) ? values.dependents.map(String) : [])]);
+  const candidates = products.flatMap(product => product.applicants.filter(applicant => people.has(applicant)).map(applicant => applicationProductEligibility(product, applicant, values)));
+  if (candidates.some(result => result !== 'ineligible')) return undefined;
+  const library = getPrototypeLibrary();
+  if (!library) throw new Error('Missing fresh-start eligibility projection');
+  const contact = [library.client.branding.name, library.client.support.phoneDisplay || library.client.support.phone, library.client.support.email, library.client.support.website].filter(Boolean).join(' · ');
+  return requirementText('eligibility.no-eligible-products', { contact });
+}
+
+export function resolveApplicationCoverage(product: CoverageDefinition, applicant: CoverageApplicantId, values: Record<string, unknown>, products: CoverageDefinition[] = [product], options?: { deferUnansweredMembership?: boolean; purpose?: "quote" }) {
+  const facts = requirementCoverageFacts(product, applicationApplicantFacts(values, applicant));
+  const library = getPrototypeLibrary();
+  const quote = options?.purpose === "quote";
+  const eligibility = quote ? 'eligible' : applicationProductEligibility(product, applicant, values, options?.deferUnansweredMembership);
+  const calculatedLimit = resolveBenefitLimit(product.requirements, applicant, facts);
+  const limit = quote && calculatedLimit?.maximum === undefined ? undefined : calculatedLimit;
+  // A quote does not collect application classifications. Offer the configured
+  // amount choices across those classes without inventing an applicant answer.
+  const classes = quote ? [undefined, ...(product.coverageAmounts ?? []).map(amount => amount.scope?.applicantClassId)] : [undefined];
+  let amounts = [...new Set(classes.flatMap(classId => getCoverageAmountChoices(product, applicant, classId)))].filter(amount => amount > 0 && (!limit || (limit.maximum !== undefined && amount <= limit.maximum)));
+  const selections = selectedApplicationApplicants(values, products);
   const selectedAmounts = values.coverageAmounts as Record<string, number> | undefined;
   if (selectedAmounts) for (const id of Object.keys(selections)) {
     selections[id] = selections[id].filter(type => selectedAmounts[`${id}:${type}`] === undefined || selectedAmounts[`${id}:${type}`] > 0);
   }
   selections[product.id] = [...new Set([...(selections[product.id] ?? []), applicant])];
-  amounts = requirementCoverageAmounts(product, applicant, facts.ageYears, amounts);
-  const normalized = prototypeCoverageDecision(product.id, applicant, values, amounts);
+  if (!quote) amounts = requirementCoverageAmounts(product, applicant, facts.ageYears, amounts, "new", library ? verifiedPortfolioAmount(library.client, values, applicant, [product.id]) : 0);
+  const normalized = quote ? null : prototypeCoverageDecision(product.id, applicant, values, amounts);
   if (normalized) amounts = normalized.amounts;
-  amounts = requirementCoverageAmounts(product, applicant, facts.ageYears, amounts);
-  const residencyMessage = requirementCoverageResidencyMessage(product, applicant, values);
+  if (!quote) amounts = requirementCoverageAmounts(product, applicant, facts.ageYears, amounts, "new", library ? verifiedPortfolioAmount(library.client, values, applicant, [product.id]) : 0);
+  const residencyMessage = quote ? undefined : requirementCoverageResidencyMessage(product, applicant, values);
   const amountControl = getCoverageAmountControl(product, applicant, amounts, library?.client.coverages ?? {}, values.coverageEntryScope);
   amounts = amountControl.choices;
-  const relationshipErrors = coverageRelationshipErrors(products, selections);
+  const relationshipErrors = quote ? [] : coverageRelationshipErrors(products, selections, library ? verifiedCoverageElections(library.client, library.products, values) : []);
   const messages = [
     ...(!product.applicants.includes(applicant) ? ["This applicant is not supported."] : []),
     ...(eligibility === "needs-information" ? [applicant === "child" ? "Complete each child’s birth date and student information on Eligibility before adding coverage." : "Complete the applicant eligibility information before adding coverage."] : []),
@@ -107,15 +130,15 @@ export function resolveApplicationCoverage(product: CoverageDefinition, applican
     benefitLimitStatus: (!limit ? "no-rule" : limit.maximum === undefined ? "needs-information" : "resolved") as ResolutionStatus,
     requirementsStatus: (product.requirements?.unresolved?.length ? "unresolved" : !product.requirements ? "no-rule" : eligibility === "needs-information" || (limit && limit.maximum === undefined) ? "needs-information" : "resolved") as ResolutionStatus,
     unresolvedRequirements: product.requirements?.unresolved ?? [],
-    underwriting: applicationUnderwriting(product, applicant, values),
+    underwriting: quote ? { status: "no-rule" as const, underwritingType: product.underwritingType } : applicationUnderwriting(product, applicant, values),
     waitingPeriod: { requiredValue: (normalized ? undefined : limit?.requiredWaitingPeriod) ?? (waitingOptions?.length === 1 ? waitingOptions[0].value : undefined), options: waitingOptions },
     benefitPeriod: { requiredValue: (normalized ? undefined : limit?.requiredBenefitPeriod) ?? (benefitOptions?.length === 1 ? benefitOptions[0].value : undefined), options: benefitOptions },
   };
 }
 
-export function validateApplicationCoverages(products: CoverageDefinition[], values: Record<string, unknown>, options?: { deferProfileUnderwriting?: boolean; deferUnansweredMembership?: boolean }): string | undefined {
+export function validateApplicationCoverages(products: CoverageDefinition[], values: Record<string, unknown>, options?: { deferProfileUnderwriting?: boolean; deferUnansweredMembership?: boolean; purpose?: "quote" }): string | undefined {
   const selected = Array.isArray(values.coverageSelections) ? values.coverageSelections : [];
-  const applicants = (values.productApplicants ?? {}) as Record<string, CoverageApplicantId[]>;
+  const applicants = selectedApplicationApplicants(values, products);
   if (!selected.length) return "Please select at least one coverage to continue.";
   for (const id of selected) {
     const product = products.find(p => p.id === id);
@@ -135,6 +158,13 @@ export function validateApplicationCoverages(products: CoverageDefinition[], val
           if (riderAmount === undefined || !getCoverageAmountChoices({ coverageAmounts: standalone.coverageAmounts }, applicant).includes(riderAmount)) return `${standalone.name}: select an available rider amount.`;
         }
       } else if (!amount || !result.amounts.includes(amount) || result.amountControl.locked && amount !== result.amountControl.defaultAmount) return `${product.name}: select an available benefit amount for ${applicant}.`;
+      for (const rider of product.riders ?? []) {
+        const riderKey = `${product.id}:${rider.id}:${applicant}`;
+        if (!(values.coverageRiders as Record<string, boolean> | undefined)?.[riderKey]) continue;
+        const riderOptions = applicationRiderOptions(product, rider, applicant, values, options);
+        const riderAmount = (values.coverageRiderAmounts as Record<string, number> | undefined)?.[riderKey];
+        if (!riderOptions.available || rider.hasAmount && (riderAmount === undefined || !riderOptions.choices.includes(riderAmount))) return `${rider.name}: select an available rider amount.`;
+      }
       for (const [field, constraint] of standalone ? [] : [["coverageWaitingPeriods", result.waitingPeriod], ["coverageMaxBenefitPeriods", result.benefitPeriod]] as const) {
         const stored = values[field] as Record<string, string> | undefined;
         const value = stored?.[key] ?? stored?.[product.id] ?? constraint.requiredValue ?? constraint.options?.[0]?.value;
@@ -144,4 +174,13 @@ export function validateApplicationCoverages(products: CoverageDefinition[], val
       if (result.underwriting.status === "needs-information" && !(options?.deferProfileUnderwriting && result.underwriting.missingFacts?.length && result.underwriting.missingFacts.every(fact => fact === "existingLifeAmount"))) return `${product.name}: complete ${result.underwriting.missingFacts?.includes("existingLifeAmount") ? "existing Life coverage information on Profile" : "applicant age and benefit information"}.`;
     }
   }
+}
+
+/** Global submission orchestration. Every application checkpoint enforces the
+ * same effective policies; only facts collected later may be explicitly deferred. */
+export function validateCoverageSubmission(products: CoverageDefinition[], values: Record<string, unknown>, options?: { deferProfileUnderwriting?: boolean }) {
+  const library = getPrototypeLibrary();
+  return requirementCoverageSubmitAlert(products, values)
+    ?? validateApplicationCoverages(products, values, options)
+    ?? (library ? coverageLifeMaximumError(library.site, products, values, library.client) : undefined);
 }

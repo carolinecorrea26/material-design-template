@@ -1,3 +1,4 @@
+import examples from '../../../requirements/global/prototype-fixtures/home-examples.json';
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import AssociationIntroduction from "./AssociationIntroduction";
 import withHomeStoryFrame from "../../../.storybook/homeSectionDecorator";
@@ -11,4 +12,4 @@ const meta = {
   decorators: [withHomeStoryFrame],
 } satisfies Meta<typeof AssociationIntroduction>;
 export default meta;
-export const Default: StoryObj = { render: () => <ComponentFixture>{fixture => <AssociationIntroduction content={fixture.content} effectiveBranding={fixture.client.branding} />}</ComponentFixture> };
+export const Default: StoryObj = { render: () => <ComponentFixture home={examples.associationIntroduction}>{fixture => <AssociationIntroduction content={fixture.content} effectiveBranding={fixture.client.branding} />}</ComponentFixture> };

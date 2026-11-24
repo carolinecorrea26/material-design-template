@@ -1,9 +1,14 @@
-import { coverageLifeMaximumError } from "../domain/coverageSubmitValidation";
-import { requirementText } from "../domain/requirementContent";
+import { selectedApplicationApplicants } from '../domain/applicantParticipation';
+import { coveragePreselectEnabled, coveragePreselection } from "../domain/coveragePreselection";
+import { getPageSections } from "../config/pageSections";
+import { getClientPageFields } from "../config/clientFields/getClientPageFields";
+import { resolveCoverageQuestionSections } from "../config/resolvers/resolveCoverageQuestionSections";
+import { resolveVisibilityCondition } from "../config/conditions";
+import { coverageFactFieldIds } from "../config/fields/coverageFactFields";
 import { getDisplayedPremium } from "../utils/coverageDisplay";
 import { rateDisplayForAmount, type RateDisplayState } from '../domain/rateDisplay';
 import { resolveSiteId } from "../data/activeSite";
-import { activeFeaturedProduct } from "../config/client/coverageProductScope";
+import { activeFirstCoverageCategory, activeFeaturedProduct } from "../config/client/coverageProductScope";
 import { orderCoveragePresentation } from "../domain/coveragePresentation";
 import { reconcileApplicationRiders } from "../domain/applicationRiders";
 import { productMonthlyPremium } from "../domain/pricing";
@@ -12,14 +17,12 @@ import { categoryEligibility as evaluateCategoryEligibility, readCategoryEligibi
 import { changeCoverageAmount, selectedRiderOnly } from "../domain/coverageRiderOnly";
 import { usePrototypeRates } from "./usePrototypeRates";
 import { initialCoverageCategories } from "../config/client/coverageCategoryScope";
-import { resolveApplicationCoverage, validateApplicationCoverages } from "../domain/coverageRuntime";
-import { requirementCoverageSubmitAlert } from "../domain/requirementCoveragePolicy";
+import { resolveApplicationCoverage, validateCoverageSubmission } from "../domain/coverageRuntime";
 import type { CoverageDefinition } from "../domain/coverage";
-import { coverageRelationshipErrors } from "../domain/coverageRequirements";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getActiveClient } from "../config/client/getActiveClient";
 import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
-import { coverageCategories } from "../config/coverageCategories";
+import { getCoverageCategories } from "../config/coverageCategories";
 import { getCategoryRequirements } from "../config/coverageQuestionRequirements";
 import type { CoverageCategoryId } from "../config/coverages/types";
 import type { CoverageApplicantId } from "../config/coverages/types";
@@ -78,7 +81,7 @@ export function useCoverageState() {
   const selectionTimerRef = useRef<number | null>(null);
 
   // ── Category selection ──────────────────────────────────────────────────
-  const availableCategories = orderCoveragePresentation(coverages, activeClient.coverages, activeFeaturedProduct(resolveSiteId())).categories.map(id => coverageCategories.find(category => category.id === id)!).filter((category) =>
+  const availableCategories = orderCoveragePresentation(coverages, activeClient.coverages, activeFeaturedProduct(resolveSiteId()), activeFirstCoverageCategory(resolveSiteId())).categories.map(id => getCoverageCategories(activeClient.coverages.categoryNames).find(category => category.id === id)!).filter((category) =>
     coverages.some((coverage) => coverage.categoryId === category.id) && evaluateCategoryEligibility(categoryPolicy, categoryPolicy ? values[categoryPolicy.fieldId] : undefined, category.id, true) === "eligible",
   );
 
@@ -89,6 +92,7 @@ export function useCoverageState() {
       ? (values.selectedCategoryChips as CoverageCategoryId[])
       : [];
     const existingSelections = Array.isArray(values.coverageSelections) ? values.coverageSelections : [];
+    if (coveragePreselectEnabled(values) && values.coveragePreselectionApplied !== true) return availableCategories.map(category => category.id);
     return initialCoverageCategories(availableCategories.map(category => category.id), storedChips, coverages.filter(coverage => existingSelections.includes(coverage.id)).map(coverage => coverage.categoryId));
   });
 
@@ -112,39 +116,31 @@ export function useCoverageState() {
     needsDi: categoryNeedsDi,
     needsOo: categoryNeedsOo,
     needsHours: categoryNeedsHours,
-    needsAdditionalFields: hasCanonicalCategoryQuestions,
   } = getCategoryRequirements(selectedCategories);
 
   const clientCoverageQuestions = activeClient.coverageQuestions;
 
-  const needsAdditionalQuestions = clientCoverageQuestions
-    ? selectedCategories.some(
-        (catId) =>
-          (clientCoverageQuestions[catId]?.length ?? 0) > 0 ||
-          (clientCoverageQuestions.always?.length ?? 0) > 0,
-      )
-    : hasCanonicalCategoryQuestions;
-
   // ── Dependents ─────────────────────────────────────────────────────────
   const selectedDependents = useMemo<string[]>(
-    () => (Array.isArray(values.dependents) ? values.dependents : []),
+    () => (Array.isArray(values.dependents) ? values.dependents.filter((value): value is string => typeof value === "string") : []),
     [values.dependents],
   );
   const hasSpouse = selectedDependents.includes("spouse") && coverages.some(product => selectedCategories.includes(product.categoryId) && product.applicants.includes("spouse"));
 
+  const questionFields = getClientPageFields("coverage", values);
+  function hasQuestionsFor(categories: CoverageCategoryId[]) {
+    const products = coverages.filter(product => categories.includes(product.categoryId));
+    const spouseParticipates = selectedDependents.includes("spouse") && products.some(product => product.applicants.includes("spouse"));
+    const sections = resolveCoverageQuestionSections({ sections: getPageSections("coverage"), selectedCategories: categories, coverageQuestions: clientCoverageQuestions });
+    return sections.some(section => (section.applicant !== "spouse" || spouseParticipates)
+      && resolveVisibilityCondition(section, values, questionFields)
+      && section.fieldIds.some(id => questionFields.some(field => field.id === id)))
+      || coverageFactFieldIds(products, values).some(id => questionFields.some(field => field.id === id));
+  }
+  const needsAdditionalQuestions = hasQuestionsFor(selectedCategories);
+
   // ── Product applicants ─────────────────────────────────────────────────
-  const productApplicants = useMemo<
-    Record<string, CoverageApplicantId[]>
-  >(() => {
-    if (
-      values.productApplicants != null &&
-      typeof values.productApplicants === "object" &&
-      !Array.isArray(values.productApplicants)
-    ) {
-      return values.productApplicants as Record<string, CoverageApplicantId[]>;
-    }
-    return {};
-  }, [values.productApplicants]);
+  const productApplicants = useMemo(() => selectedApplicationApplicants(values, coverages), [values, coverages]);
 
   // ── Coverage amounts ───────────────────────────────────────────────────
   const storedAmounts = useMemo<Record<string, number>>(() => {
@@ -320,6 +316,12 @@ export function useCoverageState() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (!showProducts || productsLoading) return;
+    const patch = coveragePreselection(categoryProducts, values);
+    if (patch) setPageValues(patch);
+  }, [showProducts, productsLoading, categoryProducts, values, setPageValues]);
+
   // Seed configured/campaign defaults without turning them into elections.
   useEffect(() => {
     if (!showProducts || categoryProducts.length === 0) return;
@@ -376,13 +378,7 @@ export function useCoverageState() {
 
   function handleCategoryToggle(categoryId: CoverageCategoryId) {
     const isAdding = !selectedCategories.includes(categoryId);
-    const categoryRequiresQuestions = clientCoverageQuestions
-      ? (clientCoverageQuestions[categoryId]?.length ?? 0) > 0 ||
-        (clientCoverageQuestions.always?.length ?? 0) > 0
-      : categoryId === "LI" ||
-        categoryId === "DI" ||
-        categoryId === "OO" ||
-        categoryId === "SH";
+    const categoryRequiresQuestions = hasQuestionsFor([categoryId]);
 
     if (isAdding && categoryRequiresQuestions && showProducts) {
       setShowProducts(false);
@@ -640,47 +636,7 @@ export function useCoverageState() {
   // ── Validation ─────────────────────────────────────────────────────────
 
   function validate(nextValues: Record<string, unknown>) {
-    const nextSelectedCoverageIds = Array.isArray(nextValues.coverageSelections)
-      ? nextValues.coverageSelections
-      : [];
-
-    if (nextSelectedCoverageIds.length === 0) {
-      return requirementText("coverage.error.select-product");
-    }
-
-    const nextProductApplicants =
-      nextValues.productApplicants != null &&
-      typeof nextValues.productApplicants === "object" &&
-      !Array.isArray(nextValues.productApplicants)
-        ? (nextValues.productApplicants as Record<
-            string,
-            CoverageApplicantId[]
-          >)
-        : {};
-
-    for (const coverageId of nextSelectedCoverageIds) {
-      const applicants = nextProductApplicants[coverageId];
-      if (!Array.isArray(applicants) || applicants.length === 0) {
-        return requirementText("coverage.error.select-applicant");
-      }
-    }
-
-    const nextAmounts =
-      nextValues.coverageAmounts != null &&
-      typeof nextValues.coverageAmounts === "object" &&
-      !Array.isArray(nextValues.coverageAmounts)
-        ? (nextValues.coverageAmounts as Record<string, number>)
-        : {};
-
-    const hasAmount = Object.values(nextAmounts).some((v) => v > 0) || coverages.some(product =>
-      nextSelectedCoverageIds.includes(product.id) && (nextProductApplicants[product.id] ?? []).some(applicant => selectedRiderOnly(product, applicant, nextValues)),
-    );
-    if (!hasAmount) {
-      return requirementText("coverage.error.select-amount");
-    }
-
-    const activeSelections = Object.fromEntries(Object.entries(nextProductApplicants).filter(([id]) => nextSelectedCoverageIds.includes(id)));
-    return requirementCoverageSubmitAlert(coverages, nextValues) ?? validateApplicationCoverages(coverages, nextValues, { deferProfileUnderwriting: true }) ?? (getPrototypeLibrary() ? coverageLifeMaximumError(getPrototypeLibrary()!.site, coverages, nextValues, activeClient) : undefined) ?? coverageRelationshipErrors(coverages, activeSelections)[0];
+    return validateCoverageSubmission(coverages, nextValues, { deferProfileUnderwriting: true });
   }
 
   return {

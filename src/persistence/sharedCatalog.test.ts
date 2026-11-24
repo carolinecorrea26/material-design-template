@@ -8,6 +8,7 @@ import { resolvePrototypeLibrary } from '../domain/prototypeLibrary';
 import { fieldCatalogRows } from '../pages/admin/library/fieldCatalogRows';
 import { createPortalDataRepository } from '../repositories/portalDataRepository';
 import { readLibraryCatalog } from '../services/libraryCatalogService';
+import { freshStartSource } from '../domain/freshStartCatalog';
 import { getFieldValidationRules } from '../utils/fieldValidation';
 
 const saved = () => JSON.parse(readFileSync('public/catalog/portal.json', 'utf8'));
@@ -52,7 +53,7 @@ describe('shared JSON catalog', () => {
       });
     }
     expect(resolvePrototypeLibrary(data, 'ama', 'button-theme-test').client.theme?.buttonShape).toBe('pill');
-    expect(resolvePrototypeLibrary(data, 'demo', 'button-theme-test').client.theme?.primaryAction).toBeUndefined();
+    expect(() => resolvePrototypeLibrary(data, 'demo', 'button-theme-test')).toThrow('Unavailable Site: demo');
   });
   it('resolves every saved Site from the checked-in file', () => {
     const catalog = validateSharedCatalog(saved());
@@ -79,10 +80,10 @@ describe('shared JSON catalog', () => {
     const fallback = vi.spyOn(base, 'list');
     const adapter = new JsonCatalogAdapter(base, read);
     const catalog = await read();
-    const prototype = resolvePrototypeLibrary(prototypeCatalogData(catalog), 'abe', catalog.revision);
-    const fields = fieldCatalogRows(catalog, 'abe');
-    expect(prototype.site.configuration.pages.find(row => row.key === 'resume')?.fields.find(field => field.key === 'resume-email')?.definition.label).toBe(email.definition.label);
-    expect(fields.find(row => row.key === 'resume-email')?.field.label).toBe(email.definition.label);
+    const prototype = resolvePrototypeLibrary(prototypeCatalogData(catalog), 'asce', catalog.revision);
+    const fields = fieldCatalogRows(catalog, 'asce');
+    expect(prototype.site.configuration.pages.find(row => row.key === 'resume')?.fields.find(field => field.key === 'resume-email')?.definition.label).toBe((freshStartSource().fields.fieldDetails as { fields: { id: string; label: string }[] }).fields.find(row => row.id === 'resume-email')!.label);
+    expect(fields.find(row => row.key === 'resume-email')?.field.label).toBe(prototype.site.configuration.pages.find(row => row.key === 'resume')?.fields.find(field => field.key === 'resume-email')?.definition.label);
     expect((await adapter.get('fields', email.id))?.definition.label).toBe(email.definition.label);
     const revision = await createPortalDataRepository(adapter).open(['fields']);
     expect(revision.get('fields', email.id)?.definition.label).toBe(email.definition.label);
@@ -95,8 +96,8 @@ describe('shared JSON catalog', () => {
 
   it('uses the static catalog in the deployed Library without a mock API or database', async () => {
     const network = vi.spyOn(globalThis, 'fetch').mockResolvedValue(Response.json(saved()));
-    const catalog = await readLibraryCatalog('abe');
-    expect(catalog.data.pages.some(page => page.key === 'health-ci')).toBe(true);
+    const catalog = await readLibraryCatalog('asce');
+    expect(catalog.data.pages.some(page => page.key === 'health-tele')).toBe(true);
     expect(catalog.revision).toMatch(/^local:v1:sha256:/);
     expect(network).toHaveBeenCalledTimes(1);
     expect(network.mock.calls[0][0]).toBe('/catalog/portal.json');

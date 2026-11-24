@@ -1,0 +1,23 @@
+{
+  "page": "membership",
+  "content": {
+    "membership.page-note": "Note: Receipt of Accelerated Death Benefits may affect eligibility for Public Assistance Programs and may be taxable\nNOTICE FOR NEW YORK RESIDENTS, THE POLICY CONTAINS A WAR RESTRICTION"
+  },
+  "hide": [
+    "title"
+  ],
+  "include": [
+    "waepa-attestation",
+    "waepa-employer",
+    "waepa-start-date",
+    "waepa-retired-employer",
+    "waepa-retirement-date",
+    "waepa-member-first-name",
+    "waepa-member-last-name",
+    "waepa-member-id",
+    "active-military",
+    "waepa-member-middle-initial",
+    "membership-referral-source",
+    "waepa-declaration"
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "rules": [
+    {
+      "id": "applicant-section-headings",
+      "name": "Show applicant headings consistently across the application",
+      "status": "confirmed",
+      "statement": "Hide the Member/Self heading for a member-only application. Show it on existing member/owner sections when an active spouse or child election, including an elected attached dependent benefit, participates anywhere in the application. Spouse and child headings identify their own applicable sections even in dependent-only applications. Heading context never creates a section or an independent application for an attached benefit. Coverage initial questions use supported Eligibility intent before product election; product-selection controls identify each available person. Cart, preview and Receipt use active elections across products, not a separate member-only decision per product. Omit empty sections. Labels use global content with effective-Site overrides. Eligibility is the exception: never show the member/Self heading there, even when dependents are selected; show only the applicable dependent section headings. Later pages retain all applicable applicant headings under the shared active-dependent rule. All applicant role labels, including coverage headings, health accessibility labels, portfolio and application document summaries, resolve through the same global applicant-label definitions and supported effective-Site values. Do not author separate member/spouse/child copies by page. The singular child record-item label is a distinct shared use from the child-group label.",
+      "source": "User shared form review November 13, 2026; src/utils/applicantVisibility.ts; User correction November 14, 2026",
+      "replaces": [
+        "rule-applicant-display-member-section-title-hidden-for-member-only-flow"
+      ]
+    },
+    {
+      "id": "applicant-active-participation",
+      "name": "Resolve active applicants from current selected coverage",
+      "status": "confirmed",
+      "statement": "After Coverage, a person participates only through a currently selected offered product and its current applicant election, or a reconciled attached dependent benefit where that surface supports it. Dependent types must remain selected on Eligibility and available under the effective Site/URL scope. Removed-product maps, deselected people, hidden saved answers and excluded products do not activate sections, validation or summaries. Page/product/category/underwriting conditions further narrow participation. Spouse and child do not gain generic sections on every page. Children use configured Eligibility collection/notice, supported coverage controls, cart, preview and Receipt; adult-only Profile, Contact, health and acknowledgement controls remain adult-only.",
+      "source": "User shared form review November 13, 2026; src/domain/applicantParticipation.ts; src/config/flowGates.ts",
+      "replaces": [
+        "rule-applicant-display-dependent-section-shown-only-when-applying",
+        "rule-applicant-display-eligibility-selection-alone-is-not-enough-after-coverage"
+      ]
+    },
+    {
+      "id": "applicant-owner-requirements",
+      "name": "Keep member ownership separate from requested coverage",
+      "status": "confirmed",
+      "statement": "The member remains the application owner on dependent-only applications. Preserve member Contact address/correspondence, member employer information when any applicable member/spouse DI or OO selection requires it, and member Review acknowledgement. Other member applicant sections require their own active coverage. Before product selection the member is the default owner; explicit empty or dependent-only product elections must not create member coverage. A missing initial per-product map retains established supported member/dependent defaults. Store stable answer keys and separate people records; derive participation rather than persisting a second editable person-selection model.",
+      "source": "Confirmed Contact/Review decisions and shared form review November 13, 2026",
+      "replaces": [
+        "rule-applicant-display-member-only-fallback"
+      ]
+    },
+    {
+      "id": "applicant-availability-url",
+      "name": "Apply the applicant URL restriction to the effective offering",
+      "status": "confirmed",
+      "statement": "Coverage Information shows configured offering amounts for each supported person independently of Eligibility choices or requested coverage. applicant=member limits availability to member; applicant=member,spouse permits member and spouse. Intersect the URL with effective Site covered people and each product/rider assignment; never enable an unsupported person. Use the same restriction for Eligibility options, product controls, questions and requested-coverage projections. Retain allowed amount rows, omit excluded people/attached benefits and products with no allowed applicants. General amount ranges remain offering information; personal age, residency, income and verified-existing-coverage limits are evaluated during selection. The site-scoped entry restriction persists across routes and saved/resumed application entry context. A new category/product campaign without applicant clears an older restriction; an explicit unsupported value clears the URL restriction while retaining Site/product limits.",
+      "source": "User clarification November 13, 2026; global products.json applicant URL contract; src/config/client/coverageApplicantScope.ts"
+    }
+  ]
+}

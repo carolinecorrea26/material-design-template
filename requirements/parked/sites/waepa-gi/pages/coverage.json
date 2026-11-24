@@ -1,0 +1,6 @@
+{
+  "page": "coverage",
+  "configurations": {
+    "coverage-increase-note": "applyForTotal"
+  }
+}

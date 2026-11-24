@@ -1,3 +1,5 @@
+import { existsSync } from "node:fs";
+import { withSnapshotSiteResolution } from "./snapshotSiteResolution";
 import { reviewAttestationSourceLeaves } from "./requirementCrosswalkAttestationReview";
 import { reviewNamedOwnerRequirements } from "./requirementCrosswalkOwnerReview";
 import { reviewNavigationRequirements } from "./requirementCrosswalkNavigationReview";
@@ -142,6 +144,9 @@ function unknownScope(basis: string): Scope {
 }
 
 export function buildRequirementCrosswalk(db: DatabaseSchema) {
+  return withSnapshotSiteResolution(() => buildCapturedRequirementCrosswalk(db));
+}
+function buildCapturedRequirementCrosswalk(db: DatabaseSchema) {
   const currentEvidence = currentMcrReviewData(db);
   db = currentEvidence.data;
   const librarySiteKeys = db.sites.filter(site => site.status === "active" && !site.deletedAt).map(site => site.key);
@@ -516,6 +521,12 @@ export function buildRequirementCrosswalk(db: DatabaseSchema) {
   reviewAdoptedSourceAliases(db, rows);
   reviewAmaProductOrderSource(rows);
   reviewAttestationSourceLeaves(rows);
+  // A recorded approval cannot survive a missing native owner. Archived reports
+  // retain their receipt, while the regenerated report requires reverification.
+  for (const row of rows) if (row.verificationStatus === "recorded-evidence" && ([...row.executionOwners, ...row.ownerCandidates].some(owner => !exists(owner)) || [...row.implementationReferences, ...row.verificationReferences].some(path => !existsSync(path)))) {
+    row.verificationStatus = "not-verified";
+    row.finding = "A recorded owner is no longer available. Reverify against the current authoritative definition.";
+  }
   const reviewedRowsById = new Map(rows.map(row => [row.id, row]));
   for (const entry of sourceLedger) if (entry.clauseIds.length && entry.clauseIds.every(id => {
     const row = reviewedRowsById.get(id)!;

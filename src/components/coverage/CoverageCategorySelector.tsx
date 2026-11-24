@@ -4,6 +4,7 @@ import { FieldGroup } from "../layout/SectionDivider";
 import type { CoverageCategory, CoverageCategoryId } from "../../config/coverageCategories";
 
 type CoverageCategorySelectorProps = {
+  field?: import("../../domain/fields").FieldDefinition;
   categories: readonly CoverageCategory[];
   selectedIds: readonly CoverageCategoryId[];
   onToggle: (id: CoverageCategoryId) => void;
@@ -14,6 +15,7 @@ type CoverageCategorySelectorProps = {
 
 /** Coverage category selection using the standard checkbox-group field. */
 export default function CoverageCategorySelector({
+  field,
   categories,
   selectedIds,
   onToggle,
@@ -21,7 +23,7 @@ export default function CoverageCategorySelector({
   error = false,
   errorMessage,
 }: CoverageCategorySelectorProps) {
-  const definition = requirementCoverageControl("coverage-categories");
+  const definition = field ?? requirementCoverageControl("coverage-categories");
   return (
     <FieldGroup className="FieldGroup-root">
     <ControlledFieldRenderer

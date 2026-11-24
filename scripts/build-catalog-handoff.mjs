@@ -1,11 +1,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import ts from 'typescript';
-import { catalogPartPath, readCatalogParts } from './catalog-parts.mjs';
+import { catalogPartPath, activeCatalog } from './catalog-parts.mjs';
 
 // Documentation exports only: these files are not runtime catalog tables.
 const output = 'docs/handoff';
-const catalog = readCatalogParts();
+const catalog = activeCatalog();
 const config = ts.readConfigFile('tsconfig.app.json', ts.sys.readFile);
 if (config.error) throw new Error(ts.flattenDiagnosticMessageText(config.error.messageText, '\n'));
 const parsed = ts.parseJsonConfigFileContent(config.config, ts.sys, '.');
@@ -76,10 +76,10 @@ const maps = ['membership', 'eligibility', 'coverage'].map(pageKey => {
   const fieldKeys = new Set([...placements, ...sectionFields, ...overrides].map(row => row.fieldKey));
   const components = d.components.filter(row => row.definition.usages?.some(usage => usage.pageKey === pageKey) || row.definition.examples?.some(example => example.pageKey === pageKey));
   const steps = d.flowSteps.filter(row => row.definition.pageId === pageKey);
-  const refs = (table, rows) => ({ table, file: `public/catalog/${catalogPartPath(table)}`, keys: rows.map(row => row.key ?? row.id) });
+  const refs = (table, rows) => ({ table, file: "public/catalog/portal.json", path: ["data", table], keys: rows.map(row => row.key ?? row.id) });
   return {
     pageKey,
-    boundary: 'Direct saved relationships and recorded component usages/examples only. Not an exhaustive policy dependency graph or a resolved Site. Use the companion page guide and effective resolvers for conditional policies.',
+    boundary: 'Direct fresh-start projection relationships and recorded component usages/examples only. Not an exhaustive policy dependency graph or a resolved Site. Use the companion page guide and effective resolvers for conditional policies.',
     references: [
       refs('pages', d.pages.filter(row => row.key === pageKey)), refs('sitePages', d.sitePages.filter(row => row.pageKey === pageKey)),
       refs('pageSections', sections), refs('pageFields', placements), refs('pageSectionFields', sectionFields),

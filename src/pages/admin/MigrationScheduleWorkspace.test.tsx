@@ -1,9 +1,11 @@
 import { act, createElement, type ComponentType } from "react";
 import { createRoot, type Root } from "react-dom/client";
-import { afterEach, beforeEach, expect, it } from "vitest";
+import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import MigrationScheduleWorkspace from "./MigrationScheduleWorkspace";
 import { persistence } from "../../persistence/client";
 import { createSeedDatabase } from "../../persistence/seed";
+
+vi.mock("../../repositories/foundations", () => ({ foundationRepositories: { clients: { list: async () => createSeedDatabase().clients } } }));
 
 let root: Root;
 let container: HTMLDivElement;

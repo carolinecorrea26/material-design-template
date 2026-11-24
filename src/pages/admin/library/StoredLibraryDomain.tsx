@@ -1,3 +1,5 @@
+import ContentLibrary from './ContentLibrary';
+import { fieldRequirednessLabel, type FieldDefinition } from '../../../domain/fields';
 import { libraryRecordColumns, readableValue } from "./libraryRecordColumns";
 import { useSearchParams } from "react-router-dom";
 import { Link, MenuItem, Stack, Tab, Tabs, TextField, Typography } from "@mui/material";
@@ -22,6 +24,10 @@ const destinations: Record<string, [string, SnapshotTable]> = {
   pageKey: ["pages", "pages"], fieldKey: ["fields", "fields"], sectionKey: ["pages", "pageSections"], productKey: ["coverage", "products"], riderKey: ["coverage", "riders"], amountPatternKey: ["coverage", "coverageAmountPatterns"], configurationKey: ["configurations", "configurationDefinitions"], contentKey: ["content", "contentEntries"], ruleKey: ["rules", "rules"], conditionKey: ["rules", "conditions"], flowKey: ["flows", "flows"], questionSetKey: ["rules", "questionSets"], patternKey: ["patterns", "patterns"], flagDefinitionKey: ["flags", "flagDefinitions"], emailTemplateKey: ["communications", "emailTemplates"], documentKey: ["content", "documentDefinitions"],
 };
 export default function StoredLibraryDomain({ domain, siteKey }: { domain: string; siteKey: string }) {
+  if (domain === "content") return <ContentLibrary siteKey={siteKey} />;
+  return <StoredDatasetDomain domain={domain} siteKey={siteKey} />;
+}
+function StoredDatasetDomain({ domain, siteKey }: { domain: string; siteKey: string }) {
   const catalog = useLibraryCatalog();
   const [search, setSearch] = useSearchParams();
   const datasets = storedDomains[domain];
@@ -51,7 +57,7 @@ export default function StoredLibraryDomain({ domain, siteKey }: { domain: strin
       return `${storedSectionLabel(catalog, field)}${placement?.collection ? ` · ${placement.collection}[].${String(row.key).replace(/^child-/, "").replace(/-([a-z])/g, (_, letter: string) => letter.toUpperCase())}` : ""}`;
     }, filter: true, filterValues: row => [storedSectionLabel(catalog, row as StoredFieldRow)] });
     columns.push({ id: "visibility", label: "When shown", width: 280, value: row => storedFieldVisibility(catalog, row as StoredFieldRow, fields) });
-    columns.push({ id: "input", label: "Input", value: row => text((row.definition as Record<string, unknown>).inputType), filter: true, tag: true }, { id: "required", label: "Required", width: 100, value: row => text(!!(row.definition as Record<string, unknown>).required), filter: true, tag: true });
+    columns.push({ id: "input", label: "Input", value: row => text((row.definition as Record<string, unknown>).inputType), filter: true, tag: true }, { id: "required", label: "Required", width: 100, value: row => fieldRequirednessLabel(row.definition as FieldDefinition), filter: true, tag: true });
   } else {
     if (rows.some(row => row.scope !== undefined || row.siteKey !== undefined)) columns.push({ id: "scope", label: "Scope", width: 180, value: row => text(row.siteKey ?? row.clientKey ?? row.scope ?? "Global"), filter: true, tag: true });
     const classification = (row: StoredRow) => row.status ?? row.kind ?? row.categoryKey ?? (row.definition as Record<string, unknown>)?.type ?? (row.definition as Record<string, unknown>)?.area;

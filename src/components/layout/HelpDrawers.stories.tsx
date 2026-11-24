@@ -2,8 +2,6 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 import AppMenu from './AppMenu';
 import { getActiveClient } from '../../config/client/getActiveClient';
-import HealthInformationHelp from '../health/HealthInformationHelp';
-import RecoveryAlert from '../feedback/RecoveryAlert';
 import HowApplyingWorksPanel from '../home/HowApplyingWorksPanel';
 import { openOverlay } from '../../../.storybook/previewInteractions';
 import { getContent } from '../../content';
@@ -20,6 +18,4 @@ export const HowApplyingWorks: StoryObj = { render: () => <MenuExample />, play:
 export const AboutCoverage: StoryObj = { render: () => <MenuExample />, play: openOverlay(/about.*coverage|coverage options/i) };
 export const CoverageNeeds: StoryObj = { render: () => <MenuExample />, play: openOverlay('Needs Calculator') };
 export const AboutQuickDecision: StoryObj = { render: () => <MenuExample />, play: openOverlay(/about.*quickdecision/i) };
-export const HealthInformation: StoryObj = { render: () => <HealthInformationHelp />, play: openOverlay(/how is my health information used/i) };
 export const ApplicationReview: StoryObj = { render: () => <HowApplyingWorksPanel variant="drawer" />, play: async context => openOverlay(getContent().home.reviewProcessLinkLabel)(context) };
-export const RecoverySupport: StoryObj = { render: () => <RecoveryAlert incident={{ code: 'SAVE_FAILED', operation: 'save', outcome: 'failed', reference: 'REQ-EXAMPLE' }} />, play: openOverlay(/get help/i) };

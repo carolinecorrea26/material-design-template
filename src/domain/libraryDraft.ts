@@ -13,6 +13,22 @@ import type { FieldDefinition } from "./fields";
 import type { Json } from "../persistence/types";
 import { validateSnapshotData } from "../persistence/snapshot";
 import { libraryMetadata } from "./provenance";
+import globalPages from '../../requirements/parked/pages.json';
+
+/** Declared permissions, shared by the editor and its mutation boundary. */
+export function sitePageRequirementOptions(key: string): string[] {
+  const settings = globalPages.pages[key as keyof typeof globalPages.pages];
+  return settings && 'siteRequirementOptions' in settings ? settings.siteRequirementOptions : [];
+}
+
+export function editDraftPageRequirement(draft: LibraryDraft, key: string, requirement: 'required' | 'optional' | 'none') {
+  if (!sitePageRequirementOptions(key).includes(requirement)) throw new Error(`Page participation is global: ${key}`);
+  return edit(draft, db => {
+    const row = db.sitePages.find(row => row.siteKey === draft.siteKey && row.pageKey === key);
+    if (!row) throw new Error('Unknown Site page');
+    row.requirement = requirement;
+  });
+}
 
 export type LibraryDraft = { mockTransport?: { id: string; version: number; baseReleaseId: string | null }; formatVersion: 1; siteKey: string; baseRevision: string; editVersion: number; data: EffectiveSiteData };
 export function createLibraryDraft(revision: PortalRevision, siteKey: string): LibraryDraft {
@@ -148,12 +164,9 @@ export function editDraftLibraryValue(draft: LibraryDraft, table: 'configuration
 }
 
 export function editDraftParticipation(draft: LibraryDraft, kind: 'page' | 'product' | 'feature', key: string, included: boolean) {
+  if (kind === 'page') return editDraftPageRequirement(draft, key, included ? 'required' : 'none');
   return edit(draft, db => {
-    if (kind === 'page') {
-      const row = db.sitePages.find(r => r.siteKey === draft.siteKey && r.pageKey === key);
-      if (!row) throw new Error('Unknown Site page');
-      row.requirement = included ? 'required' : 'none';
-    } else if (kind === 'feature') {
+    if (kind === 'feature') {
       const row = db.siteFeatures.find(r => r.siteKey === draft.siteKey && r.featureKey === key);
       if (!row) throw new Error('Unknown Site feature');
       row.enabled = included;

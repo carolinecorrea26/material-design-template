@@ -1,0 +1,16 @@
+{
+  "page.profile.title": "About you",
+  "page.profile.subhead": "Share the personal and financial details needed to complete your application.",
+  "page.profile.nav-title": "Profile",
+  "profile.section.personal": "Personal information",
+  "profile.section.other-coverage": "Other coverage",
+  "profile.section.financial-questionnaire": "Financial questionnaire",
+  "profile.other-coverage-note": "Please indicate if you currently hold an active insurance policy with any carrier, including through your employer. Other insurance you have today can impact the amount of coverage you may be approved for.",
+  "physician.title": "Physician information",
+  "profile.disability.company": "Company",
+  "profile.disability.member-modal": "Member disability insurance details modal",
+  "profile.disability.spouse-modal": "Spouse disability insurance details modal",
+  "profile.financial.net-earned-income": "Net earned income, before personal income tax",
+  "profile.financial.total-earned-income": "Total annual earned income",
+  "profile.disability.required": "Add at least one existing disability insurance carrier for {applicant}."
+}

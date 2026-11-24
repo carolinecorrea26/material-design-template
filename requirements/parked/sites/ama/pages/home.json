@@ -1,0 +1,9 @@
+{
+  "page": "home",
+  "configurations": {
+    "form-template": "multi"
+  },
+  "content": {
+    "home.hero.description": "Coverage designed exclusively for American Medical Association members. Get started today!"
+  }
+}

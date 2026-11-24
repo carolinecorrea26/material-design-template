@@ -7,9 +7,11 @@ import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
 import ManageAccountsRoundedIcon from "@mui/icons-material/ManageAccountsRounded";
 import BusinessRoundedIcon from "@mui/icons-material/BusinessRounded";
 import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
+import PersonSearchRoundedIcon from "@mui/icons-material/PersonSearchRounded";
 import SupportAgentRoundedIcon from "@mui/icons-material/SupportAgentRounded";
 import LibraryBooksRoundedIcon from "@mui/icons-material/LibraryBooksRounded";
 import AutoStoriesRoundedIcon from "@mui/icons-material/AutoStoriesRounded";
+import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
 import ConstructionRoundedIcon from "@mui/icons-material/ConstructionRounded";
 import RocketLaunchRoundedIcon from "@mui/icons-material/RocketLaunchRounded";
 import ChangeCircleRoundedIcon from "@mui/icons-material/ChangeCircleRounded";
@@ -29,10 +31,12 @@ export const adminNavigation: AdminNavigationGroup[] = [
     { label: "Account Management", path: "/admin-center/administration", icon: ManageAccountsRoundedIcon, masterAdminOnly: true },
     { label: "TPA Admin", path: "/admin-center/tpa-admin", icon: BusinessRoundedIcon },
     { label: "Customer Admin", path: "/admin-center/customer-admin", icon: GroupsRoundedIcon },
+    { label: "Applicant Admin", path: "/admin-center/applicant-admin", icon: PersonSearchRoundedIcon },
     { label: "Advisor Admin", path: "/admin-center/advisor-admin", icon: SupportAgentRoundedIcon },
   ] },
   { label: "SYSTEM", items: [
     { label: "Portal Library", path: "/admin-center/library", icon: LibraryBooksRoundedIcon },
+    { label: "Tutorials", path: "/admin-center/tutorials", icon: SchoolRoundedIcon },
     { label: "Storybook", path: getStorybookUrl(), icon: AutoStoriesRoundedIcon, external: true },
     { label: "Site Builder", path: "/admin-center/site-builder", icon: ConstructionRoundedIcon },
   ] },
@@ -49,5 +53,5 @@ export const adminNavigation: AdminNavigationGroup[] = [
   ] },
 ];
 export const visibleAdminNavigation = () => adminNavigation
-  .map(group => ({ ...group, items: group.items.filter(item => item.label === "Portal Library" || item.label === "Storybook") }))
+  .map(group => ({ ...group, items: group.items.filter(item => item.label === "Portal Library" || item.label === "Storybook" || item.label === "Tutorials" || item.label === "Applicant Admin") }))
   .filter(group => group.items.length > 0);

@@ -9,6 +9,8 @@ export function activeFieldDefinitions() { return installedFieldDefinitions; }
 export type FieldOption = {
   value: string;
   label: string;
+  /** Semantic result of a configured choice, independent of its saved value. */
+  outcome?: string;
 };
 
 export type FieldInputType =
@@ -187,6 +189,7 @@ export type FieldId =
   | "advisor-phone"
   | "advisor-code"
   | "applicant-email"
+  | "resume-phone"
   | "resume-email"
   | "resume-delivery-method"
   | "resume-security-code"
@@ -215,6 +218,12 @@ export type FieldId =
 
 export type FieldDefinition = {
   id: string;
+  /** Selected configuration of this shared field, when it has variants. */
+  configuration?: string;
+  /** Supported shared variants, projected from the field's authored configurations. */
+  configurations?: Record<string, { inputType: FieldInputType; label: string; placeholder?: string; labelVariant?: 'floating' | 'standard'; options?: FieldOption[]; optionSource?: string; optionOutcome?: string }>;
+  optionSource?: string;
+  optionOutcome?: string;
   /** Stable catalog name, separate from applicant-facing input copy. */
   displayName?: string;
   defaultValue?: string | boolean | string[];
@@ -225,6 +234,13 @@ export type FieldDefinition = {
   /** Optional authored limit, measured in unformatted characters. */
   maxLength?: number;
   minLength?: number;
+  minimum?: number;
+  maximum?: number;
+  underwritingVariants?: Partial<Record<'default' | 'QD', { label?: string; hidden?: boolean }>>;
+  coverageCategories?: string[];
+  /** Optional only when every active election for this person is listed. */
+  optionalForProducts?: string[];
+  helperTextWhen?: { values: string[]; text: string; marker?: string };
   /** Permit fractional numeric facts, such as years of employment. */
   allowDecimal?: boolean;
   placeholder?: string;
@@ -233,7 +249,7 @@ export type FieldDefinition = {
   optionExclusions?: Array<{ conditionId: ConditionId; values: string[] }>;
   autoComplete?: string;
   inputMode?: "text" | "email" | "tel" | "numeric" | "decimal";
-  format?: "email" | "phone" | "ssn" | "currency" | "percent" | "month-year" | "digits" | "postal-code";
+  format?: "email" | "phone" | "ssn" | "currency" | "percent" | "month-year" | "digits" | "postal-code" | "alphanumeric";
   labelVariant?: "floating" | "standard";
   multiline?: boolean;
   minRows?: number;
@@ -244,6 +260,13 @@ export type FieldDefinition = {
   showPhoneTypeSelector?: boolean;
   /** Canonical executable visibility source for any configurable field. */
   visibilityConditionId?: ConditionId;
+  /** Same-page questions that must remain visible before this follow-up can participate. */
+  visibilityDependencies?: string[];
 };
 
 export type Field = { id: FieldId };
+
+/** Library shows product-dependent requiredness without pretending an election is active. */
+export function fieldRequirednessLabel(field: Pick<FieldDefinition, 'required' | 'optionalForProducts'>): string {
+  return field.required && field.optionalForProducts?.length ? 'By product' : field.required ? 'Yes' : 'No';
+}

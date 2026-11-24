@@ -1,7 +1,10 @@
+import { clearReceiptConfirmation } from '../domain/receiptConfirmation';
+import { activeCoverageApplicantRestriction } from '../config/client/coverageApplicantScope';
+import { activeFirstCoverageCategory } from "../config/client/coverageProductScope";
 import { requirementAnswerKey } from "../domain/requirementFields";
 import { FieldDefinitionsContext } from "../components/forms/FieldDefinitionsContext";
 import { getPrototypeLibrary } from "../domain/prototypeLibrary";
-import { activeCoverageCategoryRestriction } from "../config/client/coverageCategoryScope";
+import { activeCoverageCategoryRestriction, coverageCategoryParameter } from "../config/client/coverageCategoryScope";
 import { captureCoverageAmountParameters, activeFeaturedProduct, activeCoverageProductRestriction, withCapturedCoverageEntryScope, restoreCoverageEntryScope } from "../config/client/coverageProductScope";
 import {
   createContext,
@@ -18,7 +21,7 @@ import type { PageId } from "../types";
 import type { AssociationId } from "../data/model";
 import { resolveSiteId } from "../data/activeSite";
 import { resolveActiveAssociationFromApplication } from "../data/activeAssociation";
-import { createApplicantSaveClient, forgetSavedApplication, readSavedApplication, rememberSavedApplication, type ApplicationSavePage, type RecoveredApplication, type SavedApplication } from '../services/applicantSaveService';
+import { createApplicantSaveClient, forgetAdvisorRecoveryLookup, forgetResumeSession, forgetSavedApplication, readSavedApplication, rememberSavedApplication, type ApplicationSavePage, type RecoveredApplication, type SavedApplication } from '../services/applicantSaveService';
 import { Alert } from '@mui/material';
 import { resetApplicationTimeout } from './applicationTimeout';
 
@@ -28,7 +31,7 @@ export type ApplicationFormValues = Record<
   string,
   | string
   | boolean
-  | string[]
+  | unknown[]
   | number
   | Record<string, number>
   | Record<string, boolean>
@@ -45,6 +48,7 @@ type ApplicationFormContextValue = {
   saveApplication?: (values: ApplicationFormValues, submittedPage?: ApplicationSavePage) => Promise<SavedApplication | null>;
   restoreApplication?: (application: RecoveredApplication) => void;
   requiresRevalidation?: boolean;
+  savedApplicationExpiresAt?: number;
 };
 
 export const STORAGE_KEY = "applicationFormValues";
@@ -96,12 +100,14 @@ function loadStoredValues(): ApplicationFormValues {
   }
 
   const entryParams = new URLSearchParams(window.location.search), siteKey = resolveSiteId();
-  if (entryParams.has("category") || entryParams.has("prods")) {
-    activeFeaturedProduct(siteKey); activeCoverageCategoryRestriction(siteKey); activeCoverageProductRestriction(siteKey);
+  if (coverageCategoryParameter(entryParams) !== null || entryParams.has("prods")) {
+    activeFeaturedProduct(siteKey); activeFirstCoverageCategory(siteKey); activeCoverageCategoryRestriction(siteKey); activeCoverageProductRestriction(siteKey);
   } else {
     restoreCoverageEntryScope(siteKey, parsedValues.coverageEntryScope);
     if (entryParams.has("featured_prod")) activeFeaturedProduct(siteKey);
+    if (entryParams.has("firstCategory")) activeFirstCoverageCategory(siteKey);
   }
+  activeCoverageApplicantRestriction(siteKey);
   captureCoverageAmountParameters(siteKey);
   parsedValues = withCapturedCoverageEntryScope(siteKey, normalizeChildValues(parsedValues));
 
@@ -177,6 +183,9 @@ export function ApplicationFormProvider({
     );
     window.sessionStorage.removeItem(applicationStorageKey(siteKey));
     forgetSavedApplication(siteKey);
+    forgetResumeSession(siteKey);
+    forgetAdvisorRecoveryLookup(siteKey);
+    clearReceiptConfirmation(siteKey);
     setSavedApplication(null);
     setSaveError('');
   }, [siteKey, saveClient]);
@@ -189,6 +198,7 @@ export function ApplicationFormProvider({
       activeAssociationId,
       setActiveAssociationId,
       requiresRevalidation: savedApplication?.requiresRevalidation ?? false,
+      savedApplicationExpiresAt: savedApplication?.expiresAt,
       saveApplication: async (nextValues, submittedPage) => {
         try {
           const saved = await saveClient.save(nextValues, submittedPage);
@@ -211,7 +221,7 @@ export function ApplicationFormProvider({
         setValues(restored);
         setActiveAssociationId(resolveActiveAssociationFromApplication(siteKey, restored).association?.id ?? null);
         setSaveError('');
-      },
+          },
     }),
     [activeAssociationId, values, savedApplication, saveClient, siteKey, resetValues, setPageValues],
   );

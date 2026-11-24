@@ -1285,34 +1285,6 @@
       "sourceReference": "prototype:supportProfiles/client:abe"
     },
     {
-      "id": "client:ama",
-      "key": "client:ama",
-      "definition": {
-        "phone": "8004585736",
-        "phoneDisplay": "800-458-5736",
-        "phoneHours": "M-F 8:00am-5:00pm CT",
-        "email": "wecare@amainsure.com",
-        "website": "https://www.amainsure.com",
-        "address": {
-          "street": "330 North Wabash Avenue Suite 39300",
-          "city": "Chicago",
-          "state": "Illinois",
-          "zip": "60611-5885"
-        },
-        "helpPhone": {
-          "phone": "8886275902",
-          "phoneDisplay": "888-627-5902"
-        }
-      },
-      "position": 0,
-      "scope": "client",
-      "clientKey": "ama",
-      "siteKey": null,
-      "sourceReference": "Associations!D15; New UX Multi-page Requirements!AX43; New UX Multi-page Requirements!BA43",
-      "providedBy": null,
-      "displayId": 239927302896332
-    },
-    {
       "id": "client:avma",
       "key": "client:avma",
       "definition": {
@@ -1418,30 +1390,6 @@
       "sourceReference": "Associations!D387",
       "providedBy": null,
       "displayId": 49084025359900
-    },
-    {
-      "id": "client:waepa",
-      "key": "client:waepa",
-      "definition": {
-        "phone": "8003683484",
-        "phoneDisplay": "800-368-3484",
-        "phoneHours": "M-Th 8:30am - 6:30pm, F 8:30am - 5:00pm, ET",
-        "email": "info@waepa.org",
-        "website": "waepa.org",
-        "address": {
-          "street": "433 Park Ave",
-          "city": "Falls Church",
-          "state": "Virginia",
-          "zip": "22046"
-        }
-      },
-      "position": 0,
-      "scope": "client",
-      "clientKey": "waepa",
-      "siteKey": null,
-      "sourceReference": "Associations!D346",
-      "providedBy": null,
-      "displayId": 94638009484413
     }
   ]
 }

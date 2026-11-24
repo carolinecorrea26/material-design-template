@@ -1,0 +1,58 @@
+{
+  "rules": [
+    {
+      "id": "docusign-shared-handoff",
+      "name": "Use the external signing step",
+      "status": "confirmed",
+      "statement": "Route the application to the configured electronic-signing provider after the preceding applicable steps have been validated and saved. Prevent repeated advancement while a transition is pending. Successful signing completion follows the shared submission workflow; technical/session failures follow the shared recovery rules.",
+      "source": "requirements/parked/docusign.json; requirements/global/prototype-fixtures/handoffs.json; requirements/parked/sites/asce/prototype-handoffs.json; src/components/feedback/PrototypeHandoffPage.tsx"
+    },
+    {
+      "id": "docusign-shared-document-content",
+      "name": "Carry the reviewed legal rules into signing documents",
+      "status": "confirmed",
+      "statement": "Signing documents use the same effective application answers, active product/applicant participation and Review legal-policy definitions; do not author a second DocuSign copy of state/product notices. Preserve the shared state/product-based underwriting flag and its reviewed consent/authorization precedence. Place the applicable Connecticut underwritten warning immediately above the member e-signature; preserve the applicable supplemental-health 14pt signature-area attestation and other configured signature/document placements. Review acknowledgements remain separate from electronic signatures.",
+      "uses": [
+        "review-shared-policy",
+        "review-jurisdiction-and-consent",
+        "review-legal-presentation",
+        "applicant-active-participation"
+      ],
+      "source": "MCR v78 Read & Sign!B115:B119 and configured legal placements; user Review decisions November 13, 2026; requirements/global/rules/review.json"
+    },
+    {
+      "id": "signing-evidence-integrity",
+      "name": "Require verified signing evidence",
+      "status": "confirmed",
+      "statement": "Keep application answers and saved progress separate from electronic-signing evidence. Review acknowledgements, a page save, a visited URL and an application reference never establish signing completion. Only verified provider completion can establish the required signatures and release the application for submission. Signing evidence and generated documents remain associated with the submitted application.",
+      "source": "User DocuSign copy decision November 15, 2026; src/pages/DocuSign.tsx; src/components/feedback/PrototypeHandoffPage.tsx; src/app/RoutePage.tsx; src/app/ApplicationFormContext.tsx",
+      "replaces": [
+        "docusign-prototype-storage"
+      ]
+    },
+    {
+      "id": "docusign-required-signers",
+      "name": "Require the owner and actively applying spouse to sign",
+      "status": "confirmed",
+      "statement": "The global signing requirement is that the member/application owner always signs, including spouse-only and child-only applications. An actively applying spouse also signs for spouse coverage. There is no separate child signature. Resolve spouse participation from currently selected offered coverage and active applicant elections, including applicable attached spouse benefits; Eligibility intent alone, removed products and stale spouse answers do not create a signer. Review acknowledgements are separate answers and never substitute for electronic signatures. These are signing requirements.",
+      "uses": [
+        "applicant-active-participation",
+        "applicant-owner-requirements",
+        "review-adult-acknowledgements"
+      ],
+      "source": "User DocuSign decisions November 14, 2026; src/utils/applicantVisibility.ts; requirements/global/rules/applicants.json"
+    },
+    {
+      "id": "docusign-completion-submits",
+      "name": "Submit after all required signatures are complete",
+      "status": "confirmed",
+      "statement": "Successful completion of all required electronic signatures submits the application and proceeds to Receipt; do not add a separate portal Submit action. Partial, canceled, declined, expired or failed signing must not produce successful submission or Receipt. Establish completion through verified signing results. Technical/session failures follow the shared recovery model.",
+      "uses": [
+        "docusign-required-signers",
+        "signing-evidence-integrity",
+        "recovery-technical-failure"
+      ],
+      "source": "User DocuSign decision November 14, 2026; requirements/global/workflows/application.json#external-provider-handoff"
+    }
+  ]
+}

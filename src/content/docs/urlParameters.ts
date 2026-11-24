@@ -1,3 +1,8 @@
+import { requirementUrlContract, requirementUrlValues } from "../../domain/requirementUrlParameters";
+const applicantContract = requirementUrlContract("applicant");
+const flowContract = requirementUrlContract("flow");
+const preselectContract = requirementUrlContract("preselect");
+
 // ---------------------------------------------------------------------------
 // URL parameters data
 //
@@ -62,19 +67,13 @@ export const urlParameters: UrlParameterEntry[] = [
     notes: "Same format and behavior as current template.",
   },
   {
-    parameter: "applicant",
+    parameter: applicantContract.parameter,
     currentValues: ["member", "member,spouse"],
-    currentBehavior: [
-      "Site only allows for member to apply. Hides question \"This insurance is for\" on eligibility page.",
-    ],
+    currentBehavior: ["Restricts the people who can apply and the Eligibility dependent choices."],
     status: "Modified",
-    newValues: ["member", "member,spouse"],
-    newBehavior: [
-      "member: Only the member can apply. The Eligibility Page question “Would you like to add dependent coverage?” is hidden. Content that communicates dependent availability is also hidden, including the “Available for: You, Your Spouse, Your Child(ren)” sentence in the About Coverage component.",
-      "member,spouse: Only the member and/or spouse can apply. On the Eligibility Page, the “Child” option is hidden from the “Would you like to add dependent coverage?” question. Content that communicates child availability is also hidden, including the “Available for: You, Your Spouse, Your Child(ren)” sentence in the About Coverage component.",
-    ],
-    notes:
-      "Same parameter values as current template; behavior is updated for the new-template dependent coverage UI/content.",
+    newValues: requirementUrlValues("applicant"),
+    newBehavior: [applicantContract.behavior],
+    notes: "Global fresh-start contract; effective Site/product assignments remain authoritative.",
   },
   {
     parameter: "category",
@@ -87,18 +86,9 @@ export const urlParameters: UrlParameterEntry[] = [
       "Isolates AD&D coverage category to be only option shown throughout site (hides quote tool on landing page, smoker question on eligibility page, needs calculators on coverage page).",
     ],
     status: "Modified",
-    newValues: [
-      "li",
-      "di",
-      "oo",
-      "sh",
-      "ad",
-      "Comma-separated values supported, e.g. li,di",
-    ],
-    newBehavior: [
-      "Restricts the site to the listed coverage category or categories. Only the specified category/categories are displayed throughout the site and Quote Tool. Supports either a single category or multiple comma-separated categories. AD is supported as a separate coverage category.",
-    ],
-    notes: "Replaces the current categories parameter for multi-category use.",
+    newValues: requirementUrlValues("category"),
+    newBehavior: [requirementUrlContract("category").behavior],
+    notes: "categories is a supported alias; category takes precedence when both are supplied.",
   },
   {
     parameter: "categories",
@@ -107,18 +97,9 @@ export const urlParameters: UrlParameterEntry[] = [
       "Isolates 2 to 3 coverage categories to be only options shown throughout site. List categories in URL parameter with comma-separated list.",
     ],
     status: "Migrated",
-    newValues: [
-      "li",
-      "di",
-      "oo",
-      "sh",
-      "ad",
-      "Comma-separated values supported, e.g. li,di",
-    ],
-    newBehavior: [
-      "Has the same functionality as the category parameter in the new template. Restricts the site to the listed coverage category or categories, using comma-separated values for multiple categories.",
-    ],
-    notes: "Combined into the category parameter, which supports the same comma-separated multi-category behavior.",
+    newValues: requirementUrlValues("categories"),
+    newBehavior: [requirementUrlContract("categories").behavior],
+    notes: "Shares category parsing, campaign resets and canonical saved context.",
   },
   {
     parameter: "prods",
@@ -127,12 +108,10 @@ export const urlParameters: UrlParameterEntry[] = [
       "Isolates identified product(s) to be only options shown. List products (G-numbers) in parameter with comma-separated list. Note: Must be used with category or categories parameter.",
     ],
     status: "Migrated",
-    newValues: ["G-0000-0", "Multiple products: comma-separated G-numbers"],
-    newBehavior: [
-      "Restricts product display to the listed product(s) throughout the site on pages/components that display products, including the Landing Page, Coverage Page, and application menu.",
-    ],
+    newValues: requirementUrlValues("prods"),
+    newBehavior: [requirementUrlContract("prods").behavior],
     notes:
-      "Must be used with the category parameter. The categories parameter is not supported in the new template.",
+      "Requires category or its categories alias; intersects effective Site offerings.",
   },
   {
     parameter: "dprods",
@@ -141,11 +120,9 @@ export const urlParameters: UrlParameterEntry[] = [
       "Disables selected product(s) coverage amount dropdown; should be used in combination with prods and amt",
     ],
     status: "Migrated",
-    newValues: ["G-0000-0", "Multiple products: comma-separated G-numbers"],
-    newBehavior: [
-      "Disables the coverage amount dropdown for the listed product(s) on the Coverage Page.",
-    ],
-    notes: "Should be used in combination with prods and amt.",
+    newValues: requirementUrlValues("dprods"),
+    newBehavior: [requirementUrlContract("dprods").behavior],
+    notes: "A valid amt is required for URL-driven locking, independently for each applicant. Site/product lock configuration is separate.",
   },
   {
     parameter: "featured_prod",
@@ -155,25 +132,19 @@ export const urlParameters: UrlParameterEntry[] = [
       "The featured product section displays the coverage category section (which the featured product is in) at the top of the coverage page. The featured product is positioned first within the coverage category section.",
     ],
     status: "Modified",
-    newValues: ["G-0000-0"],
-    newBehavior: [
-      "Displays a “Featured” chip on the listed product on the Coverage Page. The featured product’s coverage category section is displayed first among the category sections, and the listed product is prioritized within that section.",
-    ],
+    newValues: requirementUrlValues("featured_prod"),
+    newBehavior: [requirementUrlContract("featured_prod").behavior],
     notes:
       "Same parameter format; featured presentation is updated for the new Coverage Page design.",
   },
   {
-    parameter: "preselect (TBD)",
+    parameter: preselectContract.parameter,
     currentValues: ["TRUE"],
-    currentBehavior: [
-      "All products / all applicants will have \"Coverage for my ___\" preselected on the coverage page. (HOLD - can discuss in future, but no known client request for this functionality. Use of Category and Prods could be useful solution.)",
-    ],
-    status: "TBD",
-    newValues: ["TBD"],
-    newBehavior: [
-      "TBD. Proposed behavior: the \"Add coverage\" checkbox would be preselected on the Coverage Page for all applicants/products.",
-    ],
-    notes: "Current template scope: all. Still TBD — no known client request for this functionality.",
+    currentBehavior: ["Preselect base products and applicants on Coverage."],
+    status: "Modified",
+    newValues: requirementUrlValues("preselect"),
+    newBehavior: [preselectContract.behavior],
+    notes: "Confirmed by the user. Normal validation and product dependency/amount limits still apply.",
   },
   {
     parameter: "qt",
@@ -203,13 +174,8 @@ export const urlParameters: UrlParameterEntry[] = [
       "Presets coverage page benefit amount dropdown to specified amount(s) for specified product(s). List product(s) (G-numbers) and amount(s) (no commas) in parameter with comma-separated list, as follows: G-number_amount",
     ],
     status: "Migrated",
-    newValues: [
-      "G-0000-0_2000000",
-      "Multiple product/amount pairs: comma-separated",
-    ],
-    newBehavior: [
-      "Sets the Coverage Page amount dropdown for the listed product(s) to the specified amount(s).",
-    ],
+    newValues: requirementUrlValues("amt"),
+    newBehavior: [requirementUrlContract("amt").behavior],
     notes: "Same product_amount format as current template.",
   },
   {
@@ -262,7 +228,7 @@ export const urlParameters: UrlParameterEntry[] = [
     notes: "Same format and behavior as current template.",
   },
   {
-    parameter: "ctg",
+    parameter: "firstCategory",
     currentValues: ["di", "oo", "sh"],
     currentBehavior: [
       "Displays disability coverage category section first on the coverage page",
@@ -270,15 +236,8 @@ export const urlParameters: UrlParameterEntry[] = [
       "Displays supplemental health coverage category section first on the coverage page",
     ],
     status: "Modified",
-    newValues: [
-      "firstCategory=ad",
-      "firstCategory=di",
-      "firstCategory=oo",
-      "firstCategory=sh",
-    ],
-    newBehavior: [
-      "The listed category is displayed first throughout the site wherever coverage categories are presented, including the Landing Page and Coverage Page.",
-    ],
+    newValues: requirementUrlValues("firstCategory"),
+    newBehavior: [requirementUrlContract("firstCategory").behavior],
     notes: "Parameter name changes from ctg to firstCategory. AD is supported.",
   },
   {
@@ -333,6 +292,13 @@ export type UrlParameterAdditionalEntry = {
 // parameters as production requirements.
 export const urlParametersAdditional: UrlParameterAdditionalEntry[] = [
   {
+    parameter: 'mfaSessionId', currentTemplate: 'Internal Resume continuation context.', status: 'New',
+    newValues: ['Opaque session identifier; not an authorization credential.'],
+    newBehavior: [requirementUrlContract('mfaSessionId').behavior],
+    notes: 'The MFA proof remains in the separate Site-scoped tab-local handle. No campaign configuration or Site visibility gate.',
+    sourceRefs: ['requirements/global/products.json', 'src/services/applicantSaveService.ts'],
+  },
+  {
     parameter: "variant",
     currentTemplate: "Not listed in current parameter inventory.",
     status: "New",
@@ -352,9 +318,7 @@ export const urlParametersAdditional: UrlParameterAdditionalEntry[] = [
     currentTemplate: "Not listed in current parameter inventory.",
     status: "New",
     newValues: ["advisor"],
-    newBehavior: [
-      "Identifies the advisor-applicant resume/review flow. When flow=advisor is present on the Resume flow, the applicant email-entry step is bypassed and the flow proceeds in advisor-applicant mode. The Review Page also uses this state to apply advisor-flow edit behavior.",
-    ],
+    newBehavior: [flowContract.behavior],
     notes:
       "Current source usage is specific to advisor-flow Resume, Resume Code, and Review behavior. This is distinct from form=advisor, which directs initial entry to the Advisor Login Page.",
     sourceRefs: [
@@ -371,7 +335,7 @@ export const urlParametersAdditional: UrlParameterAdditionalEntry[] = [
     newBehavior: [
       "Selects the form template for the current session. A valid URL value is stored in session storage and remains active for subsequent navigation during the session.",
       "multi (default): The existing multi-page flow — separate routes for each step, Back/Next navigation, real viewport-based responsive layout.",
-      "single: Same routes, pages, and Back/Next navigation as multi — nothing about FormRoutePage, ProgressStep, or the router changes. createAppTheme is instead given forceMobileLayout: true, which pins the md/lg/xl breakpoints to an unreachable width so every desktop/mobile structural check (ProgressStep's sidebar-vs-stepper branch, AppDrawer, AppModal, HelpChips, MemberVerification) and every md/lg/xl-keyed responsive style renders its narrow-screen variant regardless of actual browser width. sm (600px) is left at its default so sm-level padding/spacing (e.g. FormRoutePage's FormShell) still activates normally on a real desktop-width browser. Home.tsx also renders the hero (tagline, title, description; no hero image; smaller title/description type) directly followed by the real Membership page component instead of a separate landing-page-then-navigate-to-Membership step; the hero is capped at 700px and the form area at 800px, both centered in the same column.",
+      "single: Same routes, pages, and Back/Next navigation as multi — nothing about FormRoutePage, ProgressStep, or the router changes. createAppTheme is instead given forceMobileLayout: true, which pins the md/lg/xl breakpoints to an unreachable width so every desktop/mobile structural check (ProgressStep's sidebar-vs-stepper branch, AppDrawer, AppModal, PageHelpChips, MemberVerification) and every md/lg/xl-keyed responsive style renders its narrow-screen variant regardless of actual browser width. sm (600px) is left at its default so sm-level padding/spacing (e.g. FormRoutePage's FormShell) still activates normally on a real desktop-width browser. Home.tsx also renders the hero (tagline, title, description; no hero image; smaller title/description type) directly followed by the real Membership page component instead of a separate landing-page-then-navigate-to-Membership step; the hero is capped at 700px and the form area at 800px, both centered in the same column.",
     ],
     notes:
       "If the URL value is absent or is not one of the supported values, the template falls back to the active client's features.defaultTemplate, or multi when unconfigured. This is the mechanism behind the waepagi client, which defaults to single.",

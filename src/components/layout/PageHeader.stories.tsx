@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import PageHeader from "./PageHeader";
-import FormHelpChips from "../content/HelpChips";
+import PageHelpChips from "../content/PageHelpChips";
 
 /**
  * PageHeader composes PageTitle with optional help content. It's rendered
@@ -30,7 +30,7 @@ export const WithHelpChips: StoryObj = {
       title="Coverage"
       subhead="Choose the coverage you'd like to apply for."
       help={
-        <FormHelpChips
+        <PageHelpChips
           items={[
             { id: "how-much", label: "How much does it cost?" },
             { id: "quick-decision", label: "About QuickDecision" },

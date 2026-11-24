@@ -1,26 +1,65 @@
 {
   "components": [
     {
-      "id": "quote-calculator"
+      "id": "quote-calculator",
+      "implementation": "QuoteCalculator"
     },
     {
-      "id": "app-header"
+      "id": "app-header",
+      "implementation": "AppHeader"
     },
     {
-      "id": "app-menu"
+      "id": "app-menu",
+      "implementation": "AppMenu"
     },
     {
-      "id": "needs-calculator"
+      "id": "needs-calculator",
+      "implementation": "CoverageNeedsCalculator"
     },
     {
-      "id": "member-verification"
+      "id": "member-verification",
+      "implementation": "MemberVerification"
     },
     {
-      "id": "form-route-page"
+      "id": "form-route-page",
+      "implementation": "FormRoutePage"
     },
     {
       "id": "verification-address",
-      "name": "Verification address"
+      "name": "Verification address",
+      "implementation": "VerificationAddress"
+    },
+    {
+      "id": "profile",
+      "implementation": "ProfileSections"
+    },
+    {
+      "id": "review",
+      "implementation": "ReviewSections"
+    },
+    {
+      "id": "receipt",
+      "implementation": "ReceiptDecisions"
+    },
+    {
+      "id": "site-support",
+      "implementation": "SiteSupport"
+    },
+    {
+      "id": "recovery",
+      "implementation": "ApplicationErrorState"
+    },
+    {
+      "id": "page-help",
+      "implementation": "PageHelp"
+    },
+    {
+      "id": "page-help-chips",
+      "implementation": "PageHelpChips"
+    },
+    {
+      "id": "page-help-drawer",
+      "implementation": "PageHelpDrawer"
     }
   ]
 }

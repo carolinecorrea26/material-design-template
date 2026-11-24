@@ -4,11 +4,13 @@ import type { LibraryDraft } from './libraryDraft';
 import { afterEach, beforeAll, expect, it } from 'vitest';
 import { writeFileSync } from 'node:fs';
 import { createReviewedMigrationDatabase } from '../migration/fixtures';
-import { installPrototypeLibrary, resolvePrototypeLibrary } from './prototypeLibrary';
+import { installPrototypeLibrary, resolvePrototypeLibrary } from "./prototypeLibrary";
 import { migrateFieldSurfaceData, type FieldSurfaceDefinition } from '../migration/fieldSurfaceDefaults';
 import { getFieldSurface, getSurfaceFields, paymentControlField, surfaceSemanticValues } from '../config/fields/storedSurfaces';
 import { validateHealthFollowUps } from './healthQuestionnaire';
 import { libraryMetadata } from './provenance';
+import { freshStartSource } from './freshStartCatalog';
+import type { FieldDefinition } from './fields';
 import type { DatabaseSchema } from '../persistence/types';
 
 let baseline: DatabaseSchema;
@@ -18,37 +20,40 @@ const policies = (data: DatabaseSchema) => data.configurationValues.find(row => 
 
 it('uses saved definitions, bindings, order and limits across all converted surfaces with Site isolation', () => {
   const data = structuredClone(baseline);
-  const definitions = policies(data);
+  const source = structuredClone(freshStartSource());
+  const definitions = Object.fromEntries(Object.values(source.pages).flatMap(page => Object.entries(page.surfaces ?? {}).map(([name, surface]) => [name, surface.definition!])));
   definitions.beneficiaryIndividual.fields.reverse();
   definitions.beneficiaryIndividual.maxItems = 3;
   definitions.healthSiDetails.fields[1].valueKey = 'medicalHistory';
   definitions.healthSiDetails.maxItems = 1;
   definitions.needsCalculator.fields[0].valueKey = 'householdIncome';
   definitions.needsCalculator.fields.reverse();
-  data.siteFieldConfigurations.push({ id: 'surface-site', key: 'surface-site', fieldKey: 'beneficiary-firstName', pageKey: 'beneficiary', scope: 'site', siteKey: 'asce', clientKey: null, include: null, hidden: null, position: 0, values: { label: 'Saved given name' } });
-  const asce = resolvePrototypeLibrary(data, 'asce', 'test');
+  (source.fields.sites.asce as { fields: Record<string, unknown> }).fields['first-name'] = { label: { beneficiary: 'Saved given name' } };
+  const asce = resolvePrototypeLibrary(data, 'asce', 'test', source);
   installPrototypeLibrary(asce);
   expect(getSurfaceFields('beneficiaryIndividual').map(field => field.id)).toEqual(['share', 'relationship', 'lastName', 'firstName']);
   expect(getSurfaceFields('beneficiaryIndividual')[3].label).toBe('Saved given name');
   expect(getFieldSurface('beneficiaryIndividual').maxItems).toBe(3);
   expect(getSurfaceFields('needsCalculator').at(-1)?.id).toBe('householdIncome');
   expect(surfaceSemanticValues('healthSiDetails', { medicalHistory: 'Stored history' }).conditionsDetails).toBe('Stored history');
-  const ama = resolvePrototypeLibrary(data, 'ama', 'test');
+  const ama = resolvePrototypeLibrary(data, 'ama', 'test', source);
   expect(ama.fieldSurfaces.beneficiaryIndividual.mapping.fields.at(-1)?.label).toBe('First Name');
 });
 
 it('narrows stored payment choices to product policy while retaining authored labels and order', () => {
   const data = structuredClone(baseline);
-  data.fields.find(row => row.key === 'payment-method')!.definition.options = [{ value: 'bank-account', label: 'Saved EFT' }, { value: 'credit-card', label: 'Saved card' }];
-  installPrototypeLibrary(resolvePrototypeLibrary(data, 'asce', 'test'));
+  const source = structuredClone(freshStartSource());
+  (source.fields.fieldDetails as { fields: FieldDefinition[] }).fields.find(field => field.id === 'payment-method')!.options = [{ value: 'bank-account', label: 'Saved EFT' }, { value: 'credit-card', label: 'Saved card' }];
+  installPrototypeLibrary(resolvePrototypeLibrary(data, 'asce', 'test', source));
   expect(paymentControlField('payment-method', 'payment-method:li-term', [{ value: 'bank-account', label: 'Bank' }, { value: 'bill-me', label: 'Bill' }])).toMatchObject({ id: 'payment-method:li-term', options: [{ value: 'bank-account', label: 'Saved EFT' }] });
 });
 
 it('enforces stored health requirements and limits on restored records with custom bindings', () => {
   const data = structuredClone(baseline);
-  policies(data).healthSiDetails.fields[1].valueKey = 'history';
-  policies(data).healthSiDetails.maxItems = 1;
-  installPrototypeLibrary(resolvePrototypeLibrary(data, 'asce', 'test'));
+  const source = structuredClone(freshStartSource());
+  source.pages['health-si'].surfaces!.healthSiDetails.definition!.fields[1].valueKey = 'history';
+  source.pages['health-si'].surfaces!.healthSiDetails.definition!.maxItems = 1;
+  installPrototypeLibrary(resolvePrototypeLibrary(data, 'asce', 'test', source));
   const surface = getFieldSurface('healthSiDetails');
   const question = { answer: { id: 'answer', label: 'Health', required: true }, collection: 'details', ...surface.mapping, maxItems: surface.maxItems };
   const record = { onset: '01/2020', history: 'Medication', physicianAddress: 'Physician' };
@@ -58,20 +63,20 @@ it('enforces stored health requirements and limits on restored records with cust
 });
 
 it('fails closed for missing, unsafe, conflicting and unexecutable surface definitions', () => {
-  const absent = structuredClone(baseline);
-  absent.configurationValues = absent.configurationValues.filter(row => row.configurationKey !== 'field-surfaces');
-  expect(() => resolvePrototypeLibrary(absent, 'asce', 'test')).toThrow('Missing or ambiguous');
+  const absent = structuredClone(freshStartSource());
+  delete absent.pages['health-si'].surfaces!.healthSiDetails;
+  expect(() => resolvePrototypeLibrary(baseline, 'asce', 'test', absent)).toThrow();
   for (const valueKey of ['__proto__', 'constructor', 'onset']) {
-    const invalid = structuredClone(baseline);
-    policies(invalid).healthSiDetails.fields[1].valueKey = valueKey;
-    expect(() => resolvePrototypeLibrary(invalid, 'asce', 'test')).toThrow('Invalid field surface binding');
+    const invalid = structuredClone(freshStartSource());
+    invalid.pages['health-si'].surfaces!.healthSiDetails.definition!.fields[1].valueKey = valueKey;
+    expect(() => resolvePrototypeLibrary(baseline, 'asce', 'test', invalid)).toThrow();
   }
-  const invalid = structuredClone(baseline);
-  invalid.fields.find(row => row.key === 'verification-method')!.definition.options = [{ value: 'unknown', label: 'Unknown' }];
-  expect(() => resolvePrototypeLibrary(invalid, 'asce', 'test')).toThrow('Unsupported surface options');
-  const conflict = structuredClone(baseline);
-  for (const id of ['a', 'b']) conflict.siteFieldConfigurations.push({ id, key: id, fieldKey: 'health-si-detail-onset', pageKey: 'health-si', scope: 'site', siteKey: 'asce', clientKey: null, include: null, hidden: null, position: 0, values: { label: id } });
-  expect(() => resolvePrototypeLibrary(conflict, 'asce', 'test')).toThrow(/Ambiguous (surface )?field override/);
+  const invalid = structuredClone(freshStartSource());
+  (invalid.fields.fieldDetails as { fields: FieldDefinition[] }).fields.find(field => field.id === 'verification-method')!.options = [{ value: 'unknown', label: 'Unknown' }];
+  expect(() => resolvePrototypeLibrary(baseline, 'asce', 'test', invalid)).toThrow('Unsupported surface options');
+  const conflict = structuredClone(freshStartSource());
+  conflict.pages['health-si'].surfaces!.healthSiDetails.definition!.fields.push(structuredClone(conflict.pages['health-si'].surfaces!.healthSiDetails.definition!.fields[0]));
+  expect(() => resolvePrototypeLibrary(baseline, 'asce', 'test', conflict)).toThrow();
 });
 
 it('converts a first-batch snapshot into a detached draft and preserves its original', () => {

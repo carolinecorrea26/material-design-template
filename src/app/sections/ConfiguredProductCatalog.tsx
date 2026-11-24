@@ -5,14 +5,14 @@ import { getActiveClient } from "../../config/client/getActiveClient";
 import { getActiveSite } from "../../data";
 import { getPrototypeLibrary } from "../../domain/prototypeLibrary";
 import { associationRatesSuppressed, resolveRatePresentation } from "../../domain/ratePresentation";
-import { activeFeaturedProduct } from "../../config/client/coverageProductScope";
+import { activeFirstCoverageCategory, activeFeaturedProduct } from "../../config/client/coverageProductScope";
 import { applicationCoverageName } from "../../domain/coverageRuntime";
 function presentationFor(products: ComponentProps<typeof ProductCatalog>["categoryProducts"], values: import("../ApplicationFormContext").ApplicationFormValues) {
   const client = getActiveClient(), library = getPrototypeLibrary(), siteId = getActiveSite().id;
   const presentation: ProductPresentation = {
     productNames: Object.fromEntries(products.map(product => [product.id, applicationCoverageName(product, values)])),
     coverageConfig: client.coverages, applicantLabels: client.applicantLabels, helpPhone: client.support.helpPhone,
-    featuredProduct: activeFeaturedProduct(siteId),
+    featuredProduct: activeFeaturedProduct(siteId), firstCategory: activeFirstCoverageCategory(siteId),
     aggregateNotes: (library?.settings.coveragePolicy as { aggregateNotes?: ProductPresentation['aggregateNotes'] } | undefined)?.aggregateNotes,
     ratesSuppressed: library ? associationRatesSuppressed(library.site, values) : false,
     ratePresentations: library ? Object.fromEntries(products.map(product => [product.id, resolveRatePresentation(library.site, product.id, String(values.association ?? values.membership ?? ""))])) : {},

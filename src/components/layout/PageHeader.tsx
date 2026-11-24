@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Stack, type SxProps, type Theme } from "@mui/material";
 import type { ReactNode } from "react";
 import PageTitle from "./PageTitle";
 
@@ -8,6 +8,9 @@ type PageHeaderProps = {
   onBack?: () => void;
   /** Optional help chips, info links, or contextual UI rendered below the title. */
   help?: ReactNode;
+  feedback?: ReactNode;
+  spacing?: number;
+  sx?: SxProps<Theme>;
 };
 
 /**
@@ -20,12 +23,12 @@ export default function PageHeader({
   title,
   subhead,
   onBack,
-  help,
+  help, feedback, spacing = 0, sx,
 }: PageHeaderProps) {
   return (
-    <Box sx={{ mb: "1rem" }}>
-      <PageTitle title={title} subhead={subhead} onBack={onBack} />
-      {help}
+    <Box sx={[{ mb: "1rem" }, ...(Array.isArray(sx) ? sx : sx ? [sx] : [])]}>
+      <Stack spacing={spacing}><PageTitle title={title} subhead={subhead} onBack={onBack} />
+      {feedback}{help}</Stack>
     </Box>
   );
 }

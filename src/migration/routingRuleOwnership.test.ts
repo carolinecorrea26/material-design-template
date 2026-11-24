@@ -1,17 +1,15 @@
+// Historical adoption: resolve the captured input, never today's application source.
+// Historical normalization: assertions resolve the captured snapshot explicitly.
 import { materializeRuleDocumentation } from "../domain/ruleDocumentation";
 import { afterEach, expect, it } from "vitest";
 import { createMigrationDatabase, createReviewedMigrationDatabase } from "./fixtures";
 import { consolidateRoutingRuleOwnership } from "./routingRuleOwnership";
-import { resolveEffectiveSite } from "../domain/effectiveSite";
-import { installPrototypeLibrary, resolvePrototypeLibrary } from "../domain/prototypeLibrary";
-import { getFlowGateDefinition, resolveFlowGate, flowGateDefinitions } from "../config/flowGates";
+import { installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
+import { getFlowGateDefinition, coverageSatisfiesFlowGate, flowGateDefinitions } from "../config/flowGates";
 import { libraryMetadata } from "../domain/provenance";
 import { validateMigrationDatabase } from "./integrity";
 import { activeSiteMigrationScope } from "./activeSiteScope";
-import { createLibraryDraft } from "../domain/libraryDraft";
-import { createSiteBuild } from "../domain/siteBuild";
-import { createPortalDataRepository } from "../repositories/portalDataRepository";
-import { LocalStorageAdapter } from "../persistence/localAdapter";
 
 const db = createReviewedMigrationDatabase();
 const preview = (data = db, site = "ama") => resolvePrototypeLibrary(data, site, "test:routing-ownership");
@@ -54,8 +52,8 @@ it("reads gates from the installed rule definition even when prose differs", () 
   const library = preview(changed);
   installPrototypeLibrary(library);
   expect(getFlowGateDefinition("beneficiary")!.gate).toEqual({ kind: "selected-category", categoryIds: ["DI"] });
-  expect(resolveFlowGate("beneficiary", { coverageSelections: ["li-term"], productApplicants: { "li-term": ["member"] }, coverageAmounts: { "li-term:member": 100000 } })).toBe(false);
-  expect(resolveFlowGate("beneficiary", { coverageSelections: ["di-level-rated"], productApplicants: { "di-level-rated": ["member"] }, coverageAmounts: { "di-level-rated:member": 1000 } })).toBe(true);
+  expect(coverageSatisfiesFlowGate(library.products.find(product => product.id === "li-term")!, getFlowGateDefinition("beneficiary")!.gate)).toBe(false);
+  expect(coverageSatisfiesFlowGate(library.products.find(product => product.id === "di-level-rated")!, getFlowGateDefinition("beneficiary")!.gate)).toBe(true);
   expect(library.settings.routingGates).toEqual(library.site.configuration.routing!.definitions);
 });
 
@@ -76,7 +74,7 @@ it.each(["missing-rule", "unassigned", "duplicate-assignment", "planned", "condi
   expect(validateMigrationDatabase(changed)).toContain("Invalid executable routing policy global.routing.gates");
 });
 
-it("supports explicit Site references without changing another Site and copies their assignments", async () => {
+it("supports explicit Site references without changing other Sites or captured revisions", async () => {
   const changed = structuredClone(db);
   const key = "rule-test-ama-beneficiary";
   changed.rules.push({ ...changed.rules.find(row => row.key === ruleKey)!, ...meta("rules", key), definition: {
@@ -90,14 +88,10 @@ it("supports explicit Site references without changing another Site and copies t
     value: { ...value, ruleKeys: value.ruleKeys.map(current => current === ruleKey ? key : current) } });
   expect(preview(changed).site.configuration.routing!.definitions[0].gate).toEqual({ kind: "selected-category", categoryIds: ["DI"] });
   expect(preview(changed, "avma").site.configuration.routing!.definitions[0].gate).toEqual(flowGateDefinitions[0].gate);
-  const revision = await createPortalDataRepository(new LocalStorageAdapter(changed)).open();
-  const draft = createLibraryDraft(revision, "ama");
-  draft.data.organizations = changed.organizations;
-  draft.data.organizationProfiles = changed.organizationProfiles;
-  const client = changed.clients.find(row => row.key === "ama")!;
-  const organization = changed.organizations.find(row => row.id === client.organizationId)!;
-  const copied = createSiteBuild(draft, { siteKey: "ama-routing-copy", siteName: "Routing copy", template: "multi", clientKey: client.key, clientName: client.name, organizationKey: organization.key, organizationName: organization.name, newClient: false, newOrganization: false });
-  expect(resolveEffectiveSite(copied.data, copied.siteKey).configuration.routing!.definitions).toEqual(preview(changed).site.configuration.routing!.definitions);
+  const captured = preview(changed).site.configuration.routing!.definitions;
+  changed.rules.find(rule => rule.key === key)!.definition.execution!.gates[0].gate = { kind: "selected-category", categoryIds: ["AD"] };
+  expect(preview(changed).site.configuration.routing!.definitions[0].gate).toEqual({ kind: "selected-category", categoryIds: ["AD"] });
+  expect(captured[0].gate).toEqual({ kind: "selected-category", categoryIds: ["DI"] });
   expect(validateMigrationDatabase(changed)).toEqual([]);
 });
 

@@ -31,18 +31,75 @@
       "people": [
         "self"
       ]
+    }
+  ],
+  "constraints": {
+    "review-consent": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ],
+      "required": true
     },
-    {
-      "field": "review-self-consent",
-      "people": [
-        "self"
+    "dividend-acknowledgement": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ],
+      "required": true
+    },
+    "dividend-first-name": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
       ]
     },
-    {
-      "field": "review-spouse-consent",
-      "people": [
-        "self"
+    "dividend-last-name": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "dividend-birth-date": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
       ]
     }
-  ]
+  }
 }

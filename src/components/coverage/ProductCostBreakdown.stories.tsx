@@ -1,11 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Box } from "@mui/material";
 import ProductCostBreakdown from "./ProductCostBreakdown";
+import ComponentFixture from '../../../.storybook/fixtures/ComponentFixture';
+import CostBreakdownExample from '../../../.storybook/costBreakdownExample';
 
 /**
  * ProductCostBreakdown is the itemized premium + rider + policy-fee
- * line-item list shown inside ProductCatalog's inline card (client-config
- * gated). It's stateless/pure — every value comes from props — and switches
+ * line-item list shown inside ProductCatalog's inline card, selected through
+ * the Fresh-start coverage-cost-breakdown setting. The configured example
+ * compiles that assignment; visual rows receive fictional quote amounts. It switches
  * its displayed numbers between monthly and annual via the shared
  * getDisplayedPremium() helper (the same one CoverageCart/QuoteCalculator
  * use), not its own math.
@@ -18,6 +21,10 @@ const meta = {
 } satisfies Meta<typeof ProductCostBreakdown>;
 
 export default meta;
+
+export const ConfiguredProduct: StoryObj = {
+  render: () => <ComponentFixture coverage={{ costBreakdown: true }}>{fixture => <CostBreakdownExample fixture={fixture} />}</ComponentFixture>,
+};
 
 export const Monthly: StoryObj = {
   render: () => (

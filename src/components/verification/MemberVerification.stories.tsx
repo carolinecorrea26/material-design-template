@@ -2,10 +2,10 @@ import { useEffect, useState, type ComponentProps } from "react";
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Button } from "@mui/material";
-import MemberVerification from "./MemberVerification";
+import MemberVerification, { verificationPresentation } from "./MemberVerification";
 import VerificationAddress from "./VerificationAddress";
-import { addressFieldNames } from "../forms/AddressFields";
-import { fieldCatalog } from "../../config/fields";
+import { getSurfaceFields } from '../../config/fields/storedSurfaces';
+import ComponentFixture from '../../../.storybook/fixtures/ComponentFixture';
 
 /**
  * MemberVerification is a multi-step identity-verification modal shown on
@@ -42,14 +42,15 @@ function MemberVerificationDemo(args: ComponentProps<typeof MemberVerification>)
       {lastResult !== null && (
         <span style={{ marginLeft: 8 }}>Last result: verified = {String(lastResult)}</span>
       )}
-      <MemberVerification
+      <ComponentFixture>{fixture => <MemberVerification
         open={open}
+        presentation={verificationPresentation(fixture)}
         onClose={(verified) => {
           setOpen(false);
           setLastResult(verified);
           args.onClose(verified);
         }}
-      />
+      />}</ComponentFixture>
     </>
   );
 }
@@ -68,6 +69,6 @@ export const Interactive: StoryObj<typeof meta> = {
 
 export const AddressBeforeVerification: StoryObj<typeof meta> = {
   name: "Address before member verification",
-  render: () => <VerificationAddress fields={addressFieldNames.map(id => fieldCatalog[id])} values={{ state: "NY", "zip-code": "10001" }} onContinue={fn()} onClose={fn()} />,
+  render: () => <ComponentFixture>{fixture => <VerificationAddress fields={getSurfaceFields('verificationAddress', fixture)} values={{ state: "NY", "zip-code": "10001" }} onContinue={fn()} onClose={fn()} />}</ComponentFixture>,
   parameters: { docs: { description: { story: "When configured for the Site, collect the full residential address before opening member verification. This uses the same address fields and validation as Contact." } } },
 };

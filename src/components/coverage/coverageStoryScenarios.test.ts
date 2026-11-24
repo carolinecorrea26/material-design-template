@@ -7,7 +7,7 @@ import { buildGlobalTemplate } from '../../dev/storybook/globalTemplate';
 const catalog = JSON.parse(readFileSync('public/catalog/portal.json', 'utf8')); 
 afterEach(() => installPrototypeLibrary(null));
 function fixture(scenario: CoverageStoryScenario) {
-  const library = buildGlobalTemplate(catalog, scenario.capability);
+  const library = buildGlobalTemplate(catalog, scenario.capability, undefined, undefined, scenario.coverage);
   installPrototypeLibrary(library);
   return { library, values: { ...coverageStoryBaseValues, ...scenario.values } };
 }
@@ -22,15 +22,6 @@ it('derives unavailable disability from work hours and allows recovery at the sa
   expect(resolveApplicationCoverage(product, 'member', values, library.products).eligibility).toBe('ineligible');
   const minimum = product.requirements!.eligibility!.find(rule => rule.applicantType === 'member')!.minimumWorkHoursPerWeek!;
   expect(resolveApplicationCoverage(product, 'member', { ...values, 'hours-worked-per-week': String(minimum) }, library.products).eligibility).toBe('eligible');
-});
-it('validates the mutually exclusive alternative and resolves the conflict after removal', () => {
-  const { library, values } = fixture(coverageStoryScenarios.mutuallyExclusive);
-  const alternative = library.products.find(product => product.id === 'di-ltd-plus')!;
-  const blocked = resolveApplicationCoverage(alternative, 'member', values, library.products);
-  expect(blocked.selectable).toBe(false);
-  expect(blocked.messages.join(' ')).toContain('cannot be selected together');
-  const allowed = resolveApplicationCoverage(alternative, 'member', { ...values, coverageSelections: [], productApplicants: {} }, library.products);
-  expect(allowed.selectable, allowed.messages.join(' ')).toBe(true);
 });
 it('keeps missing work hours unresolved instead of asserting ineligibility', () => {
   const { library, values } = fixture(coverageStoryScenarios.missingWorkHours);

@@ -2,7 +2,22 @@
   "page": "advisor-login",
   "components": [
     {
-      "type": "advisor-login"
+      "type": "FormRoutePage",
+      "purpose": "configured Start/Continue tabs, branch-specific fields and login action",
+      "components": [
+        {
+          "type": "FieldRenderer",
+          "section": "advisor-login-new"
+        },
+        {
+          "type": "FieldRenderer",
+          "section": "advisor-login-saved"
+        },
+        {
+          "type": "Button"
+        }
+      ],
+      "mapping": "advisor-login"
     }
   ],
   "definition": {
@@ -11,40 +26,42 @@
     "type": "form",
     "flow": "advisor",
     "healthGate": false,
-    "displayName": "Advisor Login"
+    "displayName": "Advisor Login",
+    "saveProgress": false
   },
   "position": 20,
-  "fieldBindings": [
-    "advisor-flow-type",
-    "advisor-email",
-    "advisor-phone",
-    "advisor-code",
-    "applicant-email"
-  ],
-  "looseFields": [
-    "advisor-flow-type",
-    "advisor-email",
-    "advisor-phone",
-    "advisor-code",
-    "applicant-email"
-  ],
   "layout": {
     "sections": {
+      "mode": {
+        "id": "advisorLoginMode",
+        "for": "self",
+        "fields": [
+          "advisor-flow-type"
+        ]
+      },
       "advisor-login-new": {
         "id": "advisorLoginNew",
+        "for": "self",
         "fields": [
           "advisor-email",
           "advisor-phone",
           "advisor-code"
         ],
-        "visibilityConditionId": "condition-advisor-new-application"
+        "when": {
+          "field": "advisor-flow-type",
+          "equals": "new"
+        }
       },
       "advisor-login-saved": {
         "id": "advisorLoginSaved",
+        "for": "self",
         "fields": [
           "applicant-email"
         ],
-        "visibilityConditionId": "condition-advisor-saved-application"
+        "when": {
+          "field": "advisor-flow-type",
+          "equals": "saved"
+        }
       }
     }
   },
@@ -57,10 +74,26 @@
       "page.advisor-login.section-notes.advisor-login-saved"
     ],
     "runtime": [
-      "application.ui.advisor-login-type",
-      "application.ui.start",
-      "home.landing-notice.continue",
       "application.ui.log-in"
     ]
+  },
+  "fieldMapping": {
+    "page": "advisor-login"
+  },
+  "sections": {
+    "advisor-login-new": {
+      "note": "page.advisor-login.section-notes.advisor-login-new"
+    },
+    "advisor-login-saved": {
+      "note": "page.advisor-login.section-notes.advisor-login-saved"
+    }
+  },
+  "contentSlots": {
+    "page.advisor-login.title": {
+      "name": "Page title"
+    },
+    "page.advisor-login.subhead": {
+      "name": "Page introduction"
+    }
   }
 }

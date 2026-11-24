@@ -1,18 +1,16 @@
+import { useInterfaceText } from '../content/useInterfaceText';
+import { alpha } from '@mui/material/styles';
+import AppModal from "./AppModal";
 import { useState } from "react";
 import {
   Box,
   Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
   Divider,
-  IconButton,
   Typography,
 } from "@mui/material";
 import PhoneRoundedIcon from "@mui/icons-material/PhoneRounded";
 import ChatBubbleOutlineRoundedIcon from "@mui/icons-material/ChatBubbleOutlineRounded";
 import CalendarMonthRoundedIcon from "@mui/icons-material/CalendarMonthRounded";
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import type { ClientConfig } from "../../config/clients/types";
 
 type ClientHelpBannerProps = {
@@ -20,6 +18,7 @@ type ClientHelpBannerProps = {
 };
 
 export default function ClientHelpBanner({ client }: ClientHelpBannerProps) {
+  const text = useInterfaceText();
   const [scheduleOpen, setScheduleOpen] = useState(false);
 
   const { phoneHours } = client.support;
@@ -30,8 +29,7 @@ export default function ClientHelpBanner({ client }: ClientHelpBannerProps) {
   if (!phone) return null;
 
   const handleChat = () => {
-    const url = chatUrl || "https://example.com/chat";
-    window.open(url, "ClientChat", "width=400,height=600,scrollbars=yes");
+    if (chatUrl) window.open(chatUrl, "ClientChat", "width=400,height=600,scrollbars=yes");
   };
 
   return (
@@ -71,59 +69,39 @@ export default function ClientHelpBanner({ client }: ClientHelpBannerProps) {
             }}
           >
             <Button
+              className="ClientHelpBanner-action"
               variant="outlined"
               size="small"
               href={`tel:${phone}`}
               startIcon={<PhoneRoundedIcon />}
-              sx={{
-                color: "#fff",
-                borderColor: "rgba(255,255,255,0.6)",
-                "&:hover": {
-                  borderColor: "#fff",
-                  bgcolor: "rgba(255,255,255,0.08)",
-                },
-                textTransform: "none",
-                fontWeight: 600,
-                fontSize: "0.8rem",
-              }}
             >
-              Call for help {phoneDisplay || phone}
+              {text('help-call', { phone: phoneDisplay || phone })}
             </Button>
             {phoneHours && (
               <Typography
                 variant="caption"
-                sx={{ color: "rgba(255,255,255,0.85)", whiteSpace: "nowrap" }}
+                sx={theme => ({ color: alpha(theme.palette.getContrastText(theme.palette.primary.dark), 0.85), whiteSpace: "nowrap" })}
               >
                 {phoneHours}
               </Typography>
             )}
           </Box>
 
-          {chat && (
+          {chat && chatUrl && (
             <>
               <Divider
                 orientation="vertical"
                 flexItem
-                sx={{ borderColor: "rgba(255,255,255,0.3)" }}
+                sx={theme => ({ borderColor: alpha(theme.palette.getContrastText(theme.palette.primary.dark), 0.3) })}
               />
               <Button
+                className="ClientHelpBanner-action"
                 variant="outlined"
                 size="small"
                 onClick={handleChat}
                 startIcon={<ChatBubbleOutlineRoundedIcon />}
-                sx={{
-                  color: "#fff",
-                  borderColor: "rgba(255,255,255,0.6)",
-                  "&:hover": {
-                    borderColor: "#fff",
-                    bgcolor: "rgba(255,255,255,0.08)",
-                  },
-                  textTransform: "none",
-                  fontWeight: 600,
-                  fontSize: "0.8rem",
-                }}
               >
-                Chat now
+                {text('help-chat')}
               </Button>
             </>
           )}
@@ -133,27 +111,17 @@ export default function ClientHelpBanner({ client }: ClientHelpBannerProps) {
               <Divider
                 orientation="vertical"
                 flexItem
-                sx={{ borderColor: "rgba(255,255,255,0.3)" }}
+                sx={theme => ({ borderColor: alpha(theme.palette.getContrastText(theme.palette.primary.dark), 0.3) })}
               />
               <Button
+                className="ClientHelpBanner-action"
                 variant="outlined"
                 size="small"
                 href={linkUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                sx={{
-                  color: "#fff",
-                  borderColor: "rgba(255,255,255,0.6)",
-                  "&:hover": {
-                    borderColor: "#fff",
-                    bgcolor: "rgba(255,255,255,0.08)",
-                  },
-                  textTransform: "none",
-                  fontWeight: 600,
-                  fontSize: "0.8rem",
-                }}
               >
-                {linkLabel || `${client.branding.acronym} help`}
+                {linkLabel || text('help-link', { acronym: client.branding.acronym })}
               </Button>
             </>
           )}
@@ -163,26 +131,16 @@ export default function ClientHelpBanner({ client }: ClientHelpBannerProps) {
               <Divider
                 orientation="vertical"
                 flexItem
-                sx={{ borderColor: "rgba(255,255,255,0.3)" }}
+                sx={theme => ({ borderColor: alpha(theme.palette.getContrastText(theme.palette.primary.dark), 0.3) })}
               />
               <Button
+                className="ClientHelpBanner-action"
                 variant="outlined"
                 size="small"
                 onClick={() => setScheduleOpen(true)}
                 startIcon={<CalendarMonthRoundedIcon />}
-                sx={{
-                  color: "#fff",
-                  borderColor: "rgba(255,255,255,0.6)",
-                  "&:hover": {
-                    borderColor: "#fff",
-                    bgcolor: "rgba(255,255,255,0.08)",
-                  },
-                  textTransform: "none",
-                  fontWeight: 600,
-                  fontSize: "0.8rem",
-                }}
               >
-                Schedule a call
+                {text('help-schedule')}
               </Button>
             </>
           )}
@@ -190,37 +148,16 @@ export default function ClientHelpBanner({ client }: ClientHelpBannerProps) {
       </Box>
 
       {/* Schedule modal with Calendly embed */}
-      <Dialog
-        open={scheduleOpen}
-        onClose={() => setScheduleOpen(false)}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          Schedule a Call
-          <IconButton
-            onClick={() => setScheduleOpen(false)}
-            aria-label="Close schedule a call dialog"
-            size="small"
-          >
-            <CloseRoundedIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent>
+      <AppModal open={scheduleOpen} onClose={() => setScheduleOpen(false)}
+        title={<Typography component="span" variant="h6">{text('help-schedule-title')}</Typography>} closeLabel={text('help-schedule-close')}
+        maxWidth={600} minHeight="auto" fullScreenOnMobile={false} contentDividers={false}>
           <Box
             component="iframe"
             src={scheduleUrl}
-            title="Schedule a call"
+            title={text('help-schedule')}
             sx={{ width: "100%", height: 500, border: "none" }}
           />
-        </DialogContent>
-      </Dialog>
+      </AppModal>
     </>
   );
 }

@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import ProductCatalog from '../src/components/coverage/ProductCatalog';
-import { coverageCategories } from '../src/config/coverageCategories';
+import { requirementCoverageMinimumAmounts } from '../src/domain/requirementCoveragePolicy';
+import { requirementCoverageControl } from '../src/domain/requirementFields';
+import { getCoverageCategories } from '../src/config/coverageCategories';
 import type { PrototypeLibrary } from '../src/domain/prototypeLibrary';
 import type { CoverageApplicantId } from '../src/config/coverages/types';
 import { getCoverageAmountChoices } from '../src/utils/coverageAmounts';
@@ -17,8 +19,8 @@ export default function ProductCatalogExample({ fixture }: { fixture: PrototypeL
   const [frequency, setFrequency] = useState<'monthly' | 'annual'>('monthly');
   const selected = products.filter(product => applicants[product.id]?.length).map(product => product.id);
   const premium = (product: typeof products[number], applicant: CoverageApplicantId) => baseMonthlyPremium(product.categoryId, amounts[`${product.id}:${applicant}`] ?? 0);
-  return <ProductCatalog presentation={{ coverageConfig: fixture.client.coverages, applicantLabels: fixture.client.applicantLabels, helpPhone: fixture.client.support.helpPhone }}
-    availableCategories={[...coverageCategories]} selectedCategories={['LI']} categoryProducts={products} categoryEligibility={{}} allCategoriesIneligible={false} hasQdCategorySelected={false}
+  return <ProductCatalog controlDefinition={(id, applicant) => requirementCoverageControl(id, applicant, fixture)} presentation={{ coverageConfig: fixture.client.coverages, applicantLabels: fixture.client.applicantLabels, helpPhone: fixture.client.support.helpPhone }}
+    availableCategories={getCoverageCategories(fixture.client.coverages.categoryNames)} selectedCategories={['LI']} categoryProducts={products} categoryEligibility={{}} allCategoriesIneligible={false} hasQdCategorySelected={false}
     selectedCoverageIds={selected} productApplicants={applicants} storedAmounts={amounts} storedRiders={riders} storedRiderAmounts={riderAmounts}
     storedWaitingPeriods={waiting} storedMaxBenefitPeriods={periods} calculatingRateKeys={new Set()} rateFrequency={frequency} frequencyCalculating={false} selectionCalculating={false}
     showRateFrequencyToggle showProducts productsLoading={false} grandTotal={products.filter(product => selected.includes(product.id)).reduce((sum, product) => sum + premium(product, 'member'), 0)} activeClient={fixture.client}
@@ -29,6 +31,6 @@ export default function ProductCatalogExample({ fixture }: { fixture: PrototypeL
     onWaitingPeriodChange={(id, value, applicant) => setWaiting(current => ({ ...current, [`${id}:${applicant}`]: value }))}
     onMaxBenefitPeriodChange={(id, value, applicant) => setPeriods(current => ({ ...current, [`${id}:${applicant}`]: value }))}
     getVisibleApplicants={applicants => applicants.filter(applicant => applicant === 'member')} calcApplicantPremium={premium}
-    generateAmountChoices={(product, applicant = 'member') => getCoverageAmountChoices(product, applicant)} hasSpouse={false} />;
+    generateAmountChoices={(product, applicant = 'member') => requirementCoverageMinimumAmounts(product, applicant, getCoverageAmountChoices(product, applicant))} hasSpouse={false} />;
 }
 

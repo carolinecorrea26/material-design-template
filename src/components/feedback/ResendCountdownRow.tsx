@@ -16,7 +16,7 @@ export default function ResendCountdownRow({
   onResend,
   disabled = false,
 }: ResendCountdownRowProps) {
-  const label = kind === "link" ? "Link" : "Code";
+  const label = requirementText(kind === "link" ? "resume.feedback.link" : "resume.feedback.code");
   return (
     <Stack
       direction="row"
@@ -28,13 +28,12 @@ export default function ResendCountdownRow({
       <Typography
         variant="body2"
         color={secondsLeft === 0 ? "error" : "text.secondary"}
-        sx={{ fontSize: "0.8125rem" }}
       >
         {secondsLeft === 0 ? (
-          `${label} expired`
+          requirementText('resume.feedback.expired', { kind: label })
         ) : (
           <>
-            {label}{requirementText("application.ui.expires-in")}
+            {requirementText('resume.feedback.expires-in', { kind: label })}
             <Box component="span" sx={{ fontWeight: 700 }}>
               {formatCountdown(secondsLeft)}
             </Box>
@@ -47,9 +46,8 @@ export default function ResendCountdownRow({
         startIcon={<LoopRoundedIcon />}
         onClick={onResend}
         disabled={disabled}
-        sx={{ textTransform: "none", fontSize: "0.8125rem" }}
       >
-        {requirementText("application.ui.resend")}{kind}
+        {requirementText(kind === 'link' ? 'resume.feedback.resend-link' : 'resume.feedback.resend-code')}
       </Button>
     </Stack>
   );

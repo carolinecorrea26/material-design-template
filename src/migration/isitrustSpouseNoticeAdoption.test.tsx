@@ -1,10 +1,12 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import { act } from "react";
 import { createRoot } from "react-dom/client";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, beforeAll, expect, it, vi } from "vitest";
 import { createReviewedMigrationDatabase } from "./fixtures";
 import { applyIsitrustSpouseNoticeAdoption } from "./isitrustSpouseNoticeAdoption";
-import { installPrototypeLibrary, resolvePrototypeLibrary } from "../domain/prototypeLibrary";
+import { installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import { getClientPageFields } from "../config/clientFields/getClientPageFields";
 import { getPageSectionNote } from "../config/pages";
 import type { DatabaseSchema } from "../persistence/types";
@@ -42,6 +44,6 @@ it("replaces ISITRUST spouse attestation with captured source notice, preserving
   for (const site of ["abe", "asce", "waepa"]) {
     installPrototypeLibrary(resolvePrototypeLibrary(db, site, "other")); window.history.replaceState(null, "", `/?site=${site}`);
     expect(getClientPageFields("eligibility", form.values).some(field => field.id === "spouse-membership")).toBe(true);
-    expect(getPageSectionNote("eligibility", "spouseSection")).toBeUndefined();
+    expect(getPageSectionNote("eligibility", "spouseSection")).not.toBe(note);
   }
 });

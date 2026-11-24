@@ -20,3 +20,5 @@ export const DependentOnlyConfirmation: StoryObj = { render: (_args, context) =>
 export const ReferenceRateTable: StoryObj = { render: (_args, context) => <CoveragePageExample key={context.id} catalog={context.loaded.catalog as SharedCatalog} scenario={coveragePageScenarios.referenceRates}><Coverage /></CoveragePageExample> };
 
 export const VerifiedExistingMember: StoryObj = { name: 'Verified existing member with existing coverage', render: (_args, context) => <CoveragePageExample key={context.id} catalog={context.loaded.catalog as SharedCatalog} scenario={coveragePageScenarios.verifiedExistingMember}><Coverage /></CoveragePageExample> };
+export const PreselectedBaseCoverage: StoryObj = { render: (_args, context) => <CoveragePageExample key={context.id} catalog={context.loaded.catalog as SharedCatalog} scenario={coveragePageScenarios.preselected}><Coverage /></CoveragePageExample> };
+export const ExistingMemberDependentApplication: StoryObj = { render: (_args, context) => <CoveragePageExample key={context.id} catalog={context.loaded.catalog as SharedCatalog} scenario={coveragePageScenarios.existingDependent}><Coverage /></CoveragePageExample> };

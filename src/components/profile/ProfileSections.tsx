@@ -1,3 +1,4 @@
+import { profileFinancialTotal, profileCalculationApplies, type ProfileFinancialCalculations } from '../../domain/profileFinancialCalculations';
 import { requirementText } from "../../domain/requirementContent";
 import { Alert, Box, Typography } from "@mui/material";
 import type { FormRouteRenderProps } from "../../app/RoutePage";
@@ -5,8 +6,6 @@ import type { ClientApplicantLabels } from "../../config/clients/types";
 import type { ApplicantExperience } from "../../domain/applicantExperience";
 import type { ResolvedFieldCollection } from "../../domain/fieldCollections";
 import type { FieldDefinition } from "../../config/fields/types";
-import { disabilityCompanyMapping } from "../../config/fields/profileListFields";
-import { sectionLabels } from "../../config/pageSections";
 import FieldRenderer from "../forms/FieldRenderer";
 import ConditionalGroup from "../forms/ConditionalGroup";
 import DynamicList from "../forms/DynamicList";
@@ -15,6 +14,17 @@ import ApplicantSectionDivider from "../layout/ApplicantSectionDivider";
 import SectionDivider from "../layout/SectionDivider";
 import ProfilePersonalInformation from "./ProfilePersonalInformation";
 
+export function renderDisabilityCompanySummary(item: Record<string, string>) {
+  return (
+    <>
+      <Typography variant="subtitle2">{item.company || requirementText("application.ui.company")}</Typography>
+      <Typography variant="caption" color="text.secondary">
+        {`${item.monthlyBenefitAmount || requirementText("application.ui.zero-amount")} | ${item.benefitPeriod || requirementText("application.ui.benefit-period-not-provided")} | ${item.waitingPeriod || requirementText("application.ui.waiting-period-not-provided")}`}
+      </Typography>
+    </>
+  );
+}
+
 export type ProfileSectionsProps = Pick<FormRouteRenderProps, "control" | "errors" | "watchedValues" | "allFields" | "pageSections"> & {
   selfHasLife: boolean;
   selfHasDisability: boolean;
@@ -22,8 +32,10 @@ export type ProfileSectionsProps = Pick<FormRouteRenderProps, "control" | "error
   spouseHasDisability: boolean;
   applicantLabels?: ClientApplicantLabels;
   showApplicantLabels?: Partial<Record<"self" | "spouse", boolean>>;
+  financialCalculations?: ProfileFinancialCalculations;
   lifeReplacementNotice?: NonNullable<ApplicantExperience["profile"]>["lifeReplacementNotice"];
   disabilityCollections?: Partial<Record<"self" | "spouse", ResolvedFieldCollection>>;
+  sectionNotes?: Record<string, string | undefined>;
 };
 
 const physicianNameRow = new Set([
@@ -69,32 +81,24 @@ const spousePendingLifeFollowup = new Set([
 
 // Dynamic list field definitions for disability insurance companies
 
-const otherCoverageInfoNote =
-  "Please indicate if you currently hold an active insurance policy with any carrier, including through your employer. Other insurance you have today can impact the amount of coverage you may be approved for.";
-
 /** Profile content in supplied section order; the page resolves Site participation and coverage policy. */
 export default function ProfileSections({ control, errors, watchedValues, allFields, pageSections,
   selfHasLife, selfHasDisability, spouseHasLife, spouseHasDisability, applicantLabels,
-  showApplicantLabels = {}, lifeReplacementNotice, disabilityCollections }: ProfileSectionsProps) {
-  const visibleSectionIds = new Set(pageSections.map(section => section.id));
-  const selfSectionOrder = [
+  showApplicantLabels = {}, financialCalculations, lifeReplacementNotice, disabilityCollections, sectionNotes = {} }: ProfileSectionsProps) {
+  const selfSections = new Set([
     "profilePersonalSelf",
     "profilePersonalSelfPhysician",
     "profileFinancialSelf",
     "profileFinancialQuestionnaireSelf",
-  ] as const;
-  const firstSelfSectionId = selfSectionOrder.find((id) =>
-    visibleSectionIds.has(id),
-  );
+  ]);
+  const firstSelfSectionId = pageSections.find(section => selfSections.has(section.id))?.id;
 
-  const spouseSectionOrder = [
+  const spouseSections = new Set([
     "profilePersonalSpouse",
     "profilePersonalSpousePhysician",
     "profileFinancialSpouse",
-  ] as const;
-  const firstSpouseSectionId = spouseSectionOrder.find((id) =>
-    visibleSectionIds.has(id),
-  );
+  ]);
+  const firstSpouseSectionId = pageSections.find(section => spouseSections.has(section.id))?.id;
 
   return (
     <>
@@ -112,7 +116,7 @@ export default function ProfileSections({ control, errors, watchedValues, allFie
               >
                 <SectionDivider
                   label={
-                    section.description ?? sectionLabels.personalInfo
+                    section.description ?? requirementText('profile.section.personal')
                   }
                   variant="subsection"
                   sx={{ mb: 1 }}
@@ -144,6 +148,7 @@ export default function ProfileSections({ control, errors, watchedValues, allFie
                 }
               >
                 <PhysicianInformation
+                  title={section.description}
                   fieldIds={section.fieldIds}
                   allFields={allFields}
                   control={control}
@@ -157,6 +162,7 @@ export default function ProfileSections({ control, errors, watchedValues, allFie
         }
 
         if (section.id === "profileFinancialSelf") {
+          if (!selfHasLife && !selfHasDisability) return null;
           return (
             <div key={section.id}>
               <ApplicantSectionDivider
@@ -168,11 +174,11 @@ export default function ProfileSections({ control, errors, watchedValues, allFie
               >
                 <SectionDivider
                   label={
-                    section.description ?? sectionLabels.financialInfo
+                    section.description ?? requirementText('profile.section.other-coverage')
                   }
                   variant="subsection"
                   sx={{ mb: 1 }}
-                  note={<Alert severity="info" icon={false} sx={{ mb: 1.5 }}>{otherCoverageInfoNote}</Alert>}
+                  note={sectionNotes[section.id] && <Alert severity="info" icon={false} sx={{ mb: 1.5 }}>{sectionNotes[section.id]}</Alert>}
                 >
                   {renderFinancialFields(
                     "self",
@@ -202,7 +208,7 @@ export default function ProfileSections({ control, errors, watchedValues, allFie
               >
                 <SectionDivider
                   label={
-                    section.description ?? requirementText("page.profile.profile-financial-questionnaire-self")
+                    section.description ?? requirementText('profile.section.financial-questionnaire')
                   }
                   variant="subsection"
                   sx={{ mb: 1 }}
@@ -212,7 +218,7 @@ export default function ProfileSections({ control, errors, watchedValues, allFie
                     allFields,
                     control,
                     errors,
-                    watchedValues,
+                    watchedValues, financialCalculations,
                   )}
                 </SectionDivider>
               </ApplicantSectionDivider>
@@ -232,7 +238,7 @@ export default function ProfileSections({ control, errors, watchedValues, allFie
               >
                 <SectionDivider
                   label={
-                    section.description ?? sectionLabels.personalInfo
+                    section.description ?? requirementText('profile.section.personal')
                   }
                   variant="subsection"
                   sx={{ mb: 1 }}
@@ -264,6 +270,7 @@ export default function ProfileSections({ control, errors, watchedValues, allFie
                 }
               >
                 <PhysicianInformation
+                  title={section.description}
                   fieldIds={section.fieldIds}
                   allFields={allFields}
                   control={control}
@@ -277,6 +284,7 @@ export default function ProfileSections({ control, errors, watchedValues, allFie
         }
 
         if (section.id === "profileFinancialSpouse") {
+          if (!spouseHasLife && !spouseHasDisability) return null;
           return (
             <div key={section.id}>
               <ApplicantSectionDivider
@@ -288,11 +296,11 @@ export default function ProfileSections({ control, errors, watchedValues, allFie
               >
                 <SectionDivider
                   label={
-                    section.description ?? sectionLabels.financialInfo
+                    section.description ?? requirementText('profile.section.other-coverage')
                   }
                   variant="subsection"
                   sx={{ mb: 1 }}
-                  note={<Alert severity="info" icon={false} sx={{ mb: 1.5 }}>{otherCoverageInfoNote}</Alert>}
+                  note={sectionNotes[section.id] && <Alert severity="info" icon={false} sx={{ mb: 1.5 }}>{sectionNotes[section.id]}</Alert>}
                 >
                   {renderFinancialFields(
                     "spouse",
@@ -332,22 +340,25 @@ export default function ProfileSections({ control, errors, watchedValues, allFie
 }
 
 function renderFinancialQuestionnaireFields(
-  _fieldIds: string[],
+  fieldIds: string[],
   allFields: FieldDefinition[],
   control: unknown,
   errors: unknown,
   watchedValues: Record<string, unknown>,
+  calculations?: ProfileFinancialCalculations,
 ) {
+  if (!calculations) throw new Error("Missing fresh-start Profile financial calculations");
+  const policy = calculations;
   function renderField(fieldId: string) {
+    if (!fieldIds.includes(fieldId)) return null;
     const field = allFields.find((f) => f.id === fieldId);
     if (!field) return null;
     return (
-      <FieldRenderer
-        key={field.id}
-        field={field}
-        control={control as never}
-        errors={errors as never}
-      />
+      <div key={field.id}>
+        <FieldRenderer field={field} control={control as never} errors={errors as never} />
+        {policy.calculations.filter(row => row.afterField === field.id && profileCalculationApplies(row, watchedValues)).map(row =>
+          <Typography key={row.id} role="status" sx={{ my: 1 }}>{requirementText(row.label)}: <strong>{new Intl.NumberFormat("en-US", { style: "currency", currency: policy.currency }).format(profileFinancialTotal(policy, row.id, watchedValues))}</strong></Typography>)}
+      </div>
     );
   }
 
@@ -355,7 +366,7 @@ function renderFinancialQuestionnaireFields(
   const isSoleProprietor = watchedValues["is-sole-proprietor"] === true;
   const isProfessionalCorporation =
     watchedValues["is-professional-corporation"] === true;
-  const hasSelfEmploymentSource = isSoleProprietor || isProfessionalCorporation;
+  const worksFromHome = watchedValues["work-from-home"] === "yes";
   const hasWorkOutsideHome =
     watchedValues["has-work-location-outside-home"] === "yes";
 
@@ -387,12 +398,14 @@ function renderFinancialQuestionnaireFields(
               {renderField("professional-corporation-benefits-cost")}
             </>
           )}
-          {hasSelfEmploymentSource && (
+          {isSelfEmployed && (
             <>
               {renderField("years-self-employed")}
               {renderField("work-from-home")}
-              {renderField("has-work-location-outside-home")}
-              {hasWorkOutsideHome && renderField("work-location-details")}
+              {worksFromHome && <ConditionalGroup>
+                {renderField("has-work-location-outside-home")}
+                {hasWorkOutsideHome && renderField("work-location-details")}
+              </ConditionalGroup>}
             </>
           )}
         </ConditionalGroup>
@@ -438,9 +451,6 @@ function renderFinancialFields(
   const pendingFollowupSet = isSelf
     ? pendingLifeFollowup
     : spousePendingLifeFollowup;
-  const disabilityListName = isSelf
-    ? "selfDisabilityCompanies"
-    : "spouseDisabilityCompanies";
 
   function renderField(fieldId: string) {
     const field = allFields.find((f) => f.id === fieldId);
@@ -455,15 +465,10 @@ function renderFinancialFields(
     );
   }
 
-  function renderDisabilityCompanySummary(item: Record<string, string>) {
-    return (
-      <>
-        <Typography variant="subtitle2">{item.company || requirementText("application.ui.company")}</Typography>
-        <Typography variant="caption" color="text.secondary">
-          {`${item.monthlyBenefitAmount || requirementText("application.ui.zero-amount")} | ${item.benefitPeriod || requirementText("application.ui.benefit-period-not-provided")} | ${item.waitingPeriod || requirementText("application.ui.waiting-period-not-provided")}`}
-        </Typography>
-      </>
-    );
+
+  function renderDisabilityCompanies() {
+    if (!collection) throw new Error(`Missing configured disability collection for ${applicant}`);
+    return <DynamicList control={control as never} name={collection.name} label={collection.label} maxItems={collection.maxItems} mapping={collection.mapping} renderItem={renderDisabilityCompanySummary} />;
   }
 
   return (
@@ -471,18 +476,18 @@ function renderFinancialFields(
       {hasLife && (
         <>
           {renderField(hasOtherLifeId)}
-          {watchedValues[hasOtherLifeId] === "yes" && (
+          {allFields.some(field => field.id === hasOtherLifeId) && watchedValues[hasOtherLifeId] === "yes" && (
             <ConditionalGroup>
               {fieldIds
                 .filter((id) => followupSet.has(id))
                 .map((id) => renderField(id))}
-              {watchedValues[replacementId] === "yes" && notice?.jurisdictions.includes(jurisdiction) && (
+              {allFields.some(field => field.id === replacementId) && watchedValues[replacementId] === "yes" && notice?.jurisdictions.includes(jurisdiction) && (
                 <Typography data-testid={`${applicant}-life-replacement-notice`} sx={{ fontSize: `${notice.fontSizePt}pt`, fontWeight: notice.bold ? "bold" : "normal", my: 2 }}>{notice.text}</Typography>
               )}
             </ConditionalGroup>
           )}
           {renderField(pendingLifeAppsId)}
-          {watchedValues[pendingLifeAppsId] === "yes" && (
+          {allFields.some(field => field.id === pendingLifeAppsId) && watchedValues[pendingLifeAppsId] === "yes" && (
             <ConditionalGroup>
               {fieldIds
                 .filter((id) => pendingFollowupSet.has(id))
@@ -495,17 +500,10 @@ function renderFinancialFields(
       {hasDisability && (
         <Box sx={{ mt: hasLife ? 2 : 0 }}>
           {renderField(hasDiId)}
-          {watchedValues[hasDiId] === "yes" && (
+          {allFields.some(field => field.id === hasDiId) && watchedValues[hasDiId] === "yes" && (
             <ConditionalGroup>
               <Box sx={{ mt: 1, mb: 2 }}>
-                <DynamicList
-                  control={control as never}
-                  name={collection?.name ?? disabilityListName}
-                  label={collection?.label ?? requirementText("application.ui.company")}
-                  maxItems={collection?.maxItems ?? 10}
-                  mapping={collection?.mapping ?? disabilityCompanyMapping}
-                  renderItem={renderDisabilityCompanySummary}
-                />
+                {renderDisabilityCompanies()}
               </Box>
               {renderField(replacingDiId)}
               {watchedValues[replacingDiId] === "yes" &&

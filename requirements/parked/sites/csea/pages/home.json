@@ -1,0 +1,8 @@
+{
+  "page": "home",
+  "configurations": {
+    "home-variant": "hero-image",
+    "child-collection-mode": "notice-only",
+    "form-template": "single"
+  }
+}

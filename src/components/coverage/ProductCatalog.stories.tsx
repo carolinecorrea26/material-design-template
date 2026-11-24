@@ -10,6 +10,7 @@ import {
   useApplicationForm,
   type ApplicationFormValues,
 } from "../../app/ApplicationFormContext";
+import { getClientPageFields } from "../../config/clientFields/getClientPageFields";
 import { withApplicantsApplying } from "../../utils/applicantsApplying";
 import { resolveApplicationCoverage } from "../../domain/coverageRuntime";
 import CoverageSelectionFeedback from "./CoverageSelectionFeedback";
@@ -58,6 +59,7 @@ function LocalFormProvider({ children, scenario }: { children: React.ReactNode; 
 function ProductCatalogDemo({ scenario }: { scenario: CoverageStoryScenario }) {
   const state = useCoverageState();
   const { values, setPageValues } = useApplicationForm();
+  const workFields = getClientPageFields("coverage", values);
   const revealProducts = state.revealProducts;
   const [validationMessage, setValidationMessage] = useState<string | undefined>();
   useEffect(() => { if (scenario.categories.length) revealProducts(); }, [revealProducts, scenario]);
@@ -65,8 +67,8 @@ function ProductCatalogDemo({ scenario }: { scenario: CoverageStoryScenario }) {
   return (
     <Stack spacing={3}>
       {scenario.editableWorkFacts && <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-        <ControlledFieldRenderer field={{ id: 'story-work-hours', label: 'Work hours per week', inputType: 'number' }} value={String(values['hours-worked-per-week'] ?? '')} onChange={value => setPageValues({ 'hours-worked-per-week': String(value) })} />
-        <ControlledFieldRenderer field={{ id: 'story-monthly-income', label: 'Average monthly income', inputType: 'number' }} value={String(values['average-monthly-income'] ?? '')} onChange={value => setPageValues({ 'average-monthly-income': String(value) })} />
+        <ControlledFieldRenderer field={workFields.find(field => field.id === 'hours-worked-per-week')!} value={String(values['hours-worked-per-week'] ?? '')} onChange={value => setPageValues({ 'hours-worked-per-week': String(value) })} />
+        <ControlledFieldRenderer field={workFields.find(field => field.id === 'average-monthly-income')!} value={String(values['average-monthly-income'] ?? '')} onChange={value => setPageValues({ 'average-monthly-income': String(value) })} />
       </Stack>}
       {state.selectedCategories.length > 0 && !state.showProducts && (
         <Button
@@ -140,15 +142,11 @@ export const DisabilityBelowWorkHours: StoryObj = { render: (_args, context) => 
 export const DisabilityMissingWorkHours: StoryObj = { render: (_args, context) => <ScenarioExample scenario={coverageStoryScenarios.missingWorkHours} catalog={context.loaded.catalog as SharedCatalog} storyId={context.id} /> };
 export const DisabilityMissingIncome: StoryObj = { render: (_args, context) => <ScenarioExample scenario={coverageStoryScenarios.missingIncome} catalog={context.loaded.catalog as SharedCatalog} storyId={context.id} /> };
 export const MixedEligibleAndIneligibleCategories: StoryObj = { render: (_args, context) => <ScenarioExample scenario={coverageStoryScenarios.mixedEligibility} catalog={context.loaded.catalog as SharedCatalog} storyId={context.id} /> };
-export const MutuallyExclusiveProductSelected: StoryObj = { render: (_args, context) => <ScenarioExample scenario={coverageStoryScenarios.mutuallyExclusive} catalog={context.loaded.catalog as SharedCatalog} storyId={context.id} /> };
-export const RestoredMutuallyExclusiveConflict: StoryObj = { render: (_args, context) => <ScenarioExample scenario={coverageStoryScenarios.restoredConflict} catalog={context.loaded.catalog as SharedCatalog} storyId={context.id} /> };
 export const SpouseNotEligible: StoryObj = { render: (_args, context) => <ScenarioExample scenario={coverageStoryScenarios.spouseIneligible} catalog={context.loaded.catalog as SharedCatalog} storyId={context.id} /> };
 export const SelectedWaitingAndBenefitPeriods: StoryObj = { render: (_args, context) => <ScenarioExample scenario={coverageStoryScenarios.selectedOptions} catalog={context.loaded.catalog as SharedCatalog} storyId={context.id} /> };
 export const ApplicantRiderOptions: StoryObj = { render: (_args, context) => <ScenarioExample scenario={coverageStoryScenarios.riders} catalog={context.loaded.catalog as SharedCatalog} storyId={context.id} /> };
-export const RiderOnlyWithZeroBaseCoverage: StoryObj = { render: (_args, context) => <ScenarioExample scenario={coverageStoryScenarios.riderOnly} catalog={context.loaded.catalog as SharedCatalog} storyId={context.id} /> };
 export const SelectedProductEstimateUnavailable: StoryObj = { render: (_args, context) => <ScenarioExample scenario={coverageStoryScenarios.rateUnavailable} catalog={context.loaded.catalog as SharedCatalog} storyId={context.id} /> };
 export const ReferenceRateTable: StoryObj = { render: (_args, context) => <ScenarioExample scenario={coverageStoryScenarios.referenceRates} catalog={context.loaded.catalog as SharedCatalog} storyId={context.id} /> };
-export const UnresolvedProductRequirements: StoryObj = { render: (_args, context) => <ScenarioExample scenario={coverageStoryScenarios.unresolvedRequirements} catalog={context.loaded.catalog as SharedCatalog} storyId={context.id} /> };
 export const NoCategorySelected: StoryObj = { render: (_args, context) => <ScenarioExample scenario={coverageStoryScenarios.noCategory} catalog={context.loaded.catalog as SharedCatalog} storyId={context.id} /> };
 
 export const ProductsLoading: StoryObj = { render: (_args, context) => <ScenarioExample scenario={coverageStoryScenarios.loading} catalog={context.loaded.catalog as SharedCatalog} storyId={context.id} /> };

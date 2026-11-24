@@ -1,3 +1,5 @@
+import { resolveMappedFields } from '../../domain/requirementFields';
+import { requirementText } from '../../domain/requirementContent';
 // Preview notes are documentation only; the canvas contains application UI.
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Stack } from "@mui/material";
@@ -22,19 +24,19 @@ const meta = {
 export default meta;
 
 export const Error: StoryObj = {
-  render: () => <PageAlert severity="error" message="Please complete the required fields before continuing." />,
+  render: () => <PageAlert severity="error" message={applicationRecovery.validation.message} />,
 };
 
 export const Warning: StoryObj = {
-  render: () => <PageAlert severity="warning" message="This plan is not available in your state." />,
+  render: () => <PageAlert severity="warning" message={requirementText("application.ui.you-re-entering-the-final-stages-of-your-application")} />,
 };
 
 export const Info: StoryObj = {
-  render: () => <PageAlert severity="info" message="Membership verification is in progress." />,
+  render: () => <PageAlert severity="info" message={requirementText("coverage.increase.additional-note")} />,
 };
 
 export const Success: StoryObj = {
-  render: () => <PageAlert severity="success" message="Your progress has been saved." />,
+  render: () => <PageAlert severity="success" message={requirementText("recovery.resume-loaded")} />,
 };
 
 export const Dismissible: StoryObj = {
@@ -51,22 +53,12 @@ export const NoMessage: StoryObj = {
   ),
 };
 
-export const AllSeverities: StoryObj = {
-  render: () => (
-    <Stack spacing={2}>
-      <PageAlert severity="error" message="Error — blocking problem the user must resolve." />
-      <PageAlert severity="warning" message="Warning — not blocking, but needs attention." />
-      <PageAlert severity="info" message="Info — contextual, non-urgent detail." />
-      <PageAlert severity="success" message="Success — confirms a completed action." />
-    </Stack>
-  ),
-};
 function ValidationOnNextDemo() {
-  const { control, handleSubmit, formState: { errors } } = useForm<Record<string, string | boolean | string[]>>({ defaultValues: { 'feedback-email': '' } });
+  const { control, handleSubmit, formState: { errors } } = useForm<Record<string, string | boolean | string[]>>({ defaultValues: { email: '' } });
   const [showSummary, setShowSummary] = useState(false);
   return <Stack component="form" spacing={2} noValidate onSubmit={handleSubmit(() => setShowSummary(false), () => setShowSummary(true))}>
     {showSummary && <PageAlert message={applicationRecovery.validation.message} />}
-    <FieldRenderer field={{ id: 'feedback-email', label: 'Email address', inputType: 'text', format: 'email', required: true }} control={control} errors={errors} />
+    <FieldRenderer field={resolveMappedFields({ component: 'membership' }).find(field => field.id === 'email')!} control={control} errors={errors} />
     <Button type="submit" variant="contained">Next</Button>
   </Stack>;
 }

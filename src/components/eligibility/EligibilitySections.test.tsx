@@ -1,12 +1,15 @@
+import { readFileSync } from "node:fs";
 import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { useForm } from "react-hook-form";
-import { afterEach, beforeEach, expect, it, vi } from "vitest";
+import { afterEach, beforeAll, beforeEach, expect, it, vi } from "vitest";
 import EligibilitySections from "./EligibilitySections";
 import { getClientPageFields } from "../../config/clientFields/getClientPageFields";
 import { getPageSections } from "../../config/pageSections/getPageSections";
-import { installPrototypeLibrary } from "../../domain/prototypeLibrary";
+import { installPrototypeLibrary, resolvePrototypeLibrary, type PrototypeLibrary } from "../../domain/prototypeLibrary";
 
+let library: PrototypeLibrary;
+beforeAll(() => { const catalog = JSON.parse(readFileSync("public/catalog/portal.json", "utf8")); library = resolvePrototypeLibrary(catalog.data, "asce", "eligibility-sections"); });
 let root: Root;
 let container: HTMLDivElement;
 
@@ -28,7 +31,7 @@ function Form() {
 
 beforeEach(async () => {
   vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true);
-  installPrototypeLibrary(null);
+  installPrototypeLibrary(library);
   window.history.replaceState(null, "", "/eligibility?site=demo");
   container = document.createElement("div");
   document.body.append(container);
@@ -38,6 +41,7 @@ beforeEach(async () => {
 afterEach(async () => {
   await act(async () => root.unmount());
   container.remove();
+  installPrototypeLibrary(null);
   window.sessionStorage.clear();
   vi.unstubAllGlobals();
 });
@@ -83,6 +87,7 @@ it("derives again when ZIP changes, including after ZIP is cleared and re-entere
 
 it("renders ZIP, State and Birthday through the same group used by quotes", () => {
   expect([...container.querySelectorAll('[data-analytics-field]')].map(field => field.getAttribute('data-analytics-field')))
-    .toEqual(['zip-postal-code', 'state-province', 'birth-date']);
-  expect(container.querySelectorAll('.MuiFormHelperText-root')).toHaveLength(3);
+    .toEqual(['zip-postal-code', 'state-province', 'birth-date', 'dependents']);
+  for (const id of ['zip-postal-code', 'state-province', 'birth-date']) for (const helper of container.querySelectorAll(`[data-analytics-field="${id}"] .MuiFormHelperText-root`)) expect(helper.textContent?.trim()).toBeTruthy();
+  expect(container.querySelector('[data-analytics-field="birth-date"] .MuiFormHelperText-root')?.textContent).toContain('MM/DD/YYYY');
 });

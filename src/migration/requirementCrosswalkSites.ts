@@ -1,8 +1,9 @@
+import { recordedFilesMatch } from "./sourceEvidence";
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import type { DatabaseSchema } from "../persistence/types";
 import type { buildRequirementCrosswalk, CrosswalkRow } from "./requirementCrosswalk";
-import { resolveSnapshotSite as resolveEffectiveSite } from "../domain/effectiveSite";
+import { resolveAuditSnapshotSite as resolveEffectiveSite } from "./snapshotSiteResolution";
 import { activeSiteMainRows } from "./activeSiteIdentity";
 import { currentMcrSource } from "./currentMcr";
 import { reviewAbeSourceFollowThrough } from "./requirementCrosswalkAbeSources";
@@ -20,10 +21,13 @@ export function abeSiteReviewSnapshot(db: DatabaseSchema) {
     decision: db.semanticRequirements.find(row => row.key === "business-decision.rules-review.abe-eligibility-ages"),
   };
 }
-export function abeFinalReviewNativeHash(db: DatabaseSchema) { return digest(resolveEffectiveSite(db, "abe")); }
+export function abeFinalReviewNativeHash(db: DatabaseSchema) {
+  if (!db.sites.some(site => site.key === "abe" && site.status === "active" && !site.deletedAt)) return null;
+  return digest(resolveEffectiveSite(db, "abe"));
+}
 export function abeSiteReviewHash(db: DatabaseSchema) { return digest(abeSiteReviewSnapshot(db)); }
 export function abeSiteReviewCodeMatches(read = (path: string) => readFileSync(path)) {
-  return abeReviewFiles.every(path => evidence.files[path as keyof typeof evidence.files] === createHash("sha256").update(read(path)).digest("hex"));
+  return recordedFilesMatch(Object.fromEntries(abeReviewFiles.map(path => [path, evidence.files[path as keyof typeof evidence.files]])), read);
 }
 function reviewedDimension(db: DatabaseSchema, site: ReturnType<typeof resolveEffectiveSite>, row: CrosswalkRow) {
   if (row.kind !== "source-clause" || row.scope.siteKeys.length !== 1 || row.scope.siteKeys[0] !== "abe") return null;
@@ -69,7 +73,7 @@ export function buildAbeSiteReview(db: DatabaseSchema, report: Report) {
   for (const record of sourceFollowThrough.records) if (record.status === "recorded-evidence") ids.add(record.requirementId);
   const queue = applicable.filter(row => row.disposition === "review-pending" && !ids.has(row.id)).map(row => ({ id: row.id, area: row.area, kind: row.kind, sourceReferences: row.sourceReferences, ruleKeys: row.ruleKeys }));
   const unassigned = report.requirements.filter(row => !row.scope.siteKeys.length && row.disposition === "review-pending" && !ids.has(row.id)).map(row => ({ id: row.id, area: row.area, sourceReferences: row.sourceReferences, question: "Does the exact source instruction apply to ABE? A shared or unassigned label does not establish applicability." }));
-  const assessmentCurrent = finalAssessment.nativeFingerprint === abeFinalReviewNativeHash(db) && Object.entries(finalAssessment.files).every(([path, value]) => createHash("sha256").update(readFileSync(path)).digest("hex") === value);
+  const assessmentCurrent = finalAssessment.nativeFingerprint === abeFinalReviewNativeHash(db) && recordedFilesMatch(finalAssessment.files, path => readFileSync(path));
   const complete = assessmentCurrent && matches && sourceFollowThrough.records.every(row => row.status === "recorded-evidence") && finalAssessment.status === "approved-changes-implemented";
   return { reviewedOn: report.reviewedOn, siteKey: "abe", status: complete ? "Complete for current mock prototype" : "Open", executionOrder: "Finish all phases for ABE before starting another Site", changePolicy: "Apply explicitly approved changes only. Present any additional prototype change to the user first. Retain the existing unmarried-child informational note only; keep DI spouse minimum hours.",
     reviewConclusion: { reviewedOn: finalAssessment.reviewedOn, status: complete ? "Review and approved implementation complete; no unanswered questions" : "Reverification required", questionsDocument: "docs/project-review/abe-review-questions.md", assessmentDocument: "docs/project-review/abe-final-review.json", questions: finalAssessment.questions.filter(question => question.status !== "answered-and-implemented").map(question => ({ id: question.id, question: question.question })) },

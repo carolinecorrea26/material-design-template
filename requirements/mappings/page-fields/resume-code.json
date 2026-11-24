@@ -7,5 +7,19 @@
         "self"
       ]
     }
-  ]
+  ],
+  "constraints": {
+    "resume-security-code": {
+      "included": true,
+      "required": true,
+      "fixedProperties": [
+        "label",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength"
+      ]
+    }
+  }
 }

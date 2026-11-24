@@ -1,0 +1,77 @@
+{
+  "title": "Email notifications",
+  "description": "Notification types, recipient emails and when each message is sent.",
+  "types": [
+    {
+      "id": "sent",
+      "label": "Application sent",
+      "description": "The advisor has sent the application to the applicant to complete and sign.",
+      "emails": [
+        {
+          "recipient": "Advisor",
+          "templateId": "advisor-sent-advisor"
+        },
+        {
+          "recipient": "Applicant",
+          "templateId": "advisor-sent-applicant"
+        }
+      ]
+    },
+    {
+      "id": "pending",
+      "label": "Application pending",
+      "description": "An application sent to the applicant is still pending completion and signature.",
+      "emails": [
+        {
+          "recipient": "Advisor",
+          "templateId": "advisor-pending-advisor"
+        },
+        {
+          "recipient": "Applicant",
+          "templateId": "consumer-pending"
+        }
+      ]
+    },
+    {
+      "id": "deleted",
+      "label": "Application deleted",
+      "description": "An incomplete advisor-prepared application has expired and been deleted. Both the advisor and applicant are notified.",
+      "emails": [
+        {
+          "recipient": "Advisor",
+          "templateId": "advisor-deleted-advisor"
+        },
+        {
+          "recipient": "Applicant",
+          "templateId": "advisor-deleted-applicant"
+        }
+      ]
+    },
+    {
+      "id": "completed",
+      "label": "Application completed",
+      "description": "The applicant has completed and submitted the application.",
+      "emails": [
+        {
+          "recipient": "Advisor",
+          "templateId": "advisor-submitted-advisor"
+        },
+        {
+          "recipient": "Applicant",
+          "templateId": "consumer-submitted"
+        }
+      ]
+    },
+    {
+      "id": "edit-requested",
+      "label": "Application edit requested",
+      "description": "The applicant has requested an edit to the advisor-prepared application.",
+      "emails": [
+        {
+          "recipient": "Advisor",
+          "templateId": "advisor-edit-advisor"
+        }
+      ]
+    }
+  ]
+}

@@ -3,19 +3,29 @@
   "components": [
     {
       "type": "HomeHero",
-      "mapping": "home"
+      "mapping": "home",
+      "section": "hero"
     },
     {
-      "type": "HowApplyingWorksPanel"
+      "type": "HowApplyingWorksPanel",
+      "section": "how-applying-works"
     },
     {
-      "type": "HomeCoverageSection"
+      "type": "HomeCoverageSection",
+      "section": "coverage-options"
     },
     {
-      "type": "AssociationIntroduction"
+      "type": "AssociationIntroduction",
+      "section": "about"
     },
     {
-      "type": "UnderwriterCredentials"
+      "type": "UnderwriterCredentials",
+      "section": "about"
+    },
+    {
+      "type": "AppModal",
+      "purpose": "configured landing notice with Cancel and Continue actions",
+      "dialog": "landing-notice"
     }
   ],
   "definition": {
@@ -33,15 +43,62 @@
   },
   "position": 0,
   "layout": {
+    "sectionOrder": "home",
     "sections": {
-      "eligibility": {
-        "id": "homeEligibility",
+      "hero": {
+        "id": "hero",
         "fields": [
           "zip-postal-code",
           "state-province",
           "birth-date"
-        ]
+        ],
+        "display": {
+          "label": "Hero",
+          "templates": [
+            "multi",
+            "single"
+          ]
+        }
+      },
+      "how-applying-works": {
+        "id": "how-applying-works",
+        "fields": [],
+        "display": {
+          "label": "How applying works",
+          "templates": [
+            "multi"
+          ],
+          "excludeVariants": [
+            "welcome-back"
+          ]
+        }
+      },
+      "coverage-options": {
+        "id": "coverage-options",
+        "fields": [],
+        "display": {
+          "label": "Coverage options",
+          "templates": [
+            "multi"
+          ],
+          "excludeVariants": [
+            "welcome-back"
+          ]
+        }
+      },
+      "about": {
+        "id": "about",
+        "fields": [],
+        "display": {
+          "label": "About",
+          "templates": [
+            "multi"
+          ]
+        }
       }
+    },
+    "dialogs": {
+      "landing-notice": {}
     }
   },
   "fieldMapping": {
@@ -55,8 +112,6 @@
       "home.hero.tagline",
       "home.hero.title",
       "home.hero.description",
-      "home.hero.welcome-back-title",
-      "home.hero.welcome-back-description",
       "home.hero.cta-label",
       "home.hero.secondary-cta-label",
       "home.how-applying-works.title",
@@ -64,11 +119,11 @@
       "home.applying-steps",
       "home.coverage-options.title",
       "home.coverage-options.description",
-      "home.nyl-credentials.name",
+      "insurer.name",
       "home.nyl-credentials.tagline",
       "home.nyl-credentials.description",
-      "home.nyl-credentials.ratings-note",
-      "home.nyl-credentials.ratings",
+      "insurer.ratings-note",
+      "insurer.ratings",
       "home.quote-section.title",
       "home.quote-section.description",
       "home.review-process-link-label",
@@ -109,7 +164,29 @@
       "home.quote.of-3",
       "home.quote.invalid-field",
       "home.quote.selection-label",
-      "home.quote.coverage-details-description"
+      "home.quote.coverage-details-description",
+      "home.client-section",
+      "home.hero.image",
+      "home.landing-notice"
+    ],
+    "runtime": [
+      "help.quick-decision.availability",
+      "help.quick-decision.show-more",
+      "help.quick-decision.show-less",
+      "coverage.summary.variable-amount",
+      "coverage.summary.amount-range",
+      "coverage.summary.starting-at",
+      "coverage.summary.up-to",
+      "home.tools.quote-title",
+      "home.tools.needs-title",
+      "insurer.logo"
+    ],
+    "hero-actions": [
+      "home.hero.resume-prefix",
+      "home.hero.start-prefix",
+      "home.hero.continue-label",
+      "home.hero.welcome-title",
+      "home.hero.welcome-description"
     ]
   },
   "surfaces": {
@@ -134,12 +211,180 @@
         "quote-rate-frequency": {
           "field": "rate-frequency"
         }
-      }
+      },
+      "definition": {
+        "label": "home.tools.quote-title",
+        "fields": [
+          {
+            "fieldKey": "zip-postal-code",
+            "valueKey": "zip-postal-code"
+          },
+          {
+            "fieldKey": "state-province",
+            "valueKey": "state-province"
+          },
+          {
+            "fieldKey": "birth-date",
+            "valueKey": "birth-date"
+          },
+          {
+            "fieldKey": "gender",
+            "valueKey": "gender"
+          },
+          {
+            "fieldKey": "smoker",
+            "valueKey": "smoker"
+          },
+          {
+            "fieldKey": "tobacco-last-used",
+            "valueKey": "tobacco-last-used"
+          },
+          {
+            "fieldKey": "tobacco-products",
+            "valueKey": "tobacco-products"
+          },
+          {
+            "fieldKey": "average-monthly-income",
+            "valueKey": "average-monthly-income"
+          },
+          {
+            "fieldKey": "hours-worked-per-week",
+            "valueKey": "hours-worked-per-week"
+          },
+          {
+            "fieldKey": "self-employed-under-one-year",
+            "valueKey": "self-employed-under-one-year"
+          },
+          {
+            "fieldKey": "actively-at-work",
+            "valueKey": "actively-at-work"
+          },
+          {
+            "fieldKey": "monthly-business-expenses",
+            "valueKey": "monthly-business-expenses"
+          },
+          {
+            "fieldKey": "business-expense-responsibility",
+            "valueKey": "business-expense-responsibility"
+          },
+          {
+            "fieldKey": "quote-selection",
+            "valueKey": "quote-selection"
+          },
+          {
+            "fieldKey": "quote-amount",
+            "valueKey": "quote-amount"
+          },
+          {
+            "fieldKey": "quote-monthly-amount",
+            "valueKey": "quote-monthly-amount"
+          },
+          {
+            "fieldKey": "quote-categories",
+            "valueKey": "quote-categories"
+          },
+          {
+            "fieldKey": "quote-rate-frequency",
+            "valueKey": "quote-rate-frequency"
+          }
+        ],
+        "inspectionLabel": "Quote calculator",
+        "inspectionOrder": {
+          "birth-date": 3,
+          "zip-postal-code": 1,
+          "state-province": 2,
+          "gender": 4,
+          "smoker": 5,
+          "average-monthly-income": 6,
+          "hours-worked-per-week": 7,
+          "actively-at-work": 8,
+          "monthly-business-expenses": 9,
+          "business-expense-responsibility": 10,
+          "quote-selection": 100,
+          "quote-amount": 100,
+          "quote-monthly-amount": 100,
+          "quote-categories": 0,
+          "quote-rate-frequency": 200
+        }
+      },
+      "kind": "tool"
     },
     "needsCalculator": {
       "mapping": {
         "component": "needs-calculator"
+      },
+      "definition": {
+        "label": "home.tools.needs-title",
+        "fields": [
+          {
+            "fieldKey": "needs-annual-income",
+            "valueKey": "needs-annual-income"
+          },
+          {
+            "fieldKey": "needs-years-to-replace",
+            "valueKey": "needs-years-to-replace"
+          },
+          {
+            "fieldKey": "needs-outstanding-debts",
+            "valueKey": "needs-outstanding-debts"
+          },
+          {
+            "fieldKey": "needs-existing-coverage",
+            "valueKey": "needs-existing-coverage"
+          }
+        ],
+        "inspectionLabel": "Needs calculator"
+      },
+      "kind": "tool"
+    }
+  },
+  "contentSlots": {
+    "home.hero.title": {
+      "name": "Hero text"
+    },
+    "home.hero.description": {
+      "name": "Hero subtext"
+    },
+    "home.client-section": {
+      "name": "About client section",
+      "optional": true
+    },
+    "home.hero.image": {
+      "name": "Hero image",
+      "kind": "image"
+    },
+    "home.landing-notice": {
+      "name": "Entry notice content",
+      "kind": "notice",
+      "optional": true,
+      "requiredWhen": {
+        "configuration": "home-landing-notice",
+        "properties": [
+          "title",
+          "text"
+        ]
       }
+    },
+    "home.hero.tagline": {
+      "name": "Hero tagline"
+    },
+    "home.how-applying-works.title": {
+      "name": "How applying works heading"
+    },
+    "home.how-applying-works.description": {
+      "name": "How applying works introduction"
+    },
+    "home.coverage-options.title": {
+      "name": "Coverage options heading"
+    },
+    "home.coverage-options.description": {
+      "name": "Coverage options introduction"
+    },
+    "home.quote-section.title": {
+      "name": "Quote introduction heading"
+    },
+    "home.quote-section.description": {
+      "name": "Quote introduction description"
     }
   }
 }

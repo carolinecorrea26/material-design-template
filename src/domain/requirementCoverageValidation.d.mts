@@ -7,4 +7,4 @@ export type CoverageAssignment = {
   minimumAgeYears?: number;
   maximumAgeYears?: number;
 };
-export function parseCoverageAssignments(document: unknown, definitions: Array<{ id: string; status: string; type: string; options?: string[] }>, siteKey: string, products?: Record<string, string[]>): CoverageAssignment[];
+export function parseCoverageAssignments(document: unknown, definitions: Array<{ id: string; status: string; type: string; options?: string[]; productApplicantOverrides?: boolean }>, siteKey: string, products?: Record<string, string[]>): CoverageAssignment[];

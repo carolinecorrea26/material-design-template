@@ -7,15 +7,11 @@ export const MESSAGE_DURATION = 2200;
 
 export function getForwardMessages(pageId: PageId): TransitionMessagePair {
   const { navigation } = getContent();
-  return (
-    (navigation.transitionMessages[pageId] as TransitionMessagePair) ??
-    navigation.transitionDefaults
-  );
+  const messages = navigation.transitionMessages[pageId] ?? navigation.transitionDefaults;
+  if (!Array.isArray(messages) || messages.length !== 2 || messages.some(message => typeof message !== 'string' || !message.trim())) throw new Error(`Invalid transition messages: ${pageId}`);
+  return messages;
 }
 
 export function getBackMessage(): string {
   return getContent().navigation.backMessage;
 }
-
-/** @deprecated Use getBackMessage() instead */
-export const BACK_MESSAGE = "Returning to the previous step...";

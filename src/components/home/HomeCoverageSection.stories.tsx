@@ -11,4 +11,4 @@ const meta = {
   decorators: [withHomeStoryFrame],
 } satisfies Meta<typeof HomeCoverageSection>;
 export default meta;
-export const Default: StoryObj = { render: () => <ComponentFixture>{fixture => <HomeCoverageSection content={fixture.content} coverageOptions={{ coverages: fixture.products, coverageConfig: fixture.client.coverages }} />}</ComponentFixture> };
+export const Default: StoryObj = { render: () => <ComponentFixture>{fixture => <HomeCoverageSection content={fixture.content} branding={fixture.client.branding} coverageOptions={{ coverages: fixture.products, coverageConfig: fixture.client.coverages }} />}</ComponentFixture> };

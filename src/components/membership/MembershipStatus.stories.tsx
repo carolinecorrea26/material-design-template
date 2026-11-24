@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import MembershipStatus from "./MembershipStatus";
 import MembershipStoryForm from "../../../.storybook/membershipStoryForm";
-import type { TemplateCapability } from "../../dev/storybook/globalTemplate";
+import type { MembershipExampleConfiguration } from "../../dev/storybook/globalTemplate";
+import { isMembershipAttestationStop } from '../../config/clientFields/membershipFollowUpVisibility';
 
 const meta = {
   id: "pages-membership-membership-status",
@@ -11,17 +12,20 @@ const meta = {
 } satisfies Meta<typeof MembershipStatus>;
 export default meta;
 
-function StatusExample({ capability, membership }: { capability?: TemplateCapability; membership?: string }) {
-  return <MembershipStoryForm capability={capability} initialValues={membership ? { membership } : {}}>
+function StatusExample({ configuration, membership }: { configuration?: MembershipExampleConfiguration; membership?: string }) {
+  return <MembershipStoryForm membership={configuration} initialValues={membership ? { membership } : {}}>
     {({ control, errors, allFields, values, client }) => <MembershipStatus
       membershipField={allFields.find(field => field.id === "membership")}
       client={client} control={control} errors={errors}
-      showMembershipIneligibleAlert={values.membership === "no"}
+      showMembershipIneligibleAlert={isMembershipAttestationStop(allFields.find(field => field.id === 'membership'), values.membership)}
     />}
   </MembershipStoryForm>;
 }
 export const Default: StoryObj = { render: () => <StatusExample /> };
-export const NotAMember: StoryObj = { render: () => <StatusExample capability="standard" membership="no" /> };
-export const AssociationSelection: StoryObj = { render: () => <StatusExample capability="associationSelection" /> };
-export const Physician: StoryObj = { render: () => <StatusExample capability="physicianMembership" /> };
-export const NewOrCurrentMember: StoryObj = { render: () => <StatusExample capability="employmentMembership" /> };
+export const NotAMember: StoryObj = { render: () => <StatusExample membership="no" /> };
+export const AssociationSelection: StoryObj = { render: () => <StatusExample configuration={{ configuration: 'association' }} /> };
+export const NewOrCurrentMember: StoryObj = { render: () => <StatusExample configuration={{ configuration: 'new-or-current' }} /> };
+export const CategoryMembership: StoryObj = { render: () => <StatusExample configuration={{ configuration: 'category', options: [
+  { value: 'professional', label: 'Professional member', outcome: 'member' },
+  { value: 'joining', label: 'Joining the association', outcome: 'new-member' },
+] }} /> };

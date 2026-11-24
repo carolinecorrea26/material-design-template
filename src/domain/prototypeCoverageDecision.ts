@@ -14,7 +14,8 @@ import { resolveAssociationAmounts } from "./associationAmountPolicy";
 import { buildPrototypeAmounts } from "./prototypeProductProjection";
 import { getCoverageAmountChoices } from "../utils/coverageAmounts";
 import { requirementCoverageFacts } from "./requirementCoveragePolicy";
-import { coverageInForceAmount, coverageInForceLife } from "./tpaPortfolioAmounts";
+import { coverageInForceAmount, coverageInForceLife, verifiedCoverageElections, verifiedPortfolioAmount } from "./tpaPortfolioAmounts";
+import { selectedApplicationApplicants } from './applicantParticipation';
 
 export function prototypeCoverageDecision(productKey: string, applicant: CoverageApplicantId, values: Record<string, unknown>, choices: number[]) {
   const library = getPrototypeLibrary();
@@ -31,7 +32,7 @@ export function prototypeCoverageDecision(productKey: string, applicant: Coverag
   const definition = library.products.find(product => product.id === productKey)!;
   const facts = requirementCoverageFacts(definition, applicationApplicantFacts(values, applicant));
   const amounts = values.coverageAmounts as Record<string, number> ?? {};
-  const selections = values.productApplicants as Record<string, CoverageApplicantId[]> ?? {};
+  const selections = selectedApplicationApplicants(values, library.products);
   const selectedProducts = Array.isArray(values.coverageSelections) ? values.coverageSelections.map(String) : [];
   const selectedAmount = (key: string, role: CoverageApplicantId) => selectedProducts.includes(key) && selections[key]?.includes(role) ? numericFact(amounts[`${key}:${role}`]) ?? 0 : 0;
   const scopedPeriod = (name: string) => (values[name] as Record<string, string> | undefined)?.[`${productKey}:${applicant}`] ?? (values[name] as Record<string, string> | undefined)?.[productKey];
@@ -87,7 +88,14 @@ export function prototypeCoverageDecision(productKey: string, applicant: Coverag
     return { amounts: capped(benefitChoices.filter(amount => !benefit.amountChoices || benefit.amountChoices.includes(amount))), messages, waitingPeriods: benefit.waitingPeriods, benefitPeriods: benefit.benefitPeriods };
   }
   if (applicant !== 'member' && product.dependentPolicies.length) {
-    const dependent = resolveDependentCoverage(library.site, productKey, applicant, { associationKey: typeof association === "string" ? association : undefined, amount: numericFact(amounts[`${productKey}:${applicant}`]) ?? choices[0], selectedApplicants, coveredApplicants: selectedApplicants, baseAmounts: Object.fromEntries(['member', 'spouse'].map(a => [a, selectedAmount(productKey, a as CoverageApplicantId)])), selectedProductKeys: selectedProducts.filter(key => selections[key]?.includes(applicant)) });
+    const existing = verifiedCoverageElections(library.client, library.products, values);
+    const coveredApplicants = [...new Set([...selectedApplicants, ...existing.filter(row => row.productKey === productKey).map(row => row.applicant)])];
+    for (const rule of definition.requirements?.dependencies ?? []) {
+      if (rule.applicantType !== applicant) continue;
+      if (library.products.some(candidate => candidate.categoryId === rule.categoryId && (!rule.sameProduct || candidate.id === productKey)
+        && (selectedAmount(candidate.id, rule.requiresApplicant) > 0 || existing.some(row => row.productKey === candidate.id && row.applicant === rule.requiresApplicant)))) coveredApplicants.push(rule.requiresApplicant);
+    }
+    const dependent = resolveDependentCoverage(library.site, productKey, applicant, { verifiedMemberAmount: verifiedPortfolioAmount(library.client, values, 'member', [productKey]), verifiedExistingAmount: verifiedPortfolioAmount(library.client, values, applicant, [productKey]), associationKey: typeof association === "string" ? association : undefined, amount: numericFact(amounts[`${productKey}:${applicant}`]) ?? choices[0], selectedApplicants, coveredApplicants: [...new Set(coveredApplicants)], baseAmounts: Object.fromEntries(['member', 'spouse'].map(a => [a, selectedAmount(productKey, a as CoverageApplicantId) + verifiedPortfolioAmount(library.client, values, a as CoverageApplicantId, [productKey])])), selectedProductKeys: selectedProducts.filter(key => selections[key]?.includes(applicant)) });
     messages.push(...dependent.errors.filter(error => error !== 'Derived amount must recalculate from primary coverage'), ...dependent.missingFacts.filter(key => key !== 'amount').map(key => `Complete ${key} to determine dependent benefits.`));
     notices.push(...dependent.notices);
     choices = dependent.derivedAmount !== null ? [dependent.derivedAmount] : choices.filter(amount => dependent.maximumAdvisory || dependent.maximum === null || amount <= dependent.maximum);

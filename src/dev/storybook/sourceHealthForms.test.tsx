@@ -34,7 +34,7 @@ it.each(stories)('renders the supplied form $default.args.formKey with separate 
   try {
     await act(async () => root.render(<MemoryRouter>{story.default.render(args, { id: args.formKey })}</MemoryRouter>));
     expect(container.textContent).toContain(args.formKey);
-    expect([...container.querySelectorAll('button, [role="button"]')].filter(button => button.textContent === 'How is my health information used?')).toHaveLength(1);
+    expect([...container.querySelectorAll('button, [role="button"]')].filter(button => button.textContent === 'How is my health information used?')).toHaveLength(0);
     const form = sourceHealthForm(args.formKey);
     for (const row of form.rows) if (row.notes) expect(container.textContent).toContain(row.notes);
     // Only answer-bearing questions get controls. Headings/instructions never become Yes/No answers.
@@ -78,7 +78,7 @@ it('reveals source TELE-SUPP details only for the answering adult', async () => 
   } finally { await act(async () => root.unmount()); container.remove(); }
 });
 
-it('keeps the actual QD story on its loader beyond the normal timeout with no fabricated questions or Next action', async () => {
+it('keeps the actual QD image handoff stable beyond the old loader timeout without fabricated answers', async () => {
   vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true); vi.useFakeTimers();
   const catalog = JSON.parse(readFileSync('public/catalog/portal.json', 'utf8')) as SharedCatalog;
   const previous = getPrototypeLibrary();
@@ -87,8 +87,9 @@ it('keeps the actual QD story on its loader beyond the normal timeout with no fa
   try {
     await act(async () => root.render(<MemoryRouter><ApplicationSessionContext.Provider value={{ reviewSubmitted: false, advisorApplicantFlow: false, markReviewSubmitted: () => {}, setAdvisorApplicantFlow: () => {}, resetApplicationSession: () => {} }}>{render({}, { id: 'qd-loader', loaded: { catalog } })}</ApplicationSessionContext.Provider></MemoryRouter>));
     await act(async () => vi.advanceTimersByTime(120000));
-    expect(container.querySelector('[role="status"]')?.textContent).toContain('QuickDecision');
-    expect(container.querySelector('.MuiCircularProgress-root')).not.toBeNull();
+    expect(document.querySelector('img')?.getAttribute('src')).toBe('/prototype/qd-page-1.png');
+    expect(document.querySelector('.MuiCircularProgress-root')).toBeNull();
+    expect(document.querySelector('button[aria-busy]')).not.toBeNull();
     expect(container.querySelectorAll('input, textarea, select')).toHaveLength(0);
     expect([...container.querySelectorAll('button')].some(button => button.textContent === 'Next')).toBe(false);
     expect(container.textContent).not.toContain('taking longer than expected');

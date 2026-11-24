@@ -6,6 +6,10 @@ contracts. An **effective Site** combines that template with its assigned produc
 values, content selections and overrides. The current migration is verified against
 the ASCE effective Site; that rollout target does not make shared behavior ASCE-specific.
 
+AMA, WAEPA and WAEPA GI were subsequently restored with their earlier assignments
+and the same global pages; see [effective Site restoration](sites.md). ASCE-only
+rollout statements in the historical checkpoints below describe those reviews.
+
 | Owner | Coverage examples |
 |---|---|
 | Global template | Amount ordering/default/lock definitions, `amt`/`dprods` contracts, product reveal, validation patterns, reusable eligibility/dependency/amount evaluators, and shared page/component/content definitions. |
@@ -39,7 +43,7 @@ effective Site, not universal template defaults or separate ASCE implementations
 | Products | Offer Term Life, 10-Year Level Term, 20-Year Level Term, High-Limit AD&D and Disability Income. Enable products per site, with their own plan codes, G-numbers, brochures and applicant participation. | Main!D165:G169; current ASCE product assignments. |
 | Categories and questions | Offer eligible Life, AD&D and Disability categories. Ask category-specific questions only for participating people; tobacco follow-ups require Yes. Member self-employment-under-one-year is one Yes/No question in Work & Income. | Fresh Coverage layout/question map; approved review. |
 | Product reveal | Validate applicable questions before revealing products. AD&D may reveal without preliminary questions. Next validates the resulting elections. | Confirmed `coverage-page-stages`. |
-| Term Life | Adults ages 17–75; new minimum $20,000; $10,000 increments; maximum $1 million, reduced to $500,000 at ages 70–72 and $350,000 at 73–75. | Main!H167:I167, O167:P167; reviewed minimum/caps. |
+| Term Life | Adults ages 17–75; minimum $10,000 for either adult with or without TPA-verified existing coverage (CHG-106); $10,000 increments; maximum $1 million, reduced to $500,000 at ages 70–72 and $350,000 at 73–75. | Main!H167:I167, O167:P167; reviewed minimum/caps. |
 | 10-Year Level Term | Adults ages 18–69; $100,000–shared Life maximum; $10,000 increments. Ages 65–69 use FUW. | Main!H165:I165; approved age/UW overrides supersede summary ages. |
 | 20-Year Level Term | Adults ages 18–59; $100,000–shared Life maximum; $10,000 increments. Ages 55–59 use FUW. | Main!H166:I166; approved age/UW overrides. |
 | Combined Life | One $2 million ceiling per person across the three Life products. Coverage Next checks the combined elections plus configured verified in-force Life. No duplicate aggregate error on Review. | Main!H165:K167; `parked/sites/asce/coverage-policies.json`; approved timing. |
@@ -52,9 +56,9 @@ effective Site, not universal template defaults or separate ASCE implementations
 | Disability periods | Member five-year or Career Plan; waiting periods 30/90/180/365 days. Spouse two years and 30 days. Fixed/mandatory options use configured controls. | Disability!D11:D12. Multi-page!AE21 describes the Career option as to-age-65; keep wording as source documentation, not a new prototype decision. |
 | Disability residency | US states/DC except NC/VT/WA, Puerto Rico and Canada except Quebec; spouse also excludes NH. | Multi-page!AC21 and Main!N169; confirmed combined scope. |
 | Joint spouse Disability | Keep spouse selectable. On Next, alert when both elect positive benefits and member benefit is below $600. | User exception to Multi-page!AD21. |
-| Spouse Life guidance | Show “Spouse coverage can’t exceed member coverage” as a note only; do not add Life amount filtering or validation for that note. | Explicit user exception; MCR otherwise allows joint spouse Life to exceed member. |
+| Spouse Life guidance | On Term/10-Year/20-Year, show the configured spouse note. Enforce same-policy existing + requested spouse <= member totals only when member coverage is TPA-verified; otherwise note only. | User confirmation November 17, 2026, CHG-106 supersedes the prior note-only exception. |
 | CIR participation | Optional rider on Term Life for member/spouse, ages 17–64; no child CIR. No CIR-only application in this prototype. | Main!L167; Riders!B43:H43; user removal of CIR-only supersedes MCR. |
-| CIR amounts | Principal amount eligible for 50% acceleration: member $50,000–$1 million in $50,000 increments; spouse $25,000–$1 million in $25,000 increments. CIR cannot exceed applicable base Life. | Riders!C43:D43; current rider amount policies. Source includes in-force plus requested Life; current comparison to requested base does not settle the pending existing-policy treatment. |
+| CIR amounts | Principal amount eligible for 50% acceleration: member $50,000–$1 million in $50,000 increments; spouse $25,000–$1 million in $25,000 increments. CIR cannot exceed applicable base Life. | Riders!C43:D43; current rider amount policies. Require at least $100,000 of this applicant’s verified existing matching Term Life plus requested Term Life (CHG-106); this also supplies the cap basis. |
 | CIR residency | Additional exclusions: CT, ID, LA, MA, MN, MT, NC, OH, SD, UT and WA. | Riders!F43; separate from base-product residency. |
 | Underwriting handoff | Preserve product/applicant age/amount processing bands and prior approved FUW exceptions. Coverage determines the handoff; underwriting, forms and medical integrations are later-page concerns. | Main, QD LI!J46:Q48; approved decision register and current underwriting policies. |
 | TPA access | Existing member + active coverage + successful verification enables portfolio access. Failure/skip continues as manual review without the portfolio. | Confirmed `coverage-tpa-portfolio-access`; fictional fixtures, no live TPA. |
@@ -62,7 +66,7 @@ effective Site, not universal template defaults or separate ASCE implementations
 | Amount controls | Configure amount-list direction, a specific initial amount instead of the current minimum, and whether a configured amount is locked. | Connected through global JSON bindings and the shared amount-control resolver. |
 | Campaign amount controls | `amt` sets listed product amounts; `dprods` disables listed product amount dropdowns. Neither bypasses eligibility or limits. | Connected; campaign context persists through navigation and resume. |
 | Product presentation | Configure category/product order; `featured_prod` prioritizes a product and its category. `category`, `prods` and `applicant` constrain participation as documented in the URL table. | Current Library URL table and product presentation readers. |
-| Elections | Choosing a default amount is separate from Add coverage. Require an elected product, an applicant for each election and valid amounts/options. Stale selections use standard page validation. | Current Coverage submission behavior; `preselect` URL behavior remains TBD. |
+| Elections | Choosing a default amount is separate from Add coverage. Require an elected product, an applicant for each election and valid amounts/options. Stale selections use standard page validation. | `preselect=TRUE` initially elects all offered base products/applicants; optional riders remain separate. Apply once and preserve subsequent edits. |
 | Estimates | Display fictional estimates, selected riders, totals and the configured frequency controls. Do not require real rate calculations or integrations for this prototype. | User-confirmed prototype scope. |
 | Continue/save | Successful Next follows shared save-before-advance behavior. Membership submission has already established the saved application. | Shared form workflow; Membership lifecycle rules. |
 
@@ -107,6 +111,12 @@ The rule `category-product-presentation-order` is mapped to Home, quote tools,
 Coverage and the shared application-menu contexts. It is one global definition,
 not copied page policies or effective-site-specific behavior.
 
+## Coverage presentation messages and retired expansion (CHG-096)
+
+`coverage-increase-note` selects one of the shared additional-coverage or total-coverage messages. It defaults globally to `applyForAdditional`; an effective Site may select `applyForTotal`. This changes only the message. Product/applicant rules continue to own calculations, eligibility, amount choices, in-force deductions and validation independently.
+
+Category expansion is removed from the template. Global application retirement declarations remove its old configuration and descriptive rule, including aliases/values from stale catalogs. Category labels, ordering and the current page layout retain their existing owners. No accordion expansion setting is offered.
+
 ## Global amount ordering and initial selection
 
 These are global template settings. Effective Sites may supply values or overrides
@@ -126,8 +136,7 @@ They do not introduce a second set of product minimums, maxima or increments.
 Defaults must be among the eligible choices after policy and in-force reductions.
 They must not silently select an unavailable benefit or elect coverage by themselves.
 Global/effective-site settings use `coverages.amountSelection`; product/applicant
-overrides use the existing Coverage assignment model. New site defaults remain
-deferred; this rollout retains the established global defaults.
+overrides use the existing Coverage assignment model. ASCE inherits the established global defaults; no additional Site-specific defaults are required.
 
 The shared amount resolver runs after eligibility, age/income and in-force filtering.
 A valid `amt` takes precedence for each eligible product/applicant. Invalid or
@@ -144,34 +153,38 @@ existing names and formats; do not invent Site-specific parameters.
 | Parameter | Coverage behavior | Example / notes |
 |---|---|---|
 | `amt` | Presets amount dropdowns for the listed G-number products. | `amt=G-0000-0_200000,G-1111-1_300000`. Illustrative G-numbers; pairs are comma-separated and amounts contain no currency signs or thousands separators. |
-| `dprods` | Disables the listed products' amount dropdowns. | `dprods=G-0000-0`; the table says to use with `prods` and `amt`. A default alone does not imply this lock. |
-| `category` | Restricts available categories, including comma-separated categories. | `category=li,di`. |
-| `prods` | Restricts products by G-number. | `prods=G-0000-0,G-1111-1`; requires `category`. |
+| `dprods` | Disables the listed product/applicant amount control only with a currently valid `amt`. | Missing, malformed, duplicate or unavailable `amt` does not create a URL lock. Configured Site/product/applicant locks remain independent. |
+| `category`, `categories` | Equivalent category restrictions, including comma-separated categories. | `category=li,di` or `categories=li,di`. If both appear, `category` wins, even when empty. `all` clears category scope. |
+| `prods` | Restricts products by G-number. | `prods=G-0000-0,G-1111-1`; requires `category` or `categories`. |
 | `featured_prod` | Featured chip; prioritize the listed product and its category. | `featured_prod=G-0000-0`. Presentation only. |
-| `firstCategory` | Display the named category first wherever categories are presented. | Replaces legacy `ctg`; example `firstCategory=di`. Documented in the Library table; no current prototype reader. |
+| `firstCategory` | Display the named category first wherever categories are presented. | Replaces legacy `ctg`; example `firstCategory=di`. Connected to the shared category/product ordering resolver; `featured_prod` retains precedence. |
 | `applicant` | Restricts supported applicants/dependent choices. | Existing values: `member` or `member,spouse`; does not establish dependency satisfaction. |
-| `preselect` | Still TBD in the Library. | Do not treat it as approval to pre-elect every product/person. |
-| `mrate`, `nc` | Removed; not supported in the new template. | Frequency controls are configured, and removed URL behavior is not reintroduced. |
+| `preselect` | `TRUE` initially checks Add coverage for all offered base products and participating applicants on Coverage. | Optional riders stay separate; effective Site/entry scope, eligibility and normal validation apply. Persist the applied flag to preserve edits/resume. |
+| `ctg`, `mrate`, `nc` | Removed; not supported in the new template. | Frequency controls are configured, and removed URL behavior is not reintroduced. |
 
-Authoritative existing records are the Library `urlParameters` / `urlParameterValues`
-entries, currently sourced from `src/content/docs/urlParameters.ts`. A parameter's
+Authoritative global records are `requirements/global/products.json` catalog
+`urlParameters` / `urlParameterValues`. Library and the reference documentation
+project those definitions; the documentation is not a second editable contract. A parameter's
 “Migrated” table status describes the documented contract; it does not prove a
 prototype parser exists. A missing effective-site `siteUrlParameters` assignment
 does not turn the contract into a Site-specific feature. Category/product/featured
-readers exist, including `amt` and `dprods`. `firstCategory` remains a separate
-cross-page rollout item. No external integration is introduced.
+readers exist, including `amt` and `dprods`. `firstCategory` uses the same ordering resolver on Home, quote and Coverage. No external integration is introduced.
 
 Product-only amount presets apply to each participating applicant only where that
 amount is valid for the applicant. They do not force an adult amount onto a fixed
 child benefit. Saved editable choices are retained; a locked amount is revalidated
 and enforced against the currently permitted choices. Restoring an application
 restores its own campaign context rather than reusing another application's link.
+Both category names start the same new campaign and clear omitted old product,
+applicant, ordering, amount, lock and preselection context. Save one canonical
+`category` key; alias-shaped restored context is normalized to that key. Invalid or
+empty restrictions offer no matching products; they do not expand the offering.
+CHG-095 records the confirmed alias and valid-amount-lock decisions.
 
 ## Current effective-site review boundaries
 
-- Existing-policy dependency satisfaction and lower existing Term Life minimums
-  remain on hold. The MCR evidence is recorded; current runtime is not silently changed.
-- CIR-only remains removed, and spouse Life amount guidance remains a note only.
+- Verified existing required base coverage satisfies covered-person prerequisites without a new primary election. Term Life requests use a $10,000 minimum for either adult with or without TPA verification (CHG-106, superseding CHG-047).
+- CIR-only remains removed. Spouse Life caps use verified matching member coverage as described in CHG-106; without it, guidance remains informational.
 - Amount ordering/default/locking and `amt`/`dprods` are connected for the reviewed
   Coverage stage. No additional site default values are chosen by this rollout.
 - Real rates, TPA calls, email/XML transmission and insurer services are outside
@@ -244,7 +257,7 @@ participating spouse. Product controls are reviewed after these preliminary ques
 | Disability residency | US states/DC excluding NC/VT/WA; Puerto Rico; Canada excluding Quebec. Spouse-only NH exclusion remains. Other products retain their existing policies. |
 | Short self-employment | A Yes answer uses the existing $1,050 maximum, mandatory 90-day waiting period and five-year benefit period. Old saved employment/years answers cannot satisfy the new question. |
 | Joint spouse Disability application | Keep spouse selectable when member benefit is below $600. On Next, the standard page error alert applies when both apply with positive benefits and the member benefit is below $600. The check is not an inline field stop. |
-| New Term Life application | Adult minimum $20,000; ages 70–72 maximum $500,000; ages 73–75 maximum $350,000. In-force coverage is not a new application. |
+| New Term Life application | Adult minimum $10,000 with or without TPA-verified existing matching coverage (CHG-106); ages 70–72 maximum $500,000; ages 73–75 maximum $350,000. In-force coverage is not a new application. |
 | AD&D child age | At least 15 days old and no older than 24 completed years. |
 | Child Life dependency | Require member Life coverage; spouse coverage alone does not satisfy it. |
 | Spouse guidance | Additional spouse-section note: “Spouse coverage can’t exceed member coverage.” This note introduces no validation or amount filtering. Existing AD&D constraints remain. |
@@ -272,7 +285,7 @@ policy service or add a new application-mode flow.
 The attached MCR v78 workbook was checked before implementation. Confirmed user
 exceptions take precedence where its sheets disagree: spouse age stays 17–59;
 the $600 threshold runs on Next; child Life requires member coverage; spouse
-amount guidance is informational. Earlier approved age, CIR-only and child-question
+amount guidance follows the conditional verified-member rule in CHG-106. Earlier approved age, CIR-only and child-question
 decisions remain in place. No email, TPA transmission or insurer integration is added.
 
 ## Fresh-start structure and content (CHG-026)
@@ -281,7 +294,7 @@ Coverage follows the same compiler as Membership and Eligibility. The complete
 question-group order is in `parked/coverage.json`; the single self-employment
 question appears once in member Work & Income, after hours and income. The source
 question-participation map is `global/coverage-questions.json`. Generated product
-controls resolve their field labels/types from the Coverage field mapping.
+controls use the compiled member, spouse and child control surfaces from that mapping.
 
 Headers, categories, reveal/Next errors, product presentation, card/cart/rate copy,
 dialogs, notes and shared help read fresh content. The compiler emits the existing
@@ -292,7 +305,7 @@ The generated deployment bundle remains a projection, not an editable second sou
 
 The dependent-only dialog remains as before. Fictional portfolio records live in
 `global/prototype-fixtures/portfolio.json`; access is defined below in CHG-029.
-Existing-coverage dependencies and lower existing Term Life amounts remain pending.
+Existing-coverage prerequisites and Term Life minimum treatment are confirmed and implemented in CHG-046.
 CIR and Disability period requirements are now recorded in the CHG-031 register.
 Estimates remain fictional; no rate-accuracy review is required for the prototype.
 
@@ -311,8 +324,7 @@ amounts for that person exceed the ceiling. Products remain selectable beforehan
 The check uses selections in the current application plus verified TPA in-force
 Life when configured (CHG-030), does not require later Profile answers and does
 not run again on Review. The domain portfolio validator uses the same normalized
-ceiling for its own explicit portfolio inputs. Existing-policy dependencies and
-lower existing Term Life minimums remain pending.
+ceiling for its own explicit portfolio inputs. Verified existing coverage may satisfy dependent prerequisites. CHG-106 assigns the same $10,000 Term Life minimum to verified and unverified adults, superseding the CHG-047 distinction.
 
 The same site policy file owns the complete reviewed Disability residency scope:
 US states/DC except NC, VT and WA; Puerto Rico; Canada except Quebec; spouse-only
@@ -322,10 +334,9 @@ is removed so exclusions have one authoritative policy. Form province codes such
 as ON are normalized to CA-ON instead of US-ON. The Library and both runtime
 surfaces resolve the compiled policy.
 
-The shared ZIP/state/date-of-birth component also uses the normal 16px field gap.
-It no longer reserves blank feedback rows. Real helper text, inferred-state
-feedback and errors still render when applicable on Home, Eligibility and shared
-Storybook examples.
+The shared ZIP/state/date-of-birth component uses the normal 16px field gap.
+The Eligibility audit (CHG-044) reserves feedback space consistently in application
+and quote contexts; helper text, inferred-state feedback and errors use that space.
 
 ## Verified existing-member portfolio (CHG-029)
 
@@ -339,8 +350,7 @@ outcomes. Missing outcomes, unmatched/new members, no active coverage and failed
 or skipped verification cannot open the portfolio.
 
 The lookup record and verification questions are fresh-start prototype fixtures.
-Portfolio policies remain fictional prototype data. They now supply configured
-amount reductions (CHG-030); they do not satisfy dependent coverage requirements.
+Portfolio policies remain fictional prototype data. They supply configured amount reductions (CHG-030) and, following CHG-046, satisfy matching covered-person prerequisites.
 No live TPA call is made.
 
 ### Reproducible prototype case
@@ -361,7 +371,7 @@ before opening the drawer. Failed/skipped verification cases verify that portfol
 access is withheld. Failed or skipped verification continues from Eligibility to
 Coverage as manual review without the portfolio, as confirmed in this review.
 
-Existing-policy dependencies and lower existing Term Life amounts remain on hold.
+Existing-policy dependency and minimum decisions were resolved in CHG-046.
 The CHG-031 register records CIR, Disability periods and the prototype estimate scope.
 
 ## In-force amounts reduce available coverage (CHG-030)
@@ -390,11 +400,79 @@ New elections across Life products remain independent dropdown choices. Coverage
 Next checks their sum plus verified in-force Life against the same single ceiling.
 Stale selections outside the remaining product choices fail normal page validation.
 Failed/skipped verification retains manual review without portfolio access or these
-deductions. No live integration, existing-policy dependency or lower-minimum behavior
-is introduced.
+deductions. No live integration is introduced. CHG-046 adds verified existing-policy prerequisite satisfaction; CHG-047 adds the verified-existing Term Life minimum without changing increments or maxima.
 
 Focused checks cover the rule and Library assignments, prototype/Storybook parity,
 per-person/product deductions, age/income caps, increment rounding, exhausted
 capacity, stale selections, combined Life submission and real-App dropdowns after
 passed/failed/skipped verification. Test runs should target affected paths; unrelated
 site/migration suites are not required for each Coverage change.
+
+
+## Coverage audit checkpoint (CHG-045)
+
+| Aspect | Fresh-start source and behavior |
+|---|---|
+| Composition | `parked/coverage.json` declares all ordered placements and dialog ownership; `mappings/page-sections/coverage.json` is the exact order. Explicit roles identify category/questions, portfolio, reveal, products and inline summary. Page regions and question groups consume this projection. No section-ID classification determines question participation. |
+| Fields and controls | Category requirements are global in `global/coverage-questions.json`; effective additions/removals apply to declared question groups. Tobacco follow-ups require Yes, spouse questions require participating spouse products, and unrendered questions cannot force a reveal step. Member/spouse/child generated controls use page-owned compiled surfaces with effective field overrides. Runtime product options narrow those definitions. The Library, installed prototype and detached Storybook examples read these same fields. |
+| Ownership | All category choices and default control labels/types remain global; ASCE selects LI/AD/DI and its effective labels/configurations. Definitions reconstruct without superseded page/field/policy records. No other real Site is enabled. |
+| Reveal validation | Validate registered applicable question fields on See my coverage options; preserve inline errors and the page alert. Successful reveal saves current answers to application context before loading products. A category with no applicable preliminary questions reveals automatically. |
+| Next validation | Validate participating registered fields, require products/applicants/amounts, then run the shared product policy acceptance, configured submit alerts, combined Life maximum and relationships. Add coverage remains usable for correction. Dependent-only confirmation occurs after the shared validation/save step; Cancel remains on Coverage and Continue advances. Thresholds and exceptions stay in their existing policy sources. |
+| Saved answers | Scalar question answers retain canonical field IDs. `selectedCategoryChips` and `coverageSelections` are category/product ID arrays; `productApplicants` maps product IDs to applicant arrays. `coverageAmounts`, `coverageWaitingPeriods` and `coverageMaxBenefitPeriods` use `product:applicant` keys; `coverageRiders` and `coverageRiderAmounts` use `product:rider:applicant`. `coverageEntryScope` retains campaign, category-order and preselection context; `coveragePreselectionApplied` records completion of the one-time election. Generated control field aliases identify definitions, not additional scalar answers. Product defaults do not elect coverage. |
+| Transient state | Reveal/loading flags, displayed rate frequency (initialized from the effective default), rate-request generations, open drawers/dialogs and feedback remain UI state. Existing product/rider reconciliation and explicit unavailable-selection removal retain their reviewed behavior. Rate responses are fictional and do not establish production pricing. |
+| Examples and execution | Supported examples use the five assigned products. A synthetic effective rate configuration demonstrates reference tables through the source compiler. Removed examples depended on absent products, OO/SH assignments, superseded unresolved policies or removed CIR-only behavior. Actual system rules remain documented; the prototype simulates integrations rather than executing real services. |
+| Retained decisions | CHG-046 resolves existing-policy prerequisite satisfaction, settles the initial Term Life minimum decision (superseded by CHG-047), and connects `preselect=TRUE`. Spouse Life maximum guidance is enforced with matching verified member coverage under CHG-106; otherwise it remains informational. Other confirmed exceptions, definition statuses and later-page responsibilities remain intact. |
+
+
+## Confirmed Coverage decisions (CHG-046)
+
+All policy questions raised in this Coverage review are resolved. Shared evaluators
+and URL behavior remain global; ASCE supplies its product/rider assignments and values.
+
+- **Dependent-only applications:** verified existing required member/base coverage can satisfy a covered-person prerequisite without a new member election. Matching category/same-product requirements and applicant ownership still apply. AD&D uses verified existing plus newly requested matching member amounts for its existing dependent cap. Failed/skipped verification and unrelated coverage do not qualify. Selected-only requirements retain their meaning.
+- **Term Life minimum (superseded by CHG-047):** the initial $20,000-for-all decision was replaced after confirming the MCR distinction. Use $10,000 with TPA-verified existing matching Term Life coverage for the applicant and $20,000 otherwise.
+- **CIR:** the configured supporting base is the same applicant’s verified existing matching Term Life plus newly requested Term Life. Requested CIR remains within its own age, residency, increment and maximum rules. CIR-only stays removed.
+- **Preselection:** `preselect=TRUE` selects all offered base products and participating applicants on the initial Coverage product reveal. It selects applicable categories first, validates the preliminary questions normally, and uses configured/campaign amount defaults. Optional riders are not elected by this parameter. No eligibility, dependent-plan or amount validation is bypassed; selections requiring correction remain subject to Next checks. Persist `coveragePreselectionApplied` so later removals and restored edits are respected.
+- **URL ordering:** the already-defined `firstCategory` contract now has a shared runtime reader and persists in entry context. `featured_prod` keeps precedence. Unsupported values do not change availability or ordering.
+
+Future migration questions must be raised during the review and answered before
+calling the page complete; they must not be silently deferred. Integration rules
+describe the actual system, while the prototype uses simulated service outcomes.
+
+
+## Historical TPA-based Term Life minimum (CHG-047; superseded by CHG-106)
+
+The historical values below are superseded: current ASCE Term Life minimum is $10,000 for both adults regardless of TPA verification.
+
+The user confirmed **$10,000 for existing Term Life insureds and $20,000 for new**,
+selected only through the TPA integration. No new-versus-additional question is
+collected or inferred from other application answers.
+
+- The global template defines `coverage-verified-existing-minimum-amount` and the shared evaluator. Its default means no exception without an effective assignment. ASCE assigns $10,000 for Term Life member/spouse and retains $20,000 under `coverage-new-application-minimum-amount`.
+- Use the lower minimum only when the configured TPA integration has successful existing-member, active-coverage, identity-verification and portfolio outcomes **and** its portfolio confirms positive matching Term Life coverage for that same applicant. Association membership, another person's policy, another product, self-reported insurance and an application-mode answer do not qualify. Failed/skipped verification and no matching coverage retain $20,000.
+- Amount choices, initial/campaign defaults, submitted amounts and the combined Life check use the same evaluator and effective assignment. Existing capacity deductions, age limits, $10,000 increments and aggregate maxima still apply. Zero remains unavailable for base coverage; CIR-only remains removed. Level Term and child fixed amounts are unchanged.
+- Library exposes the global definition and ASCE assignment. Prototype and Storybook use the same source projection and simulated TPA portfolio. No actual service execution or additional saved answer is introduced.
+
+This supersedes the minimum treatment recorded in CHG-046.
+
+Verification: fresh-start and focused minimum/journey checks pass. The historical
+`effectiveConfiguration` fixture suite fails before amount evaluation on superseded
+Membership field ownership; the same failure was reproduced with the previous
+minimum evaluator. This is separate from the verified minimum behavior above.
+
+
+## ASCE Coverage confirmation (CHG-106, November 17, 2026)
+
+The current ASCE minimum is $10,000 Term Life for either adult, regardless of TPA
+verification. CIR retains $50,000 member / $25,000 spouse minima and requires at
+least $100,000 of that same applicant's verified existing plus selected Term Life.
+Term, 10-Year and 20-Year remain QD products. ASCE uses the inherited apply for
+additional instruction; this note does not change calculations.
+
+Each Life product now has the supplied spouse note and a conditional same-policy
+cap. Only verified positive existing member coverage activates that cap; compare
+existing + selected amounts for each person, preserving available capacity and
+rejecting excess amounts. Without verification the note remains informational.
+The prior unconditional note-only exception and CHG-047 minimum distinction are
+superseded. Product descriptions, the bold level-Term notice and the High-Limit
+Accident Insurance name are recorded in the [current component checkpoint](../project-review/coverage-component-review.md#asce-coverage-values-and-product-notes-chg-106).

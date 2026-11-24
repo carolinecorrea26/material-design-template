@@ -43,6 +43,9 @@
       "id": "full-time-student"
     },
     {
+      "id": "active-military"
+    },
+    {
       "id": "coverage-categories"
     },
     {
@@ -610,91 +613,106 @@
       "id": "health-cir-dwelling-other"
     },
     {
-      "id": "health-si-detail-onset"
+      "id": "health-ci-q11-ca"
     },
     {
-      "id": "health-si-detail-conditions-details"
+      "id": "beneficiary-apply-target"
     },
     {
-      "id": "health-si-detail-physician-address"
+      "id": "resume-phone"
     },
     {
-      "id": "health-li-detail-onset"
+      "id": "ama-physician-type"
     },
     {
-      "id": "health-li-detail-conditions-details"
+      "id": "ama-physician-title"
     },
     {
-      "id": "health-li-detail-physician-address"
+      "id": "ama-physician-first-name"
     },
     {
-      "id": "health-di-q1-detail-assistance-type"
+      "id": "ama-physician-last-name"
     },
     {
-      "id": "health-di-q1-detail-onset"
+      "id": "ama-physician-birth-date"
     },
     {
-      "id": "health-di-q1-detail-conditions-details"
+      "id": "ama-physician-email"
     },
     {
-      "id": "health-di-q1-detail-physician-address"
+      "id": "waepa-declaration"
     },
     {
-      "id": "health-di-q2-detail-fall-type"
+      "id": "waepa-attestation"
     },
     {
-      "id": "health-di-q2-detail-onset"
+      "id": "waepa-employer"
     },
     {
-      "id": "health-di-q2-detail-conditions-details"
+      "id": "waepa-start-date"
     },
     {
-      "id": "health-di-q2-detail-physician-address"
+      "id": "waepa-retired-employer"
     },
     {
-      "id": "health-di-q3-detail-onset"
+      "id": "waepa-retirement-date"
     },
     {
-      "id": "health-di-q3-detail-conditions-details"
+      "id": "waepa-member-first-name"
     },
     {
-      "id": "health-di-q3-detail-physician-address"
+      "id": "waepa-member-last-name"
     },
     {
-      "id": "health-di-q4-detail-onset"
+      "id": "waepa-member-id"
     },
     {
-      "id": "health-di-q4-detail-conditions-details"
+      "id": "waepa-member-middle-initial"
     },
     {
-      "id": "health-di-q4-detail-physician-address"
+      "id": "membership-referral-source"
     },
     {
-      "id": "health-di-q5-detail-onset"
+      "id": "membership-status"
     },
     {
-      "id": "health-di-q5-detail-conditions-details"
+      "id": "applicant-class"
     },
     {
-      "id": "health-di-q5-detail-physician-address"
+      "id": "existing-step-rated-monthly-benefit"
     },
     {
-      "id": "health-di-q6-detail-onset"
+      "id": "existing-level-rated-monthly-benefit"
     },
     {
-      "id": "health-di-q6-detail-conditions-details"
+      "id": "abe-member-id",
+      "name": "Membership ID",
+      "type": "text"
     },
     {
-      "id": "health-di-q6-detail-physician-address"
+      "id": "avma-vet-college",
+      "name": "What veterinary college did you attend?",
+      "type": "text"
     },
     {
-      "id": "health-di-q7-detail-details"
+      "id": "avma-graduation-year",
+      "name": "Year of Graduation",
+      "type": "text"
     },
     {
-      "id": "review-self-consent"
+      "id": "avma-occupation",
+      "name": "Occupation",
+      "type": "text"
     },
     {
-      "id": "review-spouse-consent"
+      "id": "csea-occupation-group",
+      "name": "Are you solely engaged in office or clerical work?",
+      "type": "radio"
+    },
+    {
+      "id": "nurse-type",
+      "name": "Nurse Type",
+      "type": "dropdown"
     }
   ]
 }

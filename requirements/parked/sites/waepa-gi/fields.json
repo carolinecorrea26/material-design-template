@@ -1,0 +1,9 @@
+{
+  "fields": {
+    "coverage-categories": {
+      "options": [
+        "LI"
+      ]
+    }
+  }
+}

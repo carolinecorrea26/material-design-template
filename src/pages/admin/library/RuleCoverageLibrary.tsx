@@ -18,7 +18,6 @@ export default function RuleCoverageLibrary({ siteKey }: { siteKey: string }) {
       { id: "status", label: "Coverage status", width: 210, value: row => coverageReviewLabels[row.status], filter: true },
       { id: "finding", label: "Finding", width: 370, value: row => row.finding },
       { id: "owner", label: "Owning records", width: 300, value: row => row.owners.map(owner => `${owner.table}/${owner.key}${owner.column ? ` · ${owner.column}` : ""}`).join("; "), render: row => <Stack spacing={0.5}>{row.owners.map(owner => <LibraryLink key={`${owner.table}:${owner.key}`} domain={owner.table === "fields" ? "fields" : owner.table === "sites" ? "client-information" : "rules"} filters={{ q: owner.key }}>{owner.table}/{owner.key}</LibraryLink>)}</Stack> },
-      { id: "sources", label: "Source and decisions", width: 280, value: row => row.sourceReferences.join("; ") },
       { id: "evidence", label: "Verification evidence", width: 300, value: row => row.verificationReferences.join("; ") || "Pending" },
     ]} />
   </Stack>;

@@ -1,0 +1,667 @@
+{
+  "id": "advisor-current",
+  "title": "Advisor model (current template)",
+  "variant": "current",
+  "summary": "The existing portal before the redesign: advisor preparation, applicant completion, edits and access recovery.",
+  "audience": "Advisors, applicants and portal reviewers",
+  "ownership": "Global reference tutorial",
+  "source": {
+    "workbook": "portal_inventory.xlsx",
+    "sheet": "Flows - Advisor",
+    "range": "A2:C28"
+  },
+  "referenceNote": "Existing-portal reference. Original screens are shown where supplied; labeled placeholders mark the captures still needed.",
+  "referenceScreens": {
+    "applicant-invitation": {
+      "path": "tutorials/advisor-current/applicant-invitation.png",
+      "caption": "Application invitation received by applicant John Doe. The test mailbox displays the recipient name Correa, Caroline.",
+      "source": "email - applicant - complete app - initial link.png",
+      "sha256": "0e4b257b8fc97184d38ef83c5da5a3737aa2ce0d1e1678c4ab4d661e3d67870d"
+    },
+    "applicant-secure-link": {
+      "path": "tutorials/advisor-current/applicant-secure-link.png",
+      "caption": "The applicant’s secure-link email for completing the application.",
+      "source": "email - applicant - complete app - magic link.png",
+      "sha256": "e2aac9b15ac98b3ae123fc2057fc443db4a688c1c98a150ebec43db88b92aa39"
+    },
+    "applicant-resume-link": {
+      "path": "tutorials/advisor-current/applicant-resume-link.png",
+      "caption": "The applicant’s requested link for resuming an application.",
+      "source": "email - applicant - resume - magic link.png",
+      "sha256": "7397b16788426666d620fe76f35cc7073b7a36e3e2f23f96ede0831d12ffb73a"
+    },
+    "applicant-resume-invitation": {
+      "path": "tutorials/advisor-current/applicant-resume-invitation.png",
+      "caption": "The application email used to return to the saved application.",
+      "source": "email - applicant - resume - complete app link.png",
+      "sha256": "cfd6097f43a00fc2f2054bbdd821fe97b93c0d7ed2c93006172b3a9479973f29"
+    },
+    "request-edit": {
+      "path": "tutorials/advisor-current/request-edit.png",
+      "caption": "The current portal Review Application page with Request Edit open.",
+      "source": "application - applicant - preview - request edit.png",
+      "sha256": "1df10d27382c55767081a968e5d677124151f28224c91c5dfa761413fcbe4732"
+    },
+    "advisor-edit-email": {
+      "path": "tutorials/advisor-current/advisor-edit-email.png",
+      "caption": "Edit-request email sent to the advisor, identifying applicant John Doe, the confirmation reference and action REVISE.",
+      "source": "email - advisor - complete app - edit request.png",
+      "sha256": "4500ca509c96405bd87e7c7395ef106acefbecf4efc4c7d1a42bea4f78c479de"
+    },
+    "advisor-secure-link": {
+      "path": "tutorials/advisor-current/advisor-secure-link.png",
+      "caption": "The advisor’s requested secure-link email.",
+      "source": "email - advisor - resume - magic link.png",
+      "sha256": "324a735d5ff939d7e412de965726fdd0057ea8be8e8059899ceae094d338cdc4"
+    },
+    "advisor-saved-email": {
+      "path": "tutorials/advisor-current/advisor-saved-email.png",
+      "caption": "Application email received by the advisor after sending, with the subject “Your saved insurance request”. The To address is the advisor mailbox.",
+      "source": "email - advisor - complete app - initial link.png",
+      "sha256": "1f56db501f08890e59a1b288bdd88e365621a294721acfb4ef36c1f913d75f5c"
+    },
+    "signature": {
+      "path": "tutorials/advisor-current/signature.png",
+      "caption": "The existing DocuSign member signing screen from the current-template references.",
+      "source": "current template/docusign.png",
+      "sha256": "367e3c292dca13c208dce84347a4a307aec0723f2e6a935949da945563464c1f"
+    },
+    "entry": {
+      "path": "tutorials/advisor-current/entry.png",
+      "caption": "Advisor Login with New App selected. The advisor enters their own email, phone number and advisor code.",
+      "source": "codex-clipboard-58e0ae9f-a996-4af4-a9d9-5d3ddf4ae393.png",
+      "sha256": "ac5b5d58bfb45945855240fbbf861b641578ccc525d0b643c4f827b9182b635e"
+    },
+    "eligibility": {
+      "path": "tutorials/advisor-current/eligibility.png",
+      "caption": "Eligibility completed by the advisor for applicant John Doe, with spouse and child coverage in this example.",
+      "source": "codex-clipboard-17966028-8366-4158-8aae-0ccfd4d5ee79.png",
+      "sha256": "0eb480a8f45ad5f3277270fdbb04982177808a36f48626b83402ff94e9f2bf6e"
+    },
+    "coverage": {
+      "path": "tutorials/advisor-current/coverage.png",
+      "caption": "Coverage selections prepared by the advisor.",
+      "source": "codex-clipboard-bac17a01-cf28-4d04-8dc6-35adfe455323.png",
+      "sha256": "11123392888d06335bff6cb34ec14b6e7a1b1c70b4f1bf3363782e92ef5d5818"
+    },
+    "contact": {
+      "path": "tutorials/advisor-current/contact.png",
+      "caption": "Contact information entered by the advisor for the applicant and spouse.",
+      "source": "codex-clipboard-3a0a8bf3-d3ce-4baf-978a-30d25dd1c7dd.png",
+      "sha256": "7dbc1c9166465eb9238339a46fe4d8b51be7ac5840f1304f15fbea907973f4ab"
+    },
+    "profile": {
+      "path": "tutorials/advisor-current/profile.png",
+      "caption": "Applicant Profile completed by the advisor. The banner indicates that progress is being saved automatically.",
+      "source": "codex-clipboard-d7521f39-c5cb-4208-a633-b99862aaf60a.png",
+      "sha256": "052b385fe2be524b4c3d4fbe064acbbebadf234bb3d40c028b784925eda6253a"
+    },
+    "review-advisor": {
+      "path": "tutorials/advisor-current/review-advisor.png",
+      "caption": "Advisor Review Application with editable sections before sending.",
+      "source": "codex-clipboard-89481063-e61c-4e26-a960-f37108e0b52b.png",
+      "sha256": "e9c9d36a36da2f4838df402174872818912173c5aa2f620187f7eaae09543856"
+    },
+    "send": {
+      "path": "tutorials/advisor-current/send.png",
+      "caption": "Advisor confirms sending the application to John Doe’s applicant email for signature.",
+      "source": "codex-clipboard-adc52671-91ba-44a7-a40c-d1308f6bfc7c.png",
+      "sha256": "2affc7b7b0231415b96421d84c50373c341f63e52e50689c6cba8bd6b83ae69f"
+    },
+    "sent-confirmation": {
+      "path": "tutorials/advisor-current/sent-confirmation.png",
+      "caption": "Application sent successfully confirmation showing John Doe and the applicant email.",
+      "source": "codex-clipboard-ce24f3b5-bfde-4962-b139-9ccf3eed66d8.png",
+      "sha256": "a1f546176911fb573c7c10a821839874edfe9697deee94eec5701197afe6a58f"
+    },
+    "applicant-email": {
+      "path": "tutorials/advisor-current/applicant-email.png",
+      "caption": "Applicant Resume Application: enter the applicant email to request the secure link.",
+      "source": "codex-clipboard-ef5623ff-5f33-4a9f-80fd-a202613a7cc8.png",
+      "sha256": "f7d6195670410d0b80a65f7d29c0e1ec8edbdb250faff5e70499d4ba2994f764"
+    },
+    "applicant-link-confirmation": {
+      "path": "tutorials/advisor-current/applicant-link-confirmation.png",
+      "caption": "Applicant confirmation that a secure link has been sent.",
+      "source": "codex-clipboard-fad0e0f3-dbfa-4386-863f-d6bdee7b702f.png",
+      "sha256": "265dfbb0ae5f427e43edae88a5b0698ab743062bfb955b49798a975763d0c79c"
+    },
+    "applicant-method": {
+      "path": "tutorials/advisor-current/applicant-method.png",
+      "caption": "Applicant chooses voice call or SMS to receive a code at the phone number supplied in the application.",
+      "source": "codex-clipboard-7dc735ba-98c2-4a85-aca9-238431a94055.png",
+      "sha256": "ae8d3341134bbc17106d21f49bed732b2459b8444bc2dc595056f20022ec42f7"
+    },
+    "applicant-code": {
+      "path": "tutorials/advisor-current/applicant-code.png",
+      "caption": "Applicant enters the received phone code to complete verification. The pictured code is a historical example.",
+      "source": "codex-clipboard-8701f4e5-c4d5-41eb-ab50-c5ab6db6734c.png",
+      "sha256": "4ed580bf382c93b84a31a324a059c27203dfcc99aaaf3d2e213f112991146d17"
+    },
+    "review-applicant": {
+      "path": "tutorials/advisor-current/review-applicant.png",
+      "caption": "Applicant Review Application after MFA, with Request Edit available.",
+      "source": "codex-clipboard-590bf379-2e37-42ab-8311-2fcacc297ec3.png",
+      "sha256": "29bdcddca80f1f3f23b6686895432f8f9736f2ac4023e0273df6033bb0b53a0c"
+    },
+    "edit-confirmation": {
+      "path": "tutorials/advisor-current/edit-confirmation.png",
+      "caption": "Applicant confirmation that the edit request was sent to the advisor.",
+      "source": "codex-clipboard-9c249cc1-7be6-4aee-b69a-e3a4d6ae3729.png",
+      "sha256": "9fffa503ffb6d40774277e13534fc82d9178416acf9e958150193d8357630c6f"
+    },
+    "saved-entry": {
+      "path": "tutorials/advisor-current/saved-entry.png",
+      "caption": "Advisor Login with Saved App selected: the lookup requires the applicant email, not the advisor email.",
+      "source": "codex-clipboard-69439a42-a7a0-4aee-9115-248d1ea259c6.png",
+      "sha256": "0a4ec2cdcbe54d0abc92fdb31dbbb49bc4b6c0f8ac38e396e5bbc09d228b4650"
+    }
+  },
+  "steps": {
+    "entry": {
+      "title": "Start a new advisor application",
+      "actor": "Advisor",
+      "paragraphs": [
+        "Open Advisor Login and choose New App. Enter the advisor email, advisor phone number and advisor code to start a new application."
+      ],
+      "screens": [
+        "entry"
+      ],
+      "activeUser": "Neither",
+      "accessStage": "Advisor"
+    },
+    "eligibility": {
+      "title": "Complete Eligibility",
+      "actor": "Advisor",
+      "paragraphs": [
+        "Enter the applicant’s eligibility information. John Doe is the applicant in these captures; use the applicant email shown above for his application."
+      ],
+      "screens": [
+        "eligibility"
+      ],
+      "activeUser": "Advisor",
+      "accessStage": "Advisor"
+    },
+    "coverage": {
+      "title": "Select coverage",
+      "actor": "Advisor",
+      "paragraphs": [
+        "Select the coverage the applicant wants, including the applicable people, amounts and product options."
+      ],
+      "screens": [
+        "coverage"
+      ],
+      "activeUser": "Advisor",
+      "accessStage": "Advisor"
+    },
+    "contact": {
+      "title": "Complete Contact",
+      "actor": "Advisor",
+      "paragraphs": [
+        "Enter the applicant’s contact information carefully. The existing-flow reference places the start of autosave after Contact."
+      ],
+      "screens": [
+        "contact"
+      ],
+      "activeUser": "Advisor",
+      "accessStage": "Advisor"
+    },
+    "profile": {
+      "title": "Complete Profile",
+      "actor": "Advisor",
+      "paragraphs": [
+        "Enter the required personal and financial details before moving to Review."
+      ],
+      "screens": [
+        "profile"
+      ],
+      "activeUser": "Advisor",
+      "accessStage": "Advisor"
+    },
+    "review-advisor": {
+      "title": "Review the prepared application",
+      "actor": "Advisor",
+      "paragraphs": [
+        "Check the application details through Review before confirming that it should be sent to the applicant."
+      ],
+      "screens": [
+        "review-advisor"
+      ],
+      "activeUser": "Advisor",
+      "accessStage": "Advisor"
+    },
+    "send": {
+      "title": "Send the application",
+      "actor": "Advisor",
+      "paragraphs": [
+        "Confirm sending the prepared application to John Doe’s applicant email for completion and signature."
+      ],
+      "screens": [
+        "send"
+      ],
+      "activeUser": "Advisor",
+      "accessStage": "Advisor"
+    },
+    "invitation": {
+      "title": "Open the application invitation",
+      "actor": "Applicant",
+      "paragraphs": [
+        "The applicant opens the email asking them to complete and sign the application. Its initial link starts the access process; it is separate from the requested MFA secure link."
+      ],
+      "screens": [
+        "applicant-invitation"
+      ],
+      "activeUser": "Neither",
+      "accessStage": "Applicant"
+    },
+    "applicant-email": {
+      "title": "Enter the applicant email",
+      "actor": "Applicant",
+      "paragraphs": [
+        "Open the link in the application email to reach Resume Application. Enter John Doe’s applicant email shown above to request a secure link."
+      ],
+      "screens": [
+        "applicant-email"
+      ],
+      "activeUser": "Neither",
+      "accessStage": "Applicant"
+    },
+    "applicant-secure-link": {
+      "title": "Open the requested secure link",
+      "actor": "Applicant",
+      "paragraphs": [
+        "Open the new secure-link email to continue verification. The reference email states that access to application information requires verification."
+      ],
+      "screens": [
+        "applicant-secure-link"
+      ],
+      "activeUser": "Neither",
+      "accessStage": "Applicant"
+    },
+    "applicant-method": {
+      "title": "Choose Text or Call",
+      "actor": "Applicant",
+      "paragraphs": [
+        "Choose a delivery method for the verification code. The current-flow reference uses the applicant phone number provided in the application."
+      ],
+      "screens": [
+        "applicant-method"
+      ],
+      "activeUser": "Neither",
+      "accessStage": "Applicant"
+    },
+    "applicant-code": {
+      "title": "Verify the phone code",
+      "actor": "Applicant",
+      "paragraphs": [
+        "Enter the code delivered by the selected method to complete MFA and gain access to the application."
+      ],
+      "screens": [
+        "applicant-code"
+      ],
+      "activeUser": "Neither",
+      "accessStage": "Applicant"
+    },
+    "review-applicant": {
+      "title": "Review or request a correction",
+      "actor": "Applicant",
+      "paragraphs": [
+        "After MFA, review the application. Continue to complete it, or choose Request Edit if the advisor needs to correct the prepared information."
+      ],
+      "screens": [
+        "review-applicant"
+      ],
+      "activeUser": "Applicant",
+      "accessStage": "Applicant"
+    },
+    "health": {
+      "title": "Complete remaining questions",
+      "actor": "Applicant",
+      "paragraphs": [
+        "Complete the remaining application sections, including applicable health questions."
+      ],
+      "screens": [],
+      "placeholder": "Current-template capture needed: Complete remaining questions.",
+      "activeUser": "Applicant",
+      "accessStage": "Applicant"
+    },
+    "signature": {
+      "title": "Sign the completed application",
+      "actor": "Applicant",
+      "paragraphs": [
+        "Sign the completed application through DocuSign. The current-flow reference places the spouse signature after the member signature when spouse coverage applies."
+      ],
+      "screens": [
+        "signature"
+      ],
+      "placeholder": "Current-template captures still needed: spouse signing and the signature-completion confirmation.",
+      "activeUser": "Applicant",
+      "accessStage": "DocuSign"
+    },
+    "receipt": {
+      "title": "Review the receipt",
+      "actor": "Applicant",
+      "paragraphs": [
+        "Review the confirmation receipt and confirmation email after completing the application. The advisor also receives a completion notification."
+      ],
+      "screens": [],
+      "placeholder": "Current-template capture needed: Review the receipt.",
+      "activeUser": "Applicant",
+      "accessStage": "DocuSign"
+    },
+    "edit-request": {
+      "title": "Request an advisor edit",
+      "actor": "Applicant",
+      "paragraphs": [
+        "In Review Application, choose Request Edit. Confirm Request sends the application back for the advisor to make the correction; Cancel keeps the applicant in review."
+      ],
+      "screens": [
+        "request-edit"
+      ],
+      "activeUser": "Applicant",
+      "accessStage": "Applicant"
+    },
+    "edit-email": {
+      "title": "Advisor receives the edit request",
+      "actor": "Advisor",
+      "paragraphs": [
+        "The advisor receives this email about John Doe’s edit request. The message identifies the applicant, confirmation reference and action REVISE. Use Saved App with the applicant email, then authenticate as the advisor."
+      ],
+      "screens": [
+        "advisor-edit-email"
+      ],
+      "activeUser": "Neither",
+      "accessStage": "Advisor"
+    },
+    "saved-entry": {
+      "title": "Locate the saved application",
+      "actor": "Advisor",
+      "paragraphs": [
+        "Choose Saved App on Advisor Login and enter John Doe’s applicant email to locate the application. The following authentication steps use the advisor’s own email and phone."
+      ],
+      "screens": [
+        "saved-entry"
+      ],
+      "activeUser": "Neither",
+      "accessStage": "Advisor"
+    },
+    "advisor-email": {
+      "title": "Request an advisor secure link",
+      "actor": "Advisor",
+      "paragraphs": [
+        "Enter the advisor email shown above to receive the advisor’s secure link. The applicant email used for the Saved App lookup does not replace the advisor’s authentication email."
+      ],
+      "screens": [],
+      "placeholder": "Current-template capture needed: Request an advisor secure link.",
+      "activeUser": "Neither",
+      "accessStage": "Advisor"
+    },
+    "advisor-secure-link": {
+      "title": "Open the advisor secure link",
+      "actor": "Advisor",
+      "paragraphs": [
+        "Open the secure-link email delivered to the advisor mailbox shown above, then continue verification using the advisor phone number."
+      ],
+      "screens": [
+        "advisor-secure-link"
+      ],
+      "activeUser": "Neither",
+      "accessStage": "Advisor"
+    },
+    "advisor-method": {
+      "title": "Choose advisor code delivery",
+      "actor": "Advisor",
+      "paragraphs": [
+        "Choose Text or Call. The current-flow reference sends the code to the advisor phone number."
+      ],
+      "screens": [],
+      "placeholder": "Current-template capture needed: Choose advisor code delivery.",
+      "activeUser": "Neither",
+      "accessStage": "Advisor"
+    },
+    "advisor-code": {
+      "title": "Verify the advisor phone code",
+      "actor": "Advisor",
+      "paragraphs": [
+        "Enter the code to finish verification and reopen the saved application."
+      ],
+      "screens": [],
+      "placeholder": "Current-template capture needed: Verify the advisor phone code.",
+      "activeUser": "Neither",
+      "accessStage": "Advisor"
+    },
+    "revise": {
+      "title": "Revise and resend",
+      "actor": "Advisor",
+      "paragraphs": [
+        "Make the agreed changes, review the application, and send it back to the applicant. The applicant repeats secure access to review the updated application."
+      ],
+      "screens": [],
+      "placeholder": "Current-template capture needed: Revise and resend.",
+      "activeUser": "Advisor",
+      "accessStage": "Advisor"
+    },
+    "edit-confirmation": {
+      "title": "Edit request sent confirmation",
+      "actor": "Applicant",
+      "paragraphs": [
+        "After confirming the request, the applicant sees the edit-request confirmation. The advisor is notified and must verify access before reopening the application."
+      ],
+      "screens": [
+        "edit-confirmation"
+      ],
+      "activeUser": "Neither",
+      "accessStage": "Advisor"
+    },
+    "sent-confirmation": {
+      "title": "Application sent confirmation",
+      "actor": "Advisor",
+      "paragraphs": [
+        "After confirming Send, check the confirmation that the application was sent to the applicant."
+      ],
+      "screens": [
+        "sent-confirmation"
+      ],
+      "activeUser": "Neither",
+      "accessStage": "Applicant"
+    },
+    "applicant-link-confirmation": {
+      "title": "Secure link sent confirmation",
+      "actor": "Applicant",
+      "paragraphs": [
+        "The portal confirms that a secure link was sent to the applicant email. Open the requested email to continue verification."
+      ],
+      "screens": [
+        "applicant-link-confirmation"
+      ],
+      "activeUser": "Neither",
+      "accessStage": "Applicant"
+    },
+    "advisor-link-confirmation": {
+      "title": "Advisor secure link sent confirmation",
+      "actor": "Advisor",
+      "paragraphs": [
+        "The portal confirms that a secure link was sent to the advisor email. Open that email before proceeding to phone verification."
+      ],
+      "screens": [],
+      "placeholder": "Current-template capture needed: Advisor secure link sent confirmation.",
+      "activeUser": "Neither",
+      "accessStage": "Advisor"
+    },
+    "advisor-access": {
+      "title": "Reopen the verified saved application",
+      "actor": "Advisor",
+      "paragraphs": [
+        "After completing MFA, the advisor regains access to the saved application and can review its existing answers."
+      ],
+      "screens": [],
+      "placeholder": "Current-template capture needed: Reopen the verified saved application.",
+      "activeUser": "Advisor",
+      "accessStage": "Advisor"
+    },
+    "return-invitation": {
+      "title": "Return through the application email",
+      "actor": "Applicant",
+      "paragraphs": [
+        "Use the application link to return to a saved application or an application returned after an advisor update. This is the initial access link, not the requested MFA link."
+      ],
+      "screens": [
+        "applicant-resume-invitation"
+      ],
+      "activeUser": "Neither",
+      "accessStage": "Applicant"
+    },
+    "resume-secure-link": {
+      "title": "Open the requested resume link",
+      "actor": "Applicant",
+      "paragraphs": [
+        "After requesting secure access, open the new resume-link email and continue phone verification."
+      ],
+      "screens": [
+        "applicant-resume-link"
+      ],
+      "activeUser": "Neither",
+      "accessStage": "Applicant"
+    },
+    "sent-email": {
+      "title": "Advisor receives the application email",
+      "actor": "Advisor",
+      "paragraphs": [
+        "The advisor receives the application email after sending. The supplied capture is addressed to the advisor mailbox shown above; John Doe is the applicant named in the message."
+      ],
+      "screens": [
+        "advisor-saved-email"
+      ],
+      "activeUser": "Neither",
+      "accessStage": "Applicant"
+    }
+  },
+  "sequences": {},
+  "sections": [
+    {
+      "id": "start",
+      "title": "Start an application",
+      "description": "Prepare and send an application using the existing portal.",
+      "actor": "Advisor",
+      "entries": [
+        "entry",
+        "eligibility",
+        "coverage",
+        "contact",
+        "profile",
+        "review-advisor",
+        "send",
+        "sent-confirmation",
+        "sent-email"
+      ]
+    },
+    {
+      "id": "complete",
+      "title": "Complete an application",
+      "description": "Open the invitation, verify applicant access, review and sign.",
+      "actor": "Applicant",
+      "entries": [
+        "invitation",
+        "applicant-email",
+        "applicant-link-confirmation",
+        "applicant-secure-link",
+        "applicant-method",
+        "applicant-code",
+        "review-applicant",
+        "health",
+        "signature",
+        "receipt"
+      ]
+    },
+    {
+      "id": "revise",
+      "title": "Revise a saved application",
+      "description": "Request an edit, reopen as advisor and return the updated application.",
+      "actor": "Advisor",
+      "entries": [
+        "edit-request",
+        "edit-confirmation",
+        "edit-email",
+        "saved-entry",
+        "advisor-email",
+        "advisor-link-confirmation",
+        "advisor-secure-link",
+        "advisor-method",
+        "advisor-code",
+        "advisor-access",
+        "revise"
+      ]
+    },
+    {
+      "id": "resume",
+      "title": "Resume an application",
+      "description": "Return to a saved application or an application sent back after advisor updates.",
+      "actor": "Applicant",
+      "entries": [
+        "return-invitation",
+        "applicant-email",
+        "applicant-link-confirmation",
+        "resume-secure-link",
+        "applicant-method",
+        "applicant-code",
+        "review-applicant"
+      ]
+    },
+    {
+      "id": "notifications",
+      "title": "Email notifications",
+      "description": "Notification types and the available current-template email references.",
+      "actor": "Applicant or advisor",
+      "entries": []
+    },
+    {
+      "id": "troubleshooting",
+      "title": "Troubleshooting",
+      "description": "Common questions about application access, technical issues and emails.",
+      "actor": "Applicant or advisor",
+      "entries": []
+    }
+  ],
+  "notificationReferences": {
+    "sent": {
+      "whenNotified": "Immediately after the advisor confirms sending the application.",
+      "screens": {
+        "Applicant": [
+          "applicant-invitation"
+        ],
+        "Advisor": [
+          "advisor-saved-email"
+        ]
+      }
+    },
+    "pending": {
+      "whenNotified": "According to the pending-signature email schedule while the application is incomplete.",
+      "screens": {}
+    },
+    "deleted": {
+      "whenNotified": "When an incomplete saved application expires and is deleted.",
+      "screens": {}
+    },
+    "completed": {
+      "whenNotified": "When the applicant completes and submits the application.",
+      "screens": {}
+    },
+    "edit-requested": {
+      "whenNotified": "Immediately after the applicant confirms the edit request.",
+      "screens": {
+        "Advisor": [
+          "advisor-edit-email"
+        ]
+      }
+    }
+  },
+  "exampleParticipants": {
+    "Applicant": {
+      "name": "John Doe",
+      "email": "caroline_correa@newyorklife.com"
+    },
+    "Advisor": {
+      "email": "location-central@ox6dxosw.mailosaur.net"
+    }
+  }
+}

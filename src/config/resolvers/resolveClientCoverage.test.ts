@@ -37,7 +37,7 @@ describe("resolveClientCoverage", () => {
   it("computes which health pages a coverage's effective underwriting type unlocks", () => {
     const resolved = resolveClientCoverage(clients.abe);
     const teleDi = resolved.find((c) => c.id === "di-mtd");
-    expect(teleDi?.healthPagesUnlocked).toContain("health-di");
+    expect(teleDi?.healthPagesUnlocked).toContain("health-di-supp");
   });
 
   it("resolves ASCE product names, ranges, underwriting, and brochure links", () => {

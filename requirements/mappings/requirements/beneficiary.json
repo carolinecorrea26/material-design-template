@@ -1,0 +1,86 @@
+{
+  "component": "beneficiary",
+  "pages": [
+    "beneficiary"
+  ],
+  "configurations": [
+    "beneficiary-categories",
+    "category-order",
+    "product-order",
+    "category-names",
+    "product-names"
+  ],
+  "rules": [
+    "beneficiary-applicable-applicants-products",
+    "beneficiary-optional-page-opt-in",
+    "beneficiary-required-beneficiary-per-applicable-product",
+    "beneficiary-add-edit-remove-modal",
+    "beneficiary-primary-contingent-designation",
+    "beneficiary-individual-vs-trust",
+    "beneficiary-maximum-beneficiaries",
+    "beneficiary-individual-allocation",
+    "beneficiary-allocation-reaches-100",
+    "beneficiary-trust-exclusivity",
+    "beneficiary-apply-to-other-coverages",
+    "beneficiary-product-presentation",
+    "beneficiary-complete-individual-allocation",
+    "beneficiary-configuration-boundaries"
+  ],
+  "validations": [
+    {
+      "validation": "field-definition-checks",
+      "trigger": "save-beneficiary",
+      "scope": "registered-fields"
+    },
+    {
+      "validation": "beneficiary-required-records",
+      "trigger": "next",
+      "scope": "page"
+    },
+    {
+      "validation": "beneficiary-record-shape",
+      "trigger": "next",
+      "scope": "page"
+    },
+    {
+      "validation": "beneficiary-record-selectors",
+      "trigger": "next",
+      "scope": "page"
+    },
+    {
+      "validation": "beneficiary-record-capacity",
+      "trigger": "next",
+      "scope": "page"
+    },
+    {
+      "validation": "beneficiary-type-exclusivity",
+      "trigger": "next",
+      "scope": "page"
+    },
+    {
+      "validation": "beneficiary-share-acceptance",
+      "trigger": "next",
+      "scope": "page"
+    },
+    {
+      "validation": "beneficiary-copy-target-required",
+      "trigger": "apply-beneficiary",
+      "scope": "page"
+    },
+    {
+      "validation": "beneficiary-current-copy-target",
+      "trigger": "apply-beneficiary",
+      "scope": "page"
+    },
+    {
+      "validation": "beneficiary-individual-allocation-total",
+      "trigger": "next",
+      "scope": "page"
+    },
+    {
+      "validation": "beneficiary-primary-required",
+      "trigger": "next",
+      "scope": "page"
+    }
+  ]
+}

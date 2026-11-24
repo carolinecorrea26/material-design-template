@@ -133,8 +133,8 @@ export default function HowApplyingWorksPanel({
                 <Box
                   key={index}
                   sx={(theme) => ({
-                    px: isDrawer ? 1.5 : animated ? 2 : 0,
-                    py: isDrawer ? 0 : 1.75,
+                    px: animated ? 2 : 0,
+                    py: 1.75,
                     borderLeft: animated ? "3px solid" : 0,
                     borderColor: isActive ? "primary.main" : "transparent",
                     borderRadius: isDrawer ? 0 : "0 12px 12px 0",
@@ -146,17 +146,17 @@ export default function HowApplyingWorksPanel({
                       : "background-color 240ms ease, border-color 240ms ease",
                   })}
                 >
-                  <Box sx={!isDrawer && !animated ? {
+                  <Box sx={!animated ? {
                     display: "grid",
-                    gridTemplateColumns: { xs: "1fr", sm: "160px minmax(0, 1fr)" },
+                    gridTemplateColumns: isDrawer ? "1fr" : { xs: "1fr", sm: "160px minmax(0, 1fr)" },
                     alignItems: "center",
-                    gap: { xs: 3, sm: 2, md: 3 },
+                    gap: isDrawer ? 3 : { xs: 3, sm: 2, md: 3 },
                   } : {}}>
-                    {!isDrawer && !animated && <ApplyingStepIllustration image={applyingWorksImages[index].image} label={applyingWorksImages[index].alt} />}
+                    {!animated && <ApplyingStepIllustration image={applyingWorksImages[index].image} label={applyingWorksImages[index].alt} />}
                     <Stack spacing={1}>
-                    <Stack direction="row" spacing={1.5} alignItems="center" sx={!isDrawer && !animated ? {
-                      justifyContent: { xs: "center", sm: "flex-start" },
-                      textAlign: { xs: "center", sm: "left" },
+                    <Stack direction="row" spacing={1.5} alignItems="center" sx={!animated ? {
+                      justifyContent: isDrawer ? "center" : { xs: "center", sm: "flex-start" },
+                      textAlign: isDrawer ? "center" : { xs: "center", sm: "left" },
                     } : {}}>
                       <Box
                         aria-hidden="true"
@@ -164,12 +164,12 @@ export default function HowApplyingWorksPanel({
                           width: 28,
                           height: 28,
                           borderRadius: "50%",
-                          bgcolor: isActive || (!isDrawer && !animated) ? "primary.main" : "grey.200",
+                          bgcolor: isActive || !animated ? "primary.main" : "grey.200",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
                           typography: "body2",
-                          color: isActive || (!isDrawer && !animated) ? "common.white" : "text.primary",
+                          color: isActive || !animated ? "common.white" : "text.primary",
                           fontWeight: 700,
                           flexShrink: 0,
                           transition: prefersReducedMotion
@@ -180,7 +180,7 @@ export default function HowApplyingWorksPanel({
                         {index + 1}
                       </Box>
                       <Typography
-                        variant={!isDrawer && !animated ? "h3" : "h5"}
+                        variant={!animated ? "h3" : "h5"}
                         color={isActive ? "primary.dark" : "text.primary"}
                       >
                         {step.title}

@@ -1,6 +1,5 @@
-/** Prototype timing only: neither checked-in MCR extract specifies an applicant timeout. */
-export const applicationSessionPolicy = {
-  inactivityMinutes: 45,
-  warningMinutes: 2,
-  timingStatus: 'provisional; requires confirmation from the application session service',
-} as const;
+import definitions from '../../requirements/global/configurations/application-session.json';
+import { applicationSessionPolicy as readPolicy } from '../domain/applicationSessionPolicy.mjs';
+
+/** Fixed globally: the timer and every projection read these same Fresh-start defaults. */
+export const applicationSessionPolicy = readPolicy(definitions);

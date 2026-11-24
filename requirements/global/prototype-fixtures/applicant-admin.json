@@ -1,0 +1,7 @@
+{
+  "applications": [
+    { "id": "fast-track-member-review", "reference": "FT-DEMO-1001", "applicant": "Example applicant", "stage": "member-review", "status": "In review" },
+    { "id": "fast-track-underwriting", "reference": "FT-DEMO-1002", "applicant": "Example applicant", "stage": "underwriting", "status": "In review" },
+    { "id": "fast-track-approved", "reference": "FT-DEMO-1003", "applicant": "Example applicant", "stage": "final-decision", "status": "Approved" }
+  ]
+}

@@ -1,12 +1,12 @@
+// Historical normalization: assertions resolve the captured snapshot explicitly.
 import { beforeAll, describe, expect, it } from "vitest";
 import { createReviewedMigrationDatabase, createMigrationDatabase } from "./fixtures";
 import { consolidateRiderOwnership } from "./riderOwnership";
 import { mcrSource } from "./mcr";
 import { validateMigrationDatabase } from "./integrity";
-import { resolveEffectiveSite, type EffectiveSiteData } from "../domain/effectiveSite";
-import { resolvePrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotSite as resolveEffectiveSite, type EffectiveSiteData } from "../domain/effectiveSite";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import { createLibraryDraft, editDraftRiders } from "../domain/libraryDraft";
-import { createSiteBuild } from "../domain/siteBuild";
 import { isStoredRider } from "../domain/riderOverrides";
 import { libraryMetadata } from "../domain/provenance";
 import { LocalStorageAdapter } from "../persistence/localAdapter";
@@ -115,23 +115,20 @@ describe("relational rider ownership", () => {
     expect(() => preview(changed)).toThrow("Global rider properties");
   });
 
-  it("copies stable references and overrides into a new Site without coupling edits", () => {
+  it("keeps stable references and overrides isolated across detached revisions", () => {
     const original = createLibraryDraft(revision, "ama");
     original.data.organizations = db.organizations;
     original.data.organizationProfiles = db.organizationProfiles;
     const riders = preview(original.data).products.find(product => product.id === "li-10yr")!.riders!;
     const source = editDraftRiders(original, "li-10yr", riders.map(rider => ({ ...rider, description: "Source Site wording" })));
-    const client = db.clients.find(client => client.key === "ama")!;
-    const organization = db.organizations.find(organization => organization.id === client.organizationId)!;
-    const copied = createSiteBuild(source, { siteKey: "ama-rider-copy", siteName: "Rider copy", template: "multi", clientKey: client.key, clientName: client.name,
-      organizationKey: organization.key, organizationName: organization.name, newClient: false, newOrganization: false });
+    const copied = structuredClone(source);
     const library = preview(copied.data, copied.siteKey);
     const copiedRiders = library.products.find(product => product.id === "li-10yr")!.riders!;
     expect(copiedRiders).toEqual(preview(source.data).products.find(product => product.id === "li-10yr")!.riders);
     expect(library.site.configuration.products.find(product => product.productKey === "li-10yr")!.riders.map(rider => rider.key)).toEqual(["rider.ama.r39", "rider.ama.r38"]);
     const edited = editDraftRiders(copied, "li-10yr", copiedRiders.map(rider => ({ ...rider, description: "Copied Site wording" })));
     expect(preview(edited.data, copied.siteKey).products.find(product => product.id === "li-10yr")!.riders!.every(rider => rider.description === "Copied Site wording")).toBe(true);
-    expect(preview(edited.data).products.find(product => product.id === "li-10yr")!.riders!.every(rider => rider.description === "Source Site wording")).toBe(true);
+    expect(preview(source.data).products.find(product => product.id === "li-10yr")!.riders!.every(rider => rider.description === "Source Site wording")).toBe(true);
     expect(edited.data.riders).toEqual(source.data.riders);
     expect(validateMigrationDatabase({ ...db, ...edited.data })).toEqual([]);
   });

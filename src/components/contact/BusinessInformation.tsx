@@ -4,7 +4,7 @@ import FieldRenderer from '../forms/FieldRenderer';
 import AddressFields, { addressFieldNames, type AddressFieldsProps } from '../forms/AddressFields';
 import SectionDivider from '../layout/SectionDivider';
 import type { FormRouteRenderProps } from '../../app/RoutePage';
-import { requirementText } from '../../domain/requirementContent';
+import { useComponentContent } from '../content/ComponentContentContext';
 
 export type BusinessInformationProps = Omit<AddressFieldsProps, 'prefix'> & Pick<FormRouteRenderProps, 'watchedValues' | 'setValue'> & {
   sameAsHome: boolean;
@@ -12,20 +12,23 @@ export type BusinessInformationProps = Omit<AddressFieldsProps, 'prefix'> & Pick
   title?: string;
 };
 /** Local same-as-home interaction; product eligibility/participation is decided by the caller. */
-export default function BusinessInformation({ fields, control, errors, watchedValues, setValue, sameAsHome, showEmployerDetails, title = requirementText('contact.section.business') }: BusinessInformationProps) {
+export default function BusinessInformation({ fields, control, errors, watchedValues, setValue, sameAsHome, showEmployerDetails, title }: BusinessInformationProps) {
+  const defaultTitle = useComponentContent().pages.contact?.messages?.businessHeading;
+  const heading = title ?? defaultTitle;
+  if (typeof heading !== 'string') throw new Error('Missing fresh-start Contact business heading');
   useEffect(() => {
-    if (!sameAsHome) return;
+    if (!showEmployerDetails || !sameAsHome) return;
     for (const id of addressFieldNames) {
       const value = watchedValues[id];
       if (typeof value === "string" && value !== watchedValues[`business-${id}`]) {
         setValue(`business-${id}`, value, { shouldDirty: false, shouldTouch: false, shouldValidate: false });
       }
     }
-  }, [sameAsHome, watchedValues, setValue]);
+  }, [showEmployerDetails, sameAsHome, watchedValues, setValue]);
   const addressIds = addressFieldNames.map(id => `business-${id}`);
   const render = (field: AddressFieldsProps['fields'][number]) => <FieldRenderer key={field.id} field={field} control={control} errors={errors} />;
   return <Box sx={{ mt: 2 }}>
-    <SectionDivider label={title} variant="subsection">
+    <SectionDivider label={heading} variant="subsection">
     {showEmployerDetails && fields.filter(field => !addressIds.includes(field.id) && !['business-phone', 'business-address-same-as-home'].includes(field.id)).map(render)}
     {showEmployerDetails && fields.filter(field => field.id === 'business-address-same-as-home').map(render)}
     {(!sameAsHome || !showEmployerDetails) && <AddressFields fields={fields} control={control} errors={errors} prefix="business-" />}

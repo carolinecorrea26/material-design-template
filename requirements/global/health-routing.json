@@ -1,0 +1,7 @@
+[
+  { "pageId": "health-si", "pageLabel": "SI", "condition": "The participating adult's effective pathway assigns Simplified Issue questions", "purpose": "Shared SI questionnaire and applicable follow-up detail records.", "implemented": true },
+  { "pageId": "health-tele", "pageLabel": "TELE", "condition": "The effective product/applicant policy assigns full health questions, Critical Illness questions, or their configured combination", "purpose": "Shared TELE page with the assigned questionnaire; CI is a product-dependent variation within TELE.", "implemented": true },
+  { "pageId": "health-qd", "pageLabel": "QD", "condition": "The effective product/applicant pathway assigns externally hosted QuickDecision health questions", "purpose": "Configured prototype image handoff, followed by standard saving and navigation. No live underwriting service or external questionnaire executes.", "implemented": true },
+  { "pageId": "health-di-supp", "pageLabel": "DI SUPP", "condition": "The effective product/applicant combination requires supplemental Disability questions", "purpose": "Shared supplemental Disability questionnaire and follow-up detail records.", "implemented": true },
+  { "pageId": "health-cir", "pageLabel": "CIR", "condition": "The participating adult selects the rider and its effective assignment requires CIR questions", "purpose": "Assigned Chronic Illness Rider questionnaire on its shared page.", "implemented": true }
+]

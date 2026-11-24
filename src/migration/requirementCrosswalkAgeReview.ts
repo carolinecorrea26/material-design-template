@@ -1,4 +1,4 @@
-import { createHash } from "node:crypto";
+import { recordedFilesMatch } from "./sourceEvidence";
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -21,7 +21,7 @@ const evidence: Record<string, string> = {
   "src/migration/canonicalAgeSourceReview.test.ts": "c66a40e0b01b918d93ec20df6872fae408a1ef85004af58a33db7139b084eaa5"
 };
 export function reviewedAgeCodeMatches(read = (path: string) => readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), "../..", path))) {
-  return Object.keys(evidence).length > 0 && Object.entries(evidence).every(([path, hash]) => createHash("sha256").update(read(path)).digest("hex") === hash);
+  return recordedFilesMatch(evidence, read);
 }
 /** Exact source statements only. Other product ages and qualifiers remain separate. */
 export function reviewAgeSourceStatements(db: DatabaseSchema, rows: CrosswalkRow[]) {

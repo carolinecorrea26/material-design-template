@@ -1,22 +1,20 @@
 import { canViewCoveragePortfolio } from "../domain/tpaIntegration";
 import { requirementText } from "../domain/requirementContent";
 import { resolveApplicationCoverage } from "../domain/coverageRuntime";
-import { useRef, useState } from "react";
+import { Fragment, useRef, useState, type ReactNode } from "react";
 import { Box, Button, Divider, Stack } from "@mui/material";
 import PageAlert from "../components/feedback/PageAlert";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import AccountBalanceWalletRoundedIcon from "@mui/icons-material/AccountBalanceWalletRounded";
 import FormRoutePage from "../app/RoutePage";
 
-import AppDrawer from "../components/layout/AppDrawer";
-import FormHelpChips from "../components/content/HelpChips";
 import CoverageQuestions from "../app/sections/ConfiguredCoverageQuestions";
 import ProductCatalog from "../app/sections/ConfiguredProductCatalog";
 import { useCoverageState } from "../app/useCoverageState";
 import CoveragePortfolioDrawer from "../components/coverage/CoveragePortfolioDrawer";
 import { useApplicationForm } from "../app/ApplicationFormContext";
 import type { CoverageApplicantId } from "../config/coverages/types";
-import type { BeforeNextContext } from "../app/RoutePage";
+import type { BeforeNextContext, FormRouteRenderProps } from "../app/RoutePage";
 import ConfirmationDialog from "../components/layout/ConfirmationDialog";
 import { useComponentContent } from "../components/content/ComponentContentContext";
 import CoverageSelectionFeedback from "../components/coverage/CoverageSelectionFeedback";
@@ -36,17 +34,6 @@ export default function Coverage() {
   const pendingContinueRef = useRef<(() => void) | null>(null);
   const [dependentCoverageDialogOpen, setDependentCoverageDialogOpen] =
     useState(false);
-
-  const helpItems: {
-    id: string;
-    label: string;
-    title: React.ReactNode;
-    content: React.ReactNode;
-  }[] = [];
-
-  const [activeHelpId, setActiveHelpId] = useState<string | null>(null);
-  const activeHelpItem =
-    helpItems.find((item) => item.id === activeHelpId) ?? null;
 
   function getProductApplicants(
     formValues: Record<string, unknown>,
@@ -124,18 +111,6 @@ export default function Coverage() {
       pageId="coverage"
       validate={state.validate}
       onBeforeNext={handleBeforeNext}
-      help={
-        <>
-          <FormHelpChips items={helpItems} onSelect={setActiveHelpId} />
-          <AppDrawer
-            open={!!activeHelpItem}
-            title={activeHelpItem?.title ?? ""}
-            onClose={() => setActiveHelpId(null)}
-          >
-            {activeHelpItem?.content}
-          </AppDrawer>
-        </>
-      }
       hideNextButton={() =>
         // Hide Next while products are loading
         (state.showProducts && state.productsLoading) ||
@@ -204,13 +179,7 @@ function CoveragePageContent({
   state,
   isTpaVerified,
   onOpenPortfolio,
-}: {
-  control: any;
-  errors: any;
-  watchedValues: any;
-  allFields: any[];
-  pageSections: any[];
-  trigger: () => Promise<boolean>;
+}: Pick<FormRouteRenderProps, "control" | "errors" | "watchedValues" | "allFields" | "pageSections" | "trigger"> & {
   state: ReturnType<typeof useCoverageState>;
   isTpaVerified: boolean;
   onOpenPortfolio: () => void;
@@ -225,10 +194,12 @@ function CoveragePageContent({
     setPageError(null);
   }
 
-  return (
-    <>
-      {/* TPA portfolio banner */}
-      {isTpaVerified && (
+  const regions = [...new Set(pageSections.flatMap(section => {
+    const role = section.role === "categories" ? "questions" : section.role === "summary" ? "products" : section.role;
+    return role ? [role] : [];
+  }))];
+  const regionContent: Record<string, ReactNode> = {
+    portfolio: (isTpaVerified && (
         <Box sx={{ mb: 3 }}>
           <Button
             variant="outlined"
@@ -239,15 +210,8 @@ function CoveragePageContent({
             {requirementText("coverage.portfolio.button")}
           </Button>
         </Box>
-      )}
-
-      {state.coverages.length === 0 && <PageAlert severity="info" message={requirementText("coverage.no-coverage")} />}
-      {state.selectedCoverageIds.some(id => !state.coverages.some(product => product.id === id)) && <PageAlert severity="warning" message={<Stack spacing={1}>
-        <span>{requirementText("coverage.selection-unavailable")}</span>
-        <Button sx={{ alignSelf: "flex-start" }} onClick={() => state.setPageValues({ coverageSelections: state.selectedCoverageIds.filter(id => state.coverages.some(product => product.id === id)) })}>{requirementText("coverage.selection-unavailable.action")}</Button>
-      </Stack>} />}
-      {/* Coverage questions: category question and its follow-ups */}
-      <PageAlert severity="error" message={pageError ?? undefined} />
+      )),
+    questions: (<>
       <CoverageQuestions
         control={control}
         errors={errors}
@@ -265,6 +229,8 @@ function CoveragePageContent({
         categoryErrorMessage={content.coverage.selectAtLeastOneCategoryError}
       />
 
+</>),
+    products: (<>
       {/* Divider between coverage questions and products */}
       {state.selectedCategories.length > 0 && state.showProducts && (
         <Divider sx={{ my: 4 }} />
@@ -313,6 +279,8 @@ function CoveragePageContent({
         </Box>
       )}
 
+</>),
+    reveal: (<>
       {/* "See my coverage options" button */}
       {state.selectedCategories.length > 0 &&
         !state.showProducts &&
@@ -343,7 +311,7 @@ function CoveragePageContent({
                 setPageError(null);
                 // Save current form answers to context before revealing products,
                 // so the RoutePage reset effect doesn't clobber them.
-                state.setPageValues(watchedValues as Record<string, any>);
+                state.setPageValues(watchedValues);
                 state.revealProducts();
               }}
               endIcon={<ArrowForwardRoundedIcon />}
@@ -351,7 +319,19 @@ function CoveragePageContent({
               {requirementText("coverage.reveal.button")}
             </Button>
           </Box>
-        )}
+        )}</>),
+  };
+
+  return (
+    <>
+      {state.coverages.length === 0 && <PageAlert severity="info" message={requirementText("coverage.no-coverage")} />}
+      {state.selectedCoverageIds.some(id => !state.coverages.some(product => product.id === id)) && <PageAlert severity="warning" message={<Stack spacing={1}>
+        <span>{requirementText("coverage.selection-unavailable")}</span>
+        <Button sx={{ alignSelf: "flex-start" }} onClick={() => state.setPageValues({ coverageSelections: state.selectedCoverageIds.filter(id => state.coverages.some(product => product.id === id)) })}>{requirementText("coverage.selection-unavailable.action")}</Button>
+      </Stack>} />}
+      {/* Coverage questions: category question and its follow-ups */}
+      <PageAlert severity="error" message={pageError ?? undefined} />
+      {regions.map(role => <Fragment key={role}>{regionContent[role]}</Fragment>)}
 
 
     </>

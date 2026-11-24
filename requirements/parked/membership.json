@@ -33,16 +33,37 @@
       "navigation.next",
       "navigation.submitting",
       "navigation.back"
+    ],
+    "association-attestation": "membership.association.attestation",
+    "runtime": [
+      "navigation.transition-messages.membership"
+    ],
+    "wording": [
+      "membership.title",
+      "membership.subhead",
+      "membership.page-note",
+      "membership.not-member.heading",
+      "membership.not-member.body",
+      "membership.not-member.website",
+      "membership.physician.title",
+      "membership.physician.note"
+    ],
+    "follow-up": [
+      "membership.associate-notices.spouse",
+      "membership.associate-notices.child",
+      "membership.associate-notices.other"
     ]
   },
   "help": [
     {
       "id": "coverage-options-available",
-      "chip": "membership.help.coverage-options"
+      "chip": "membership.help.coverage-options",
+      "title": "membership.help.coverage-options-title"
     },
     {
       "id": "application-process",
-      "chip": "membership.help.how-applying-works"
+      "chip": "membership.help.how-applying-works",
+      "title": "membership.help.applying-title"
     }
   ],
   "sections": {
@@ -53,6 +74,9 @@
           "membership.not-member.heading",
           "membership.not-member.body",
           "membership.not-member.website"
+        ],
+        "association-link": [
+          "membership.association.link-required"
         ]
       }
     },
@@ -72,7 +96,21 @@
           "type": "PageHeader",
           "components": [
             {
-              "type": "MembershipHelp"
+              "type": "PageHelp",
+              "mapping": "page-help",
+              "components": [
+                {
+                  "type": "PageHelpChips"
+                },
+                {
+                  "type": "PageHelpDrawer",
+                  "components": [
+                    {
+                      "type": "AppDrawer"
+                    }
+                  ]
+                }
+              ]
             }
           ]
         },
@@ -85,12 +123,23 @@
           "section": "membership",
           "components": [
             {
-              "type": "MembershipStatus"
+              "type": "MembershipStatus",
+              "fields": [
+                "membership"
+              ]
             },
             {
-              "type": "MemberInformation"
+              "type": "MemberInformation",
+              "fields": [
+                "title",
+                "first-name",
+                "last-name",
+                "email",
+                "phone"
+              ]
             }
-          ]
+          ],
+          "partOf": "SectionDivider"
         },
         {
           "type": "AdditionalMembershipInformation",
@@ -119,21 +168,28 @@
       "membership": {
         "id": "default",
         "for": "self",
-        "fields": [
-          "membership",
-          "title",
-          "first-name",
-          "last-name",
-          "email",
-          "phone"
-        ]
+        "display": {
+          "label": "Membership",
+          "templates": [
+            "multi",
+            "single"
+          ]
+        }
       },
       "follow-up": {
         "id": "membershipInformation",
         "for": "self",
-        "remaining": true
+        "remaining": true,
+        "display": {
+          "label": "Additional membership information",
+          "templates": [
+            "multi",
+            "single"
+          ]
+        }
       }
-    }
+    },
+    "sectionOrder": "membership"
   },
   "shownWhen": {
     "sections": {
@@ -141,7 +197,8 @@
         "outcome": [
           "member",
           "new-member"
-        ]
+        ],
+        "field": "membership"
       }
     },
     "fields": [
@@ -152,7 +209,8 @@
           "outcome": [
             "member",
             "new-member"
-          ]
+          ],
+          "field": "membership"
         }
       },
       {
@@ -162,7 +220,8 @@
           "outcome": [
             "member",
             "new-member"
-          ]
+          ],
+          "field": "membership"
         }
       },
       {
@@ -172,7 +231,8 @@
           "outcome": [
             "member",
             "new-member"
-          ]
+          ],
+          "field": "membership"
         }
       },
       {
@@ -182,7 +242,8 @@
           "outcome": [
             "member",
             "new-member"
-          ]
+          ],
+          "field": "membership"
         }
       },
       {
@@ -192,7 +253,8 @@
           "outcome": [
             "member",
             "new-member"
-          ]
+          ],
+          "field": "membership"
         }
       },
       {
@@ -202,7 +264,8 @@
           "outcome": [
             "member",
             "new-member"
-          ]
+          ],
+          "field": "membership"
         }
       }
     ]
@@ -211,5 +274,40 @@
     "phone": [
       "phone-type"
     ]
-  }
+  },
+  "retiredComponentKeys": [
+    "component-membership-help"
+  ],
+  "contentSlots": {
+    "membership.physician.title": {
+      "name": "Associated professional information heading"
+    },
+    "membership.physician.note": {
+      "name": "Associated professional information guidance",
+      "optional": true
+    },
+    "membership.title": {
+      "name": "Membership page title"
+    },
+    "membership.subhead": {
+      "name": "Membership page introduction"
+    },
+    "membership.page-note": {
+      "name": "Membership information note",
+      "optional": true
+    },
+    "membership.not-member.heading": {
+      "name": "Non-member guidance heading"
+    },
+    "membership.not-member.body": {
+      "name": "Non-member guidance explanation"
+    },
+    "membership.not-member.website": {
+      "name": "Non-member contact guidance"
+    }
+  },
+  "note": "membership.page-note",
+  "retiredContentKeys": [
+    "membership.note.member-profession"
+  ]
 }

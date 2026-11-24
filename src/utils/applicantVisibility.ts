@@ -1,80 +1,37 @@
-import type { ApplicantSectionId } from "../config/formSectionTitle";
-import type { CoverageApplicantId } from "../config/coverages/types";
+import type { ApplicantSectionId } from '../config/formSectionTitle';
+import type { CoverageApplicantId, CoverageDefinition } from '../config/coverages/types';
+import { getActiveClientCoverages } from '../config/client/getActiveClientCoverages';
+import { selectedProductApplicants } from '../domain/applicantParticipation';
+import { reconcileApplicationRiders } from '../domain/applicationRiders';
 
 export type FormValuesLike = Record<string, unknown>;
-export type ApplicantLike = ApplicantSectionId | "member";
+export type ApplicantLike = ApplicantSectionId | 'member';
 
-function getProductApplicantsFromValues(
-  values: FormValuesLike,
-): Record<string, CoverageApplicantId[]> {
-  const raw = values.productApplicants;
-  if (raw != null && typeof raw === "object" && !Array.isArray(raw)) {
-    return raw as Record<string, CoverageApplicantId[]>;
+/** Heading context is application-wide; section applicability is evaluated separately. */
+export function applyingApplicants(values: FormValuesLike, products: CoverageDefinition[] = getActiveClientCoverages()): CoverageApplicantId[] {
+  const applicants = new Set<CoverageApplicantId>();
+  const riders = reconcileApplicationRiders(products, values).coverageRiders;
+  for (const product of products) for (const owner of selectedProductApplicants(values, product)) {
+    applicants.add(owner);
+    for (const rider of product.riders ?? []) if (rider.dependentApplicant && riders[`${product.id}:${rider.id}:${owner}`]) applicants.add(rider.dependentApplicant);
   }
-  return {};
+  return [...applicants];
 }
 
-function hasNonMemberApplicantSelected(values: FormValuesLike): boolean {
-  const selectedDependents = getSelectedDependents(values);
-  const productApplicants = getProductApplicantsFromValues(values);
-  for (const applicants of Object.values(productApplicants)) {
-    if (
-      Array.isArray(applicants) &&
-      applicants.some((a) => a !== "member" && selectedDependents.includes(a))
-    ) {
-      return true;
-    }
-  }
-  return false;
+export function hasDependentsSelected(values: FormValuesLike, products?: CoverageDefinition[]): boolean {
+  return applyingApplicants(values, products).some(applicant => applicant !== 'member');
 }
 
-function getSelectedDependents(values: FormValuesLike): string[] {
-  const dependents = values.dependents;
-  return Array.isArray(dependents) ? dependents : [];
+export function isApplicantApplying(applicant: ApplicantLike, values: FormValuesLike, products?: CoverageDefinition[]): boolean {
+  return applyingApplicants(values, products).includes(applicant === 'self' ? 'member' : applicant);
 }
 
-function isApplicantInProductSelections(
-  applicant: CoverageApplicantId,
-  values: FormValuesLike,
-): boolean {
-  // If the dependent type is no longer selected on eligibility, it's not applying
-  if (
-    applicant === "spouse" &&
-    !getSelectedDependents(values).includes("spouse")
-  )
-    return false;
-  if (applicant === "child" && !getSelectedDependents(values).includes("child"))
-    return false;
-
-  const productApplicants = getProductApplicantsFromValues(values);
-  for (const applicants of Object.values(productApplicants)) {
-    if (Array.isArray(applicants) && applicants.includes(applicant)) {
-      return true;
-    }
-  }
-  return false;
+export function shouldShowApplicantLabel(applicant: ApplicantLike, values: FormValuesLike, products?: CoverageDefinition[]): boolean {
+  return applicant === 'self' || applicant === 'member' ? hasDependentsSelected(values, products) : isApplicantApplying(applicant, values, products);
 }
 
-export function hasDependentsSelected(values: FormValuesLike): boolean {
-  return hasNonMemberApplicantSelected(values);
-}
-
-export function isApplicantApplying(
-  applicant: ApplicantLike,
-  values: FormValuesLike,
-): boolean {
-  const applicantId: CoverageApplicantId =
-    applicant === "self" ? "member" : applicant;
-  return isApplicantInProductSelections(applicantId, values);
-}
-
-export function shouldShowApplicantLabel(
-  applicant: ApplicantLike,
-  values: FormValuesLike,
-): boolean {
-  if (applicant === "self" || applicant === "member") {
-    return hasNonMemberApplicantSelected(values);
-  }
-
-  return isApplicantInProductSelections(applicant, values);
+/** Coverage questions precede product election and use eligible applicant intent. */
+export function hasProspectiveDependents(values: FormValuesLike, products: CoverageDefinition[]): boolean {
+  const dependents = Array.isArray(values.dependents) ? values.dependents : [];
+  return products.some(product => product.applicants.some(applicant => applicant !== 'member' && dependents.includes(applicant)));
 }

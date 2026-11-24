@@ -1,0 +1,41 @@
+{
+  "site": "ama-gi",
+  "assignments": [
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-term",
+      "applicants": [
+        "member"
+      ],
+      "value": 17,
+      "source": "User AMA-GI enrollment and confirmations November 19, 2026; Main!O129:P130"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-term",
+      "applicants": [
+        "member"
+      ],
+      "value": 39,
+      "source": "User AMA-GI enrollment and confirmations November 19, 2026; Main!O129:P130"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "di-short-term",
+      "applicants": [
+        "member"
+      ],
+      "value": 17,
+      "source": "User AMA-GI enrollment and confirmations November 19, 2026; Main!O129:P130"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "di-short-term",
+      "applicants": [
+        "member"
+      ],
+      "value": 39,
+      "source": "User AMA-GI enrollment and confirmations November 19, 2026; Main!O129:P130"
+    }
+  ]
+}

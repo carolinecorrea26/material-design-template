@@ -1,4 +1,4 @@
-import { Alert, Box, type AlertColor } from "@mui/material";
+import { Alert, Box, type AlertColor, type SxProps, type Theme } from "@mui/material";
 import type { ReactNode } from "react";
 
 type PageAlertProps = {
@@ -11,6 +11,7 @@ type PageAlertProps = {
   message?: ReactNode;
   /** Show a dismiss button. Caller manages open state. */
   onDismiss?: () => void;
+  sx?: SxProps<Theme>;
 };
 
 /**
@@ -26,12 +27,12 @@ type PageAlertProps = {
 export default function PageAlert({
   severity = "error",
   message,
-  onDismiss,
+  onDismiss, sx,
 }: PageAlertProps) {
   if (!message) return null;
 
   return (
-    <Box sx={{ mb: 2 }}>
+    <Box sx={[{ mb: 2 }, ...(Array.isArray(sx) ? sx : sx ? [sx] : [])]}>
       <Alert
         severity={severity}
         onClose={onDismiss}

@@ -6,9 +6,8 @@ const owners: Record<string, string> = {
   beneficiary: "rule-application-flow-beneficiary-routing",
   "health-si": "rule-application-flow-health-si-routing",
   "health-qd": "rule-application-flow-health-qd-routing",
-  "health-li": "rule-application-flow-health-tele-supp-routing",
-  "health-di": "rule-application-flow-health-tele-supp-routing",
-  "health-ci": "rule-application-flow-health-tele-supp-routing",
+  "health-tele": "rule-application-flow-health-tele-supp-routing",
+  "health-di-supp": "rule-application-flow-health-tele-supp-routing",
   "health-cir": "rule-application-flow-health-uw-cir-routing",
 };
 const authority = "Shared routing rule ownership, October 19, 2026";

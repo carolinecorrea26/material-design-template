@@ -6,6 +6,7 @@ import { libraryOwners } from '../../../domain/libraryOwnership';
 
 /** Carry scope/Site context, never unrelated domain filters. */
 export function libraryHref(domain: string, search: URLSearchParams, filters: Record<string, string> = {}) {
+  if (domain === 'communications') domain = 'emails';
   if (domain === 'coverage') domain = !filters.dataset || (libraryOwners.products as readonly string[]).includes(filters.dataset) ? 'products' : 'coverage';
   if (domain === 'patterns' || domain === 'flags') domain = 'rules';
   const next = new URLSearchParams();

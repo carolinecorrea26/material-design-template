@@ -1,3 +1,4 @@
+import { requirementText } from "../../domain/requirementContent";
 import { Box, Divider, IconButton, Stack, Typography } from "@mui/material";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import type { ReactNode } from "react";
@@ -10,7 +11,6 @@ export type ApplicationDocumentPreviewProps = {
   sectionPages?: { title: string; pageId: PageId }[];
   signatureName: string;
   signedDate: string;
-  currentDate: string;
   onEditSection?: (pageId: PageId) => void;
   hideSignature?: boolean;
 };
@@ -37,7 +37,6 @@ export default function ApplicationDocumentPreview({
   sectionPages = [],
   signatureName,
   signedDate,
-  currentDate,
   onEditSection,
   hideSignature,
 }: ApplicationDocumentPreviewProps) {
@@ -75,7 +74,7 @@ export default function ApplicationDocumentPreview({
               {pageIndex === 0 ? (
                 <Stack spacing={1.5}>
                   <Typography variant="overline">
-                    Application Preview
+                    {requirementText("application.document-preview.title")}
                   </Typography>
                   <Stack
                     direction={{ xs: "column", sm: "row" }}
@@ -87,12 +86,7 @@ export default function ApplicationDocumentPreview({
                         {associationName}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        Insurance Application Review Copy
-                      </Typography>
-                    </div>
-                    <div>
-                      <Typography variant="body2" color="text.secondary">
-                        Prepared on {currentDate}
+                        {requirementText("application.document-preview.subtitle")}
                       </Typography>
                     </div>
                   </Stack>
@@ -118,7 +112,7 @@ export default function ApplicationDocumentPreview({
                           <IconButton
                             size="small"
                             onClick={() => onEditSection(sectionPageId)}
-                            aria-label={`Edit ${section.title}`}
+                            aria-label={requirementText("application.document-preview.edit-section", { title: section.title })}
                             sx={{ color: "primary.main" }}
                           >
                             <EditRoundedIcon fontSize="small" />
@@ -128,7 +122,7 @@ export default function ApplicationDocumentPreview({
 
                     {section.groups.map((group, groupIndex) => (
                       <Stack
-                        key={`${section.title}-${group.title ?? groupIndex}`}
+                        key={`${section.title}-${groupIndex}`}
                         spacing={1}
                       >
                         {group.title ? (
@@ -179,7 +173,7 @@ export default function ApplicationDocumentPreview({
                 <Stack spacing={1.25} sx={{ pt: 1.5 }}>
                   <Divider />
                   <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                    Signature
+                    {requirementText("application.document-preview.signature")}
                   </Typography>
                   <Box
                     sx={{
@@ -190,7 +184,7 @@ export default function ApplicationDocumentPreview({
                   >
                     <Stack spacing={1}>
                       <Typography variant="caption" color="text.secondary">
-                        Electronic signature
+                        {requirementText("application.document-preview.electronic-signature")}
                       </Typography>
                       <Typography
                         sx={{
@@ -207,7 +201,7 @@ export default function ApplicationDocumentPreview({
                         {signatureName.trim() || PLACEHOLDER}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        Signed date: {signedDate || PLACEHOLDER}
+                        {requirementText("application.document-preview.signed-date", { date: signedDate || PLACEHOLDER })}
                       </Typography>
                     </Stack>
                   </Box>

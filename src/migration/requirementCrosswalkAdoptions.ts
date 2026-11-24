@@ -234,7 +234,7 @@ export function reviewedAdoptionRequirements(db: DatabaseSchema): CrosswalkRow[]
           owners, matches, ["src/migration/isitrustQuestionnaireAdoption.test.ts", "src/migration/atpeQuestionnaireAdoption.test.tsx"]);
         const row = rows.at(-1)!;
         row.scope.associationKeys = [...generalQuestionnaire.associationKeys]; row.scope.applicantKeys = ["member", "spouse"];
-        row.implementationReferences = ["src/domain/configuredHealthQuestionnaire.ts", "src/config/clientFields/getClientPageFields.ts", "src/pages/HealthLi.tsx", "src/app/sections/ConfiguredHealthQuestions.tsx"];
+        row.implementationReferences = ["src/domain/configuredHealthQuestionnaire.ts", "src/config/clientFields/getClientPageFields.ts", "src/pages/HealthTele.tsx", "src/app/sections/ConfiguredHealthQuestions.tsx"];
       }
     }
     const policy = current(owner("isitrust.review-policy"));
@@ -252,7 +252,7 @@ export function reviewedAdoptionRequirements(db: DatabaseSchema): CrosswalkRow[]
         `${key === item.questionFieldKey ? "Collect source Yes/No answer" : item.questionFieldKey ? "On Yes, collect" : "Collect"}: ${field.label}; ${field.required ? "required" : "optional"}${field.maxLength ? `; maximum ${field.maxLength} characters` : ""}. ${item.repeated && key !== item.questionFieldKey ? "Require complete repeatable details on Yes." : "Use captured field format."} Per adult, explicit Site assignment, product guard ${JSON.stringify(variant.when)}${item.when ? `, conditional guard ${JSON.stringify(item.when)}` : ""}. Actual health participation remains separate from processing; preserve NSO short QD, WAEPA child and GI scope.`,
         [ref, fieldRef], matches, ["src/migration/sharedLifeQuestionnaireAdoption.test.ts"]);
       rows.at(-1)!.scope.applicantKeys = ["member", "spouse"];
-      rows.at(-1)!.implementationReferences = ["src/domain/configuredHealthQuestionnaire.ts", "src/domain/coverageJourney.ts", "src/app/sections/ConfiguredHealthQuestions.tsx", "src/pages/HealthLi.tsx"];
+      rows.at(-1)!.implementationReferences = ["src/domain/configuredHealthQuestionnaire.ts", "src/domain/coverageJourney.ts", "src/app/sections/ConfiguredHealthQuestions.tsx", "src/pages/HealthTele.tsx"];
     }
   }
   if (sharedLifeReview?.waepaHealthScope) {
@@ -278,7 +278,7 @@ export function reviewedAdoptionRequirements(db: DatabaseSchema): CrosswalkRow[]
       const fieldRef = { table: "fields", key, column: "definition" }, field = current(fieldRef) as FieldDefinition;
       add(`combined-di.${selected.siteKey}.${item.key}.${key}`, "Health", selected.siteKey, null, null, [...item.sourceReferences, "Health Questions!A101", "User decision October 20, 2026"], `${key === item.questionFieldKey ? "Require source Yes/No answer" : "On Yes, require detail"}: ${field.label}${field.maxLength ? `, maximum ${field.maxLength} characters` : ""}. ${item.repeated && key !== item.questionFieldKey ? "Allow repeated complete records." : "Use captured field format."} Only for the same adult's native QD Life + FUW Disability combination. DI-only retains its provisional form; processing and PDF output remain separate.`, [ref, fieldRef], canonical(current(ref)) === canonical(selected.policy) && canonical(field) === canonical(combinedDiReview?.fields?.find(row => row.key === key)?.definition), ["src/migration/combinedDisabilityQuestionnaireAdoption.test.tsx"]);
       rows.at(-1)!.scope.applicantKeys = ["member", "spouse"];
-      rows.at(-1)!.implementationReferences = ["src/domain/configuredHealthQuestionnaire.ts", "src/domain/coverageJourneyUnderwriting.ts", "src/domain/coverageJourney.ts", "src/domain/coveragePortfolio.ts", "src/pages/HealthDi.tsx", "src/config/healthFollowUps.ts"];
+      rows.at(-1)!.implementationReferences = ["src/domain/configuredHealthQuestionnaire.ts", "src/domain/coverageJourneyUnderwriting.ts", "src/domain/coverageJourney.ts", "src/domain/coveragePortfolio.ts", "src/pages/HealthDiSupp.tsx", "src/config/healthFollowUps.ts"];
     }
   }
   const giPayrollReview = db.semanticRequirements.find(row => row.key === giAndPayrollReviewDecisionKey)?.value as { selected?: Array<{ siteKey: string; key: string; block: { key: string; sourceReferences: string[] } }> } | undefined;
@@ -411,7 +411,7 @@ export function reviewedAdoptionRequirements(db: DatabaseSchema): CrosswalkRow[]
   for (const row of rows.filter(row => row.id.startsWith("atomic.adopted.atpe.questionnaire."))) {
     row.scope.applicantKeys = ["member", "spouse"];
     row.scope.productKeys = row.id.includes(".ci-only.") ? ["sh-critical-illness"] : row.id.includes(".ci-mixed.") ? atpeAmountSelections.map(slice => slice.productKey) : ["li-group-term", "li-10yr", "li-20yr"];
-    row.implementationReferences = ["src/domain/configuredHealthQuestionnaire.ts", "src/config/clientFields/getClientPageFields.ts", "src/config/healthFollowUps.ts", "src/pages/HealthLi.tsx", "src/app/sections/ConfiguredHealthQuestions.tsx"];
+    row.implementationReferences = ["src/domain/configuredHealthQuestionnaire.ts", "src/config/clientFields/getClientPageFields.ts", "src/config/healthFollowUps.ts", "src/pages/HealthTele.tsx", "src/app/sections/ConfiguredHealthQuestions.tsx"];
   }
   const contactReview = db.semanticRequirements.find(row => row.key === waepaContactDecisionKey)?.value as { owners?: Array<Owner & { reviewedValue: unknown }> } | undefined;
   if (contactReview?.owners?.length) {

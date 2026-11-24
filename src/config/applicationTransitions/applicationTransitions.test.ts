@@ -27,7 +27,11 @@ const quoteSource: QuoteApplySource = {
 
 describe("application transitions", () => {
   it("applies quote fields, structured coverage state, and preserves unrelated values", () => {
-    const result = executeApplicationTransition(quoteApplyTransition, quoteSource, {
+    const result = executeApplicationTransition(quoteApplyTransition, { ...quoteSource,
+      // This synthetic DI/OO quote explicitly collected these fields; it does not
+      // inherit the currently installed Site's product/category assignment.
+      collectedFieldIds: ['gender', 'average-monthly-income', 'hours-worked-per-week', 'monthly-business-expenses', 'business-expense-responsibility'],
+    }, {
       "first-name": "Taylor",
     });
 

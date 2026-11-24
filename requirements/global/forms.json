@@ -1,0 +1,508 @@
+{
+  "hostingDefinition": "Hosting identifies who renders the form interface, independently of any external services used to send or verify information.",
+  "forms": [
+    {
+      "id": "docusign",
+      "hosting": "External",
+      "prototype": {
+        "mode": "Image handoff",
+        "note": "Prototype displays the configured DocuSign image; no signing service is connected."
+      },
+      "sourceReferences": [
+        "src/pages/DocuSign.tsx"
+      ],
+      "target": {
+        "page": "docusign"
+      },
+      "description": {
+        "content": "forms.docusign.description"
+      },
+      "usedIn": [
+        {
+          "page": "docusign"
+        }
+      ]
+    },
+    {
+      "id": "health-qd",
+      "hosting": "External",
+      "prototype": {
+        "mode": "Image handoff",
+        "note": "Prototype displays the configured QD images; no underwriting service is connected."
+      },
+      "sourceReferences": [
+        "src/pages/HealthQd.tsx"
+      ],
+      "target": {
+        "page": "health-qd"
+      },
+      "description": {
+        "content": "forms.health-qd.description"
+      },
+      "usedIn": [
+        {
+          "page": "health-qd"
+        }
+      ],
+      "name": {
+        "content": "forms.health-qd.name"
+      }
+    },
+    {
+      "id": "payment-credit-card",
+      "hosting": "External",
+      "prototype": {
+        "mode": "Not implemented",
+        "note": "The hosted card-entry form is recorded here; the prototype does not collect card details or connect a payment service."
+      },
+      "sourceReferences": [
+        "src/pages/Payment.tsx"
+      ],
+      "target": {
+        "component": "PaymentSections"
+      },
+      "description": {
+        "content": "forms.payment-credit-card.description"
+      },
+      "usedIn": [
+        {
+          "page": "payment"
+        }
+      ],
+      "name": {
+        "content": "forms.payment-credit-card.name"
+      }
+    },
+    {
+      "id": "member-authentication",
+      "hosting": "External",
+      "prototype": {
+        "mode": "Portal simulation",
+        "note": "Prototype verification questions and outcomes simulate the external authentication; the method-selection form is internal."
+      },
+      "sourceReferences": [
+        "src/components/verification/MemberVerification.tsx"
+      ],
+      "target": {
+        "component": "MemberVerification"
+      },
+      "description": {
+        "content": "forms.member-authentication.description"
+      },
+      "usedIn": [
+        {
+          "page": "eligibility"
+        }
+      ],
+      "name": {
+        "content": "forms.member-authentication.name"
+      }
+    },
+    {
+      "id": "membership",
+      "hosting": "Internal",
+      "prototype": {
+        "mode": "Portal UI",
+        "note": ""
+      },
+      "sourceReferences": [
+        "src/pages/Membership.tsx"
+      ],
+      "target": {
+        "page": "membership"
+      },
+      "description": {
+        "content": "forms.membership.description"
+      },
+      "usedIn": [
+        {
+          "page": "membership"
+        }
+      ]
+    },
+    {
+      "id": "eligibility",
+      "hosting": "Internal",
+      "prototype": {
+        "mode": "Portal UI",
+        "note": ""
+      },
+      "sourceReferences": [
+        "src/pages/Eligibility.tsx",
+        "src/components/forms/DynamicList.tsx",
+        "src/components/eligibility/EligibilitySections.tsx"
+      ],
+      "target": {
+        "page": "eligibility"
+      },
+      "description": {
+        "content": "forms.eligibility.description"
+      },
+      "usedIn": [
+        {
+          "page": "eligibility"
+        }
+      ]
+    },
+    {
+      "id": "coverage",
+      "hosting": "Internal",
+      "prototype": {
+        "mode": "Portal UI",
+        "note": ""
+      },
+      "sourceReferences": [
+        "src/pages/Coverage.tsx"
+      ],
+      "target": {
+        "page": "coverage"
+      },
+      "description": {
+        "content": "forms.coverage.description"
+      },
+      "usedIn": [
+        {
+          "page": "coverage"
+        }
+      ]
+    },
+    {
+      "id": "beneficiary",
+      "hosting": "Internal",
+      "prototype": {
+        "mode": "Portal UI",
+        "note": ""
+      },
+      "sourceReferences": [
+        "src/pages/Beneficiary.tsx"
+      ],
+      "target": {
+        "page": "beneficiary"
+      },
+      "description": {
+        "content": "forms.beneficiary.description"
+      },
+      "usedIn": [
+        {
+          "page": "beneficiary"
+        }
+      ]
+    },
+    {
+      "id": "contact",
+      "hosting": "Internal",
+      "prototype": {
+        "mode": "Portal UI",
+        "note": ""
+      },
+      "sourceReferences": [
+        "src/pages/Contact.tsx"
+      ],
+      "target": {
+        "page": "contact"
+      },
+      "description": {
+        "content": "forms.contact.description"
+      },
+      "usedIn": [
+        {
+          "page": "contact"
+        }
+      ]
+    },
+    {
+      "id": "profile",
+      "hosting": "Internal",
+      "prototype": {
+        "mode": "Portal UI",
+        "note": ""
+      },
+      "sourceReferences": [
+        "src/pages/Profile.tsx",
+        "src/components/profile/ProfileSections.tsx",
+        "src/components/forms/DynamicList.tsx"
+      ],
+      "target": {
+        "page": "profile"
+      },
+      "description": {
+        "content": "forms.profile.description"
+      },
+      "usedIn": [
+        {
+          "page": "profile"
+        }
+      ]
+    },
+    {
+      "id": "review",
+      "hosting": "Internal",
+      "prototype": {
+        "mode": "Portal UI",
+        "note": ""
+      },
+      "sourceReferences": [
+        "src/pages/Review.tsx"
+      ],
+      "target": {
+        "page": "review"
+      },
+      "description": {
+        "content": "forms.review.description"
+      },
+      "usedIn": [
+        {
+          "page": "review"
+        }
+      ]
+    },
+    {
+      "id": "payment",
+      "hosting": "Internal",
+      "prototype": {
+        "mode": "Portal UI",
+        "note": ""
+      },
+      "sourceReferences": [
+        "src/pages/Payment.tsx",
+        "src/components/payment/PaymentSections.tsx"
+      ],
+      "target": {
+        "page": "payment"
+      },
+      "description": {
+        "content": "forms.payment.description"
+      },
+      "usedIn": [
+        {
+          "page": "payment"
+        }
+      ]
+    },
+    {
+      "id": "health-questionnaires",
+      "hosting": "Internal",
+      "prototype": {
+        "mode": "Portal UI",
+        "note": ""
+      },
+      "sourceReferences": [
+        "src/pages/HealthSi.tsx",
+        "src/pages/HealthTele.tsx",
+        "src/pages/HealthDiSupp.tsx",
+        "src/pages/HealthCir.tsx",
+        "src/components/forms/HealthQuestion.tsx",
+        "src/app/sections/ConfiguredHealthPage.tsx",
+        "src/components/forms/DynamicList.tsx"
+      ],
+      "target": {
+        "component": "HealthQuestionList"
+      },
+      "description": {
+        "content": "forms.health-questionnaires.description"
+      },
+      "usedIn": [
+        {
+          "page": "health-si"
+        },
+        {
+          "page": "health-tele"
+        },
+        {
+          "page": "health-di-supp"
+        },
+        {
+          "page": "health-cir"
+        }
+      ],
+      "name": {
+        "content": "forms.health-questionnaires.name"
+      }
+    },
+    {
+      "id": "quote-calculator",
+      "hosting": "Internal",
+      "prototype": {
+        "mode": "Portal UI",
+        "note": ""
+      },
+      "sourceReferences": [
+        "src/app/workflows/QuoteCalculator.tsx"
+      ],
+      "target": {
+        "component": "QuoteCalculator"
+      },
+      "description": {
+        "component": "QuoteCalculator"
+      },
+      "usedIn": [
+        {
+          "parentsOf": "quote-calculator"
+        }
+      ]
+    },
+    {
+      "id": "needs-calculator",
+      "hosting": "Internal",
+      "prototype": {
+        "mode": "Portal UI",
+        "note": ""
+      },
+      "sourceReferences": [
+        "src/components/coverage/CoverageNeedsCalculator.tsx",
+        "src/components/layout/AppMenu.tsx"
+      ],
+      "target": {
+        "component": "CoverageNeedsCalculator"
+      },
+      "description": {
+        "component": "CoverageNeedsCalculator"
+      },
+      "usedIn": [
+        {
+          "parentsOf": "needs-calculator"
+        }
+      ]
+    },
+    {
+      "id": "dividend-notices",
+      "target": {
+        "component": "ReviewSections"
+      },
+      "hosting": "Internal",
+      "prototype": {
+        "mode": "Portal UI",
+        "note": "Captured ABE dividend notices are internal Review content."
+      },
+      "sourceReferences": [
+        "src/components/review/ReviewSections.tsx",
+        "requirements/global/application.json"
+      ],
+      "description": {
+        "content": "forms.dividend-notices.description"
+      },
+      "usedIn": [
+        {
+          "page": "home"
+        },
+        {
+          "page": "review"
+        }
+      ],
+      "name": {
+        "content": "forms.dividend-notices.name"
+      }
+    },
+    {
+      "id": "member-verification",
+      "hosting": "Internal",
+      "prototype": {
+        "mode": "Portal UI",
+        "note": ""
+      },
+      "sourceReferences": [
+        "src/components/verification/MemberVerification.tsx",
+        "src/components/verification/VerificationAddress.tsx"
+      ],
+      "target": {
+        "component": "MemberVerification"
+      },
+      "description": {
+        "content": "forms.member-verification.description"
+      },
+      "usedIn": [
+        {
+          "page": "eligibility"
+        }
+      ]
+    },
+    {
+      "id": "resume-email-request",
+      "hosting": "Internal",
+      "prototype": {
+        "mode": "Portal UI",
+        "note": "Prototype uses the mock recovery service and outbox."
+      },
+      "sourceReferences": [
+        "src/pages/Resume.tsx"
+      ],
+      "target": {
+        "page": "resume"
+      },
+      "description": {
+        "content": "forms.resume-email-request.description"
+      },
+      "usedIn": [
+        {
+          "page": "resume"
+        }
+      ]
+    },
+    {
+      "id": "resume-delivery-method",
+      "hosting": "Internal",
+      "prototype": {
+        "mode": "Portal UI",
+        "note": "The request and method selection are internal; LexisNexis phone-code authentication is listed separately."
+      },
+      "sourceReferences": [
+        "src/pages/ResumeMethod.tsx"
+      ],
+      "target": {
+        "page": "resume-method"
+      },
+      "description": {
+        "content": "forms.resume-delivery-method.description"
+      },
+      "usedIn": [
+        {
+          "page": "resume-method"
+        }
+      ]
+    },
+    {
+      "id": "resume-code",
+      "hosting": "Internal",
+      "prototype": {
+        "mode": "Portal UI",
+        "note": "Prototype uses the mock recovery service and outbox."
+      },
+      "sourceReferences": [
+        "src/pages/ResumeCode.tsx"
+      ],
+      "target": {
+        "page": "resume-code"
+      },
+      "description": {
+        "content": "forms.resume-code.description"
+      },
+      "usedIn": [
+        {
+          "page": "resume-code"
+        }
+      ]
+    },
+    {
+      "id": "advisor-login",
+      "hosting": "Internal",
+      "prototype": {
+        "mode": "Portal UI",
+        "note": ""
+      },
+      "sourceReferences": [
+        "src/pages/AdvisorLogin.tsx"
+      ],
+      "target": {
+        "page": "advisor-login"
+      },
+      "description": {
+        "content": "forms.advisor-login.description"
+      },
+      "usedIn": [
+        {
+          "page": "advisor-login"
+        }
+      ]
+    }
+  ]
+}

@@ -8,7 +8,6 @@ import { getTpaForClient } from "../../repositories/sites";
 import { readMockEmailPreviews } from "../../utils/mockEmail";
 import AppFooter from "./AppFooter";
 import ClientHelpBanner from "./ClientHelpBanner";
-import ProductCostBreakdown from "../coverage/ProductCostBreakdown";
 
 let database: DatabaseSchema;
 beforeAll(() => { database = createReviewedMigrationDatabase(); }, 120000);
@@ -43,15 +42,12 @@ it.each([
   }
 });
 
-it("keeps AMA's help-ribbon and breakdown phone distinct from its administrator contact", () => {
+it("keeps AMA's configured help-ribbon phone distinct from its administrator contact", () => {
   const { client } = install("ama");
   const banner = renderToStaticMarkup(<ClientHelpBanner client={client} />);
-  const breakdown = renderToStaticMarkup(<ProductCostBreakdown premiumCost={10} riderItems={[]} rateFrequency="monthly" helpPhone={client.support.helpPhone} />);
-  for (const html of [banner, breakdown]) {
-    expect(html).toContain('href="tel:8886275902"');
-    expect(html).toContain("888-627-5902");
-    expect(html).not.toContain("800-458-5736");
-  }
+  expect(banner).toContain('href="tel:8886275902"');
+  expect(banner).toContain('888-627-5902');
+  expect(banner).not.toContain('800-458-5736');
 });
 
 it("uses captured administrator identity in applicant emails without substituting the Association name", () => {

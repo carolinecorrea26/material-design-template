@@ -1,0 +1,473 @@
+{
+  "site": "avma",
+  "assignments": [
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-group-term",
+      "applicants": [
+        "member"
+      ],
+      "value": 17,
+      "source": "Main!O187"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-group-term",
+      "applicants": [
+        "member"
+      ],
+      "value": 69,
+      "source": "Main!O187"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-group-term",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 17,
+      "source": "Main!P187"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-group-term",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 69,
+      "source": "Main!P187"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-10yr",
+      "applicants": [
+        "member"
+      ],
+      "value": 17,
+      "source": "Main!O188"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-10yr",
+      "applicants": [
+        "member"
+      ],
+      "value": 69,
+      "source": "Main!O188"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-10yr",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 17,
+      "source": "Main!P188"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-10yr",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 69,
+      "source": "Main!P188"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-50plus",
+      "applicants": [
+        "member"
+      ],
+      "value": 45,
+      "source": "Main!O190"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-50plus",
+      "applicants": [
+        "member"
+      ],
+      "value": 74,
+      "source": "Main!O190"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-50plus",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 45,
+      "source": "Main!P190"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-50plus",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 74,
+      "source": "Main!P190"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-add",
+      "applicants": [
+        "member"
+      ],
+      "value": 17,
+      "source": "Main!O191"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-add",
+      "applicants": [
+        "member"
+      ],
+      "value": 64,
+      "source": "Main!O191"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-add",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 17,
+      "source": "Main!P191"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-add",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 64,
+      "source": "Main!P191"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "di-ltd",
+      "applicants": [
+        "member"
+      ],
+      "value": 17,
+      "source": "Main!O192; other dimensions: prototype:avma.di-ltd; work eligibility: Main!R192"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "di-ltd",
+      "applicants": [
+        "member"
+      ],
+      "value": 69,
+      "source": "Main!O192; other dimensions: prototype:avma.di-ltd; work eligibility: Main!R192"
+    },
+    {
+      "configuration": "coverage-minimum-work-hours",
+      "product": "di-ltd",
+      "applicants": [
+        "member"
+      ],
+      "value": 20,
+      "source": "Main!O192; other dimensions: prototype:avma.di-ltd; work eligibility: Main!R192"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "di-ltd",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 17,
+      "source": "Main!P192"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "di-ltd",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 69,
+      "source": "Main!P192"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "di-ltd-plus",
+      "applicants": [
+        "member"
+      ],
+      "value": 17,
+      "source": "Main!O193; other dimensions: prototype:avma.di-ltd-plus; work eligibility: Main!R193"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "di-ltd-plus",
+      "applicants": [
+        "member"
+      ],
+      "value": 49,
+      "source": "Main!O193; other dimensions: prototype:avma.di-ltd-plus; work eligibility: Main!R193"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "di-short-term",
+      "applicants": [
+        "member"
+      ],
+      "value": 17,
+      "source": "Main!O194; other dimensions: prototype:avma.di-short-term; work eligibility: Main!R194"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "di-short-term",
+      "applicants": [
+        "member"
+      ],
+      "value": 64,
+      "source": "Main!O194; other dimensions: prototype:avma.di-short-term; work eligibility: Main!R194"
+    },
+    {
+      "configuration": "coverage-minimum-work-hours",
+      "product": "di-short-term",
+      "applicants": [
+        "member"
+      ],
+      "value": 20,
+      "source": "Main!O194; other dimensions: prototype:avma.di-short-term; work eligibility: Main!R194"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "sh-critical-illness",
+      "applicants": [
+        "member"
+      ],
+      "value": 17,
+      "source": "Main!O195"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "sh-critical-illness",
+      "applicants": [
+        "member"
+      ],
+      "value": 64,
+      "source": "Main!O195"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "sh-critical-illness",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 17,
+      "source": "Main!P195"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "sh-critical-illness",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 64,
+      "source": "Main!P195"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "oo-professional",
+      "applicants": [
+        "member"
+      ],
+      "value": 17,
+      "source": "Main!O196; other dimensions: prototype:avma.oo-professional; work eligibility: Main!R196"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "oo-professional",
+      "applicants": [
+        "member"
+      ],
+      "value": 69,
+      "source": "Main!O196; other dimensions: prototype:avma.oo-professional; work eligibility: Main!R196"
+    },
+    {
+      "configuration": "coverage-minimum-work-hours",
+      "product": "oo-professional",
+      "applicants": [
+        "member"
+      ],
+      "value": 20,
+      "source": "Main!O196; other dimensions: prototype:avma.oo-professional; work eligibility: Main!R196"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-term",
+      "applicants": [
+        "member"
+      ],
+      "value": 17,
+      "source": "Main!O197; work eligibility: Main!R197"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-term",
+      "applicants": [
+        "member"
+      ],
+      "value": 69,
+      "source": "Main!O197; work eligibility: Main!R197"
+    },
+    {
+      "configuration": "coverage-minimum-work-hours",
+      "product": "li-term",
+      "applicants": [
+        "member"
+      ],
+      "value": 20,
+      "source": "Main!O197; work eligibility: Main!R197"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "sh-hospital-income",
+      "applicants": [
+        "member"
+      ],
+      "value": 17,
+      "source": "Main!O198"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "sh-hospital-income",
+      "applicants": [
+        "member"
+      ],
+      "value": 64,
+      "source": "Main!O198"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "sh-hospital-income",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 17,
+      "source": "Main!P198"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "sh-hospital-income",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 64,
+      "source": "Main!P198"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-20yr",
+      "applicants": [
+        "member"
+      ],
+      "value": 17,
+      "source": "docs/step3-provisional-decisions.md"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-20yr",
+      "applicants": [
+        "member"
+      ],
+      "value": 59,
+      "source": "docs/step3-provisional-decisions.md"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-20yr",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 17,
+      "source": "docs/step3-provisional-decisions.md"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-20yr",
+      "applicants": [
+        "spouse"
+      ],
+      "value": 59,
+      "source": "docs/step3-provisional-decisions.md"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-10yr",
+      "applicants": [
+        "child"
+      ],
+      "value": 0,
+      "source": "docs/archive/step3-journey-adoption.md"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-10yr",
+      "applicants": [
+        "child"
+      ],
+      "value": 25,
+      "source": "docs/archive/step3-journey-adoption.md"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-20yr",
+      "applicants": [
+        "child"
+      ],
+      "value": 0,
+      "source": "docs/archive/step3-journey-adoption.md"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-20yr",
+      "applicants": [
+        "child"
+      ],
+      "value": 25,
+      "source": "docs/archive/step3-journey-adoption.md"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "li-group-term",
+      "applicants": [
+        "child"
+      ],
+      "value": 0,
+      "source": "docs/archive/step3-journey-adoption.md"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "li-group-term",
+      "applicants": [
+        "child"
+      ],
+      "value": 25,
+      "source": "docs/archive/step3-journey-adoption.md"
+    },
+    {
+      "configuration": "coverage-minimum-age-years",
+      "product": "sh-hospital-income",
+      "applicants": [
+        "child"
+      ],
+      "value": 0,
+      "source": "docs/archive/step3-journey-adoption.md"
+    },
+    {
+      "configuration": "coverage-maximum-age-years",
+      "product": "sh-hospital-income",
+      "applicants": [
+        "child"
+      ],
+      "value": 25,
+      "source": "docs/archive/step3-journey-adoption.md"
+    }
+  ]
+}

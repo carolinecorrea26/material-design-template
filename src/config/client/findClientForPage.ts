@@ -1,6 +1,7 @@
 import type { PageId } from "../../types";
 import { resolveSiteCoverage, siteEntities, type SiteId } from "../../data";
-import { coverageUnlocksPage } from "../flowGates";
+import { coverageUnlocksPage, siteFlowContext } from "../flowGates";
+import { getPrototypeLibrary, getRelatedPrototypeLibrary } from '../../domain/prototypeLibrary';
 
 /**
  * Finds a Site whose coverage catalog can unlock a gated health-* page
@@ -10,8 +11,9 @@ import { coverageUnlocksPage } from "../flowGates";
  */
 export function findSiteIdUnlockingPage(pageId: PageId): SiteId | null {
   for (const site of siteEntities) {
+    if (getPrototypeLibrary() && !getRelatedPrototypeLibrary(site.id)) continue;
     const coverages = resolveSiteCoverage(site.id);
-    if (coverages.some((coverage) => coverageUnlocksPage(pageId, coverage.effective))) {
+    if (coverages.some((coverage) => coverage.status !== 'disabled' && coverageUnlocksPage(pageId, coverage.effective, siteFlowContext(site.id)))) {
       return site.id;
     }
   }

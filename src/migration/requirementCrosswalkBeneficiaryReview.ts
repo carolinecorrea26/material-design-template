@@ -1,3 +1,4 @@
+import { recordedFilesMatch } from "./sourceEvidence";
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
@@ -29,7 +30,7 @@ const evidence: Record<string, string> = {
   "src/config/flowGates.test.ts": "d29c8ea362df1746fcee6fbe1b0a4ec663318558ed85e1ed4e413e33be463c04"
 };
 export function reviewedBeneficiaryCodeMatches(read = (path: string) => readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), "../..", path))) {
-  return Object.keys(evidence).length > 0 && Object.entries(evidence).every(([path, hash]) => createHash("sha256").update(read(path)).digest("hex") === hash);
+  return recordedFilesMatch(evidence, read);
 }
 export function beneficiaryOwnerEvidenceHash(db: DatabaseSchema) {
   // Configuration record positions shift when an unrelated setting is compiled.

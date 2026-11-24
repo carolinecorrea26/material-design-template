@@ -1,3 +1,6 @@
+import { getActiveClientCoverages } from '../config/client/getActiveClientCoverages';
+import { getPrototypeLibrary } from '../domain/prototypeLibrary';
+import { applicationPaymentAnswers } from '../domain/paymentAnswers';
 import type { ApplicationFormValues } from '../app/ApplicationFormContext';
 import { buildDocumentSections } from '../components/content/applicationDocumentSections';
 import { getActiveClient } from '../config/client/getActiveClient';
@@ -13,10 +16,13 @@ export function applicationPdfLines(values: ApplicationFormValues, paymentOnly =
       for (const entry of group.entries) lines.push({ text: `${entry.label}: ${entry.value}` });
     }
   }
+  const library = getPrototypeLibrary();
+  const payments = library ? applicationPaymentAnswers(library, values, getActiveClientCoverages()) : {};
   // Include collected health/billing rows that the existing Review preview omits.
   for (const [key, value] of Object.entries(values)) {
     if (!/^(health-(li|si|di|cir)-|payment-|billing-|bill-|ach-|bank-)/.test(key)) continue;
     if (paymentOnly && key.startsWith('health-')) continue;
+    if (/^(payment-|bank-|billing-|bill-|ach-)/.test(key) && !Object.hasOwn(payments, key)) continue;
     const label = fieldCatalog[key as keyof typeof fieldCatalog]?.label ?? key.replaceAll('-', ' ');
     if (Array.isArray(value)) {
       lines.push({ text: label, heading: true });

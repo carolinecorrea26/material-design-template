@@ -8,8 +8,8 @@ type Props = Pick<ComponentProps<typeof FieldRenderer>, "control" | "errors"> & 
 /** Applicant name, email and phone collected after membership is confirmed. */
 export default function MemberInformation({ fields, control, errors }: Props) {
   const nameFields = fields.filter(field => ["title", "first-name", "last-name"].includes(field.id));
-  const contactFields = fields.filter(field => ["email", "phone"].includes(field.id));
-  return <>
+  const contactFields = fields.filter(field => !nameFields.includes(field));
+  return <FieldGrid>
     <FieldGrid columns={nameFields.some(field => field.id === "title") ? "120px 1fr 1fr" : "equal"}>
       {nameFields.map((field) =>
         <FieldRenderer key={field.id} field={field} control={control} errors={errors} />,
@@ -19,5 +19,5 @@ export default function MemberInformation({ fields, control, errors }: Props) {
     {contactFields.map((field) =>
       <FieldRenderer key={field.id} field={field} control={control} errors={errors} />,
     )}
-  </>;
+  </FieldGrid>;
 }

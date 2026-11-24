@@ -1,0 +1,20 @@
+{
+  "fields": {
+    "coverage-categories": {
+      "options": [
+        "LI",
+        "DI"
+      ]
+    },
+    "membership": {
+      "configuration": {
+        "self": "new-or-current",
+        "spouse": "yes-no"
+      },
+      "label": {
+        "self": "Are you a current WAEPA member, or are you becoming a new member?",
+        "spouse": "Is your spouse currently a WAEPA member or becoming a WAEPA member?"
+      }
+    }
+  }
+}

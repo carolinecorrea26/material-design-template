@@ -17,5 +17,6 @@ export function LibraryCatalogProvider({ siteKey, children }: { siteKey: string;
   }, [siteKey, generation]);
   if (result?.siteKey !== siteKey || result.generation !== generation) return <Typography>Loading Library…</Typography>;
   if (!result.catalog) return <Alert severity="error">Library records could not be loaded: {result.error}<Button onClick={() => setGeneration(value => value + 1)}>Retry</Button></Alert>;
+  if (siteKey !== 'all' && !result.catalog.data.sites.some(site => site.key === siteKey)) return <Alert severity="info">This Site is not available in the current Library.</Alert>;
   return <Context.Provider value={result.catalog}><Stack spacing={2}><Button size="small" sx={{ alignSelf: "flex-end" }} onClick={() => setGeneration(value => value + 1)}>Refresh</Button>{children}</Stack></Context.Provider>;
 }

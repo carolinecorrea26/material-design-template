@@ -1,0 +1,62 @@
+{
+  "rules": [
+    {
+      "id": "contact-owner-address",
+      "name": "Collect the member address for every application",
+      "status": "confirmed",
+      "statement": "Contact always collects the member’s residential address, including dependent-only applications where the member requests no coverage. Street, city, state and ZIP/postal code are globally included and required; apartment/suite defaults optional. Correspondence is collected when its control is available; when hidden, persist the global Home value. The owner section is independent of product-applicant participation.",
+      "source": "User decision November 13, 2026; requirements/parked/contact.json"
+    },
+    {
+      "id": "contact-business-participation",
+      "name": "Show configured business and employer information",
+      "status": "confirmed",
+      "statement": "The global Contact policy uses member employment for selected DI/OO elections, including spouse-only DI; never collect a separate spouse employer. A nonempty assigned business-product list controls automatic business collection instead of the default DI/OO categories and allows matching products through the hide-business setting. An empty list uses default categories. Independently, choosing Business correspondence reveals address-only fields even when selected products do not require business/employer collection. Without DI/OO applicability, do not show employer name/type, same-as-home or business phone. Effective complete business hiding omits business fields and the correspondence question and persists Home, even if Business was retained. Hiding correspondence independently also persists Home; automatic business collection may still apply. Use current URL-filtered product/applicant elections, never retained out-of-scope selections. No Site-name branch selects behavior.",
+      "source": "src/domain/applicantExperience.ts; requirements/parked/contact.json"
+    },
+    {
+      "id": "contact-same-as-home",
+      "name": "Copy the residential address into business address",
+      "status": "confirmed",
+      "statement": "For the visible member employer-details section, the same-as-home checkbox copies the collected member/household street, apartment/suite, city, state and ZIP/postal code into business-* keys and tracks later home edits while checked. Hide separate business-address and business-phone controls while checked. Unchecking retains copied values for independent editing. Copy address values only, including blank strings and entry carry-forward, without copying phone/email. Retained same-as-home flags on hidden employer controls must not overwrite an editable correspondence-only business address. A hidden same-as-home control must not copy values or suppress otherwise editable business fields.",
+      "source": "src/components/contact/BusinessInformation.tsx; src/pages/Contact.tsx",
+      "replaces": [
+        "rule-contact-business-address-same-as-home"
+      ]
+    },
+    {
+      "id": "contact-spouse-participation",
+      "name": "Collect spouse contact only for an applying spouse",
+      "status": "confirmed",
+      "statement": "Show spouse phone and email only when spouse is selected on Eligibility and participates in a selected product. Member phone/email remain in their earlier shared collection location; do not duplicate them on Contact. Spouse phone/type and email use independent answer keys and autocomplete off. Child contact fields are not collected here.",
+      "source": "requirements/parked/contact.json; src/utils/applicantVisibility.ts"
+    },
+    {
+      "id": "contact-location-carry-forward",
+      "name": "Preset empty Contact location values",
+      "status": "confirmed",
+      "statement": "On Contact entry, copy Eligibility state-province to state and zip-postal-code to zip-code only when the destination is empty. Existing Contact edits win on return or resume. This is entry carry-forward, not an automatic update of Eligibility or live ZIP-to-state inference on Contact. Location options inherit effective Site eligible-state filtering.",
+      "source": "requirements/parked/contact.json; src/config/applicationTransitions/executeApplicationTransition.ts",
+      "replaces": [
+        "rule-contact-eligibility-address-carry-forward"
+      ]
+    },
+    {
+      "id": "contact-storage-and-validation",
+      "name": "Validate active Contact fields and retain draft answers",
+      "status": "confirmed",
+      "statement": "Persist member address, correspondence, separate business address/employer data and spouse phone/type/email under authored scalar answer keys. A hidden correspondence question persists the global Home value, replacing any retained Business selection; preserve other hidden drafts without reactivating controls. Same-as-home is boolean and copied addresses are separate values. Next uses active effective requiredness, offered-option membership, global postal/email/10-digit phone formats and shared feedback. Hidden controls do not block Next.",
+      "source": "src/app/RoutePage.tsx; src/utils/fieldValidation.ts"
+    },
+    {
+      "id": "contact-member-employment",
+      "name": "Use member employment for spouse disability coverage",
+      "status": "confirmed",
+      "statement": "Spouse-only disability coverage depends on the member’s employment. Display and validate the existing member Business/Employer section under the member/owner heading, even when the member requests no coverage. Use business-* answer keys only. Spouse phone and email remain separate personal contact fields; spouse employer fields are not collected. Retired spouse-business-* catalog bindings may not reappear from old snapshots, and old spouse employer answers must never be copied into member employer fields.",
+      "source": "Corrected user decision November 13, 2026; requirements/parked/contact.json; src/pages/Contact.tsx",
+      "replaces": [
+        "rule-contact-spouse-employer"
+      ]
+    }
+  ]
+}

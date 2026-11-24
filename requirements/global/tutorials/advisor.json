@@ -1,0 +1,541 @@
+{
+  "id": "advisor",
+  "title": "Advisor model (new template)",
+  "summary": "Choose an action to learn how to start, complete or recover an advisor-prepared application.",
+  "audience": "Master users, advisors and portal reviewers",
+  "ownership": "Global template tutorial",
+  "source": {
+    "workbook": "portal_inventory.xlsx",
+    "sheet": "Flows - Advisor",
+    "range": "A2:C28"
+  },
+  "steps": {
+    "start": {
+      "title": "Start a new application",
+      "paragraphs": [
+        "Open the advisor entry and select Start. Enter the advisor email, phone number and code, then choose Log in. The new application begins at Membership.",
+        "Use Continue when returning to an application already started."
+      ],
+      "actor": "Advisor",
+      "preview": {
+        "pageId": "advisor-login",
+        "mode": "start"
+      },
+      "activeUser": "Neither",
+      "accessStage": "Advisor",
+      "flowNodeIds": [
+        "advisor-login"
+      ]
+    },
+    "membership": {
+      "title": "Confirm membership",
+      "paragraphs": [
+        "Complete Membership before continuing. The questions shown come from the selected Site’s configuration."
+      ],
+      "actor": "Advisor",
+      "preview": {
+        "pageId": "membership",
+        "mode": "membership"
+      },
+      "activeUser": "Advisor",
+      "accessStage": "Advisor",
+      "flowNodeIds": [
+        "advisor-membership"
+      ]
+    },
+    "eligibility": {
+      "title": "Enter eligibility details",
+      "paragraphs": [
+        "Provide the required details for each person applying. The page determines which coverage is available from those answers."
+      ],
+      "actor": "Advisor",
+      "preview": {
+        "pageId": "eligibility",
+        "mode": "eligibility"
+      },
+      "activeUser": "Advisor",
+      "accessStage": "Advisor",
+      "flowNodeIds": [
+        "advisor-eligibility"
+      ]
+    },
+    "coverage": {
+      "title": "Choose coverage",
+      "paragraphs": [
+        "Select products, covered people and coverage amounts. Review the estimated cost before continuing. Estimates in this prototype are fictional."
+      ],
+      "actor": "Advisor",
+      "preview": {
+        "pageId": "coverage",
+        "mode": "coverage"
+      },
+      "activeUser": "Advisor",
+      "accessStage": "Advisor",
+      "flowNodeIds": [
+        "advisor-coverage"
+      ]
+    },
+    "beneficiary": {
+      "title": "Add beneficiaries when applicable",
+      "paragraphs": [
+        "Complete beneficiary information when the chosen coverage requires it. This page participates according to the application’s selected products."
+      ],
+      "actor": "Advisor",
+      "preview": {
+        "pageId": "beneficiary",
+        "mode": "beneficiary"
+      },
+      "activeUser": "Advisor",
+      "accessStage": "Advisor",
+      "flowNodeIds": [
+        "advisor-beneficiary"
+      ]
+    },
+    "contact": {
+      "title": "Enter applicant contact details",
+      "paragraphs": [
+        "Complete the residential address and correspondence details. Include business or dependent contact sections when they are shown."
+      ],
+      "actor": "Advisor",
+      "preview": {
+        "pageId": "contact",
+        "mode": "contact"
+      },
+      "activeUser": "Advisor",
+      "accessStage": "Advisor",
+      "flowNodeIds": [
+        "advisor-contact"
+      ]
+    },
+    "profile": {
+      "title": "Complete Profile",
+      "paragraphs": [
+        "Complete the required personal, physician and other-coverage details. Profile is the last preparation page before the advisor sends the application."
+      ],
+      "actor": "Advisor",
+      "preview": {
+        "pageId": "profile",
+        "mode": "profile"
+      },
+      "activeUser": "Advisor",
+      "accessStage": "Advisor",
+      "flowNodeIds": [
+        "advisor-profile"
+      ]
+    },
+    "send": {
+      "title": "Confirm the recipient and send",
+      "paragraphs": [
+        "Choose Next on Profile. Check the applicant name and email in Send to applicant for review, then choose Send. Cancel keeps you on Profile."
+      ],
+      "actor": "Advisor",
+      "preview": {
+        "pageId": "profile",
+        "mode": "send"
+      },
+      "activeUser": "Advisor",
+      "accessStage": "Advisor",
+      "flowNodeIds": [
+        "advisor-send-dialog"
+      ]
+    },
+    "sent": {
+      "title": "Check the send confirmation",
+      "paragraphs": [
+        "The confirmation identifies the applicant and shows the sent time and scheduled deletion date. The next part of the walkthrough switches to the applicant."
+      ],
+      "actor": "Advisor",
+      "preview": {
+        "pageId": "advisor-send-confirmation",
+        "mode": "sent"
+      },
+      "activeUser": "Neither",
+      "accessStage": "Applicant",
+      "flowNodeIds": [
+        "advisor-send-confirmation"
+      ]
+    },
+    "request-link": {
+      "title": "MFA · Request a secure email link",
+      "paragraphs": [
+        "The applicant enters their saved email. For Advisor Continue, enter the advisor’s own saved email and phone after the applicant email has identified the application. Choose Next to request a separate secure email link; this does not grant access to saved answers.",
+        "The public confirmation is the same when no application can be recovered, including after submission or expiry."
+      ],
+      "preview": {
+        "pageId": "resume",
+        "mode": "request-link"
+      },
+      "actor": "Current person",
+      "activeUser": "Neither",
+      "accessStage": "Current person",
+      "flowNodeIds": [
+        "advisor-saved-resume",
+        "advisor-resume-verification"
+      ]
+    },
+    "open-link": {
+      "title": "MFA · Open the secure link",
+      "paragraphs": [
+        "The confirmation asks you to check the recipient email. Open the secure link to continue to phone verification. If the link expires, request a replacement using the resend action.",
+        "The live preview shows the portal confirmation; email delivery is simulated in this prototype."
+      ],
+      "preview": {
+        "pageId": "resume",
+        "mode": "open-link"
+      },
+      "actor": "Current person",
+      "activeUser": "Neither",
+      "accessStage": "Current person",
+      "flowNodeIds": [
+        "advisor-secure-email",
+        "advisor-applicant-email"
+      ]
+    },
+    "delivery-method": {
+      "title": "MFA · Choose Text or Call",
+      "paragraphs": [
+        "Choose Text or Call, then Next. The code goes to the saved phone for the person authenticating: applicant phone for applicant access, advisor phone for advisor access. Next consumes the email link and starts MFA; opening the link alone does not."
+      ],
+      "preview": {
+        "pageId": "resume-method",
+        "mode": "delivery-method"
+      },
+      "actor": "Current person",
+      "activeUser": "Neither",
+      "accessStage": "Current person",
+      "flowNodeIds": [
+        "advisor-saved-method",
+        "advisor-applicant-method"
+      ]
+    },
+    "verify-code": {
+      "title": "MFA · Enter the verification code",
+      "paragraphs": [
+        "Enter the code delivered by the selected phone method and choose Next. A valid code completes verification and restores access.",
+        "If the code expires, use Resend code while the verification session is active. If the session expires, restart secure access.",
+        "After signing starts, a verified applicant returns to unfinished DocuSign. After submission, recovery stops issuing links; public confirmation remains unchanged."
+      ],
+      "preview": {
+        "pageId": "resume-code",
+        "mode": "verify-code"
+      },
+      "actor": "Current person",
+      "activeUser": "Neither",
+      "accessStage": "Current person",
+      "flowNodeIds": [
+        "advisor-saved-code",
+        "advisor-applicant-code"
+      ]
+    },
+    "review": {
+      "title": "Access granted · Review the application",
+      "paragraphs": [
+        "The applicant can now review the advisor-prepared answers. Earlier stages are locked against direct applicant editing.",
+        "If everything is correct, complete the required acknowledgements and continue. For a correction, choose an Edit action to request an advisor update."
+      ],
+      "actor": "Applicant",
+      "preview": {
+        "pageId": "review",
+        "mode": "review"
+      },
+      "activeUser": "Applicant",
+      "accessStage": "Applicant",
+      "flowNodeIds": [
+        "advisor-review"
+      ]
+    },
+    "request-edit": {
+      "title": "Request an advisor correction",
+      "paragraphs": [
+        "This is optional. When the answers are correct, continue from Review without requesting an edit.",
+        "Choose an Edit action in the application preview. In Request edit to application, choose Send to confirm, or Cancel to stay on Review."
+      ],
+      "actor": "Applicant",
+      "preview": {
+        "pageId": "review",
+        "mode": "request-edit"
+      },
+      "activeUser": "Applicant",
+      "accessStage": "Applicant",
+      "flowNodeIds": [
+        "advisor-edit-dialog"
+      ]
+    },
+    "edit-sent": {
+      "title": "Check the edit-request confirmation",
+      "paragraphs": [
+        "The confirmation identifies the advisor recipient. The advisor contacts the applicant about the changes and reopens the saved application."
+      ],
+      "actor": "Applicant",
+      "preview": {
+        "pageId": "application-edit-confirmation",
+        "mode": "edit-sent"
+      },
+      "activeUser": "Neither",
+      "accessStage": "Advisor",
+      "flowNodeIds": [
+        "advisor-edit-confirmation"
+      ]
+    },
+    "continue": {
+      "title": "Find the saved application",
+      "paragraphs": [
+        "On advisor entry, select Continue and enter the applicant email used to begin the application. Choose Log in.",
+        "The applicant email identifies the application. The following authentication steps use the advisor’s own email and phone, matched to the saved advisor record; applicant contact details do not authenticate the advisor."
+      ],
+      "actor": "Advisor",
+      "preview": {
+        "pageId": "advisor-login",
+        "mode": "continue"
+      },
+      "activeUser": "Neither",
+      "accessStage": "Advisor",
+      "flowNodeIds": [
+        "advisor-login"
+      ]
+    },
+    "advisor-access": {
+      "title": "Access granted · Reopen the saved answers",
+      "paragraphs": [
+        "Successful verification restores the saved application and returns the advisor to Eligibility. Review the existing answers before making corrections."
+      ],
+      "actor": "Advisor",
+      "preview": {
+        "pageId": "eligibility",
+        "mode": "advisor-access"
+      },
+      "activeUser": "Advisor",
+      "accessStage": "Advisor",
+      "flowNodeIds": [
+        "advisor-saved-code"
+      ]
+    },
+    "update": {
+      "title": "Make the requested changes",
+      "paragraphs": [
+        "Work through the saved application and make the agreed corrections. Review the applicant contact details, then continue through Profile and send it again."
+      ],
+      "actor": "Advisor",
+      "preview": {
+        "pageId": "profile",
+        "mode": "update"
+      },
+      "activeUser": "Advisor",
+      "accessStage": "Advisor",
+      "flowNodeIds": [
+        "advisor-eligibility"
+      ]
+    },
+    "health": {
+      "title": "Complete the required health questions",
+      "paragraphs": [
+        "After reviewing the application, the applicant answers the health questions that apply to the selected products and covered people. The applicable health pages can vary."
+      ],
+      "actor": "Applicant",
+      "preview": {
+        "pageId": "health-si",
+        "mode": "health"
+      },
+      "activeUser": "Applicant",
+      "accessStage": "Applicant",
+      "flowNodeIds": [
+        "advisor-health-summary"
+      ]
+    },
+    "payment": {
+      "title": "Complete payment selections",
+      "paragraphs": [
+        "Complete the payment sections shown for the selected products. Available methods and frequencies come from the effective Site configuration."
+      ],
+      "actor": "Applicant",
+      "preview": {
+        "pageId": "payment",
+        "mode": "payment"
+      },
+      "activeUser": "Applicant",
+      "accessStage": "Applicant",
+      "flowNodeIds": [
+        "advisor-payment"
+      ]
+    },
+    "signature": {
+      "title": "Continue to signature",
+      "paragraphs": [
+        "Continue to the configured signature handoff. This prototype shows the handoff screen; it does not execute a real signature ceremony.",
+        "Once signing starts, advisor access ends. Unfinished signing resumes at DocuSign after applicant verification. Completing all required signatures submits the application and opens Receipt."
+      ],
+      "actor": "Applicant",
+      "preview": {
+        "pageId": "docusign",
+        "mode": "signature"
+      },
+      "activeUser": "Applicant",
+      "accessStage": "DocuSign",
+      "flowNodeIds": [
+        "advisor-esign"
+      ]
+    },
+    "receipt": {
+      "title": "Read the confirmation receipt",
+      "paragraphs": [
+        "Review the confirmation reference, coverage outcomes and next steps. Use the confirmation reference when discussing the application. Coverage outcomes and rates in this example are fictional."
+      ],
+      "actor": "Applicant",
+      "preview": {
+        "pageId": "receipt",
+        "mode": "receipt"
+      },
+      "activeUser": "Applicant",
+      "accessStage": "DocuSign",
+      "flowNodeIds": [
+        "advisor-receipt"
+      ]
+    },
+    "applicant-invitation": {
+      "title": "Open the application email",
+      "actor": "Applicant",
+      "paragraphs": [
+        "The applicant receives an email explaining that the advisor has prepared an application. Choose Continue my application in that email to open Resume.",
+        "This invitation link starts access to the application. The applicant then requests a separate secure email link and completes phone verification before seeing any saved answers."
+      ],
+      "emailType": "advisor-sent-to-applicant",
+      "activeUser": "Neither",
+      "accessStage": "Applicant",
+      "flowNodeIds": [
+        "advisor-invitation"
+      ]
+    },
+    "advisor-edit-email": {
+      "title": "Receive the applicant’s edit request",
+      "actor": "Advisor",
+      "paragraphs": [
+        "The advisor receives an edit-request email. It identifies the applicant and applicant email, along with the request and application dates.",
+        "Use the applicant email shown in the message to locate the application under Continue on advisor entry. Complete secure access before changing the saved answers."
+      ],
+      "emailType": "advisor-edit-request",
+      "activeUser": "Neither",
+      "accessStage": "Advisor",
+      "flowNodeIds": [
+        "advisor-edit-email"
+      ]
+    },
+    "pending-applicant": {
+      "title": "Applicant pending notification",
+      "actor": "Applicant",
+      "paragraphs": [
+        "A pending notification reminds the applicant to finish an incomplete application. Use the application link, then complete secure access before continuing."
+      ],
+      "emailType": "pending-reminder",
+      "activeUser": "Neither",
+      "accessStage": "Applicant",
+      "flowNodeIds": [
+        "advisor-pending-applicant"
+      ]
+    },
+    "pending-advisor": {
+      "title": "Advisor pending notification",
+      "actor": "Advisor",
+      "paragraphs": [
+        "The advisor’s pending notification identifies the application and applicant email. Reopen it through Continue on advisor entry if follow-up or changes are needed."
+      ],
+      "emailType": "advisor-pending-reminder",
+      "activeUser": "Neither",
+      "accessStage": "Applicant",
+      "flowNodeIds": [
+        "advisor-pending-advisor"
+      ]
+    },
+    "deletion": {
+      "title": "Application deletion notification",
+      "actor": "Applicant",
+      "paragraphs": [
+        "The deletion notification explains that the incomplete saved application has expired and been deleted. A deleted application cannot be resumed; begin a new application if the applicant still wants to apply."
+      ],
+      "emailType": "purge-reminder",
+      "activeUser": "Neither",
+      "accessStage": "Unavailable",
+      "flowNodeIds": [
+        "advisor-deletion"
+      ]
+    }
+  },
+  "sequences": {
+    "secure-access": [
+      "request-link",
+      "open-link",
+      "delivery-method",
+      "verify-code"
+    ]
+  },
+  "sections": [
+    {
+      "id": "start",
+      "title": "Start an application",
+      "description": "The advisor prepares an application and sends it to the applicant.",
+      "actor": "Advisor",
+      "entries": [
+        "start",
+        "membership",
+        "eligibility",
+        "coverage",
+        "beneficiary",
+        "contact",
+        "profile",
+        "send",
+        "sent"
+      ]
+    },
+    {
+      "id": "complete",
+      "title": "Complete an application",
+      "description": "The applicant opens the advisor’s email, verifies access and completes the application.",
+      "actor": "Applicant",
+      "entries": [
+        "applicant-invitation",
+        {
+          "sequence": "secure-access"
+        },
+        "review",
+        "health",
+        "payment",
+        "signature",
+        "receipt"
+      ]
+    },
+    {
+      "id": "revise",
+      "title": "Revise a saved application",
+      "description": "Optional correction example: the applicant requests an edit; the advisor verifies access, revises and returns the application. Applicants who need no correction continue directly from Review.",
+      "actor": "Advisor",
+      "entries": [
+        "request-edit",
+        "edit-sent",
+        "advisor-edit-email",
+        "continue",
+        {
+          "sequence": "secure-access"
+        },
+        "advisor-access",
+        "update",
+        "send",
+        "sent"
+      ]
+    },
+    {
+      "id": "notifications",
+      "title": "Email notifications",
+      "description": "Notification types, recipient emails and when each message is sent.",
+      "actor": "Applicant or advisor",
+      "entries": []
+    },
+    {
+      "id": "troubleshooting",
+      "title": "Troubleshooting",
+      "description": "Common questions about application access, technical issues and emails.",
+      "actor": "Applicant or advisor",
+      "entries": []
+    }
+  ],
+  "variant": "new",
+  "flowId": "advisor"
+}

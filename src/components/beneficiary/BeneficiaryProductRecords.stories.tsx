@@ -1,3 +1,4 @@
+import ComponentFixture from '../../../.storybook/fixtures/ComponentFixture';
 import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Box, Typography } from '@mui/material';
@@ -9,7 +10,7 @@ export default meta;
 const individual: BeneficiaryItem = { id: 'example', designation: 'primary', beneficiaryType: 'individual', firstName: 'Jordan', lastName: 'Morgan', relationship: 'Spouse', share: 100, trustName: '', trustDate: '' };
 function Example({ initialItems = [] }: { initialItems?: BeneficiaryItem[] }) {
   const [items, setItems] = useState(initialItems), [action, setAction] = useState('');
-  return <Box sx={{ maxWidth: 640 }}><BeneficiaryProductRecords productName="Example Term Life" items={items} onAdd={() => setAction('Add requested. See Whole page for the application editor.')} onEdit={() => setAction('Edit requested. See Whole page for the application editor.')} onRemove={id => setItems(items => items.filter(item => item.id !== id))} /><Typography role="status">{action}</Typography></Box>;
+  return <Box sx={{ maxWidth: 640 }}><ComponentFixture>{fixture => <BeneficiaryProductRecords productName={fixture.products.find(product => product.categoryId === "LI")!.name} relationshipOptions={fixture.fieldSurfaces.beneficiaryIndividual.mapping.fields.find(field => field.id === "beneficiary-relationship")?.options} items={items} onAdd={() => setAction('Add requested. See Whole page for the application editor.')} onEdit={() => setAction('Edit requested. See Whole page for the application editor.')} onRemove={id => setItems(items => items.filter(item => item.id !== id))} />}</ComponentFixture><Typography role="status">{action}</Typography></Box>;
 }
 export const Empty: StoryObj = { render: () => <Example /> };
 export const Individual: StoryObj = { render: () => <Example initialItems={[individual]} /> };

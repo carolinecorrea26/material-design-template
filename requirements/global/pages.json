@@ -28,16 +28,13 @@
       "id": "health-si"
     },
     {
-      "id": "health-li"
+      "id": "health-tele"
     },
     {
       "id": "health-qd"
     },
     {
-      "id": "health-di"
-    },
-    {
-      "id": "health-ci"
+      "id": "health-di-supp"
     },
     {
       "id": "health-cir"
@@ -70,10 +67,10 @@
       "id": "application-edit-confirmation"
     },
     {
-      "id": "not-found"
+      "id": "error-400"
     },
     {
-      "id": "application-unavailable"
+      "id": "not-found"
     },
     {
       "id": "technical-error"
@@ -83,9 +80,6 @@
     },
     {
       "id": "session-expired"
-    },
-    {
-      "id": "unconfirmed-result"
     },
     {
       "id": "error-500"

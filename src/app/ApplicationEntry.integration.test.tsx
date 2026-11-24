@@ -84,7 +84,7 @@ function expectMembership() {
 
 it.each(['eligibility', 'contact'])('shows shared resume feedback on %s and preserves route context', async page => {
   await open();
-  await clickLink('Start my application');
+  await clickLink(requirementText('home.hero.cta-label'));
   await act(async () => router.navigate(`/${page}?site=asce&campaign=resumed#position`, {
     state: { resumeLoaded: true, retained: 'yes' },
   }));
@@ -97,6 +97,30 @@ it.each(['eligibility', 'contact'])('shows shared resume feedback on %s and pres
   expect(container.textContent).not.toContain('Saved application loaded successfully.');
 });
 
+it('clicks through external images and uses the standard transition to Receipt', async () => {
+  await open();
+  await clickLink(requirementText('home.hero.cta-label'));
+  await act(async () => router.navigate('/health-qd?site=asce'));
+  const image = () => document.querySelector<HTMLImageElement>('[role="dialog"] img');
+  expect(image()?.getAttribute('src')).toBe('/prototype/qd-page-1.png');
+  await act(async () => document.querySelector<HTMLButtonElement>('[aria-label="Click to continue"]')!.click());
+  expect(image()?.getAttribute('src')).toBe('/prototype/qd-page-2.png');
+  expect(router.state.location.pathname).toBe('/health-qd');
+  await act(async () => document.querySelector<HTMLButtonElement>('[aria-label="Click to continue"]')!.click());
+  expect(image()).toBeNull();
+  expect(container.querySelector('.MuiSkeleton-root')).not.toBeNull();
+  await act(async () => vi.advanceTimersByTimeAsync(MESSAGE_DURATION * 2 + 300));
+  await act(async () => applicationSessionStorage.writeReviewSubmitted(true));
+  await act(async () => router.navigate('/docusign?site=asce'));
+  expect(router.state.location.pathname).toBe('/docusign');
+  expect(document.querySelector('[role="dialog"][aria-label="DocuSign signing screen"] img')?.getAttribute('src')).toBe('/prototype/docusign.png');
+  await act(async () => document.querySelector<HTMLButtonElement>('[aria-label="Click to continue"]')!.click());
+  expect(container.querySelector('.MuiSkeleton-root')).not.toBeNull();
+  await act(async () => vi.advanceTimersByTimeAsync(MESSAGE_DURATION * 2 + 300));
+  expect(router.state.location.pathname).toBe('/receipt');
+  expect(container.textContent).toContain('Confirmation number:');
+});
+
 async function fill(name: string, value: string) {
   const input = document.querySelector<HTMLInputElement>(`input[name="${name}"]`)!;
   expect(input, name).not.toBeNull();
@@ -107,16 +131,21 @@ async function fill(name: string, value: string) {
 }
 async function submit(page: string) {
   await act(async () => container.querySelector(`#${page}-form`)!.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true })));
-  await act(async () => vi.advanceTimersByTime(MESSAGE_DURATION * 2 + 100));
+  if (page === 'membership') {
+    expect(container.textContent).toContain('Saving your membership information...');
+    await act(async () => vi.advanceTimersByTime(MESSAGE_DURATION + 50));
+    expect(container.textContent).toContain('Checking your member details before we continue...');
+    await act(async () => vi.advanceTimersByTime(MESSAGE_DURATION + 50));
+  } else await act(async () => vi.advanceTimersByTime(MESSAGE_DURATION * 2 + 100));
 }
 
 it("starts a fresh application from the real Home page", async () => {
-  await open(); await clickLink("Start my application"); expectMembership();
+  await open(); await clickLink(requirementText("home.hero.cta-label")); expectMembership();
 });
 
 it.each(["default", "quoteFirst"])("starts a new session from %s Home after the previous application expired", async variant => {
   await open(`/?site=asce&variant=${variant}`, true);
-  await clickLink("Start my application");
+  await clickLink(requirementText("home.hero.cta-label"));
   expectMembership();
   await act(async () => container.querySelector<HTMLInputElement>('input[name="membership"][value="yes"]')!.click());
   expect(container.querySelector<HTMLInputElement>('input[name="email"]')?.value).toBe("");
@@ -128,14 +157,14 @@ it("recovers through Start new application without returning to the expired-sess
   expect(container.textContent).toContain("Your session has timed out");
   await clickLink("Start new application");
   expect(router.state.location.pathname).toBe("/");
-  await clickLink("Start my application"); expectMembership();
+  await clickLink(requirementText("home.hero.cta-label")); expectMembership();
 });
 
 it("keeps Continue application on the resume path without renewing or clearing the expired draft", async () => {
   await open("/?site=asce", true);
   const deadline = sessionStorage.getItem(applicationTimeoutKey("asce"));
   const draft = sessionStorage.getItem(applicationStorageKey("asce"));
-  await clickLink("Continue application");
+  await clickLink(requirementText("home.hero.secondary-cta-label"));
   expect(router.state.location.pathname).toBe("/resume");
   expect(sessionStorage.getItem(applicationTimeoutKey("asce"))).toBe(deadline);
   expect(sessionStorage.getItem(applicationStorageKey("asce"))).toBe(draft);
@@ -144,13 +173,12 @@ it("keeps Continue application on the resume path without renewing or clearing t
 it.each([false, true])("continues through Membership and Eligibility to Coverage with campaign amount controls %s", async campaign => {
   await open(campaign ? "/?site=asce&amt=G-10500-1_200000&dprods=G-10500-1" : "/?site=asce", true);
   vi.spyOn(candidateMockRatingService, "quote").mockImplementation(async () => ({ mode: "mock", premiumCents: 12000, expiresAt: Date.now() + 60000, authority: "Synthetic test rates" }));
-  await clickLink("Start my application");
+  await clickLink(requirementText("home.hero.cta-label"));
   expectMembership();
   await act(async () => container.querySelector<HTMLInputElement>('input[name="membership"][value="yes"]')!.click());
   await fill("first-name", "Entry"); await fill("last-name", "Applicant");
   await fill("email", "entry@example.test"); await fill("phone", "2125550123");
-  await act(async () => document.getElementById("phone-type")!.dispatchEvent(new MouseEvent("mousedown", { bubbles: true, button: 0 })));
-  await act(async () => [...document.querySelectorAll<HTMLElement>('[role="option"]')].find(option => option.dataset.value === "mobile")!.click());
+  expect(container.querySelector<HTMLInputElement>('input[name="phone-type"]')?.value).toBe("mobile");
   await fill("member-id", "00123456");
   await submit("membership");
   expect(router.state.location.pathname, container.textContent ?? "").toBe("/eligibility");
@@ -189,12 +217,11 @@ it.each(["passed", "failed", "skipped"] as const)("runs the existing-insured-mem
   // Keep the separate synthetic-rating HTTP service deterministic while the
   // real application, verification, Coverage state and dropdowns run together.
   vi.spyOn(candidateMockRatingService, "quote").mockImplementation(async () => ({ mode: "mock", premiumCents: 12000, expiresAt: Date.now() + 60000, authority: "Synthetic test rates" }));
-  await clickLink("Start my application");
+  await clickLink(requirementText("home.hero.cta-label"));
   await act(async () => container.querySelector<HTMLInputElement>('input[name="membership"][value="yes"]')!.click());
   await fill("first-name", facts["first-name"]); await fill("last-name", facts["last-name"]);
   await fill("email", "verified.member@example.test"); await fill("phone", "2125550123");
-  await act(async () => document.getElementById("phone-type")!.dispatchEvent(new MouseEvent("mousedown", { bubbles: true, button: 0 })));
-  await act(async () => [...document.querySelectorAll<HTMLElement>('[role="option"]')].find(option => option.dataset.value === "mobile")!.click());
+  expect(container.querySelector<HTMLInputElement>('input[name="phone-type"]')?.value).toBe("mobile");
   await fill("member-id", facts["member-id"]);
   await submit("membership");
   expect(router.state.location.pathname).toBe("/eligibility");

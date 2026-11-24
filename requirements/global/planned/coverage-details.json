@@ -1,0 +1,14 @@
+{
+  "status": "planned",
+  "reason": "Legacy header dialog had no opening path. Preserve wording as planning evidence, outside the active site-copy inventory. Existing coverage panels and product summaries keep their canonical owners.",
+  "content": {
+    "dialogs.coverage-details.fallback-title": "Coverage Details",
+    "dialogs.coverage-details.benefit-amount-label": "Benefit amount:",
+    "dialogs.coverage-details.coverage-note-label": "Coverage note:",
+    "dialogs.coverage-details.eligible-applicants-label": "Eligible applicants:",
+    "dialogs.coverage-details.waiting-periods-label": "Waiting periods:",
+    "dialogs.coverage-details.max-benefit-periods-label": "Max benefit periods:",
+    "dialogs.coverage-details.available-riders-label": "Available riders",
+    "dialogs.coverage-details.view-full-details-link-label": "View full coverage details"
+  }
+}

@@ -2,7 +2,33 @@
   "page": "health-cir",
   "components": [
     {
-      "type": "health-cir"
+      "type": "FormRoutePage",
+      "mapping": "form-route-page",
+      "components": [
+        {
+          "type": "PageHeader"
+        },
+        {
+          "type": "HealthQuestionList",
+          "mapping": "health-cir",
+          "components": [
+            {
+              "type": "ApplicantSectionDivider"
+            },
+            {
+              "type": "HealthQuestion",
+              "purpose": "items from the uniquely assigned rider questionnaire"
+            }
+          ]
+        },
+        {
+          "type": "PageAlert",
+          "purpose": "technical questionnaire-load failure"
+        },
+        {
+          "type": "PageNav"
+        }
+      ]
     }
   ],
   "definition": {
@@ -15,8 +41,6 @@
     "displayName": "Health CIR"
   },
   "position": 13,
-  "fieldBindings": [],
-  "looseFields": [],
   "layout": {
     "sections": {}
   },
@@ -27,7 +51,37 @@
       "page.health-cir.nav-title"
     ],
     "runtime": [
-      "application.ui.unable-to-load-health-questions-please-try-again"
+      "application.ui.unable-to-load-health-questions-please-try-again",
+      "health.question-title",
+      "health.details-label",
+      "health.condition-details-label"
     ]
+  },
+  "fieldMapping": {
+    "page": "health-cir"
+  },
+  "controls": [
+    "health-cir-q1",
+    "health-cir-activities",
+    "health-cir-q2",
+    "health-cir-q3",
+    "health-cir-q4",
+    "health-cir-q5",
+    "health-cir-q6",
+    "health-cir-q7",
+    "health-cir-q8",
+    "health-cir-q9",
+    "health-cir-q10",
+    "health-cir-q11",
+    "health-cir-dwelling-other",
+    "health-cir-q12"
+  ],
+  "contentSlots": {
+    "page.health-cir.title": {
+      "name": "Page title"
+    },
+    "page.health-cir.subhead": {
+      "name": "Page introduction"
+    }
   }
 }

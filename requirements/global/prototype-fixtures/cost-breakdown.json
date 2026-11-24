@@ -1,0 +1,16 @@
+{
+  "description": "Synthetic reconciled quote components for the shared cost-breakdown example; not insurance rates or an ASCE assignment.",
+  "product": "li-term",
+  "applicant": "member",
+  "amount": 100000,
+  "rider": "cir",
+  "riderAmount": 50000,
+  "quote": {
+    "amount": 13,
+    "breakdown": [
+      { "key": "base", "kind": "base", "amount": 10 },
+      { "key": "rider:0", "kind": "rider", "riderIndex": 0, "amount": 2 },
+      { "key": "fee", "kind": "fee", "amount": 1, "label": "Policy fee" }
+    ]
+  }
+}

@@ -17,13 +17,15 @@
     "coverage-minimum-age-days",
     "coverage-excluded-states",
     "coverage-new-application-minimum-amount",
+    "coverage-verified-existing-minimum-amount",
     "coverage-age-maximum-amount",
     "coverage-member-benefit-submit-minimum",
     "coverage-self-employment-question",
     "coverage-child-requires-member",
     "coverage-student-maximum-age-years",
     "coverage-increase-note",
-    "tpa-integration"
+    "tpa-integration",
+    "coverage-cost-breakdown"
   ],
   "rules": [
     "category-product-presentation-order",
@@ -43,7 +45,10 @@
     "coverage-child-member-dependency",
     "coverage-self-employment-benefits",
     "coverage-combined-life-submit-maximum",
-    "coverage-tpa-portfolio-access"
+    "coverage-tpa-portfolio-access",
+    "coverage-existing-policy-participation",
+    "coverage-rider-applicant-wording",
+    "coverage-configuration-scope"
   ],
   "presentation": [
     "estimated-rate-states"
@@ -57,5 +62,42 @@
     "base-premium",
     "rider-premium",
     "payment-frequency-factors"
+  ],
+  "validations": [
+    {
+      "validation": "field-definition-checks",
+      "trigger": "reveal-products",
+      "scope": "registered-fields"
+    },
+    {
+      "validation": "field-definition-checks",
+      "trigger": "next",
+      "scope": "registered-fields"
+    },
+    {
+      "validation": "coverage-election-acceptance",
+      "trigger": "next",
+      "scope": "page"
+    },
+    {
+      "validation": "coverage-product-election",
+      "trigger": "next",
+      "scope": "page"
+    },
+    {
+      "validation": "coverage-applicant-election",
+      "trigger": "next",
+      "scope": "page"
+    },
+    {
+      "validation": "coverage-amount-election",
+      "trigger": "next",
+      "scope": "page"
+    },
+    {
+      "validation": "coverage-reveal-fields",
+      "trigger": "reveal-products",
+      "scope": "page"
+    }
   ]
 }

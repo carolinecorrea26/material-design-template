@@ -5,7 +5,17 @@
       "name": "Shared category and product presentation order",
       "status": "confirmed",
       "statement": "Category order and product order are global template configurations, with values supplied by the effective Site. Use the same ordering wherever categories or products are displayed, including Home, quote tools, About Coverage panels/drawers, application navigation, Coverage and selected-product summaries on later pages. A valid featured_prod takes precedence: move its category first and its product first within that category, then preserve configured ordering for the remaining entries. Otherwise use effective-site categoryOrder/productOrder, followed by the global defaults for omitted entries. Product order is within a category. Unknown or unavailable featured products do not enable products or alter ordering. Filtering and eligibility determine participation separately. This is distinct from numeric amount-dropdown ordering. Cross-page requirements apply to later-page rollout as well; documenting them does not mark every consumer migrated.",
-      "source": "User-confirmed global template review; existing Library URL parameter featured_prod; src/domain/coveragePresentation.ts; src/config/client/getActiveClientCoverages.ts"
+      "source": "User-confirmed global template review; existing Library URL parameter featured_prod; src/domain/coveragePresentation.ts; src/config/client/getActiveClientCoverages.ts",
+      "replaces": [
+        "rule-coverage-coverage-options-featured-first-sort-and-category-fallback"
+      ]
+    },
+    {
+      "id": "quick-decision-information-availability",
+      "name": "Show QuickDecision information for assigned QuickDecision products",
+      "status": "confirmed",
+      "statement": "Show the QuickDecision availability information panel in Home and About Coverage only when at least one product in the effective assigned offering supports QuickDecision underwriting. Changing category tabs does not independently hide it. An offering with no QuickDecision products, including an empty offering, must not claim QuickDecision availability.",
+      "source": "User decision 2026-11-12; src/components/coverage/CoverageOptionsPanel.tsx"
     }
   ]
 }

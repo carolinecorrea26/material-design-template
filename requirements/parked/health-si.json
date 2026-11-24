@@ -2,7 +2,36 @@
   "page": "health-si",
   "components": [
     {
-      "type": "health-si"
+      "type": "FormRoutePage",
+      "mapping": "form-route-page",
+      "components": [
+        {
+          "type": "PageHeader"
+        },
+        {
+          "type": "HealthQuestionList",
+          "mapping": "health-si",
+          "components": [
+            {
+              "type": "ApplicantSectionDivider"
+            },
+            {
+              "type": "HealthQuestion",
+              "components": [
+                {
+                  "type": "FieldRenderer"
+                },
+                {
+                  "type": "DynamicList"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "PageNav"
+        }
+      ]
     }
   ],
   "definition": {
@@ -15,35 +44,41 @@
     "displayName": "Health SI"
   },
   "position": 8,
-  "fieldBindings": [
-    "health-si-q1",
-    "health-si-q2",
-    "health-si-q3",
-    "health-si-q4",
-    "health-si-q5",
-    "health-si-q1-spouse",
-    "health-si-q2-spouse",
-    "health-si-q3-spouse",
-    "health-si-q4-spouse",
-    "health-si-q5-spouse",
-    "health-si-detail-onset",
-    "health-si-detail-conditionsDetails",
-    "health-si-detail-physicianAddress"
-  ],
-  "looseFields": [
-    "health-si-q1",
-    "health-si-q2",
-    "health-si-q3",
-    "health-si-q4",
-    "health-si-q5",
-    "health-si-q1-spouse",
-    "health-si-q2-spouse",
-    "health-si-q3-spouse",
-    "health-si-q4-spouse",
-    "health-si-q5-spouse"
-  ],
   "layout": {
-    "sections": {}
+    "sections": {
+      "questions": {
+        "id": "healthSiSelf",
+        "for": "self",
+        "fields": [
+          "health-si-q1",
+          "health-si-q2",
+          "health-si-q3",
+          "health-si-q4",
+          "health-si-q5"
+        ]
+      },
+      "spouse-questions": {
+        "id": "healthSiSpouse",
+        "for": "spouse",
+        "fields": [
+          "health-si-q1",
+          "health-si-q2",
+          "health-si-q3",
+          "health-si-q4",
+          "health-si-q5"
+        ]
+      }
+    },
+    "dialogs": {
+      "condition-details": {
+        "for": "self",
+        "fields": [
+          "health-detail-onset",
+          "health-detail-conditions",
+          "health-detail-physician-address"
+        ]
+      }
+    }
   },
   "content": {
     "wording": [
@@ -53,7 +88,122 @@
     ],
     "runtime": [
       "application.ui.onset",
-      "application.ui.no-details-provided"
+      "application.ui.no-details-provided",
+      "health.question-title",
+      "health.details-label",
+      "health.condition-details-label"
     ]
+  },
+  "fieldMapping": {
+    "page": "health-si"
+  },
+  "answerKeyPatterns": {
+    "spouse": "{field}-spouse"
+  },
+  "surfaces": {
+    "healthSiDetails": {
+      "mapping": {
+        "page": "health-si"
+      },
+      "definition": {
+        "label": "health.details-label",
+        "maxItems": 10,
+        "fields": [
+          {
+            "fieldKey": "health-si-detail-onset",
+            "valueKey": "onset"
+          },
+          {
+            "fieldKey": "health-si-detail-conditionsDetails",
+            "valueKey": "conditionsDetails"
+          },
+          {
+            "fieldKey": "health-si-detail-physicianAddress",
+            "valueKey": "physicianAddress"
+          }
+        ],
+        "libraryGroup": {
+          "label": "health.condition-details-modal"
+        }
+      },
+      "aliases": {
+        "health-si-detail-onset": {
+          "field": "health-detail-onset"
+        },
+        "health-si-detail-conditionsDetails": {
+          "field": "health-detail-conditions"
+        },
+        "health-si-detail-physicianAddress": {
+          "field": "health-detail-physician-address"
+        }
+      }
+    }
+  },
+  "collections": {
+    "healthSiQ1SelfDetails": {
+      "surface": "healthSiDetails",
+      "section": "questions",
+      "storageName": "health-si-q1-details"
+    },
+    "healthSiQ2SelfDetails": {
+      "surface": "healthSiDetails",
+      "section": "questions",
+      "storageName": "health-si-q2-details"
+    },
+    "healthSiQ3SelfDetails": {
+      "surface": "healthSiDetails",
+      "section": "questions",
+      "storageName": "health-si-q3-details"
+    },
+    "healthSiQ4SelfDetails": {
+      "surface": "healthSiDetails",
+      "section": "questions",
+      "storageName": "health-si-q4-details"
+    },
+    "healthSiQ5SelfDetails": {
+      "surface": "healthSiDetails",
+      "section": "questions",
+      "storageName": "health-si-q5-details"
+    },
+    "healthSiQ1SpouseDetails": {
+      "surface": "healthSiDetails",
+      "section": "spouse-questions",
+      "storageName": "health-si-q1-spouse-details"
+    },
+    "healthSiQ2SpouseDetails": {
+      "surface": "healthSiDetails",
+      "section": "spouse-questions",
+      "storageName": "health-si-q2-spouse-details"
+    },
+    "healthSiQ3SpouseDetails": {
+      "surface": "healthSiDetails",
+      "section": "spouse-questions",
+      "storageName": "health-si-q3-spouse-details"
+    },
+    "healthSiQ4SpouseDetails": {
+      "surface": "healthSiDetails",
+      "section": "spouse-questions",
+      "storageName": "health-si-q4-spouse-details"
+    },
+    "healthSiQ5SpouseDetails": {
+      "surface": "healthSiDetails",
+      "section": "spouse-questions",
+      "storageName": "health-si-q5-spouse-details"
+    }
+  },
+  "retiredContentKeys": [
+    "health.information"
+  ],
+  "retiredComponentKeys": [
+    "component-health-information-help",
+    "component-yes-no-detail-list"
+  ],
+  "contentSlots": {
+    "page.health-si.title": {
+      "name": "Page title"
+    },
+    "page.health-si.subhead": {
+      "name": "Page introduction"
+    }
   }
 }

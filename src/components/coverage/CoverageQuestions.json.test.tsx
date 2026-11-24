@@ -13,7 +13,7 @@ vi.mock("../../persistence/sharedCatalog", async original => {
 });
 afterEach(() => vi.unstubAllGlobals());
 
-it.each([[DisabilitySelected, "question"], [WithSpouse, "spouse note"]] as const)("renders reviewed Coverage JSON in the standalone %s story", async (story, example) => {
+it.each([[DisabilitySelected, "question"], [WithSpouse, "spouse questions"]] as const)("renders reviewed Coverage JSON in the standalone %s story", async (story, example) => {
   vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true);
   const previous = getPrototypeLibrary();
   installPrototypeLibrary(null);
@@ -27,7 +27,10 @@ it.each([[DisabilitySelected, "question"], [WithSpouse, "spouse note"]] as const
       expect(container.querySelector('input[name="is-self-employed"]')).toBeNull();
       expect(container.querySelector('input[name="years-self-employed"]')).toBeNull();
     } else {
-      expect(container.textContent).toContain("Spouse coverage can’t exceed member coverage.");
+      // Product-specific spouse guidance belongs to the product cards. This
+      // standalone question example preserves ASCE's adult participation.
+      expect(container.querySelector('input[name="smoker"]')).not.toBeNull();
+      expect(container.querySelector('input[name="spouse-smoker"]')).not.toBeNull();
     }
     expect(getPrototypeLibrary()).toBeNull();
   } finally { await act(async () => root.unmount()); container.remove(); installPrototypeLibrary(previous); }

@@ -1,3 +1,10 @@
+import autofillExample from '../../../requirements/global/prototype-fixtures/autofill.json';
+import { getPrototypeLibrary } from '../../domain/prototypeLibrary';
+import { resolveCoverageJourneyPolicy } from '../../domain/coverageJourneyPolicy';
+import { getFieldSurface, getSurfaceField } from '../../config/fields/storedSurfaces';
+import { paymentFrequencyFieldValue } from '../../domain/paymentPolicy';
+import type { FieldDefinition } from '../../config/fields/types';
+import receiptExample from '../../../requirements/global/prototype-fixtures/receipt-email.json';
 import type { PageId } from "../../types";
 import { getResolvedFormFlow, shouldSkipPage } from "../../config/formFlow";
 import { getClientPageFields } from "../../config/clientFields/getClientPageFields";
@@ -9,7 +16,7 @@ import { getFlowGateDefinition } from "../../config/flowGates";
 
 /**
  * Picks a sample amount within a coverage's min/max range, snapped to its step.
- * Falls back to 100000 when the coverage has no configured range.
+ * Uses the fictional fixture amount when the coverage has no configured range.
  */
 function pickSampleAmount(
   coverage: ReturnType<typeof getActiveClientCoverages>[number],
@@ -19,7 +26,7 @@ function pickSampleAmount(
     coverage,
     applicantId,
   );
-  if (minAmount == null || maxAmount == null) return 100000;
+  if (minAmount == null || maxAmount == null) return autofillExample.coverage.defaultAmount;
 
   const mid = minAmount + (maxAmount - minAmount) / 2;
   const snapped = step && step > 0 ? Math.round(mid / step) * step : mid;
@@ -33,7 +40,7 @@ function previewCoverageValues(
   values: ApplicationFormValues,
   coverages: ReturnType<typeof getActiveClientCoverages>,
 ): ApplicationFormValues {
-  const defaults = coverages.slice(0, 2);
+  const defaults = coverages.slice(0, autofillExample.coverage.defaultSelectionCount);
   const selections = [
     defaults,
     ...coverages.map(coverage => [coverage]),
@@ -61,8 +68,9 @@ function previewCoverageValues(
  */
 export function generateFormDataUpToPage(
   targetPageId: PageId,
+  initialValues: ApplicationFormValues = {},
 ): ApplicationFormValues {
-  const values: ApplicationFormValues = {};
+  const values: ApplicationFormValues = { ...initialValues };
 
   // Use the resolved form flow to find the target page
   const resolvedFlow = getResolvedFormFlow();
@@ -72,20 +80,19 @@ export function generateFormDataUpToPage(
   // Iterate through all pages up to and including the target page
   for (let i = 0; i <= targetIndex; i++) {
     const pageId = resolvedFlow[i] as PageId;
-    const fields = getClientPageFields(pageId, values);
-
-    for (const field of fields) {
-      if (values[field.id] !== undefined) continue; // Skip if already set
-
-      // Generate default value based on field type and input type
-      values[field.id] = getDefaultValueForField(field);
-    }
+    // Answers can reveal more fields on the same page (for example Membership Yes).
+    // Re-read until every currently visible field has an answer, preserving prior choices.
+    let pending;
+    do {
+      pending = getClientPageFields(pageId, values).filter(field => values[field.id] === undefined);
+      for (const field of pending) values[field.id] = getDefaultValueForField(field);
+    } while (pending.length);
   }
 
   const coverageIndex = resolvedFlow.indexOf("coverage");
   const paymentIndex = resolvedFlow.indexOf("payment");
-  const shouldSeedCoverageData = targetIndex >= coverageIndex;
-  const shouldSeedPaymentData = targetIndex >= paymentIndex;
+  const shouldSeedCoverageData = coverageIndex >= 0 && targetIndex >= coverageIndex;
+  const shouldSeedPaymentData = paymentIndex >= 0 && targetIndex >= paymentIndex;
 
   // Add special handling for coverage-dependent fields
   if (shouldSeedCoverageData) {
@@ -99,7 +106,7 @@ export function generateFormDataUpToPage(
 
     // Generate coverage amounts and payment methods/frequencies
     const coverageSelections = Array.isArray(values.coverageSelections)
-      ? values.coverageSelections
+      ? values.coverageSelections.filter((value): value is string => typeof value === "string")
       : [];
 
     // Ensure productApplicants are set for each selected coverage
@@ -146,37 +153,25 @@ export function generateFormDataUpToPage(
       }
 
       if (shouldSeedPaymentData) {
-        // Set payment method and frequency for each coverage
-        // First coverage uses bank-account, others use bill-me
         const methodKey = `payment-method:${coverageId}`;
         const frequencyKey = `payment-frequency:${coverageId}`;
-
-        if (!(methodKey in values)) {
-          values[methodKey] = i === 0 ? "bank-account" : "bill-me";
-        }
-
-        if (!(frequencyKey in values)) {
-          values[frequencyKey] = "monthly";
-        }
+        const library = getPrototypeLibrary();
+        const policy = library ? resolveCoverageJourneyPolicy(library.site, coverageId)?.payment : undefined;
+        const methods = getSurfaceField('paymentControls', 'payment-method')?.options?.filter(option => !policy || policy.methods.some(method => method.method === option.value)) ?? [];
+        const preferredMethod = policy?.defaultMethod ?? autofillExample.payment.methods[i % autofillExample.payment.methods.length];
+        const method = methods.find(option => option.value === preferredMethod)?.value ?? methods[0]?.value;
+        const frequencies = getSurfaceField('paymentControls', 'payment-frequency')?.options?.filter(option => !policy || policy.methods.find(choice => choice.method === method)?.frequencies.some(frequency => paymentFrequencyFieldValue(frequency) === option.value)) ?? [];
+        const preferredFrequency = policy?.defaultFrequency ? paymentFrequencyFieldValue(policy.defaultFrequency) : autofillExample.payment.frequency;
+        if (!(methodKey in values) && method) values[methodKey] = method;
+        if (!(frequencyKey in values) && frequencies.length) values[frequencyKey] = frequencies.find(option => option.value === preferredFrequency)?.value ?? frequencies[0].value;
       }
     }
 
     if (shouldSeedPaymentData) {
-      // Add bank account details if not already set
-      if (!values["payment-routing-number"]) {
-        values["payment-routing-number"] = "021000021";
-      }
-
-      if (!values["payment-account-number"]) {
-        values["payment-account-number"] = "123456789";
-      }
-
-      if (!values["payment-account-type"]) {
-        values["payment-account-type"] = "checking";
-      }
-
-      if (!values["bank-authorization"]) {
-        values["bank-authorization"] = true;
+      const bank = getFieldSurface('paymentBank');
+      for (const field of bank.mapping.fields) {
+        const key = bank.mapping.fieldToKey[field.id];
+        if (values[key] === undefined || values[key] === '') values[key] = getDefaultValueForField(field);
       }
     }
 
@@ -218,318 +213,32 @@ export function generateFormDataUpToPage(
     values.coverageAmounts = coverageAmounts;
   }
 
+  // A terminal-page inspection is an explicit fictional example, not a QD run.
+  // Use the same JSON-owned application/outcomes as receipt email and component examples.
+  if (targetPageId === 'receipt' && Object.keys(initialValues).length === 0) Object.assign(values, structuredClone(receiptExample.application));
   return values;
 }
 
-/**
- * Generate a default value for a single field based on its ID and type
- */
-function getDefaultValueForField(field: {
-  id: string;
-  inputType?: string;
-  options?: Array<{ value: string }>;
-  format?: string;
-  minLength?: number;
-  maxLength?: number;
-}): string | string[] | boolean | number {
-  const { id: fieldId, inputType, options } = field;
-
-  // Boolean fields (radio/checkbox)
-  if (
-    fieldId === "membership" ||
-    fieldId === "has-other-life-insurance" ||
-    fieldId === "is-replacing-life-insurance" ||
-    fieldId === "has-pending-life-insurance-applications" ||
-    fieldId === "has-spouse-life-insurance" ||
-    fieldId === "is-replacing-spouse-life-insurance" ||
-    fieldId === "has-pending-spouse-life-insurance-applications" ||
-    fieldId === "smoker" ||
-    fieldId === "spouse-smoker" ||
-    fieldId === "has-drivers-license" ||
-    fieldId === "spouse-has-drivers-license" ||
-    fieldId === "intend-live-outside-us" ||
-    fieldId === "spouse-intend-live-outside-us" ||
-    fieldId === "travel-outside-us-six-months" ||
-    fieldId === "spouse-travel-outside-us-six-months" ||
-    fieldId === "business-address-same-as-home"
-  ) {
-    return "yes";
-  }
-
-  // Checkbox group fields (like dependents)
-  if (inputType === "checkbox-group") {
-    return [];
-  }
-
-  if (inputType === "multi-select") {
-    return options?.[0]?.value ? [options[0].value] : [];
-  }
-
-  // Date fields
-  if (inputType === "date") {
-    if (fieldId === "birth-date" || fieldId === "spouse-birth-date") {
-      // Default to age 35
-      const now = new Date();
-      const birthDate = new Date(now.getFullYear() - 35, 0, 15);
-      return birthDate.toISOString().split("T")[0];
+/** Effective defaults/options own the choice; fixture answers are suggestions only. */
+export function getDefaultValueForField(field: Pick<FieldDefinition, 'id' | 'inputType' | 'options' | 'format' | 'minLength' | 'maxLength' | 'defaultValue'>): string | string[] | boolean | number {
+  const fixtureValue = (autofillExample.fieldValues as Record<string, string | boolean>)[field.id];
+  const preferred = field.defaultValue ?? fixtureValue;
+  if (field.options) {
+    const allowed = new Set(field.options.map(option => option.value));
+    if (field.inputType === 'multi-select' || field.inputType === 'checkbox-group') {
+      if (Array.isArray(preferred)) return preferred.filter(value => allowed.has(value));
+      return field.inputType === 'multi-select' && field.options.length ? [field.options[0].value] : [];
     }
-    return new Date().toISOString().split("T")[0];
+    return preferred !== undefined && allowed.has(String(preferred)) ? preferred as string | boolean : field.options[0]?.value ?? '';
   }
-
-  // Name fields
-  if (
-    fieldId === "first-name" ||
-    fieldId === "spouse-first-name" ||
-    fieldId === "physician-first-name"
-  ) {
-    if (fieldId === "spouse-first-name") return "Jane";
-    if (fieldId === "physician-first-name") return "John";
-    return "John";
+  if (field.inputType === 'checkbox-group' || field.inputType === 'multi-select') return [];
+  if (field.inputType === 'date') {
+    if (field.defaultValue !== undefined) return field.defaultValue;
+    const rule = (autofillExample.dates as Record<string, { yearsAgo: number; month: number; day: number }>)[field.id];
+    const now = new Date();
+    return rule ? `${now.getFullYear() - rule.yearsAgo}-${String(rule.month).padStart(2, '0')}-${String(rule.day).padStart(2, '0')}` : now.toISOString().split('T')[0];
   }
-
-  if (
-    fieldId === "last-name" ||
-    fieldId === "spouse-last-name" ||
-    fieldId === "physician-last-name"
-  ) {
-    if (fieldId === "spouse-last-name") return "Smith";
-    if (fieldId === "physician-last-name") return "Doe";
-    return "Smith";
-  }
-
-  // Respect effective digits-only text requirements, including identifier leading zeroes.
-  if (field.format === 'digits') return '1'.repeat(field.minLength ?? 6).slice(0, field.maxLength);
-
-  // Email
-  if (fieldId === "email" || fieldId === "spouse-email") {
-    if (fieldId === "spouse-email") return "jane.smith@example.com";
-    return "john.smith@example.com";
-  }
-
-  // Phone numbers
-  if (
-    fieldId === "phone" ||
-    fieldId === "business-phone" ||
-    fieldId === "spouse-phone" ||
-    fieldId === "physician-phone"
-  ) {
-    return "(555) 123-4567";
-  }
-
-  // Address fields
-  if (fieldId === "street-address" || fieldId === "business-street-address") {
-    return "123 Main Street";
-  }
-
-  if (fieldId === "apt-suite" || fieldId === "business-apt-suite") {
-    return "Apt 4B";
-  }
-
-  if (
-    fieldId === "city" ||
-    fieldId === "business-city" ||
-    fieldId === "medical-city"
-  ) {
-    return "New York";
-  }
-
-  if (
-    fieldId === "state" ||
-    fieldId === "business-state" ||
-    fieldId === "medical-state"
-  ) {
-    return "NY";
-  }
-
-  if (
-    fieldId === "zip-code" ||
-    fieldId === "business-zip-code" ||
-    fieldId === "medical-zip-code"
-  ) {
-    return "10001";
-  }
-
-  if (fieldId === "zip-postal-code") {
-    return "10001";
-  }
-
-  // State/Province dropdown
-  if (fieldId === "state-province") {
-    return "NY";
-  }
-
-  // Business fields
-  if (fieldId === "business-name") {
-    return "ABC Corporation";
-  }
-
-  if (fieldId === "business-type") {
-    return "corporation";
-  }
-
-  // Medical fields
-  if (fieldId === "medical-facility-name") {
-    return "General Hospital";
-  }
-
-  if (fieldId === "medical-facility-street-address") {
-    return "456 Hospital Ave";
-  }
-
-  if (fieldId === "medical-facility-apt-suite") {
-    return "";
-  }
-
-  // Health/Personal fields
-  if (fieldId === "height-feet") {
-    return "5";
-  }
-
-  if (fieldId === "height-inches") {
-    return "10";
-  }
-
-  if (fieldId === "spouse-height-feet") {
-    return "5";
-  }
-
-  if (fieldId === "spouse-height-inches") {
-    return "6";
-  }
-
-  if (
-    fieldId === "weight-lbs" ||
-    fieldId === "weight-12-months-ago-lbs" ||
-    fieldId === "spouse-weight-lbs" ||
-    fieldId === "spouse-weight-12-months-ago-lbs"
-  ) {
-    return "170";
-  }
-
-  // Gender
-  if (fieldId === "gender") {
-    return "male";
-  }
-
-  if (fieldId === "spouse-gender") {
-    return "female";
-  }
-
-  // Tobacco
-  if (
-    fieldId === "tobacco-last-used" ||
-    fieldId === "spouse-tobacco-last-used"
-  ) {
-    return "more-than-12-months";
-  }
-
-  // Income fields
-  if (
-    fieldId === "average-monthly-income" ||
-    fieldId === "spouse-average-monthly-income"
-  ) {
-    return "5000";
-  }
-
-  if (
-    fieldId === "hours-worked-per-week" ||
-    fieldId === "spouse-hours-worked-per-week"
-  ) {
-    return "40";
-  }
-
-  // Business expense fields
-  if (fieldId === "monthly-business-expenses") {
-    return "2000";
-  }
-
-  if (fieldId === "business-expense-responsibility") {
-    return "50";
-  }
-
-  // SSN
-  if (
-    fieldId === "social-security-number" ||
-    fieldId === "spouse-social-security-number"
-  ) {
-    return "123456789";
-  }
-
-  // Marital status
-  if (fieldId === "marital-status") {
-    return "married";
-  }
-
-  // Driver's license
-  if (
-    fieldId === "drivers-license-number" ||
-    fieldId === "spouse-drivers-license-number"
-  ) {
-    return "D123456789";
-  }
-
-  if (
-    fieldId === "drivers-license-state" ||
-    fieldId === "spouse-drivers-license-state"
-  ) {
-    return "NY";
-  }
-
-  // International travel
-  if (
-    fieldId === "outside-us-months" ||
-    fieldId === "spouse-outside-us-months"
-  ) {
-    return "1";
-  }
-
-  if (
-    fieldId === "outside-us-country" ||
-    fieldId === "spouse-outside-us-country" ||
-    fieldId === "travel-outside-us-country" ||
-    fieldId === "spouse-travel-outside-us-country"
-  ) {
-    return "canada";
-  }
-
-  // Correspondence
-  if (fieldId === "correspondence-to") {
-    return "home";
-  }
-
-  // Existing life insurance
-  if (
-    fieldId === "existing-life-insurance-amount" ||
-    fieldId === "spouse-existing-life-insurance-amount"
-  ) {
-    return "100000";
-  }
-
-  // Pending life insurance
-  if (
-    fieldId === "pending-life-insurance-amount" ||
-    fieldId === "spouse-pending-life-insurance-amount"
-  ) {
-    return "50000";
-  }
-
-  if (
-    fieldId === "pending-life-insurance-company" ||
-    fieldId === "spouse-pending-life-insurance-company"
-  ) {
-    return "Insurance Corp";
-  }
-
-  // Title
-  if (fieldId === "title") {
-    return "mr";
-  }
-
-  // Dropdown/select fields default to first option value
-  if (inputType === "dropdown" || inputType === "searchable-select") {
-    return options?.[0]?.value ?? "yes";
-  }
-
-  // Default text/input values
-  return "";
+  if (preferred !== undefined) return structuredClone(preferred);
+  if (field.format === 'digits') return autofillExample.digits.character.repeat(field.minLength ?? autofillExample.digits.length).slice(0, field.maxLength);
+  return field.inputType === 'checkbox' ? false : '';
 }

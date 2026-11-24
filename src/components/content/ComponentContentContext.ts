@@ -6,7 +6,7 @@ const defaultContent: SiteContent = {
   home: defaults.homeDefaults, coverage: defaults.coverageDefaults, navigation: defaults.navigationDefaults,
   footer: defaults.footerDefaults, review: defaults.reviewDefaults, receipt: defaults.receiptDefaults,
   help: defaults.helpDefaults, shared: defaults.sharedDefaults, pages: defaults.pagesDefaults,
-  beneficiary: defaults.beneficiaryDefaults, dialogs: defaults.dialogsDefaults, statusMessages: defaults.statusMessagesDefaults,
+  beneficiary: defaults.beneficiaryDefaults, dialogs: defaults.dialogsDefaults,
 };
 /** Explicit presentation content. Standalone components always have static defaults. */
 export const ComponentContentContext = createContext<SiteContent | undefined>(undefined);

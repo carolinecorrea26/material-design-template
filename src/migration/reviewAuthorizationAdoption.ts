@@ -19,7 +19,7 @@ export function applyReviewAuthorizationAdoption(db: DatabaseSchema) {
     const row = db.configurationValues.find(row => row.key === `${site.key}.review-policy`);
     if (!row || !isReviewPolicy(row.value)) throw new Error(`Missing Review policy ${site.key}`);
     const authorization: NonNullable<ReviewPolicy["authorization"]> = {
-      when: "participating-health-questions", pageIds: ["health-li", "health-si", "health-di", "health-qd"],
+      when: "participating-health-questions", pageIds: ["health-tele", "health-si", "health-di-supp", "health-qd"],
       introductoryStatement: text("B36"), wording: { defaultText: text("B41"), variants: [
         { jurisdictions: ["MN"], text: minnesota, afterConsentText },
         { jurisdictions: ["VA"], underwritingTypes: ["QD"], text: text("C48") },

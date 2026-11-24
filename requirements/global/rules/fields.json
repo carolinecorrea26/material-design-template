@@ -6,6 +6,14 @@
       "status": "confirmed",
       "statement": "Fields with an authored browser autocomplete token offer the browser's saved information when available for self (the member/applicant) only, wherever those fields appear. This includes name, email, phone, addresses and date of birth. Spouse, child and other people's fields must not request the browser owner's saved details. Autocomplete hints are independent of input type and keyboard mode; browser availability does not change requiredness or validation, and autofill is never guaranteed.",
       "source": "docs/requirements-spec/README.md; src/domain/requirementFields.ts"
+    },
+    {
+      "id": "shared-field-spacing",
+      "name": "Use one shared gap between form fields",
+      "status": "confirmed",
+      "statement": "Home and quote tools, application pages, follow-ups and record dialogs use the global form-field layout spacing: 24px between stacked fields or field rows and 16px between columns. FieldGrid, FieldGroup and ConditionalGroup own layout spacing; the shared FieldRenderer and its controlled adapter render a real layout item without their own default control margins. Helper and error text remains within its field, without an additional trailing margin or empty reserved feedback unless explicitly requested. Grouped columns retain their supported responsive layouts. Section headings, selection options and action rows keep their own semantic spacing. This replaces the earlier 14px helper-text bottom margin; no Site overrides are introduced.",
+      "source": "User global field-spacing correction November 19, 2026; requirements/global/presentation-tokens.json; src/components/layout/FieldGrid.tsx; src/components/layout/SectionDivider.tsx; src/components/forms/FieldRenderer.tsx",
+      "appliesTo": "all-pages"
     }
   ]
 }

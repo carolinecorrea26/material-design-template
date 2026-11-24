@@ -1,6 +1,7 @@
 import { isCoverageJourneyPolicy } from "./coverageJourneyPolicy";
 import { isBeneficiaryNotePolicy } from "./beneficiaryNotes";
 import { isBeneficiaryParticipationPolicy } from "./beneficiaryParticipation";
+import { isReviewPolicy } from './reviewPolicy';
 import { validateEligibilityConstraint, validateUnderwritingBand, validateUnderwritingOverlap } from "./coveragePolicyValidation";
 import { eligibilityFactSatisfied, eligibilityAgeMaximumSatisfied, isEligibilityFactRequirements, type EligibilityFactRequirement } from "./eligibilityFacts";
 import { categoryEligibility, readCategoryEligibilityPolicy } from "./categoryEligibilityPolicy";
@@ -10,6 +11,9 @@ import type { DatabaseSchema } from "../persistence/types";
 import type { LibraryMetadata } from "./provenance";
 import { asceBusinessDecisions, inspectAsceBusinessDecisions } from "./asceBusinessDecisions";
 import { withFreshStartCatalog } from "./freshStartCatalog";
+import { compileRequirementCatalog, type RequirementCatalogSource } from './requirementCatalog.mjs';
+
+import { resolveStoredFieldSurfaces, type ResolvedFieldSurface } from './fieldSurfaces';
 
 export type EffectiveSiteData = EffectiveConfigurationData & Pick<DatabaseSchema, "sites" | "clients" | "organizations" | "organizationProfiles" | "siteProducts" | "siteProductApplicants" | "eligibilityConstraints" | "underwritingBands" | "semanticRequirements" | "associations" | "siteAssociations" | "sitePolicies">;
 export type RuleProvenance = Partial<LibraryMetadata> & { table: string; key: string; approvalKey?: string };
@@ -33,6 +37,7 @@ export type EffectiveSite = {
   resolution: { completeness: "partial"; implementedScopes: { productKey: string; applicantKey: string; decisions: ("eligibility" | "underwriting")[] }[] };
   provisionalDecisions: { key: string; value: import("../persistence/types").Json; provenance: RuleProvenance[] }[];
   configuration: EffectiveConfiguration;
+  fieldSurfaces?: Record<string, ResolvedFieldSurface>;
   products: { productKey: string; provenance: RuleProvenance[]; applicants: EffectiveApplicant[] }[];
 };
 function provenance(table: string, row: { id: string; key?: string } & Partial<LibraryMetadata>, approvalKey?: string): RuleProvenance {
@@ -44,14 +49,24 @@ function unique<T>(rows: T[], key: (row: T) => string, label: string) {
 const compare = (a: string, b: string) => a < b ? -1 : a > b ? 1 : 0;
 
 /** Pure resolution over a persisted snapshot. No static fallback, extraction or writes. */
-export function resolveEffectiveSite(data: EffectiveSiteData, siteKey: string, options: { freshStart?: boolean } = {}): EffectiveSite {
-  if (options.freshStart !== false) data = withFreshStartCatalog(data, siteKey);
+export function resolveEffectiveSite(data: EffectiveSiteData, siteKey: string, options: { freshStart?: boolean; requirements?: RequirementCatalogSource } = {}): EffectiveSite {
+  if (options.freshStart !== false) data = options.requirements ? compileRequirementCatalog(data, options.requirements, siteKey) : withFreshStartCatalog(data, siteKey);
+  return resolveSiteProjection(data, siteKey, options.freshStart === false);
+}
+
+/** Pure consumer projection after the fresh-start compiler has run. The shared
+ * Library boundary compiles once and supplies that exact projection to every
+ * consumer; this does not select a saved/legacy fallback. */
+export function resolveCompiledEffectiveSite(data: EffectiveSiteData, siteKey: string): EffectiveSite {
+  return resolveSiteProjection(data, siteKey, false);
+}
+function resolveSiteProjection(data: EffectiveSiteData, siteKey: string, snapshot: boolean): EffectiveSite {
   const sites = data.sites.filter(s => s.key === siteKey);
   if (sites.length !== 1 || sites[0].deletedAt || sites[0].status !== "active") throw new Error(`Unavailable Site: ${siteKey}`);
   const site = sites[0];
   const clients = data.clients.filter(c => c.id === site.clientId);
   if (clients.length !== 1 || clients[0].status !== "active") throw new Error(`Unavailable Client: ${site.clientId}`);
-  if (siteKey === "asce" && options.freshStart === false) {
+  if (siteKey === "asce" && snapshot) {
     const invalid = inspectAsceBusinessDecisions(data).filter(d => !d.approved);
     if (invalid.length) throw new Error(`Unapproved ASCE rules: ${invalid.map(d => d.key).join(", ")}`);
   }
@@ -100,9 +115,19 @@ export function resolveEffectiveSite(data: EffectiveSiteData, siteKey: string, o
   const configuration = resolveEffectiveConfiguration(data, siteKey, clients[0].key, site.id, products.map(p => p.productKey));
   readCategoryEligibilityPolicy(configuration.categoryEligibilityPolicies);
   const assignedProducts = new Set(data.siteProducts.filter(link => link.siteId === site.id).map(link => link.productKey));
+  const assignedApplicant = (productKey: string, applicantKey: string) => data.siteProductApplicants.some(link => link.siteKey === siteKey && link.productKey === productKey && link.applicantKey === applicantKey);
   for (const policy of configuration.beneficiaryParticipationPolicies) if (isBeneficiaryParticipationPolicy(policy.value) && policy.value.rules.some(rule => !assignedProducts.has(rule.productKey))) throw new Error("Invalid beneficiary participation policy product scope");
   for (const policy of configuration.beneficiaryNotePolicies) if (isBeneficiaryNotePolicy(policy.value) && policy.value.notes.some(note => note.productKeys.some(key => !assignedProducts.has(key)))) throw new Error("Invalid beneficiary note policy product scope");
+  for (const policy of configuration.beneficiaryParticipationPolicies) if (isBeneficiaryParticipationPolicy(policy.value) && policy.value.rules.some(rule => !assignedApplicant(rule.productKey, rule.applicantKey))) throw new Error('Invalid beneficiary participation policy applicant scope');
+  for (const policy of configuration.beneficiaryNotePolicies) if (isBeneficiaryNotePolicy(policy.value) && policy.value.notes.some(note => note.productKeys.some(key => note.applicants.some(applicant => !assignedApplicant(key, applicant))))) throw new Error('Invalid beneficiary note policy applicant scope');
   for (const policy of configuration.beneficiaryParticipationPolicies) if (isBeneficiaryParticipationPolicy(policy.value) && policy.value.rules.some(rule => rule.associationKeys?.some(key => !data.siteAssociations.some(link => link.siteKey === siteKey && link.associationKey === key)))) throw new Error("Invalid beneficiary participation policy Association scope");
+  // Historical snapshots retain their original broad Review selectors. Current
+  // authored assignments must reference only supported product/applicant pairs.
+  if (!snapshot) for (const { value: policy } of configuration.reviewPolicies) if (isReviewPolicy(policy)) {
+    if (policy.blocks.some(block => block.when?.associationKeys?.some(key => !data.siteAssociations.some(link => link.siteKey === siteKey && link.enabled && link.associationKey === key)))) throw new Error('Invalid Review policy Association scope');
+    const pairs = [...policy.blocks.flatMap(block => block.when?.applicant ? (block.when.products ?? []).map(product => ({ product, applicants: [block.when!.applicant!] })) : []), ...(policy.underwritingFlag?.rules.flatMap(rule => (rule.products ?? []).map(product => ({ product, applicants: rule.applicants }))) ?? []), ...(policy.consent?.underwrittenWhen.map(rule => ({ product: rule.productKey, applicants: rule.applicants })) ?? [])];
+    if (pairs.some(pair => pair.applicants.some(applicant => !assignedApplicant(pair.product, applicant)))) throw new Error(`Invalid Review policy applicant scope: ${siteKey}/${pairs.filter(pair => pair.applicants.some(applicant => !assignedApplicant(pair.product, applicant))).map(pair => pair.product).join(',')}`);
+  }
   const implementedScopes = products.flatMap(p => p.applicants.flatMap(a => {
     if (eligibilityExecution(configuration, p.productKey, a).reason) return [];
     const c = a.constraints!.value;
@@ -116,7 +141,7 @@ export function resolveEffectiveSite(data: EffectiveSiteData, siteKey: string, o
     return [{ productKey: p.productKey, applicantKey: a.applicantKey, decisions }];
   }));
   const provisionalDecisions = data.semanticRequirements.filter(decision => decision.domain === "provisional-source-decision" && decision.subjectTable === "sites" && decision.subjectKey === siteKey).sort((a, b) => compare(a.key, b.key)).map(decision => ({ key: decision.key, value: decision.value, provenance: [provenance("semanticRequirements", decision)] }));
-  return structuredClone({ assignedAssociationKeys: data.siteAssociations.filter(link => link.siteKey === siteKey).map(link => link.associationKey), enabledAssociationKeys: data.siteAssociations.filter(link => link.siteKey === siteKey && link.enabled).map(link => link.associationKey), provisionalDecisions, siteKey, clientKey: clients[0].key, name: { value: site.name, provenance: [provenance("sites", site)] }, runtimeActivation: "pending-phase-6", resolution: { completeness: "partial", implementedScopes }, configuration, products });
+  return structuredClone({ ...(!snapshot ? { fieldSurfaces: resolveStoredFieldSurfaces(data, { siteKey, clientKey: clients[0].key, configuration }) } : {}), assignedAssociationKeys: data.siteAssociations.filter(link => link.siteKey === siteKey).map(link => link.associationKey), enabledAssociationKeys: data.siteAssociations.filter(link => link.siteKey === siteKey && link.enabled).map(link => link.associationKey), provisionalDecisions, siteKey, clientKey: clients[0].key, name: { value: site.name, provenance: [provenance("sites", site)] }, runtimeActivation: "pending-phase-6", resolution: { completeness: "partial", implementedScopes }, configuration, products });
 }
 
 /** Historical extraction and ownership audits compare their captured snapshot.

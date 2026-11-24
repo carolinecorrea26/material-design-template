@@ -1,0 +1,26 @@
+{
+  "legend": "In application identifies who is currently using the application in this example. Can access means the person can sign in; authentication is still required.",
+  "labels": {
+    "active": "in application",
+    "available": "can access",
+    "unavailable": "locked"
+  },
+  "stages": {
+    "Advisor": {
+      "canAccess": ["Advisor"],
+      "explanation": "The advisor is preparing or revising the application. Applicant access is available after the advisor sends it."
+    },
+    "Applicant": {
+      "canAccess": ["Advisor", "Applicant"],
+      "explanation": "The advisor can sign in to the saved application and take over at any point before the applicant reaches DocuSign."
+    },
+    "DocuSign": {
+      "canAccess": ["Applicant"],
+      "explanation": "Once the applicant reaches DocuSign, the advisor can no longer access or take over the application. Only the applicant can resume using the application link already sent by the advisor."
+    },
+    "Unavailable": {
+      "canAccess": [],
+      "explanation": "A deleted application cannot be resumed."
+    }
+  }
+}

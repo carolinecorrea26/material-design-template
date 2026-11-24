@@ -1,0 +1,33 @@
+import { readFileSync } from 'node:fs';
+import { afterEach, expect, it } from 'vitest';
+import { healthPageScenario } from '../../.storybook/healthPageScenario';
+import { buildGlobalTemplate } from '../dev/storybook/globalTemplate';
+import { installPrototypeLibrary, resolvePrototypeLibrary } from '../domain/prototypeLibrary';
+import { validateSharedCatalog } from '../persistence/sharedCatalog';
+import { applicantParticipatesInPage, resolvePageParticipation } from '../config/flowGates';
+import { validateHealthPage } from '../config/healthFollowUps';
+const catalog = validateSharedCatalog(JSON.parse(readFileSync('public/catalog/portal.json', 'utf8')));
+afterEach(() => installPrototypeLibrary(null));
+it.each(['si', 'li', 'di', 'ci', 'cir'] as const)('%s uses only current adult elections and ignores retained answers for inactive people', kind => {
+  const scenario = healthPageScenario(kind, true), page = scenario.health!.page;
+  const library = buildGlobalTemplate(catalog, scenario.capability, undefined, undefined, undefined, undefined, undefined, undefined, undefined, scenario.health);
+  installPrototypeLibrary(library);
+  const product = scenario.health!.product;
+  const values = { ...scenario.values, productApplicants: { [product]: ['spouse'] }, 'health-li-q1': 'yes', 'health-li-q1-details': [{}] };
+  expect(applicantParticipatesInPage(page, 'member', values)).toBe(false);
+  expect(applicantParticipatesInPage(page, 'spouse', values)).toBe(true);
+  expect(applicantParticipatesInPage(page, 'child', values)).toBe(false);
+  const removed = { ...values, coverageSelections: [] };
+  expect(resolvePageParticipation(page, removed)).toBe(false);
+  expect(validateHealthPage(page, removed as never)).toBeUndefined();
+  const childOnly = { ...values, productApplicants: { [product]: ['child'] } };
+  expect(applicantParticipatesInPage(page, 'member', childOnly)).toBe(false);
+  expect(applicantParticipatesInPage(page, 'spouse', childOnly)).toBe(false);
+});
+it('ASCE Life routes through external QD, while DI-only and inactive Life do not', () => {
+  installPrototypeLibrary(resolvePrototypeLibrary(catalog.data, 'asce', 'health-asce-final'));
+  const values = healthPageScenario('qd').values;
+  expect(resolvePageParticipation('health-qd', values)).toBe(true);
+  const di = { ...healthPageScenario('di').values, productApplicants: { 'di-ltd': ['spouse'], 'li-term': ['member'] } };
+  for (const page of ['health-si', 'health-tele', 'health-qd', 'health-di-supp', 'health-cir'] as const) expect(resolvePageParticipation(page, di)).toBe(false);
+});

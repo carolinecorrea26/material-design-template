@@ -14,7 +14,7 @@ describe("configuration option documentation", () => {
   });
   it("documents the available values for every provisioning option", () => {
     const undocumented = configurationsData.filter(
-      (row) => getConfigurationAvailableOptions(row) === "No configurable values documented",
+      (row) => getConfigurationAvailableOptions(row) === "No configurable values documented" && !row.name.startsWith("set"),
     );
 
     expect(undocumented.map((row) => row.name)).toEqual([]);

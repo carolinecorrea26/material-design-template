@@ -1,9 +1,9 @@
-import { getPrototypeLibrary } from '../domain/prototypeLibrary';
+import { getPrototypeLibrary, getRelatedPrototypeLibrary } from '../domain/prototypeLibrary';
 import { componentInteractions, quoteInteractions } from "./componentInteractions";
 import { pages } from "../config/pages";
 import { getSiteFieldInventory, getFieldPlacements } from "../config/fields/inspectionInventory";
 import { resolveSitePages } from "../data/resolvers";
-import { getFlowGateDefinition, coverageUnlocksPage } from "../config/flowGates";
+import { getFlowGateDefinition, coverageUnlocksPage, siteFlowContext } from "../config/flowGates";
 import { getClientCoverages } from "../config/client/getActiveClientCoverages";
 import { getEffectiveSiteConfig } from "../data/registry";
 import { siteEntities } from "../data/registry";
@@ -20,8 +20,14 @@ const elements: Array<[string, AnalyticsElementKind, string, string, AnalyticsEv
   ["review", "button", "submit-application", "Submit application", ["activate"]],
   ["review", "link", "edit-section", "Edit section", ["activate"]],
 ];
-let cache: AnalyticsTag[] | undefined;
+const detachedInventories = new Map<string, AnalyticsTag[]>();
+const revisionInventories = new WeakMap<object, Map<string, AnalyticsTag[]>>();
 export function getAnalyticsInventory(siteKey = "all"): AnalyticsTag[] {
+  const installed = getPrototypeLibrary();
+  if (installed && !revisionInventories.has(installed)) revisionInventories.set(installed, new Map());
+  const inventories = installed ? revisionInventories.get(installed)! : detachedInventories;
+  let cache = inventories.get(siteKey);
+  const inspectedSites = siteEntities.filter(site => siteKey === 'all' || site.id === siteKey || installed?.site.siteKey === siteKey && installed.sourceSiteKey === site.id);
   if (!cache) {
     const rows = new Map<string, AnalyticsTag>();
     const add = (site: string, pageId: string, kind: AnalyticsElementKind, key: string, label: string, events: AnalyticsEvent[], hasLocalHook: boolean, source: AnalyticsTag["source"] = "prototype-definition", sourceFile = "src/config/pages.ts", condition = "Page availability and applicant visibility rules apply") => {
@@ -32,10 +38,14 @@ export function getAnalyticsInventory(siteKey = "all"): AnalyticsTag[] {
         description: kind === "page" ? `Track the ${label} page${events.includes("submit") ? " and its completion or validation outcome" : " view"}.` : kind === "field" ? `Track interaction with ${label}; never collect the entered value.` : `Track ${label.toLowerCase()} interactions. Confirm placement and Site applicability before implementation.`,
         source, sourceFile, condition, adobe: { mapping: null, status: "not-configured" }, contentsquare: { mapping: null, status: "not-configured" } });
     };
-    for (const site of siteEntities) {
-      const fields = getSiteFieldInventory(site.id);
-      const products = getClientCoverages(getEffectiveSiteConfig(site.id));
-      const enabledPages = new Set(resolveSitePages(site.id).filter(p => p.effective.included && (!getFlowGateDefinition(p.id) || products.some(product => coverageUnlocksPage(p.id, product)))).map(p => p.id));
+    for (const site of inspectedSites) {
+      const library = getRelatedPrototypeLibrary(site.id);
+      const routing = siteFlowContext(site.id);
+      const fields = getSiteFieldInventory(site.id, library ?? undefined);
+      const products = library?.products ?? getClientCoverages(getEffectiveSiteConfig(site.id));
+      const assignedPages = library ? library.site.configuration.pages.filter(page => page.requirement !== 'none').map(page => page.key)
+        : resolveSitePages(site.id).filter(page => page.effective.included).map(page => page.id);
+      const enabledPages = new Set(assignedPages.filter(page => !getFlowGateDefinition(page as typeof pages[number]['id'], routing) || products.some(product => coverageUnlocksPage(page as typeof pages[number]['id'], product, routing))));
       for (const page of pages.filter(p => p.type !== "internal" && enabledPages.has(p.id))) {
         // Page availability is documented independently of transient applicant visibility.
         add(site.id, page.id, "page", "page", page.id, page.type === "form" ? ["view", "submit", "validation-failed"] : ["view"], page.type === "form");
@@ -57,12 +67,13 @@ export function getAnalyticsInventory(siteKey = "all"): AnalyticsTag[] {
       for (const [page, kind, key, label, events] of elements) if (enabledPages.has(page as typeof pages[number]["id"])) add(site.id, page, kind, key, label, events, false, "proposed-interaction");
     }
     // Shared UI is one specification, rather than fabricated duplicates on every page.
-    for (const site of siteEntities) {
+    for (const site of inspectedSites) {
       add(site.id, "app-shell", "link", "privacy-notice", "Privacy notice", ["activate"], false, "shared-component");
       add(site.id, "app-shell", "modal", "privacy-notice", "Privacy notice modal", ["open", "close"], false, "shared-component");
       add(site.id, "app-shell", "navigation", "menu", "Application menu", ["open", "close", "activate"], false, "shared-component");
     }
     cache = [...rows.values()].sort((a, b) => a.id.localeCompare(b.id));
+    inventories.set(siteKey, cache);
   }
   const active = getPrototypeLibrary(siteKey);
   if (active && !siteEntities.some(s => s.id === siteKey)) {

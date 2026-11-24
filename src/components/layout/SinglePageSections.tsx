@@ -18,6 +18,7 @@ export default function SinglePageSections({ initialPageId = "membership", rende
   const { reviewSubmitted, advisorApplicantFlow } = useApplicationSession();
   const [pageId, setPageId] = useState(initialPageId);
   const [furthestPageId, setFurthestPageId] = useState(initialPageId);
+  useEffect(() => { setPageId(initialPageId); setFurthestPageId(initialPageId); }, [initialPageId]);
   const [scrollTarget, setScrollTarget] = useState<PageId | null>(null);
   const [lastCompleted, setLastCompleted] = useState<Partial<Record<PageId, boolean>>>({});
   const sectionRefs = useRef(new Map<string, HTMLElement>());
@@ -27,11 +28,19 @@ export default function SinglePageSections({ initialPageId = "membership", rende
   const furthestIndex = Math.max(flow.indexOf(pageId), flow.indexOf(furthestPageId));
   const steps = getActiveProgressSteps(values);
   const activeStepIndex = steps.findIndex(step => step.pageIds.includes(pageId));
-  const goToSection = useCallback((next: PageId, target: PageId = next) => {
+  const showSection = useCallback((next: PageId, target: PageId = next) => {
     setPageId(next);
-    setFurthestPageId(current => flow.indexOf(current) > flow.indexOf(next) ? current : next);
     setScrollTarget(target);
-  }, [flow]);
+  }, []);
+  const goToSection = useCallback((next: PageId, target: PageId = next) => {
+    const index = flow.indexOf(next);
+    if (navigationPending || index < 0 || index > flow.indexOf(furthestPageId)) return;
+    // Editing reopens this checkpoint and its successors. Only successful page
+    // submission can advance the frontier through the existing validators.
+    setFurthestPageId(next);
+    setLastCompleted(previous => Object.fromEntries(Object.entries(previous).filter(([id]) => flow.indexOf(id as PageId) < index)));
+    showSection(next, target);
+  }, [flow, furthestPageId, navigationPending, showSection]);
 
   const scrollTargetStepId = steps.find(step => step.pageIds.includes(scrollTarget ?? pageId))?.id ?? "receipt";
 
@@ -49,8 +58,9 @@ export default function SinglePageSections({ initialPageId = "membership", rende
     setNavigationPending(false);
     setLastCompleted(previous => ({ ...previous, [completed]: true }));
     setShowProgressSaved(true);
-    goToSection(next, completed);
-  }, [goToSection]);
+    setFurthestPageId(next);
+    showSection(next, completed);
+  }, [showSection]);
 
   return (
     <SinglePageFlowContext value={{ pageId, goToSection, completeSection, navigationPending, setNavigationPending }}>

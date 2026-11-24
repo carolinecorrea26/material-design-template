@@ -1,0 +1,6 @@
+{
+  "page": "membership",
+  "include": [
+    "abe-member-id"
+  ]
+}

@@ -1,3 +1,4 @@
+import asceMembershipPage from '../../requirements/parked/sites/asce/pages/membership.json';
 import { readFileSync } from "node:fs";
 import { afterEach, describe, expect, it } from "vitest";
 import { validateSharedCatalog } from "../persistence/sharedCatalog";
@@ -65,16 +66,16 @@ describe("ASCE current catalog, prototype, Library and Storybook parity", () => 
     expect(fieldSurfaceRows(changed, "asce").find(row => row.field.id === "phone-type" && row.pages.includes("membership"))?.field.options).toEqual(current.fields.find(field => field.id === "phone-type")?.options);
     const rows = storedLibraryRows(changed, "contentValues", "asce");
     for (const [key, value] of Object.entries(membershipContent)) {
-      const aliases: Record<string, string> = { "membership.title": "pages.membership.title", "membership.subhead": "pages.membership.subhead", "membership.breadcrumb": "pages.membership.navTitle", "membership.note.member-profession": "pages.membership.infoNote" };
-      expect(rows.find(row => row.contentKey === (aliases[key] ?? key))?.value).toBe(value);
+      const aliases: Record<string, string> = { "membership.title": "pages.membership.title", "membership.subhead": "pages.membership.subhead", "membership.breadcrumb": "pages.membership.navTitle", "membership.page-note": "pages.membership.infoNote", "membership.not-member.heading": "pages.membership.messages.notMemberHeading", "membership.not-member.body": "pages.membership.messages.notMemberBody", "membership.not-member.website": "pages.membership.messages.notMemberContact" };
+      expect(rows.find(row => row.contentKey === (aliases[key] ?? key))?.value).toBe(key === "membership.page-note" ? asceMembershipPage.content["membership.page-note"] : value);
     }
   });
 
   it.each(["prototype", "storybook"] as const)("uses the Membership page note and member-only browser hints in %s and Library", surface => {
     const current = surface === "prototype" ? library : buildGlobalTemplate(catalog, "multipleTerms");
-    const note = membershipContent["membership.note.member-profession"];
+    const note = asceMembershipPage.content["membership.page-note"];
     expect(current.content.pages.membership?.infoNote).toBe(note);
-    expect(current.content.pages.eligibility?.sectionNotes?.selfEligibility).toBeUndefined();
+    expect(current.content.pages.eligibility?.sectionNotes?.selfEligibility).toBe("");
     expect(storedLibraryRows(catalog, "contentValues", "asce").find(row => row.contentKey === "pages.membership.infoNote")?.value).toBe(note);
     const membership = current.site.configuration.pages.find(page => page.key === "membership")!;
     expect(membership.fields.some(field => field.included && field.key === "title")).toBe(false);
@@ -100,11 +101,11 @@ describe("ASCE current catalog, prototype, Library and Storybook parity", () => 
     const address = eligibility.fieldGroups.find(group => group.label === "Verification address modal")!;
     expect(address.fields.map(field => field.key)).toEqual(expect.arrayContaining(["street-address", "apt-suite", "city", "state", "zip-code"]));
   });
-  it.each(["prototype", "storybook"] as const)("uses only QD Life health pages from the saved ASCE configuration in %s", surface => {
+  it.each(["prototype", "storybook"] as const)("keeps global Health templates while routing ASCE only to applicable QD pages in %s", surface => {
     const current = surface === "prototype" ? library : buildGlobalTemplate(catalog, "multipleTerms");
     installPrototypeLibrary(current);
-    expect(current.site.configuration.pages.filter(page => page.key.startsWith("health-") && page.requirement !== "none").map(page => page.key)).toEqual(["health-qd"]);
-    expect(storedApplicationPageRows(catalog, "asce").filter(page => page.key.startsWith("health-")).map(page => page.key)).toEqual(["health-qd"]);
+    expect(current.site.configuration.pages.filter(page => page.key.startsWith("health-") && page.requirement !== "none").map(page => page.key)).toEqual(["health-si", "health-tele", "health-qd", "health-di-supp", "health-cir"]);
+    expect(storedApplicationPageRows(catalog, "asce").filter(page => page.key.startsWith("health-")).map(page => page.key)).toEqual(["health-si", "health-tele", "health-qd", "health-di-supp", "health-cir"]);
     const healthPages = (values: ApplicationFormValues) => getActiveFormFlow(values).filter(page => page.startsWith("health-"));
     const values: ApplicationFormValues = {
       membership: "yes", "birth-date": "1990-01-15", "state-province": "NY",
@@ -248,7 +249,7 @@ describe("ASCE current catalog, prototype, Library and Storybook parity", () => 
     expect(rows.some(row => row.pages.includes("eligibility") && row.field.id === "child-full-time-student" && row.field.required)).toBe(true);
     for (const id of ["tobacco-last-used", "tobacco-products"]) expect(rows.some(row => row.tool && row.field.id === id && row.pages.includes("home")), id).toBe(true);
     expect(rows.some(row => row.tool && /quote/i.test(row.surface) && row.pages.includes("membership"))).toBe(false);
-    expect(storedApplicationPageRows(catalog, "asce").some(row => row.key === "health-ci")).toBe(false);
+    expect(storedApplicationPageRows(catalog, "asce").some(row => row.key === "health-tele")).toBe(true);
   });
 
   it("keeps the generic multiple-term Storybook example's ASCE requirements intact", () => {

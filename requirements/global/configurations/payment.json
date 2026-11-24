@@ -1,0 +1,20 @@
+{
+  "configurations": [
+    {
+      "id": "payment-share-method",
+      "name": "Use one payment method for all collecting products",
+      "status": "confirmed",
+      "type": "boolean",
+      "default": false,
+      "source": "Global Payment presentation capability. Shared choices use the intersection of effective product methods and retain canonical per-product answers."
+    },
+    {
+      "id": "payment-share-frequency",
+      "name": "Use one payment frequency for all collecting products",
+      "status": "confirmed",
+      "type": "boolean",
+      "default": false,
+      "source": "Global Payment presentation capability. Shared choices use the intersection of allowed frequencies for the selected methods and retain canonical per-product answers."
+    }
+  ]
+}

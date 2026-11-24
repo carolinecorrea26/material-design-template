@@ -7,16 +7,15 @@ import { ApplicationSessionContext } from '../../app/ApplicationSessionContext';
 import { getPrototypeLibrary } from '../../domain/prototypeLibrary';
 import * as si from '../../components/health/HealthSiPage.stories';
 import * as qd from '../../components/health/HealthQdPage.stories';
-import * as li from '../../components/health/HealthLiPage.stories';
-import * as di from '../../components/health/HealthDiPage.stories';
-import * as ci from '../../components/health/HealthCiPage.stories';
+import * as li from '../../components/health/HealthTelePage.stories';
+import * as di from '../../components/health/HealthDiSuppPage.stories';
 import * as cir from '../../components/health/HealthCirPage.stories';
 
 const catalog = JSON.parse(readFileSync('public/catalog/portal.json', 'utf8'));
 afterEach(() => vi.unstubAllGlobals());
 const cases = [
-  ['SI', si, 5], ['Life', li, 15], ['Disability', di, 7],
-  ['Critical Illness', ci, 16], ['Chronic Illness Rider', cir, 12],
+  ['SI', si, 5], ['TELE', li, 15], ['DI SUPP', di, 7],
+  ['Chronic Illness Rider', cir, 12],
 ] as const;
 
 it.each(cases.flatMap(([label, stories, count]) => [
@@ -31,13 +30,7 @@ it.each(cases.flatMap(([label, stories, count]) => [
   const render = story.render as unknown as (args: object, context: object) => ReactNode;
   try {
     await act(async () => root.render(<MemoryRouter><ApplicationSessionContext.Provider value={{ reviewSubmitted: false, advisorApplicantFlow: false, markReviewSubmitted: () => {}, setAdvisorApplicantFlow: () => {}, resetApplicationSession: () => {} }}>{render({}, { id: 'health-test', loaded: { catalog } })}</ApplicationSessionContext.Provider></MemoryRouter>));
-    expect([...container.querySelectorAll('button, [role="button"]')].filter(button => button.textContent === 'How is my health information used?')).toHaveLength(1);
-    if (!count) {
-      const chip = [...container.querySelectorAll<HTMLElement>('[role="button"]')].find(button => button.textContent === 'How is my health information used?')!;
-      await act(async () => chip.click());
-      expect(document.body.textContent).toContain('Your health information is only used to review your application');
-      await act(async () => document.querySelector<HTMLButtonElement>('button[aria-label="Close drawer"]')!.click());
-    }
+    expect([...container.querySelectorAll('button, [role="button"]')].filter(button => button.textContent === 'How is my health information used?')).toHaveLength(0);
     expect(container.textContent).not.toMatch(/Unable to load health questions/);
     expect(container.querySelectorAll('[data-health-question]')).toHaveLength(count);
     if (count) {
@@ -50,7 +43,7 @@ it.each(cases.flatMap(([label, stories, count]) => [
         expect(yes.checked).toBe(true);
         expect(first.querySelector<HTMLInputElement>('[data-health-applicant="spouse"] input[value="yes"]')?.checked ?? false).toBe(false);
       }
-    } else expect(container.textContent).toContain('QuickDecision');
+    } else expect(document.body.querySelector('[role="dialog"] img')?.getAttribute('alt')).toContain('QuickDecision');
     expect(JSON.stringify(catalog)).toBe(before);
   } finally {
     await act(async () => root.unmount()); container.remove();
@@ -59,9 +52,11 @@ it.each(cases.flatMap(([label, stories, count]) => [
 });
 
 it.each([
-  ['full source Life', async () => (await import('../../components/health/HealthLiPage.stories')).FullSourceQuestionnaire, 0],
-  ['supplemental DI', async () => (await import('../../components/health/HealthDiPage.stories')).SupplementalQuestionnaire, 8],
-  ['California CI', async () => (await import('../../components/health/HealthCiPage.stories')).CaliforniaWording, 16],
+  ['Life', async () => (await import('../../components/health/HealthTelePage.stories')).FullSourceQuestionnaire, 2],
+  ['restored TELE', async () => (await import('../../components/health/HealthTelePage.stories')).RestoredDetails, 15],
+  ['supplemental DI', async () => (await import('../../components/health/HealthDiSuppPage.stories')).SupplementalQuestionnaire, 8],
+  ['CI TELE', async () => (await import('../../components/health/HealthTelePage.stories')).CriticalIllnessQuestionnaire, 16],
+  ['California CI', async () => (await import('../../components/health/HealthTelePage.stories')).CaliforniaWording, 16],
 ] as const)('renders the configured %s page story', async (label, load, count) => {
   vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
   const previous = getPrototypeLibrary();

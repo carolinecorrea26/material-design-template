@@ -1,34 +1,26 @@
 import { useForm } from 'react-hook-form';
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import DynamicList from '../src/components/forms/DynamicList';
-import { disabilityCompanyMapping } from '../src/config/fields/profileListFields';
-const sampleCompanies = [
-  { company: "Example Carrier", monthlyBenefitAmount: "$1,200", benefitPeriod: "Age 65", waitingPeriod: "90 days" },
-  { company: "Other Example Carrier", monthlyBenefitAmount: "$800", benefitPeriod: "5 years", waitingPeriod: "60 days" },
-];
+import { getPrototypeLibrary } from '../src/domain/prototypeLibrary';
+import { renderDisabilityCompanySummary } from '../src/components/profile/ProfileSections';
+import examples from '../requirements/global/prototype-fixtures/company-records.json';
 
-function renderCompany(item: Record<string, string>) {
-  return <>
-    <Typography variant="subtitle2">{item.company || "Company"}</Typography>
-    <Typography variant="caption" color="text.secondary">
-      {`${item.monthlyBenefitAmount || "$0"} | ${item.benefitPeriod || "Benefit period not provided"} | ${item.waitingPeriod || "Waiting period not provided"}`}
-    </Typography>
-  </>;
-}
-
-export default function CompanyRecordExample({ populated = false, maxItems = 10, legacyOrdering = false }) {
+export default function CompanyRecordExample({ populated = false, maxItems, legacyOrdering = false }: { populated?: boolean; maxItems?: number; legacyOrdering?: boolean }) {
+  const collection = getPrototypeLibrary()?.fieldCollections.selfDisabilityCompanies;
+  if (!collection) throw new Error('Missing fresh-start disability-company collection');
+  const mapping = collection.mapping;
   const { control } = useForm<Record<string, unknown>>({
-    defaultValues: { selfDisabilityCompanies: populated ? sampleCompanies : [] },
+    defaultValues: { [collection.name]: populated ? structuredClone(examples.companies) : [] },
   });
   return <Box sx={{ maxWidth: 480 }}>
     <DynamicList
       control={control}
-      name="selfDisabilityCompanies"
-      label="Company"
-      mapping={legacyOrdering ? { ...disabilityCompanyMapping, gridFields: disabilityCompanyMapping.fields.slice(0, 2).map(field => field.id) } : disabilityCompanyMapping}
-      renderItem={renderCompany}
+      name={collection.name}
+      label={collection.label}
+      mapping={legacyOrdering ? { ...mapping, gridFields: mapping.fields.slice(0, 2).map(field => field.id) } : mapping}
+      renderItem={renderDisabilityCompanySummary}
       getItemLabel={item => item.company}
-      maxItems={maxItems}
+      maxItems={maxItems ?? collection.maxItems}
     />
   </Box>;
 }

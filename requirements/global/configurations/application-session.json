@@ -1,0 +1,24 @@
+{
+  "configurations": [
+    {
+      "id": "application-inactivity-minutes",
+      "name": "Application inactivity limit (minutes)",
+      "status": "confirmed",
+      "type": "number",
+      "default": 45,
+      "minimum": 1,
+      "globalOnly": true,
+      "source": "User confirmation November 17, 2026: fixed global production timing; separate from the thirty-minute Resume MFA session"
+    },
+    {
+      "id": "application-session-warning-minutes",
+      "name": "Application session warning lead time (minutes)",
+      "status": "confirmed",
+      "type": "number",
+      "default": 2,
+      "minimum": 1,
+      "globalOnly": true,
+      "source": "User confirmation November 17, 2026: fixed global production timing; separate from the thirty-minute Resume MFA session"
+    }
+  ]
+}

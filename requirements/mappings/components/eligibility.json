@@ -63,6 +63,43 @@
         "child"
       ],
       "default": "off"
+    },
+    {
+      "field": "active-military",
+      "people": [
+        "child"
+      ],
+      "default": "off"
     }
-  ]
+  ],
+  "constraints": {
+    "zip-postal-code": {
+      "fixedProperties": [
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength"
+      ],
+      "included": true,
+      "required": true
+    },
+    "birth-date": {
+      "fixedProperties": [
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength"
+      ],
+      "included": [
+        "self"
+      ],
+      "required": [
+        "self"
+      ]
+    },
+    "state-province": {
+      "included": true,
+      "required": true
+    }
+  }
 }

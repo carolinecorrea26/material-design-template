@@ -8,6 +8,7 @@ import AppBody from "../components/layout/AppBody";
 import SinglePageSections from "../components/layout/SinglePageSections";
 import { ApplicationFormContext, type ApplicationFormValues } from "./ApplicationFormContext";
 import { ApplicationSessionProvider } from "./ApplicationSessionContext";
+import { useSinglePageFlow } from "./SinglePageFlowContext";
 import { MESSAGE_DURATION } from "../config/transitionMessages";
 import { sendAutosaveMockEmail } from "../utils/mockEmail";
 
@@ -43,13 +44,19 @@ afterEach(() => {
 
 async function mountFlow() {
   function LocationProbe() { return <output data-location>{useLocation().pathname}</output>; }
+  function JumpAhead() {
+    const flow = useSinglePageFlow();
+    return <button type="button" data-jump onClick={() => flow?.goToSection("coverage")}>Jump ahead</button>;
+  }
   function Harness() {
     const [values, setValues] = useState<ApplicationFormValues>({ membership: "yes", "first-name": "Jane", email: "old@example.test", phone: "2125550100", "birth-date": "1990-01-01", "state-province": "NY" });
     return <ApplicationFormContext value={{ values, setPageValues: patch => setValues(current => ({ ...current, ...patch })), resetValues: () => setValues({}) }}>
       <ApplicationSessionProvider><MemoryRouter initialEntries={["/"]}><AppBody>
         <h1>Persistent landing hero</h1><LocationProbe />
         <SinglePageSections renderPage={pageId => <FormRoutePage key={pageId} pageId={pageId}>
-          {({ allFields, control }) => <>{allFields.map(field => <input key={field.id} aria-label={field.id} {...control.register(field.id)} />)}
+          {({ allFields, control, setValue }) => <><JumpAhead />{allFields.map(field => <input key={field.id} aria-label={field.id} {...control.register(field.id, { required: field.id === "birth-date" })} />)}
+            <button type="button" data-clear onClick={() => setValue("birth-date", "")}>Clear birth date</button>
+            <button type="button" data-restore onClick={() => setValue("birth-date", "1990-01-01")}>Restore birth date</button>
           </>}
         </FormRoutePage>} />
       </AppBody></MemoryRouter></ApplicationSessionProvider>
@@ -71,6 +78,25 @@ async function next(node: HTMLElement) {
 async function finishNext() { await act(async () => { await vi.advanceTimersByTimeAsync(MESSAGE_DURATION * 2); }); }
 
 describe("single-page transitions and breadcrumb navigation", () => {
+  it("reopens later checkpoints when editing and requires successful validation before advancing again", async () => {
+    const { node, close } = await mountFlow();
+    try {
+      await next(node); await finishNext();
+      await next(node); await finishNext();
+      expect(node.querySelector("#coverage-form")).not.toBeNull();
+      await click(node, '[aria-label="Edit Getting started"]');
+      expect(node.querySelector("#eligibility-form")).not.toBeNull();
+      expect(node.querySelector('[aria-label="Edit Coverage"]')).toBeNull();
+      await click(node, '[data-clear]');
+      await click(node, '[data-jump]');
+      expect(node.querySelector("#eligibility-form")).not.toBeNull();
+      await next(node); await finishNext();
+      expect(node.querySelector("#eligibility-form")).not.toBeNull();
+      await click(node, '[data-restore]');
+      await next(node); await finishNext();
+      expect(node.querySelector("#coverage-form")).not.toBeNull();
+    } finally { await close(); }
+  });
   it("keeps loading Next/Back, one card per main step, and checks for completed breadcrumbs", async () => {
     const { node, close } = await mountFlow();
     try {

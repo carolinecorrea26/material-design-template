@@ -19,7 +19,7 @@ export default function ExpandableCell({ children }: { children: ReactNode }) {
   return <Box>
     <Box id={id} ref={content} onFocusCapture={() => { if (overflows) setExpanded(true); }} sx={{ maxHeight: expanded ? "none" : 100, overflow: "hidden" }}>{children}</Box>
     {overflows && <Link component="button" type="button" aria-expanded={expanded} aria-controls={id}
-      onClick={() => setExpanded(value => !value)} sx={{ mt: 0.5, fontSize: "0.8125rem", textAlign: "left" }}>
+      onClick={() => setExpanded(value => !value)} sx={{ mt: 0.5, fontSize: "caption.fontSize", textAlign: "left" }}>
       {expanded ? "Show less" : "Show more"}
     </Link>}
   </Box>;

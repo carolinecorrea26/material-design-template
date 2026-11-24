@@ -1,4 +1,5 @@
 import { walkFiles } from './storybook-inventory.mjs';
+import ts from 'typescript';
 
 const name = source => source.split('/').at(-1).replace(/\.[jt]sx?$/, '').replace(/([a-z])([A-Z])/g, '$1 $2');
 
@@ -8,11 +9,29 @@ const name = source => source.split('/').at(-1).replace(/\.[jt]sx?$/, '').replac
 export function createComponentUsage(analyzer, pages, sources = walkFiles('src').filter(source => analyzer.uiSource(source))) {
  const traced = new Map(sources.map(source => [source, analyzer.trace(source, analyzer.module(source).ast)]));
  const graph = new Map([...traced].map(([source, result]) => [source, result.components.map(component => component.source)]));
- const router = analyzer.module('src/app/router.tsx');
- const roots = router.top.get('pageComponents').properties.flatMap(property => {
-  const pageKey = property.name.getText().replace(/^['"]|['"]$/g, '');
+ const routerFile = 'src/app/router.tsx';
+ function entries(file, node, ancestry = new Set()) {
+  if (!node) throw new Error(`Missing page component registry in ${file}`);
+  const identity = `${file}:${node.pos}:${node.end}`;
+  if (ancestry.has(identity)) throw new Error(`Circular page component registry in ${file}`);
+  const trail = new Set(ancestry).add(identity), mod = analyzer.module(file);
+  if (ts.isAsExpression(node) || ts.isSatisfiesExpression(node) || ts.isParenthesizedExpression(node)) return entries(file, node.expression, trail);
+  if (ts.isIdentifier(node)) {
+   const imported = mod.imports.get(node.text);
+   return imported?.source ? entries(imported.source, analyzer.module(imported.source).top.get(imported.symbol), trail) : entries(file, mod.top.get(node.text), trail);
+  }
+  if (!ts.isObjectLiteralExpression(node)) throw new Error(`Unsupported page component registry in ${file}`);
+  return node.properties.flatMap(property => {
+   if (ts.isSpreadAssignment(property)) return entries(file, property.expression, trail);
+   if (!ts.isPropertyAssignment(property) && !ts.isShorthandPropertyAssignment(property)) throw new Error(`Unsupported page component entry in ${file}`);
+   return [{ file, pageKey: property.name.getText().replace(/^['"]|['"]$/g, ''), expression: ts.isShorthandPropertyAssignment(property) ? property.name : property.initializer }];
+  });
+ }
+ // Object spreads retain their module's bindings; later keys replace earlier ones.
+ const registry = new Map(entries(routerFile, analyzer.module(routerFile).top.get('pageComponents')).map(entry => [entry.pageKey, entry]));
+ const roots = [...registry.values()].flatMap(({ file, pageKey, expression }) => {
   const page = pages.find(page => page.key === pageKey && page.definition.flow !== 'internal');
-  const source = router.imports.get(property.initializer.getText())?.source ?? analyzer.trace('src/app/router.tsx', property.initializer).components[0]?.source;
+  const source = analyzer.module(file).imports.get(expression.getText())?.source ?? analyzer.trace(file, expression).components[0]?.source;
   return page && source ? [{ page, source }] : [];
  });
  const contexts = new Map();

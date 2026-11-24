@@ -21,10 +21,12 @@ so run the standalone command afterward if you need both outputs.
 
 The prototype, Portal Library and generated ABE requirements tables use
 [`public/catalog/portal.json`](public/catalog/portal.json). This checked-in JSON
-file is the generated runtime bundle. Its authoring sources are the section files
-listed in [`public/catalog/manifest.json`](public/catalog/manifest.json). Start with
-the [developer handoff guide](docs/handoff/README.md). No database connection or
-additional account is required.
+file is the generated runtime bundle. Reviewed definitions are authored under
+[`requirements/`](requirements/), following the
+[fresh-start ownership specification](docs/requirements-spec/README.md). The section
+files listed in [`public/catalog/manifest.json`](public/catalog/manifest.json) retain
+identity records and parked evidence; they are not a second authoring source for
+migrated requirements. No database connection or additional account is required.
 
 ```text
 public/catalog/portal.json
@@ -33,17 +35,27 @@ public/catalog/portal.json
   └── ABE requirements: generated Pages and Fields tables
 ```
 
-Edit the section files, retain their IDs and relationships, then run
+Edit the owning requirements source, retaining stable IDs and relationships:
+
+- Global definitions/defaults: `requirements/global/`, the shared page files in
+  `requirements/parked/`, and `requirements/mappings/`.
+- Effective-Site assignments, values, content selections and permitted overrides:
+  `requirements/parked/sites/<site>/`.
+- Retained identities and parked evidence: the catalog section files, only for
+  records that have not transferred to fresh-start ownership.
+
+Then run
 `npm run catalog:build`, `npm run docs:abe`, `npm run docs:handoff` and
-`npm run build`. Do not edit `portal.json` directly. The build validates all saved Sites,
-checks that the generated requirements tables match, and copies the same file
+`npm run build`. Do not edit `portal.json` directly. The build runs the fresh-start
+ownership/inheritance gate, checks that generated requirements tables match, and copies the same file
 into `dist/catalog/portal.json` for Netlify. Deploy the resulting `dist` folder
 through the existing site deployment workflow. Reload the site after deploying.
 
 `npm run dev` retains the local mock services for synthetic quotes, payments,
-save/resume and Site Builder previews. Its base catalog is the same JSON file;
-saved local Site drafts can override it for their Site during preview. These
-drafts are not deployed or included in the base requirements document. Local
+save/resume and Site Builder previews. Its base catalog is the same JSON file.
+Reviewed requirements are reconstructed from fresh-start sources even when a
+saved snapshot contains older records; saving a raw catalog row does not override
+its authored owner. Local drafts are not deployed or included in the base requirements document. Local
 application saves, account state and operational demo records stay in their
 existing private local stores and are not part of the public catalog.
 
@@ -52,56 +64,77 @@ server saves; catalog updates require a file change and redeployment. Catalog
 records cannot be overwritten through browser-only persistence. A failed catalog
 read is reported instead of substituting code defaults or browser copies.
 
+Startup accepts only active Sites in the loaded catalog. With no available Site
+in the URL or session, it selects the catalog's first active Site and remembers
+that choice. Parked Sites and stale aliases cannot become a startup fallback.
+This applies to applicant, Admin Center and standalone entry points without
+changing any Site's product assignments or policies.
+
 ### Pages and Fields source contract
 
-The Library's Pages and Fields tables project this same catalog. Stable table
-names belong to `pages[].definition.displayName` and
-`fields[].definition.displayName`; applicant-facing input copy remains in
-`fields[].definition.label`. Field options, helper text, keyboard metadata and
-`defaultValue` belong to the field definition. Forms and nested phone selectors
-read those saved defaults and options as well.
+The Library's Pages and Fields tables project the same compiled requirements as
+the prototype and Storybook. Page definitions/layouts are authored in
+`requirements/parked/<page>.json`; shared fields, options and validation definitions
+have their fresh-start owners under `requirements/global/`, with field details
+in `requirements/parked/field-details.json`. Mappings bind those definitions to
+pages/components and people. Stable table names, applicant-facing labels, field
+defaults and input metadata project from these sources into the catalog records.
 
-Page participation and order come from `sitePages`; field placement and order
-come from `pageFields`, `pageSections` and `pageSectionFields`. Home's inline
-field references are saved on its page definition. Modal group labels and
-collection ordering anchors live with the saved `field-surfaces` and
-`field-collections` configuration values; questionnaire policies save their
-details group label. The tables do not maintain ABE-specific copies of these
-values. Input-type and keyboard names are generic display formatting.
+The compiler generates `sitePages`, `pageFields`, `pageSections`,
+`pageSectionFields`, field surfaces and collections from these authored layouts,
+mappings and permitted Site assignments. Global page order and fixed requirements
+remain global; only declared Site options may override them. Home's inline fields,
+modal groups and repeated-record placement use the same projection. Input-type
+and keyboard names in tables are generic display formatting.
 
-`src/persistence/abePagesFields.test.tsx` verifies source edits across the ABE
-prototype and Library, including a rendered phone selector. `catalog:check`
-also rejects missing display names and defaults outside authored options.
+`npm run test:fresh-start` verifies reconstruction, ownership, inheritance and
+Library/prototype/Storybook parity. Run focused tests for affected behavior;
+`npm run test:source-propagation` covers the migrated shared content readers.
+`catalog:check` also rejects missing display names and defaults outside authored options.
 
 The SQL migrations, Supabase adapter and Postgres verification scripts were archived
 in the `redesignv6` refactor and removed from the working tree. They remain in git at
 tag `archive/sql-postgres-v5`. Migration exports under `src/migration` remain only as
-historical fixtures until the requirements refactor replaces them; `mock:seed` generates
-those fixtures and does not overwrite the shared JSON catalog.
+historical fixtures until the requirements refactor replaces them. Local startup does
+not generate or validate those migration fixtures. `mock:seed` generates operational
+examples only and does not overwrite the shared JSON catalog.
 
 Current architecture review: [project structure and Library review](docs/project-review/README.md).
 Its table counts, SQL dictionaries and relationship diagrams describe the archived schema.
 
 ## Requirements (fresh start)
 
-Site requirements are being rewritten from scratch under [`requirements/`](requirements/),
-starting with ASCE. The model, naming and layering rules are in the
+All 30 shared page definitions compile from fresh-start sources under
+[`requirements/`](requirements/). ASCE, AMA, AMA-GI, WAEPA and WAEPA GI are enrolled;
+source transfer does not imply that every business rule has completed review.
+The model, naming and layering rules are in the
 [requirements specification](docs/requirements-spec/README.md); explicitly requested
 changes are recorded in [`requirements/changelog.json`](requirements/changelog.json)
 and shown in Admin Center. `golden/` holds reference snapshots for comparison, not a target.
 
-## ASCE development/testing handoff
+## Prototype verification
 
 Storage boundaries and verification: no database is used. Configuration comes from the
 JSON catalog; operational demo data stays in browser storage and `.mock-platform/`.
-`npm test` runs the focused ASCE tests (`test:asce`) while ASCE is being finalized; other
-sites' tests are paused. `npm run test:all` runs the full all-sites suite.
+`npm test` (also `npm run test:all`) runs the focused prototype suite: shared rules
+and inheritance, effective configuration for all five enrolled Sites, representative
+member/spouse/child product journeys, invalid inputs, and Review/signing/Receipt
+end states. Shared mechanics run once; Site-specific checks cover actual overrides.
+No analytics, HTTP-server, pricing calculation or historical migration suites run.
+The existing `test:journeys` and `test:fresh-start` commands select smaller subsets.
+`npm run storybook:template:check` checks real component/example bindings and
+Storybook organization without running the test archive.
 
-Other sites are switched off: `activeSites` in `scripts/catalog-parts.mjs` limits the built
-bundle (`public/catalog/portal.json`) to ASCE, so the prototype, Library and Storybook load only
-ASCE (Storybook's generic template renders every capability from it). The catalog parts keep every
-site. `tsconfig.app.json` type-checks only the ASCE tests, and `catalog:check` skips the ABE
-document. To switch a site back on, add it to `activeSites` and run `node scripts/build-catalog.mjs`.
+Historical and out-of-scope tests remain available only through the explicit
+`npm run test:archive` maintenance command; it is not a prototype or build gate.
+
+The prototype, Library and Storybook now carry ASCE, AMA, AMA-GI, WAEPA and WAEPA GI
+(`waepa-gi`). Enrollment derives from the fresh-start Site source folders;
+adding a Site requires migrating its assignments, not editing a separate allowlist.
+Other Sites remain parked in the catalog parts. `test:fresh-start` includes the
+restoration cases. Application builds type-check source and stories; Vitest owns
+the focused test selection.
+See the [restoration scope and ownership](docs/requirements-spec/sites.md).
 
 Current ASCE scope and open corrections are in the
 [execution register](docs/asce-follow-up-execution.md). Still-binding decisions:
@@ -127,7 +160,12 @@ Components are grouped by responsibility. `forms` owns FieldRenderer and its inp
 
 Storybook owns component browsing under **Layout**, **Forms**, **Pages**, **Dialogs**, **Feedback**, **Transitions**, and **Reusable components**. Each component has one canonical record; page examples and the reuse index reference it. Portal Library retains contextual Storybook links on Pages and Fields, with no separate Components section. Existing CSF `id` values preserve deep links. Admin Center stories are excluded.
 
-The saved component records in `public/catalog/portal.json` include their source, canonical example, page-section examples, and production usage references. `node scripts/generate-component-catalog.mjs --write-catalog` refreshes those references from source; add `--add-records` when intentionally introducing newly reviewed records. Run `npm run docs:abe` afterward. `catalog:check` rejects differences between the generated inventory, saved catalog and generated document.
+Canonical component registrations, parts, roles and Storybook bindings are authored
+in `requirements/global/components.json`. The compiler reconstructs those records;
+`node scripts/generate-component-catalog.mjs --write-catalog` refreshes generated
+usage/example annotations from source. Run `npm run docs:abe` afterward.
+`catalog:check` rejects differences between the generated inventory, saved catalog
+and generated document. Do not author another component definition in the bundle.
 
 Reuse counts distinct page/source compositions, includes conditional variants, and excludes stories, tests and internal reference pages. Repeated records do not inflate totals. The final index is derived from canonical records with at least two uses; no second inventory is maintained.
 
@@ -161,8 +199,9 @@ backups and are ignored by Git.
 
 Historical compatibility exports in `migration-artifacts/` can be recreated with
 `npm run migration:export`; `npm run migration:semantic-gate` regenerates them
-before checking readiness. `npm run mock:seed` regenerates the separate
-`migration-artifacts/mock/` fixtures used by local development.
+before checking readiness. `npm run mock:seed` regenerates only
+`migration-artifacts/mock/operations-data.json` for local development; Library and
+prototype definitions come from `public/catalog/portal.json`.
 
 Keep the original requirements workbooks, review evidence and
 `.mock-platform/` saved state. Historical reports retain source decisions and
@@ -177,7 +216,13 @@ synthetic PRASE/payment endpoints and Caroline's local password/TOTP/recovery
 setup with an authenticator QR code (`caroline@example.invalid`; no emails sent).
 Mock mode uses local data and does not call any database.
 
-Prototype startup: `npm run dev` loads `public/catalog/portal.json` with the local mock services at [localhost:5180](http://127.0.0.1:5180/). `npm run mock:dev` is the equivalent explicit command. Saved Site drafts remain in `.mock-platform/server-state.json` and take precedence only for their Site during local preview. `npm run dev:catalog` runs the shared catalog directly without mock services. Both use the same base JSON file as the Netlify build. Real PRASE remains excluded.
+Prototype startup: `npm run dev` loads `public/catalog/portal.json` with the local
+mock services at [localhost:5180](http://127.0.0.1:5180/). `npm run mock:dev` is the
+equivalent explicit command. Saved Site drafts remain in
+`.mock-platform/server-state.json`; local previews still recompile reviewed
+requirements from their fresh-start owners. `npm run dev:catalog` runs the shared
+catalog directly without mock services. Both use the same base JSON file as the
+Netlify build. Real PRASE remains excluded.
 
 ### Site build, review and prototype release
 
@@ -197,3 +242,15 @@ Earlier phase, Step 3–6, canonical/MCR, active-site and ASCE handoff reports a
 [`docs/archive/`](docs/archive/) for traceability only. They predate the fresh-start
 requirements model and do not describe current behavior. Code and generated catalog
 records still cite them as `source`/`reference` evidence.
+
+## Internal prototype scenarios
+
+Add `&dev` to a Site URL (for example `/?site=asce&dev`), then open Dev Tools.
+Select an applicant/error/Receipt scenario and an offered product, then use
+Jump to Page or Submit Full Application. Seeds use the effective Site configuration;
+nonparticipating pages are rejected. `&dev=false` hides the tools.
+
+`npm test` runs the focused prototype/rules/Library/component checks. Shared rules
+are checked globally, all ten Site configurations are checked separately, and
+representative rendered journeys reach Receipt. Historical migrations, analytics,
+servers and rate-service tests remain outside this routine suite.

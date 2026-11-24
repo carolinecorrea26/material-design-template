@@ -1,10 +1,12 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import { afterEach, beforeAll, expect, it } from "vitest";
 import { createReviewedMigrationDatabase } from "./fixtures";
 import { applyAmaConsentAdoption } from "./amaConsentAdoption";
 import { applyReviewAndRateAdoption } from "./reviewAndRateAdoption";
-import { resolveEffectiveSite } from "../domain/effectiveSite";
+import { resolveSnapshotSite as resolveEffectiveSite } from "../domain/effectiveSite";
 import { isReviewPolicy, resolveReviewConsent, validateCapturedReview, type ReviewPolicy, type ReviewSelection } from "../domain/reviewPolicy";
-import { installPrototypeLibrary, resolvePrototypeLibrary } from "../domain/prototypeLibrary";
+import { installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import { composeReadAndSign, resolveReviewExperience } from "../config/reviewExperience";
 import { getEffectiveSiteConfig } from "../data/registry";
 import { reviewDefaults } from "../content/defaults/review";
@@ -56,9 +58,9 @@ it("replaces one consent section in the live Review projection and keeps the app
   const values = { membership: "physician", state: "PA", coverageSelections: ["sh-hospital-income"], productApplicants: { "sh-hospital-income": ["member"] } };
   const experience = resolveReviewExperience(getEffectiveSiteConfig("ama"), "ama", library.products, values);
   expect(experience.consent.text).toContain("I am a physician");
-  const content = composeReadAndSign(reviewDefaults.readAndSignContent, experience.fraudNotice, experience.consent.text);
+  const content = composeReadAndSign(reviewDefaults.readAndSignContent, experience.fraudNotice, experience.consent.text, experience.authorizationVisible, experience.medicalAuthorization, experience.premiumContributionStatement);
   expect(content.match(/CONSENT:/g)).toHaveLength(1);
-  expect(content).toContain("AUTHORIZATION:");
+  expect(content).not.toContain("AUTHORIZATION:"); // Non-underwritten selection has no medical authorization.
   expect(content).toContain(experience.fraudNotice);
   expect(content).not.toContain("I request the insurance applied for (for myself");
 });

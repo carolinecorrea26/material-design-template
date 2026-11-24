@@ -1,3 +1,4 @@
+import waepaApplication from "../../requirements/parked/sites/waepa/application.json";
 import { describe, expect, it } from "vitest";
 import { clients } from "../config/clients";
 import { buildContent } from "../content";
@@ -73,7 +74,7 @@ describe("client TPA policies", () => {
               decision: existingMember ? "manual-review" : "auto-approve",
             });
           }
-      expect(client.theme).toEqual({ type: "custom", primary: "#001F5F" });
+      expect(client.theme).toMatchObject({ type: "custom", primary: waepaApplication.records.configurationValues.find(row => row.configurationKey === "theme.primary")!.value });
       expect(client.flows?.overrides?.tpaVerification).toBeDefined();
     },
   );

@@ -9,7 +9,6 @@ import ShoppingCartRoundedIcon from "@mui/icons-material/ShoppingCartRounded";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
 import {
-  Alert,
   Box,
   Chip,
   DialogContentText,
@@ -18,7 +17,7 @@ import {
   Typography,
 } from "@mui/material";
 import AppModal from "../layout/AppModal";
-import { coverageCategories } from "../../config/coverageCategories";
+import { coverageCategories, getCoverageCategories } from "../../config/coverageCategories";
 import { getResolvedApplicantLabels } from "../../config/formSectionTitle";
 import type {
   CoverageApplicantId,
@@ -39,7 +38,7 @@ import { getDisplayedPremium } from "../../utils/coverageDisplay";
 export type ApplicantSummary = {
   applicantId: CoverageApplicantId;
   amount: number | undefined;
-  riders: { name: string; amount?: number }[];
+  riders: { name: string; amount?: number; applicant?: CoverageApplicantId }[];
   monthlyEstimate: number | undefined;
   display: RateDisplayState;
   quickDecision?: boolean;
@@ -66,7 +65,6 @@ type DrawerProps = {
   entries: CoverageSummaryEntry[];
   totalMonthly: number;
   applicantLabels?: Record<CoverageApplicantId, string>;
-  ineligibleProducts?: string[];
   onRemoveCoverage: (coverageId: string) => void;
   ratesSuppressed?: boolean;
   /** "cart-icon" = opened from AppHeader; "coverage-page" = opened from Coverage page */
@@ -90,6 +88,7 @@ type DrawerProps = {
 };
 
 type InlineProps = {
+  frequencyField?: import("../../domain/fields").FieldDefinition;
   variant: "inline";
   rateFrequency: EstimatedRateFrequency;
   showRateFrequencyToggle: boolean;
@@ -117,7 +116,7 @@ export type CoverageCartProps = DrawerProps | InlineProps;
 
 function CoverageCartDrawer({
   source = "cart-icon", onClose, entries, totalMonthly,
-  applicantLabels = getResolvedApplicantLabels(), ineligibleProducts = [], onRemoveCoverage, ratesSuppressed = false,
+  applicantLabels = getResolvedApplicantLabels(), onRemoveCoverage, ratesSuppressed = false,
 }: Omit<DrawerProps, "variant">) {
   const isEmpty = entries.length === 0;
   const [confirmRemoveId, setConfirmRemoveId] = useState<string | null>(null);
@@ -127,7 +126,7 @@ function CoverageCartDrawer({
       category: (typeof coverageCategories)[number];
       items: CoverageSummaryEntry[];
     }[] = [];
-    for (const cat of coverageCategories) {
+    for (const cat of getCoverageCategories()) {
       const items = entries.filter((e) => e.coverage.categoryId === cat.id);
       if (items.length > 0) groups.push({ category: cat, items });
     }
@@ -194,9 +193,6 @@ function CoverageCartDrawer({
             <Stack spacing={1}>
               {groupedByCategory.map(({ items }) =>
                 items.map(({ coverage, applicants }) => {
-                  const isMemberOnly =
-                    applicants.length === 1 &&
-                    applicants[0].applicantId === "member";
                   return (
                     <ProductCard
                       key={coverage.id}
@@ -224,7 +220,7 @@ function CoverageCartDrawer({
                             return (
                               <Box key={applicantId}>
                                 <Stack spacing={0.5}>
-                                  {!isMemberOnly && (
+                                  {entries.some(entry => entry.applicants.some(applicant => applicant.applicantId !== 'member' || applicant.riders.some(rider => rider.applicant && rider.applicant !== 'member'))) && (
                                     <Typography variant="caption" fontWeight={700}>
                                       {applicantLabels[applicantId]}
                                     </Typography>
@@ -292,18 +288,6 @@ function CoverageCartDrawer({
                 }),
               )}
 
-              {ineligibleProducts.length > 0 && (
-                <Alert
-                  severity="warning"
-                  variant="outlined"
-                  sx={{ backgroundColor: "rgba(255, 152, 0, 0.04)" }}
-                >
-                  <Typography variant="subtitle2">{requirementText("coverage.coverage-cart.eligibility-concern")}</Typography>
-                  <Typography variant="body2" sx={{ mt: 0.5 }}>{requirementText("coverage.coverage-cart.based-on-your-answers-you-may-not-be")}{" "}
-                    {ineligibleProducts.join(", ")}{requirementText("coverage.coverage-cart.you-may-still-continue-with-your-other-selected")}</Typography>
-                </Alert>
-              )}
-
               {entries.length > 0 && (
                 <TotalCostSummary display={ratesSuppressed ? { status: "hidden" } : undefined} rateAppearance="summary"
                   items={groupedByCategory.flatMap(({ items }) =>
@@ -360,6 +344,7 @@ function CoverageCartDrawer({
 // ─── Inline variant (replaces TotalCostCart) ─────────────────────────────────
 
 function CoverageCartInline({
+  frequencyField,
   categoryProducts,
   selectedCoverageIds,
   calculatingRateKeys,
@@ -468,6 +453,7 @@ function CoverageCartInline({
 
           {showRateFrequencyToggle && (
             <RateFrequencyControl
+              field={frequencyField}
               value={rateFrequency}
               onChange={onFrequencyToggle}
               justifyContent="end"

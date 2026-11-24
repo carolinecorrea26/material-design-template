@@ -3,7 +3,7 @@
     {
       "id": "required-fields",
       "name": "Check required field values",
-      "status": "draft",
+      "status": "confirmed",
       "check": "required-fields",
       "statement": "Reject missing values for mapped fields marked required in their effective field definitions. Do not maintain a second required setting here. The applicability mapping identifies which fields are checked.",
       "source": "src/utils/fieldValidation.ts",
@@ -138,6 +138,26 @@
       "level": "field",
       "message": "validation.field.digits",
       "statement": "Fields with digits format accept digits only and retain leading zeroes. Format and length are selected by the effective field definition; membership identifiers can remain unrestricted text for other Sites.",
+      "source": "src/utils/fieldValidation.ts"
+    },
+    {
+      "id": "field-alphanumeric",
+      "name": "Validate alphanumeric text",
+      "status": "confirmed",
+      "check": "field-definition",
+      "level": "field",
+      "message": "validation.field.alphanumeric",
+      "statement": "Fields with alphanumeric format accept letters and digits only, up to their effective maximum length.",
+      "source": "src/utils/fieldValidation.ts"
+    },
+    {
+      "id": "field-numeric-range",
+      "name": "Validate numeric field limits",
+      "status": "confirmed",
+      "check": "field-definition",
+      "level": "field",
+      "message": "validation.field.numeric-range",
+      "statement": "Apply minimum and maximum numeric values from the effective field definition. Length and numeric format checks remain independent.",
       "source": "src/utils/fieldValidation.ts"
     }
   ]

@@ -12,7 +12,6 @@ import { getResolvedFieldResolutionsForSite } from "../config/fields/resolvedFie
 import { pageSections } from "../config/pageSections/pageSections";
 import { flowGateDefinitions, coverageSatisfiesFlowGate } from "../config/flowGates";
 import { resolveActiveAssociation } from "../data/associationSelection";
-import { readMockEmailPreviews } from "../utils/mockEmail";
 import { pages } from "../config/pages";
 import { buildContent } from "../content";
 import { getApplicableSiteRules } from "../content/docs/siteRules";
@@ -95,7 +94,7 @@ describe("phase 1–4 migration gate — independently resolved database behavio
       expect(migrated.policy).toEqual(clean({ associationSelection: site.associationSelection, associationBranding: site.associationBranding }));
     });
     it("email: contact visibility and fallback precedence", () => {
-      expect(db.siteEmailTemplates.filter((r) => r.siteKey === siteKey && r.enabled).map((r) => r.emailTemplateKey).sort()).toEqual(readMockEmailPreviews(siteKey).map((r) => r.type).sort());
+      expect(db.siteEmailTemplates.filter((r) => r.siteKey === siteKey && r.enabled).map((r) => r.emailTemplateKey).sort()).toEqual(db.emailTemplates.map(row => row.key).sort());
       const email = old.emailSupport, client = getClientForSite(siteKey)!;
       expect(migrated.emailConfiguration).toEqual({ hideContactBox: Boolean(email?.hideContactBox), name: email?.contactOverride?.name || client.name, acronym: email?.contactOverride?.acronym || client.acronym,
         phone: email?.supportOverride?.phone || old.support.phoneDisplay || old.support.phone || "", email: email?.supportOverride?.email || old.support.email || "", website: email?.supportOverride?.website || old.support.website || "" });

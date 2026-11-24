@@ -9,6 +9,10 @@
 // rather than duplicated here.
 // ---------------------------------------------------------------------------
 
+import pageDefaults from '../../../requirements/parked/pages.json';
+import quoting from '../../../requirements/global/configurations/quoting.json';
+const coverageMessage = quoting.configurations.find(row => row.id === 'coverage-increase-note')!;
+
 export type ConfigurationScope = "Global" | "Client Configurable";
 export type ConfigurationRequirement = "Required" | "Optional";
 
@@ -61,7 +65,7 @@ const CONFIGURATION_PAGE_BY_NAME: Partial<Record<string, ConfigurationPage>> = {
     label: "Beneficiary / Payment", pageIds: ["beneficiary", "payment"],
   },
   "ClientConfig.coverages.categories": { id: "coverage", label: "Coverage" },
-  "ClientConfig.coverages.categorySectionLabels / allCategoriesExpanded": {
+  "ClientConfig.coverages.categorySectionLabels": {
     id: "coverage",
     label: "Coverage",
   },
@@ -148,13 +152,13 @@ const CONFIGURATION_DEFAULT_DISPLAY: Partial<Record<string, string>> = {
     '“Your coverage options” / “Learn more about the coverage available to you.”',
   "content.home.nylCredentials":
     'New York Life Insurance Company — “A trusted name for over 180 years”; A++ / AAA / Aa1 / AA+ ratings; reports as of 09/30/2025',
-  "ClientConfig.pages.requirements.beneficiary / payment": "Required",
-  formFlow: "Home, Membership, Eligibility, Coverage, Profile, Beneficiary, Contact, Review, E-sign, applicable Health page(s), Payment, Receipt",
+  "ClientConfig.pages.requirements.beneficiary / payment": `Beneficiary: ${pageDefaults.pages.beneficiary.requirement}; Payment: ${pageDefaults.pages.payment.requirement}`,
+  formFlow: "Global page definitions and positions; participation follows effective rules",
   "pages / pageGroups / progressSteps": "Canonical registered-page, page-group, and progress-step definitions",
   "ClientConfig.coverages.categories": "No global enabled-category list — supplied per client",
-  "ClientConfig.coverages.categorySectionLabels / allCategoriesExpanded":
-    "Standard category labels; collapsed",
-  "ClientConfig.coverages.additionalCoverageWarning": "Apply for additional coverage",
+  "ClientConfig.coverages.categorySectionLabels":
+    "Standard category labels",
+  "ClientConfig.coverages.additionalCoverageWarning": `${coverageMessage.default} (message selection)`,
   "content.coverage.categoryDescriptions": "Shared category descriptions from the global content defaults",
   "categoryMaxAggregateNotes / siteMaxAggregateNoteOverrides":
     "Life: $2,000,000 aggregate maximum for member and spouse; no note for other categories",
@@ -184,7 +188,8 @@ const CONFIGURATION_DEFAULT_DISPLAY: Partial<Record<string, string>> = {
 };
 
 export function getConfigurationDefaultDisplay(config: Pick<ConfigRow, "name">): string {
-  return CONFIGURATION_DEFAULT_DISPLAY[config.name] ?? "None";
+  const shared = quoting.configurations.find(row => row.id === config.name);
+  return shared ? String(shared.default) : CONFIGURATION_DEFAULT_DISPLAY[config.name] ?? "None";
 }
 
 /**
@@ -223,10 +228,9 @@ const CONFIGURATION_AVAILABLE_OPTIONS: Partial<Record<string, string>> = {
   "ClientConfig.features.scheduleUrl": "None; valid scheduling URL",
   "ClientConfig.features.linkUrl / linkLabel": "None; valid URL with a custom label",
   "ClientConfig.pages.requirements.beneficiary / payment": "required; optional; none",
-  "ClientConfig.coverages.categorySectionLabels / allCategoriesExpanded":
-    "Labels for LI, AD, DI, OO, SH; accordions collapsed or expanded",
-  "ClientConfig.coverages.additionalCoverageWarning":
-    "applyForAdditional; applyForTotal",
+  "ClientConfig.coverages.categorySectionLabels":
+    "Labels for LI, AD, DI, OO, SH",
+  "ClientConfig.coverages.additionalCoverageWarning": coverageMessage.options!.join('; '),
   "ClientConfig.coverages.enabled / overrides":
     "Products: li-term, li-10yr, li-15yr, li-20yr, li-50plus, li-add, li-preferred, li-premier-accident, li-group-term, di-ltd-plus, di-ltd, di-mtd, di-step-rated, di-level-rated, di-short-term, oo-professional, oo-office-overhead, sh-critical-illness, sh-hospital-money, sh-hospital-income. Overrides: name, brochure URL, category (LI/AD/DI/OO/SH), identifiers, situs, riders, waiting/benefit periods, applicants (member/spouse/child), notes, featured, underwriting (FUW/GI/NA/QD/SI/TELE), warning, structured content",
   "ClientConfig.coverages.coverageAmounts[productId]":
@@ -250,7 +254,8 @@ const CONFIGURATION_AVAILABLE_OPTIONS: Partial<Record<string, string>> = {
 };
 
 export function getConfigurationAvailableOptions(config: Pick<ConfigRow, "name">): string {
-  return CONFIGURATION_AVAILABLE_OPTIONS[config.name] ?? "No configurable values documented";
+  const shared = quoting.configurations.find(row => row.id === config.name);
+  return shared?.type === 'boolean' ? 'true; false' : CONFIGURATION_AVAILABLE_OPTIONS[config.name] ?? "No configurable values documented";
 }
 
 const REQUIRED_CONFIGURATION_NAMES = new Set([
@@ -478,7 +483,7 @@ const configurationInventory: ConfigRowSource[] = [
     name: "ClientConfig.pages.requirements.beneficiary / payment",
     description:
       "Controls whether Beneficiary and Payment participate in the application flow. Excluded pages are removed from routing, the stepper, breadcrumbs, and Review; non-required pages begin with a Yes/No prompt. The older pages.excluded and pages.optional arrays are deprecated.",
-    sourcePath: "src/config/clients/*.ts",
+    sourcePath: "requirements/parked/pages.json; requirements/parked/sites/<site>/pages/{beneficiary,payment}.json",
     scope: "Client Configurable",
     usedIn: "Router, formFlow, ProgressStep, Review",
   },
@@ -487,8 +492,8 @@ const configurationInventory: ConfigRowSource[] = [
     label: "Form flow",
     name: "formFlow",
     description:
-      "Ordered page sequence with skip/visibility logic. Determines which pages appear in the resolved flow for a given client and coverage selection.",
-    sourcePath: "src/config/formFlow.ts",
+      "The global template fixes the page list and sequence for every Site. Only Beneficiary and Payment allow required, optional or disabled participation; their positions stay global. Other participation follows product, underwriting, applicant and questionnaire rules, not Site page switches.",
+    sourcePath: "requirements/parked/*.json; src/config/formFlow.ts",
     scope: "Global",
     usedIn: "PageNav next/prev, progress calculation",
   },
@@ -516,23 +521,23 @@ const configurationInventory: ConfigRowSource[] = [
   },
   {
     group: "Coverage categories",
-    label: "Category label overrides & expand behavior",
-    name: "ClientConfig.coverages.categorySectionLabels / allCategoriesExpanded",
+    label: "Category label overrides",
+    name: "ClientConfig.coverages.categorySectionLabels",
     description:
-      "Per-category display label overrides and a boolean controlling whether category accordions start expanded on load.",
+      "Per-category display label overrides inherited from shared category content.",
     sourcePath: "src/config/clients/*.ts",
     scope: "Client Configurable",
     usedIn: "ProductCatalog, CoverageCategorySelector",
   },
   {
     group: "Coverage categories",
-    label: "Coverage amount basis",
+    label: coverageMessage.name,
     name: "ClientConfig.coverages.additionalCoverageWarning",
     description:
-      "Controls whether applicants enter an additional amount or a total coverage amount.",
-    sourcePath: "src/config/clients/*.ts",
+      "Selects the shared additional-coverage or total-coverage message. Message selection does not change amount calculations, eligibility, validation or in-force deductions.",
+    sourcePath: "requirements/global/configurations/quoting.json#coverage-increase-note",
     scope: "Client Configurable",
-    usedIn: "ProductCatalog, coverage amount logic",
+    usedIn: "ProductCatalog message",
   },
   {
     group: "Coverage categories",
@@ -628,13 +633,13 @@ const configurationInventory: ConfigRowSource[] = [
   },
   {
     group: "Premium & estimated cost",
-    label: "Cost breakdown & supplemental fees",
-    name: "productEstimatedCostBreakdown / policyFee / childApplicantRider",
+    label: "Itemized product cost breakdown",
+    name: "coverage-cost-breakdown",
     description:
-      "Controls supplemental cost line items beneath product estimates.",
-    sourcePath: "src/config/clients/*.ts",
+      "Global false default with a Site display override. Shows reconciled quote components; pricing policies own fees, credits and rider values. Missing itemization preserves the total estimate.",
+    sourcePath: "requirements/global/configurations/quoting.json",
     scope: "Client Configurable",
-    usedIn: "ProductCostBreakdown, CoverageCart",
+    usedIn: "ProductCatalog, ProductCostBreakdown",
   },
   // ── J. Coverage-question sections ─────────────────────────────────────────
   {
@@ -728,7 +733,7 @@ const configurationInventory: ConfigRowSource[] = [
       "Structured help content for How Applying Works, application review, group insurance, Coverage, beneficiary allocation, field rationale, and payment handling. Client overrides merge at the property level.",
     sourcePath: "src/content/defaults/help.ts / src/content/clients/*.ts",
     scope: "Client Configurable",
-    usedIn: "HelpChips, AppMenu, helpContent.tsx",
+    usedIn: "PageHelpChips, AppMenu, helpContent.tsx",
   },
   {
     group: "Page & help content",

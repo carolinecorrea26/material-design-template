@@ -1,5 +1,6 @@
+import { getPrototypeLibrary, type PrototypeLibrary } from "../domain/prototypeLibrary";
+import { selectedProductApplicants } from '../domain/applicantParticipation';
 import { applicationCoverageName, applicationUnderwriting, type UnderwritingOutcome } from "../domain/coverageRuntime";
-import { coverageCategories } from "../config/coverageCategories";
 import { getContent } from "../content";
 import type {
   CoverageApplicantId,
@@ -7,8 +8,6 @@ import type {
   CoverageUnderwritingType,
 } from "../config/coverages/types";
 import type { ApplicationFormValues } from "../app/ApplicationFormContext";
-
-const QUICK_DECISION_UNDERWRITING_TYPES = new Set(["SI", "GI", "NA", "QD"]);
 
 export type QdDecisionResult =
   | "conditionally-approved"
@@ -37,19 +36,6 @@ const APPLICANT_SORT_ORDER: Record<CoverageApplicantId, number> = {
   child: 2,
 };
 
-const DEMO_QD_DECISION_RESULTS: QdDecisionResult[] = [
-  "conditionally-approved",
-  "referred",
-  "soft-declined",
-  "database-unavailable",
-];
-
-export function isQuickDecisionUnderwritingType(
-  underwritingType: string,
-): boolean {
-  return QUICK_DECISION_UNDERWRITING_TYPES.has(underwritingType.toUpperCase());
-}
-
 export function formatCurrencyAmount(value: number): string {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -73,75 +59,37 @@ function toPositiveAmount(value: unknown): number | null {
   return null;
 }
 
-function normalizeApplicant(value: unknown): CoverageApplicantId | null {
-  if (typeof value !== "string") return null;
-
-  const normalized = value.trim().toLowerCase();
-
-  if (normalized === "self") return "member";
-
-  if (
-    normalized === "member" ||
-    normalized === "spouse" ||
-    normalized === "child"
-  ) {
-    return normalized;
-  }
-
-  return null;
+export function isQdDecisionResult(value: unknown): value is QdDecisionResult {
+  return value === 'conditionally-approved' || value === 'referred' || value === 'soft-declined' || value === 'database-unavailable';
 }
 
-function getUniqueApplicants(values: unknown[]): CoverageApplicantId[] {
-  const applicants: CoverageApplicantId[] = [];
-
-  for (const value of values) {
-    const applicant = normalizeApplicant(value);
-
-    if (applicant && !applicants.includes(applicant)) {
-      applicants.push(applicant);
-    }
-  }
-
-  return applicants;
-}
-
-export function getQdDecisionResult(
+export function readQdDecisionResult(
   values: ApplicationFormValues,
   coverageId: string,
   applicant: CoverageApplicantId,
-  fallbackIndex: number,
-): QdDecisionResult {
+): QdDecisionResult | undefined {
   const decisions = values.qdDecisions;
 
   if (decisions && typeof decisions === "object" && !Array.isArray(decisions)) {
     const key = `${coverageId}:${applicant}`;
     const result = (decisions as Record<string, string>)[key];
 
-    if (
-      result === "conditionally-approved" ||
-      result === "referred" ||
-      result === "soft-declined" ||
-      result === "database-unavailable"
-    ) {
-      return result;
-    }
+    if (isQdDecisionResult(result)) return result;
   }
 
-  return DEMO_QD_DECISION_RESULTS[
-    fallbackIndex % DEMO_QD_DECISION_RESULTS.length
-  ];
 }
 
 export function getDecisionStatus(opts: {
   underwritingType: CoverageUnderwritingType;
-  decisionResult: QdDecisionResult;
+  decisionResult?: QdDecisionResult;
+  content?: import('../content/types').ReceiptContent;
 }): DecisionStatus {
-  const receiptContent = getContent().receipt;
+  const receiptContent = opts.content ?? getContent().receipt;
   const { underwritingType, decisionResult } = opts;
   const type = underwritingType.toUpperCase();
-  if (type === "UNRESOLVED") return { label: "Requirements unresolved", color: "warning.main", description: "Contact support to resolve underwriting requirements.", activeStep: 1 };
+  if (type === "UNRESOLVED") throw new Error("Unresolved Receipt underwriting requirements");
 
-  if (!QUICK_DECISION_UNDERWRITING_TYPES.has(type)) {
+  if (type !== "QD") {
     return {
       label: receiptContent.decisionStatuses.fullyUnderwritten.label,
       color: "primary.main",
@@ -151,14 +99,14 @@ export function getDecisionStatus(opts: {
     };
   }
 
+  if (!decisionResult) throw new Error("Missing Receipt QD result");
   switch (decisionResult) {
     case "conditionally-approved":
       return {
         label: receiptContent.decisionStatuses.conditionallyApproved.label,
         color: "primary.main",
         activeStep: 2,
-        description:
-          receiptContent.decisionStatuses.conditionallyApproved.description,
+        description: receiptContent.decisionStatuses.conditionallyApproved.description,
       };
 
     case "referred":
@@ -194,30 +142,6 @@ function getSelectedCoverageIds(values: ApplicationFormValues): string[] {
     : [];
 }
 
-function getSelectedDependents(
-  values: ApplicationFormValues,
-): CoverageApplicantId[] {
-  return Array.isArray(values.dependents)
-    ? getUniqueApplicants(values.dependents).filter(
-        (applicant) => applicant === "spouse" || applicant === "child",
-      )
-    : [];
-}
-
-function getProductApplicants(
-  values: ApplicationFormValues,
-): Record<string, CoverageApplicantId[]> {
-  if (
-    values.productApplicants != null &&
-    typeof values.productApplicants === "object" &&
-    !Array.isArray(values.productApplicants)
-  ) {
-    return values.productApplicants as Record<string, CoverageApplicantId[]>;
-  }
-
-  return {};
-}
-
 export function getCoverageAmountRequested(
   values: ApplicationFormValues,
   coverageId: string,
@@ -241,11 +165,9 @@ export function getCoverageAmountRequested(
 export function buildSelectedCoverageEntries(
   values: ApplicationFormValues,
   coverages: CoverageDefinition[],
+  library: PrototypeLibrary | null = getPrototypeLibrary(),
 ): SelectedCoverageEntry[] {
   const selectedCoverageIds = getSelectedCoverageIds(values);
-  const selectedDependents = getSelectedDependents(values);
-  const productApplicants = getProductApplicants(values);
-
   const coverageById = new Map(
     coverages.map((coverage) => [coverage.id, coverage]),
   );
@@ -254,32 +176,15 @@ export function buildSelectedCoverageEntries(
     const coverage = coverageById.get(coverageId);
     if (!coverage) return [];
 
-    let applicants: CoverageApplicantId[];
-
-    if (Object.prototype.hasOwnProperty.call(productApplicants, coverageId)) {
-      const selectedApplicants = Array.isArray(productApplicants[coverageId])
-        ? productApplicants[coverageId]
-        : [];
-
-      applicants = coverage.applicants.filter((applicant) =>
-        selectedApplicants.includes(applicant),
-      );
-    } else if (selectedDependents.length > 0) {
-      applicants = coverage.applicants.filter((applicant) => {
-        if (applicant === "member") return true;
-        return selectedDependents.includes(applicant);
-      });
-    } else {
-      applicants = coverage.applicants.includes("member") ? ["member"] : [];
-    }
+    const applicants = selectedProductApplicants(values, coverage);
 
     return applicants.map(
       (applicant) =>
         ({
           coverageId,
           applicant,
-          coverage: { ...coverage, name: applicationCoverageName(coverage, values), underwritingType: applicationUnderwriting(coverage, applicant, values).underwritingType ?? "UNRESOLVED" },
-          underwriting: applicationUnderwriting(coverage, applicant, values),
+          coverage: { ...coverage, name: applicationCoverageName(coverage, values, library), underwritingType: applicationUnderwriting(coverage, applicant, values, library).underwritingType ?? "UNRESOLVED" },
+          underwriting: applicationUnderwriting(coverage, applicant, values, library),
         }) satisfies SelectedCoverageEntry,
     );
   });
@@ -288,22 +193,9 @@ export function buildSelectedCoverageEntries(
 export function getOrderedDecisionEntries(
   values: ApplicationFormValues,
   coverages: CoverageDefinition[],
+  library: PrototypeLibrary | null = getPrototypeLibrary(),
 ): SelectedCoverageEntry[] {
-  const selectedEntries = buildSelectedCoverageEntries(values, coverages);
-
-  return coverageCategories.flatMap((category) =>
-    selectedEntries
-      .filter((entry) => entry.coverage.categoryId === category.id)
-      .sort((a, b) => {
-        const coverageCompare = a.coverage.name.localeCompare(
-          b.coverage.name,
-        );
-
-        if (coverageCompare !== 0) return coverageCompare;
-
-        return (
-          APPLICANT_SORT_ORDER[a.applicant] - APPLICANT_SORT_ORDER[b.applicant]
-        );
-      }),
-  );
+  const rank = new Map(coverages.map((coverage, index) => [coverage.id, index]));
+  return buildSelectedCoverageEntries(values, coverages, library).sort((a, b) =>
+    rank.get(a.coverageId)! - rank.get(b.coverageId)! || APPLICANT_SORT_ORDER[a.applicant] - APPLICANT_SORT_ORDER[b.applicant]);
 }

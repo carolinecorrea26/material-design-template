@@ -1,0 +1,62 @@
+{
+  "component": "profile",
+  "pages": [
+    "profile"
+  ],
+  "rules": [
+    "profile-underwriting-field-variants",
+    "profile-other-coverage-applicability",
+    "profile-life-replacement-notice",
+    "profile-financial-questionnaire-applicability",
+    "profile-applicant-participation",
+    "profile-other-coverage-followups",
+    "profile-disability-records",
+    "profile-ssn-requiredness",
+    "profile-financial-calculations",
+    "profile-self-employment-followups",
+    "profile-advisor-handoff",
+    "profile-content-and-storage",
+    "browser-autofill-self-only",
+    "profile-physician-information"
+  ],
+  "validations": [
+    {
+      "validation": "required-fields",
+      "trigger": "next",
+      "scope": "visible-fields"
+    },
+    {
+      "validation": "field-definition-checks",
+      "trigger": "next",
+      "scope": "visible-fields"
+    },
+    {
+      "validation": "available-selection",
+      "trigger": "next",
+      "scope": "visible-fields"
+    },
+    {
+      "validation": "field-ssn",
+      "trigger": "next",
+      "scope": "visible-fields"
+    },
+    {
+      "validation": "field-phone",
+      "trigger": "next",
+      "scope": "visible-fields"
+    },
+    {
+      "validation": "postal-code-format",
+      "trigger": "next",
+      "scope": "visible-fields"
+    },
+    {
+      "validation": "profile-disability-record-required",
+      "trigger": "next",
+      "scope": "page"
+    }
+  ],
+  "configurations": [
+    "physician-information"
+  ]
+}

@@ -4,17 +4,219 @@
       "id": "abandoned-lead-nightly-batch",
       "name": "Make incomplete applications available to the nightly TPA lead batch",
       "status": "confirmed",
-      "fields": ["first-name", "last-name", "email", "phone"],
-      "statement": "After Membership is successfully validated, submitted and saved, the application's applicant name, email and phone are available for abandoned-lead processing. Applications still incomplete when the nightly batch is prepared are included in batch files for their site's TPA. Merely viewing, editing or failing Membership validation does not qualify an application. This records the business requirement only; XML generation, scheduling and TPA file transmission are not connected in this prototype.",
+      "fields": [
+        "first-name",
+        "last-name",
+        "email",
+        "phone"
+      ],
+      "statement": "After Membership is successfully validated, submitted and saved, the application's applicant name, email and phone are available for abandoned-lead processing. Applications still incomplete when the nightly batch is prepared are included in batch files for their site's TPA. Merely viewing, editing or failing Membership validation does not qualify an application. These rules describe actual system behavior.",
       "source": "docs/requirements-spec/page-review.md; Membership review decision"
     },
     {
       "id": "membership-initial-autosave-email",
       "name": "Send the initial autosave email after successful Membership submission",
       "status": "confirmed",
-      "fields": ["email"],
-      "statement": "The initial autosave email is triggered for the applicant as soon as Membership is successfully validated, submitted and saved, confirming the start of saved application progress. It is not triggered by viewing the page, entering an email address, failed validation or a failed save. This is a recorded business rule only: the prototype has no email delivery service and does not automatically send an email or create a mock email preview on submission.",
+      "fields": [
+        "email"
+      ],
+      "statement": "The initial autosave email is triggered for the applicant as soon as Membership is successfully validated, submitted and saved, confirming the start of saved application progress. It is not triggered by viewing the page, entering an email address, failed validation or a failed save. These rules describe actual system behavior.",
       "source": "docs/requirements-spec/page-review.md; Membership review decision"
+    },
+    {
+      "id": "shared-disclosure-print",
+      "name": "Print individual legal disclosures",
+      "status": "confirmed",
+      "statement": "Terms of Use and Privacy Notice modals, Read & Sign and Electronic Consent each offer the same PrintAction at the bottom. Print only the selected disclosure, not the surrounding application.",
+      "source": "User request 2026-11-10; src/components/content/PrintAction.tsx"
+    },
+    {
+      "id": "profile-underwriting-field-variants",
+      "name": "Apply effective underwriting variants to Profile fields",
+      "status": "confirmed",
+      "statement": "For each applicant, weight 12 months ago, the driver\u2019s-license question and its number/state follow-ups, and the U.S./Canada residence-over-six-months question and Country follow-up appear only when that applicant has a selected product with a resolved QD path. The residence question has no months follow-up. Non-QD applicants do not see these fields, including stale saved answers. General travel questions retain their separate applicability.",
+      "source": "User request 2026-11-10; field underwritingVariants; src/config/clientFields/getClientPageFields.ts",
+      "uses": [
+        "rule-profile-conditional-follow-up-fields",
+        "applicant-active-participation"
+      ],
+      "replaces": [
+        "rule-profile-outside-u-s-follow-up"
+      ]
+    },
+    {
+      "id": "review-applicable-completed-sections",
+      "name": "Preview completed applicable answers only",
+      "status": "confirmed",
+      "statement": "Review uses effective page sections and visible fields, omits empty sections and masks SSNs. Profile financial questions use the same enabled-Site/product/amount policy as Profile. Child details appear only for an applied-for child product or elected child rider. Stale hidden answers do not appear.",
+      "source": "User request 2026-11-10; src/components/content/applicationDocumentSections.ts; src/domain/financialQuestionnaire.ts"
+    },
+    {
+      "id": "receipt-qd-product-outcomes",
+      "name": "Limit QuickDecision outcomes to QD products",
+      "status": "confirmed",
+      "statement": "Receipt displays QD outcomes only for a product/applicant with a resolved QD path and the corresponding QD product indicator. Other products use standard review status regardless of saved QD results. Products are visually separated and applicant labels appear when spouse or other dependents participate. The layout uses one information/download panel above product/applicant decision cards. Each card includes its requested coverage, estimated payment with the selected billing period and payment method below the decision wording. The shared support component aligns with the top of the decisions section and stacks below it on small screens. There is no separate application receipt summary.",
+      "source": "User request 2026-11-10; src/pages/Receipt.tsx; supplied receipt mockup",
+      "uses": [
+        "receipt-result-integrity",
+        "receipt-underwriting-next-steps"
+      ]
+    },
+    {
+      "id": "shared-site-support",
+      "name": "Share administrator support across pages and emails; retain technical support on pages",
+      "status": "confirmed",
+      "statement": "Use one SiteSupport content source everywhere support appears. All page uses render a standard MUI info Alert with AlertTitle and no leading alert icon and configured MUI Link styling. Do not override link underlining. Show the effective Site administrator and available phone, email and website with channel icons instead of visible channel labels; retain accessible channel names. Do not show an Application or product support heading. On pages only, below the divider, display the configured technical-support sentence with Send an email as its only link, using the globally configured technical email destination without displaying the address. Shared wording comes from global support content. Email output reuses the standard MUI info Alert, AlertTitle and MUI channel icons with self-contained theme-derived inline styling. Email support contains administrator contact details and available reference context only; omit the technical-support divider, sentence and link. Existing email contact-box visibility remains an email-only configuration. Include only approved application or confirmation identifiers when available.",
+      "source": "User request 2026-11-10; src/components/layout/SiteSupport.tsx; src/utils/mockEmail.ts; User decision November 13, 2026; User email support instruction November 18, 2026"
+    },
+    {
+      "id": "profile-other-coverage-applicability",
+      "name": "Show Other coverage for the selected applicant categories",
+      "status": "confirmed",
+      "statement": "For each applicant, show Other coverage only when an applied-for Life or Disability product is selected. Life questions appear only for Life selections and Disability questions only for Disability selections. With neither category, hide the section heading, note and fields. Existing-Disability records use the shared record-dialog rule and the page\u2019s configured collections.",
+      "uses": [
+        "rule-profile-conditional-follow-up-fields",
+        "rule-dynamiclist-add-edit-remove-modal-pattern",
+        "applicant-section-headings",
+        "applicant-active-participation"
+      ],
+      "source": "User Profile review; profile section/field coverageCategories; src/config/flowGates.ts"
+    },
+    {
+      "id": "profile-life-replacement-notice",
+      "name": "Show the Life replacement notice for New York applicants",
+      "status": "confirmed",
+      "statement": "In the applicant\u2019s applicable Life questions, show the configured replacement notice when the application residency is New York and that applicant answers Yes to the intent-to-replace-Life question. The effective notice configuration owns the wording and presentation.",
+      "uses": [
+        "rule-profile-conditional-follow-up-fields"
+      ],
+      "source": "User Profile review; shared.profile.lifeReplacementNotice; src/components/profile/ProfileSections.tsx"
+    },
+    {
+      "id": "profile-financial-questionnaire-applicability",
+      "name": "Require an enabled Site feature and applicable financial policy",
+      "status": "confirmed",
+      "statement": "Profile\u2019s member financial questionnaire requires the effective Site financial-questionnaire feature to be enabled and the applicable product/policy criteria to be satisfied. A disabled Site feature suppresses it even with saved answers or an otherwise satisfied policy. Review uses the same evaluator. Threshold rules require at least one matching currently selected member product, including an inclusive zero threshold. The policy definition is global and remains visible in the Library without a Site assignment; effective Sites assign product groups, thresholds and comparison modes through that definition.",
+      "source": "User Profile review; src/domain/financialQuestionnaire.ts",
+      "replaces": [
+        "rule-profile-financial-questionnaire-visibility"
+      ]
+    },
+    {
+      "id": "payment-effective-product-elections",
+      "name": "Collect payment for applicable selected products",
+      "status": "confirmed",
+      "statement": "Collect payment details for current selected products/applicants according to effective methods, frequencies, collection and locking. Each product has one election for its participating applicants; products keep independent choices unless shared configuration or synchronization applies. Required collection has no opt-in; optional collection collects only on Yes; disabled collection collects nothing. Show banking only when an active collecting product selects Bank account. Validate and save before continuing to signing. Collection does not authorize, charge or submit the application. Use the shared category/product order.",
+      "uses": [
+        "rule-payment-optional-payment-opt-in",
+        "rule-payment-payment-per-applicable-product",
+        "rule-payment-bank-account-detail-display"
+      ],
+      "source": "src/pages/Payment.tsx; src/domain/sharedPaymentChoices.ts; src/domain/paymentPolicy.ts; requirements/mappings/page-fields/payment.json; User Payment configuration decision November 16, 2026"
+    },
+    {
+      "id": "health-tele-questionnaire",
+      "name": "Resolve TELE questions for each participating applicant",
+      "status": "confirmed",
+      "statement": "Health TELE is one shared page for Life, Disability and Critical Illness telesupplement questionnaires. The effective policy selects the applicable product/combination, jurisdiction, processing, gender and follow-ups for each adult; an invalid or ambiguous assigned policy blocks Next. Without an assigned questionnaire, the global default TELE questions apply. Corresponding questions group member/spouse controls while preserving independent answers and detail records. No separate Health CI page exists.",
+      "uses": [
+        "rule-dynamiclist-add-edit-remove-modal-pattern",
+        "applicant-section-headings",
+        "applicant-active-participation"
+      ],
+      "source": "requirements/parked/health-tele.json; src/domain/configuredHealthQuestionnaire.ts; src/config/healthFollowUps.ts",
+      "replaces": [
+        "health-life-questionnaire",
+        "health-ci-questionnaire",
+        "rule-application-flow-health-ci-routing"
+      ]
+    },
+    {
+      "id": "health-si-questionnaire",
+      "name": "Collect Simplified Issue answers and active details",
+      "status": "confirmed",
+      "statement": "The default Simplified Issue page has five questions for each participating adult. Each Yes answer uses the shared condition-details collection, including required onset, condition/treatment details and physician/facility details. Applicant participation and suppression by an effective combined questionnaire remain shared routing behavior. Saved answers and records remain independent for each adult.",
+      "uses": [
+        "rule-dynamiclist-add-edit-remove-modal-pattern",
+        "applicant-section-headings",
+        "applicant-active-participation"
+      ],
+      "source": "requirements/parked/health-si.json; src/config/flowGates.ts; src/config/healthFollowUps.ts"
+    },
+    {
+      "id": "health-di-questionnaire",
+      "name": "Resolve Disability supplemental questions and details",
+      "status": "confirmed",
+      "statement": "Health DI SUPP uses a uniquely assigned effective questionnaire when configured, otherwise the seven-question global set. Default question 1 uses assistance details; question 2 uses fall/diagnosis details; questions 3\u20136 use condition details; question 7 uses general text. Only active Yes answers require repeated detail records. Shared applicant participation, questionnaire selection, dynamic-list actions and field checks remain abstracted. Participation requires an effective product/portfolio assignment to Health DI SUPP. Ordinary DI telesupplement processing belongs to TELE and does not automatically activate this supplemental page.",
+      "uses": [
+        "rule-dynamiclist-add-edit-remove-modal-pattern",
+        "applicant-section-headings",
+        "applicant-active-participation"
+      ],
+      "source": "requirements/parked/health-di-supp.json; src/domain/configuredHealthQuestionnaire.ts; src/config/healthFollowUps.ts",
+      "replaces": [
+        "rule-application-flow-health-di-supp-routing"
+      ]
+    },
+    {
+      "id": "health-cir-questionnaire",
+      "name": "Render the assigned questionnaire for the selected CIR rider",
+      "status": "confirmed",
+      "statement": "The internal CIR page requires effective page participation and a selected CIR rider for the applicant. Its effective questionnaire owns order, activities/dwelling follow-ups and required fields. Member and spouse answers are independent. Missing or unresolved assignments block Next. No questionnaire assignment is added by this migration.",
+      "uses": [
+        "applicant-section-headings",
+        "applicant-active-participation"
+      ],
+      "source": "requirements/parked/health-cir.json; src/config/flowGates.ts; src/domain/configuredHealthQuestionnaire.ts"
+    },
+    {
+      "id": "payment-defaults-and-sharing",
+      "name": "Seed configured defaults and reconcile available choices",
+      "status": "confirmed",
+      "statement": "Seed missing product method/frequency answers from effective policy defaults; preserve explicit saved answers and validate them against current allowed choices. Frequency options follow the selected method; retain a valid frequency on method change, otherwise use an allowed configured default or clear it. A locked frequency is preselected and disabled; its configured value replaces an incompatible saved frequency. Shared method and frequency are independently configurable, default off, and use only the intersection accepted by every collecting product. Product synchronization requires both shared choices. Shared UI controls update canonical per-product bindings; no common choice blocks Next with shared guidance.",
+      "source": "User Payment decisions November 14, 2026; src/pages/Payment.tsx; src/domain/sharedPaymentChoices.ts"
+    },
+    {
+      "id": "payment-configurable-notes",
+      "name": "Show configured shared or product payment notes",
+      "status": "confirmed",
+      "statement": "The global Payment notes content slot defaults to an empty list. A Site may supply stable-id plain-text notes shared once above product cards (empty productKeys) or inside assigned selected product cards (one or more productKeys). Notes appear only while collecting payment and never calculate or change estimates. Effective-Site copy may describe taxes or billing fees. Payment has three content slots: page title, introduction and notes. Billing-timing explanation and estimate disclaimer remain global system wording. Field labels, allowed choices, requiredness and payment policy retain their existing shared configuration contracts.",
+      "source": "User Payment copy decision November 15, 2026; User decision November 14, 2026; MCR Main!AJ165; requirements/global/content/payment.json; requirements/parked/sites/asce/pages/payment.json"
+    },
+    {
+      "id": "payment-active-storage",
+      "name": "Keep draft answers separate from active payment information",
+      "status": "confirmed",
+      "statement": "Product methods/frequencies persist at payment-method:<product> and payment-frequency:<product>; optional collection uses payment-information-opt-in. Banking fields retain their single application-level bank-* keys. Hidden/removed product and bank answers may remain in the draft, but cannot reveal controls, block Next or appear in active payment document output. Bank fields render and validate only when a current collecting product selects Bank account. Preserve routing/account values as digit strings including leading zeroes. Shared :all answers are UI state, not independent product elections or active document data.",
+      "source": "src/domain/paymentAnswers.ts; src/domain/paymentProducts.ts; src/utils/applicationPdf.ts; src/pages/Payment.tsx"
+    },
+    {
+      "id": "payment-collection-service-boundary",
+      "name": "Collect payment details before signing",
+      "status": "confirmed",
+      "statement": "Payment continues to DocuSign through normal form validation and save without authorizing payment or submitting the application. Processing and billing occur outside this page; the tax/fee note does not imply calculation, charging, live bank verification or processor integration. Technical failures use the shared error/session model and business or validation issues use page/field feedback, with no separate payment-issue page. The effective Site page requirement controls whether collection is required, optional or disabled; product payment controls apply only when collection is active.",
+      "source": "User Payment decisions November 14, 2026; MCR New UX Multi-page Requirements!AT21; src/pages/Payment.tsx"
+    },
+    {
+      "id": "shared-action-typography",
+      "name": "Inherit shared link and button presentation",
+      "status": "confirmed",
+      "statement": "Global presentation tokens own weight 600 for links and buttons and no link underline, including hover/focus. Native/email anchors use the same tokens; remove local weight/underline overrides. Inline drawer actions reuse MUI Link with button semantics and a visible focus outline. This is global presentation, not a new Site copy or typography override. The global application theme owns the shared typography scale: PageTitle uses h3 at 1.5rem at every breakpoint, and application text has a minimum size of 0.875rem. Small controls, supporting text and Library tables inherit theme typography rather than local size literals. Current and completed breadcrumbs are the explicit weight-500 exception to normal link/button emphasis; future entries retain the default text weight. Library and Storybook display the same shared theme. Email typography and demonstration illustrations retain their separate presentation contracts.",
+      "source": "User shared-control update November 15, 2026; requirements/global/presentation/controls.json; requirements/global/presentation-tokens.json; src/app/theme.ts; User typography correction November 23, 2026"
+    },
+    {
+      "id": "global-page-configuration-boundary",
+      "name": "Use shared page definitions and evaluate participation",
+      "status": "confirmed",
+      "statement": "All Sites use the global page routes, structure and order. Resolve participation through declared page settings and current product/applicant journey policies. A disabled optional collection keeps its shared position; applicable Health forms are selected by the assigned journey and questionnaire. Page selection does not create a Site-specific page definition.",
+      "source": "User page-configuration clarification November 15, 2026; requirements/parked/pages.json; src/domain/requirementPagePresentation.mjs; src/config/flowGates.ts"
+    },
+    {
+      "id": "shared-content-references",
+      "name": "Author shared content once and reference every use",
+      "status": "confirmed",
+      "statement": "Each content item has one global authoring owner and default. Repeated uses reference that item through declared bindings instead of copied editable strings. Reject cycles, missing owners and a second authored value for a reference. Keep separate content identities when meaning or independently supported configuration differs. Content selections affect wording and presentation, not applicant answers, underwriting results or business-policy execution.",
+      "source": "User Content Library consolidation decision November 17, 2026; requirements/global/content-references.json; requirements/global/content-bindings.json"
     }
   ]
 }

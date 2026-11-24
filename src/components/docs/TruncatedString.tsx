@@ -20,7 +20,7 @@ export default function TruncatedString({
         component="span"
         sx={{
           // fontFamily: "monospace",
-          fontSize: "0.8125rem",
+          fontSize: "caption.fontSize",
           whiteSpace: "pre-wrap",
         }}
       >
@@ -31,7 +31,7 @@ export default function TruncatedString({
           component="button"
           type="button"
           onClick={() => setExpanded((v) => !v)}
-          sx={{ ml: 1, fontSize: "0.75rem", verticalAlign: "baseline" }}
+          sx={{ ml: 1, fontSize: "caption.fontSize", verticalAlign: "baseline" }}
         >
           {expanded ? "Show less" : "Show more"}
         </Link>

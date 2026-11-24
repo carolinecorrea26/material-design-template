@@ -60,7 +60,7 @@ export const BreakpointsAndResponsiveDesign = () => {
           <TableRow>
             <TableCell sx={{ fontFamily: "monospace" }}>md</TableCell>
             <TableCell>{theme.breakpoints.values.md}</TableCell>
-            <TableCell>Structural desktop/mobile branches: ProgressStep's sidebar-vs-stepper, AppDrawer's side-panel-vs-bottom-sheet, AppModal's fullScreen toggle, HelpChips' overflow-fade, MemberVerification's fullScreen dialog.</TableCell>
+            <TableCell>Structural desktop/mobile branches: ProgressStep's sidebar-vs-stepper, AppDrawer's side-panel-vs-bottom-sheet, AppModal's fullScreen toggle, PageHelpChips' overflow-fade, MemberVerification's fullScreen dialog.</TableCell>
           </TableRow>
           <TableRow>
             <TableCell sx={{ fontFamily: "monospace" }}>lg</TableCell>

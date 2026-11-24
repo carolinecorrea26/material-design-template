@@ -1,11 +1,14 @@
+import { useState } from 'react';
+import PageAlert from '../feedback/PageAlert';
 import { Box, Stack, Typography } from "@mui/material";
 import SendRoundedIcon from "@mui/icons-material/SendRounded";
 import AppModal from "./AppModal";
+import { requirementText } from '../../domain/requirementContent';
 
 type SendApplicationDialogProps = {
   open: boolean;
   onClose: () => void;
-  onConfirm: () => void;
+  onConfirm: () => void | Promise<void>;
   /**
    * Optional title override for the modal.
    */
@@ -53,33 +56,42 @@ export default function SendApplicationDialog(
     recipientEmail,
     recipientLabel = "applicant",
   } = props;
-  const resolvedTitle = title ?? `Send application to ${recipientLabel}?`;
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  async function confirm() {
+    if (busy) return;
+    setBusy(true); setError('');
+    try { await onConfirm(); } catch { setError(requirementText('resume.error.technical')); } finally { setBusy(false); }
+  }
+  const resolvedTitle = title ?? requirementText('dialogs.send-application.default-title', { recipient: recipientLabel });
 
   return (
     <AppModal
       open={open}
-      onClose={onClose}
+      onClose={() => { if (!busy) onClose(); }}
       maxWidth={480}
       minHeight="auto"
       role="alertdialog"
       title={resolvedTitle}
       actions={[
         {
-          label: "Send",
-          onClick: onConfirm,
+          label: requirementText('dialogs.send-application.send'),
+          onClick: () => void confirm(),
+          disabled: busy,
           variant: "contained",
         },
         {
-          label: "Cancel",
+          label: requirementText('dialogs.send-application.cancel'),
           onClick: onClose,
+          disabled: busy,
           variant: "text",
         },
       ]}
     >
       <Stack spacing={2}>
+        <PageAlert message={error} />
         <Typography variant="body2" color="text.secondary">
-          {introText ??
-            "The application will be sent to the following email address:"}
+          {introText ?? requirementText('dialogs.send-application.default-intro')}
         </Typography>
 
         <Stack
@@ -103,21 +115,21 @@ export default function SendApplicationDialog(
             {showRecipientName ? (
               <>
                 <Typography variant="caption" color="text.secondary">
-                  Name
+                  {requirementText('dialogs.send-application.name')}
                 </Typography>
                 <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                  {recipientName?.trim() || "—"}
+                  {recipientName?.trim() || requirementText('dialogs.send-application.missing-value')}
                 </Typography>
               </>
             ) : null}
             <Typography variant="caption" color="text.secondary">
-              Email
+              {requirementText('dialogs.send-application.email')}
             </Typography>
             <Typography
               variant="body2"
               sx={{ fontWeight: 600, wordBreak: "break-all" }}
             >
-              {recipientEmail || "—"}
+              {recipientEmail || requirementText('dialogs.send-application.missing-value')}
             </Typography>
           </Stack>
         </Stack>

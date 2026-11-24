@@ -1,7 +1,8 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import { expect, it } from "vitest";
 import { createReviewedMigrationDatabase } from "./fixtures";
 import { consolidateSiteStructureOwnership } from "./siteStructureOwnership";
-import { resolvePrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import type { DatabaseSchema } from "../persistence/types";
 
 const db = createReviewedMigrationDatabase();

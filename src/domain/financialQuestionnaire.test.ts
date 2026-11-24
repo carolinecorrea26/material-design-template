@@ -16,3 +16,10 @@ it("uses MCR financial assignments for the matching product and applicant", () =
   expect(requiresFinancialQuestionnaire(products("financial-questions", "spouse"), new Set(["site-product"]))).toBe(false);
   expect(requiresFinancialQuestionnaire(products("financial-questions"), new Set(["another-site-product"]))).toBe(false);
 });
+
+it('requires a matching active member product even for an inclusive zero threshold', () => {
+  const policies = [{ value: { version: 1, enabled: true, applicant: 'member', rules: [{ productKeys: ['site-product'], minimumAmount: 0, inclusive: true }], sourceReferences: [] } }];
+  expect(requiresFinancialQuestionnaire([], new Set(), {}, policies)).toBe(false);
+  expect(requiresFinancialQuestionnaire([], new Set(['another-product']), { 'another-product': 1000 }, policies)).toBe(false);
+  expect(requiresFinancialQuestionnaire([], new Set(['site-product']), { 'site-product': 1000 }, policies)).toBe(true);
+});

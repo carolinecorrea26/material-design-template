@@ -1,7 +1,9 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import { afterEach, beforeAll, expect, it } from "vitest";
 import { createReviewedMigrationDatabase } from "./fixtures";
 import type { DatabaseSchema } from "../persistence/types";
-import { installPrototypeLibrary, resolvePrototypeLibrary } from "../domain/prototypeLibrary";
+import { installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import { resolveCoverageJourneyPolicy, resolveSubmissionMapping } from "../domain/coverageJourneyPolicy";
 import { resolveNormalizedBenefit } from "../domain/benefitPolicy";
 import { prototypeCoverageDecision } from "../domain/prototypeCoverageDecision";

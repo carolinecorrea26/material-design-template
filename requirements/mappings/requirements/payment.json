@@ -1,0 +1,45 @@
+{
+  "component": "payment",
+  "pages": [
+    "payment"
+  ],
+  "rules": [
+    "payment-effective-product-elections",
+    "payment-defaults-and-sharing",
+    "payment-configurable-notes",
+    "payment-active-storage",
+    "payment-collection-service-boundary"
+  ],
+  "validations": [
+    {
+      "validation": "payment-shared-method",
+      "trigger": "next",
+      "scope": "page"
+    },
+    {
+      "validation": "payment-shared-frequency",
+      "trigger": "next",
+      "scope": "page"
+    },
+    {
+      "validation": "payment-all-products",
+      "trigger": "next",
+      "scope": "page"
+    },
+    {
+      "validation": "payment-available-choices",
+      "trigger": "next",
+      "scope": "page"
+    },
+    {
+      "validation": "payment-policy-choices",
+      "trigger": "next",
+      "scope": "page"
+    },
+    {
+      "validation": "payment-products-required",
+      "trigger": "next",
+      "scope": "page"
+    }
+  ]
+}

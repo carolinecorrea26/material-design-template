@@ -3,7 +3,7 @@
     {
       "id": "field-definition-checks",
       "name": "Validate using the effective field definition",
-      "status": "draft",
+      "status": "confirmed",
       "check": "field-definition",
       "statement": "Apply the shared checks defined by the effective field: required values/checks/selections, authored option membership, maximum length, configured formats, valid calendar dates and nonnegative numbers where applicable. Required flags and limits remain on the field definition, not copied here. Quote inputs additionally reject supplied values outside their authored options. Only fields participating in the mapped context are checked.",
       "source": "src/utils/fieldValidation.ts; src/app/workflows/QuoteCalculator.tsx"
@@ -11,7 +11,7 @@
     {
       "id": "page-validation-callback",
       "name": "Run the page-specific acceptance check",
-      "status": "draft",
+      "status": "confirmed",
       "check": "page-check",
       "statement": "After registered field checks pass, invoke the configured page validation callback with merged current application/form values. A returned error message blocks forward submission. Page-specific business checks must be authored separately; this defines only the shared invocation.",
       "source": "src/app/RoutePage.tsx"
@@ -25,6 +25,306 @@
       "message": "recovery.validation.message",
       "statement": "When submitted participating fields fail their shared checks, keep their inline messages and show the standard page alert. Eligibility failures use their separate shared ineligibility message.",
       "source": "src/app/RoutePage.tsx"
+    },
+    {
+      "id": "review-residency",
+      "name": "Review requires residence to resolve the fraud notice",
+      "status": "confirmed",
+      "check": "page-check",
+      "level": "page",
+      "message": "review.missing-residency",
+      "statement": "Block Review Next when selected coverage has no residence for notice selection.",
+      "source": "src/pages/Review.tsx"
+    },
+    {
+      "id": "review-applicant-type",
+      "name": "Review requires a resolved consent opening",
+      "status": "confirmed",
+      "check": "page-check",
+      "level": "page",
+      "message": "review.missing-applicant-type",
+      "statement": "Block Review Next when the effective consent policy cannot resolve the applicant type.",
+      "source": "src/pages/Review.tsx"
+    },
+    {
+      "id": "payment-shared-method",
+      "name": "Require a common payment method",
+      "status": "confirmed",
+      "check": "page-check",
+      "level": "page",
+      "message": "payment.error.shared-method",
+      "statement": "When a shared payment method is enabled, require an allowed method applied to every collecting product.",
+      "source": "src/pages/Payment.tsx"
+    },
+    {
+      "id": "payment-shared-frequency",
+      "name": "Require a common payment frequency",
+      "status": "confirmed",
+      "check": "page-check",
+      "level": "page",
+      "message": "payment.error.shared-frequency",
+      "statement": "When a shared payment frequency is enabled, require an allowed frequency applied to every collecting product.",
+      "source": "src/pages/Payment.tsx"
+    },
+    {
+      "id": "payment-all-products",
+      "name": "Require product payment elections",
+      "status": "confirmed",
+      "check": "page-check",
+      "level": "page",
+      "message": "payment.error.all-products",
+      "statement": "When collection is active, each applicable collecting product requires its method and frequency.",
+      "source": "src/pages/Payment.tsx"
+    },
+    {
+      "id": "payment-available-choices",
+      "name": "Check authored payment choices",
+      "status": "confirmed",
+      "check": "page-check",
+      "level": "page",
+      "message": "payment.error.available-choices",
+      "statement": "Reject choices absent from the effective field options after product policy filtering.",
+      "source": "src/pages/Payment.tsx"
+    },
+    {
+      "id": "payment-policy-choices",
+      "name": "Check effective payment policy",
+      "status": "confirmed",
+      "check": "page-check",
+      "level": "page",
+      "message": "payment.error.policy-choices",
+      "statement": "Reject a method/frequency pair not accepted by its effective product policy.",
+      "source": "src/pages/Payment.tsx"
+    },
+    {
+      "id": "health-required-answer",
+      "name": "Require an answer for active health questions",
+      "status": "confirmed",
+      "check": "page-check",
+      "level": "page",
+      "message": "validation.health.answer",
+      "statement": "Require Yes or No for each participating required question.",
+      "source": "src/domain/healthQuestionnaire.ts; src/domain/configuredHealthQuestionnaire.ts"
+    },
+    {
+      "id": "health-yes-details",
+      "name": "Require details for active Yes answers",
+      "status": "confirmed",
+      "check": "page-check",
+      "level": "page",
+      "message": "validation.health.add-details",
+      "statement": "Require at least one valid detail record when an active question is Yes and has detail fields. Shared field validations use each effective detail field definition.",
+      "source": "src/domain/healthQuestionnaire.ts; src/domain/configuredHealthQuestionnaire.ts"
+    },
+    {
+      "id": "health-details-limit",
+      "name": "Enforce the configured detail record limit",
+      "status": "confirmed",
+      "check": "page-check",
+      "level": "page",
+      "message": "validation.health.maximum-records",
+      "statement": "Reject restored or entered repeated details above the authored surface limit.",
+      "source": "src/domain/healthQuestionnaire.ts; src/domain/configuredHealthQuestionnaire.ts"
+    },
+    {
+      "id": "health-questionnaire-resolution",
+      "name": "Require a unique configured questionnaire",
+      "status": "confirmed",
+      "check": "page-check",
+      "level": "page",
+      "message": "validation.health.questionnaire-unresolved",
+      "statement": "An assigned unresolved or ambiguous configured questionnaire blocks Next; it does not silently fall back to the default question set.",
+      "source": "src/domain/healthQuestionnaire.ts; src/domain/configuredHealthQuestionnaire.ts"
+    },
+    {
+      "id": "health-ci-questionnaire-assignment",
+      "name": "Require the CI questionnaire within TELE",
+      "status": "confirmed",
+      "check": "page-check",
+      "level": "page",
+      "message": "validation.health.ci-unassigned",
+      "statement": "An adult participating in TELE with a selected Critical Illness coverage must have an assigned effective questionnaire. Do not substitute default medical questions when that assignment is missing. CI is a product-dependent TELE variant, not a separate page.",
+      "source": "src/config/healthFollowUps.ts"
+    },
+    {
+      "id": "health-cir-questionnaire-assignment",
+      "name": "Require an assigned Chronic Illness Rider questionnaire",
+      "status": "confirmed",
+      "check": "page-check",
+      "level": "page",
+      "message": "application.ui.unable-to-load-health-questions-please-try-again",
+      "statement": "A participating adult applying for the selected CIR rider must have an assigned questionnaire. Missing assignment blocks Next and displays the existing load error.",
+      "source": "src/config/healthFollowUps.ts; src/pages/HealthCir.tsx"
+    },
+    {
+      "id": "repeated-entry-values",
+      "name": "Validate participating repeated entries on submission",
+      "status": "confirmed",
+      "check": "page-check",
+      "level": "page",
+      "message": "validation.collection.review",
+      "statement": "For a participating collection, enforce its effective maximum, record shape and each enabled field\u2019s existing checks against saved or restored rows. Field definitions and collection configuration own requiredness, options and limits. Inactive sections and notice-only child sections do not validate stored child rows.",
+      "source": "src/domain/fieldCollections.ts; src/pages/Eligibility.tsx",
+      "code": "VALIDATION_FAILED"
+    },
+    {
+      "id": "coverage-election-acceptance",
+      "name": "Validate participating Coverage elections",
+      "status": "confirmed",
+      "check": "page-check",
+      "level": "page",
+      "statement": "On Coverage Next, require at least one product, an applicant for each selection, and an amount or supported rider-only election. Resolve effective product/applicant eligibility, allowed amounts, riders, waiting and benefit periods, dependencies and aggregate limits with the shared policy resolver. Apply the configured submit alerts and combined Life maximum; an invalid or unavailable retained selection blocks continuation. Verified existing coverage satisfies covered-person prerequisites without requiring a new primary election. The amount minimum uses the TPA-verified matching product/person outcome: the verified-existing minimum applies only with positive matching coverage, and all other cases use the new-applicant minimum. No new-versus-additional question supplies this outcome. CIR uses the configured requested-plus-verified-existing base; preselection never bypasses these checks. Add coverage remains usable for correction; missing estimates are not zero premiums.",
+      "source": "src/app/useCoverageState.ts; src/domain/coverageRuntime.ts; src/domain/coverageSubmitValidation.ts; docs/requirements-spec/coverage.md"
+    },
+    {
+      "id": "coverage-product-election",
+      "name": "Require an elected Coverage product",
+      "status": "confirmed",
+      "check": "page-check",
+      "level": "page",
+      "message": "coverage.error.select-product",
+      "statement": "Require at least one selected product before Coverage Next.",
+      "source": "src/pages/Coverage.tsx; src/app/useCoverageState.ts"
+    },
+    {
+      "id": "coverage-applicant-election",
+      "name": "Require an applicant for each Coverage election",
+      "status": "confirmed",
+      "check": "page-check",
+      "level": "page",
+      "message": "coverage.error.select-applicant",
+      "statement": "Require at least one applicant for every selected product before Coverage Next.",
+      "source": "src/pages/Coverage.tsx; src/app/useCoverageState.ts"
+    },
+    {
+      "id": "coverage-amount-election",
+      "name": "Require a positive Coverage amount",
+      "status": "confirmed",
+      "check": "page-check",
+      "level": "page",
+      "message": "coverage.error.select-amount",
+      "statement": "Require a positive selected amount or a supported rider-only election; subsequent policy validation checks every participating election. ASCE has no CIR-only application.",
+      "source": "src/pages/Coverage.tsx; src/app/useCoverageState.ts"
+    },
+    {
+      "id": "coverage-reveal-fields",
+      "name": "Correct Coverage questions before reveal",
+      "status": "confirmed",
+      "check": "page-check",
+      "level": "page",
+      "message": "coverage.error.correct",
+      "statement": "When applicable registered question fields fail validation on See my coverage options, retain inline errors and show the Coverage page alert.",
+      "source": "src/pages/Coverage.tsx; src/app/useCoverageState.ts"
+    },
+    {
+      "id": "beneficiary-required-records",
+      "name": "Require beneficiary records for participating products",
+      "status": "confirmed",
+      "check": "page-check",
+      "level": "page",
+      "message": "beneficiary.error.missing",
+      "statement": "When the page is required, or optional with Yes, require beneficiary records for each participating product/applicant with a selected positive amount. Inactive records and an optional No do not participate.",
+      "source": "src/pages/Beneficiary.tsx; src/domain/beneficiaryValidation.ts; CHG-009"
+    },
+    {
+      "id": "beneficiary-record-shape",
+      "name": "Validate beneficiary record shape",
+      "status": "confirmed",
+      "check": "page-check",
+      "level": "page",
+      "message": "beneficiary.error.record",
+      "statement": "Validate each saved/restored record as an object before reading its authored fields.",
+      "source": "src/pages/Beneficiary.tsx; src/domain/beneficiaryValidation.ts; CHG-009"
+    },
+    {
+      "id": "beneficiary-record-selectors",
+      "name": "Validate beneficiary type and designation",
+      "status": "confirmed",
+      "check": "page-check",
+      "level": "page",
+      "message": "beneficiary.error.record-type",
+      "statement": "Require a supported individual/trust type and primary/contingent designation.",
+      "source": "src/pages/Beneficiary.tsx; src/domain/beneficiaryValidation.ts; CHG-009"
+    },
+    {
+      "id": "beneficiary-record-capacity",
+      "name": "Enforce beneficiary record limits",
+      "status": "confirmed",
+      "check": "page-check",
+      "level": "page",
+      "message": "beneficiary.error.maximum",
+      "statement": "Enforce the effective individual/trust surface maximum separately for each product/applicant/designation. Add/edit and copying use the same check as restored records.",
+      "source": "src/pages/Beneficiary.tsx; src/domain/beneficiaryValidation.ts; CHG-009"
+    },
+    {
+      "id": "beneficiary-type-exclusivity",
+      "name": "Use individuals or a single trust",
+      "status": "confirmed",
+      "check": "page-check",
+      "level": "page",
+      "message": "beneficiary.error.mixed-types",
+      "statement": "A designation may contain individuals or one trust; never mix the types. Primary and contingent are independent.",
+      "source": "src/pages/Beneficiary.tsx; src/domain/beneficiaryValidation.ts; CHG-009"
+    },
+    {
+      "id": "beneficiary-share-acceptance",
+      "name": "Validate beneficiary allocations",
+      "status": "confirmed",
+      "check": "page-check",
+      "level": "page",
+      "message": "beneficiary.error.shares",
+      "statement": "Individual allocations use the canonical percent field format, must be positive, and must not exceed the available share or a total of 100 for the designation.",
+      "source": "src/pages/Beneficiary.tsx; src/domain/beneficiaryValidation.ts; CHG-009"
+    },
+    {
+      "id": "beneficiary-copy-target-required",
+      "name": "Require a selected copy target",
+      "status": "confirmed",
+      "check": "page-check",
+      "level": "page",
+      "message": "beneficiary.apply.error-empty",
+      "statement": "Apply requires at least one target; Skip closes without copying.",
+      "source": "src/pages/Beneficiary.tsx; src/domain/beneficiaryValidation.ts; CHG-009"
+    },
+    {
+      "id": "beneficiary-current-copy-target",
+      "name": "Recheck beneficiary target participation",
+      "status": "confirmed",
+      "check": "page-check",
+      "level": "page",
+      "message": "beneficiary.error.coverage-unavailable",
+      "statement": "Before saving or applying, require every target product/applicant to remain participating; validate all copy targets before writing any copied records.",
+      "source": "src/pages/Beneficiary.tsx; src/domain/beneficiaryValidation.ts; CHG-009"
+    },
+    {
+      "id": "beneficiary-individual-allocation-total",
+      "name": "Require complete individual designation allocations on Next",
+      "status": "confirmed",
+      "check": "page-check",
+      "level": "page",
+      "message": "beneficiary.error.allocation-total",
+      "statement": "For each applicable product/applicant, each primary or contingent designation containing individuals must total exactly 100% on Next. Evaluate designations separately; a Primary beneficiary is required by the accompanying designation check. Trusts need no shares. Draft add/edit/copy accepts partial allocations.",
+      "source": "User decision November 13, 2026; src/domain/beneficiaryValidation.ts; src/pages/Beneficiary.tsx; User clarification November 13, 2026"
+    },
+    {
+      "id": "beneficiary-primary-required",
+      "name": "Require a Primary beneficiary for each applicable product/applicant",
+      "status": "confirmed",
+      "check": "page-check",
+      "level": "page",
+      "message": "beneficiary.error.primary-required",
+      "statement": "On Next, require at least one Primary beneficiary (individual or trust) for each applicable product/applicant when beneficiary questions are active. Contingent-only records do not satisfy this requirement. Draft add/edit/copy may remain incomplete; optional No and inactive product/applicant records are exempt.",
+      "source": "User clarification November 13, 2026; src/domain/beneficiaryValidation.ts; src/pages/Beneficiary.tsx"
+    },
+    {
+      "id": "payment-products-required",
+      "name": "Require selected coverage before Payment",
+      "status": "confirmed",
+      "message": "payment.error.products-required",
+      "statement": "Payment cannot continue without an active applied-for product. Missing or stale selections do not establish an election.",
+      "source": "Coverage selection prerequisite; Payment final review November 14, 2026",
+      "check": "page-check",
+      "level": "page"
     }
   ]
 }

@@ -1,10 +1,11 @@
+import { recordedFilesMatch } from "./sourceEvidence";
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { DatabaseSchema } from "../persistence/types";
 import type { CrosswalkRow } from "./requirementCrosswalk";
-import { resolveSnapshotSite as resolveEffectiveSite } from "../domain/effectiveSite";
+import { resolveAuditSnapshotSite as resolveEffectiveSite } from "./snapshotSiteResolution";
 import namedEvidence from "../../docs/project-review/step1-owner-review-evidence.json";
 import { reviewedNamedOwnerCodeMatches } from "./requirementCrosswalkOwnerReview";
 const evidence: Record<string, string> = {
@@ -17,7 +18,7 @@ const evidence: Record<string, string> = {
   "src/pages/Review.consent.test.tsx": "1bf6f6e54cc20a89197cac1f95c97ab75729eafce4c4e2b37d2e95edc6d9f981"
 };
 export function reviewedAbeReviewCodeMatches(read = (path: string) => readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), "../..", path))) {
-  return Object.keys(evidence).length > 0 && Object.entries(evidence).every(([path, hash]) => createHash("sha256").update(read(path)).digest("hex") === hash);
+  return recordedFilesMatch(evidence, read);
 }
 export function abeDividendOwnerSnapshot(db: DatabaseSchema) {
   const site = resolveEffectiveSite(db, "abe");

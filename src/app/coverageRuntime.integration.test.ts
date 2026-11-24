@@ -34,14 +34,14 @@ describe("application facts through live Coverage and routing", () => {
     expect(resolveApplicationCoverage(di,"member",{...facts(),"hours-worked-per-week":""},products).eligibilityStatus).toBe("needs-information");
   });
   it.each([[22,"no",true],[23,"no",false],[24,"yes",true],[25,"yes",false],[22,"yes",true]])("child age %s student %s", (age,student,allowed) => {
-    const values = { "child-birth-date": dob(Number(age)), "child-full-time-student": student, productApplicants: {"li-term":["member"]} };
+    const values = { coverageSelections: ["li-term"], coverageAmounts: { "li-term:member": 100000 }, dependents: ["child"], "child-birth-date": dob(Number(age)), "child-full-time-student": student, productApplicants: {"li-term":["member"]} };
     expect(resolveApplicationCoverage(life,"child",values,products).selectable).toBe(allowed);
   });
   it("enforces infant boundary, dependencies and one child plan", () => {
-    const values = {"child-birth-date":dayjs().subtract(14,"day").format("YYYY-MM-DD"),productApplicants:{"li-term":["member"]}};
+    const values = {coverageSelections: ["li-term"], coverageAmounts: { "li-term:member": 100000 }, dependents: ["child"], "child-birth-date":dayjs().subtract(14,"day").format("YYYY-MM-DD"),productApplicants:{"li-term":["member"]}};
     expect(resolveApplicationCoverage(life,"child",values,products).selectable).toBe(true);
     expect(resolveApplicationCoverage(life,"child",{...values,"child-birth-date":dayjs().subtract(13,"day").format("YYYY-MM-DD")},products).selectable).toBe(false);
-    expect(resolveApplicationCoverage(life,"child",{...values,productApplicants:{}},products).selectable).toBe(false);
+    expect(resolveApplicationCoverage(life,"child",{...values,productApplicants:{"li-term":[]}},products).selectable).toBe(false);
     expect(resolveApplicationCoverage(life,"child",{...values,productApplicants:{"li-term":["member","child"]}},products).selectable).toBe(false);
   });
   it.each([[35,20000,"no",0,8550],[65,20000,"no",0,4200],[35,20000,"yes",0.5,1050],[35,1100,"no",0,600]])("limits generated amount choices", (age,income,self,years,max) => {
@@ -112,7 +112,7 @@ describe("application facts through live Coverage and routing", () => {
     },products).selectable).toBe(false);
   });
   it("uses all existing children instead of an independent child birth date", () => {
-    const values = {productApplicants:{"li-term":["member"]}, "child-birth-date":dob(20), children:[{"child-birth-date":dob(22)},{"child-birth-date":dob(24),"child-full-time-student":"yes"}]};
+    const values = {coverageSelections: ["li-term"], coverageAmounts: { "li-term:member": 100000 }, dependents: ["child"], productApplicants:{"li-term":["member"]}, "child-birth-date":dob(20), children:[{"child-birth-date":dob(22)},{"child-birth-date":dob(24),"child-full-time-student":"yes"}]};
     expect(resolveApplicationCoverage(life,"child",values,products).selectable).toBe(true);
     expect(resolveApplicationCoverage(life,"child",{...values,children:[...values.children,{"child-birth-date":dob(25),"child-full-time-student":"yes"}]},products).selectable).toBe(false);
     expect(resolveApplicationCoverage(life,"child",{...values,children:[{"child-birth-date":dob(20)}]},products).eligibility).toBe("eligible");

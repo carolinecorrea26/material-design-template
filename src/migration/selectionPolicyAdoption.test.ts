@@ -1,7 +1,8 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import { expect, it } from "vitest";
 import { createReviewedMigrationDatabase } from "./fixtures";
 import { activeSiteMigrationScope } from "./activeSiteScope";
-import { resolveEffectiveSite } from "../domain/effectiveSite";
+import { resolveSnapshotSite as resolveEffectiveSite } from "../domain/effectiveSite";
 import { isSelectionPolicy, reconcileCoverageSelection, resolveNormalizedSelection, type SelectionPolicy } from "../domain/coverageSelectionPolicy";
 import { resolveNormalizedBenefit } from "../domain/benefitPolicy";
 import { validateMigrationDatabase } from "./integrity";

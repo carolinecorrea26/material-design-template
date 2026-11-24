@@ -15,8 +15,8 @@ export type AddressFieldsProps = Pick<ComponentProps<typeof FieldRenderer>, 'con
 export default function AddressFields({ fields, prefix = '', fieldIds = {}, control, errors }: AddressFieldsProps) {
   const row = (ids: (keyof AddressFieldMapping)[]) => fields.filter(field => ids.some(id => field.id === (fieldIds[id] ?? `${prefix}${id}`)))
     .map(field => <FieldRenderer key={field.id} field={field} control={control} errors={errors} />);
-  return <>
+  return <FieldGrid>
     <FieldGrid columns="wide-narrow">{row(['street-address', 'apt-suite'])}</FieldGrid>
     <FieldGrid columns="wide-two-narrow">{row(['city', 'state', 'zip-code'])}</FieldGrid>
-  </>;
+  </FieldGrid>;
 }

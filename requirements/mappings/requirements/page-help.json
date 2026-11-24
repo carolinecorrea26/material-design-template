@@ -1,0 +1,11 @@
+{
+  "component": "page-help",
+  "pages": [
+    "membership",
+    "beneficiary",
+    "payment"
+  ],
+  "rules": [
+    "shared-page-help"
+  ]
+}

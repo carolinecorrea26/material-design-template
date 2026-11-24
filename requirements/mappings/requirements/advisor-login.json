@@ -1,0 +1,55 @@
+{
+  "component": "advisor-login",
+  "pages": [
+    "advisor-login",
+    "advisor-send-confirmation",
+    "application-edit-confirmation"
+  ],
+  "rules": [
+    "advisor-entry-and-identity",
+    "advisor-handoff-and-return",
+    "advisor-new-application",
+    "advisor-resume-content-and-storage",
+    "shared-action-typography",
+    "advisor-recovery-identity",
+    "advisor-access-stages",
+    "resume-signing-and-submission"
+  ],
+  "validations": [
+    {
+      "validation": "required-fields",
+      "trigger": "submit",
+      "scope": "visible-fields"
+    },
+    {
+      "validation": "available-selection",
+      "trigger": "submit",
+      "scope": "visible-fields"
+    },
+    {
+      "validation": "field-email",
+      "trigger": "submit",
+      "scope": "visible-fields"
+    },
+    {
+      "validation": "field-phone",
+      "trigger": "submit",
+      "scope": "visible-fields"
+    },
+    {
+      "validation": "field-digits",
+      "trigger": "submit",
+      "scope": "visible-fields"
+    },
+    {
+      "validation": "field-minimum-length",
+      "trigger": "submit",
+      "scope": "visible-fields"
+    },
+    {
+      "validation": "field-maximum-length",
+      "trigger": "submit",
+      "scope": "visible-fields"
+    }
+  ]
+}

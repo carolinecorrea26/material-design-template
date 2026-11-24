@@ -34,6 +34,8 @@ async function enter(id: string, value: string) {
   });
 }
 it('uses ZIP / State / Birthday order and displays complete validation messages', async () => {
+  expect([...container.querySelectorAll('.MuiFormHelperText-root')].filter(node => !node.textContent?.replace(/\u200b/g, '').trim())).toHaveLength(0);
+  expect(container.textContent).toContain('MM/DD/YYYY');
   expect([...container.querySelectorAll('[data-analytics-field]')].map(field => field.getAttribute('data-analytics-field')))
     .toEqual(['elig-zip-postal-code', 'elig-state-province', 'elig-birth-date']);
   await act(async () => [...container.querySelectorAll('button')].find(button => button.textContent === 'Validate quote')!.click());

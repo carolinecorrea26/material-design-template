@@ -1,3 +1,20 @@
+import { requirementText } from '../../domain/requirementContent';
+import applicationContent from '../../../requirements/global/content/application.json';
+import coverageContent from '../../../requirements/global/content/coverage.json';
+import beneficiaryContent from '../../../requirements/global/content/beneficiary.json';
+import contactContent from '../../../requirements/global/content/contact.json';
+import eligibilityContent from '../../../requirements/global/content/eligibility.json';
+import membershipContent from '../../../requirements/global/content/membership.json';
+import homeContent from '../../../requirements/global/content/home.json';
+import healthContent from "../../../requirements/global/content/health.json";
+import paymentContent from "../../../requirements/global/content/payment.json";
+import reviewContent from "../../../requirements/global/content/review.json";
+import profileContent from '../../../requirements/global/content/profile.json';
+import advisorLoginContent from '../../../requirements/global/content/advisor-login.json';
+import confirmationContent from '../../../requirements/global/content/confirmations.json';
+import receiptContent from '../../../requirements/global/content/receipt.json';
+import recoveryContent from '../../../requirements/global/content/recovery.json';
+import resumeContent from '../../../requirements/global/content/resume.json';
 import type { PagesContent } from "../types";
 
 /**
@@ -5,156 +22,161 @@ import type { PagesContent } from "../types";
  * The {{clientAcronym}} placeholder is replaced at runtime with the active client's acronym.
  */
 export const pagesDefaults: Partial<PagesContent> = {
-  home: { title: "Home", navTitle: "Home" },
+  maintenance: {
+    title: recoveryContent['recovery.maintenance.title'],
+    subhead: recoveryContent['recovery.maintenance.message'],
+    recoveryGuidance: recoveryContent['recovery.maintenance.guidance'],
+    navTitle: recoveryContent['recovery.maintenance.title'],
+  },
+  home: { title: homeContent['home.title'], navTitle: homeContent['home.title'] },
   membership: {
-    title: "Your application for {{clientAcronym}}-sponsored insurance",
-    subhead:
-      "Progress saves as you go, so you can stop anytime and finish later.",
-    navTitle: "Membership",
+    title: membershipContent['membership.title'],
+    subhead: membershipContent['membership.subhead'],
+    navTitle: membershipContent['membership.breadcrumb'],
+    infoNote: membershipContent['membership.page-note'],
+    messages: {
+      notMemberHeading: membershipContent['membership.not-member.heading'],
+      notMemberBody: membershipContent['membership.not-member.body'],
+      notMemberContact: membershipContent['membership.not-member.website'],
+    },
   },
   eligibility: {
-    title: "Confirm your eligibility",
-    subhead:
-      "Answer a few questions to check eligibility and see your coverage options.",
-    navTitle: "Eligibility",
+    title: eligibilityContent['eligibility.title'],
+    subhead: eligibilityContent['eligibility.subhead'],
+    navTitle: eligibilityContent['eligibility.breadcrumb'],
+    sectionNotes: {
+      selfEligibility: eligibilityContent['eligibility.note.self'],
+      spouseSection: eligibilityContent['eligibility.note.spouse'],
+      childSection: eligibilityContent['eligibility.note.children'],
+    },
   },
   coverage: {
-    title: "Your coverage options",
-    subhead:
-      "Explore and customize your coverage options. Please note that available options are based on eligibility information.",
-    navTitle: "Coverage",
+    title: coverageContent['coverage.title'],
+    subhead: coverageContent['coverage.subhead'],
+    navTitle: coverageContent['coverage.breadcrumb'],
   },
   beneficiary: {
-    title: "Add your beneficiaries",
-    subhead: "Tell us who should receive benefits if a claim is paid.",
-    navTitle: "Beneficiary",
+    title: beneficiaryContent['beneficiary.title'],
+    subhead: beneficiaryContent['beneficiary.subhead'],
+    navTitle: beneficiaryContent['beneficiary.breadcrumb'],
   },
   contact: {
-    title: "Your preferred contact",
-    subhead: "Provide the best way for us to reach you about your application.",
-    navTitle: "Contact",
+    title: contactContent['contact.title'],
+    subhead: contactContent['contact.subhead'],
+    navTitle: contactContent['contact.breadcrumb'],
+    messages: { businessHeading: contactContent['contact.section.business'] },
   },
   review: {
-    title: "Review your application",
-    subhead: "Check your answers before submitting your application.",
-    navTitle: "Review",
+    title: reviewContent["page.review.title"],
+    subhead: reviewContent["page.review.subhead"],
+    navTitle: reviewContent["page.review.nav-title"],
   },
   docusign: {
-    title: "Review and sign your application.",
-    subhead: "Review and sign your application documents electronically.",
-    navTitle: "E-sign",
+    title: applicationContent['page.docusign.title'],
+    subhead: applicationContent['page.docusign.subhead'],
+    navTitle: applicationContent['page.docusign.nav-title'],
   },
   "health-si": {
-    title: "About your health history",
-    subhead:
-      "Please answer the following questions about your health as accurately as you can.",
-    navTitle: "Health",
+    title: healthContent['page.health-si.title'],
+    subhead: healthContent['page.health-si.subhead'],
+    navTitle: requirementText("page.health-si.nav-title"),
   },
-  "health-li": {
-    title:
-      "Please answer the following health questions to the best of your ability.",
-    subhead: "Answer health questions required for your selected coverage.",
-    navTitle: "Health",
+  "health-tele": {
+    title: healthContent['page.health-tele.title'],
+    subhead: healthContent['page.health-tele.subhead'],
+    navTitle: requirementText("page.health-tele.nav-title"),
   },
   "health-qd": {
-    title: "About your health",
-    subhead: "Answer health questions required for your selected coverage.",
-    navTitle: "Health",
+    title: applicationContent['page.health-qd.title'],
+    subhead: applicationContent['page.health-qd.subhead'],
+    navTitle: requirementText("page.health-qd.nav-title"),
   },
-  "health-di": {
-    title: "About your health history",
-    subhead:
-      "Please answer the following questions about your health as accurately as you can.",
-    navTitle: "Health",
+  "health-di-supp": {
+    title: healthContent['page.health-di-supp.title'],
+    subhead: healthContent['page.health-di-supp.subhead'],
+    navTitle: requirementText("page.health-di-supp.nav-title"),
   },
-  "health-ci": { title: "Critical illness health questions", subhead: "Answer the health questions required for your critical illness coverage.", navTitle: "Health" },
   "health-cir": {
-    title: "About your health",
-    subhead: "Answer health questions required for your selected coverage.",
-    navTitle: "Health",
+    title: healthContent['page.health-cir.title'],
+    subhead: healthContent['page.health-cir.subhead'],
+    navTitle: requirementText("page.health-cir.nav-title"),
   },
   payment: {
-    title: "Choose your payment method",
-    subhead: "Select how you would like to pay for your coverage.",
-    navTitle: "Payment",
+    title: paymentContent["page.payment.title"],
+    subhead: paymentContent["page.payment.subhead"],
+    navTitle: paymentContent["page.payment.nav-title"],
   },
   receipt: {
-    title: "Application received",
-    subhead:
-      "Your application has been received, and we'll guide you through any next steps.",
-    navTitle: "Receipt",
+    title: receiptContent['page.receipt.title'],
+    subhead: receiptContent['page.receipt.subhead'],
+    navTitle: receiptContent['page.receipt.nav-title'],
   },
   resume: {
-    title: "Continue saved application",
-    subhead:
-      "Before proceeding, we need to confirm your identity. Please enter your email and we'll send a secure link for verification.",
-    navTitle: "Resume application",
+    title: resumeContent['page.resume.title'],
+    subhead: resumeContent['page.resume.subhead'],
+    navTitle: resumeContent['page.resume.nav-title'],
   },
   "resume-method": {
-    title: "Get your verification code",
-    subhead:
-      "Choose how you would like to receive your verification code for the phone number (•••)•••1111.",
-    navTitle: "Verification method",
+    title: resumeContent['page.resume-method.title'],
+    subhead: resumeContent['page.resume-method.subhead'],
+    navTitle: resumeContent['page.resume-method.nav-title'],
   },
   "resume-code": {
-    title: "Enter your verification code",
-    subhead:
-      "Please enter the verification code sent to the phone number (•••)•••1111.",
-    navTitle: "Verification code",
+    title: resumeContent['page.resume-code.title'],
+    subhead: resumeContent['page.resume-code.subhead'],
+    navTitle: resumeContent['page.resume-code.nav-title'],
   },
   "advisor-login": {
-    title: "Advisor Portal",
-    subhead: "Prepare applications for your clients.",
+    title: advisorLoginContent['page.advisor-login.title'],
+    subhead: advisorLoginContent['page.advisor-login.subhead'],
+    navTitle: advisorLoginContent['page.advisor-login.nav-title'],
     sectionNotes: {
-      advisorLoginNew: "Enter your advisor details to start at Membership. Complete the application through Profile, then send it to the applicant to review and sign.",
-      advisorLoginSaved: "Enter the applicant’s email address to reopen an application you previously started. You’ll verify access before continuing the saved application.",
+      advisorLoginNew: advisorLoginContent['page.advisor-login.section-notes.advisor-login-new'],
+      advisorLoginSaved: advisorLoginContent['page.advisor-login.section-notes.advisor-login-saved'],
     },
-    navTitle: "Advisor login",
   },
   "advisor-send-confirmation": {
-    title: "Application sent successfully!",
-    subhead:
-      "The applicant can now review, sign, and submit their application.",
-    navTitle: "Sent confirmation",
+    title: confirmationContent['confirmation.advisor.title'],
+    subhead: confirmationContent['confirmation.advisor.subhead'],
+    navTitle: confirmationContent['confirmation.advisor.nav-title'],
   },
   "application-edit-confirmation": {
-    title: "Edit request sent!",
-    subhead:
-      "Your advisor has been notified of your request to edit your application.",
-    navTitle: "Edit confirmation",
+    title: confirmationContent['confirmation.edit.title'],
+    subhead: confirmationContent['confirmation.edit.subhead'],
+    navTitle: confirmationContent['confirmation.edit.nav-title'],
   },
   "mock-email-preview": {
-    title: "Mock Email Preview",
-    navTitle: "Mock email preview",
+    title: applicationContent['page.mock-email-preview.title'],
+    navTitle: applicationContent['page.mock-email-preview.nav-title'],
   },
   "site-details": {
-    title: "Site Details",
-    navTitle: "Site Details",
+    title: applicationContent['page.site-details.title'],
+    navTitle: applicationContent['page.site-details.nav-title'],
   },
   "design-system": {
-    title: "Design System",
-    navTitle: "Design system",
+    title: applicationContent['page.design-system.title'],
+    navTitle: applicationContent['page.design-system.nav-title'],
   },
   "portal-admin": {
-    title: "Portal Admin",
-    navTitle: "Portal Admin",
+    title: applicationContent['page.portal-admin.title'],
+    navTitle: applicationContent['page.portal-admin.nav-title'],
   },
   cms: {
-    title: "CMS",
-    navTitle: "CMS",
+    title: applicationContent['page.cms.title'],
+    navTitle: applicationContent['page.cms.nav-title'],
   },
   "portal-template-project": {
-    title: "Portal Site Template (v3) Project",
-    navTitle: "Portal Site Template (v3) Project",
+    title: applicationContent['page.portal-template-project.title'],
+    navTitle: applicationContent['page.portal-template-project.nav-title'],
   },
   "portal-requirements-project": {
-    title: "Portal Admin Project",
-    navTitle: "Portal Admin Project",
+    title: applicationContent['page.portal-requirements-project.title'],
+    navTitle: applicationContent['page.portal-requirements-project.nav-title'],
   },
   profile: {
-    title: "About you",
-    subhead:
-      "Share the personal and financial details needed to complete your application.",
-    navTitle: "Profile",
+    title: profileContent['page.profile.title'],
+    subhead: profileContent['page.profile.subhead'],
+    navTitle: profileContent['page.profile.nav-title'],
+    sectionNotes: { profileFinancialSelf: profileContent['profile.other-coverage-note'], profileFinancialSpouse: profileContent['profile.other-coverage-note'] },
   },
 };

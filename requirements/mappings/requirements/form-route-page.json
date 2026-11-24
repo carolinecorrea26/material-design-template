@@ -1,8 +1,43 @@
 {
   "component": "form-route-page",
-  "pages": ["membership", "eligibility", "coverage", "beneficiary", "contact", "profile", "review", "health-si", "health-li", "health-di", "health-ci", "health-cir", "payment", "docusign"],
-  "rules": ["browser-autofill-self-only"],
-  "workflows": ["form-next-validation", "form-next-save", "form-next-intermediate-step", "form-next-action-state", "form-next-destination", "form-next-transition"],
+  "pages": [
+    "membership",
+    "eligibility",
+    "coverage",
+    "beneficiary",
+    "contact",
+    "profile",
+    "review",
+    "health-si",
+    "health-tele",
+    "health-di-supp",
+    "health-cir",
+    "payment",
+    "docusign",
+    "health-qd",
+    "receipt"
+  ],
+  "rules": [
+    "browser-autofill-self-only",
+    "shared-disclosure-print",
+    "recovery-technical-failure",
+    "applicant-section-headings",
+    "applicant-active-participation",
+    "applicant-owner-requirements",
+    "applicant-availability-url",
+    "shared-action-typography",
+    "global-page-configuration-boundary",
+    "shared-content-references"
+  ],
+  "workflows": [
+    "form-next-validation",
+    "form-next-save",
+    "form-next-intermediate-step",
+    "form-next-action-state",
+    "form-next-destination",
+    "form-next-transition",
+    "external-provider-handoff"
+  ],
   "validations": [
     {
       "validation": "field-definition-checks",

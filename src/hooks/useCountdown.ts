@@ -1,48 +1,22 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from 'react';
 
-/** A restartable seconds countdown with interval cleanup on expiry/unmount. */
+/** Wall-clock deadline so delayed/background timer callbacks cannot extend validity. */
 export default function useCountdown(initialSeconds: number) {
   const [secondsLeft, setSecondsLeft] = useState(initialSeconds);
+  const secondsRef = useRef(initialSeconds);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  const stop = useCallback(() => {
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-      timerRef.current = null;
-    }
-  }, []);
-
+  const stop = useCallback(() => { if (timerRef.current) clearInterval(timerRef.current); timerRef.current = null; }, []);
   const start = useCallback(() => {
     stop();
+    const deadline = Date.now() + secondsRef.current * 1000;
     timerRef.current = setInterval(() => {
-      setSecondsLeft((previousSeconds) => {
-        if (previousSeconds <= 1) {
-          if (timerRef.current) clearInterval(timerRef.current);
-          timerRef.current = null;
-          return 0;
-        }
-        return previousSeconds - 1;
-      });
+      const remaining = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
+      secondsRef.current = remaining; setSecondsLeft(remaining);
+      if (!remaining) stop();
     }, 1000);
   }, [stop]);
-
-  const reset = useCallback(
-    (nextSeconds = initialSeconds) => {
-      stop();
-      setSecondsLeft(nextSeconds);
-    },
-    [initialSeconds, stop],
-  );
-
-  const restart = useCallback(
-    (nextSeconds = initialSeconds) => {
-      reset(nextSeconds);
-      start();
-    },
-    [initialSeconds, reset, start],
-  );
-
+  const reset = useCallback((nextSeconds = initialSeconds) => { stop(); secondsRef.current = nextSeconds; setSecondsLeft(nextSeconds); }, [initialSeconds, stop]);
+  const restart = useCallback((nextSeconds = initialSeconds) => { reset(nextSeconds); start(); }, [initialSeconds, reset, start]);
   useEffect(() => stop, [stop]);
-
   return { secondsLeft, start, stop, reset, restart };
 }

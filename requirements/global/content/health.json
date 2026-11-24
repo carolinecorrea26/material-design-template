@@ -1,0 +1,14 @@
+{
+  "page.health-tele.title": "Please answer the following health questions to the best of your ability.",
+  "page.health-tele.subhead": "Answer health questions required for your selected coverage.",
+  "health.question-title": "Question {{number}}",
+  "health.details-label": "details",
+  "health.condition-details-modal": "Condition details modal",
+  "page.health-si.title": "About your health history",
+  "page.health-si.subhead": "Please answer the following questions about your health as accurately as you can.",
+  "page.health-di-supp.title": "About your health history",
+  "page.health-di-supp.subhead": "Please answer the following questions about your health as accurately as you can.",
+  "page.health-cir.title": "About your health",
+  "page.health-cir.subhead": "Answer health questions required for your selected coverage.",
+  "health.condition-details-label": "condition details"
+}

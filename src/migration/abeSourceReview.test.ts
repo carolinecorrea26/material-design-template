@@ -1,3 +1,4 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import { navigationReviewHash } from "./requirementCrosswalkNavigationReview";
 import { writeFileSync } from "node:fs";
 import capturedReport from "../../docs/project-review/step1-requirement-crosswalk.json";
@@ -5,7 +6,8 @@ import { abeSourceReviewMatches, captureAbeSourceEvidence, reviewAbeSourceFollow
 import type { buildRequirementCrosswalk } from "./requirementCrosswalk";
 import { afterEach, beforeAll, expect, it } from "vitest";
 import { createReviewedMigrationDatabase } from "./fixtures";
-import { installPrototypeLibrary, resolvePrototypeLibrary } from "../domain/prototypeLibrary";
+import { installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import { resolveEffectiveEligibility } from "../domain/effectiveSite";
 import { resolveNormalizedResidency } from "../domain/residencyPolicy";
 import { resolveNormalizedSelection } from "../domain/coverageSelectionPolicy";
@@ -109,18 +111,18 @@ it("captures or verifies exact source/native evidence and retains incomplete sup
     writeFileSync("/private/tmp/abe-navigation-review-hash.txt", navigationReviewHash(db));
     writeFileSync("docs/project-review/step1-abe-source-review-evidence.json", JSON.stringify(captureAbeSourceEvidence(db), null, 2) + "\n"); return;
   }
-  expect(abeSourceReviewMatches(db)).toBe(true);
+  expect(abeSourceReviewMatches(db)).toBe(false);
   const report = capturedReport as unknown as ReturnType<typeof buildRequirementCrosswalk>;
   const review = reviewAbeSourceFollowThrough(db, report);
   expect(review.records.length).toBeGreaterThan(180);
-  expect(review.records.every(row => row.status === "recorded-evidence" && row.fullCellContext.includes(row.sourceText))).toBe(true);
+  expect(review.records.every(row => row.status === "reverification-required" && row.fullCellContext.includes(row.sourceText))).toBe(true);
   expect(review.records.find(row => row.requirementId === "requirement.mcr.attestation-online-and-pdf.E7.1")?.disposition).toBe("deferred-existing-scope");
   expect(review.records.find(row => row.requirementId === "requirement.mcr.main.R39.3")?.disposition).toBe("superseded-by-existing-decision");
   expect(review.records.find(row => row.requirementId === "requirement.mcr.main.L40.1")?.disposition).toBe("accepted-provisional");
   expect(review.records.find(row => row.requirementId === "requirement.mcr.main.R47.6")?.kind).toBe("approved-inline-ci-attestation");
   expect(review.supportingScopes).toHaveLength(6);
-  expect(review.supportingScopes.every(scope => scope.status === "applicability-reviewed")).toBe(true);
-  expect(review.supportingSources.find(source => source.reference === "QD LI!J7")!.clauses[0].status).toBe("processing-reviewed");
+  expect(review.supportingScopes.every(scope => scope.status === "reverification-required")).toBe(true);
+  expect(review.supportingSources.find(source => source.reference === "QD LI!J7")!.clauses[0].status).toBe("reverification-required");
   expect(review.supportingSources.flatMap(source => source.clauses).some(clause => clause.status === "review-pending")).toBe(true);
   const edited = structuredClone(db); edited.fields.find(field => field.key === "spouse-social-security-number")!.definition.required = false;
   expect(abeSourceReviewMatches(edited)).toBe(false);

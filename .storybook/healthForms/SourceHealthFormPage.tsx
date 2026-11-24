@@ -4,7 +4,6 @@ import { Alert, Box, Button, Stack, Typography } from '@mui/material';
 import PageShell from '../../src/components/layout/PageShell';
 import FormShell from '../../src/components/layout/FormShell';
 import FieldRenderer from '../../src/components/forms/FieldRenderer';
-import HealthInformationHelp from '../../src/components/health/HealthInformationHelp';
 import HealthQuestion from '../../src/components/forms/HealthQuestion';
 import { sourceFormErrors } from './validation';
 import ApplicantSectionDivider from '../../src/components/layout/ApplicantSectionDivider';
@@ -31,7 +30,7 @@ export default function SourceHealthFormPage({ formKey, includeSpouse, initialVa
   };
   const notes = form.rows.filter(row => row.notes);
   let ordinal = 0;
-  return <Box sx={{ width: '100%', p: { xs: 2, md: 4 } }}><PageShell title="Health" subhead={form.key} help={<HealthInformationHelp />}>
+  return <Box sx={{ width: '100%', p: { xs: 2, md: 4 } }}><PageShell title="Health" subhead={form.key}>
     <Box component="form" noValidate onSubmit={event => { event.preventDefault(); checkAnswers(); }}><FormShell sx={{ p: { xs: 2, sm: 3 } }}>
       <Stack spacing={3}>
         {questions.map(question => {

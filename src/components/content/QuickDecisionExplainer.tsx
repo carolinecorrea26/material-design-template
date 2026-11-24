@@ -1,4 +1,4 @@
-import { Box, ButtonBase, Stack, Typography, type ButtonBaseProps } from "@mui/material";
+import { Box, Link, Stack, Typography, type ButtonBaseProps } from "@mui/material";
 import QuickDecisionIcon from "../coverage/QuickDecisionIcon";
 import { useComponentContent } from "./ComponentContentContext";
 
@@ -8,17 +8,15 @@ function InlineDrawerLink({
   ...props
 }: Pick<ButtonBaseProps, "children" | "onClick" | "aria-expanded" | "aria-controls">) {
   return (
-    <ButtonBase
+    <Link component="button" type="button" variant="inherit"
       {...props}
       onClick={onClick}
       sx={{
         display: "inline",
         verticalAlign: "baseline",
         color: "primary.main",
-        font: "inherit",
         lineHeight: "inherit",
-        textDecoration: "underline",
-        textUnderlineOffset: "0.12em",
+        cursor: "pointer",
         "&.Mui-focusVisible": {
           outline: "2px solid currentColor",
           outlineOffset: 2,
@@ -26,7 +24,7 @@ function InlineDrawerLink({
       }}
     >
       {children}
-    </ButtonBase>
+    </Link>
   );
 }
 
@@ -34,7 +32,7 @@ function QuickDecisionMark() {
   return (
     <>
       QuickDecision
-      <Box component="sup" sx={{ fontSize: "0.6em", lineHeight: 1 }}>
+      <Box component="sup" sx={{ fontSize: "caption.fontSize", lineHeight: 1 }}>
         SM
       </Box>
     </>

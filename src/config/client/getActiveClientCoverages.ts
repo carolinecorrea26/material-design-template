@@ -1,13 +1,15 @@
-import { activeFeaturedProduct, activeCoverageProductRestriction, restrictCoverageProducts } from "./coverageProductScope";
+import type { EffectiveSite } from '../../domain/effectiveSite';
+import { activeCoverageApplicantRestriction, resolveAvailableApplicants, restrictCoverageApplicants } from './coverageApplicantScope';
+import { activeFirstCoverageCategory, activeFeaturedProduct, activeCoverageProductRestriction, restrictCoverageProducts } from "./coverageProductScope";
 import { orderCoveragePresentation } from "../../domain/coveragePresentation";
-import { getPrototypeLibrary } from "../../domain/prototypeLibrary";
+import { getPrototypeLibrary, type PrototypeLibrary } from "../../domain/prototypeLibrary";
 import { resolveSiteId } from "../../data/activeSite";
 import { activeCoverageCategoryRestriction, restrictCoverageCategories } from "./coverageCategoryScope";
 import { coverages } from "../coverages";
 import { getActiveClient } from "./getActiveClient";
 import type { ClientConfig } from "../clients/types";
 import { mergeCoverageAmountAssignments } from "../coverages/amounts";
-import type { ProductIdentifierSet, ScopedIdentifierSet } from "../coverages/types";
+import type { CoverageDefinition, ProductIdentifierSet, ScopedIdentifierSet } from "../coverages/types";
 
 function mergeIdentifiers<T extends ProductIdentifierSet>(
   globalValue: ScopedIdentifierSet<T> | undefined,
@@ -28,13 +30,20 @@ function mergeIdentifiers<T extends ProductIdentifierSet>(
   } as ScopedIdentifierSet<T>;
 }
 
-export function getActiveClientCoverages() {
-  const client = getActiveClient();
-  const siteKey = resolveSiteId(), library = getPrototypeLibrary(siteKey);
+/** One entry-context projection for runtime and internal scenario consumers. */
+export function getEntryScopedCoverages(library: PrototypeLibrary) {
+  return entryScopedCoverages(library.products, library.client, library.site.siteKey, library.site);
+}
+function entryScopedCoverages(offering: CoverageDefinition[], client: ClientConfig, siteKey: string, site?: EffectiveSite) {
   const featured = activeFeaturedProduct(siteKey);
-  const categories = restrictCoverageCategories(library?.products ?? getClientCoverages(client), activeCoverageCategoryRestriction(siteKey));
-  const products = restrictCoverageProducts(categories, activeCoverageProductRestriction(siteKey), library?.site);
-  return orderCoveragePresentation(products, client.coverages, featured).products;
+  const categories = restrictCoverageCategories(offering, activeCoverageCategoryRestriction(siteKey));
+  const scoped = restrictCoverageProducts(categories, activeCoverageProductRestriction(siteKey), site);
+  const products = restrictCoverageApplicants(scoped, resolveAvailableApplicants(client.applicantExperience?.coveredPeople, activeCoverageApplicantRestriction(siteKey)));
+  return orderCoveragePresentation(products, client.coverages, featured, activeFirstCoverageCategory(siteKey)).products;
+}
+export function getActiveClientCoverages() {
+  const siteKey = resolveSiteId(), library = getPrototypeLibrary(siteKey);
+  return library ? getEntryScopedCoverages(library) : entryScopedCoverages(getClientCoverages(getActiveClient()), getActiveClient(), siteKey);
 }
 
 /** Same merging logic as {@link getActiveClientCoverages}, for an arbitrary client. */

@@ -16,6 +16,8 @@ const config: StorybookConfig = {
   },
   // Serves the app's real public/ assets (client logos, hero images) so
   // Component examples can reference actual files instead of placeholders.
-  "staticDirs": ["../public"]
+  "staticDirs": ["../public"],
+  // Storybook owns this copy; Vite copying public/ concurrently can race it.
+  viteFinal: async config => ({ ...config, publicDir: false })
 };
 export default config;

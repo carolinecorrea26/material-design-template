@@ -1,5 +1,7 @@
-import { createTheme, darken, responsiveFontSizes, type PaletteOptions } from "@mui/material/styles";
+import { createTheme, darken, alpha, responsiveFontSizes, type PaletteOptions } from "@mui/material/styles";
 import type { ClientThemeConfig, ThemeColorId } from "../config/clients/types";
+import controlPresentation from '../../requirements/global/presentation-tokens.json';
+const actionPresentation = controlPresentation.controls;
 
 const presets: Record<ThemeColorId, { main: string; light: string; dark: string }> = {
   default: { main: "#0668ff", light: "#5c94ff", dark: "#034cba" },
@@ -53,12 +55,47 @@ export function createAppTheme(
       h4: { fontSize: "1.375rem", fontWeight: 800 },
       h5: { fontSize: "1.125rem", fontWeight: 800 },
       h6: { fontSize: "1rem", fontWeight: 800 },
-      button: { textTransform: "none" },
+      caption: { fontSize: "0.875rem" },
+      overline: { fontSize: "0.875rem" },
+      button: { textTransform: "none", fontWeight: actionPresentation.fontWeight },
     },
     components: {
+      MuiIconButton: {
+        styleOverrides: { root: ({ theme }) => ({
+          '&.StepEditButton-root': { fontSize: theme.typography.pxToRem(20), border: 'none', borderRadius: '50%', color: theme.palette.primary.dark, backgroundColor: alpha(theme.palette.primary.main, 0.10), padding: theme.spacing(0.5), '&.Mui-disabled': { color: theme.palette.action.disabled, backgroundColor: theme.palette.action.disabledBackground }, '&:hover': { backgroundColor: alpha(theme.palette.primary.main, 0.18) } },
+        }) },
+      },
+      MuiChip: {
+        styleOverrides: { root: ({ theme }) => ({
+          fontSize: theme.typography.caption.fontSize,
+          '&.PageHelpChip-root': { backgroundColor: theme.palette.action.hover, '&:hover': { backgroundColor: theme.palette.action.selected } },
+        }) },
+      },
+      MuiBreadcrumbs: {
+        styleOverrides: { root: ({ theme }) => ({
+          ...theme.typography.caption,
+          '& [aria-current="page"], & [data-completed="true"]': { fontWeight: 500 },
+        }) },
+      },
+      MuiTooltip: {
+        styleOverrides: { tooltip: ({ theme }) => ({ fontSize: theme.typography.caption.fontSize }) },
+      },
+      MuiBadge: {
+        styleOverrides: { badge: ({ theme }) => ({ fontSize: theme.typography.caption.fontSize }) },
+      },
+      MuiToggleButton: {
+        styleOverrides: { sizeSmall: ({ theme }) => ({ fontSize: theme.typography.button.fontSize }) },
+      },
       MuiButton: {
         styleOverrides: {
           root: ({ theme, ownerState }) => ({
+            fontWeight: actionPresentation.fontWeight,
+            ...(ownerState.size === "small" && { fontSize: theme.typography.button.fontSize }),
+            '&.ClientHelpBanner-action': {
+              color: theme.palette.getContrastText(theme.palette.primary.dark),
+              borderColor: alpha(theme.palette.getContrastText(theme.palette.primary.dark), 0.6),
+              '&:hover': { borderColor: theme.palette.getContrastText(theme.palette.primary.dark), backgroundColor: alpha(theme.palette.getContrastText(theme.palette.primary.dark), 0.08) },
+            },
             ...(config.buttonShape !== "standard" && { borderRadius: 9999 }),
             ...(primaryAction && ownerState.variant === "contained" && ownerState.color === "primary" && {
               "&:not(.Mui-disabled)": {
@@ -70,33 +107,25 @@ export function createAppTheme(
           }),
         },
       },
-      MuiAppBar: {
-        defaultProps: { elevation: 0 },
-        styleOverrides: {
-          root: ({ theme }) => ({
-            backgroundColor: theme.palette.background.paper,
-            color: theme.palette.text.primary,
-            borderBottom: `1px solid ${theme.palette.divider}`,
-          }),
-        },
-      },
-      MuiToolbar: { styleOverrides: { root: { gap: 16 } } },
-      MuiContainer: { defaultProps: { maxWidth: "md" } },
       MuiLink: {
         defaultProps: { underline: "none" },
-        styleOverrides: { root: { fontWeight: 700, textDecoration: "none", "&:hover": { textDecoration: "none" } } },
+        styleOverrides: { root: { fontWeight: actionPresentation.fontWeight, textDecoration: actionPresentation.linkDecoration, '&:hover, &:focus': { textDecoration: actionPresentation.linkDecoration } } },
       },
       MuiCssBaseline: {
-        styleOverrides: { a: { fontWeight: 700, textDecoration: "none" } },
+        styleOverrides: theme => ({ a: { fontWeight: actionPresentation.fontWeight, textDecoration: actionPresentation.linkDecoration, '&:hover, &:focus': { textDecoration: actionPresentation.linkDecoration } }, button: { fontWeight: actionPresentation.fontWeight }, 'sup, sub, small': { fontSize: theme.typography.caption.fontSize } }),
       },
       MuiFormHelperText: {
-        styleOverrides: { root: { lineHeight: 1.2, marginBottom: "14px" } },
+        styleOverrides: { root: { lineHeight: 1.2, marginBottom: 0 } },
       },
       MuiFormLabel: {
         styleOverrides: {
           root: { fontWeight: 500 },
           asterisk: ({ theme }) => ({ color: theme.palette.error.main }),
         },
+      },
+      MuiInputLabel: {
+        // MUI scales floating labels to 75%; preserve the minimum visible text size.
+        styleOverrides: { shrink: ({ theme }) => ({ fontSize: `calc(${theme.typography.caption.fontSize} / 0.75)` }) },
       },
       MuiFormControlLabel: {
         styleOverrides: { label: { fontWeight: 500 } },
@@ -110,7 +139,9 @@ export function createAppTheme(
       },
       MuiOutlinedInput: {
         styleOverrides: {
-          notchedOutline: ({ theme }) => ({ borderColor: theme.palette.divider }),
+          // Match resting text/select outlines to the shared selection-row border.
+          // MUI still owns hover, focus, error and disabled border states.
+          notchedOutline: ({ theme }) => ({ borderColor: theme.palette.divider, '& legend': { fontSize: theme.typography.caption.fontSize } }),
         },
       },
       // Insurance option labels must remain readable in both the field and menu.
@@ -123,7 +154,8 @@ export function createAppTheme(
         styleOverrides: { root: { whiteSpace: "normal", overflowWrap: "anywhere", lineHeight: 1.3 } },
       },
     },
-  }));
+  // h3 is the shared page-title scale and remains 1.5rem at every breakpoint.
+  }), { variants: ["h1", "h2", "h4", "h5", "h6", "subtitle1", "subtitle2", "body1", "body2", "caption", "button", "overline"] });
 }
 
 export default createAppTheme();

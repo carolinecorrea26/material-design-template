@@ -16,3 +16,8 @@ export function getStorybookDocsUrl(storybookId: string): string {
 export function getStorybookStoryUrl(storybookStoryId: string): string {
   return getStorybookUrl(`?path=/story/${storybookStoryId}`);
 }
+
+/** Embed the same registered example without the Storybook manager chrome. */
+export function getStorybookPreviewUrl(storyId: string): string {
+  return getStorybookUrl(`iframe.html?id=${encodeURIComponent(storyId)}&viewMode=story`);
+}

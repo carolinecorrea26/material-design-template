@@ -358,7 +358,7 @@ export default function GlobalSiteDetailsPanel({
                                 sx={{
                                   verticalAlign: "top",
                                   fontWeight: 600,
-                                  fontSize: "0.8125rem",
+                                  fontSize: "caption.fontSize",
                                   color: showCategory ? "text.primary" : "transparent",
                                   borderTop: showCategory && i !== 0 ? "2px solid" : undefined,
                                   borderTopColor: showCategory && i !== 0 ? "divider" : undefined,
@@ -377,7 +377,7 @@ export default function GlobalSiteDetailsPanel({
                               >
                                 <Link
                                   href={`${page.path}?site=demo${formFlow.includes(page.id) ? `&autofill=${page.id}` : ""}`}
-                                  sx={{ fontWeight: 700 }}
+                                  sx={{ }}
                                 >
                                   {page.id}
                                 </Link>
@@ -604,10 +604,10 @@ export default function GlobalSiteDetailsPanel({
                             <TableBody>
                               {rows.map((c) => (
                                 <TableRow key={c.id}>
-                                  <TableCell sx={{ fontFamily: "monospace", fontSize: "0.75rem", whiteSpace: "normal !important" }}>
+                                  <TableCell sx={{ fontFamily: "monospace", fontSize: "caption.fontSize", whiteSpace: "normal !important" }}>
                                     {c.id}
                                   </TableCell>
-                                  <TableCell sx={{ fontFamily: "monospace", fontSize: "0.75rem", whiteSpace: "normal !important" }}>
+                                  <TableCell sx={{ fontFamily: "monospace", fontSize: "caption.fontSize", whiteSpace: "normal !important" }}>
                                     {c.code}
                                   </TableCell>
                                   <TableCell sx={{ whiteSpace: "normal !important" }}>
@@ -834,25 +834,25 @@ export default function GlobalSiteDetailsPanel({
                           <TableBody>
                             {filteredUrlParameters.map((row) => (
                               <TableRow key={row.parameter}>
-                                <TableCell sx={{ verticalAlign: "top", fontFamily: "monospace", fontWeight: 700, fontSize: "0.8125rem", whiteSpace: "normal !important" }}>
+                                <TableCell sx={{ verticalAlign: "top", fontFamily: "monospace", fontWeight: 700, fontSize: "caption.fontSize", whiteSpace: "normal !important" }}>
                                   {row.parameter}
                                 </TableCell>
                                 <TableCell sx={{ verticalAlign: "top" }}>
-                                  <Chip label={row.status} size="small" color={urlParamStatusColor[row.status]} sx={{ height: 20, fontSize: "0.7rem" }} />
+                                  <Chip label={row.status} size="small" color={urlParamStatusColor[row.status]} sx={{ height: 20, fontSize: "caption.fontSize" }} />
                                 </TableCell>
-                                <TableCell sx={{ verticalAlign: "top", fontSize: "0.8125rem", whiteSpace: "normal !important" }}>
+                                <TableCell sx={{ verticalAlign: "top", fontSize: "caption.fontSize", whiteSpace: "normal !important" }}>
                                   <TruncatedString
                                     value={`${row.currentValues.join(", ")} — ${row.currentBehavior.join(" ")}`}
                                     threshold={170}
                                   />
                                 </TableCell>
-                                <TableCell sx={{ verticalAlign: "top", fontSize: "0.8125rem", whiteSpace: "normal !important" }}>
+                                <TableCell sx={{ verticalAlign: "top", fontSize: "caption.fontSize", whiteSpace: "normal !important" }}>
                                   <TruncatedString
                                     value={`${row.newValues.join(", ")} — ${row.newBehavior.join(" ")}`}
                                     threshold={170}
                                   />
                                 </TableCell>
-                                <TableCell sx={{ verticalAlign: "top", fontSize: "0.8125rem", whiteSpace: "normal !important", color: "text.secondary" }}>
+                                <TableCell sx={{ verticalAlign: "top", fontSize: "caption.fontSize", whiteSpace: "normal !important", color: "text.secondary" }}>
                                   <TruncatedString value={row.notes} threshold={160} />
                                 </TableCell>
                               </TableRow>
@@ -926,27 +926,27 @@ export default function GlobalSiteDetailsPanel({
                           <TableBody>
                             {filteredUrlParametersAdditional.map((row) => (
                               <TableRow key={row.parameter}>
-                                <TableCell sx={{ verticalAlign: "top", fontFamily: "monospace", fontWeight: 700, fontSize: "0.8125rem", whiteSpace: "normal !important" }}>
+                                <TableCell sx={{ verticalAlign: "top", fontFamily: "monospace", fontWeight: 700, fontSize: "caption.fontSize", whiteSpace: "normal !important" }}>
                                   {row.parameter}
                                 </TableCell>
-                                <TableCell sx={{ verticalAlign: "top", fontSize: "0.75rem", whiteSpace: "normal !important" }}>
+                                <TableCell sx={{ verticalAlign: "top", fontSize: "caption.fontSize", whiteSpace: "normal !important" }}>
                                   <Chip
                                     label={row.status}
                                     size="small"
                                     color={urlParamStatusColor[row.status.split(" —")[0] as UrlParamStatus] ?? "primary"}
-                                    sx={{ height: 20, fontSize: "0.7rem", mb: 0.5 }}
+                                    sx={{ height: 20, fontSize: "caption.fontSize", mb: 0.5 }}
                                   />
                                   <Typography variant="caption" color="text.secondary" sx={{ display: "block" }}>
                                     {row.currentTemplate}
                                   </Typography>
                                 </TableCell>
-                                <TableCell sx={{ verticalAlign: "top", fontSize: "0.8125rem", whiteSpace: "normal !important" }}>
+                                <TableCell sx={{ verticalAlign: "top", fontSize: "caption.fontSize", whiteSpace: "normal !important" }}>
                                   <TruncatedString
                                     value={`${row.newValues.join(", ")} — ${row.newBehavior.join(" ")}`}
                                     threshold={170}
                                   />
                                 </TableCell>
-                                <TableCell sx={{ verticalAlign: "top", fontSize: "0.8125rem", whiteSpace: "normal !important", color: "text.secondary" }}>
+                                <TableCell sx={{ verticalAlign: "top", fontSize: "caption.fontSize", whiteSpace: "normal !important", color: "text.secondary" }}>
                                   <TruncatedString value={row.notes} threshold={160} />
                                 </TableCell>
                                 <TableCell sx={{ verticalAlign: "top" }}>
@@ -1008,13 +1008,13 @@ export default function GlobalSiteDetailsPanel({
                           <TableBody>
                             {filteredUrlParameterSourceSummary.map((row) => (
                               <TableRow key={row.parameter}>
-                                <TableCell sx={{ verticalAlign: "top", fontFamily: "monospace", fontWeight: 700, fontSize: "0.8125rem", whiteSpace: "normal !important" }}>
+                                <TableCell sx={{ verticalAlign: "top", fontFamily: "monospace", fontWeight: 700, fontSize: "caption.fontSize", whiteSpace: "normal !important" }}>
                                   {row.parameter}
                                 </TableCell>
-                                <TableCell sx={{ verticalAlign: "top", fontSize: "0.8125rem", whiteSpace: "normal !important" }}>
+                                <TableCell sx={{ verticalAlign: "top", fontSize: "caption.fontSize", whiteSpace: "normal !important" }}>
                                   <TruncatedString value={row.classification} threshold={150} />
                                 </TableCell>
-                                <TableCell sx={{ verticalAlign: "top", fontSize: "0.8125rem", whiteSpace: "normal !important" }}>
+                                <TableCell sx={{ verticalAlign: "top", fontSize: "caption.fontSize", whiteSpace: "normal !important" }}>
                                   <TruncatedString value={row.productionStatus} threshold={150} />
                                 </TableCell>
                               </TableRow>

@@ -3,7 +3,7 @@ import type { SiteId } from "./sites";
 import type { FieldId } from "./fields";
 
 export type ConditionId = `condition-${string}`;
-export type ConditionOperator = "equals" | "notEquals" | "includes" | "oneOf";
+export type ConditionOperator = "equals" | "notEquals" | "includes" | "oneOf" | "outcome";
 
 export type ConditionClause = {
   fieldId: FieldId;
@@ -19,6 +19,7 @@ export type ConditionDefinition = {
 
 export type RuleId = `rule-${string}`;
 export type RuleDefinition = {
+  templates?: import("../config/template/resolveTemplate").FormTemplate[];
   organization?: import("./ruleOrganization").RuleOrganization;
   execution?: import("./routingRules").RoutingRuleExecution;
   id: RuleId;

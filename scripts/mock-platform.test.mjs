@@ -32,6 +32,34 @@ it('matches the RFC6238 SHA1 test vector', () => {
   expect(totp(secret, 59000, 8)).toBe('94287082');
   expect(totp(secret, 1111111109000, 8)).toBe('07081804');
 });
+it('serves newly enrolled catalog Sites without a separate mock Site allowlist', async () => {
+  const client = await api({ database: { sites: [{ id: 'new-gi-site', key: 'new-gi-site' }], siteProducts: [] } });
+  const response = await client.request('/prototype/library', { siteKey: 'new-gi-site' });
+  expect(response.status).toBe(200);
+  expect(response.data.payload.siteKey).toBe('new-gi-site');
+  expect((await client.request('/prototype/library', { siteKey: 'ama-gi' })).status).toBe(404);
+});
+it('uses global recovery defaults despite captured Site overrides', async () => {
+  const client = await api({ database: {
+    ...database,
+    configurationDefinitions: [
+      { key: 'old-link-validity', definition: { path: ['recoveryPolicy', 'linkValiditySeconds'] } },
+      { key: 'old-link-limit', definition: { path: ['recoveryPolicy', 'requestLimit'] } },
+    ],
+    configurationValues: [
+      { configurationKey: 'old-link-validity', scope: 'site', siteKey: 'asce', value: 1 },
+      { configurationKey: 'old-link-limit', scope: 'site', siteKey: 'asce', value: 1 },
+    ],
+  } });
+  const recipient = 'unmatched@example.invalid';
+  const first = await client.request('/applicant/resume/request', { siteKey: 'asce', recipient });
+  expect(first.status).toBe(200);
+  client.advance(599000);
+  const second = await client.request('/applicant/resume/request', { siteKey: 'asce', recipient });
+  expect(second.status).toBe(200);
+  expect(second.data.expiresAt - first.data.expiresAt).toBe(599000);
+  expect(first.data.expiresAt).toBe(1760000000000 + 600000);
+});
 it('opens local development administration while disabling account sign-in without changing credentials', async () => {
   const dir = mkdtempSync(join(tmpdir(), 'mock-signin-disabled-')); temporaryStores.push(dir);
   const statePath = join(dir, 'state.json');
@@ -79,6 +107,7 @@ it('exercises synthetic rate and payment contracts across ten Sites with idempot
   for (const siteKey of sites) {
     const quote = await client.request('/rates/quote', { siteKey, productKey: 'test-life', amount: 100000, frequency: 'monthly' });
     expect(quote.data).toMatchObject({ mode: 'mock', premiumCents: 2500, currency: 'USD' });
+    expect(quote.data.components).toEqual([{ key: 'base', kind: 'base', amount: 25 }]);
     const body = { quoteId: quote.data.quoteId, paymentToken: 'mock-approved', idempotencyKey: `test-${siteKey}` };
     const payment = await client.request('/payments/authorize', body);
     expect(payment.data).toMatchObject({ mode: 'mock', status: 'authorized', amountCents: 2500, fundsMoved: false });
@@ -87,6 +116,9 @@ it('exercises synthetic rate and payment contracts across ten Sites with idempot
     const declined = await client.request('/payments/authorize', { ...body, paymentToken: 'mock-declined', idempotencyKey: `declined-${siteKey}` });
     expect(declined.data.status).toBe('declined');
   }
+  const itemized = (await client.request('/rates/quote', { siteKey: sites[0], productKey: 'test-life', amount: 100000, frequency: 'annual', riders: [{ amount: 50000, premiumFactor: 0.1 }, { amount: 25000, premiumFactor: 0.2 }] })).data;
+  expect(itemized.components.filter(row => row.kind === 'rider').map(row => row.riderIndex)).toEqual([0, 1]);
+  expect(Math.round(itemized.components.reduce((sum, row) => sum + row.amount, 0) * 100)).toBe(itemized.premiumCents);
   expect((await client.request('/payments/authorize', { quoteId: 'bad', cardNumber: 'private' })).status).toBe(400);
   expect((await client.request('/rates/quote', { siteKey: sites[0], productKey: 'test-life', amount: 0, frequency: 'monthly' })).status).toBe(400);
 });

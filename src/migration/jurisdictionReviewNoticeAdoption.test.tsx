@@ -1,8 +1,10 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, beforeAll, expect, it } from "vitest";
 import { createReviewedMigrationDatabase } from "./fixtures";
 import { applyJurisdictionReviewNoticeAdoption } from "./jurisdictionReviewNoticeAdoption";
-import { installPrototypeLibrary, resolvePrototypeLibrary } from "../domain/prototypeLibrary";
+import { installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import { isReviewPolicy } from "../domain/reviewPolicy";
 import { resolveReviewExperience, composeReadAndSign } from "../config/reviewExperience";
 import { reviewDefaults } from "../content/defaults/review";
@@ -25,7 +27,7 @@ it("places WAEPA Life notes after fraud and before one Consent, with a bold NY-o
   for (const [state, product, count] of [["NY", "li-group-term", 2], ["PA", "li-group-term", 1], ["NY", "di-short-term", 0]] as const) {
     const result = resolveReviewExperience(library.client, "waepa", library.products, { membership: "current", state, "birth-date": "1986-01-01", coverageSelections: [product], productApplicants: { [product]: ["member"] }, coverageAmounts: { [`${product}:member`]: product === "di-short-term" ? 1000 : 100000 } });
     const notices = result.blocks.filter(block => block.placement === "before-consent"); expect(notices).toHaveLength(count);
-    const text = composeReadAndSign(reviewDefaults.readAndSignContent, result.fraudNotice, result.consent.text, result.authorizationVisible, result.medicalAuthorization);
+    const text = composeReadAndSign(reviewDefaults.readAndSignContent, result.fraudNotice, result.consent.text, result.authorizationVisible, result.medicalAuthorization, result.premiumContributionStatement);
     const html = renderToStaticMarkup(<ReviewStatement text={text} notices={notices} />);
     expect(html.match(/CONSENT:/g)).toHaveLength(1);
     if (count) expect(html.indexOf("Receipt of Accelerated Death Benefits")).toBeLessThan(html.indexOf("CONSENT:"));

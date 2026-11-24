@@ -1,0 +1,69 @@
+{
+  "progressSteps": [
+    {
+      "id": "getting-started",
+      "libraryLabel": "Getting Started",
+      "pages": [
+        "membership",
+        "eligibility"
+      ]
+    },
+    {
+      "id": "coverage-options",
+      "libraryLabel": "Coverage",
+      "pages": [
+        "coverage"
+      ]
+    },
+    {
+      "id": "profile",
+      "libraryLabel": "Profile",
+      "pages": [
+        "beneficiary",
+        "contact",
+        "profile"
+      ]
+    },
+    {
+      "id": "application-review",
+      "libraryLabel": "Review & Sign",
+      "pages": [
+        "review",
+        "health-si",
+        "health-tele",
+        "health-qd",
+        "health-di-supp",
+        "health-cir",
+        "payment"
+      ]
+    },
+    {
+      "id": "esign-submit",
+      "libraryLabel": "E-sign",
+      "pages": [
+        "docusign"
+      ]
+    }
+  ],
+  "libraryRedirects": {
+    "cms": {
+      "domain": "content"
+    },
+    "site-details": {
+      "domain": "pages",
+      "anchors": {
+        "pages-subsection": "pages",
+        "fields-subsection": "fields",
+        "coverage-subsection": "products",
+        "flows-subsection": "flows",
+        "configuration-options-subsection": "configurations",
+        "url-parameters-subsection": "url-parameters",
+        "behavioral-rules-subsection": "rules",
+        "validation-subsection": "validation"
+      }
+    },
+    "site-features": {
+      "domain": "configurations"
+    }
+  }
+}

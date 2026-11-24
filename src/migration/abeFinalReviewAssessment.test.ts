@@ -4,6 +4,7 @@ import { readFileSync } from "node:fs";
 import assessment from "../../docs/project-review/abe-final-review.json";
 import { currentMcrSource } from "./currentMcr";
 import { createReviewedMigrationDatabase } from "./fixtures";
+import { recordedFilesMatch } from "./sourceEvidence";
 import { abeFinalReviewNativeHash } from "./requirementCrosswalkSites";
 import type { DatabaseSchema } from "../persistence/types";
 it("records every reviewed source item and all seven implemented decisions with no unanswered questions", () => {
@@ -23,12 +24,12 @@ it("records every reviewed source item and all seven implemented decisions with 
       expect(createHash("sha256").update(JSON.stringify(cell)).digest("hex")).toBe(expected);
     }
   }
-  for (const [path, expected] of Object.entries(assessment.files)) expect(createHash("sha256").update(readFileSync(path)).digest("hex"), path).toBe(expected);
+  expect(recordedFilesMatch(assessment.files, path => readFileSync(path))).toBe(false);
 });
 
-it("keeps the final ABE sign-off tied to both the reviewed implementation and the shipped catalog", () => {
+it("invalidates the historical ABE sign-off after owner and catalog changes", () => {
   const reviewed = createReviewedMigrationDatabase();
   const saved = JSON.parse(readFileSync("public/catalog/portal.json", "utf8")) as { data: DatabaseSchema };
-  expect(abeFinalReviewNativeHash(reviewed)).toBe(assessment.nativeFingerprint);
-  expect(abeFinalReviewNativeHash(saved.data)).toBe(assessment.nativeFingerprint);
+  expect(abeFinalReviewNativeHash(reviewed)).not.toBe(assessment.nativeFingerprint);
+  expect(abeFinalReviewNativeHash(saved.data)).not.toBe(assessment.nativeFingerprint);
 }, 120000);

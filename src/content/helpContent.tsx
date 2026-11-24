@@ -1,15 +1,12 @@
-import { requirementText } from "../domain/requirementContent";
-import { helpChipDefinitions } from "./interactionLabels";
+import { getPrototypeLibrary } from '../domain/prototypeLibrary';
+import { requirementPageHelp } from "../domain/requirementContent";
 import { Box, Stack, Link, Typography } from "@mui/material";
 import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
-import CalculateRoundedIcon from "@mui/icons-material/CalculateRounded";
-import TuneRoundedIcon from "@mui/icons-material/TuneRounded";
 import LockRoundedIcon from "@mui/icons-material/LockRounded";
 import CreditCardOffRoundedIcon from "@mui/icons-material/CreditCardOffRounded";
 import LoopRoundedIcon from "@mui/icons-material/LoopRounded";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
-import CoverageNeedsCalculator from "../app/sections/ConfiguredCoverageNeedsCalculator";
-import type { FormPageHelpItem } from "../components/content/HelpChips";
+import type { PageHelpItem } from "../components/content/PageHelpChips";
 import CoverageOptionsPanel from "../app/sections/ConfiguredCoverageOptionsPanel";
 import HowApplyingWorksPanel from "../components/home/HowApplyingWorksPanel";
 import { getContent, resolveTemplate } from "./index";
@@ -92,7 +89,6 @@ export function CoverageProductsDrawerContent({
                     width: "fit-content",
                     color: "primary.main",
                     fontSize: "0.875rem",
-                    fontWeight: 600,
                     lineHeight: 1.35,
                     textUnderlineOffset: "0.15em",
                   }}
@@ -116,154 +112,42 @@ export function CoverageOptionsDrawerContent({
   );
 }
 
-export function groupInsuranceHelpItem(
-  associationName: string,
-): FormPageHelpItem {
-  return {
-    id: "group-insurance",
-    label: "What is group insurance?",
-    title: "What is group insurance?",
-    content: <GroupInsuranceDrawerContent associationName={associationName} />,
-  };
+function HelpParagraphs({ paragraphs }: { paragraphs: string[] }) {
+  return <Stack spacing={2}>{paragraphs.map((paragraph, index) => <Typography key={index} variant="body2">{paragraph}</Typography>)}</Stack>;
 }
 
-export const howApplyingWorksHelpItem: FormPageHelpItem = {
-  ...helpChipDefinitions.applying,
-  title: requirementText("membership.help.applying-title"),
-  content: <HowApplyingWorksPanel variant="drawer" />,
+function HelpSections({ intro, sections, icons }: { intro: string; sections: Array<{ title: string; description: string }>; icons: Array<typeof InfoRoundedIcon> }) {
+  return <Stack spacing={3}>
+    <Typography variant="body2" color="text.secondary">{intro}</Typography>
+    {sections.map((section, index) => {
+      const Icon = icons[index] ?? InfoRoundedIcon;
+      return <Box key={index} sx={{ display: 'flex', gap: 2 }}>
+        <Icon sx={{ color: 'primary.main', fontSize: '2.5rem', flexShrink: 0 }} />
+        <Box sx={{ flex: 1 }}>
+          <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 0.5 }}>{section.title}</Typography>
+          <Typography variant="body2" color="text.secondary">{section.description}</Typography>
+        </Box>
+      </Box>;
+    })}
+  </Stack>;
+}
+
+const pageHelpBodies: Record<string, () => React.ReactNode> = {
+  'coverage-options-available': () => <CoverageOptionsDrawerContent />,
+  'application-process': () => <HowApplyingWorksPanel variant="drawer" />,
+  'beneficiary-basics': () => <HelpParagraphs paragraphs={getContent().help.beneficiary.whatIs.paragraphs} />,
+  'beneficiary-share': () => <HelpParagraphs paragraphs={getContent().help.beneficiary.percentageShare.paragraphs} />,
+  'payment-handling': () => <HelpSections {...getContent().help.paymentHandling} icons={[CreditCardOffRoundedIcon, LockRoundedIcon, LoopRoundedIcon, DeleteOutlineRoundedIcon]} />,
 };
 
-export const coverageOptionsAvailableHelpItem: FormPageHelpItem = {
-  ...helpChipDefinitions.coverageOptions,
-  title: requirementText("membership.help.coverage-options-title"),
-  content: <CoverageOptionsDrawerContent />,
-};
-
-export const coverageNeedsHelpItem: FormPageHelpItem = {
-  id: "coverage-needs",
-  label: "How much coverage do I need?",
-  title: "How much coverage do I need?",
-  content: <CoverageNeedsCalculator />,
-};
-
-export const beneficiaryHelpItems: FormPageHelpItem[] = (() => {
-  const { whatIs, percentageShare } = getContent().help.beneficiary;
-  return [
-    {
-      ...helpChipDefinitions.beneficiaryBasics,
-        title: "What is a beneficiary?",
-      content: (
-        <Stack spacing={2}>
-          {whatIs.paragraphs.map((p, i) => (
-            <Typography key={i} variant="body2">
-              {p}
-            </Typography>
-          ))}
-        </Stack>
-      ),
-    },
-    {
-      ...helpChipDefinitions.beneficiaryShare,
-        title: "What is the % share?",
-      content: (
-        <Stack spacing={2}>
-          {percentageShare.paragraphs.map((p, i) => (
-            <Typography key={i} variant="body2">
-              {p}
-            </Typography>
-          ))}
-        </Stack>
-      ),
-    },
-  ];
-})();
-
-export const coverageQuestionsWhyAskedHelpItem: FormPageHelpItem = (() => {
-  const whyAsked = getContent().help.whyAsked;
-  const icons = [CalculateRoundedIcon, TuneRoundedIcon, InfoRoundedIcon];
-  return {
-    id: "why-asked",
-    label: "Why is this information being asked?",
-    title: "Why is this information being asked?",
-    content: (
-      <Stack spacing={3}>
-        <Typography variant="body2" color="text.secondary">
-          {whyAsked.intro}
-        </Typography>
-
-        {whyAsked.sections.map((section, i) => {
-          const IconComponent = icons[i] ?? InfoRoundedIcon;
-          return (
-            <Box key={i} sx={{ display: "flex", gap: 2 }}>
-              <IconComponent
-                sx={{
-                  color: "primary.main",
-                  fontSize: "2.5rem",
-                  flexShrink: 0,
-                }}
-              />
-              <Box sx={{ flex: 1 }}>
-                <Typography
-                  variant="subtitle1"
-                  sx={{ fontWeight: 600, mb: 0.5 }}
-                >
-                  {section.title}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {section.description}
-                </Typography>
-              </Box>
-            </Box>
-          );
-        })}
-      </Stack>
-    ),
-  };
-})();
-
-export const paymentHandlingHelpItem: FormPageHelpItem = (() => {
-  const payment = getContent().help.paymentHandling;
-  const icons = [
-    CreditCardOffRoundedIcon,
-    LockRoundedIcon,
-    LoopRoundedIcon,
-    DeleteOutlineRoundedIcon,
-  ];
-  return {
-    ...helpChipDefinitions.payment,
-    title: "How is my payment information handled?",
-    content: (
-      <Stack spacing={3}>
-        <Typography variant="body2" color="text.secondary">
-          {payment.intro}
-        </Typography>
-
-        {payment.sections.map((section, i) => {
-          const IconComponent = icons[i] ?? InfoRoundedIcon;
-          return (
-            <Box key={i} sx={{ display: "flex", gap: 2 }}>
-              <IconComponent
-                sx={{
-                  color: "primary.main",
-                  fontSize: "2.5rem",
-                  flexShrink: 0,
-                }}
-              />
-              <Box sx={{ flex: 1 }}>
-                <Typography
-                  variant="subtitle1"
-                  sx={{ fontWeight: 600, mb: 0.5 }}
-                >
-                  {section.title}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {section.description}
-                </Typography>
-              </Box>
-            </Box>
-          );
-        })}
-      </Stack>
-    ),
-  };
-})();
+/** Source selections/wording plus shared topic content; evaluated for the current Site. */
+export function pageHelpItems(pageId: string): PageHelpItem[] {
+  const library = getPrototypeLibrary();
+  const topics = library ? library.pages.find(page => page.definition.id === pageId)?.definition.help : requirementPageHelp(pageId);
+  if (!topics) throw new Error(`Missing fresh-start page help: ${pageId}`);
+  return topics.map(item => {
+    const body = pageHelpBodies[item.id];
+    if (!body) throw new Error(`Unsupported page help topic: ${item.id}`);
+    return { ...item, content: body() };
+  });
+}

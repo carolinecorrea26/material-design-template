@@ -1,0 +1,12 @@
+{
+  "page": "home",
+  "configurations": {
+    "form-template": "single",
+    "home-variant": "hero-image"
+  },
+  "content": {
+    "home.hero.title": "AMA-Sponsored Medical Student Program",
+    "home.hero.description": "Open Enrollment: July 1–December 31",
+    "home.hero.tagline": "AMA Insurance"
+  }
+}

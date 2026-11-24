@@ -8,7 +8,7 @@ import { openOverlay } from '../../../.storybook/previewInteractions';
 
 const meta = {
   id: 'coverage-commerce-coveragecart', title: "Components/Feedback and overlays/Dialogs and drawers/Application dialogs/Coverage summary", component: CoverageCart,
-  parameters: { standalone: true, layout: 'fullscreen', docs: { description: { component: 'Drawer and inline cart views receive explicit entries, rate states and callbacks. The application adapter owns saved answers, eligibility, rating and navigation.' } } },
+  parameters: { standalone: true, layout: 'fullscreen', docs: { description: { component: 'Drawer and inline cart views receive explicit entries, rate states and callbacks. The application adapter owns saved answers, rating and navigation.' } } },
 } satisfies Meta<typeof CoverageCart>;
 export default meta;
 function DrawerExample({ initialEntries = [] }: { initialEntries?: CoverageSummaryEntry[] }) {

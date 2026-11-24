@@ -1,6 +1,7 @@
 import { type ReactNode } from "react";
-import { Alert, Box, Stack } from "@mui/material";
-import PageTitle from "./PageTitle";
+import { Box, Stack } from "@mui/material";
+import PageHeader from "./PageHeader";
+import PageAlert from "../feedback/PageAlert";
 
 type PageLayoutProps = {
   title: ReactNode;
@@ -40,19 +41,8 @@ export default function PageShell({
           <Stack spacing={2}>
             {headerOverride ??
               (!noTitle && title ? (
-                <Stack spacing={1} sx={{ padding: "0 0.5rem" }}>
-                  <PageTitle
-                    title={title}
-                    subhead={subhead}
-                    onBack={onBack}
-                  />
-                  {error && (
-                    <Alert severity="error" sx={{ width: "100%" }}>
-                      {error}
-                    </Alert>
-                  )}
-                  {help}
-                </Stack>
+                <PageHeader title={title} subhead={subhead} onBack={onBack} help={help}
+                  feedback={<PageAlert message={error} sx={{ mb: 0 }} />} spacing={1} sx={{ px: 0.5, mb: 0 }} />
               ) : undefined)}
             <Box sx={{ width: "100%" }}>{children}</Box>
             <Box>

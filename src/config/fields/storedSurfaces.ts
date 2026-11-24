@@ -2,11 +2,12 @@ import { getPrototypeLibrary } from '../../domain/prototypeLibrary';
 import { fieldSurfaceDefaults } from '../../migration/fieldSurfaceDefaults';
 import type { ResolvedFieldSurface } from '../../domain/fieldSurfaces';
 import type { FieldDefinition } from './types';
+import { getHealthDetailSurfaceName } from './healthPageFields';
+export { getHealthDetailSurfaceName } from './healthPageFields';
 
 let legacy: Record<string, ResolvedFieldSurface> | undefined;
 /** Code defaults are restricted to catalog mode. Stored prototypes fail closed. */
-export function getFieldSurface(name: string): ResolvedFieldSurface {
-  const library = getPrototypeLibrary();
+export function getFieldSurface(name: string, library = getPrototypeLibrary()): ResolvedFieldSurface {
   if (library) {
     const surface = library.fieldSurfaces[name];
     if (!surface) throw new Error(`Missing stored field surface: ${name}`);
@@ -24,8 +25,8 @@ export function getFieldSurface(name: string): ResolvedFieldSurface {
   return legacy[name];
 }
 /** Project stored binding names into local control state. */
-export function getSurfaceFields(name: string): FieldDefinition[] {
-  const { mapping } = getFieldSurface(name);
+export function getSurfaceFields(name: string, library = getPrototypeLibrary()): FieldDefinition[] {
+  const { mapping } = getFieldSurface(name, library);
   return mapping.fields.map(field => ({ ...field, id: mapping.fieldToKey[field.id] }));
 }
 export function getSurfaceField(name: string, id: string) {
@@ -33,10 +34,7 @@ export function getSurfaceField(name: string, id: string) {
   const field = surface.mapping.fields.find(field => field.id === id || surface.mapping.fieldToKey[field.id] === id);
   return field ? { ...field, id: surface.mapping.fieldToKey[field.id] } : undefined;
 }
-export function getHealthDetailSurfaceName(page: 'health-li' | 'health-si' | 'health-di', answerId: string) {
-  return page === 'health-li' ? 'healthLiDetails' : page === 'health-si' ? 'healthSiDetails' : `healthDi${answerId.replace('health-di-', '').replace('-spouse', '')}Details`;
-}
-export function getHealthDetailSurface(page: 'health-li' | 'health-si' | 'health-di', answerId: string) {
+export function getHealthDetailSurface(page: 'health-tele' | 'health-si' | 'health-di-supp', answerId: string) {
   return getFieldSurface(getHealthDetailSurfaceName(page, answerId));
 }
 
@@ -53,5 +51,12 @@ export function surfaceSemanticValues(name: string, row: Record<string, unknown>
   return Object.fromEntries(surface.mapping.fields.map(field => [field.id.startsWith(prefix) ? field.id.slice(prefix.length) : field.id, row[surface.mapping.fieldToKey[field.id]]]));
 }
 export function beneficiarySemanticValues<T extends Record<string, unknown>>(row: T): T {
-  return { ...row, ...surfaceSemanticValues(row.beneficiaryType === 'trust' ? 'beneficiaryTrust' : 'beneficiaryIndividual', row) };
+  return { firstName: "", lastName: "", relationship: "", trustName: "", trustDate: "", share: 0, ...row, ...surfaceSemanticValues(row.beneficiaryType === 'trust' ? 'beneficiaryTrust' : 'beneficiaryIndividual', row) };
+}
+
+/** Serialize only the active type's authored bindings and structural record keys. */
+export function beneficiaryStoredValues(row: Record<string, unknown>) {
+  const surface = getFieldSurface(row.beneficiaryType === 'trust' ? 'beneficiaryTrust' : 'beneficiaryIndividual');
+  return { id: row.id, designation: row.designation, beneficiaryType: row.beneficiaryType,
+    ...Object.fromEntries(surface.mapping.fields.map(field => [surface.mapping.fieldToKey[field.id], row[field.id.replace(/^beneficiary-/, '')]])) };
 }

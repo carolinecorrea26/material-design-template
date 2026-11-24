@@ -1,6 +1,10 @@
 import { beforeAll, expect, it } from 'vitest';
 import { createReviewedMigrationDatabase } from '../migration/fixtures';
 import { resolvePrototypeLibrary } from './prototypeLibrary';
+import { compileRequirementCatalog } from './requirementCatalog.mjs';
+import { freshStartSource } from './freshStartCatalog';
+import { resolveEffectiveConfiguration } from './effectiveConfiguration';
+import { resolveStoredFieldCollections } from './fieldCollections';
 import { migrateFieldCollectionData } from '../migration/fieldCollectionDefaults';
 import { migratePageCatalogSnapshot } from './pageCatalogMigration';
 import { effectiveSiteSnapshotTables } from '../repositories/portalDataRepository';
@@ -10,9 +14,16 @@ import type { LibraryDraft } from './libraryDraft';
 
 let baseline: DatabaseSchema;
 beforeAll(() => { baseline = createReviewedMigrationDatabase(); }, 120000);
-const policies = (data: DatabaseSchema) => data.configurationValues.find(row => row.configurationKey === 'field-collections')!.value as unknown as Record<string, FieldCollectionDefinition>;
+const policies = (data: DatabaseSchema) => (data.configurationValues.find(row => row.configurationKey === 'field-collections' && row.siteKey === 'asce') ?? data.configurationValues.find(row => row.configurationKey === 'field-collections' && row.scope === 'global'))!.value as unknown as Record<string, FieldCollectionDefinition>;
+const compiled = () => compileRequirementCatalog(structuredClone(baseline), freshStartSource(), 'asce');
+const resolveCollections = (data: DatabaseSchema) => {
+  const site = data.sites.find(site => site.key === 'asce')!;
+  const clientKey = data.clients.find(client => client.id === site.clientId)!.key;
+  const products = data.siteProducts.filter(product => product.siteId === site.id && product.enabled).map(product => product.productKey);
+  return resolveStoredFieldCollections(data, { siteKey: 'asce', clientKey, configuration: resolveEffectiveConfiguration(data, 'asce', clientKey, site.id, products) } as Parameters<typeof resolveStoredFieldCollections>[1]);
+};
 
-it('uses fresh children and retains saved settings for unreviewed collections', () => {
+it('uses fresh children and Profile record definitions instead of stale snapshot settings', () => {
   const data = structuredClone(baseline);
   data.fields.find(row => row.key === 'child-first-name')!.definition.label = 'Stored given name';
   data.fields.find(row => row.key === 'di-company-name')!.definition.label = 'Stored carrier name';
@@ -24,37 +35,36 @@ it('uses fresh children and retains saved settings for unreviewed collections', 
   expect(collection.children).toMatchObject({ name: 'children', label: 'Child', maxItems: 10 });
   expect(collection.children.mapping.fields[0].label).toBe('First Name');
   expect(collection.children.mapping.fieldToKey['child-first-name']).toBe('child-first-name');
-  expect(collection.selfDisabilityCompanies.mapping.fields.map(field => field.id)).toEqual([...policies(data).selfDisabilityCompanies.fields].map(row => row.fieldKey));
-  expect(collection.selfDisabilityCompanies.mapping.fields.find(field => field.id === 'di-company-name')!.label).toBe('ASCE carrier');
-  expect(resolvePrototypeLibrary(data, 'ama', 'test').fieldCollections.selfDisabilityCompanies.mapping.fields.find(field => field.id === 'di-company-name')!.label).toBe('Stored carrier name');
+  expect(collection.selfDisabilityCompanies.mapping.fields.map(field => field.id)).toEqual(['di-company-name', 'di-company-monthly-benefit', 'di-company-benefit-period', 'di-company-waiting-period']);
+  expect(collection.selfDisabilityCompanies.mapping.fields.find(field => field.id === 'di-company-name')!.label).toBe('Company');
 });
 
 it('honors relational child order and removals and a hidden collection field', () => {
-  const data = structuredClone(baseline);
+  const data = compiled();
   const section = data.pageSections.find(row => row.definition.collectionName === 'children')!;
   const first = data.pageSectionFields.find(row => row.sectionKey === section.key && row.fieldKey === 'child-first-name')!;
   const last = data.pageSectionFields.find(row => row.sectionKey === section.key && row.fieldKey === 'child-last-name')!;
   [first.position, last.position] = [last.position, first.position];
   data.pageSectionFields = data.pageSectionFields.filter(row => !(row.sectionKey === section.key && row.fieldKey === 'child-gender'));
-  data.siteFieldConfigurations.push({ id: 'collection-hidden', key: 'collection-hidden', fieldKey: 'di-company-waiting-period', pageKey: 'profile', position: 0, scope: 'site', clientKey: null, siteKey: 'asce', include: null, hidden: true, values: {} });
-  const collections = resolvePrototypeLibrary(data, 'asce', 'test').fieldCollections;
-  expect(collections.children.mapping.fields.slice(0, 2).map(field => field.id)).toEqual(['child-first-name', 'child-last-name']);
-  expect(collections.children.mapping.fields.some(field => field.id === 'child-gender')).toBe(true);
+  data.siteFieldConfigurations.find(row => row.siteKey === 'asce' && row.pageKey === 'profile' && row.fieldKey === 'di-company-waiting-period')!.hidden = true;
+  const collections = resolveCollections(data);
+  expect(collections.children.mapping.fields.slice(0, 2).map(field => field.id)).toEqual(['child-last-name', 'child-first-name']);
+  expect(collections.children.mapping.fields.some(field => field.id === 'child-gender')).toBe(false);
   expect(collections.selfDisabilityCompanies.mapping.fields.some(field => field.id === 'di-company-waiting-period')).toBe(false);
 });
 
 it('refuses missing configuration, unsafe or duplicate bindings and conflicting overrides', () => {
-  const data = structuredClone(baseline);
+  const data = compiled();
   data.configurationValues = data.configurationValues.filter(row => row.configurationKey !== 'field-collections');
-  expect(() => resolvePrototypeLibrary(data, 'asce', 'test')).toThrow('Missing stored field collection: selfDisabilityCompanies');
+  expect(() => resolveCollections(data)).toThrow('Missing or ambiguous stored field collection configuration');
   for (const valueKey of ['constructor', '__proto__', 'company']) {
-    const invalid = structuredClone(baseline);
+    const invalid = compiled();
     policies(invalid).selfDisabilityCompanies.fields[1].valueKey = valueKey;
-    expect(() => resolvePrototypeLibrary(invalid, 'asce', 'test')).toThrow('Invalid collection binding');
+    expect(() => resolveCollections(invalid)).toThrow('Invalid collection binding');
   }
-  const conflicting = structuredClone(baseline);
+  const conflicting = compiled();
   for (const id of ['first', 'second']) conflicting.siteFieldConfigurations.push({ id, key: id, fieldKey: 'di-company-name', pageKey: 'profile', position: 0, scope: 'site', siteKey: 'asce', clientKey: null, hidden: null, include: null, values: { label: id } });
-  expect(() => resolvePrototypeLibrary(conflicting, 'asce', 'test')).toThrow(/Ambiguous (collection )?field override/);
+  expect(() => resolveCollections(conflicting)).toThrow(/Ambiguous (collection )?field override/);
 });
 
 it('explicitly upgrades an older snapshot into a detached draft while preserving its original', () => {

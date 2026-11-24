@@ -1,4 +1,15 @@
+Current redirect-page checkpoint: CHG-057 moves magic-link expiry to inline page feedback on Resume. The global redirect component has six content cases; see [the current source and scope](recovery-state-plan.md). Earlier dated entries below are historical.
+
 # Application recovery and component library review
+
+## Current recovery checkpoint — November 13
+
+The [shared error-page review](recovery-state-plan.md) supersedes earlier recovery
+page/alert proposals below. One global frame previews HTTP-code errors, an uncaught
+technical error with no specific code mapping, Maintenance, Session expired content. Expired/invalid magic links use an inline page error on Resume. There are no operation-specific
+payment/submission or saved-application-unavailable pages. This pass is limited to
+prototype presentation and Library/Storybook documentation, with no new service or
+business-flow wiring. Earlier unrelated component approvals remain unchanged.
 
 ## Current approval checkpoint — November 5
 

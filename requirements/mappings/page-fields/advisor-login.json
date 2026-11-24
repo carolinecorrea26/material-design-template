@@ -31,5 +31,59 @@
         "self"
       ]
     }
-  ]
+  ],
+  "constraints": {
+    "advisor-flow-type": {
+      "included": true,
+      "required": true,
+      "fixedProperties": [
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "label",
+        "options"
+      ]
+    },
+    "advisor-email": {
+      "included": true,
+      "required": true,
+      "fixedProperties": [
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength"
+      ]
+    },
+    "advisor-phone": {
+      "included": true,
+      "required": true,
+      "fixedProperties": [
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength"
+      ]
+    },
+    "advisor-code": {
+      "included": true,
+      "required": true,
+      "fixedProperties": [
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength"
+      ]
+    },
+    "applicant-email": {
+      "included": true,
+      "required": true,
+      "fixedProperties": [
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength"
+      ]
+    }
+  }
 }

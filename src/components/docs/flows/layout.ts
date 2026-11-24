@@ -1,81 +1,56 @@
-import dagre from "@dagrejs/dagre";
-import type { FlowDefinition, FlowEdgeDef, FlowNodeDef } from "../../../content/docs/flows/types";
+import dagre from '@dagrejs/dagre';
+import type { FlowDefinition, FlowEdgeDef, FlowNodeDef } from '../../../content/docs/flows/types';
+import { createRouter, inflate, placeLabel, type Point, type Rect } from './routing';
 
 export const FLOW_NODE_WIDTH = 240;
-export const FLOW_NODE_MIN_HEIGHT = 88;
-const APPROX_DESCRIPTION_CHARS_PER_LINE = 24;
-const APPROX_LABEL_CHARS_PER_LINE = 20;
-const LABEL_LINE_HEIGHT = 18;
-const DESCRIPTION_LINE_HEIGHT = 20;
-const VERTICAL_PADDING = 24;
-
-/**
- * Nodes are not fixed-height. Dagre still needs a height before React renders,
- * so estimate one from the documented content. The rendered card uses this as
- * a minimum only and may grow naturally when text wraps more than estimated.
- */
+export const FLOW_NODE_MIN_HEIGHT = 64;
+export type Size = { width: number; height: number };
+export type FlowMeasurements = { nodes?: Record<string, Size>; labels?: Record<string, Size> };
 export function getFlowNodeHeight(node: FlowNodeDef): number {
-  const labelLines = Math.max(1, Math.ceil(node.label.length / APPROX_LABEL_CHARS_PER_LINE));
-  const descriptionLines = node.description
-    ? Math.max(1, Math.ceil(node.description.length / APPROX_DESCRIPTION_CHARS_PER_LINE))
-    : 0;
-
-  return Math.max(
-    FLOW_NODE_MIN_HEIGHT,
-    VERTICAL_PADDING + labelLines * LABEL_LINE_HEIGHT + descriptionLines * DESCRIPTION_LINE_HEIGHT,
-  );
+  return Math.max(FLOW_NODE_MIN_HEIGHT, 28 + Math.ceil(node.label.length / 23) * 19);
 }
+export type LaidOutNode = FlowNodeDef & { position: Point; layoutHeight: number };
+export type LaidOutFlow = { nodes: LaidOutNode[]; edges: FlowEdgeDef[]; edgeRoutes: Record<string, Point[]>; edgeLabels: Record<string, Rect>; bounds: Rect };
 
-export type LaidOutNode = FlowNodeDef & {
-  position: { x: number; y: number };
-  layoutHeight: number;
-};
-export type LaidOutFlow = { nodes: LaidOutNode[]; edges: FlowEdgeDef[]; edgeRoutes: Record<string, { x: number; y: number }[]> };
-
-/**
- * Deterministic layered layout for a flow's node/edge graph. Pure function:
- * the same FlowDefinition always produces the same coordinates. Never lays
- * out anything the content model doesn't already describe — no node/edge is
- * added, dropped, or reordered, only annotated with a position.
- */
-export function computeFlowLayout(definition: FlowDefinition): LaidOutFlow {
+/** Topology stays in JSON. Browser measurements replace estimates as fonts and
+ * content settle; node and label rectangles are reserved before routing. */
+export function computeFlowLayout(definition: FlowDefinition, measurements: FlowMeasurements = {}): LaidOutFlow {
   const g = new dagre.graphlib.Graph({ multigraph: true });
-  // Extra separation is intentional. These diagrams are documentation first,
-  // so branches and edge labels need enough room to remain readable and avoid
-  // passing visually through adjacent cards.
-  g.setGraph({ rankdir: "TB", nodesep: 96, ranksep: 104, edgesep: 48 });
+  g.setGraph({ rankdir: 'TB', nodesep: 96, ranksep: 80, edgesep: 40 });
   g.setDefaultEdgeLabel(() => ({}));
-
-  const heights = new Map<string, number>();
-  for (const node of definition.nodes) {
-    const height = getFlowNodeHeight(node);
-    heights.set(node.id, height);
-    g.setNode(node.id, { width: FLOW_NODE_WIDTH, height });
-  }
-
-  // `name` (edge.id) keeps parallel edges between the same two nodes distinct
-  // (e.g. resume flow's Text/Call edges both target Resume Code).
+  for (const node of definition.nodes) g.setNode(node.id, { width: FLOW_NODE_WIDTH, height: measurements.nodes?.[node.id]?.height ?? getFlowNodeHeight(node) });
+  const labelSizes = new Map<string, Size>();
   for (const edge of definition.edges) {
-    g.setEdge(edge.source, edge.target, {}, edge.id);
+    const size = edge.condition ? measurements.labels?.[edge.id] ?? { width: 180, height: 14 + Math.ceil(edge.condition.length / 23) * 18 } : { width: 0, height: 0 };
+    labelSizes.set(edge.id, size);
+    g.setEdge(edge.source, edge.target, { ...size, labelpos: 'r', labeloffset: 18 }, edge.id);
   }
-
   dagre.layout(g);
-
-  const nodes: LaidOutNode[] = definition.nodes.map((node) => {
-    const laidOut = g.node(node.id);
-    const layoutHeight = heights.get(node.id) ?? FLOW_NODE_MIN_HEIGHT;
-    return {
-      ...node,
-      layoutHeight,
-      position: {
-        x: laidOut.x - FLOW_NODE_WIDTH / 2,
-        y: laidOut.y - layoutHeight / 2,
-      },
-    };
+  const nodes = definition.nodes.map(node => {
+    const placed = g.node(node.id);
+    return { ...node, position: { x: placed.x - FLOW_NODE_WIDTH / 2, y: placed.y - placed.height / 2 }, layoutHeight: placed.height };
   });
-
-  const edgeRoutes = Object.fromEntries(definition.edges.map(edge => [edge.id,
-    g.edge({ v: edge.source, w: edge.target, name: edge.id }).points as { x: number; y: number }[],
-  ]));
-  return { nodes, edges: definition.edges, edgeRoutes };
+  const boxes = nodes.map(node => ({ ...node.position, width: FLOW_NODE_WIDTH, height: node.layoutHeight }));
+  const edgeLabels: Record<string, Rect> = {};
+  const occupied = [...boxes];
+  for (const edge of definition.edges) if (edge.condition) {
+    const placed = g.edge({ v: edge.source, w: edge.target, name: edge.id }), size = labelSizes.get(edge.id)!;
+    const label = placeLabel({ x: placed.x - size.width / 2, y: placed.y - size.height / 2, ...size }, occupied);
+    edgeLabels[edge.id] = label; occupied.push(label);
+  }
+  const ports = Object.fromEntries(nodes.map(node => [node.id, {
+    bottom: { x: node.position.x + FLOW_NODE_WIDTH / 2, y: node.position.y + node.layoutHeight },
+    exit: { x: node.position.x + FLOW_NODE_WIDTH / 2, y: node.position.y + node.layoutHeight + 16 },
+    entrance: { x: node.position.x + FLOW_NODE_WIDTH / 2, y: node.position.y - 16 },
+    top: { x: node.position.x + FLOW_NODE_WIDTH / 2, y: node.position.y },
+  }]));
+  const labelPorts = Object.fromEntries(Object.entries(edgeLabels).map(([id, r]) => [id, { x: r.x - 10, y: r.y + r.height / 2 }]));
+  const route = createRouter([...boxes.map(r => inflate(r, 12)), ...Object.values(edgeLabels).map(r => inflate(r, 4))], [...Object.values(ports).flatMap(p => [p.exit, p.entrance]), ...Object.values(labelPorts)]);
+  const edgeRoutes = Object.fromEntries(definition.edges.map(edge => {
+    const a = ports[edge.source], b = ports[edge.target], label = labelPorts[edge.id];
+    const points = label ? [...route(a.exit, label), ...route(label, b.entrance).slice(1)] : route(a.exit, b.entrance);
+    return [edge.id, [a.bottom, ...points, b.top]];
+  }));
+  const minX = Math.min(...occupied.map(r => r.x)) - 24, minY = Math.min(...occupied.map(r => r.y)) - 24;
+  return { nodes, edges: definition.edges, edgeRoutes, edgeLabels, bounds: { x: minX, y: minY, width: Math.max(...occupied.map(r => r.x + r.width)) - minX + 24, height: Math.max(...occupied.map(r => r.y + r.height)) - minY + 24 } };
 }

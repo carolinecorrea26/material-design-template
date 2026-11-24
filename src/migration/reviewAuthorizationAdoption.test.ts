@@ -1,8 +1,10 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import { afterEach, beforeAll, expect, it } from "vitest";
 import { createReviewedMigrationDatabase } from "./fixtures";
 import { applyReviewAuthorizationAdoption } from "./reviewAuthorizationAdoption";
 import { applyReviewAndRateAdoption } from "./reviewAndRateAdoption";
-import { resolvePrototypeLibrary, installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import { composeReadAndSign, resolveReviewExperience } from "../config/reviewExperience";
 import { isReviewPolicy } from "../domain/reviewPolicy";
 import { reviewDefaults } from "../content/defaults/review";
@@ -27,15 +29,15 @@ it.each([
 ] as const)("uses actual question participation for %s/%s/%s", (siteKey, productKey, applicant, association, expected) => {
   window.history.replaceState(null, "", `/?site=${siteKey}`);
   const library = resolvePrototypeLibrary(db, siteKey, "authorization"); installPrototypeLibrary(library);
-  const values = { membership: siteKey === "ama" ? "physician" : association ?? "yes", association, state: "PA", "birth-date": "1986-01-01", "spouse-birth-date": "1986-01-01", coverageSelections: [productKey], productApplicants: { [productKey]: [applicant] }, coverageAmounts: { [`${productKey}:${applicant}`]: 100000 } };
+  const values = { dependents: ["spouse", "child"], membership: siteKey === "ama" ? "physician" : association ?? "yes", association, state: "PA", "birth-date": "1986-01-01", "spouse-birth-date": "1986-01-01", coverageSelections: [productKey], productApplicants: { [productKey]: [applicant] }, coverageAmounts: { [`${productKey}:${applicant}`]: 100000 } };
   const result = resolveReviewExperience(library.client, siteKey, library.products, values);
   expect(result.authorizationVisible).toBe(expected);
-  const content = composeReadAndSign(reviewDefaults.readAndSignContent, result.fraudNotice, result.consent.text, result.authorizationVisible, result.medicalAuthorization);
+  const content = composeReadAndSign(reviewDefaults.readAndSignContent, result.fraudNotice, result.consent.text, result.authorizationVisible, result.medicalAuthorization, result.premiumContributionStatement);
   expect(content.includes("AUTHORIZATION:")).toBe(expected);
   expect(content.includes("MIB, other insurance companies")).toBe(false);
   expect(content.includes("right to require additional information")).toBe(expected);
   expect(content).toContain("CONSENT:");
-  expect(content).toContain("payment of a premium contribution");
+  if (result.premiumContributionStatement) expect(content).toContain(result.premiumContributionStatement);
   if (result.fraudNotice) expect(content).toContain(result.fraudNotice);
 });
 
@@ -47,9 +49,9 @@ it.each([
 ] as const)("renders the source authorization for %s/%s with one consent and the correct Minnesota placement", (state, product, phrase, minnesota) => {
   const library = resolvePrototypeLibrary(db, "isitrust", "source-authorization"); installPrototypeLibrary(library);
   // Group Term at this amount follows SI; 20-Year follows QD with full health questions.
-  const values = { membership: atpeAssociationKey, state, "birth-date": "1986-01-01", coverageSelections: [product], productApplicants: { [product]: ["member"] }, coverageAmounts: { [`${product}:member`]: 100000 } };
+  const values = { dependents: ["spouse", "child"], membership: atpeAssociationKey, state, "birth-date": "1986-01-01", coverageSelections: [product], productApplicants: { [product]: ["member"] }, coverageAmounts: { [`${product}:member`]: 100000 } };
   const result = resolveReviewExperience(library.client, "isitrust", library.products, values);
-  const content = composeReadAndSign(reviewDefaults.readAndSignContent, result.fraudNotice, result.consent.text, result.authorizationVisible, result.medicalAuthorization);
+  const content = composeReadAndSign(reviewDefaults.readAndSignContent, result.fraudNotice, result.consent.text, result.authorizationVisible, result.medicalAuthorization, result.premiumContributionStatement);
   expect(content).toContain(phrase);
   expect(content.match(/CONSENT:/g)).toHaveLength(1);
   expect(content).not.toContain("site specific or standard consent");
@@ -80,13 +82,13 @@ it("uses the captured editable authorization guard and honors excluded question 
   if (!isReviewPolicy(row.value)) throw new Error("Invalid fixture policy");
   row.value.authorization!.pageIds = ["health-si"];
   const after = resolvePrototypeLibrary(edited, "isitrust", "after-guard-edit");
-  const values = { membership: atpeAssociationKey, state: "PA", "birth-date": "1986-01-01", coverageSelections: ["sh-critical-illness"], productApplicants: { "sh-critical-illness": ["member"] }, coverageAmounts: { "sh-critical-illness:member": 10000 } };
+  const values = { dependents: ["spouse", "child"], membership: atpeAssociationKey, state: "PA", "birth-date": "1986-01-01", coverageSelections: ["sh-critical-illness"], productApplicants: { "sh-critical-illness": ["member"] }, coverageAmounts: { "sh-critical-illness:member": 10000 } };
   for (const [library, expected] of [[captured, true], [after, false]] as const) {
     installPrototypeLibrary(library);
     expect(resolveReviewExperience(library.client, "isitrust", library.products, values).authorizationVisible).toBe(expected);
   }
   const withoutQuestions = structuredClone(captured.client);
-  withoutQuestions.pages = { participationSource: "sitePages", requirements: { "health-li": "none", "health-si": "none", "health-di": "none" } };
+  withoutQuestions.pages = { participationSource: "sitePages", requirements: { "health-tele": "none", "health-si": "none", "health-di-supp": "none" } };
   installPrototypeLibrary(captured);
   expect(resolveReviewExperience(withoutQuestions, "isitrust", captured.products, values).authorizationVisible).toBe(false);
 });

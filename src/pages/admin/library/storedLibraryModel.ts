@@ -2,8 +2,9 @@ import { withFreshStartCatalog } from "../../../domain/freshStartCatalog";
 import { resolveStoredFieldSurfaces } from "../../../domain/fieldSurfaces";
 import { resolveStoredFieldCollections } from "../../../domain/fieldCollections";
 import type { LibraryCatalog } from "../../../services/libraryCatalogService";
-import { resolveEffectiveSite } from "../../../domain/effectiveSite";
+import { resolveCompiledEffectiveSite } from "../../../domain/effectiveSite";
 import { isApplicantExperience } from "../../../domain/applicantExperience";
+import { buildPrototypeClient } from "../../../domain/prototypeConfigurationProjection";
 import type { SnapshotTable } from "../../../persistence/snapshot";
 import { resolvePageCatalog } from "../../../domain/pageCatalog";
 
@@ -18,7 +19,7 @@ export const storedDomains: Record<string, Array<[SnapshotTable, string]>> = {
   patterns: [["patterns", "Patterns"], ["patternAssignments", "Assignments"]],
   flags: [["flagDefinitions", "Flags"], ["flagAssignments", "Assignments"], ["flagValues", "Values"]],
   features: [["features", "Features"], ["siteFeatures", "Site settings"]],
-  content: [["contentValues", "Content"], ["contentEntries", "Definitions"], ["documentDefinitions", "Documents"]],
+  content: [["contentValues", "Content"]],
   communications: [["emailTemplates", "Templates"], ["siteEmailTemplates", "Site settings"]],
   themes: [["brandingProfiles", "Branding"], ["supportProfiles", "Support"]],
   "url-parameters": [["urlParameters", "Parameters"], ["siteUrlParameters", "Site settings"]],
@@ -26,25 +27,28 @@ export const storedDomains: Record<string, Array<[SnapshotTable, string]>> = {
 };
 export type StoredRow = Record<string, unknown> & { id: string; key?: string };
 function orderedPages(catalog: LibraryCatalog, siteKey: string) {
-  return resolvePageCatalog(withFreshStartCatalog(catalog.data, siteKey === "all" ? undefined : siteKey), siteKey === "all" ? undefined : siteKey).map((row, index) => ({ ...row, sequence: index + 1 }));
+  return resolvePageCatalog(catalog.data, siteKey === "all" ? undefined : siteKey).map((row, index) => ({ ...row, sequence: index + 1 }));
 }
 /** All Sites shows the catalog; a selected Site shows only its enabled pages. */
 export function storedApplicationPageRows(catalog: LibraryCatalog, siteKey: string) {
   if (siteKey !== "all" && !catalog.data.sites.some(site => site.key === siteKey)) return [];
   const labels = { application: "Application", resume: "Resume", advisor: "Advisor", utility: "Utility", internal: "Internal" };
-  return resolvePageCatalog(withFreshStartCatalog(catalog.data, siteKey === "all" ? undefined : siteKey), siteKey === "all" ? undefined : siteKey).filter(row => row.definition.flow !== "internal" && (siteKey === "all" || row.enabled)).map(row => ({
+  return resolvePageCatalog(withFreshStartCatalog(catalog.data, siteKey === "all" ? undefined : siteKey, catalog.siteScope), siteKey === "all" ? undefined : siteKey).filter(row => row.definition.flow !== "internal" && (siteKey === "all" || row.enabled)).map(row => ({
     ...row, flow: labels[row.definition.flow],
     route: row.definition.path, requirement: siteKey === "all" || row.definition.flow !== "application" && row.enabled ? "—" : row.requirement ?? "Not configured",
   }));
 }
 export function storedLibraryRows(catalog: LibraryCatalog, table: SnapshotTable, siteKey: string): StoredRow[] {
-  const data = withFreshStartCatalog(catalog.data, siteKey === "all" ? undefined : siteKey);
+  return compiledStoredLibraryRows({ ...catalog, data: withFreshStartCatalog(catalog.data, siteKey === "all" ? undefined : siteKey, catalog.siteScope) }, table, siteKey);
+}
+function compiledStoredLibraryRows(catalog: LibraryCatalog, table: SnapshotTable, siteKey: string): StoredRow[] {
+  const data = catalog.data;
   const site = data.sites.find(site => site.key === siteKey);
   let rows = data[table] as unknown as StoredRow[];
   if (siteKey === "all") return table === "pages" ? orderedPages(catalog, siteKey) : rows;
   if (!site) return [];
   rows = rows.filter(row => (!row.siteKey || row.siteKey === siteKey) && (!row.siteId || row.siteId === site.id) && (!row.clientKey || row.clientKey === data.clients.find(c => c.id === site.clientId)?.key) && (!row.clientId || row.clientId === site.clientId));
-  const resolved = resolveEffectiveSite(data, siteKey);
+  const resolved = resolveCompiledEffectiveSite(data, siteKey);
   const pageKeys = new Set(resolved.configuration.pages.filter(page => page.requirement !== "none" && page.definition?.value.type !== "internal").map(page => page.key));
   const productKeys = new Set(resolved.products.map(product => product.productKey));
   rows = rows.filter(row => !row.productKey || productKeys.has(String(row.productKey)));
@@ -56,7 +60,7 @@ export function storedLibraryRows(catalog: LibraryCatalog, table: SnapshotTable,
   if (table === "pages") return orderedPages(catalog, siteKey).filter(row => pageKeys.has(row.key));
   if (table === "pageSections") return rows.filter(row => pageKeys.has(String(row.pageKey)));
   if (table === "validationRules") {
-    const fieldKeys = new Set(storedFieldRows(catalog, siteKey).map(field => field.key));
+    const fieldKeys = new Set(compiledStoredFieldRows(catalog, siteKey).map(field => field.key));
     return rows.filter(row => fieldKeys.has(String(row.fieldKey)));
   }
   const configuredRiders = new Set(resolved.configuration.products.flatMap(p => p.riders.filter(r => r.enabled).map(r => r.key)));
@@ -69,11 +73,14 @@ export function storedLibraryRows(catalog: LibraryCatalog, table: SnapshotTable,
   return rows;
 }
 export function childCollection(catalog: LibraryCatalog, siteKey: string) {
-  const data = withFreshStartCatalog(catalog.data, siteKey === "all" ? undefined : siteKey);
+  return compiledChildCollection({ ...catalog, data: withFreshStartCatalog(catalog.data, siteKey === "all" ? undefined : siteKey, catalog.siteScope) }, siteKey);
+}
+export function compiledChildCollection(catalog: LibraryCatalog, siteKey: string) {
+  const data = catalog.data;
   const section = data.pageSections.find(row => row.definition.collectionName === "children");
-  const resolved = siteKey === "all" ? null : resolveEffectiveSite(data, siteKey);
-  const setting = resolved?.configuration.configurations.filter(row => data.configurationDefinitions.find(def => def.key === row.key)?.definition.path?.join(".") === "applicantExperience").at(-1);
-  const experience = setting?.value;
+  const resolved = siteKey === "all" ? null : resolveCompiledEffectiveSite(data, siteKey);
+  const setting = resolved?.configuration.configurations.find(row => data.configurationDefinitions.find(def => def.key === row.key)?.definition.path?.join(".") === "applicantExperience.childEligibility.mode");
+  const experience = resolved ? buildPrototypeClient(data, resolved).client.applicantExperience : undefined;
   const settings = isApplicantExperience(experience) ? experience.childEligibility : undefined;
   const mode = settings?.mode ?? "details";
   const collection = resolved ? resolveStoredFieldCollections(data, resolved).children : null;
@@ -92,12 +99,16 @@ export type StoredFieldRow = LibraryCatalog["data"]["fields"][number] & StoredRo
 
 /** One field row per page: scoped additions and definitions belong to that page. */
 export function storedFieldRows(catalog: LibraryCatalog, siteKey: string): StoredFieldRow[] {
-  const data = withFreshStartCatalog(catalog.data, siteKey === "all" ? undefined : siteKey);
-  const collection = childCollection(catalog, siteKey);
-  const resolved = siteKey === "all" ? null : resolveEffectiveSite(data, siteKey);
+  return compiledStoredFieldRows({ ...catalog, data: withFreshStartCatalog(catalog.data, siteKey === "all" ? undefined : siteKey, catalog.siteScope) }, siteKey);
+}
+/** Internal consumers reuse the same compiled revision rather than rebuilding it. */
+export function compiledStoredFieldRows(catalog: LibraryCatalog, siteKey: string): StoredFieldRow[] {
+  const data = catalog.data;
+  const collection = compiledChildCollection(catalog, siteKey);
+  const resolved = siteKey === "all" ? null : resolveCompiledEffectiveSite(data, siteKey);
   const definitions = new Map(data.fields.map(field => [field.key, field]));
   const result: StoredFieldRow[] = [];
-  for (const page of storedLibraryRows(catalog, "pages", siteKey)) {
+  for (const page of compiledStoredLibraryRows(catalog, "pages", siteKey)) {
     const pageKey = String(page.key);
     const savedPage = resolved?.configuration.pages.find(row => row.key === pageKey);
     const effectivePage = savedPage;
@@ -168,8 +179,10 @@ export function storedFieldVisibility(catalog: LibraryCatalog, field: StoredFiel
     if (!condition) return key;
     return condition.conditions.map(clause => {
       const source = fields.find(row => row.key === clause.fieldId && row.placements.some(row => row.page === placement?.page))?.definition ?? catalog.data.fields.find(row => row.key === clause.fieldId)?.definition;
-      const value = Array.isArray(clause.value) ? clause.value.map(value => source?.options?.find(option => option.value === value)?.label ?? String(value)).join(", ") : source?.options?.find(option => option.value === clause.value)?.label ?? String(clause.value);
-      return `${source?.label ?? clause.fieldId} ${clause.operator === "equals" ? "is" : clause.operator === "notEquals" ? "is not" : clause.operator === "oneOf" ? "is one of" : "includes"} ${value}`;
+      const value = clause.operator === "outcome" && Array.isArray(clause.value)
+        ? source?.options?.filter(option => clause.value instanceof Array && clause.value.includes(option.outcome)).map(option => option.label).join(", ") || clause.value.join(", ")
+        : Array.isArray(clause.value) ? clause.value.map(value => source?.options?.find(option => option.value === value)?.label ?? String(value)).join(", ") : source?.options?.find(option => option.value === clause.value)?.label ?? String(clause.value);
+      return `${source?.label ?? clause.fieldId} ${clause.operator === "outcome" ? "has an accepted outcome" : clause.operator === "equals" ? "is" : clause.operator === "notEquals" ? "is not" : clause.operator === "oneOf" ? "is one of" : "includes"} ${value}`;
     }).join(condition.match === "all" ? "; and " : "; or ");
   });
   if (placement?.collection) descriptions.push(`Repeated for each ${placement.collection === "children" ? "child" : placement.collection}`);

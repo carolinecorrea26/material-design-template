@@ -37,10 +37,6 @@ export const Default: Story = {
   args: { formId: "demo-form" },
 };
 
-export const CustomLabel: Story = {
-  args: { formId: "demo-form", nextLabel: "Submit application" },
-};
-
 export const Transitioning: Story = {
   name: "isTransitioning (submit in flight)",
   args: { formId: "demo-form", isTransitioning: true },

@@ -1,0 +1,11 @@
+{
+  "presentation": [
+    {
+      "id": "shared-action-presentation",
+      "name": "Shared link and button typography",
+      "status": "confirmed",
+      "statement": "Links and buttons use font weight 600. Links have no underline in normal, hover or focus states; visible keyboard focus remains. Shared inline drawer actions use the configured MUI Link component. These are global presentation defaults, not Site-specific overrides. The global application theme owns the shared typography scale: PageTitle uses h3 at 1.5rem at every breakpoint, and application text has a minimum size of 0.875rem. Small controls, supporting text and Library tables inherit theme typography rather than local size literals. Current and completed breadcrumbs are the explicit weight-500 exception to normal link/button emphasis; future entries retain the default text weight. Library and Storybook display the same shared theme. Email typography and demonstration illustrations retain their separate presentation contracts.",
+      "source": "User presentation update November 15, 2026; requirements/global/presentation-tokens.json; src/app/theme.ts; User typography correction November 23, 2026"
+    }
+  ]
+}

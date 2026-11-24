@@ -7,7 +7,7 @@ import { rateDisplayForAmount, type RateDisplayState } from '../../domain/rateDi
 import ReferenceRateTableLink from './ReferenceRateTableLink';
 
 export type EstimatedRateProps = Omit<TypographyProps, 'children' | 'display'> & {
-  /** Product prices use 1.25rem; summary prices use body2 sizing. Both are bold and primary-colored. Inline inherits its context. */
+  /** Product and summary prices use 1rem, bold, normal text color. The summary total supplies primary emphasis; inline inherits its context. */
   appearance?: 'inline' | 'product' | 'summary';
   amount?: number;
   display?: RateDisplayState;
@@ -22,7 +22,7 @@ export default function EstimatedRate({ appearance = 'product', amount = NaN, di
   const state = requested.status === 'available' ? rateDisplayForAmount(requested.amount) : requested;
   if (state.status === 'hidden') return null;
   if (state.status === 'reference-table') return <ReferenceRateTableLink table={state.table} />;
-  const priceSx = appearance === 'inline' ? {} : { color: 'primary.main', fontWeight: 700, fontSize: appearance === 'summary' ? '0.875rem' : '1.25rem' };
+  const priceSx = appearance === 'inline' ? {} : { color: 'text.primary', fontWeight: 700, fontSize: '1rem' };
   const withLabel = (content: ReactNode) => label ? <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.5 }}><Typography component="span" variant="caption" color="text.secondary">{label}</Typography>{content}</Box> : content;
   if (state.status === 'unavailable') return withLabel(<Typography component="span" variant="body2" sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.5, color: 'text.secondary', fontWeight: 400, lineHeight: 1.5 }}><InfoRoundedIcon aria-hidden="true" sx={{ fontSize: 16, flexShrink: 0 }} />{requirementText("coverage.estimated-rate.estimate-unavailable")}</Typography>);
   if (state.status === 'needs-information') return null;

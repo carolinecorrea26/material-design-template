@@ -1,0 +1,74 @@
+import { readFileSync } from 'node:fs';
+import { afterEach, expect, it } from 'vitest';
+import { installPrototypeLibrary, resolvePrototypeLibrary, getRelatedPrototypeLibrary, getPrototypeLibrary } from './prototypeLibrary';
+import { freshStartSource } from './freshStartCatalog';
+import { applicationUnderwriting } from './coverageRuntime';
+import { coverageUnlocksPage, libraryFlowContext, resolvePageParticipation, siteFlowContext } from '../config/flowGates';
+import { possibleProductHealthPages } from './coverageJourneyUnderwriting';
+import type { CoverageJourneyPolicy } from './coverageJourneyPolicy';
+import { getAnalyticsInventory } from '../analytics/inventory';
+import { resolveSiteCoverage } from '../data/resolvers';
+import { findSiteIdUnlockingPage } from '../config/client/findClientForPage';
+import { getOrderedDecisionEntries } from '../utils/coverageDecisions';
+import { getMockEmailSamples } from '../utils/mockEmail';
+import { journeyAssignment } from '../migration/freshStartJourneyFixtures';
+
+const data = JSON.parse(readFileSync('public/catalog/portal.json', 'utf8')).data;
+afterEach(() => { installPrototypeLibrary(null); sessionStorage.clear(); });
+it('keeps WAEPA Library reachability aligned with actual health routing while another Site is installed', () => {
+  const asce = resolvePrototypeLibrary(data, 'asce', 'routing-authority');
+  const waepa = resolvePrototypeLibrary(data, 'waepa', 'routing-authority');
+  const product = waepa.products.find(product => product.id === 'li-group-term')!;
+  const values = { membership: 'current', 'birth-date': '1990-01-01', 'state-province': 'VA', 'active-military': 'no', coverageSelections: [product.id], productApplicants: { [product.id]: ['member'] }, coverageAmounts: { [`${product.id}:member`]: 100000 } };
+  installPrototypeLibrary(waepa);
+  const actual = applicationUnderwriting(product, 'member', values).healthPage!;
+  expect(actual).toBe('health-tele');
+  expect(resolvePageParticipation(actual, values)).toBe(true);
+  installPrototypeLibrary(asce);
+  expect(getOrderedDecisionEntries(values, waepa.products, waepa)[0].underwriting).toMatchObject({ status: 'resolved', healthPage: actual });
+  expect(getMockEmailSamples('waepa', { library: waepa }).some(email => email.type === 'receipt')).toBe(true);
+  expect(coverageUnlocksPage(actual, product, libraryFlowContext(waepa))).toBe(true);
+  expect(coverageUnlocksPage('health-qd', product, libraryFlowContext(waepa))).toBe(false);
+  expect(resolveSiteCoverage('waepa').find(row => row.id === product.id)?.healthPagesUnlocked).toContain(actual);
+  expect(getAnalyticsInventory('waepa').some(tag => tag.pageId === actual && tag.kind === 'page')).toBe(true);
+  const launchSite = findSiteIdUnlockingPage(actual)!;
+  expect(getRelatedPrototypeLibrary(launchSite)).not.toBeNull();
+  expect(resolveSiteCoverage(launchSite).some(row => row.status !== 'disabled' && row.healthPagesUnlocked.includes(actual))).toBe(true);
+  expect(getPrototypeLibrary()).toBe(asce);
+});
+
+it('propagates changed Site journey mappings through runtime and cross-Site inspection from the same captured source', () => {
+  const source = structuredClone(freshStartSource());
+  const row = source.siteProducts.waepa.catalog!.configurationValues.find(row => row.configurationKey === 'template.product-journey-policy.li-group-term')!;
+  (row.value as CoverageJourneyPolicy).healthPageByUnderwriting = { QD: 'health-si', FUW: 'health-di-supp' };
+  const asce = resolvePrototypeLibrary(data, 'asce', 'changed-routing-authority', source);
+  installPrototypeLibrary(asce);
+  const related = getRelatedPrototypeLibrary('waepa')!;
+  const product = related.products.find(product => product.id === 'li-group-term')!;
+  expect(possibleProductHealthPages(related.site, product.id, ['member'])).toEqual(expect.arrayContaining(['health-si', 'health-di-supp']));
+  expect(coverageUnlocksPage('health-tele', product, siteFlowContext('waepa'))).toBe(false);
+  expect(coverageUnlocksPage('health-si', product, siteFlowContext('waepa'))).toBe(true);
+  expect(getAnalyticsInventory('waepa').some(tag => tag.pageId === 'health-si' && tag.kind === 'page')).toBe(true);
+  expect(getAnalyticsInventory('waepa').some(tag => tag.pageId === 'health-tele' && tag.kind === 'page')).toBe(false);
+  expect(getPrototypeLibrary()).toBe(asce);
+  installPrototypeLibrary(related);
+  const values = { membership: 'current', 'birth-date': '1990-01-01', 'state-province': 'VA', 'active-military': 'no', coverageSelections: [product.id], productApplicants: { [product.id]: ['member'] }, coverageAmounts: { [`${product.id}:member`]: 100000 } };
+  expect(applicationUnderwriting(product, 'member', values).healthPage).toBe('health-si');
+});
+
+it('preserves explicit Association Health overrides in runtime and capability inspection', () => {
+  const source = structuredClone(freshStartSource());
+  const base = resolvePrototypeLibrary(data, 'asce', 'association-health-base');
+  const association = base.associationContext.associations[0];
+  const policy = journeyAssignment(source, 'asce', 'li-term');
+  policy.associationChoices = [{ key: association.id, label: association.name }];
+  policy.associationUnderwriting = [{ associationKey: association.id, applicantKey: 'member', bands: [{ minimumAgeYears: 17, maximumAgeYears: 75, minimumAmount: 1, maximumAmount: 1000000, pathway: 'QD', healthPage: 'health-si' }] }];
+  const library = resolvePrototypeLibrary(data, 'asce', 'association-health-override', source);
+  installPrototypeLibrary(library);
+  const product = library.products.find(product => product.id === 'li-term')!;
+  const values = { membership: association.id, 'birth-date': '1990-01-01', coverageSelections: [product.id], productApplicants: { [product.id]: ['member'] }, coverageAmounts: { [`${product.id}:member`]: 100000 } };
+  expect(applicationUnderwriting(product, 'member', values)).toMatchObject({ status: 'resolved', underwritingType: 'QD', healthPage: 'health-si' });
+  expect(possibleProductHealthPages(library.site, product.id, ['member'])).toEqual(['health-si']);
+  expect(coverageUnlocksPage('health-si', product, libraryFlowContext(library))).toBe(true);
+  expect(coverageUnlocksPage('health-qd', { ...product, applicants: ['member'] }, libraryFlowContext(library))).toBe(false);
+});

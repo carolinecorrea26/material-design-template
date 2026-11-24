@@ -1,18 +1,18 @@
 {
   "page": "profile",
   "sections": [
-    "personal",
-    "drivers-license",
-    "outside-us",
-    "travel-outside-us",
-    "physician",
-    "other-coverage",
-    "financial-questionnaire",
-    "spouse-personal",
-    "spouse-drivers-license",
-    "spouse-outside-us",
-    "spouse-travel-outside-us",
-    "spouse-physician",
-    "spouse-other-coverage"
+    "profile-personal-self",
+    "profile-personal-self-drivers-license",
+    "profile-personal-self-outside-us",
+    "profile-personal-self-travel-outside-us",
+    "profile-personal-self-physician",
+    "profile-financial-self",
+    "profile-financial-questionnaire-self",
+    "profile-personal-spouse",
+    "profile-personal-spouse-drivers-license",
+    "profile-personal-spouse-outside-us",
+    "profile-personal-spouse-travel-outside-us",
+    "profile-personal-spouse-physician",
+    "profile-financial-spouse"
   ]
 }

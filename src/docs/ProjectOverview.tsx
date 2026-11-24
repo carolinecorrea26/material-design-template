@@ -68,13 +68,13 @@ const HeaderCell = ({ children }: { children: React.ReactNode }) => (
 );
 
 const BodyCell = ({ children }: { children: React.ReactNode }) => (
-  <TableCell sx={{ verticalAlign: "top", fontSize: "0.8125rem" }}>
+  <TableCell sx={{ verticalAlign: "top", fontSize: "caption.fontSize" }}>
     {children}
   </TableCell>
 );
 
 const AreaCell = ({ children }: { children: React.ReactNode }) => (
-  <TableCell sx={{ verticalAlign: "top", fontSize: "0.8125rem", whiteSpace: "nowrap", color: "text.secondary" }}>
+  <TableCell sx={{ verticalAlign: "top", fontSize: "caption.fontSize", whiteSpace: "nowrap", color: "text.secondary" }}>
     {children}
   </TableCell>
 );

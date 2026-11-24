@@ -1,10 +1,5 @@
-import type { BeneficiaryContent } from "../types";
+import type { BeneficiaryContent } from '../types';
+import { requirementContentSection } from '../../domain/requirementContent';
 
-export const beneficiaryDefaults: BeneficiaryContent = {
-  noMoreOnlineMessage:
-    "No more beneficiaries can be added online for this coverage.",
-  noApplicantProductsMessage:
-    "No self or spouse Life/AD product selections were found.",
-  missingBeneficiaryError:
-    "Please add beneficiary information before continuing.",
-};
+/** Read-only defaults projected from the canonical content bindings. */
+export const beneficiaryDefaults = requirementContentSection<BeneficiaryContent>('beneficiary');

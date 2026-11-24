@@ -1,3 +1,4 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import { resolveCoverageJourneyPolicy } from "../domain/coverageJourneyPolicy";
 import { paymentSelectionAllowed } from "../domain/paymentPolicy";
 import { describe, expect, it, vi } from "vitest";
@@ -8,7 +9,7 @@ import { createMigrationDatabase, createReviewedMigrationDatabase } from "./fixt
 import { mcrSource } from "./mcr";
 import { reviewActiveSiteIdentities } from "./activeSiteIdentity";
 import { applyWaepaGiAmountAdoption, applyWaepaGiPortfolioAndPayment } from "./waepaGiAdoption";
-import { resolveEffectiveSite } from "../domain/effectiveSite";
+import { resolveSnapshotSite as resolveEffectiveSite } from "../domain/effectiveSite";
 import { validateMigrationDatabase } from "./integrity";
 
 const baseline = createMigrationDatabase();

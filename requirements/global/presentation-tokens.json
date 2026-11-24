@@ -1,0 +1,26 @@
+{
+  "controls": {
+    "fontWeight": 600,
+    "linkDecoration": "none",
+    "attentionDurationMs": 1000
+  },
+  "email": {
+    "fontFamily": "Arial, Helvetica, sans-serif",
+    "body": {
+      "fontSize": 16,
+      "lineHeight": 1.55
+    },
+    "footer": {
+      "fontSize": 11,
+      "legalFontSize": 10,
+      "noReplyFontSize": 13
+    }
+  },
+  "productCards": {
+    "unselectedPrimaryOpacity": 0.04
+  },
+  "formFields": {
+    "rowGap": 3,
+    "columnGap": 2
+  }
+}

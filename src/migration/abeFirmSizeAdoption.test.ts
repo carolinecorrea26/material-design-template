@@ -1,7 +1,9 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import { afterEach, beforeAll, expect, it } from "vitest";
 import { createReviewedMigrationDatabase } from "./fixtures";
 import { applyAbeFirmSizeAdoption } from "./abeFirmSizeAdoption";
-import { installPrototypeLibrary, resolvePrototypeLibrary } from "../domain/prototypeLibrary";
+import { installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import { resolveEffectiveEligibility } from "../domain/effectiveSite";
 import { resolveApplicationCoverage, validateApplicationCoverages } from "../domain/coverageRuntime";
 import { getClientPageFields } from "../config/clientFields/getClientPageFields";

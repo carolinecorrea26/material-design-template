@@ -1,0 +1,10 @@
+{
+  "page": "home",
+  "configurations": {
+    "form-template": "multi"
+  },
+  "content": {
+    "home.hero.title": "Safeguard your family's future.",
+    "home.hero.description": "Group Term Life and Group Short Term Disability Insurance, available exclusively to Civilian Federal Employees. Start your application today."
+  }
+}

@@ -29,11 +29,10 @@ function SettingsTable({ rows, siteKey }: { rows: ConfigurationInspectionRow[]; 
     { id: 'name', label: 'Setting', width: 260, value: row => row.name },
     { id: 'description', label: 'Description', width: 440, value: row => row.description },
     { id: 'group', label: 'Category', width: 180, value: row => row.group, filter: true, tag: true },
-    { id: 'values', label: siteKey === 'all' ? 'Configured values' : 'Effective value', width: 320, value: row => row.values, render: row => row.owner === 'configurations' ? row.values : <LibraryLink domain={row.owner === 'rules' ? 'coverage' : row.owner} filters={{ ...(row.owner === 'rules' ? { dataset: 'configurationValues' } : {}), q: row.referenceKey }}>{row.owner === 'rules' ? 'Coverage settings' : ownerLabels[row.owner]}</LibraryLink> },
+    { id: 'values', label: siteKey === 'all' ? 'Configured values' : 'Effective value', width: 320, value: row => row.owner === 'configurations' ? row.values : row.owner === 'rules' ? 'Coverage settings' : ownerLabels[row.owner], render: row => row.owner === 'configurations' ? row.values : <LibraryLink domain={row.owner === 'rules' ? 'coverage' : row.owner} filters={{ ...(row.owner === 'rules' ? { dataset: 'configurationValues' } : {}), q: row.referenceKey }}>{row.owner === 'rules' ? 'Coverage settings' : ownerLabels[row.owner]}</LibraryLink> },
     { id: 'options', label: 'Options', width: 260, value: row => row.options },
     { id: 'scope', label: 'Scope', width: 180, value: row => row.scope, filter: true, tag: true },
     { id: 'usedIn', label: 'Used in', width: 240, value: row => row.usedIn },
-    { id: 'source', label: 'Source', width: 280, value: row => row.source },
   ]} />;
 }
 
@@ -67,9 +66,9 @@ export default function ConfigurationsLibrary({ siteKey, domain }: { siteKey: st
       </Tabs>
       {coverageView === 'products' ? <ProductsLibrary siteKey={siteKey} /> : coverageView === 'review' ? <RuleCoverageLibrary siteKey={siteKey} /> : <><SettingsTable rows={rows} siteKey={siteKey} /><BusinessRulesLibrary siteKey={siteKey} view="coverage" /></>}
     </> : view === 'theme' ? <ThemesBrandingLibrary /> : view === 'url-parameters' ? <UrlParametersLibrary siteKey={siteKey} /> : view === 'features' ? <><StoredLibraryDomain domain="features" siteKey={siteKey} /><details><summary>Template change reference</summary><TemplateChangeReference /></details></> : view === 'contacts' ? <>
-      <SettingsTable rows={rows} siteKey={siteKey} />
+      <SettingsTable rows={rows.filter(row => !row.key.startsWith('emailSupport.'))} siteKey={siteKey} />
       <Typography variant="h6">Email contact settings</Typography>
-      {siteKey === 'all' ? <GlobalEmailConfigurationTable /> : <ClientEmailConfigurationTable siteId={siteKey} />}
+      {siteKey === 'all' ? <GlobalEmailConfigurationTable catalog={catalog} /> : <ClientEmailConfigurationTable siteId={siteKey} catalog={catalog} />}
     </> : <>
     <SettingsTable rows={rows} siteKey={siteKey} />
     </>}

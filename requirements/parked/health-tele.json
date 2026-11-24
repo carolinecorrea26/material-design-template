@@ -1,0 +1,362 @@
+{
+  "page": "health-tele",
+  "components": [
+    {
+      "type": "FormRoutePage",
+      "mapping": "form-route-page",
+      "components": [
+        {
+          "type": "PageHeader"
+        },
+        {
+          "type": "HealthQuestionList",
+          "mapping": "health-tele",
+          "components": [
+            {
+              "type": "ApplicantSectionDivider"
+            },
+            {
+              "type": "HealthQuestion",
+              "components": [
+                {
+                  "type": "FieldRenderer"
+                },
+                {
+                  "type": "DynamicList"
+                }
+              ]
+            },
+            {
+              "type": "HealthQuestion",
+              "purpose": "effective configured questionnaire items"
+            }
+          ]
+        },
+        {
+          "type": "PageNav"
+        }
+      ]
+    }
+  ],
+  "definition": {
+    "id": "health-tele",
+    "path": "/health-tele",
+    "type": "form",
+    "groupId": "health",
+    "flow": "application",
+    "healthGate": true,
+    "displayName": "Health TELE"
+  },
+  "position": 9,
+  "layout": {
+    "sections": {
+      "questions": {
+        "id": "healthLiSelf",
+        "for": "self",
+        "fields": [
+          "health-li-q1",
+          "health-li-q2",
+          "health-li-q3",
+          "health-li-q4",
+          "health-li-q5",
+          "health-li-q6",
+          "health-li-q7",
+          "health-li-q8",
+          "health-li-q9",
+          "health-li-q10",
+          "health-li-q11",
+          "health-li-q12",
+          "health-li-q13",
+          "health-li-q14",
+          "health-li-q15"
+        ]
+      },
+      "spouse-questions": {
+        "id": "healthLiSpouse",
+        "for": "spouse",
+        "fields": [
+          "health-li-q1",
+          "health-li-q2",
+          "health-li-q3",
+          "health-li-q4",
+          "health-li-q5",
+          "health-li-q6",
+          "health-li-q7",
+          "health-li-q8",
+          "health-li-q9",
+          "health-li-q10",
+          "health-li-q11",
+          "health-li-q12",
+          "health-li-q13",
+          "health-li-q14",
+          "health-li-q15"
+        ]
+      }
+    },
+    "dialogs": {
+      "condition-details": {
+        "for": "self",
+        "fields": [
+          "health-detail-onset",
+          "health-detail-conditions",
+          "health-detail-physician-address"
+        ]
+      }
+    }
+  },
+  "content": {
+    "wording": [
+      "page.health-tele.title",
+      "page.health-tele.subhead",
+      "page.health-tele.nav-title"
+    ],
+    "runtime": [
+      "application.ui.onset",
+      "application.ui.no-details-provided",
+      "health.question-title",
+      "health.details-label",
+      "health.condition-details-modal",
+      "validation.health.answer",
+      "validation.health.add-details",
+      "validation.health.update-details",
+      "validation.health.maximum-records",
+      "validation.health.detail-error",
+      "validation.health.value",
+      "validation.health.date",
+      "validation.health.month-year",
+      "validation.health.questionnaire-unresolved",
+      "health.condition-details-label"
+    ]
+  },
+  "fieldMapping": {
+    "page": "health-tele"
+  },
+  "answerKeyPatterns": {
+    "spouse": "{field}-spouse"
+  },
+  "surfaces": {
+    "healthLiDetails": {
+      "mapping": {
+        "page": "health-tele"
+      },
+      "definition": {
+        "label": "health.details-label",
+        "maxItems": 10,
+        "fields": [
+          {
+            "fieldKey": "health-li-detail-onset",
+            "valueKey": "onset"
+          },
+          {
+            "fieldKey": "health-li-detail-conditionsDetails",
+            "valueKey": "conditionsDetails"
+          },
+          {
+            "fieldKey": "health-li-detail-physicianAddress",
+            "valueKey": "physicianAddress"
+          }
+        ],
+        "libraryGroup": {
+          "label": "health.condition-details-modal"
+        }
+      },
+      "aliases": {
+        "health-li-detail-onset": {
+          "field": "health-detail-onset"
+        },
+        "health-li-detail-conditionsDetails": {
+          "field": "health-detail-conditions"
+        },
+        "health-li-detail-physicianAddress": {
+          "field": "health-detail-physician-address"
+        }
+      }
+    }
+  },
+  "collections": {
+    "healthLiQ1SelfDetails": {
+      "surface": "healthLiDetails",
+      "section": "questions",
+      "storageName": "health-li-q1-details"
+    },
+    "healthLiQ2SelfDetails": {
+      "surface": "healthLiDetails",
+      "section": "questions",
+      "storageName": "health-li-q2-details"
+    },
+    "healthLiQ3SelfDetails": {
+      "surface": "healthLiDetails",
+      "section": "questions",
+      "storageName": "health-li-q3-details"
+    },
+    "healthLiQ4SelfDetails": {
+      "surface": "healthLiDetails",
+      "section": "questions",
+      "storageName": "health-li-q4-details"
+    },
+    "healthLiQ5SelfDetails": {
+      "surface": "healthLiDetails",
+      "section": "questions",
+      "storageName": "health-li-q5-details"
+    },
+    "healthLiQ6SelfDetails": {
+      "surface": "healthLiDetails",
+      "section": "questions",
+      "storageName": "health-li-q6-details"
+    },
+    "healthLiQ7SelfDetails": {
+      "surface": "healthLiDetails",
+      "section": "questions",
+      "storageName": "health-li-q7-details"
+    },
+    "healthLiQ8SelfDetails": {
+      "surface": "healthLiDetails",
+      "section": "questions",
+      "storageName": "health-li-q8-details"
+    },
+    "healthLiQ9SelfDetails": {
+      "surface": "healthLiDetails",
+      "section": "questions",
+      "storageName": "health-li-q9-details"
+    },
+    "healthLiQ10SelfDetails": {
+      "surface": "healthLiDetails",
+      "section": "questions",
+      "storageName": "health-li-q10-details"
+    },
+    "healthLiQ11SelfDetails": {
+      "surface": "healthLiDetails",
+      "section": "questions",
+      "storageName": "health-li-q11-details"
+    },
+    "healthLiQ12SelfDetails": {
+      "surface": "healthLiDetails",
+      "section": "questions",
+      "storageName": "health-li-q12-details"
+    },
+    "healthLiQ13SelfDetails": {
+      "surface": "healthLiDetails",
+      "section": "questions",
+      "storageName": "health-li-q13-details"
+    },
+    "healthLiQ14SelfDetails": {
+      "surface": "healthLiDetails",
+      "section": "questions",
+      "storageName": "health-li-q14-details"
+    },
+    "healthLiQ15SelfDetails": {
+      "surface": "healthLiDetails",
+      "section": "questions",
+      "storageName": "health-li-q15-details"
+    },
+    "healthLiQ1SpouseDetails": {
+      "surface": "healthLiDetails",
+      "section": "spouse-questions",
+      "storageName": "health-li-q1-spouse-details"
+    },
+    "healthLiQ2SpouseDetails": {
+      "surface": "healthLiDetails",
+      "section": "spouse-questions",
+      "storageName": "health-li-q2-spouse-details"
+    },
+    "healthLiQ3SpouseDetails": {
+      "surface": "healthLiDetails",
+      "section": "spouse-questions",
+      "storageName": "health-li-q3-spouse-details"
+    },
+    "healthLiQ4SpouseDetails": {
+      "surface": "healthLiDetails",
+      "section": "spouse-questions",
+      "storageName": "health-li-q4-spouse-details"
+    },
+    "healthLiQ5SpouseDetails": {
+      "surface": "healthLiDetails",
+      "section": "spouse-questions",
+      "storageName": "health-li-q5-spouse-details"
+    },
+    "healthLiQ6SpouseDetails": {
+      "surface": "healthLiDetails",
+      "section": "spouse-questions",
+      "storageName": "health-li-q6-spouse-details"
+    },
+    "healthLiQ7SpouseDetails": {
+      "surface": "healthLiDetails",
+      "section": "spouse-questions",
+      "storageName": "health-li-q7-spouse-details"
+    },
+    "healthLiQ8SpouseDetails": {
+      "surface": "healthLiDetails",
+      "section": "spouse-questions",
+      "storageName": "health-li-q8-spouse-details"
+    },
+    "healthLiQ9SpouseDetails": {
+      "surface": "healthLiDetails",
+      "section": "spouse-questions",
+      "storageName": "health-li-q9-spouse-details"
+    },
+    "healthLiQ10SpouseDetails": {
+      "surface": "healthLiDetails",
+      "section": "spouse-questions",
+      "storageName": "health-li-q10-spouse-details"
+    },
+    "healthLiQ11SpouseDetails": {
+      "surface": "healthLiDetails",
+      "section": "spouse-questions",
+      "storageName": "health-li-q11-spouse-details"
+    },
+    "healthLiQ12SpouseDetails": {
+      "surface": "healthLiDetails",
+      "section": "spouse-questions",
+      "storageName": "health-li-q12-spouse-details"
+    },
+    "healthLiQ13SpouseDetails": {
+      "surface": "healthLiDetails",
+      "section": "spouse-questions",
+      "storageName": "health-li-q13-spouse-details"
+    },
+    "healthLiQ14SpouseDetails": {
+      "surface": "healthLiDetails",
+      "section": "spouse-questions",
+      "storageName": "health-li-q14-spouse-details"
+    },
+    "healthLiQ15SpouseDetails": {
+      "surface": "healthLiDetails",
+      "section": "spouse-questions",
+      "storageName": "health-li-q15-spouse-details"
+    }
+  },
+  "controls": [
+    "health-ci-q1",
+    "health-ci-q2",
+    "health-ci-q3",
+    "health-ci-q4",
+    "health-ci-q5",
+    "health-ci-q6",
+    "health-ci-q7",
+    "health-ci-q8",
+    "health-ci-q9",
+    "health-ci-q10",
+    "health-ci-q11",
+    "health-ci-q12",
+    "health-ci-q13",
+    "health-ci-q14",
+    "health-ci-q15",
+    "health-ci-q16",
+    "health-ci-q11-ca"
+  ],
+  "retiredPageKeys": [
+    "health-li",
+    "health-ci"
+  ],
+  "retiredComponentKeys": [
+    "component-yes-no-detail-list"
+  ],
+  "contentSlots": {
+    "page.health-tele.title": {
+      "name": "Page title"
+    },
+    "page.health-tele.subhead": {
+      "name": "Page introduction"
+    }
+  }
+}

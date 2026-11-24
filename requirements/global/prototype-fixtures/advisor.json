@@ -1,3 +1,4 @@
 {
-  "email": "advisor@example.com"
+  "email": "advisor@example.com",
+  "exampleSavedApplicationAgeDays": 1
 }

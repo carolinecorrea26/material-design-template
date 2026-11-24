@@ -2,273 +2,1892 @@
   "frame": [
     {
       "name": "AppShell",
-      "description": "Chooses which header, menu and footer a page shows (application form, advisor, error)."
+      "description": "Chooses which header, menu and footer a page shows (application form, advisor, error).",
+      "displayName": "Application shell",
+      "registration": {
+        "source": "src/components/layout/AppShell.tsx",
+        "role": "application-frame",
+        "section": "Components / Layout",
+        "storyId": "layout-appshell--application-form-variant"
+      },
+      "contains": [
+        "AppBody",
+        "AppFooter",
+        "AppHeader",
+        "AppSnackbar",
+        "CookieDialog",
+        "OfflineBanner"
+      ]
     },
     {
       "name": "AppHeader",
-      "description": "Brand, help actions, application menu, cart and the step bar."
+      "description": "Brand, help actions, application menu, cart and the step bar.",
+      "displayName": "Application header",
+      "registration": {
+        "source": "src/components/layout/AppHeader.tsx",
+        "role": "application-frame",
+        "section": "Components / Layout",
+        "storyId": "layout-appheader--homepage-variant"
+      },
+      "contains": [
+        "AppDrawer",
+        "AppMenu",
+        "ClientHelpBanner"
+      ]
     },
     {
       "name": "AppMenu",
-      "description": "Application navigation and informational drawers."
+      "description": "Application navigation and informational drawers.",
+      "displayName": "App menu",
+      "registration": {
+        "source": "src/components/layout/AppMenu.tsx",
+        "role": "application-frame",
+        "section": "Components / Navigation",
+        "storyId": "layout-appmenu--default"
+      },
+      "contains": [
+        "AppDrawer",
+        "Button",
+        "HowApplyingWorksPanel",
+        "Link",
+        "QuickDecisionExplainer"
+      ]
     },
     {
       "name": "AppBody",
-      "description": "Main content container with responsive spacing."
+      "description": "Main content container with responsive spacing.",
+      "displayName": "Application body",
+      "registration": {
+        "source": "src/components/layout/AppBody.tsx",
+        "role": "application-frame",
+        "section": "Components / Layout",
+        "storyId": "layout-appbody--default"
+      },
+      "contains": []
     },
     {
       "name": "AppFooter",
-      "description": "Administrator, insurer, support and legal details."
+      "description": "Administrator, insurer, support and legal details.",
+      "displayName": "Footer",
+      "registration": {
+        "source": "src/components/layout/AppFooter.tsx",
+        "role": "application-frame",
+        "section": "Components / Layout",
+        "storyId": "layout-appfooter--default"
+      },
+      "contains": [
+        "AppModal",
+        "LegalDocList",
+        "Link",
+        "PrintAction"
+      ]
     },
     {
       "name": "ClientHelpBanner",
-      "description": "Client phone, chat and other support actions."
+      "description": "Client phone, chat and other support actions.",
+      "displayName": "Client help banner",
+      "registration": {
+        "source": "src/components/layout/ClientHelpBanner.tsx",
+        "role": "application-frame",
+        "section": "Components / Content and data display / Help and support",
+        "storyId": "layout-clienthelpbanner--default"
+      },
+      "contains": [
+        "AppModal",
+        "Button"
+      ]
     },
     {
       "name": "OfflineBanner",
-      "description": "Connection notice shown above the header."
+      "description": "Connection notice shown above the header.",
+      "displayName": "Offline banner",
+      "registration": {
+        "source": "src/components/feedback/OfflineBanner.tsx",
+        "role": "application-frame",
+        "section": "Components / Feedback and overlays / Banners",
+        "storyId": "feedback-technical-error--offline"
+      },
+      "contains": []
     },
     {
       "name": "ProgressStep",
-      "description": "The steps (Getting started, Choose your coverage, and so on) and the breadcrumbs within the current step."
+      "description": "The steps (Getting started, Choose your coverage, and so on) and the breadcrumbs within the current step.",
+      "displayName": "Application progress",
+      "registration": {
+        "source": "src/components/navigation/ProgressStep.tsx",
+        "role": "application-frame",
+        "section": "Components / Navigation",
+        "storyId": "navigation-progressstep--collapsed-steps"
+      },
+      "contains": [],
+      "parts": [
+        {
+          "name": "Breadcrumbs",
+          "kind": "export",
+          "sourceSymbol": "Breadcrumbs",
+          "description": "Pages within the active main step, such as Membership, Eligibility, Beneficiary and Contact; shown when multiple applicable entries exist."
+        }
+      ]
     },
     {
       "name": "FormRoutePage",
-      "description": "Wraps each consumer form page: title, steps, breadcrumbs, back, help, validation, saving and Next."
+      "description": "Wraps each consumer form page: title, steps, breadcrumbs, back, help, validation, saving and Next.",
+      "displayName": "Application page template",
+      "registration": {
+        "source": "src/app/RoutePage.tsx",
+        "role": "application-frame",
+        "section": "Components / Layout",
+        "storyId": "application-patterns-application-page-template--standard-form-page"
+      },
+      "contains": [
+        "FormShell",
+        "PageAlert",
+        "PageHeader",
+        "PageNav",
+        "PageShell",
+        "PageTransitionSkeleton",
+        "ProgressSavedSnackbar",
+        "ProgressStep"
+      ],
+      "parts": [
+        {
+          "name": "Surface header",
+          "kind": "slot",
+          "sourceSymbol": "formHeader",
+          "description": "Optional full-width header within FormShell, above the padded form body. Advisor login supplies its themed title banner."
+        },
+        {
+          "name": "Form",
+          "kind": "native-element",
+          "sourceSymbol": "form",
+          "description": "Owns form state, validation and submit handling; FormShell supplies the visual surface."
+        },
+        {
+          "name": "Page content",
+          "kind": "slot",
+          "sourceSymbol": "children",
+          "description": "The page supplies its sections and shared pieces. This slot is not a fixed list of sections."
+        },
+        {
+          "name": "Contextual help",
+          "kind": "slot",
+          "sourceSymbol": "help",
+          "description": "The page supplies help chips and their content; PageHeader places the help below the heading."
+        }
+      ]
     },
     {
       "name": "FormShell",
-      "description": "The visual surface a form sits on."
+      "description": "The visual surface a form sits on.",
+      "displayName": "Form shell",
+      "registration": {
+        "source": "src/components/layout/FormShell.tsx",
+        "role": "application-frame",
+        "section": "Components / Layout / Containers",
+        "storyId": "layout-formshell--default"
+      },
+      "contains": []
     },
     {
       "name": "PageShell",
-      "description": "Shared page container and layout."
+      "description": "Shared page container and layout.",
+      "displayName": "Page shell",
+      "registration": {
+        "source": "src/components/layout/PageShell.tsx",
+        "role": "application-frame",
+        "section": "Components / Layout / Containers",
+        "storyId": "layout-pageshell--default"
+      },
+      "contains": [
+        "PageAlert",
+        "PageHeader"
+      ]
     },
     {
       "name": "PageHeader",
-      "description": "Page title, supporting copy, back action and contextual help."
+      "description": "Page title, supporting copy, back action and contextual help.",
+      "displayName": "Page header",
+      "registration": {
+        "source": "src/components/layout/PageHeader.tsx",
+        "role": "application-frame",
+        "section": "Components / Layout / Headings and dividers",
+        "storyId": "layout-pageheader--default"
+      },
+      "contains": [
+        "PageTitle"
+      ]
     },
     {
       "name": "PageTitle",
-      "description": "Page heading, subtitle and supporting actions."
+      "description": "Page heading, subtitle and supporting actions.",
+      "displayName": "Page title",
+      "registration": {
+        "source": "src/components/layout/PageTitle.tsx",
+        "role": "application-frame",
+        "section": "Components / Layout / Headings and dividers",
+        "storyId": "layout-pagetitle--title-only"
+      },
+      "contains": [],
+      "parts": [
+        {
+          "name": "Back button",
+          "kind": "action",
+          "sourceSymbol": "onBack",
+          "description": "Optional back action rendered beside the heading; the page template owns navigation."
+        }
+      ]
     },
     {
       "name": "PageNav",
-      "description": "The page's Next or Submit action."
+      "description": "The page's Next or Submit action.",
+      "displayName": "Page navigation",
+      "registration": {
+        "source": "src/components/navigation/PageNav.tsx",
+        "role": "application-frame",
+        "section": "Components / Navigation",
+        "storyId": "navigation-pagenav--default"
+      },
+      "contains": [
+        "Button"
+      ],
+      "parts": [
+        {
+          "name": "Next button",
+          "kind": "action",
+          "sourceSymbol": "formId",
+          "description": "Submits the associated form with shared disabled and transition states."
+        }
+      ]
+    },
+    {
+      "name": "PrototypeHandoffPage",
+      "description": "Full-screen prototype image sequence with normal application saving and transitions.",
+      "displayName": "Prototype handoff page",
+      "registration": {
+        "source": "src/components/feedback/PrototypeHandoffPage.tsx",
+        "role": "shared-piece",
+        "section": "Components / Feedback and overlays",
+        "storyId": "feedback-prototype-handoff--multiple-screens"
+      },
+      "contains": [
+        "FormRoutePage"
+      ],
+      "parts": [
+        {
+          "name": "Prototype screens",
+          "kind": "slot",
+          "sourceSymbol": "screens",
+          "description": "Validated global defaults or effective-Site image assignments, with accessible alternative text and optional placeholder content."
+        },
+        {
+          "name": "Continue",
+          "kind": "action",
+          "sourceSymbol": "requestSubmit",
+          "description": "Intermediate clicks advance the supplied sequence. The final click submits the shared form; pending navigation disables repeat activation."
+        },
+        {
+          "name": "Full-screen surface",
+          "kind": "native-element",
+          "sourceSymbol": "Dialog",
+          "description": "Intentional full-screen image viewport, distinct from compact AppModal workflows. It retains save errors and image-load fallback."
+        }
+      ]
+    },
+    {
+      "name": "PrintAction",
+      "description": "Prints one disclosure or consent section without surrounding application content.",
+      "displayName": "Print action",
+      "registration": {
+        "source": "src/components/content/PrintAction.tsx",
+        "role": "shared-piece",
+        "section": "Components / Content",
+        "storyId": "content-print-action--disclosure"
+      },
+      "contains": [
+        "Button"
+      ]
+    },
+    {
+      "name": "StandaloneFormPage",
+      "displayName": "Standalone form page",
+      "description": "Presentational page, form surface and header shared by standalone forms. Callers own field state, security and workflow effects.",
+      "registration": {
+        "source": "src/components/layout/StandaloneFormPage.tsx",
+        "role": "application-frame",
+        "section": "Components / Layout / Containers",
+        "storyId": "layout-standalone-form-page--default"
+      },
+      "contains": [
+        "FormShell",
+        "PageHeader",
+        "PageShell"
+      ],
+      "parts": [
+        {
+          "name": "Form content",
+          "kind": "slot",
+          "sourceSymbol": "children",
+          "description": "Explicit form fields, actions and messages. Callers own form/security state and workflow callbacks."
+        }
+      ]
     }
   ],
   "sections": [
     {
       "name": "HomeHero",
-      "description": "Introduction, start and resume actions, with a quote card or association image."
+      "description": "Global Home introduction with one primary action, a secondary paragraph/link, and a quote card or association image.",
+      "displayName": "Home hero",
+      "registration": {
+        "source": "src/components/home/HomeHero.tsx",
+        "role": "page-section",
+        "section": "Components / Pages / Home / Sections",
+        "storyId": "pages-home-hero--standard-quote"
+      },
+      "contains": [
+        "Button",
+        "EligibilityFields",
+        "Link"
+      ]
     },
     {
       "name": "AssociationIntroduction",
-      "description": "Association logo, tagline and introductory paragraphs."
+      "description": "Association logo, tagline and introductory paragraphs.",
+      "displayName": "Association introduction",
+      "registration": {
+        "source": "src/components/home/AssociationIntroduction.tsx",
+        "role": "page-section",
+        "section": "Components / Pages / Home / Sections",
+        "storyId": "pages-home-association-introduction--default"
+      },
+      "contains": []
     },
     {
       "name": "HomeCoverageSection",
-      "description": "Coverage heading, description, category choices and product information."
+      "description": "Coverage heading, description, category choices and product information.",
+      "displayName": "Home coverage section",
+      "registration": {
+        "source": "src/components/home/HomeCoverageSection.tsx",
+        "role": "page-section",
+        "section": "Components / Pages / Home / Sections",
+        "storyId": "pages-home-coverage-options--default"
+      },
+      "contains": [
+        "CoverageOptionsPanel"
+      ]
     },
     {
       "name": "UnderwriterCredentials",
-      "description": "Insurer logo, name, ratings, description and footnote."
+      "description": "Insurer logo, name, ratings, description and footnote.",
+      "displayName": "Underwriter credentials",
+      "registration": {
+        "source": "src/components/home/UnderwriterCredentials.tsx",
+        "role": "page-section",
+        "section": "Components / Pages / Home / Sections",
+        "storyId": "pages-home-new-york-life-credentials--default"
+      },
+      "contains": []
     },
     {
       "name": "MembershipStatus",
-      "description": "The membership question, with its link, eligibility and non-member feedback."
+      "description": "The membership question, with its link, eligibility and non-member feedback.",
+      "displayName": "Membership status",
+      "registration": {
+        "source": "src/components/membership/MembershipStatus.tsx",
+        "role": "page-section",
+        "section": "Components / Pages / Membership / Sections",
+        "storyId": "pages-membership-membership-status--default"
+      },
+      "contains": [
+        "FieldRenderer",
+        "Link"
+      ]
     },
     {
       "name": "MemberInformation",
-      "description": "Applicant name, email and phone, collected once membership is confirmed."
+      "description": "Applicant name, email and phone, collected once membership is confirmed.",
+      "displayName": "Member information",
+      "registration": {
+        "source": "src/components/membership/MemberInformation.tsx",
+        "role": "page-section",
+        "section": "Components / Pages / Membership / Sections",
+        "storyId": "pages-membership-member-information--default"
+      },
+      "contains": [
+        "FieldGrid",
+        "FieldRenderer"
+      ]
     },
     {
       "name": "AdditionalMembershipInformation",
-      "description": "Conditional membership follow-up questions."
-    },
-    {
-      "name": "MembershipHelp",
-      "description": "Coverage options and how-applying-works help actions."
+      "description": "Conditional membership follow-up questions.",
+      "displayName": "Additional membership information",
+      "registration": {
+        "source": "src/components/membership/AdditionalMembershipInformation.tsx",
+        "role": "page-section",
+        "section": "Components / Pages / Membership / Sections",
+        "storyId": "pages-membership-additional-membership-information--member-id"
+      },
+      "contains": [
+        "FieldGrid",
+        "FieldRenderer",
+        "SectionDivider"
+      ]
     },
     {
       "name": "EligibilitySections",
-      "description": "Personal information, covered applicants, spouse details and repeated children."
+      "description": "Personal information, covered applicants, spouse details and repeated children.",
+      "displayName": "Eligibility sections",
+      "registration": {
+        "source": "src/components/eligibility/EligibilitySections.tsx",
+        "role": "page-section",
+        "section": "Components / Pages / Eligibility / Sections",
+        "storyId": "pages-eligibility-your-information--default"
+      },
+      "contains": [
+        "ApplicantSectionDivider",
+        "DynamicList",
+        "EligibilityFields",
+        "FieldGrid",
+        "FieldRenderer",
+        "SectionDivider"
+      ],
+      "parts": [
+        {
+          "name": "SectionNote",
+          "kind": "native-element",
+          "sourceSymbol": "Alert",
+          "description": "Inline MUI info Alert at the authored section-note placement. The adapter supplies the effective section wording; this is not a separate component."
+        }
+      ]
     },
     {
       "name": "CoverageQuestions",
-      "description": "Category questions with their member and spouse follow-ups."
+      "description": "Category questions with their member and spouse follow-ups.",
+      "displayName": "Coverage questions",
+      "registration": {
+        "source": "src/components/coverage/CoverageQuestions.tsx",
+        "role": "page-section",
+        "section": "Components / Pages / Coverage / Sections",
+        "storyId": "coverage-commerce-coveragequestions--no-category-selected"
+      },
+      "contains": [
+        "ApplicantSectionDivider",
+        "ConditionalGroup",
+        "CoverageCategorySelector",
+        "FieldGrid",
+        "FieldRenderer",
+        "SectionDivider"
+      ]
     },
     {
       "name": "ProductCatalog",
-      "description": "Product choices with coverage and rider options per applicant, and the combined cost."
+      "description": "Product choices with coverage and rider options per applicant, and the combined cost.",
+      "displayName": "Product catalog",
+      "registration": {
+        "source": "src/components/coverage/ProductCatalog.tsx",
+        "role": "page-section",
+        "section": "Components / Coverage and pricing / Product selection",
+        "storyId": "coverage-commerce-productcatalog--interactive"
+      },
+      "contains": [
+        "ApplicantSectionDivider",
+        "CategoryCard",
+        "CategoryHeader",
+        "ControlledFieldRenderer",
+        "CoverageCart",
+        "EstimatedRate",
+        "FeaturedBadge",
+        "FieldGrid",
+        "ProductCard",
+        "ProductCostBreakdown",
+        "QuickDecisionInfoBox"
+      ]
     },
     {
       "name": "CoverageCategorySelector",
-      "description": "The available coverage categories and their current selections."
+      "description": "The available coverage categories and their current selections.",
+      "displayName": "Coverage category selector",
+      "registration": {
+        "source": "src/components/coverage/CoverageCategorySelector.tsx",
+        "role": "shared-piece",
+        "section": "Components / Coverage and pricing",
+        "storyId": "coverage-commerce-coveragecategoryselector--default"
+      },
+      "contains": [
+        "ControlledFieldRenderer",
+        "SectionDivider"
+      ]
     },
     {
       "name": "CoverageCart",
-      "description": "Selected coverages and combined estimated cost, displayed inline or in a drawer."
+      "description": "Selected coverages and combined estimated cost, displayed inline or in a drawer.",
+      "displayName": "Coverage cart",
+      "registration": {
+        "source": "src/components/coverage/CoverageCart.tsx",
+        "role": "shared-piece",
+        "section": "Components / Feedback and overlays / Dialogs and drawers / Application dialogs",
+        "storyId": "coverage-commerce-coveragecart--empty-drawer"
+      },
+      "contains": [
+        "AppModal",
+        "EmptyState",
+        "EstimatedRate",
+        "ProductCard",
+        "RateFrequencyControl",
+        "TotalCostSummary"
+      ]
     },
     {
       "name": "CoveragePortfolioDrawer",
-      "description": "Existing coverage made available after TPA verification."
+      "description": "Existing coverage made available after TPA verification.",
+      "displayName": "Coverage portfolio drawer",
+      "registration": {
+        "source": "src/components/coverage/CoveragePortfolioDrawer.tsx",
+        "role": "shared-piece",
+        "section": "Components / Feedback and overlays / Dialogs and drawers / Application dialogs",
+        "storyId": "coverage-commerce-coverageportfoliodrawer--member-only"
+      },
+      "contains": [
+        "AppDrawer"
+      ]
     },
     {
       "name": "CoverageSelectionFeedback",
-      "description": "Cart drawer for the first addition and compact feedback for later additions."
+      "description": "Cart drawer for the first addition and compact feedback for later additions.",
+      "displayName": "Coverage selection feedback",
+      "registration": {
+        "source": "src/components/coverage/CoverageSelectionFeedback.tsx",
+        "role": "shared-piece",
+        "section": "Components / Coverage and pricing / Product selection",
+        "storyId": "coverage-commerce-productcatalog--first-product-from-empty-cart"
+      },
+      "contains": [
+        "AppDrawer",
+        "AppSnackbar"
+      ]
     },
     {
       "name": "BeneficiaryProductRecords",
-      "description": "Beneficiary records per product, with add, edit and remove."
+      "description": "Beneficiary records per product, with add, edit and remove.",
+      "displayName": "Beneficiary product records",
+      "registration": {
+        "source": "src/components/beneficiary/BeneficiaryProductRecords.tsx",
+        "role": "page-section",
+        "section": "Components / Pages / Beneficiary / Sections",
+        "storyId": "pages-beneficiary-product-records--empty"
+      },
+      "contains": [
+        "Button",
+        "DynamicListItem",
+        "ProductCard"
+      ],
+      "parts": [
+        {
+          "name": "SectionNote",
+          "kind": "native-element",
+          "sourceSymbol": "Alert",
+          "description": "Inline MUI info Alert for the supplied product designation note; the page resolves the effective wording."
+        }
+      ]
     },
     {
       "name": "ContactSections",
-      "description": "Lays out the contact sections below."
+      "description": "Lays out the contact sections below.",
+      "displayName": "Contact sections",
+      "registration": {
+        "source": "src/components/contact/ContactSections.tsx",
+        "role": "page-section",
+        "section": "Components / Pages / Contact / Sections",
+        "storyId": "pages-contact-sections-together--default"
+      },
+      "contains": [
+        "ApplicantSectionDivider",
+        "BusinessInformation",
+        "FieldRenderer",
+        "ResidentialAddress",
+        "SectionDivider"
+      ]
     },
     {
       "name": "ResidentialAddress",
-      "description": "Residential address and any mailing-address control."
+      "description": "Residential address and any mailing-address control.",
+      "displayName": "Residential address",
+      "registration": {
+        "source": "src/components/contact/ResidentialAddress.tsx",
+        "role": "page-section",
+        "section": "Components / Pages / Contact / Sections",
+        "storyId": "pages-contact-residential-address--default"
+      },
+      "contains": [
+        "AddressFields",
+        "FieldRenderer",
+        "SectionDivider"
+      ]
     },
     {
       "name": "BusinessInformation",
-      "description": "Business address, with a same-as-home option."
-    },
-    {
-      "name": "SpouseContact",
-      "description": "Spouse contact details."
+      "description": "Business address, with a same-as-home option.",
+      "displayName": "Business information",
+      "registration": {
+        "source": "src/components/contact/BusinessInformation.tsx",
+        "role": "page-section",
+        "section": "Components / Pages / Contact / Sections",
+        "storyId": "pages-contact-business-and-employer-information--default"
+      },
+      "contains": [
+        "AddressFields",
+        "FieldRenderer",
+        "SectionDivider"
+      ]
     },
     {
       "name": "ProfileSections",
-      "description": "Personal, employment, financial, existing-coverage, travel, residence and spouse sections, in order."
+      "description": "Personal information, physician details, other coverage and the member financial questionnaire in the configured section order. Member and spouse share field definitions with independent answers. Disability record lists reuse the configured dialog and keep separate storage.",
+      "displayName": "Profile sections",
+      "registration": {
+        "source": "src/components/profile/ProfileSections.tsx",
+        "role": "page-section",
+        "section": "Components / Pages / Profile / Sections",
+        "storyId": "pages-profile-sections--personal-information"
+      },
+      "contains": [
+        "ApplicantSectionDivider",
+        "ConditionalGroup",
+        "DynamicList",
+        "FieldRenderer",
+        "PhysicianInformation",
+        "ProfilePersonalInformation",
+        "SectionDivider"
+      ],
+      "parts": [
+        {
+          "name": "Personal information",
+          "kind": "slot",
+          "sourceSymbol": "ProfilePersonalInformation",
+          "description": "Independent member/spouse fields and license, residence and travel follow-ups."
+        },
+        {
+          "name": "Other coverage",
+          "kind": "slot",
+          "sourceSymbol": "renderFinancialFields",
+          "description": "Life and disability follow-ups, supplied replacement notice and repeated carrier records. DynamicList owns record dialogs."
+        },
+        {
+          "name": "Financial questionnaire",
+          "kind": "slot",
+          "sourceSymbol": "renderFinancialQuestionnaireFields",
+          "description": "Member financial details and local self-employment follow-ups; the page resolves policy participation."
+        }
+      ]
     },
     {
       "name": "ReviewSections",
-      "description": "Application summary, legal disclosures and the required consents."
+      "description": "Application summary, legal disclosures and the required consents.",
+      "displayName": "Review sections",
+      "registration": {
+        "source": "src/components/review/ReviewSections.tsx",
+        "role": "page-section",
+        "section": "Components / Pages / Review / Sections",
+        "storyId": "pages-review-sections--default"
+      },
+      "contains": [
+        "AppModal",
+        "ApplicantSectionDivider",
+        "FieldGrid",
+        "FieldRenderer",
+        "LegalDocList",
+        "LegalReviewSection",
+        "Link",
+        "PrintAction",
+        "ReviewStatement"
+      ],
+      "parts": [
+        {
+          "name": "Document preview",
+          "kind": "slot",
+          "sourceSymbol": "documentPreview",
+          "description": "Caller supplies the application readout; its adapter resolves saved fields and edit targets."
+        }
+      ]
     },
     {
       "name": "PaymentSections",
-      "description": "Payment elections, banking fields and cost display."
-    },
-    {
-      "name": "HealthInformationHelp",
-      "description": "Help chip and explanation drawer."
+      "description": "Payment elections, banking fields and cost display.",
+      "displayName": "Payment sections",
+      "registration": {
+        "source": "src/components/payment/PaymentSections.tsx",
+        "role": "page-section",
+        "section": "Components / Pages / Payment / Sections",
+        "storyId": "pages-payment-sections--default"
+      },
+      "contains": [
+        "CategoryCard",
+        "FieldGrid",
+        "FieldRenderer",
+        "ProductCard",
+        "SectionDivider"
+      ],
+      "parts": [
+        {
+          "name": "Shared payment elections",
+          "kind": "slot",
+          "sourceSymbol": "sharedControls",
+          "description": "Explicit shared controls; page resolves common choices and policy."
+        },
+        {
+          "name": "Product costs",
+          "kind": "slot",
+          "sourceSymbol": "costs",
+          "description": "Caller supplies rate summaries or reference tables within each ProductCard."
+        },
+        {
+          "name": "Payment notes",
+          "kind": "slot",
+          "sourceSymbol": "notes",
+          "description": "Configured page-level notes, with per-product notes inside matching cards. Empty notes are hidden. Notes describe taxes or fees; this slot does not calculate or charge them."
+        }
+      ]
     },
     {
       "name": "HealthQuestionList",
-      "description": "Questions one at a time, answered separately for member and spouse, with Yes/No answers and follow-up details."
-    },
-    {
-      "name": "ProcessingStatusPage",
-      "description": "A progress state: loading the externally hosted QuickDecision questions, or the signature in progress."
-    },
-    {
-      "name": "ESignInstructions",
-      "new": true,
-      "description": "Tells the applicant what happens next in the electronic-signature process."
+      "description": "Questions one at a time, answered separately for member and spouse, with Yes/No answers and follow-up details.",
+      "displayName": "Health questionnaire",
+      "registration": {
+        "source": "src/components/forms/HealthQuestionList.tsx",
+        "role": "shared-piece",
+        "section": "Components / Pages / Health / Sections / Question and follow-up layouts",
+        "storyId": "forms-health-question-list--member-and-spouse"
+      },
+      "contains": [
+        "ApplicantSectionDivider",
+        "SectionDivider"
+      ],
+      "parts": [
+        {
+          "name": "Questions and applicant answers",
+          "kind": "slot",
+          "sourceSymbol": "entries",
+          "description": "Caller supplies question identities, order, applicant and content. Groups corresponding questions without merging answer bindings."
+        }
+      ]
     },
     {
       "name": "ReceiptConfirmation",
-      "description": "Submission confirmation, security notice and document downloads."
+      "description": "Submission confirmation, independent next-step/security guidance and document downloads. Payment guidance requires active allowed payment method/frequency; Site wording cannot change this global condition.",
+      "displayName": "Receipt confirmation",
+      "registration": {
+        "source": "src/components/receipt/ReceiptConfirmation.tsx",
+        "role": "page-section",
+        "section": "Components / Pages / Receipt / Sections",
+        "storyId": "receipt-receiptconfirmation--documents"
+      },
+      "contains": [
+        "Button",
+        "InformationAlert"
+      ]
     },
     {
       "name": "ReceiptDecisions",
-      "description": "Decision letters, with the application receipt and help alongside."
-    },
-    {
-      "name": "ReceiptApplicationSummary",
-      "description": "Summary of the selected coverage and payment instructions."
-    },
-    {
-      "name": "ReceiptNextSteps",
-      "description": "Acknowledgement with payment and welcome-kit guidance."
-    },
-    {
-      "name": "ResumeEmailRequest",
-      "new": true,
-      "description": "Application email address and the action to send a secure link."
-    },
-    {
-      "name": "ResumeDeliveryMethod",
-      "new": true,
-      "description": "Choice of Text or Call to receive the verification code."
-    },
-    {
-      "name": "ResumeCodeEntry",
-      "new": true,
-      "description": "Verification code entry and the Next action."
+      "description": "Product decisions with coverage and payment details in each decision card; the shared support component aligns beside the decisions section and stacks below it on small screens.",
+      "displayName": "Receipt decisions",
+      "registration": {
+        "source": "src/components/receipt/ReceiptDecisions.tsx",
+        "role": "page-section",
+        "section": "Components / Pages / Receipt / Sections",
+        "storyId": "components-pages-receipt-sections-decision-section--conditionally-approved"
+      },
+      "contains": []
     },
     {
       "name": "ExpiringCodeAlert",
-      "description": "Shows whether a secure link or code is active or expired, and confirms a send or resend."
+      "description": "Shows whether a secure link or code is active or expired, and confirms a send or resend.",
+      "displayName": "Expiring code alert",
+      "registration": {
+        "source": "src/components/feedback/ExpiringCodeAlert.tsx",
+        "role": "shared-piece",
+        "section": "Components / Feedback and overlays / Alerts",
+        "storyId": "feedback-resume-expiration--active-link"
+      },
+      "contains": [
+        "Link"
+      ]
     },
     {
       "name": "ResendCountdownRow",
-      "description": "Resend countdown and action."
-    },
-    {
-      "name": "AdvisorLoginTabs",
-      "new": true,
-      "description": "Start and Continue tabs, each with its fields and action."
-    },
-    {
-      "name": "ConfirmationAlert",
-      "new": true,
-      "description": "Success message that a request was sent."
+      "description": "Resend countdown and action.",
+      "displayName": "Resend countdown row",
+      "registration": {
+        "source": "src/components/feedback/ResendCountdownRow.tsx",
+        "role": "shared-piece",
+        "section": "Components / Feedback and overlays / Alerts",
+        "storyId": "feedback-resume-expiration--active-link"
+      },
+      "contains": [
+        "Button"
+      ]
     },
     {
       "name": "DetailsTable",
-      "description": "Labeled values with a follow-up action: applicant email, send time and purge date, or the edit request details."
+      "description": "Labeled values with a follow-up action: applicant email, send time and purge date, or the edit request details.",
+      "displayName": "Details table",
+      "registration": {
+        "source": "src/components/layout/DetailsTable.tsx",
+        "role": "shared-piece",
+        "section": "Components / Content and data display",
+        "storyId": "application-patterns-detailstable--confirmation-details"
+      },
+      "contains": []
     },
     {
       "name": "ApplicationErrorState",
-      "description": "The one layout for every error page: icon or number, heading, message, guidance and actions."
+      "description": "The one layout for every error page: icon or number, heading, message, guidance and actions.",
+      "displayName": "Application error state",
+      "registration": {
+        "source": "src/components/feedback/ApplicationErrorState.tsx",
+        "role": "page-section",
+        "section": "Components / Pages / Error pages",
+        "storyId": "pages-error-pages--bad-request"
+      },
+      "contains": [
+        "ApplicationRecoveryActions",
+        "FormShell",
+        "PageShell",
+        "SiteSupport"
+      ]
     },
     {
       "name": "HowApplyingWorksPanel",
-      "description": "Existing application steps and informational drawers on Home."
+      "description": "Existing application steps and informational drawers on Home.",
+      "displayName": "How applying works panel",
+      "registration": {
+        "source": "src/components/home/HowApplyingWorksPanel.tsx",
+        "role": "shared-piece",
+        "section": "Components / Pages / Home / Sections / How applying works",
+        "storyId": "coverage-commerce-howapplyingworkspanel--page-variant"
+      },
+      "contains": [
+        "AppDrawer",
+        "ApplicationPreview",
+        "ApplicationReviewDrawerContent",
+        "QuickDecisionExplainer"
+      ]
+    },
+    {
+      "name": "QuoteCalculator",
+      "description": "Collects eligibility information, coverage choices and amounts used to estimate insurance costs.",
+      "displayName": "Quote calculator",
+      "registration": {
+        "source": "src/app/workflows/QuoteCalculator.tsx",
+        "role": "shared-piece",
+        "section": "Components / Coverage and pricing",
+        "storyId": "coverage-commerce-quotecalculator--collects-eligibility"
+      },
+      "contains": [
+        "AppDrawer",
+        "Button",
+        "CategoryHeader",
+        "CoverageCategorySelector",
+        "EmptyState",
+        "FieldGrid",
+        "FieldRenderer",
+        "PageHeader",
+        "RateFrequencyControl",
+        "SectionDivider"
+      ]
+    },
+    {
+      "name": "CoverageNeedsCalculator",
+      "description": "Collects income, income-replacement years, outstanding debts and existing coverage to estimate coverage needs.",
+      "displayName": "Coverage needs calculator",
+      "registration": {
+        "source": "src/components/coverage/CoverageNeedsCalculator.tsx",
+        "role": "shared-piece",
+        "section": "Components / Coverage and pricing",
+        "storyId": "coverage-commerce-coverageneedscalculator--default"
+      },
+      "contains": [
+        "FieldGrid",
+        "FieldRenderer"
+      ]
+    },
+    {
+      "name": "ResumeSessionWarning",
+      "description": "Shared PageAlert for the fixed MFA verification deadline, with a configured warning threshold and countdown and no extension action.",
+      "displayName": "MFA session warning",
+      "registration": {
+        "source": "src/components/feedback/ResumeSessionWarning.tsx",
+        "role": "shared-piece",
+        "section": "Components / Feedback and overlays / Alerts",
+        "storyId": "feedback-resume-expiration--mfa-warning"
+      },
+      "contains": [
+        "PageAlert"
+      ]
     }
   ],
   "elements": [
     {
       "name": "Button",
-      "description": "An explicit page or section action."
+      "description": "An explicit page or section action.",
+      "displayName": "Button",
+      "registration": {
+        "source": "@mui/material/Button",
+        "role": "shared-piece",
+        "section": "Components / Actions",
+        "storyId": "forms-button--variants",
+        "packageImport": {
+          "module": "@mui/material",
+          "symbol": "Button"
+        }
+      },
+      "contains": []
     },
     {
       "name": "ConfirmationDialog",
-      "description": "A decision dialog with confirm and cancel actions."
+      "description": "A decision dialog with confirm and cancel actions.",
+      "displayName": "Confirmation dialog",
+      "registration": {
+        "source": "src/components/layout/ConfirmationDialog.tsx",
+        "role": "shared-piece",
+        "section": "Components / Feedback and overlays / Dialogs and drawers / Application dialogs",
+        "storyId": "overlays-confirmationdialog--dependent-only-coverage"
+      },
+      "contains": [
+        "AppModal"
+      ]
     },
     {
       "name": "PageAlert",
-      "description": "Page-level alert under the header: notices (resumed application) and page errors (ineligibility, business validation)."
-    },
-    {
-      "name": "SectionNote",
-      "description": "Standard info alert directly under a section header; text is the section's note content."
-    },
-    {
-      "name": "FieldGroup",
-      "description": "A section's fields, laid out by the page; fields come from the page's field mapping."
+      "description": "Page-level alert under the header: notices (resumed application) and page errors (ineligibility, business validation).",
+      "displayName": "Page alert",
+      "registration": {
+        "source": "src/components/feedback/PageAlert.tsx",
+        "role": "shared-piece",
+        "section": "Components / Feedback and overlays / Alerts",
+        "storyId": "feedback-pagealert--error"
+      },
+      "contains": []
     },
     {
       "name": "DynamicList",
-      "description": "Repeating entries (children, beneficiaries, companies): add or edit in a dialog, remove with confirmation, up to a maximum."
+      "description": "Repeating entries (children, beneficiaries, companies): add or edit in a dialog, remove with confirmation, up to a maximum.",
+      "displayName": "Repeated records",
+      "registration": {
+        "source": "src/components/forms/DynamicList.tsx",
+        "role": "shared-piece",
+        "section": "Components / Forms / Repeated records",
+        "storyId": "forms-dynamiclist--empty"
+      },
+      "contains": [
+        "AppModal",
+        "Button",
+        "DynamicListItem",
+        "FieldGrid",
+        "FieldRenderer"
+      ]
     },
     {
       "name": "MemberVerification",
-      "description": "Identity verification drawer opened when the TPA finds an existing member with active coverage."
+      "description": "Identity verification drawer opened when the TPA finds an existing member with active coverage.",
+      "displayName": "Member verification",
+      "registration": {
+        "source": "src/components/verification/MemberVerification.tsx",
+        "role": "shared-piece",
+        "section": "Components / Feedback and overlays / Dialogs and drawers / Application dialogs",
+        "storyId": "coverage-commerce-memberverification--interactive"
+      },
+      "contains": [
+        "AppModal",
+        "Button",
+        "FieldRenderer"
+      ]
     },
     {
       "name": "VerificationAddress",
-      "description": "Address dialog collected before verification when the TPA requires it."
+      "description": "Collects a residential address before configured member verification.",
+      "displayName": "Verification address",
+      "registration": {
+        "source": "src/components/verification/VerificationAddress.tsx",
+        "role": "shared-piece",
+        "section": "Components / Feedback and overlays / Dialogs and drawers / Application dialogs",
+        "storyId": "coverage-commerce-memberverification--address-before-verification"
+      },
+      "contains": [
+        "AddressFields",
+        "AppModal"
+      ]
     },
     {
-      "name": "Snackbar",
-      "description": "Short confirmation toast."
+      "name": "EstimatedRate",
+      "description": "Product and summary estimates use 1rem, bold, normal text color. TotalCostSummary emphasizes only its final total amount in primary color. Inline inherits its context.",
+      "displayName": "Estimated rate",
+      "registration": {
+        "source": "src/components/coverage/EstimatedRate.tsx",
+        "role": "shared-piece",
+        "section": "Components / Coverage and pricing",
+        "storyId": "components-estimated-rate--available"
+      },
+      "contains": [
+        "ReferenceRateTableLink"
+      ]
     },
     {
-      "name": "HelpChip",
-      "description": "Inline help chip that opens help content."
+      "name": "ApplicationDocumentPreview",
+      "description": "Displays application data grouped into readable document sections.",
+      "displayName": "Application document preview",
+      "registration": {
+        "source": "src/components/content/ApplicationDocumentPreview.tsx",
+        "role": "shared-piece",
+        "section": "Components / Content and data display",
+        "storyId": "content-applicationdocumentpreview--default"
+      },
+      "contains": []
+    },
+    {
+      "name": "PageHelpChips",
+      "description": "Opens contextual help and reference content from labeled chips.",
+      "displayName": "Page help chips",
+      "registration": {
+        "source": "src/components/content/PageHelpChips.tsx",
+        "role": "shared-piece",
+        "section": "Components / Content and data display / Help and support",
+        "storyId": "content-helpchips--default"
+      },
+      "contains": [],
+      "parts": [
+        {
+          "name": "HelpChip",
+          "kind": "native-element",
+          "sourceSymbol": "Chip",
+          "description": "Repeated native MUI chip bound to an explicit help item and the shared selection callback."
+        }
+      ]
+    },
+    {
+      "name": "LegalDocList",
+      "description": "Lists application documents and legal disclosures with links.",
+      "displayName": "Legal doc list",
+      "registration": {
+        "source": "src/components/content/LegalDocList.tsx",
+        "role": "shared-piece",
+        "section": "Components / Content and data display",
+        "storyId": "content-legaldoclist--terms-of-use"
+      },
+      "contains": []
+    },
+    {
+      "name": "QuickDecisionExplainer",
+      "description": "Explains the QuickDecision process and possible outcomes.",
+      "displayName": "Quick decision explainer",
+      "registration": {
+        "source": "src/components/content/QuickDecisionExplainer.tsx",
+        "role": "shared-piece",
+        "section": "Components / Coverage and pricing",
+        "storyId": "content-quickdecision--drawer-explainer-content"
+      },
+      "contains": [
+        "Link"
+      ]
+    },
+    {
+      "name": "QuickDecisionIndicator",
+      "description": "Marks coverages that support QuickDecision with the configured client icon.",
+      "displayName": "Quick decision indicator",
+      "registration": {
+        "source": "src/components/coverage/QuickDecisionIndicator.tsx",
+        "role": "shared-piece",
+        "section": "Components / Coverage and pricing",
+        "storyId": "content-quickdecision--mark-variants"
+      },
+      "contains": []
+    },
+    {
+      "name": "QuickDecisionInfoBox",
+      "description": "Shared product-driven QuickDecision information notice with disclosure controls and optional one-second reveal attention; honors reduced motion and configured artwork.",
+      "displayName": "Quick decision info box",
+      "registration": {
+        "source": "src/components/content/QuickDecisionInfoBox.tsx",
+        "role": "shared-piece",
+        "section": "Components / Coverage and pricing",
+        "storyId": "content-quickdecision--info-box-inline-collapse"
+      },
+      "contains": [
+        "QuickDecisionExplainer"
+      ]
+    },
+    {
+      "name": "CoverageOptionsPanel",
+      "description": "Explains available coverage categories and products on the homepage or in a drawer.",
+      "displayName": "Coverage options panel",
+      "registration": {
+        "source": "src/components/coverage/CoverageOptionsPanel.tsx",
+        "role": "shared-piece",
+        "section": "Components / Coverage and pricing",
+        "storyId": "coverage-commerce-coverageoptionspanel--page-variant"
+      },
+      "contains": [
+        "QuickDecisionIndicator",
+        "QuickDecisionInfoBox"
+      ]
+    },
+    {
+      "name": "EligibilityFields",
+      "description": "Shared ZIP/state/DOB group for application and quotes; real guidance, inferred-state feedback and validation without empty helper spacers.",
+      "displayName": "Eligibility fields",
+      "registration": {
+        "source": "src/components/forms/EligibilityFields.tsx",
+        "role": "shared-piece",
+        "section": "Components / Pages / Eligibility / Sections",
+        "storyId": "coverage-commerce-eligibilityfields--default"
+      },
+      "contains": [
+        "ControlledFieldRenderer",
+        "FieldGrid",
+        "FieldRenderer"
+      ]
+    },
+    {
+      "name": "EstimatorProductCard",
+      "description": "Displays a product, applicant selections, coverage amounts, and estimated cost.",
+      "displayName": "Estimator product card",
+      "registration": {
+        "source": "src/components/coverage/EstimatorProductCard.tsx",
+        "role": "shared-piece",
+        "section": "Components / Coverage and pricing / Product selection",
+        "storyId": "coverage-commerce-estimatorproductcard--unselected"
+      },
+      "contains": [
+        "ControlledFieldRenderer",
+        "EstimatedRate",
+        "FeaturedBadge",
+        "FieldGrid",
+        "ProductCard"
+      ]
+    },
+    {
+      "name": "FeaturedBadge",
+      "description": "Small \"Featured\" badge chip used on product cards to indicate featured coverage products.",
+      "displayName": "Featured badge",
+      "registration": {
+        "source": "src/components/coverage/FeaturedBadge.tsx",
+        "role": "shared-piece",
+        "section": "Components / Coverage and pricing",
+        "storyId": "coverage-commerce-product-adornments--side-by-side"
+      },
+      "contains": []
+    },
+    {
+      "name": "PhysicianInformation",
+      "description": "Collects physician name, phone and facility details from supplied member or spouse fields.",
+      "displayName": "Physician information",
+      "registration": {
+        "source": "src/components/forms/PhysicianInformation.tsx",
+        "role": "shared-piece",
+        "section": "Components / Pages / Profile / Sections",
+        "storyId": "coverage-commerce-physicianinformation--default"
+      },
+      "contains": [
+        "AddressFields",
+        "FieldGrid",
+        "FieldRenderer",
+        "SectionDivider"
+      ]
+    },
+    {
+      "name": "ProductCostBreakdown",
+      "description": "Itemizes reconciled quote components using shared estimate presentation and global content.",
+      "displayName": "Product cost breakdown",
+      "registration": {
+        "source": "src/components/coverage/ProductCostBreakdown.tsx",
+        "role": "shared-piece",
+        "section": "Components / Coverage and pricing",
+        "storyId": "coverage-commerce-productcostbreakdown--monthly"
+      },
+      "contains": [
+        "EstimatedRate"
+      ]
+    },
+    {
+      "name": "RateFrequencyControl",
+      "description": "Labeled monthly/annual control shared by quote and cart cost summaries.",
+      "displayName": "Rate frequency control",
+      "registration": {
+        "source": "src/components/coverage/RateFrequencyControl.tsx",
+        "role": "shared-piece",
+        "section": "Components / Coverage and pricing / Rate frequency",
+        "storyId": "coverage-commerce-ratefrequencycontrol--interactive"
+      },
+      "contains": [
+        "RateFrequencyToggle"
+      ]
+    },
+    {
+      "name": "RateFrequencyToggle",
+      "description": "Custom styled toggle switch for monthly/annual rate frequency display. Used in cost summary panels and quote comparison views.",
+      "displayName": "Rate frequency toggle",
+      "registration": {
+        "source": "src/components/coverage/RateFrequencyToggle.tsx",
+        "role": "shared-piece",
+        "section": "Components / Coverage and pricing / Rate frequency",
+        "storyId": "coverage-commerce-ratefrequencytoggle--unchecked"
+      },
+      "contains": []
+    },
+    {
+      "name": "TotalCostSummary",
+      "description": "Estimated cost summary with optional item breakdown and shared rate states. All costs use 1rem; item amounts use normal text color and only the final total amount uses primary color.",
+      "displayName": "Total cost summary",
+      "registration": {
+        "source": "src/components/coverage/TotalCostSummary.tsx",
+        "role": "shared-piece",
+        "section": "Components / Coverage and pricing",
+        "storyId": "coverage-commerce-totalcostsummary--default"
+      },
+      "contains": [
+        "EstimatedRate"
+      ]
+    },
+    {
+      "name": "AppSnackbar",
+      "description": "Shows a temporary feedback message with an optional action.",
+      "displayName": "Notification",
+      "registration": {
+        "source": "src/components/feedback/AppSnackbar.tsx",
+        "role": "shared-piece",
+        "section": "Components / Feedback and overlays",
+        "storyId": "feedback-appsnackbar--success"
+      },
+      "contains": [],
+      "parts": [
+        {
+          "name": "Snackbar",
+          "kind": "native-element",
+          "sourceSymbol": "Snackbar",
+          "description": "MUI transient surface with responsive positioning, dismissal and the configured auto-hide duration."
+        }
+      ]
+    },
+    {
+      "name": "EmptyState",
+      "description": "Explains why a section has no items and offers a next action.",
+      "displayName": "Empty state",
+      "registration": {
+        "source": "src/components/feedback/EmptyState.tsx",
+        "role": "shared-piece",
+        "section": "Components / Feedback and overlays",
+        "storyId": "feedback-emptystate--default"
+      },
+      "contains": []
+    },
+    {
+      "name": "PageTransitionSkeleton",
+      "description": "Shows loading placeholders while the next application page opens.",
+      "displayName": "Page transition skeleton",
+      "registration": {
+        "source": "src/components/feedback/PageTransitionSkeleton.tsx",
+        "role": "shared-piece",
+        "section": "Components / Feedback and overlays / Loading and processing",
+        "storyId": "feedback-pagetransitionskeleton--with-message"
+      },
+      "contains": []
+    },
+    {
+      "name": "ProgressSavedSnackbar",
+      "description": "Confirms that application progress has been saved.",
+      "displayName": "Progress saved snackbar",
+      "registration": {
+        "source": "src/components/feedback/ProgressSavedSnackbar.tsx",
+        "role": "shared-piece",
+        "section": "Components / Feedback and overlays",
+        "storyId": "feedback-appsnackbar--progress-saved-preset"
+      },
+      "contains": [
+        "AppSnackbar"
+      ]
+    },
+    {
+      "name": "ConditionalGroup",
+      "description": "ConditionalGroup renders a left-bordered, indented container that visually groups follow-up questions which are conditional on a prior answer. This is a pure visual wrapper — the parent is responsible for deciding when to render it. It does not own show/hide logic.",
+      "displayName": "Conditional group",
+      "registration": {
+        "source": "src/components/forms/ConditionalGroup.tsx",
+        "role": "shared-piece",
+        "section": "Components / Forms",
+        "storyId": "forms-conditionalgroup--hidden-and-revealed"
+      },
+      "contains": []
+    },
+    {
+      "name": "DynamicListItem",
+      "description": "Displays one repeated record with its edit and remove controls.",
+      "displayName": "Record row",
+      "registration": {
+        "source": "src/components/forms/DynamicListItem.tsx",
+        "role": "shared-piece",
+        "section": "Components / Forms / Repeated records",
+        "storyId": "forms-dynamiclistitem--default"
+      },
+      "contains": [
+        "Button"
+      ]
+    },
+    {
+      "name": "FieldRenderer",
+      "description": "Renders a configured field with its input, validation and conditional behavior.",
+      "displayName": "Field",
+      "registration": {
+        "source": "src/components/forms/FieldRenderer.tsx",
+        "role": "shared-piece",
+        "section": "Components / Forms",
+        "storyId": "forms-fieldrenderer--playground"
+      },
+      "contains": [
+        "Link",
+        "PhoneField",
+        "RadioSelectionGroup",
+        "SelectionGroup"
+      ]
+    },
+    {
+      "name": "RadioSelectionGroup",
+      "description": "Presentational radio rows used by FieldRenderer; application fields use the renderer.",
+      "displayName": "Radio selection group",
+      "registration": {
+        "source": "src/components/forms/RadioSelectionGroup.tsx",
+        "role": "shared-piece",
+        "section": "Components / Forms / Selection rows",
+        "storyId": "forms-radioselectiongroup--interactive"
+      },
+      "contains": [
+        "SelectionGroup"
+      ]
+    },
+    {
+      "name": "SelectionGroup",
+      "description": "Provides a selectable row or card with the shared selection styling.",
+      "displayName": "Selection group",
+      "registration": {
+        "source": "src/components/forms/SelectionGroup.tsx",
+        "role": "shared-piece",
+        "section": "Components / Forms / Selection rows",
+        "storyId": "forms-selectiongroup--checkbox-row-unselected"
+      },
+      "contains": []
+    },
+    {
+      "name": "ApplicationPreview",
+      "description": "Decorative homepage illustration of coverage, health, and receipt scenes; its drawn controls do not collect application answers.",
+      "displayName": "Application preview",
+      "registration": {
+        "source": "src/components/home/ApplicationPreview.tsx",
+        "role": "shared-piece",
+        "section": "Components / Content and data display / Application illustrations",
+        "storyId": "home-applicationpreview--narrow-container"
+      },
+      "contains": [
+        "MobilePreviewFrame"
+      ]
+    },
+    {
+      "name": "ApplicantSectionDivider",
+      "description": "Labels an applicant section with an optional supporting note.",
+      "displayName": "Applicant section divider",
+      "registration": {
+        "source": "src/components/layout/ApplicantSectionDivider.tsx",
+        "role": "shared-piece",
+        "section": "Components / Layout / Headings and dividers",
+        "storyId": "layout-applicantsectiondivider--member-section"
+      },
+      "contains": []
+    },
+    {
+      "name": "CategoryCard",
+      "description": "Surface card wrapping a category header + content stack. Used on Payment, Beneficiary, and ProductCatalog pages.",
+      "displayName": "Category card",
+      "registration": {
+        "source": "src/components/layout/CategoryCard.tsx",
+        "role": "shared-piece",
+        "section": "Components / Content and data display / Cards",
+        "storyId": "layout-categorycard--default"
+      },
+      "contains": [
+        "CategoryHeader"
+      ]
+    },
+    {
+      "name": "CategoryHeader",
+      "description": "Heading with an optional icon for coverage category sections. Rendered as an h3 (nested under the page's h2) with h6 visual styling preserved. Icon renders in primary color; label renders in default text color.",
+      "displayName": "Category header",
+      "registration": {
+        "source": "src/components/layout/CategoryHeader.tsx",
+        "role": "shared-piece",
+        "section": "Components / Layout / Headings and dividers",
+        "storyId": "layout-categoryheader--with-icon"
+      },
+      "contains": []
+    },
+    {
+      "name": "FieldGrid",
+      "description": "Fields stack by default. Address, name and other intentionally grouped fields can opt into responsive columns.",
+      "displayName": "Field layout",
+      "registration": {
+        "source": "src/components/layout/FieldGrid.tsx",
+        "role": "shared-piece",
+        "section": "Components / Forms / Field groups",
+        "storyId": "layout-fieldgrid--stacked-fields"
+      },
+      "contains": []
+    },
+    {
+      "name": "MobilePreviewFrame",
+      "description": "Presentation-only mobile viewport shared by previews with otherwise unrelated data and interaction models.",
+      "displayName": "Mobile preview frame",
+      "registration": {
+        "source": "src/components/layout/MobilePreviewFrame.tsx",
+        "role": "shared-piece",
+        "section": "Components / Content and data display / Application illustrations",
+        "storyId": "layout-mobilepreviewframe--default"
+      },
+      "contains": []
+    },
+    {
+      "name": "ProductCard",
+      "description": "Shared product container with a weight-800 title, optional brochure link, QD indicator, description, optional bold separate-line description notice and supplied flow content.",
+      "displayName": "Product card",
+      "registration": {
+        "source": "src/components/layout/ProductCard.tsx",
+        "role": "shared-piece",
+        "section": "Components / Content and data display / Cards",
+        "storyId": "layout-productcard--unselected"
+      },
+      "contains": [
+        "Link",
+        "QuickDecisionIndicator"
+      ],
+      "parts": [
+        {
+          "name": "Product heading",
+          "kind": "native-element",
+          "sourceSymbol": "h4",
+          "description": "Consistent product title at weight 800, optional brochure link, QD indicator and header action."
+        },
+        {
+          "name": "Product content",
+          "kind": "slot",
+          "sourceSymbol": "children",
+          "description": "Coverage, beneficiary, payment, quote or receipt content supplied by the caller."
+        }
+      ]
+    },
+    {
+      "name": "SectionDivider",
+      "description": "Labels field-group sections with uppercase, letter-spaced text. Titled and untitled groups share a rounded FieldGroup surface matching the page background, with white inputs and increased section spacing.",
+      "displayName": "Section divider",
+      "registration": {
+        "source": "src/components/layout/SectionDivider.tsx",
+        "role": "shared-piece",
+        "section": "Components / Layout / Headings and dividers",
+        "storyId": "layout-sectiondivider--subsection-preset"
+      },
+      "contains": [],
+      "parts": [
+        {
+          "name": "FieldGroup",
+          "kind": "export",
+          "sourceSymbol": "FieldGroup",
+          "description": "Named shared field surface exported by SectionDivider; used directly for untitled groups. It is a part of this owner, not another canonical component."
+        }
+      ]
+    },
+    {
+      "name": "AppDrawer",
+      "description": "Displays supporting content in a drawer with a close action.",
+      "displayName": "Drawer",
+      "registration": {
+        "source": "src/components/layout/AppDrawer.tsx",
+        "role": "shared-piece",
+        "section": "Components / Feedback and overlays / Dialogs and drawers / Containers",
+        "storyId": "overlays-appdrawer--default"
+      },
+      "contains": []
+    },
+    {
+      "name": "AppModal",
+      "description": "Displays a focused dialog with primary and secondary actions.",
+      "displayName": "Modal",
+      "registration": {
+        "source": "src/components/layout/AppModal.tsx",
+        "role": "shared-piece",
+        "section": "Components / Feedback and overlays / Dialogs and drawers / Containers",
+        "storyId": "overlays-appmodal--default"
+      },
+      "contains": [
+        "Button"
+      ],
+      "parts": [
+        {
+          "name": "Staged header",
+          "kind": "slot",
+          "sourceSymbol": "headerContent",
+          "description": "Optional stepper or context between the title and scrolling content."
+        },
+        {
+          "name": "Dialog content",
+          "kind": "slot",
+          "sourceSymbol": "children",
+          "description": "Supplied content; shell options control compact/mobile sizing, dividers and dismissal without owning the workflow."
+        },
+        {
+          "name": "Footer actions",
+          "kind": "slot",
+          "sourceSymbol": "footerActions",
+          "description": "Supplied actions or configured action buttons with optional autofocus."
+        }
+      ]
+    },
+    {
+      "name": "CookieDialog",
+      "description": "Displays cookie information and consent controls.",
+      "displayName": "Cookie notice",
+      "registration": {
+        "source": "src/components/layout/CookieDialog.tsx",
+        "role": "shared-piece",
+        "section": "Components / Feedback and overlays / Banners",
+        "storyId": "overlays-cookiedialog--default"
+      },
+      "contains": [
+        "Link"
+      ]
+    },
+    {
+      "name": "SendApplicationDialog",
+      "description": "Lets advisors send an application or request an edit from an applicant.",
+      "displayName": "Send application dialog",
+      "registration": {
+        "source": "src/components/layout/SendApplicationDialog.tsx",
+        "role": "shared-piece",
+        "section": "Components / Feedback and overlays / Dialogs and drawers / Application dialogs",
+        "storyId": "overlays-sendapplicationdialog--default",
+        "examples": [
+          {
+            "key": "to-advisor",
+            "label": "Request edits from advisor",
+            "storyId": "overlays-sendapplicationdialog--to-advisor"
+          }
+        ]
+      },
+      "contains": [
+        "AppModal",
+        "PageAlert"
+      ]
+    },
+    {
+      "name": "ControlledFieldRenderer",
+      "description": "Adapts externally owned values to the same renderer used by application forms.",
+      "displayName": "Controlled field",
+      "registration": {
+        "source": "src/components/forms/ControlledFieldRenderer.tsx",
+        "role": "shared-piece",
+        "section": "Components / Forms / Individual fields",
+        "storyId": "forms-controlled-field-adapter--default"
+      },
+      "contains": [
+        "FieldRenderer"
+      ]
+    },
+    {
+      "name": "ApplicationRecoveryActions",
+      "description": "Shared recovery actions for unavailable, expired and failed application pages.",
+      "displayName": "Application recovery actions",
+      "registration": {
+        "source": "src/components/feedback/ApplicationRecoveryActions.tsx",
+        "role": "shared-piece",
+        "section": "Components / Feedback and overlays / Alerts",
+        "storyId": "pages-shared-application-recovery-actions--default"
+      },
+      "contains": [
+        "Button",
+        "Link"
+      ]
+    },
+    {
+      "name": "SessionExpiryAlert",
+      "description": "Warning before application inactivity expiry. The countdown is not announced each second.",
+      "displayName": "Session expiry alert",
+      "registration": {
+        "source": "src/components/feedback/SessionExpiryAlert.tsx",
+        "role": "shared-piece",
+        "section": "Components / Feedback and overlays / Dialogs and drawers / Application dialogs",
+        "storyId": "feedback-session-expiry-warning--two-minutes"
+      },
+      "contains": [
+        "AppModal"
+      ]
+    },
+    {
+      "name": "SiteSupport",
+      "description": "Shared Questions support content in a standard MUI info alert on every page, with matching email-compatible info styling. Effective Site contacts and global technical support use the same content source.",
+      "displayName": "Site support",
+      "registration": {
+        "source": "src/components/layout/SiteSupport.tsx",
+        "role": "shared-piece",
+        "section": "Components / Content and data display / Help and support",
+        "storyId": "pages-shared-site-support--current-site"
+      },
+      "contains": [
+        "Link"
+      ]
+    },
+    {
+      "name": "ReferenceRateTableLink",
+      "description": "Candidate consumer; install in applicant pricing areas at the later cutover.",
+      "displayName": "Reference rate table link",
+      "registration": {
+        "source": "src/components/coverage/ReferenceRateTableLink.tsx",
+        "role": "shared-piece",
+        "section": "Components / Coverage and pricing",
+        "storyId": "coverage-reference-rate-table--image"
+      },
+      "contains": [
+        "AppDrawer",
+        "Link"
+      ]
+    },
+    {
+      "name": "AddressFields",
+      "description": "Actual answer IDs for address groups whose names do not share one prefix.",
+      "displayName": "Address fields",
+      "registration": {
+        "source": "src/components/forms/AddressFields.tsx",
+        "role": "shared-piece",
+        "section": "Components / Forms / Field groups",
+        "storyId": "forms-field-groups-address-fields--default"
+      },
+      "contains": [
+        "FieldGrid",
+        "FieldRenderer"
+      ]
+    },
+    {
+      "name": "ApplicationReviewDrawerContent",
+      "description": "Application Review Drawer Content component used by the portal.",
+      "displayName": "Application review drawer content",
+      "registration": {
+        "source": "src/components/content/ApplicationReviewDrawerContent.tsx",
+        "role": "shared-piece",
+        "section": "Components / Pages / Home / Sections",
+        "storyId": "pages-home-how-applying-works--default"
+      },
+      "contains": [
+        "QuickDecisionExplainer"
+      ]
+    },
+    {
+      "name": "PhoneField",
+      "description": "Controlled number/type composition. Every value is bound explicitly by its caller.",
+      "displayName": "Phone field",
+      "registration": {
+        "source": "src/components/forms/PhoneField.tsx",
+        "role": "shared-piece",
+        "section": "Components / Forms / Field groups",
+        "storyId": "forms-phonefield--with-type"
+      },
+      "contains": []
+    },
+    {
+      "name": "ProfilePersonalInformation",
+      "description": "Personal fields and local follow-ups shared by member and spouse, with independent answer identities.",
+      "displayName": "Profile personal information",
+      "registration": {
+        "source": "src/components/profile/ProfilePersonalInformation.tsx",
+        "role": "shared-piece",
+        "section": "Components / Pages / Profile / Sections",
+        "storyId": "pages-profile-personal-information--default"
+      },
+      "contains": [
+        "ConditionalGroup",
+        "FieldGrid",
+        "FieldRenderer"
+      ]
+    },
+    {
+      "name": "LegalReviewSection",
+      "description": "Shared disclosure heading, bordered content surface and print action. Copy and print behavior are supplied.",
+      "displayName": "Legal review section",
+      "registration": {
+        "source": "src/components/content/LegalReviewSection.tsx",
+        "role": "shared-piece",
+        "section": "Components / Pages / Review / Sections",
+        "storyId": "forms-legal-review-section--default"
+      },
+      "contains": [
+        "PrintAction"
+      ],
+      "parts": [
+        {
+          "name": "Disclosure content",
+          "kind": "slot",
+          "sourceSymbol": "children",
+          "description": "Supplied legal statement, native notice blocks or electronic disclosure."
+        },
+        {
+          "name": "Print",
+          "kind": "action",
+          "sourceSymbol": "onPrint",
+          "description": "Shared PrintAction prints this disclosure only; an explicit caller override is available for previews."
+        }
+      ]
+    },
+    {
+      "name": "ReviewStatement",
+      "description": "Text and native blocks share the actual Consent boundary, so source notes retain their placement without HTML injection or duplicate consent copy.",
+      "displayName": "Review statement",
+      "registration": {
+        "source": "src/components/forms/ReviewStatement.tsx",
+        "role": "shared-piece",
+        "section": "Components / Pages / Review / Sections",
+        "storyId": "forms-review-statement--default"
+      },
+      "contains": []
+    },
+    {
+      "name": "HealthQuestion",
+      "description": "One explicit answer with conditional direct fields or repeated details. Supports supplied mappings, summary content and source-specific record limits.",
+      "displayName": "Health question",
+      "registration": {
+        "source": "src/components/forms/HealthQuestion.tsx",
+        "role": "shared-piece",
+        "section": "Components / Pages / Health / Sections / Question and follow-up layouts",
+        "storyId": "forms-health-question--repeated-details"
+      },
+      "contains": [
+        "DynamicList",
+        "FieldGrid",
+        "FieldRenderer"
+      ],
+      "parts": [
+        {
+          "name": "Record summary",
+          "kind": "slot",
+          "sourceSymbol": "renderItem",
+          "description": "Supplied summary of mapped stored records. Default health pages share HealthDetailSummary; policy questionnaires retain their explicit field-label summaries."
+        },
+        {
+          "name": "Answer",
+          "kind": "slot",
+          "sourceSymbol": "question",
+          "description": "Explicit field definition rendered by FieldRenderer."
+        },
+        {
+          "name": "Follow-up details",
+          "kind": "slot",
+          "sourceSymbol": "fields",
+          "description": "Caller resolves visibility, mapping, summary and explicit record bounds. Direct fields or DynamicList records use independent collection bindings."
+        }
+      ]
+    },
+    {
+      "name": "SharedPaymentControls",
+      "description": "Shared Payment Controls component used by the portal.",
+      "displayName": "Shared payment controls",
+      "registration": {
+        "source": "src/components/forms/SharedPaymentControls.tsx",
+        "role": "shared-piece",
+        "section": "Components / Pages / Payment / Sections",
+        "storyId": "forms-shared-payment-controls--shared-method-and-frequency"
+      },
+      "contains": [
+        "FieldGrid",
+        "FieldRenderer"
+      ],
+      "parts": [
+        {
+          "name": "Payment elections",
+          "kind": "slot",
+          "sourceSymbol": "methodField",
+          "description": "Explicit method/frequency definitions and resolved common-choice state. Updates canonical product bindings through the supplied setter."
+        }
+      ]
+    },
+    {
+      "name": "ReceiptCoverageDecision",
+      "description": "Shared product/applicant decision wording and outcome presentation for Receipt and its submission email. The page includes requested coverage and payment details; the compact static-email variation contains the product, applicant when needed, decision and explanation with inline theme styling.",
+      "displayName": "Receipt coverage decision",
+      "registration": {
+        "source": "src/components/receipt/ReceiptCoverageDecision.tsx",
+        "role": "shared-piece",
+        "section": "Components / Pages / Receipt / Sections",
+        "storyId": "receipt-receiptcoveragedecision--sent-for-review"
+      },
+      "contains": [
+        "ApplicantSectionDivider",
+        "ProductCard"
+      ]
+    },
+    {
+      "name": "Link",
+      "description": "Link component used by the portal.",
+      "displayName": "Link",
+      "registration": {
+        "source": "@mui/material/Link",
+        "role": "shared-piece",
+        "section": "Components / Actions",
+        "storyId": "components-actions-links--standard",
+        "packageImport": {
+          "module": "@mui/material",
+          "symbol": "Link"
+        }
+      },
+      "contains": []
+    },
+    {
+      "name": "PageHelp",
+      "displayName": "Page help",
+      "description": "Shared page-help topics with chip selection and one active drawer; content is supplied.",
+      "registration": {
+        "source": "src/components/content/PageHelp.tsx",
+        "role": "shared-piece",
+        "section": "Components / Content and data display / Help and support",
+        "storyId": "components-content-and-data-display-help-and-support-page-help--multiple-topics"
+      },
+      "contains": [
+        "PageHelpChips",
+        "PageHelpDrawer"
+      ]
+    },
+    {
+      "name": "PageHelpDrawer",
+      "displayName": "Page help drawer",
+      "description": "Shared help drawer using AppDrawer with a supplied title and content.",
+      "registration": {
+        "source": "src/components/content/PageHelpDrawer.tsx",
+        "role": "shared-piece",
+        "section": "Components / Feedback and overlays / Dialogs and drawers",
+        "storyId": "components-feedback-and-overlays-dialogs-and-drawers-page-help-drawer--default"
+      },
+      "contains": [
+        "AppDrawer"
+      ]
+    },
+    {
+      "name": "InformationAlert",
+      "displayName": "Information alert",
+      "description": "Shared MUI information alert with supplied heading, description and content.",
+      "registration": {
+        "source": "src/components/feedback/InformationAlert.tsx",
+        "role": "shared-piece",
+        "section": "Components / Feedback and overlays / Alerts",
+        "storyId": "feedback-information-alert--default"
+      },
+      "contains": [],
+      "parts": [
+        {
+          "name": "Information content",
+          "kind": "slot",
+          "sourceSymbol": "children",
+          "description": "Supplied supporting content and actions below the heading and optional description."
+        }
+      ]
     }
   ]
 }

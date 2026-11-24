@@ -1,17 +1,23 @@
 import type { DatabaseSchema, Json } from "../persistence/types";
 import { libraryMetadata } from "../domain/provenance";
-import { isCoverageJourneyPolicy } from "../domain/coverageJourneyPolicy";
+import { isCoverageJourneyPolicy, type CoverageJourneyPolicy } from "../domain/coverageJourneyPolicy";
 export const nsoCombinedLifeDecisionKey = "business-decision.rules-review.nso-combined-life-questionnaire";
 export function applyNsoCombinedLifeQuestionnaireAdoption(db: DatabaseSchema) {
   const authority = "User decision October 21, 2026; SUP DI Health questions!A1:A4; Health Questions!A62:B75/A101:B104: NSO full source Life questions only for same-adult QD Life plus FUW Disability";
   const meta = (table: string, key: string) => ({ id: key, key, ...libraryMetadata(table, key, authority) });
-  const products = db.siteProducts.filter(link => link.siteId === db.sites.find(site => site.key === "nso")?.id && link.enabled && db.products.some(product => product.key === link.productKey && product.categoryKey === "LI")).map(link => link.productKey);
-  const selected = db.configurationValues.filter(row => row.siteKey === "nso" && products.some(key => row.key === `nso.${key}.journey-policy`)).flatMap(row => {
+  const siteId = db.sites.find(site => site.key === "nso")?.id;
+  const products = db.siteProducts.filter(link => link.siteId === siteId && link.enabled && db.products.some(product => product.key === link.productKey && product.categoryKey === "LI")).map(link => link.productKey);
+  const selected: Array<{ key: string; healthPageForPortfolio: NonNullable<CoverageJourneyPolicy["healthPageForPortfolio"]> }> = db.configurationValues.filter(row => row.siteKey === "nso" && products.some(key => row.key === `nso.${key}.journey-policy`)).flatMap(row => {
     if (!isCoverageJourneyPolicy(row.value)) throw new Error(`Missing NSO Life journey ${row.key}`);
     if (row.value.defaultUnderwritingPathway !== "QD" && !db.underwritingBands.some(band => band.siteKey === "nso" && row.key === `nso.${band.productKey}.journey-policy` && band.pathway === "QD")) return [];
-    row.value.healthPageForPortfolio = { when: "qd-life-with-fuw-disability", pageId: "health-li" };
+    row.value.healthPageForPortfolio = { when: "qd-life-with-fuw-disability", pageId: "health-tele" };
     return [{ key: row.key, healthPageForPortfolio: structuredClone(row.value.healthPageForPortfolio) }];
   });
+  for (const row of db.configurationValues.filter(row => row.siteKey === "nso" && db.products.some(product => product.categoryKey === "DI" && row.key === `nso.${product.key}.journey-policy` && db.siteProducts.some(link => link.siteId === siteId && link.productKey === product.key && link.enabled)))) {
+    if (!isCoverageJourneyPolicy(row.value)) throw new Error(`Missing NSO Disability journey ${row.key}`);
+    row.value.healthPageForPortfolio = { when: "qd-life-with-disability", pageId: "health-di-supp" };
+    selected.push({ key: row.key, healthPageForPortfolio: structuredClone(row.value.healthPageForPortfolio) });
+  }
   if (!selected.length) throw new Error("Missing NSO QD Life portfolio");
   const key = nsoCombinedLifeDecisionKey, row = { ...meta("semanticRequirements", key), domain: "approved-business-decision", subjectTable: "sites", subjectKey: "nso", predicate: "combined-life-health", status: "documented", value: {
     authority, approvalStatus: "approved", sourceReconciliation: "approved-new-template-interpretation", runtimeActivation: "reviewed-seed", sourceReferences: ["SUP DI Health questions!A1:A4", "Health Questions!A62:B75", "Health Questions!A101:B104"], selected,

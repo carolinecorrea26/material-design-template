@@ -10,6 +10,7 @@ import {
   type ConfigurationScope,
 } from "../../content/docs/configurations";
 import type { ResolutionStatus } from "./types";
+import quoting from '../../../requirements/global/configurations/quoting.json';
 
 export type ConfigurableKind = "client" | "global";
 
@@ -61,10 +62,7 @@ const CONFIG_ACCESSORS: Partial<Record<string, (client: ClientConfig) => unknown
   }),
   "ClientConfig.pages.requirements.beneficiary / payment": (c) => c.pages.requirements,
   "ClientConfig.coverages.categories": (c) => c.coverages.categories,
-  "ClientConfig.coverages.categorySectionLabels / allCategoriesExpanded": (c) => ({
-    categorySectionLabels: c.coverages.categorySectionLabels,
-    allCategoriesExpanded: c.coverages.allCategoriesExpanded,
-  }),
+  "ClientConfig.coverages.categorySectionLabels": (c) => c.coverages.categorySectionLabels,
   "ClientConfig.coverages.additionalCoverageWarning": (c) =>
     c.coverages.additionalCoverageWarning,
   "ClientConfig.coverages.enabled / overrides": (c) => ({
@@ -75,8 +73,7 @@ const CONFIG_ACCESSORS: Partial<Record<string, (client: ClientConfig) => unknown
   "overrides[].waitingPeriodOptions / maxBenefitPeriodOptions": (c) => c.coverages.overrides,
   "overrides[].riders": (c) => c.coverages.overrides,
   "ClientConfig.estimatedRateDisplay": (c) => c.coverages.estimatedRateDisplay,
-  "productEstimatedCostBreakdown / policyFee / childApplicantRider": (c) =>
-    c.coverages.productEstimatedCostBreakdown,
+  "coverage-cost-breakdown": (c) => c.coverages.productEstimatedCostBreakdown?.enabled,
   "ClientConfig.coverageQuestions": (c) => c.coverageQuestions,
   "ClientConfig.coverages.hideSmokerQuestion": (c) => c.coverages.hideSmokerQuestion,
   "ClientConfig.fields[pageId].extra / hidden / required / overrides": (c) => c.fields,
@@ -106,7 +103,7 @@ export const CONFIG_DEFAULTS: Partial<Record<string, unknown>> = {
   "ClientConfig.theme": { type: "preset", preset: "default" },
   "ClientConfig.features.homePageVariant": "default",
   "ClientConfig.features.defaultTemplate": "multi",
-  "ClientConfig.coverages.additionalCoverageWarning": "applyForAdditional",
+  "ClientConfig.coverages.additionalCoverageWarning": quoting.configurations.find(row => row.id === 'coverage-increase-note')!.default,
 };
 
 export function getConfigurationDefaultValue(name: string): unknown {

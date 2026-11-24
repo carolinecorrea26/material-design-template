@@ -1,10 +1,14 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import { act } from "react";
 import { createRoot } from "react-dom/client";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, beforeAll, expect, it, vi } from "vitest";
 import { createReviewedMigrationDatabase } from "./fixtures";
 import { applyWaepaSpouseMembershipAdoption } from "./waepaSpouseMembershipAdoption";
-import { installPrototypeLibrary, resolvePrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolvePrototypeLibrary as resolveFreshPrototypeLibrary } from "../domain/prototypeLibrary";
+import { requirementValidationMessage } from "../domain/requirementValidations";
+import { installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import { resolveEffectiveEligibility } from "../domain/effectiveSite";
 import { resolveApplicationCoverage } from "../domain/coverageRuntime";
 import { getClientPageFields } from "../config/clientFields/getClientPageFields";
@@ -49,21 +53,22 @@ it("supports captured owner edits and rejects malformed rules, with idempotent a
   expect(validateMigrationDatabase(db)).toEqual([]);
 });
 
-it("shows the WAEPA question and error immediately and disables Eligibility Next only for Yes", async () => {
+it("validates the WAEPA spouse override on Next through the global eligibility rule", async () => {
   vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true);
   window.history.replaceState(null, "", "/?site=waepa");
-  installPrototypeLibrary(resolvePrototypeLibrary(db, "waepa", "spouse-render"));
+  installPrototypeLibrary(resolveFreshPrototypeLibrary(db, "waepa", "spouse-render"));
   const container = document.createElement("div"), root = createRoot(container); document.body.append(container);
   try {
     await act(async () => root.render(<MemoryRouter><Eligibility /></MemoryRouter>));
     const group = container.querySelector('[role="radiogroup"][aria-labelledby="spouse-membership-label"]')!;
     expect(group).not.toBeNull();
-    const [yes, no] = group.querySelectorAll<HTMLElement>('label.SelectionGroup-root');
+    const [yes] = group.querySelectorAll<HTMLElement>('label.SelectionGroup-root');
     await act(async () => yes.click());
-    expect(container.querySelector('.MuiAlert-standardError')?.textContent).toContain("apply separately");
-    expect([...container.querySelectorAll<HTMLButtonElement>('button[type="submit"]')].find(button => button.textContent?.includes("Next"))?.disabled).toBe(true);
-    await act(async () => no.click());
-    expect(container.querySelector('.MuiAlert-standardError')).toBeNull();
-    expect([...container.querySelectorAll<HTMLButtonElement>('button[type="submit"]')].find(button => button.textContent?.includes("Next"))?.disabled).toBe(false);
+    const next = [...container.querySelectorAll<HTMLButtonElement>('button[type="submit"]')].find(button => button.textContent?.includes("Next"))!;
+    expect(next.disabled).toBe(false);
+    expect(container.textContent).not.toContain(requirementValidationMessage('applicant-ineligible'));
+    await act(async () => next.click());
+    expect(container.textContent).toContain(requirementValidationMessage('applicant-ineligible'));
+    expect(next.disabled).toBe(false);
   } finally { await act(async () => root.unmount()); container.remove(); }
 });

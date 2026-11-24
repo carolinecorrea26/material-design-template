@@ -1,0 +1,32 @@
+{
+  "component": "health-di-supp",
+  "pages": [
+    "health-di-supp"
+  ],
+  "rules": [
+    "health-di-questionnaire",
+    "health-participation-and-storage"
+  ],
+  "validations": [
+    {
+      "validation": "health-required-answer",
+      "trigger": "next",
+      "scope": "page"
+    },
+    {
+      "validation": "health-yes-details",
+      "trigger": "next",
+      "scope": "page"
+    },
+    {
+      "validation": "health-details-limit",
+      "trigger": "next",
+      "scope": "page"
+    },
+    {
+      "validation": "health-questionnaire-resolution",
+      "trigger": "next",
+      "scope": "page"
+    }
+  ]
+}

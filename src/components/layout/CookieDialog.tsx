@@ -9,6 +9,7 @@ type CookieDialogProps = {
 export default function CookieDialog({ onClose }: CookieDialogProps) {
   const { message, learnMoreLabel, learnMoreHref } =
     getContent().shared.cookieBanner;
+  const insurerLogo = getContent().shared.insurerLogo;
 
   return (
     <Alert
@@ -50,8 +51,8 @@ export default function CookieDialog({ onClose }: CookieDialogProps) {
         >
           <Box
             component="img"
-            src="/logo.svg"
-            alt="New York Life Logo"
+              src={insurerLogo.src}
+              alt={insurerLogo.alt}
             sx={{
               height: 48,
               width: "auto",
@@ -77,7 +78,7 @@ export default function CookieDialog({ onClose }: CookieDialogProps) {
               target="_blank"
               rel="noreferrer"
               color="inherit"
-              sx={{ fontWeight: 500 }}
+              sx={{ }}
             >
               {learnMoreLabel}
             </Link>

@@ -1,6 +1,7 @@
 import { normalizeSiteReferences } from '../domain/siteIdentity.mjs';
 import { recoveryIncident, type RecoveryOperation } from '../domain/recoveryIncident';
 export async function mockRequest<T>(path: string, body?: unknown): Promise<T> {
+  if (window.location.pathname.includes('/admin-center/tutorial-preview/') && path !== '/prototype/library') throw new Error('This interactive preview does not call application services.');
   const environment = sessionStorage.getItem('prototypeReleaseEnvironment');
   if (!window.location.pathname.startsWith('/admin-center') && environment && ['/prototype/library', '/rates/quote', '/applications/submit'].includes(path) && body && typeof body === 'object') body = { ...body, environment };
   const applicantRequest = ['/applicant/save', '/rates/quote', '/applications/submit', '/payments/authorize'].includes(path) && !window.location.pathname.startsWith('/admin-center');
@@ -22,7 +23,7 @@ export async function mockRequest<T>(path: string, body?: unknown): Promise<T> {
   }
   if (applicantRequest && (response.status === 401 || response.status === 419 || response.status === 440)) window.dispatchEvent(new Event('application:session-expired'));
   else if (applicantRequest && response.status >= 500) reportTechnicalFailure();
-  if (!response.ok) throw new Error(data.error ?? "Mock request failed");
+  if (!response.ok) throw Object.assign(new Error(data.error ?? "Mock request failed"), { status: response.status, code: data.code, retryAt: data.retryAt });
   return data as T;
 }
 export type MockAuthStatus = { signInDisabled?: boolean; mfaVerified: boolean; passwordExpired: boolean; passwordExpiresAt: number | null; sessionExpiresAt: number | null; setupNeeded: boolean; authenticated: boolean; passwordAccepted: boolean; recoveryRequired: boolean; enrollmentNeeded: boolean; username: string; displayName?: string; groupId?: string; groupIds?: string[]; canManageAccounts?: boolean; canEdit?: boolean; passkeyCount?: number; totpEnrolled?: boolean; email: string; mode: "mock" };

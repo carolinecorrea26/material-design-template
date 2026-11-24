@@ -6,8 +6,8 @@ import DynamicList from './DynamicList';
 import CoverageNeedsCalculator from '../../app/sections/ConfiguredCoverageNeedsCalculator';
 import { createReviewedMigrationDatabase } from '../../migration/fixtures';
 import { installPrototypeLibrary, resolvePrototypeLibrary } from '../../domain/prototypeLibrary';
+import { freshStartSource } from '../../domain/freshStartCatalog';
 import { getFieldSurface } from '../../config/fields/storedSurfaces';
-import type { FieldSurfaceDefinition } from '../../migration/fieldSurfaceDefaults';
 import type { DatabaseSchema } from '../../persistence/types';
 
 let baseline: DatabaseSchema;
@@ -16,12 +16,13 @@ afterEach(() => { installPrototypeLibrary(null); vi.unstubAllGlobals(); });
 it('renders and edits health rows from saved bindings and enforces authored limits', async () => {
   vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
   const data = structuredClone(baseline);
-  const definitions = data.configurationValues.find(row => row.configurationKey === 'field-surfaces')!.value as unknown as Record<string, FieldSurfaceDefinition>;
-  definitions.healthSiDetails.maxItems = 1;
-  definitions.healthSiDetails.fields = definitions.healthSiDetails.fields.slice(1, 2);
-  definitions.healthSiDetails.fields[0].valueKey = 'history';
-  data.fields.find(row => row.key === 'health-si-detail-conditionsDetails')!.definition.label = 'Saved medical history';
-  installPrototypeLibrary(resolvePrototypeLibrary(data, 'asce', 'test'));
+  const source = structuredClone(freshStartSource());
+  const details = (source.fields.fieldDetails as { fields: { id: string; label: unknown }[] }).fields;
+  source.pages['health-si'].surfaces!.healthSiDetails.definition!.maxItems = 1;
+  source.pages['health-si'].surfaces!.healthSiDetails.definition!.fields = source.pages['health-si'].surfaces!.healthSiDetails.definition!.fields.slice(1, 2);
+  source.pages['health-si'].surfaces!.healthSiDetails.definition!.fields[0].valueKey = 'history';
+  details.find(row => row.id === 'health-detail-conditions')!.label = 'Saved medical history';
+  installPrototypeLibrary(resolvePrototypeLibrary(data, 'asce', 'test', source));
   let readValues: (() => unknown) | undefined;
   function Form() {
     const { control, getValues } = useForm({ defaultValues: { details: [{ history: 'Existing saved details', retainedHiddenDetail: 'Preserved' }] } });
@@ -47,10 +48,11 @@ it('renders and edits health rows from saved bindings and enforces authored limi
 it('renders calculator input membership and order from stored data', async () => {
   vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
   const data = structuredClone(baseline);
-  const definitions = data.configurationValues.find(row => row.configurationKey === 'field-surfaces')!.value as unknown as Record<string, FieldSurfaceDefinition>;
-  definitions.needsCalculator.fields = [definitions.needsCalculator.fields[2], definitions.needsCalculator.fields[0]];
-  data.fields.find(row => row.key === 'needs-outstanding-debts')!.definition.label = 'Saved debts';
-  installPrototypeLibrary(resolvePrototypeLibrary(data, 'asce', 'test'));
+  const source = structuredClone(freshStartSource());
+  const details = (source.fields.fieldDetails as { fields: { id: string; label: unknown }[] }).fields;
+  source.pages.home.surfaces!.needsCalculator.definition!.fields = [source.pages.home.surfaces!.needsCalculator.definition!.fields[2], source.pages.home.surfaces!.needsCalculator.definition!.fields[0]];
+  details.find(row => row.id === 'needs-outstanding-debts')!.label = 'Saved debts';
+  installPrototypeLibrary(resolvePrototypeLibrary(data, 'asce', 'test', source));
   const container = document.createElement('div'); document.body.append(container); const root = createRoot(container);
   try {
     await act(async () => root.render(<CoverageNeedsCalculator />));
@@ -62,9 +64,10 @@ it('renders calculator input membership and order from stored data', async () =>
 it('uses authored verification method and question labels through the real dialog flow', async () => {
   vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
   const data = structuredClone(baseline);
-  data.fields.find(row => row.key === 'verification-method')!.definition.label = 'Saved verification methods';
-  data.fields.find(row => row.key === 'sq-1')!.definition.label = 'Saved security question';
-  installPrototypeLibrary(resolvePrototypeLibrary(data, 'asce', 'test'));
+  const source = structuredClone(freshStartSource());
+  (source.fields.fieldDetails as { fields: { id: string; label: string }[] }).fields.find(row => row.id === 'verification-method')!.label = 'Saved verification methods';
+  source.verification.questions[0].question = 'Saved security question';
+  installPrototypeLibrary(resolvePrototypeLibrary(data, 'asce', 'test', source));
   const { default: MemberVerification } = await import('../verification/MemberVerification');
   const container = document.createElement('div'); document.body.append(container); const root = createRoot(container);
   try {

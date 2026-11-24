@@ -11,11 +11,12 @@ export function parseCoverageAssignments(document, definitions, siteKey, product
     if (!object(row) || Object.keys(row).some(key => !['configuration', 'product', 'applicants', 'value', 'source', 'minimumAgeYears', 'maximumAgeYears'].includes(key))) fail('unexpected assignment property');
     const definition = definitions.find(definition => definition.id === row.configuration);
     if (!definition || definition.status !== 'confirmed') fail(`unknown configuration ${row.configuration}`);
+    if (definition.productApplicantOverrides !== true) fail(`configuration does not support product/applicant overrides: ${row.configuration}`);
     if (typeof row.product !== 'string' || !row.product || products && !products[row.product]) fail(`unknown product ${row.product}`);
     if (!Array.isArray(row.applicants) || !row.applicants.length || new Set(row.applicants).size !== row.applicants.length
       || row.applicants.some(applicant => !['member', 'spouse', 'child'].includes(applicant) || products && !products[row.product].includes(applicant))) fail('invalid applicants');
     if (typeof row.source !== 'string' || !row.source.trim()) fail('missing source');
-    const valid = definition.type === 'number' ? integer(row.value) && row.value > 0
+    const valid = definition.type === 'number' ? integer(row.value) && (row.value > 0 || ['coverage-minimum-age-years', 'coverage-minimum-age-days'].includes(row.configuration))
       : definition.type === 'boolean' ? typeof row.value === 'boolean'
       : definition.type === 'enum' ? definition.options?.includes(row.value)
       : definition.type === 'string-list' && Array.isArray(row.value) && new Set(row.value).size === row.value.length && row.value.every(value => typeof value === 'string' && /^[A-Z]{2}$/.test(value));
@@ -29,8 +30,10 @@ export function parseCoverageAssignments(document, definitions, siteKey, product
     result.push(row);
   }
   for (const row of result.filter(row => row.configuration === 'coverage-minimum-age-years')) {
-    const maximum = result.find(other => other.configuration === 'coverage-maximum-age-years' && other.product === row.product && other.applicants.some(applicant => row.applicants.includes(applicant)));
-    if (maximum && row.value > maximum.value) fail('minimum age exceeds maximum age');
+    for (const applicant of row.applicants) {
+      const maximum = result.find(other => other.configuration === 'coverage-maximum-age-years' && other.product === row.product && other.applicants.includes(applicant));
+      if (maximum && row.value > maximum.value) fail('minimum age exceeds maximum age');
+    }
   }
   return result;
 }

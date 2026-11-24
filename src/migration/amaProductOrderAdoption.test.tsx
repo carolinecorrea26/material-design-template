@@ -1,8 +1,10 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, beforeAll, expect, it } from "vitest";
 import { createReviewedMigrationDatabase } from "./fixtures";
 import { applyAmaProductOrderAdoption, amaSourceProductOrder } from "./amaProductOrderAdoption";
-import { installPrototypeLibrary, resolvePrototypeLibrary } from "../domain/prototypeLibrary";
+import { installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
 import { capturedCoverageEntryScope, restoreCoverageEntryScope } from "../config/client/coverageProductScope";
 import CoverageOptionsPanel from "../app/sections/ConfiguredCoverageOptionsPanel";

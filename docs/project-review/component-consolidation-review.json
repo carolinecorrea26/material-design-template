@@ -1,5 +1,5 @@
 {
-  "componentCount": 111,
+  "componentCount": 110,
   "reviewType": "source-and-composition",
   "rows": [
     {
@@ -19,7 +19,7 @@
         "src/app/sections/ConfiguredApplicationDocumentPreview.tsx"
       ],
       "sourcePlacements": 1,
-      "sourceHash": "5de82a0af239e100e73825853c1f3e6da5aada6d82d2159fc6754a735b6a1a63"
+      "sourceHash": "b48a0328e8201a4ef71dbaec3e437a9b3aaabc62fb279e9a8a3b9e4b0f78c65d"
     },
     {
       "key": "component-application-review-drawer-content",
@@ -39,58 +39,8 @@
       "sourceConsumers": [
         "src/components/home/HowApplyingWorksPanel.tsx"
       ],
-      "sourcePlacements": 30,
+      "sourcePlacements": 28,
       "sourceHash": "64b78c6401e3dd27a7f0ef4a1c7b7f1cc1db2478b4531d0dc388a4ab9c135b1f"
-    },
-    {
-      "key": "component-health-information-help",
-      "name": "HealthInformationHelp",
-      "section": "Components / Pages / Health / Sections",
-      "role": "shared-piece",
-      "contains": [
-        "component-app-drawer",
-        "component-help-chips"
-      ],
-      "parts": [],
-      "source": "src/components/health/HealthInformationHelp.tsx",
-      "storyId": "forms-health-information-help--default",
-      "purpose": "Shared Health help chip and explanation drawer, including the QD loading page.",
-      "family": "Content and documents",
-      "assessment": "Keep",
-      "next": "Distinct preview, contextual-help and disclosure-list tasks.",
-      "sourceConsumers": [
-        "src/pages/HealthCi.tsx",
-        "src/pages/HealthCir.tsx",
-        "src/pages/HealthDi.tsx",
-        "src/pages/HealthLi.tsx",
-        "src/pages/HealthQd.tsx",
-        "src/pages/HealthSi.tsx"
-      ],
-      "sourcePlacements": 6,
-      "sourceHash": "9cd373ea6c740365cba1d6641e1a3696b3f3e3eea8c269c490fcdc5f30bea7a5"
-    },
-    {
-      "key": "component-help-chips",
-      "name": "HelpChips",
-      "section": "Components / Content and data display / Help and support",
-      "role": "shared-piece",
-      "contains": [],
-      "parts": [],
-      "source": "src/components/content/HelpChips.tsx",
-      "storyId": "content-helpchips--default",
-      "purpose": "Opens contextual help and reference content from labeled chips.",
-      "family": "Content and documents",
-      "assessment": "Keep",
-      "next": "Distinct preview, contextual-help and disclosure-list tasks.",
-      "sourceConsumers": [
-        "src/components/health/HealthInformationHelp.tsx",
-        "src/components/membership/MembershipHelp.tsx",
-        "src/pages/Beneficiary.tsx",
-        "src/pages/Coverage.tsx",
-        "src/pages/Payment.tsx"
-      ],
-      "sourcePlacements": 10,
-      "sourceHash": "df739b3beafcd38285f639d7f22f252f6dd94a7ad53425bee2c94c4b065cc013"
     },
     {
       "key": "component-legal-doc-list",
@@ -106,10 +56,105 @@
       "assessment": "Keep",
       "next": "Distinct preview, contextual-help and disclosure-list tasks.",
       "sourceConsumers": [
-        "src/components/layout/AppFooter.tsx"
+        "src/components/layout/AppFooter.tsx",
+        "src/components/review/ReviewSections.tsx"
+      ],
+      "sourcePlacements": 29,
+      "sourceHash": "95a19dae573247d4a5042d6d226523e19cc3699734fb6612bed328a76aa20166"
+    },
+    {
+      "key": "component-page-help",
+      "name": "PageHelp",
+      "section": "Components / Content and data display / Help and support",
+      "role": "shared-piece",
+      "contains": [
+        "component-page-help-chips",
+        "component-page-help-drawer"
+      ],
+      "parts": [],
+      "source": "src/components/content/PageHelp.tsx",
+      "storyId": "components-content-and-data-display-help-and-support-page-help--multiple-topics",
+      "purpose": "Shared page-help topics with chip selection and one active drawer; content is supplied.",
+      "family": "Content and documents",
+      "assessment": "Shared; aligned",
+      "next": "CHG-067 unified page-help state and source-compiled topics across Membership, Beneficiary and Payment. Health has no help chips.",
+      "sourceConsumers": [
+        "src/pages/Beneficiary.tsx",
+        "src/pages/Membership.tsx",
+        "src/pages/Payment.tsx"
+      ],
+      "sourcePlacements": 3,
+      "sourceHash": "0546f2808f21735e83f3489b916cf95bc5122285e0b03806d20e16c620b57c9e"
+    },
+    {
+      "key": "component-page-help-chips",
+      "name": "PageHelpChips",
+      "section": "Components / Content and data display / Help and support",
+      "role": "shared-piece",
+      "contains": [],
+      "parts": [
+        {
+          "name": "HelpChip",
+          "kind": "native-element",
+          "sourceSymbol": "Chip",
+          "description": "Repeated native MUI chip bound to an explicit help item and the shared selection callback."
+        }
+      ],
+      "source": "src/components/content/PageHelpChips.tsx",
+      "storyId": "content-helpchips--default",
+      "purpose": "Opens contextual help and reference content from labeled chips.",
+      "family": "Content and documents",
+      "assessment": "Shared; aligned",
+      "next": "One source-driven chip-row owner with explicit items and callbacks, independent of page/person/Site identity.",
+      "sourceConsumers": [
+        "src/components/content/PageHelp.tsx"
+      ],
+      "sourcePlacements": 3,
+      "sourceHash": "8d7f73fef61bbd1d4b36a79a189ff759c73df971c31beff102c9efafcf4952ab"
+    },
+    {
+      "key": "component-page-help-drawer",
+      "name": "PageHelpDrawer",
+      "section": "Components / Feedback and overlays / Dialogs and drawers",
+      "role": "shared-piece",
+      "contains": [
+        "component-app-drawer"
+      ],
+      "parts": [],
+      "source": "src/components/content/PageHelpDrawer.tsx",
+      "storyId": "components-feedback-and-overlays-dialogs-and-drawers-page-help-drawer--default",
+      "purpose": "Shared help drawer using AppDrawer with a supplied title and content.",
+      "family": "Content and documents",
+      "assessment": "Shared; aligned",
+      "next": "One controlled title/content wrapper over AppDrawer; pages supply topic data rather than another help component.",
+      "sourceConsumers": [
+        "src/components/content/PageHelp.tsx"
+      ],
+      "sourcePlacements": 3,
+      "sourceHash": "ecdab644553744655d670442ff380980448848102a7f35e5b1e0e6ed56c82e15"
+    },
+    {
+      "key": "component-print-action",
+      "name": "PrintAction",
+      "section": "Components / Content",
+      "role": "shared-piece",
+      "contains": [
+        "component-button"
+      ],
+      "parts": [],
+      "source": "src/components/content/PrintAction.tsx",
+      "storyId": "content-print-action--disclosure",
+      "purpose": "Prints one disclosure or consent section without surrounding application content.",
+      "family": "Content and documents",
+      "assessment": "Keep",
+      "next": "Distinct preview, contextual-help and disclosure-list tasks.",
+      "sourceConsumers": [
+        "src/components/content/LegalReviewSection.tsx",
+        "src/components/layout/AppFooter.tsx",
+        "src/components/review/ReviewSections.tsx"
       ],
       "sourcePlacements": 30,
-      "sourceHash": "95a19dae573247d4a5042d6d226523e19cc3699734fb6612bed328a76aa20166"
+      "sourceHash": "ab1f9126b788d5450cea34cd02137390bda0cb974782cadc0ed5e69c92932738"
     },
     {
       "key": "component-reference-rate-table-link",
@@ -131,8 +176,8 @@
         "src/components/coverage/EstimatedRate.tsx",
         "src/pages/Payment.tsx"
       ],
-      "sourcePlacements": 31,
-      "sourceHash": "97618046dcc50521a6ae3770a15a01b30a2642db2fd0f1f691380718aed8371b"
+      "sourcePlacements": 29,
+      "sourceHash": "846dc4bd5f6c0fa65c223210fc8a7a5de498e0942bba6dde25ac7730e6fd850b"
     },
     {
       "key": "component-app-drawer",
@@ -149,22 +194,16 @@
       "next": "Keep one modal/drawer foundation; domain workflows compose it rather than become shell variants.",
       "sourceConsumers": [
         "src/app/workflows/QuoteCalculator.tsx",
-        "src/components/coverage/ApplicationEstimate.tsx",
+        "src/components/content/PageHelpDrawer.tsx",
         "src/components/coverage/CoveragePortfolioDrawer.tsx",
         "src/components/coverage/CoverageSelectionFeedback.tsx",
         "src/components/coverage/ReferenceRateTableLink.tsx",
-        "src/components/feedback/RecoveryAlert.tsx",
-        "src/components/health/HealthInformationHelp.tsx",
         "src/components/home/HowApplyingWorksPanel.tsx",
         "src/components/layout/AppHeader.tsx",
         "src/components/layout/AppMenu.tsx",
-        "src/components/membership/MembershipHelp.tsx",
-        "src/pages/Beneficiary.tsx",
-        "src/pages/Coverage.tsx",
-        "src/pages/Home.tsx",
-        "src/pages/Payment.tsx"
+        "src/pages/Home.tsx"
       ],
-      "sourcePlacements": 183,
+      "sourcePlacements": 119,
       "sourceHash": "98acb32386879e61480d4308911e3a66d37d389694bf2cd43a821ea72e71b958"
     },
     {
@@ -175,23 +214,48 @@
       "contains": [
         "component-button"
       ],
-      "parts": [],
+      "parts": [
+        {
+          "name": "Staged header",
+          "kind": "slot",
+          "sourceSymbol": "headerContent",
+          "description": "Optional stepper or context between the title and scrolling content."
+        },
+        {
+          "name": "Dialog content",
+          "kind": "slot",
+          "sourceSymbol": "children",
+          "description": "Supplied content; shell options control compact/mobile sizing, dividers and dismissal without owning the workflow."
+        },
+        {
+          "name": "Footer actions",
+          "kind": "slot",
+          "sourceSymbol": "footerActions",
+          "description": "Supplied actions or configured action buttons with optional autofocus."
+        }
+      ],
       "source": "src/components/layout/AppModal.tsx",
       "storyId": "overlays-appmodal--default",
       "purpose": "Displays a focused dialog with primary and secondary actions.",
       "family": "Dialogs and drawers",
-      "assessment": "Keep",
-      "next": "Keep one modal/drawer foundation; domain workflows compose it rather than become shell variants.",
+      "assessment": "Shared; R3 complete",
+      "next": "Home notices, header coverage details, scheduling, verification and session warnings share the shell. Generic slots and dismissal/focus/mobile options preserve their contracts.",
       "sourceConsumers": [
         "src/components/coverage/CoverageCart.tsx",
+        "src/components/feedback/SessionExpiryAlert.tsx",
         "src/components/forms/DynamicList.tsx",
         "src/components/layout/AppFooter.tsx",
+        "src/components/layout/ClientHelpBanner.tsx",
         "src/components/layout/ConfirmationDialog.tsx",
         "src/components/layout/SendApplicationDialog.tsx",
-        "src/pages/Beneficiary.tsx"
+        "src/components/review/ReviewSections.tsx",
+        "src/components/verification/MemberVerification.tsx",
+        "src/components/verification/VerificationAddress.tsx",
+        "src/pages/Beneficiary.tsx",
+        "src/pages/Home.tsx"
       ],
-      "sourcePlacements": 72,
-      "sourceHash": "e68d6ef5b92a2f32e243b30d3a67ef1ebfea16538a95305ec925945d4babdc90"
+      "sourcePlacements": 127,
+      "sourceHash": "889174718a6b8c0d818abd67a11c84dfc42da13b53701a1690f804593a9a19ec"
     },
     {
       "key": "component-confirmation-dialog",
@@ -204,7 +268,7 @@
       "parts": [],
       "source": "src/components/layout/ConfirmationDialog.tsx",
       "storyId": "overlays-confirmationdialog--dependent-only-coverage",
-      "purpose": "Requests confirmation before continuing a consequential application action.",
+      "purpose": "A decision dialog with confirm and cancel actions.",
       "family": "Dialogs and drawers",
       "assessment": "Keep",
       "next": "Keep one modal/drawer foundation; domain workflows compose it rather than become shell variants.",
@@ -233,8 +297,8 @@
       "sourceConsumers": [
         "src/components/layout/AppShell.tsx"
       ],
-      "sourcePlacements": 30,
-      "sourceHash": "df28de1aef5a1e8874a734545c578f69dbd7d549f340a797954062b35ab5a38e"
+      "sourcePlacements": 28,
+      "sourceHash": "d006a465a4125086ab12414f862278b745a95138c5ca01ec96377c993a5e9f03"
     },
     {
       "key": "component-coverage-portfolio-drawer",
@@ -247,7 +311,7 @@
       "parts": [],
       "source": "src/components/coverage/CoveragePortfolioDrawer.tsx",
       "storyId": "coverage-commerce-coverageportfoliodrawer--member-only",
-      "purpose": "Shows existing member and spouse coverage in a drawer.",
+      "purpose": "Existing coverage made available after TPA verification.",
       "family": "Dialogs and drawers",
       "assessment": "Keep",
       "next": "Keep one modal/drawer foundation; domain workflows compose it rather than become shell variants.",
@@ -255,7 +319,7 @@
         "src/pages/Coverage.tsx"
       ],
       "sourcePlacements": 1,
-      "sourceHash": "7e37b4fb741c7e59c1a8d01ded825bcefd9baf92acf5e6db3e861831b4796771"
+      "sourceHash": "75b37f0b1e739768de739566dc583209a98f29ef4bd5a4ae8fb3b1e40f0b40f1"
     },
     {
       "key": "component-member-verification",
@@ -263,21 +327,22 @@
       "section": "Components / Feedback and overlays / Dialogs and drawers / Application dialogs",
       "role": "shared-piece",
       "contains": [
+        "component-app-modal",
         "component-button",
         "component-field-renderer"
       ],
       "parts": [],
       "source": "src/components/verification/MemberVerification.tsx",
       "storyId": "coverage-commerce-memberverification--interactive",
-      "purpose": "Collects a verification method and security answers using the standard form fields, then reports the prototype verification result.",
+      "purpose": "Identity verification drawer opened when the TPA finds an existing member with active coverage.",
       "family": "Dialogs and drawers",
-      "assessment": "Keep",
-      "next": "Keep one modal/drawer foundation; domain workflows compose it rather than become shell variants.",
+      "assessment": "Shared; R3 complete",
+      "next": "Composes AppModal with a generic staged-header slot; its own verification state, validations and callbacks remain independent.",
       "sourceConsumers": [
         "src/pages/Eligibility.tsx"
       ],
       "sourcePlacements": 1,
-      "sourceHash": "efcf529b6b74238cb75131b854a921fbee08567e2042e7ae3b9ebd54b9489e17"
+      "sourceHash": "e8b02bda325ed5a6a80c25003cd0a79612845d443da6ec16002dba3b4537933c"
     },
     {
       "key": "component-send-application-dialog",
@@ -285,7 +350,8 @@
       "section": "Components / Feedback and overlays / Dialogs and drawers / Application dialogs",
       "role": "shared-piece",
       "contains": [
-        "component-app-modal"
+        "component-app-modal",
+        "component-page-alert"
       ],
       "parts": [],
       "source": "src/components/layout/SendApplicationDialog.tsx",
@@ -299,7 +365,29 @@
         "src/pages/Review.tsx"
       ],
       "sourcePlacements": 2,
-      "sourceHash": "65af13a583aa28b5585dbfd38f0705eea70a6c7fe7831857c1332aabc451ef9a"
+      "sourceHash": "cb6bea7ad4e494a052cc40c04e52589fe37c74e38ee0bcce11782b1838aa5e1b"
+    },
+    {
+      "key": "component-verification-address",
+      "name": "VerificationAddress",
+      "section": "Components / Feedback and overlays / Dialogs and drawers / Application dialogs",
+      "role": "shared-piece",
+      "contains": [
+        "component-address-fields",
+        "component-app-modal"
+      ],
+      "parts": [],
+      "source": "src/components/verification/VerificationAddress.tsx",
+      "storyId": "coverage-commerce-memberverification--address-before-verification",
+      "purpose": "Collects a residential address before configured member verification.",
+      "family": "Dialogs and drawers",
+      "assessment": "Keep",
+      "next": "Keep one modal/drawer foundation; domain workflows compose it rather than become shell variants.",
+      "sourceConsumers": [
+        "src/pages/Eligibility.tsx"
+      ],
+      "sourcePlacements": 1,
+      "sourceHash": "d32cf453d48f8723c721229d617e0682d876f5c1dc458fa04350a2bf7a3cf9cb"
     },
     {
       "key": "component-eligibility-sections",
@@ -311,12 +399,20 @@
         "component-dynamic-list",
         "component-eligibility-fields",
         "component-field-grid",
-        "component-field-renderer"
+        "component-field-renderer",
+        "component-section-divider"
       ],
-      "parts": [],
+      "parts": [
+        {
+          "name": "SectionNote",
+          "kind": "native-element",
+          "sourceSymbol": "Alert",
+          "description": "Inline MUI info Alert at the authored section-note placement. The adapter supplies the effective section wording; this is not a separate component."
+        }
+      ],
       "source": "src/components/eligibility/EligibilitySections.tsx",
       "storyId": "pages-eligibility-your-information--default",
-      "purpose": "Configured Eligibility sections for personal information, covered applicants, spouse details and repeated child records.",
+      "purpose": "Personal information, covered applicants, spouse details and repeated children.",
       "family": "Eligibility and physician sections",
       "assessment": "Keep",
       "next": "Keep page-specific policy and applicant structure above shared fields; PhysicianInformation has canonical member/spouse fields; Profile composition and scenarios are documented in profile-component-review.md.",
@@ -324,7 +420,7 @@
         "src/app/sections/ConfiguredEligibilitySections.tsx"
       ],
       "sourcePlacements": 1,
-      "sourceHash": "bef12508e5f169ccd6df5bf2ef80c82b28c58474b4023b6ab1ed87744efbac8a"
+      "sourceHash": "ff209512e999ba49e70d9c99f77010e31076d538baf4fa5b09bb0e97b527b189"
     },
     {
       "key": "component-physician-information",
@@ -348,7 +444,7 @@
         "src/components/profile/ProfileSections.tsx"
       ],
       "sourcePlacements": 1,
-      "sourceHash": "06897b59ec362b49590b5f67c3747dea5a6a79999e6ec588e11b12f0ea43f4ac"
+      "sourceHash": "3c786c12533aab726b7f6f3775fc74548acb08237b8d134cadcf7de05c3a6618"
     },
     {
       "key": "component-application-error-state",
@@ -363,17 +459,17 @@
       ],
       "parts": [],
       "source": "src/components/feedback/ApplicationErrorState.tsx",
-      "storyId": "pages-error-pages--not-found",
-      "purpose": "One page template for 404/500, session timeout, maintenance, unavailable applications and technical/payment/submission failures.",
+      "storyId": "pages-error-pages--bad-request",
+      "purpose": "The one layout for every error page: icon or number, heading, message, guidance and actions.",
       "family": "Feedback and recovery",
       "assessment": "Composition; aligned",
       "next": "One card-contained utility-page layout renders large primary-colored error codes or state icons, messages, plain recovery links and the standard SiteSupport card. Maintenance has no navigation actions; 404 Home/Resume links preserve application state.",
       "sourceConsumers": [
-        "src/components/feedback/ProcessingStatusPage.tsx",
-        "src/pages/ErrorPage.tsx"
+        "src/pages/ErrorPage.tsx",
+        "src/pages/Receipt.tsx"
       ],
-      "sourcePlacements": 9,
-      "sourceHash": "26b6b78b31b22100eb73f618f984aaac065f2f2f9a1a112b5d6135ac1404c182"
+      "sourcePlacements": 7,
+      "sourceHash": "ffe7fb9e9f9be9ff63e9011de2baa5f76ad9c365f681a6d9c68338c633506f9d"
     },
     {
       "key": "component-application-recovery-actions",
@@ -392,11 +488,10 @@
       "assessment": "Composition; aligned",
       "next": "One compact responsive action row. Maintenance has no navigation actions. Only explicit Start new invokes the reset callback; retries require an explicit local callback.",
       "sourceConsumers": [
-        "src/components/feedback/ApplicationErrorState.tsx",
-        "src/components/feedback/RecoveryAlert.tsx"
+        "src/components/feedback/ApplicationErrorState.tsx"
       ],
-      "sourcePlacements": 39,
-      "sourceHash": "b3935795cb023b4eef9eed70530ff33bf1518a8875873f41e7d4fb8612ae85c1"
+      "sourcePlacements": 7,
+      "sourceHash": "bdad6597d72d10238ffcb75a3304dd5a7007a40c65ec22b8add557bad243558d"
     },
     {
       "key": "component-app-snackbar",
@@ -404,7 +499,14 @@
       "section": "Components / Feedback and overlays",
       "role": "shared-piece",
       "contains": [],
-      "parts": [],
+      "parts": [
+        {
+          "name": "Snackbar",
+          "kind": "native-element",
+          "sourceSymbol": "Snackbar",
+          "description": "MUI transient surface with responsive positioning, dismissal and the configured auto-hide duration."
+        }
+      ],
       "source": "src/components/feedback/AppSnackbar.tsx",
       "storyId": "feedback-appsnackbar--success",
       "purpose": "Shows a temporary feedback message with an optional action.",
@@ -414,9 +516,11 @@
       "sourceConsumers": [
         "src/components/coverage/CoverageSelectionFeedback.tsx",
         "src/components/feedback/ProgressSavedSnackbar.tsx",
-        "src/components/layout/SinglePageSections.tsx"
+        "src/components/layout/AppShell.tsx",
+        "src/components/layout/SinglePageSections.tsx",
+        "src/pages/Receipt.tsx"
       ],
-      "sourcePlacements": 20,
+      "sourcePlacements": 48,
       "sourceHash": "626d7fc3c5a64691d740c4a509b89d4d9a2e9ab7ae9f29156a756b282136df57"
     },
     {
@@ -431,7 +535,7 @@
       "parts": [],
       "source": "src/components/coverage/CoverageSelectionFeedback.tsx",
       "storyId": "coverage-commerce-productcatalog--first-product-from-empty-cart",
-      "purpose": "First addition opens the cart; later additions use the compact Added feedback.",
+      "purpose": "Cart drawer for the first addition and compact feedback for later additions.",
       "family": "Feedback and recovery",
       "assessment": "Composition; aligned",
       "next": "Shared AppDrawer/CoverageCart for the first addition and AppSnackbar for subsequent additions; keep selection state and feedback timing at the caller.",
@@ -439,7 +543,7 @@
         "src/pages/Coverage.tsx"
       ],
       "sourcePlacements": 1,
-      "sourceHash": "1cf2a353b3589b1ed3d9ac2acbe8ad780d3aa1eb6493c96aafee06df5cabc153"
+      "sourceHash": "991ff445fe017c5e8bbf0507e38770b4fb10225b37f934c14c9d0a6bc279b039"
     },
     {
       "key": "component-empty-state",
@@ -458,7 +562,7 @@
         "src/app/workflows/QuoteCalculator.tsx",
         "src/components/coverage/CoverageCart.tsx"
       ],
-      "sourcePlacements": 32,
+      "sourcePlacements": 29,
       "sourceHash": "f24b37c08e7aa4d4caed82887409d9a599dfe03541a71b0bc2a43d69ed951b44"
     },
     {
@@ -472,7 +576,7 @@
       "parts": [],
       "source": "src/components/feedback/ExpiringCodeAlert.tsx",
       "storyId": "feedback-resume-expiration--active-link",
-      "purpose": "Shared active/expired/resend alert for resume links and verification codes.",
+      "purpose": "Shows whether a secure link or code is active or expired, and confirms a send or resend.",
       "family": "Feedback and recovery",
       "assessment": "Keep",
       "next": "Use the common recovery vocabulary, actions and Site support; preserve feedback timing and scope.",
@@ -481,7 +585,33 @@
         "src/pages/ResumeCode.tsx"
       ],
       "sourcePlacements": 2,
-      "sourceHash": "e1cc233603af5fe95b27bc9592c2cd31f2211ad154747adb5274c4bd30cb3cee"
+      "sourceHash": "ef4756eded5c45da3d21c6c21b60787e0be21e99eb0245b36131fba2a8caaf65"
+    },
+    {
+      "key": "component-information-alert",
+      "name": "InformationAlert",
+      "section": "Components / Feedback and overlays / Alerts",
+      "role": "shared-piece",
+      "contains": [],
+      "parts": [
+        {
+          "name": "Information content",
+          "kind": "slot",
+          "sourceSymbol": "children",
+          "description": "Supplied supporting content and actions below the heading and optional description."
+        }
+      ],
+      "source": "src/components/feedback/InformationAlert.tsx",
+      "storyId": "feedback-information-alert--default",
+      "purpose": "Shared MUI information alert with supplied heading, description and content.",
+      "family": "Feedback and recovery",
+      "assessment": "Shared; R5 complete",
+      "next": "Generic supplied heading, description and content; ReceiptConfirmation owns receipt rules and text selection.",
+      "sourceConsumers": [
+        "src/components/receipt/ReceiptConfirmation.tsx"
+      ],
+      "sourcePlacements": 1,
+      "sourceHash": "7452ac7ecc0ed5d9990a369df91a78053f45753dc7bb9869745c4ab8cddcf999"
     },
     {
       "key": "component-page-alert",
@@ -492,17 +622,22 @@
       "parts": [],
       "source": "src/components/feedback/PageAlert.tsx",
       "storyId": "feedback-pagealert--error",
-      "purpose": "Displays page-level errors, warnings, or informational messages.",
+      "purpose": "Page-level alert under the header: notices (resumed application) and page errors (ineligibility, business validation).",
       "family": "Feedback and recovery",
-      "assessment": "Keep",
-      "next": "Use the common recovery vocabulary, actions and Site support; preserve feedback timing and scope.",
+      "assessment": "Shared; R6 complete",
+      "next": "PageShell, Resume request/sent, ResumeMethod and CIR load failures use PageAlert. Inline and overlay alerts retain their distinct placement.",
       "sourceConsumers": [
         "src/app/RoutePage.tsx",
-        "src/components/feedback/RecoveryAlert.tsx",
-        "src/pages/Coverage.tsx"
+        "src/components/feedback/ResumeSessionWarning.tsx",
+        "src/components/layout/PageShell.tsx",
+        "src/components/layout/SendApplicationDialog.tsx",
+        "src/pages/Coverage.tsx",
+        "src/pages/HealthCir.tsx",
+        "src/pages/Resume.tsx",
+        "src/pages/ResumeMethod.tsx"
       ],
-      "sourcePlacements": 49,
-      "sourceHash": "c6cd280009a87823874dad2b1a84b28dee97501b2a13326f3196ae745e11caac"
+      "sourcePlacements": 52,
+      "sourceHash": "291e3bcebb127f0a8218959fe917ed6d914f66babe93e8a0c2115d46c60947b2"
     },
     {
       "key": "component-progress-saved-snackbar",
@@ -522,35 +657,8 @@
       "sourceConsumers": [
         "src/app/RoutePage.tsx"
       ],
-      "sourcePlacements": 18,
+      "sourcePlacements": 17,
       "sourceHash": "95a57644cf4814fd32bffc8547fb1dc556c849eb7794f2ab311202ee74c35db2"
-    },
-    {
-      "key": "component-recovery-alert",
-      "name": "RecoveryAlert",
-      "section": "Components / Feedback and overlays / Alerts",
-      "role": "shared-piece",
-      "contains": [
-        "component-app-drawer",
-        "component-application-recovery-actions",
-        "component-button",
-        "component-link",
-        "component-page-alert",
-        "component-site-support"
-      ],
-      "parts": [],
-      "source": "src/components/feedback/RecoveryAlert.tsx",
-      "storyId": "feedback-technical-error--save-conflict",
-      "purpose": "Shared persistent recovery alert with approved local copy, safe actions and contextual Site support.",
-      "family": "Feedback and recovery",
-      "assessment": "Composition; aligned",
-      "next": "One RecoveryAlert uses stable local codes and approved copy, preserves answers/focus, and carries the same opaque support reference into the full page and support drawer.",
-      "sourceConsumers": [
-        "src/app/ApplicationSessionGuard.tsx",
-        "src/components/feedback/ProcessingStatusPage.tsx"
-      ],
-      "sourcePlacements": 32,
-      "sourceHash": "6f182d37a23cb65a5d0268c5322b6ee528e8537e4f063f5c0d222da6823eea09"
     },
     {
       "key": "component-resend-countdown-row",
@@ -563,7 +671,7 @@
       "parts": [],
       "source": "src/components/feedback/ResendCountdownRow.tsx",
       "storyId": "feedback-resume-expiration--active-link",
-      "purpose": "Shows the resend countdown and action for a verification message.",
+      "purpose": "Resend countdown and action.",
       "family": "Feedback and recovery",
       "assessment": "Keep",
       "next": "Use the common recovery vocabulary, actions and Site support; preserve feedback timing and scope.",
@@ -572,7 +680,29 @@
         "src/pages/ResumeCode.tsx"
       ],
       "sourcePlacements": 2,
-      "sourceHash": "7d23643ca9d78b8c023b6774e4f0f8959a48e39464c814f6d93d375aa5c4dea6"
+      "sourceHash": "33e89ec48f04685bbd07d19194eb99878e70af38503a209ed96ffd49bcca1da3"
+    },
+    {
+      "key": "component-resume-session-warning",
+      "name": "ResumeSessionWarning",
+      "section": "Components / Feedback and overlays / Alerts",
+      "role": "shared-piece",
+      "contains": [
+        "component-page-alert"
+      ],
+      "parts": [],
+      "source": "src/components/feedback/ResumeSessionWarning.tsx",
+      "storyId": "feedback-resume-expiration--mfa-warning",
+      "purpose": "Shared PageAlert for the fixed MFA verification deadline, with a configured warning threshold and countdown and no extension action.",
+      "family": "Feedback and recovery",
+      "assessment": "Keep",
+      "next": "Use the common recovery vocabulary, actions and Site support; preserve feedback timing and scope.",
+      "sourceConsumers": [
+        "src/pages/ResumeCode.tsx",
+        "src/pages/ResumeMethod.tsx"
+      ],
+      "sourcePlacements": 2,
+      "sourceHash": "e1078cbb13858423f2efdb428bdf0190a6d97950717ee2a52d4770e96f3d7270"
     },
     {
       "key": "component-session-expiry-alert",
@@ -580,20 +710,20 @@
       "section": "Components / Feedback and overlays / Dialogs and drawers / Application dialogs",
       "role": "shared-piece",
       "contains": [
-        "component-button"
+        "component-app-modal"
       ],
       "parts": [],
       "source": "src/components/feedback/SessionExpiryAlert.tsx",
       "storyId": "feedback-session-expiry-warning--two-minutes",
       "purpose": "Warning before application inactivity expiry. The countdown is not announced each second.",
       "family": "Feedback and recovery",
-      "assessment": "Keep",
-      "next": "Use the common recovery vocabulary, actions and Site support; preserve feedback timing and scope.",
+      "assessment": "Shared; R3 complete",
+      "next": "Composes AppModal with non-dismissal, alertdialog, labelled description and autofocus; inactivity-extension behavior remains separate from fixed MFA expiry.",
       "sourceConsumers": [
         "src/app/ApplicationSessionGuard.tsx"
       ],
-      "sourcePlacements": 30,
-      "sourceHash": "502acc1f863005d5ae6d3ce0f490b31221b89a22bf8120b2fd76d4921c516973"
+      "sourcePlacements": 28,
+      "sourceHash": "76671a1c77a909bc8867ca319d939971612ef3283a2f9f56ebc8f2bfe556c7fe"
     },
     {
       "key": "component-site-support",
@@ -606,17 +736,16 @@
       "parts": [],
       "source": "src/components/layout/SiteSupport.tsx",
       "storyId": "pages-shared-site-support--current-site",
-      "purpose": "Site support card shared by receipts, maintenance and error pages; email uses the same contact data and copy.",
+      "purpose": "Shared Questions support content in a standard MUI info alert on every page, with matching email-compatible info styling. Effective Site contacts and global technical support use the same content source.",
       "family": "Feedback and recovery",
-      "assessment": "Consolidated now",
-      "next": "Receipt, maintenance and errors share the standard support card. Emails share its resolver/copy while retaining table markup suitable for email clients.",
+      "assessment": "Shared; aligned",
+      "next": "Receipt and redirect templates share the configured MUI info alert. Email keeps appropriate table markup while sharing contact/copy resolution.",
       "sourceConsumers": [
         "src/components/feedback/ApplicationErrorState.tsx",
-        "src/components/feedback/RecoveryAlert.tsx",
         "src/pages/Receipt.tsx"
       ],
-      "sourcePlacements": 40,
-      "sourceHash": "e462227023c50b78c2db5aaaede37c58f7d116f52a0e16ba7efb0a03892a02b3"
+      "sourcePlacements": 8,
+      "sourceHash": "4dd31c407a6f1e5629a391b0fd1f207e414b80e00774290f84f4e519fda35f36"
     },
     {
       "key": "component-address-fields",
@@ -637,10 +766,11 @@
       "sourceConsumers": [
         "src/components/contact/BusinessInformation.tsx",
         "src/components/contact/ResidentialAddress.tsx",
-        "src/components/forms/PhysicianInformation.tsx"
+        "src/components/forms/PhysicianInformation.tsx",
+        "src/components/verification/VerificationAddress.tsx"
       ],
-      "sourcePlacements": 3,
-      "sourceHash": "3c92c05e049356c67c6247e7d693faca9372ebeb1cba880b44ff3cdbcd26aada"
+      "sourcePlacements": 4,
+      "sourceHash": "d11d49085b8f07f6ace422490ec46432f0c898ce9e690a47fdabccd4a537b1dd"
     },
     {
       "key": "component-button",
@@ -651,44 +781,37 @@
       "parts": [],
       "source": "@mui/material/Button",
       "storyId": "forms-button--variants",
-      "purpose": "Standard action button with pill shape by default; supports contained, outlined, text, disabled and loading states.",
+      "purpose": "An explicit page or section action.",
       "family": "Generic form controls",
       "assessment": "Keep",
       "next": "Use FieldRenderer for application fields; adapters/compositions must reuse its controls. Buttons and links use the existing MUI owners under Actions.",
       "sourceConsumers": [
         "src/app/workflows/QuoteCalculator.tsx",
         "src/components/beneficiary/BeneficiaryProductRecords.tsx",
-        "src/components/content/LegalReviewSection.tsx",
-        "src/components/coverage/ApplicationEstimate.tsx",
+        "src/components/content/PrintAction.tsx",
         "src/components/demo/ApplicantMockOutbox.tsx",
         "src/components/feedback/ApplicationRecoveryActions.tsx",
-        "src/components/feedback/RecoveryAlert.tsx",
         "src/components/feedback/ResendCountdownRow.tsx",
-        "src/components/feedback/SessionExpiryAlert.tsx",
         "src/components/forms/DynamicList.tsx",
         "src/components/forms/DynamicListItem.tsx",
         "src/components/home/HomeHero.tsx",
-        "src/components/layout/AppHeader.tsx",
         "src/components/layout/AppMenu.tsx",
         "src/components/layout/AppModal.tsx",
         "src/components/layout/ClientHelpBanner.tsx",
         "src/components/navigation/PageNav.tsx",
         "src/components/receipt/ReceiptConfirmation.tsx",
-        "src/components/review/ReviewSections.tsx",
         "src/components/verification/MemberVerification.tsx",
         "src/pages/AdvisorLogin.tsx",
         "src/pages/AdvisorSendConfirmation.tsx",
         "src/pages/ApplicationEditConfirmation.tsx",
         "src/pages/Beneficiary.tsx",
         "src/pages/Coverage.tsx",
-        "src/pages/DocuSign.tsx",
         "src/pages/Home.tsx",
-        "src/pages/Payment.tsx",
         "src/pages/Resume.tsx",
         "src/pages/ResumeCode.tsx",
         "src/pages/ResumeMethod.tsx"
       ],
-      "sourcePlacements": 284,
+      "sourcePlacements": 167,
       "sourceHash": null
     },
     {
@@ -710,7 +833,7 @@
         "src/components/profile/ProfileSections.tsx"
       ],
       "sourcePlacements": 3,
-      "sourceHash": "1cabab612be9b5ee94a06d3517ce988dc4db8d35f0dbada76f903d6bd1edd98d"
+      "sourceHash": "e393c19ddad4fa20cc851372cc9bb4d22b67f530a23e80f1bf175d7f5c7aefc6"
     },
     {
       "key": "component-controlled-field-renderer",
@@ -734,8 +857,8 @@
         "src/components/forms/EligibilityFields.tsx",
         "src/pages/Beneficiary.tsx"
       ],
-      "sourcePlacements": 10,
-      "sourceHash": "e4bce173353ae014abd608fdc17a2bf8ef9b9a2300a5b30737534a22da0b5aad"
+      "sourcePlacements": 7,
+      "sourceHash": "07a744646a99b6369a82aa39d4224447c95a65a44363484b3dce2599f017531b"
     },
     {
       "key": "component-field-renderer",
@@ -753,14 +876,13 @@
       "storyId": "forms-fieldrenderer--playground",
       "purpose": "Renders a configured field with its input, validation and conditional behavior.",
       "family": "Generic form controls",
-      "assessment": "Keep",
-      "next": "Use FieldRenderer for application fields; adapters/compositions must reuse its controls. Buttons and links use the existing MUI owners under Actions.",
+      "assessment": "Shared; R1 complete",
+      "next": "Date and month-year use TextLikeField with independent format/storage adapters, validation and unchanged answer bindings.",
       "sourceConsumers": [
         "src/app/workflows/QuoteCalculator.tsx",
         "src/components/contact/BusinessInformation.tsx",
         "src/components/contact/ContactSections.tsx",
         "src/components/contact/ResidentialAddress.tsx",
-        "src/components/contact/SpouseContact.tsx",
         "src/components/coverage/CoverageNeedsCalculator.tsx",
         "src/components/coverage/CoverageQuestions.tsx",
         "src/components/eligibility/EligibilitySections.tsx",
@@ -771,7 +893,6 @@
         "src/components/forms/HealthQuestion.tsx",
         "src/components/forms/PhysicianInformation.tsx",
         "src/components/forms/SharedPaymentControls.tsx",
-        "src/components/forms/YesNoDetailList.tsx",
         "src/components/membership/AdditionalMembershipInformation.tsx",
         "src/components/membership/MemberInformation.tsx",
         "src/components/membership/MembershipStatus.tsx",
@@ -786,8 +907,8 @@
         "src/pages/ResumeCode.tsx",
         "src/pages/ResumeMethod.tsx"
       ],
-      "sourcePlacements": 77,
-      "sourceHash": "2deded54910ec496ca1f9985b0beb65260bf6ee6cd14f0d683579c40b9983669"
+      "sourcePlacements": 68,
+      "sourceHash": "d068b00fb965fe64da6a3585714f5a347409b23f0a6f65feebe616204ecf55be"
     },
     {
       "key": "component-link",
@@ -803,22 +924,23 @@
       "assessment": "Keep",
       "next": "Use FieldRenderer for application fields; adapters/compositions must reuse its controls. Buttons and links use the existing MUI owners under Actions.",
       "sourceConsumers": [
-        "src/components/coverage/ProductCostBreakdown.tsx",
+        "src/components/content/QuickDecisionExplainer.tsx",
         "src/components/coverage/ReferenceRateTableLink.tsx",
         "src/components/demo/ApplicantMockOutbox.tsx",
         "src/components/feedback/ApplicationRecoveryActions.tsx",
         "src/components/feedback/ExpiringCodeAlert.tsx",
-        "src/components/feedback/RecoveryAlert.tsx",
         "src/components/forms/FieldRenderer.tsx",
+        "src/components/home/HomeHero.tsx",
         "src/components/layout/AppFooter.tsx",
-        "src/components/layout/AppHeader.tsx",
         "src/components/layout/AppMenu.tsx",
         "src/components/layout/CookieDialog.tsx",
         "src/components/layout/ProductCard.tsx",
         "src/components/layout/SiteSupport.tsx",
-        "src/components/membership/MembershipStatus.tsx"
+        "src/components/membership/MembershipStatus.tsx",
+        "src/components/review/ReviewSections.tsx",
+        "src/pages/Home.tsx"
       ],
-      "sourcePlacements": 306,
+      "sourcePlacements": 218,
       "sourceHash": null
     },
     {
@@ -837,7 +959,7 @@
       "sourceConsumers": [
         "src/components/forms/FieldRenderer.tsx"
       ],
-      "sourcePlacements": 30,
+      "sourcePlacements": 28,
       "sourceHash": "8a7cf0e430f04e4c169abfabcef990f701aefba435a81cbc595e1004230f1a11"
     },
     {
@@ -858,7 +980,7 @@
       "sourceConsumers": [
         "src/components/forms/FieldRenderer.tsx"
       ],
-      "sourcePlacements": 30,
+      "sourcePlacements": 28,
       "sourceHash": "262c47afb10b596f67590b659ff7b8fa41784fc825317cbeaa1b9135ac336f02"
     },
     {
@@ -878,8 +1000,8 @@
         "src/components/forms/FieldRenderer.tsx",
         "src/components/forms/RadioSelectionGroup.tsx"
       ],
-      "sourcePlacements": 60,
-      "sourceHash": "155a053a0fbb338993e25af541534603aa38ca28267ce5f0c9d20ce98f1d3b76"
+      "sourcePlacements": 56,
+      "sourceHash": "a7ea6870034b5f772b3d1aad548632a10eaa8fd70b540b084f1a29cb17d8fc0e"
     },
     {
       "key": "component-form-route-page",
@@ -924,32 +1046,28 @@
       ],
       "source": "src/app/RoutePage.tsx",
       "storyId": "application-patterns-application-page-template--standard-form-page",
-      "purpose": "Application frame composing page surfaces, steps, breadcrumbs, heading/Back, help, form validation, transitions, saved values and Next; pages supply their sections.",
+      "purpose": "Wraps each consumer form page: title, steps, breadcrumbs, back, help, validation, saving and Next.",
       "family": "Page layout and navigation",
       "assessment": "Keep",
       "next": "Preserve layout, application state and navigation boundaries.",
       "sourceConsumers": [
+        "src/app/sections/ConfiguredHealthPage.tsx",
+        "src/components/feedback/PrototypeHandoffPage.tsx",
         "src/pages/AdvisorLogin.tsx",
         "src/pages/AdvisorSendConfirmation.tsx",
         "src/pages/ApplicationEditConfirmation.tsx",
         "src/pages/Beneficiary.tsx",
         "src/pages/Contact.tsx",
         "src/pages/Coverage.tsx",
-        "src/pages/DocuSign.tsx",
         "src/pages/Eligibility.tsx",
-        "src/pages/HealthCi.tsx",
         "src/pages/HealthCir.tsx",
-        "src/pages/HealthDi.tsx",
-        "src/pages/HealthLi.tsx",
-        "src/pages/HealthQd.tsx",
-        "src/pages/HealthSi.tsx",
         "src/pages/Membership.tsx",
         "src/pages/Payment.tsx",
         "src/pages/Profile.tsx",
         "src/pages/Review.tsx"
       ],
-      "sourcePlacements": 18,
-      "sourceHash": "8cbf118ebcc25ff3114709f13fb3723ca847f3d2dbf87c8e61360d603d21b881"
+      "sourcePlacements": 17,
+      "sourceHash": "a8de22cbac64df2af634eea5f7d580a85ce00e6b1e649dfa95399fb55d032e04"
     },
     {
       "key": "component-form-shell",
@@ -960,20 +1078,18 @@
       "parts": [],
       "source": "src/components/layout/FormShell.tsx",
       "storyId": "layout-formshell--default",
-      "purpose": "Provides the visual form surface; FormRoutePage owns form state and navigation.",
+      "purpose": "The visual surface a form sits on.",
       "family": "Page layout and navigation",
       "assessment": "Internal primitive",
-      "next": "A styled Paper with width only. Keep internal to the page composition rather than implying a second form engine.",
+      "next": "Shared styled Paper with responsive radius/padding. Preserve it as a view surface, separate from form-state engines.",
       "sourceConsumers": [
         "src/app/RoutePage.tsx",
         "src/components/feedback/ApplicationErrorState.tsx",
-        "src/pages/Receipt.tsx",
-        "src/pages/Resume.tsx",
-        "src/pages/ResumeCode.tsx",
-        "src/pages/ResumeMethod.tsx"
+        "src/components/layout/StandaloneFormPage.tsx",
+        "src/pages/Receipt.tsx"
       ],
-      "sourcePlacements": 31,
-      "sourceHash": "0fa7ffc899bcc459a0c111d77f54a4e7fa8e57af5f0c030c014dced12d008903"
+      "sourcePlacements": 28,
+      "sourceHash": "9a3aa56bf801d2fa99ededfdc9206e82d8335a0cfcfe2e1decf5e17be74262c8"
     },
     {
       "key": "component-page-header",
@@ -986,19 +1102,18 @@
       "parts": [],
       "source": "src/components/layout/PageHeader.tsx",
       "storyId": "layout-pageheader--default",
-      "purpose": "Displays the page title, supporting copy, back action, and contextual help.",
+      "purpose": "Page title, supporting copy, back action and contextual help.",
       "family": "Page layout and navigation",
-      "assessment": "Consolidate next",
-      "next": "Make PageHeader the single title/subtitle/back/help composition used by PageShell and FormRoutePage.",
+      "assessment": "Shared; R2 complete",
+      "next": "PageShell and standalone/application form frames share the title, help and feedback owner; PageTitle remains its internal primitive.",
       "sourceConsumers": [
         "src/app/RoutePage.tsx",
         "src/app/workflows/QuoteCalculator.tsx",
-        "src/pages/Resume.tsx",
-        "src/pages/ResumeCode.tsx",
-        "src/pages/ResumeMethod.tsx"
+        "src/components/layout/PageShell.tsx",
+        "src/components/layout/StandaloneFormPage.tsx"
       ],
-      "sourcePlacements": 23,
-      "sourceHash": "ee0790dd2125aa4cc137f8e4e0c3266dee8c7ae8664180d61052b385ad66876a"
+      "sourcePlacements": 48,
+      "sourceHash": "b12e9ea4295dc6a987104c9a54c426a4d57dfdbc67abe8d0e0e3e19491a6756b"
     },
     {
       "key": "component-page-nav",
@@ -1018,15 +1133,15 @@
       ],
       "source": "src/components/navigation/PageNav.tsx",
       "storyId": "navigation-pagenav--default",
-      "purpose": "Provides the application page's Next or submit action.",
+      "purpose": "The page's Next or Submit action.",
       "family": "Page layout and navigation",
       "assessment": "Keep",
       "next": "Preserve layout, application state and navigation boundaries.",
       "sourceConsumers": [
         "src/app/RoutePage.tsx"
       ],
-      "sourcePlacements": 18,
-      "sourceHash": "ab0239f182b1c3ceb483ede1b04e4f8c564102a886dd6b9c25cc8be67523d2a8"
+      "sourcePlacements": 17,
+      "sourceHash": "76ad64a44f72cc9f04c41fbd39c06ab05626fb96a17de8e35cf198ad55d4083b"
     },
     {
       "key": "component-page-shell",
@@ -1034,25 +1149,24 @@
       "section": "Components / Layout / Containers",
       "role": "application-frame",
       "contains": [
-        "component-page-title"
+        "component-page-alert",
+        "component-page-header"
       ],
       "parts": [],
       "source": "src/components/layout/PageShell.tsx",
       "storyId": "layout-pageshell--default",
-      "purpose": "Provides a shared page container and layout.",
+      "purpose": "Shared page container and layout.",
       "family": "Page layout and navigation",
-      "assessment": "Consolidate next",
-      "next": "Delegate its duplicate header/error/help arrangement to PageHeader and PageAlert; keep width/actions/layout ownership here.",
+      "assessment": "Shared; R2 complete",
+      "next": "Uses PageHeader and PageAlert. StandaloneFormPage shares Resume layout without application autosave/security effects.",
       "sourceConsumers": [
         "src/app/RoutePage.tsx",
         "src/components/feedback/ApplicationErrorState.tsx",
-        "src/pages/Receipt.tsx",
-        "src/pages/Resume.tsx",
-        "src/pages/ResumeCode.tsx",
-        "src/pages/ResumeMethod.tsx"
+        "src/components/layout/StandaloneFormPage.tsx",
+        "src/pages/Receipt.tsx"
       ],
-      "sourcePlacements": 31,
-      "sourceHash": "185c032139860f96f1509fb977450d567d93981bcd8e5e5bfcdae7572d6a31b5"
+      "sourcePlacements": 28,
+      "sourceHash": "e570ccef5cf48c0ba426009d83dbe5de0a2dc146bb6a4f6bb9b45f59a76eb1d0"
     },
     {
       "key": "component-page-title",
@@ -1070,16 +1184,15 @@
       ],
       "source": "src/components/layout/PageTitle.tsx",
       "storyId": "layout-pagetitle--title-only",
-      "purpose": "Displays the page heading, subtitle and supporting actions.",
+      "purpose": "Page heading, subtitle and supporting actions.",
       "family": "Page layout and navigation",
-      "assessment": "Consolidate next",
-      "next": "Retain as an internal heading primitive if needed; avoid two public header APIs with overlapping title/back/subhead props.",
+      "assessment": "Internal primitive",
+      "next": "Shared heading/back/subtitle primitive beneath PageHeader; keep this layering. Do not create person/page copies.",
       "sourceConsumers": [
-        "src/components/layout/PageHeader.tsx",
-        "src/components/layout/PageShell.tsx"
+        "src/components/layout/PageHeader.tsx"
       ],
-      "sourcePlacements": 51,
-      "sourceHash": "64842492e3d74e5b73745d61d71641d81dda567fb51181b22f952759c0452d64"
+      "sourcePlacements": 28,
+      "sourceHash": "6db23a332a6f54c9d6ffec5d974c07894e8be531dd9f49e3006cad5736e50c31"
     },
     {
       "key": "component-progress-step",
@@ -1097,15 +1210,47 @@
       ],
       "source": "src/components/navigation/ProgressStep.tsx",
       "storyId": "navigation-progressstep--collapsed-steps",
-      "purpose": "Main application steps (Getting started, Choose your coverage and later stages), with Breadcrumbs exported from the same module for pages within the current main step; visibility follows the active flow and template.",
+      "purpose": "The steps (Getting started, Choose your coverage, and so on) and the breadcrumbs within the current step.",
       "family": "Page layout and navigation",
       "assessment": "Keep",
       "next": "Preserve layout, application state and navigation boundaries.",
       "sourceConsumers": [
         "src/app/RoutePage.tsx"
       ],
-      "sourcePlacements": 18,
-      "sourceHash": "ebb7e5f10960793579ee8072fbb9954c22b1ad25fbb137761c537dd9f806789c"
+      "sourcePlacements": 17,
+      "sourceHash": "a0d2ee285d2a7e31e93ee2fd1d3c0c780a3e2b8845e447f9cf3116c428c4a81e"
+    },
+    {
+      "key": "component-standalone-form-page",
+      "name": "StandaloneFormPage",
+      "section": "Components / Layout / Containers",
+      "role": "application-frame",
+      "contains": [
+        "component-form-shell",
+        "component-page-header",
+        "component-page-shell"
+      ],
+      "parts": [
+        {
+          "name": "Form content",
+          "kind": "slot",
+          "sourceSymbol": "children",
+          "description": "Explicit form fields, actions and messages. Callers own form/security state and workflow callbacks."
+        }
+      ],
+      "source": "src/components/layout/StandaloneFormPage.tsx",
+      "storyId": "layout-standalone-form-page--default",
+      "purpose": "Presentational page, form surface and header shared by standalone forms. Callers own field state, security and workflow effects.",
+      "family": "Page layout and navigation",
+      "assessment": "Shared; R2 complete",
+      "next": "Pure PageShell/FormShell/PageHeader layout. Resume request/method/code controllers keep independent state, callbacks and security policies.",
+      "sourceConsumers": [
+        "src/pages/Resume.tsx",
+        "src/pages/ResumeCode.tsx",
+        "src/pages/ResumeMethod.tsx"
+      ],
+      "sourcePlacements": 3,
+      "sourceHash": "8c7d82894c549a47eca33cf025511e2f7b3ebe48d0a0986345250efe3db9d7ca"
     },
     {
       "key": "component-payment-sections",
@@ -1114,17 +1259,12 @@
       "role": "page-section",
       "contains": [
         "component-category-card",
+        "component-field-grid",
         "component-field-renderer",
         "component-product-card",
         "component-section-divider"
       ],
       "parts": [
-        {
-          "name": "Payment feedback",
-          "kind": "slot",
-          "sourceSymbol": "feedback",
-          "description": "Caller supplies mock authorization and submission feedback."
-        },
         {
           "name": "Shared payment elections",
           "kind": "slot",
@@ -1136,19 +1276,25 @@
           "kind": "slot",
           "sourceSymbol": "costs",
           "description": "Caller supplies rate summaries or reference tables within each ProductCard."
+        },
+        {
+          "name": "Payment notes",
+          "kind": "slot",
+          "sourceSymbol": "notes",
+          "description": "Configured page-level notes, with per-product notes inside matching cards. Empty notes are hidden. Notes describe taxes or fees; this slot does not calculate or charge them."
         }
       ],
       "source": "src/components/payment/PaymentSections.tsx",
       "storyId": "pages-payment-sections--default",
-      "purpose": "Payment content with explicit fields and display data; the page resolves policies, costs and submission.",
+      "purpose": "Payment elections, banking fields and cost display.",
       "family": "Payment composition",
       "assessment": "Keep",
-      "next": "Page resolves collection, product policy, field definitions, rate display and submission. Standalone sections and shared controls receive explicit inputs; canonical per-product bindings remain independent.",
+      "next": "Page resolves collection, product policy, field definitions, rate display, configurable notes and normal form continuation. Standalone sections and shared controls receive explicit inputs; canonical per-product bindings remain independent.",
       "sourceConsumers": [
         "src/pages/Payment.tsx"
       ],
       "sourcePlacements": 1,
-      "sourceHash": "23643715bd41ea70bb6104d76ae9c9b9db213c4c6599c6f43c6cf3daf3ba51e2"
+      "sourceHash": "3b891ab9aa46f1ae5872783a7bf81c166cf9983b44fb866d6c4f83e293dd4109"
     },
     {
       "key": "component-shared-payment-controls",
@@ -1156,6 +1302,7 @@
       "section": "Components / Pages / Payment / Sections",
       "role": "shared-piece",
       "contains": [
+        "component-field-grid",
         "component-field-renderer"
       ],
       "parts": [
@@ -1171,12 +1318,12 @@
       "purpose": "Shared Payment Controls component used by the portal.",
       "family": "Payment composition",
       "assessment": "Keep",
-      "next": "Page resolves collection, product policy, field definitions, rate display and submission. Standalone sections and shared controls receive explicit inputs; canonical per-product bindings remain independent.",
+      "next": "Page resolves collection, product policy, field definitions, rate display, configurable notes and normal form continuation. Standalone sections and shared controls receive explicit inputs; canonical per-product bindings remain independent.",
       "sourceConsumers": [
         "src/pages/Payment.tsx"
       ],
       "sourcePlacements": 1,
-      "sourceHash": "eba06c25c2de4a68e5b87c536275ce9bc9e7f62ce47d42ed2512881d9fb32157"
+      "sourceHash": "34686fc4a6bfd018b97ab5fe0f7556c26414897114f39b1b29d0e447e8a061dc"
     },
     {
       "key": "component-profile-personal-information",
@@ -1199,7 +1346,7 @@
         "src/components/profile/ProfileSections.tsx"
       ],
       "sourcePlacements": 1,
-      "sourceHash": "5c467b11d7b7b676d0533dc21668b17e762ec9fd0e4c1eff5644ec545d81d5ce"
+      "sourceHash": "cb4c177fee619c0af0957789e2af6d9428b70401e10f310ada95527620ce8ea0"
     },
     {
       "key": "component-profile-sections",
@@ -1237,7 +1384,7 @@
       ],
       "source": "src/components/profile/ProfileSections.tsx",
       "storyId": "pages-profile-sections--personal-information",
-      "purpose": "Profile content in supplied section order; the page resolves Site participation and coverage policy.",
+      "purpose": "Personal information, physician details, other coverage and the member financial questionnaire in the configured section order. Member and spouse share field definitions with independent answers. Disability record lists reuse the configured dialog and keep separate storage.",
       "family": "Profile sections",
       "assessment": "Keep",
       "next": "One production composition for personal, physician, Other coverage and financial questionnaire sections. Page resolves participation and coverage policy; standalone examples receive explicit inputs.",
@@ -1245,14 +1392,16 @@
         "src/pages/Profile.tsx"
       ],
       "sourcePlacements": 1,
-      "sourceHash": "b82aaf2c87aa6a4520ef3d2dadc45936578238704c4a6b808565d21801b8fc88"
+      "sourceHash": "04cf8451e4ab37db73a8d275268267b53cddd0cfc28c8ba26cbb2d4e1113d848"
     },
     {
       "key": "component-quick-decision-explainer",
       "name": "QuickDecisionExplainer",
       "section": "Components / Coverage and pricing",
       "role": "shared-piece",
-      "contains": [],
+      "contains": [
+        "component-link"
+      ],
       "parts": [],
       "source": "src/components/content/QuickDecisionExplainer.tsx",
       "storyId": "content-quickdecision--drawer-explainer-content",
@@ -1267,8 +1416,8 @@
         "src/components/layout/AppMenu.tsx",
         "src/pages/Home.tsx"
       ],
-      "sourcePlacements": 121,
-      "sourceHash": "03090ec03a9925e6a673732a7008c80bb125f1a85ecce8ecef291367656e8902"
+      "sourcePlacements": 113,
+      "sourceHash": "3fcc14e9974984f2342c0cc757053113e61b4de62132fdd1a7fe27438e832a95"
     },
     {
       "key": "component-quick-decision-indicator",
@@ -1287,7 +1436,7 @@
         "src/components/coverage/CoverageOptionsPanel.tsx",
         "src/components/layout/ProductCard.tsx"
       ],
-      "sourcePlacements": 60,
+      "sourcePlacements": 56,
       "sourceHash": "e51d02233569ae57beb020d5d4b10d07c9737840a5805990f6fd75403a89d35a"
     },
     {
@@ -1301,39 +1450,16 @@
       "parts": [],
       "source": "src/components/content/QuickDecisionInfoBox.tsx",
       "storyId": "content-quickdecision--info-box-inline-collapse",
-      "purpose": "Reusable QuickDecision info panel shown on the Coverage page, landing page coverage options section, and app menu coverage drawer.",
+      "purpose": "Shared product-driven QuickDecision information notice with disclosure controls and optional one-second reveal attention; honors reduced motion and configured artwork.",
       "family": "QuickDecision content and marks",
-      "assessment": "Consolidate selectively",
-      "next": "Already reuses the explainer/mark, but its promotional lead sentence is local. Put shared explanation copy in one content source when the Coverage page is reviewed.",
+      "assessment": "Shared; aligned",
+      "next": "Current content comes from the shared content context; assigned-product availability and expand/collapse distinguish this view from the full explainer and compact mark.",
       "sourceConsumers": [
         "src/components/coverage/CoverageOptionsPanel.tsx",
         "src/components/coverage/ProductCatalog.tsx"
       ],
-      "sourcePlacements": 31,
-      "sourceHash": "40ae21e87ec02f4a4a5e926dd0a4126003bdf2649f85e70734b82eba0362d9c8"
-    },
-    {
-      "key": "component-application-estimate",
-      "name": "ApplicationEstimate",
-      "section": "Components / Coverage and pricing",
-      "role": "shared-piece",
-      "contains": [
-        "component-app-drawer",
-        "component-button",
-        "component-estimated-rate"
-      ],
-      "parts": [],
-      "source": "src/components/coverage/ApplicationEstimate.tsx",
-      "storyId": "components-coverage-and-pricing-application-estimate--with-next",
-      "purpose": "One reserved bottom surface keeps the estimate and the page action together on small screens.",
-      "family": "Quote and coverage",
-      "assessment": "Keep",
-      "next": "Preserve quote/full-application differences; share field, price and summary primitives.",
-      "sourceConsumers": [
-        "src/app/sections/ConfiguredApplicationEstimate.tsx"
-      ],
-      "sourcePlacements": 18,
-      "sourceHash": "7f59756c8c319e1e16428b9f9b020d6803a78a59d3547b4d182d87e09b7d0a03"
+      "sourcePlacements": 29,
+      "sourceHash": "acc3c71237492687475cc9c655afafa4f6e7a260683bf7706dbedd4c94a1cd36"
     },
     {
       "key": "component-coverage-cart",
@@ -1351,7 +1477,7 @@
       "parts": [],
       "source": "src/components/coverage/CoverageCart.tsx",
       "storyId": "coverage-commerce-coveragecart--empty-drawer",
-      "purpose": "\"drawer\" — used inside AppDrawer (AppHeader cart icon, Coverage page summary). Shows header with close button, empty state, product cards, and total. \"inline\" — used inline on the Coverage page below ProductCatalog. Shows cart panel directly, no close button. Supports rate frequency toggle, edit/delete actions.",
+      "purpose": "Selected coverages and combined estimated cost, displayed inline or in a drawer.",
       "family": "Quote and coverage",
       "assessment": "Keep",
       "next": "Preserve quote/full-application differences; share field, price and summary primitives.",
@@ -1359,8 +1485,8 @@
         "src/app/sections/ConfiguredCoverageCart.tsx",
         "src/components/coverage/ProductCatalog.tsx"
       ],
-      "sourcePlacements": 31,
-      "sourceHash": "48ed43ad9cd770931d86244930e6fee7b38c6ebed1841d4d0ceedb985be2249f"
+      "sourcePlacements": 29,
+      "sourceHash": "9539e958506b8f5b8799e6b2dfdf047a1342a3c61b716ce3270ca5bd10ac1a1c"
     },
     {
       "key": "component-coverage-category-selector",
@@ -1368,12 +1494,13 @@
       "section": "Components / Coverage and pricing",
       "role": "shared-piece",
       "contains": [
-        "component-controlled-field-renderer"
+        "component-controlled-field-renderer",
+        "component-section-divider"
       ],
       "parts": [],
       "source": "src/components/coverage/CoverageCategorySelector.tsx",
       "storyId": "coverage-commerce-coveragecategoryselector--default",
-      "purpose": "Lets applicants choose the coverage categories they want to explore.",
+      "purpose": "The available coverage categories and their current selections.",
       "family": "Quote and coverage",
       "assessment": "Keep",
       "next": "Preserve quote/full-application differences; share field, price and summary primitives.",
@@ -1381,8 +1508,8 @@
         "src/app/workflows/QuoteCalculator.tsx",
         "src/components/coverage/CoverageQuestions.tsx"
       ],
-      "sourcePlacements": 3,
-      "sourceHash": "389b918c75375e6340249d569491c360e8d3ca874c417734f76ce6fd55ae5239"
+      "sourcePlacements": 2,
+      "sourceHash": "9788424a89b02cbacbbbef276b3bd2f4e7624ea2b135f84e9f91383f294b07a2"
     },
     {
       "key": "component-coverage-needs-calculator",
@@ -1390,20 +1517,21 @@
       "section": "Components / Coverage and pricing",
       "role": "shared-piece",
       "contains": [
+        "component-field-grid",
         "component-field-renderer"
       ],
       "parts": [],
       "source": "src/components/coverage/CoverageNeedsCalculator.tsx",
       "storyId": "coverage-commerce-coverageneedscalculator--default",
-      "purpose": "Estimates life insurance needs from financial obligations and available resources.",
+      "purpose": "Collects income, income-replacement years, outstanding debts and existing coverage to estimate coverage needs.",
       "family": "Quote and coverage",
       "assessment": "Keep",
       "next": "Preserve quote/full-application differences; share field, price and summary primitives.",
       "sourceConsumers": [
         "src/app/sections/ConfiguredCoverageNeedsCalculator.tsx"
       ],
-      "sourcePlacements": 30,
-      "sourceHash": "d91ff0ec63d0b7c69761a97651252e9cf093e1d7a331f6572595d6ec70187616"
+      "sourcePlacements": 28,
+      "sourceHash": "08a077c7151072478e5c16524ec7b21d555cf4d0596774966dab07b5377c18c0"
     },
     {
       "key": "component-coverage-options-panel",
@@ -1425,8 +1553,8 @@
         "src/app/sections/ConfiguredCoverageOptionsPanel.tsx",
         "src/components/home/HomeCoverageSection.tsx"
       ],
-      "sourcePlacements": 31,
-      "sourceHash": "8f683cdaac4186508b3166b94413965b612f725c49852e00e2e6fe5eb85fbcf5"
+      "sourcePlacements": 29,
+      "sourceHash": "66e205b5510454983d4587c34045c0ec7440938de20cd4f3e569f501ad0116c4"
     },
     {
       "key": "component-coverage-questions",
@@ -1437,13 +1565,14 @@
         "component-applicant-section-divider",
         "component-conditional-group",
         "component-coverage-category-selector",
+        "component-field-grid",
         "component-field-renderer",
         "component-section-divider"
       ],
       "parts": [],
       "source": "src/components/coverage/CoverageQuestions.tsx",
       "storyId": "coverage-commerce-coveragequestions--no-category-selected",
-      "purpose": "Category question with its configured member/spouse follow-ups and additional product eligibility facts.",
+      "purpose": "Category questions with their member and spouse follow-ups.",
       "family": "Quote and coverage",
       "assessment": "Keep",
       "next": "Preserve quote/full-application differences; share field, price and summary primitives.",
@@ -1451,7 +1580,7 @@
         "src/app/sections/ConfiguredCoverageQuestions.tsx"
       ],
       "sourcePlacements": 1,
-      "sourceHash": "8204db7ebd3b4d3e830b13c8147d44d27634b08082e9cc165af346678012d2f8"
+      "sourceHash": "ed9698af7b3570eb2455829856dbcf0bc5b89ad022d92aac1095bc8cf0bdb62a"
     },
     {
       "key": "component-eligibility-fields",
@@ -1460,12 +1589,13 @@
       "role": "shared-piece",
       "contains": [
         "component-controlled-field-renderer",
+        "component-field-grid",
         "component-field-renderer"
       ],
       "parts": [],
       "source": "src/components/forms/EligibilityFields.tsx",
       "storyId": "coverage-commerce-eligibilityfields--default",
-      "purpose": "Collects and validates applicant eligibility details.",
+      "purpose": "Shared ZIP/state/DOB group for application and quotes; real guidance, inferred-state feedback and validation without empty helper spacers.",
       "family": "Quote and coverage",
       "assessment": "Composition; aligned",
       "next": "The application Eligibility page and quote tools share ZIP/State/Birthday rendering and manual-State behavior; their adapters retain value and validation ownership.",
@@ -1474,8 +1604,8 @@
         "src/components/eligibility/EligibilitySections.tsx",
         "src/components/home/HomeHero.tsx"
       ],
-      "sourcePlacements": 4,
-      "sourceHash": "d53f19880dfecc3aea121842e2abe62aadafaa413c73c005b6cd79de624290ad"
+      "sourcePlacements": 3,
+      "sourceHash": "efa4e41f22d75fb90360760766a641ca6332ca6436d216ae3b5c9483ab2bbbe5"
     },
     {
       "key": "component-estimated-rate",
@@ -1488,13 +1618,12 @@
       "parts": [],
       "source": "src/components/coverage/EstimatedRate.tsx",
       "storyId": "components-estimated-rate--available",
-      "purpose": "Product prices use 1.25rem; summary prices use body2 sizing. Both are bold and primary-colored. Inline inherits its context.",
+      "purpose": "Product and summary estimates use 1rem, bold, normal text color. TotalCostSummary emphasizes only its final total amount in primary color. Inline inherits its context.",
       "family": "Quote and coverage",
       "assessment": "Composition; already shared",
       "next": "Already handles amount/unavailable/calculating across cards and totals, including reserved dimensions. Reuse this instead of local price spinners.",
       "sourceConsumers": [
-        "src/app/sections/ConfiguredEstimatedRate.tsx",
-        "src/components/coverage/ApplicationEstimate.tsx",
+        "src/app/sections/ConfiguredApplicationDocumentPreview.tsx",
         "src/components/coverage/CoverageCart.tsx",
         "src/components/coverage/EstimatorProductCard.tsx",
         "src/components/coverage/ProductCatalog.tsx",
@@ -1502,8 +1631,8 @@
         "src/components/coverage/TotalCostSummary.tsx",
         "src/pages/Receipt.tsx"
       ],
-      "sourcePlacements": 84,
-      "sourceHash": "64597943be5fcef5a392af2dceaadfa5d854ee3421f82a7f2be4b061ff37b0ed"
+      "sourcePlacements": 61,
+      "sourceHash": "c27ca6af893eec72022f1e4509efbda5422fe6141e85c36a486d3db77a62bb7a"
     },
     {
       "key": "component-estimator-product-card",
@@ -1514,6 +1643,7 @@
         "component-controlled-field-renderer",
         "component-estimated-rate",
         "component-featured-badge",
+        "component-field-grid",
         "component-product-card"
       ],
       "parts": [],
@@ -1521,13 +1651,13 @@
       "storyId": "coverage-commerce-estimatorproductcard--unselected",
       "purpose": "Displays a product, applicant selections, coverage amounts, and estimated cost.",
       "family": "Quote and coverage",
-      "assessment": "Consolidate selectively",
-      "next": "Share the product surface, stored field controls and EstimatedRate. Keep its member-only quote behavior distinct from ProductCatalog.",
+      "assessment": "Keep distinct; shared primitives",
+      "next": "Already uses ProductCard, ControlledFieldRenderer and EstimatedRate. Quote selection/rider callbacks differ from full application policy orchestration.",
       "sourceConsumers": [
         "src/app/sections/ConfiguredEstimatorProductCard.tsx"
       ],
-      "sourcePlacements": 2,
-      "sourceHash": "ce21df18c9a9154aa7df137a1c903ec8732c58e218061157ed90ace25d1a8980"
+      "sourcePlacements": 1,
+      "sourceHash": "3de895e63833b11f1d0ec16abbbb96fb1220ed0d004a3342739f9a0abbacb324"
     },
     {
       "key": "component-featured-badge",
@@ -1546,7 +1676,7 @@
         "src/components/coverage/EstimatorProductCard.tsx",
         "src/components/coverage/ProductCatalog.tsx"
       ],
-      "sourcePlacements": 3,
+      "sourcePlacements": 2,
       "sourceHash": "0085fc6b907e2ad29feab4679140e537106e2bf2362921403d347e2d4284ccda"
     },
     {
@@ -1562,6 +1692,7 @@
         "component-coverage-cart",
         "component-estimated-rate",
         "component-featured-badge",
+        "component-field-grid",
         "component-product-card",
         "component-product-cost-breakdown",
         "component-quick-decision-info-box"
@@ -1569,15 +1700,15 @@
       "parts": [],
       "source": "src/components/coverage/ProductCatalog.tsx",
       "storyId": "coverage-commerce-productcatalog--interactive",
-      "purpose": "Product boxes with coverage and rider notes/options for each applicant, plus the combined cost of all selected products.",
+      "purpose": "Product choices with coverage and rider options per applicant, and the combined cost.",
       "family": "Quote and coverage",
-      "assessment": "Consolidate selectively",
-      "next": "Owns applicant/rider/product policy. Extract repeated view fragments only; do not turn the quote card into the full business-policy orchestrator.",
+      "assessment": "Keep distinct; shared primitives",
+      "next": "Owns product/applicant/rider selection composition while reusing shared product surfaces, fields and prices. No reason to merge it with quote or receipt controllers.",
       "sourceConsumers": [
         "src/app/sections/ConfiguredProductCatalog.tsx"
       ],
       "sourcePlacements": 1,
-      "sourceHash": "57db7efb238032645a99f381fbe976f57346c7c4f63ca43fa347538816e4a1a0"
+      "sourceHash": "c4a8e397c2d4f05af4f423d52867c4b737422b0b02470314808120495cb3898f"
     },
     {
       "key": "component-product-cost-breakdown",
@@ -1585,21 +1716,20 @@
       "section": "Components / Coverage and pricing",
       "role": "shared-piece",
       "contains": [
-        "component-estimated-rate",
-        "component-link"
+        "component-estimated-rate"
       ],
       "parts": [],
       "source": "src/components/coverage/ProductCostBreakdown.tsx",
       "storyId": "coverage-commerce-productcostbreakdown--monthly",
-      "purpose": "Displays premium details and supplemental fees for a product.",
+      "purpose": "Itemizes reconciled quote components using shared estimate presentation and global content.",
       "family": "Quote and coverage",
-      "assessment": "Consolidate selectively",
-      "next": "Line items and fees differ from a grand-total summary. Share label/value/amount rows if their markup drifts; retain fee/disclosure semantics.",
+      "assessment": "Keep distinct; shared prices",
+      "next": "Fee/rider breakdown rows use EstimatedRate. Their line-item semantics differ from a grand total; no additional consolidation established.",
       "sourceConsumers": [
         "src/components/coverage/ProductCatalog.tsx"
       ],
       "sourcePlacements": 1,
-      "sourceHash": "7fdc732069fd5d40f44762d341740a4cfe15eb4949c2af798176a454231d0549"
+      "sourceHash": "66e774c5bc258f4e4d1c7691a1c707e2fdf4db2118016a33c0fa9dc53d4227bc"
     },
     {
       "key": "component-quote-calculator",
@@ -1612,6 +1742,7 @@
         "component-category-header",
         "component-coverage-category-selector",
         "component-empty-state",
+        "component-field-grid",
         "component-field-renderer",
         "component-page-header",
         "component-rate-frequency-control",
@@ -1620,16 +1751,15 @@
       "parts": [],
       "source": "src/app/workflows/QuoteCalculator.tsx",
       "storyId": "coverage-commerce-quotecalculator--collects-eligibility",
-      "purpose": "Collects eligibility and coverage choices to estimate an applicant's cost.",
+      "purpose": "Collects eligibility information, coverage choices and amounts used to estimate insurance costs.",
       "family": "Quote and coverage",
       "assessment": "Keep",
       "next": "Preserve quote/full-application differences; share field, price and summary primitives.",
       "sourceConsumers": [
-        "src/app/sections/ConfiguredMembershipHelp.tsx",
         "src/pages/Home.tsx"
       ],
-      "sourcePlacements": 2,
-      "sourceHash": "daaa6de57e6909d8a7e9a1e1c0c20c367886e24591425f05ea200a92b3a4cf52"
+      "sourcePlacements": 1,
+      "sourceHash": "96e73c370c6c74014eaae7a901b414fdfcc1959e2ecbc67f4bf1239d04151abc"
     },
     {
       "key": "component-rate-frequency-control",
@@ -1650,8 +1780,8 @@
         "src/app/workflows/QuoteCalculator.tsx",
         "src/components/coverage/CoverageCart.tsx"
       ],
-      "sourcePlacements": 32,
-      "sourceHash": "ba6b159f716f4a4e9f05c2038df7a9a88598c43dc31961d980708943136d839e"
+      "sourcePlacements": 29,
+      "sourceHash": "66b2668994fc1418bd997fc5e2372f398e3bc18d312c41879399bd353a9d8d22"
     },
     {
       "key": "component-rate-frequency-toggle",
@@ -1669,8 +1799,8 @@
       "sourceConsumers": [
         "src/components/coverage/RateFrequencyControl.tsx"
       ],
-      "sourcePlacements": 30,
-      "sourceHash": "f57046a9c2c92bff7f4f18ab065fb83a1dce24ed59f3394c4a304815ad0f8c42"
+      "sourcePlacements": 28,
+      "sourceHash": "91259fda90e717fde7d37c616f1f71cb4c422de348ddb31aec57ea6a8fdc8bde"
     },
     {
       "key": "component-total-cost-summary",
@@ -1683,37 +1813,16 @@
       "parts": [],
       "source": "src/components/coverage/TotalCostSummary.tsx",
       "storyId": "coverage-commerce-totalcostsummary--default",
-      "purpose": "Shared \"Total Estimated Cost\" panel used by EstimatedCostPanel (Coverage page) and CoverageSummary (ECart drawer). Styling: bg #f8fafd, border 2px solid primary, borderRadius 16px. Prices use EstimatedRate’s shared bold, primary-color presentation.",
+      "purpose": "Estimated cost summary with optional item breakdown and shared rate states. All costs use 1rem; item amounts use normal text color and only the final total amount uses primary color.",
       "family": "Quote and coverage",
-      "assessment": "Consolidate selectively",
-      "next": "Keep its product/grand-total role. EstimatedRate is already shared with breakdown/card prices.",
+      "assessment": "Keep distinct; shared prices",
+      "next": "Aggregate cost presentation already uses EstimatedRate and frequency primitives. Do not merge its policy or total semantics with individual product cards.",
       "sourceConsumers": [
         "src/app/sections/ConfiguredTotalCostSummary.tsx",
         "src/components/coverage/CoverageCart.tsx"
       ],
-      "sourcePlacements": 33,
-      "sourceHash": "132666c60454220743f31074ad447e408f33a9b61c55d8b314823748216fa7c6"
-    },
-    {
-      "key": "component-receipt-application-summary",
-      "name": "ReceiptApplicationSummary",
-      "section": "Components / Pages / Receipt / Sections",
-      "role": "page-section",
-      "contains": [
-        "component-applicant-section-divider"
-      ],
-      "parts": [],
-      "source": "src/components/receipt/ReceiptApplicationSummary.tsx",
-      "storyId": "components-pages-receipt-sections-application-receipt--mixed-payment-choices",
-      "purpose": "A receipt of the selected coverage and payment instructions; never a claim that payment was taken.",
-      "family": "Receipt sections",
-      "assessment": "Keep",
-      "next": "Receipt resolves submission identity, product/applicant decisions, document actions and client payment guidance; sections render explicit content and callbacks.",
-      "sourceConsumers": [
-        "src/pages/Receipt.tsx"
-      ],
-      "sourcePlacements": 1,
-      "sourceHash": "3a313d576dd0d60f8dbc521d141164f804a18fe6a7d001feda74ee3dfe1a2344"
+      "sourcePlacements": 30,
+      "sourceHash": "38551342f1578d895c78a42651303a29a4a043dd4769b07f6c88ed92d2fc5e36"
     },
     {
       "key": "component-receipt-confirmation",
@@ -1722,12 +1831,12 @@
       "role": "page-section",
       "contains": [
         "component-button",
-        "component-receipt-next-steps"
+        "component-information-alert"
       ],
       "parts": [],
       "source": "src/components/receipt/ReceiptConfirmation.tsx",
       "storyId": "receipt-receiptconfirmation--documents",
-      "purpose": "Submission receipt header, security notice and available document downloads.",
+      "purpose": "Submission confirmation, independent next-step/security guidance and document downloads. Payment guidance requires active allowed payment method/frequency; Site wording cannot change this global condition.",
       "family": "Receipt sections",
       "assessment": "Keep",
       "next": "Receipt resolves submission identity, product/applicant decisions, document actions and client payment guidance; sections render explicit content and callbacks.",
@@ -1735,7 +1844,7 @@
         "src/pages/Receipt.tsx"
       ],
       "sourcePlacements": 1,
-      "sourceHash": "ebf7328c14bd0bfb9542e7f7a6774047b715dc7580ec5ea0e94627dffefba89b"
+      "sourceHash": "0555eabf9a4f958cf1430da38f1e1220d62708436ebcd91ca497bac23af265c9"
     },
     {
       "key": "component-receipt-coverage-decision",
@@ -1749,7 +1858,7 @@
       "parts": [],
       "source": "src/components/receipt/ReceiptCoverageDecision.tsx",
       "storyId": "receipt-receiptcoveragedecision--sent-for-review",
-      "purpose": "One coverage/applicant outcome within the shared decision section.",
+      "purpose": "Shared product/applicant decision wording and outcome presentation for Receipt and its submission email. The page includes requested coverage and payment details; the compact static-email variation contains the product, applicant when needed, decision and explanation with inline theme styling.",
       "family": "Receipt sections",
       "assessment": "Keep",
       "next": "Receipt resolves submission identity, product/applicant decisions, document actions and client payment guidance; sections render explicit content and callbacks.",
@@ -1757,7 +1866,7 @@
         "src/pages/Receipt.tsx"
       ],
       "sourcePlacements": 1,
-      "sourceHash": "9712b93d6d927be4445d403457cf6c770811729ca99d846293ca1ff8c5a59105"
+      "sourceHash": "d09ee22e32ff8353b382d5babcd827f77e1a33f2be218c5a436beaa1877c7c9c"
     },
     {
       "key": "component-receipt-decisions",
@@ -1768,7 +1877,7 @@
       "parts": [],
       "source": "src/components/receipt/ReceiptDecisions.tsx",
       "storyId": "components-pages-receipt-sections-decision-section--conditionally-approved",
-      "purpose": "Decision letters on the main page; the application receipt and help sit alongside them.",
+      "purpose": "Product decisions with coverage and payment details in each decision card; the shared support component aligns beside the decisions section and stacks below it on small screens.",
       "family": "Receipt sections",
       "assessment": "Keep",
       "next": "Receipt resolves submission identity, product/applicant decisions, document actions and client payment guidance; sections render explicit content and callbacks.",
@@ -1776,26 +1885,7 @@
         "src/pages/Receipt.tsx"
       ],
       "sourcePlacements": 1,
-      "sourceHash": "024f1ddf007bd86411b8ca2103672f2681aba4c59564f68faf77f90245baf715"
-    },
-    {
-      "key": "component-receipt-next-steps",
-      "name": "ReceiptNextSteps",
-      "section": "Components / Pages / Receipt / Sections",
-      "role": "page-section",
-      "contains": [],
-      "parts": [],
-      "source": "src/components/receipt/ReceiptNextSteps.tsx",
-      "storyId": "receipt-receiptnextsteps--default",
-      "purpose": "Receipt acknowledgement with client-supplied payment and welcome-kit guidance.",
-      "family": "Receipt sections",
-      "assessment": "Keep",
-      "next": "Receipt resolves submission identity, product/applicant decisions, document actions and client payment guidance; sections render explicit content and callbacks.",
-      "sourceConsumers": [
-        "src/components/receipt/ReceiptConfirmation.tsx"
-      ],
-      "sourcePlacements": 1,
-      "sourceHash": "be9cfbde78532eda85416f3f5e200ecfa2dd96748ea6b00f8b2aae0376c808c6"
+      "sourceHash": "84f760f264023801955d83a0cd01ecb623e9cf3e84fb550dabb7e7e6f9e4376d"
     },
     {
       "key": "component-beneficiary-product-records",
@@ -1807,18 +1897,25 @@
         "component-dynamic-list-item",
         "component-product-card"
       ],
-      "parts": [],
+      "parts": [
+        {
+          "name": "SectionNote",
+          "kind": "native-element",
+          "sourceSymbol": "Alert",
+          "description": "Inline MUI info Alert for the supplied product designation note; the page resolves the effective wording."
+        }
+      ],
       "source": "src/components/beneficiary/BeneficiaryProductRecords.tsx",
       "storyId": "pages-beneficiary-product-records--empty",
-      "purpose": "Record presentation and actions; eligibility, capacity and persistence belong to the caller.",
+      "purpose": "Beneficiary records per product, with add, edit and remove.",
       "family": "Repeated records",
       "assessment": "Keep",
-      "next": "YesNoDetailList already composes DynamicList; DynamicList already composes DynamicListItem and FieldRenderer.",
+      "next": "HealthQuestion renders direct and repeated details for configured/default questionnaires; DynamicList composes DynamicListItem and FieldRenderer. Independent policies, bindings, mappings, summaries and limits stay explicit.",
       "sourceConsumers": [
         "src/pages/Beneficiary.tsx"
       ],
       "sourcePlacements": 1,
-      "sourceHash": "529e5dd0a9a69e2a2157dbbc3e3f43787874cd22bec8f260aa07ee38c57eed59"
+      "sourceHash": "df3a11336a3a9f17cc444a7690d888012c49af7a3f8867010b6238beb00ca1ef"
     },
     {
       "key": "component-dynamic-list",
@@ -1835,18 +1932,17 @@
       "parts": [],
       "source": "src/components/forms/DynamicList.tsx",
       "storyId": "forms-dynamiclist--empty",
-      "purpose": "Collects repeated records through add, edit and remove actions in a dialog.",
+      "purpose": "Repeating entries (children, beneficiaries, companies): add or edit in a dialog, remove with confirmation, up to a maximum.",
       "family": "Repeated records",
       "assessment": "Keep; grouping aligned",
       "next": "The add/edit dialog retains configured first/last-name rows on larger screens and stacks them on mobile. Other fields remain stacked. Retain one list editor and existing remove confirmation.",
       "sourceConsumers": [
         "src/components/eligibility/EligibilitySections.tsx",
         "src/components/forms/HealthQuestion.tsx",
-        "src/components/forms/YesNoDetailList.tsx",
         "src/components/profile/ProfileSections.tsx"
       ],
-      "sourcePlacements": 9,
-      "sourceHash": "705087237ac1ffc4692b737c7046ecc4751d9c52471801a36fd75c05b4fd3ee6"
+      "sourcePlacements": 6,
+      "sourceHash": "8ad83f3017b1a4370cd442e881d18d65fc944e06848d12216259740c9892f0df"
     },
     {
       "key": "component-dynamic-list-item",
@@ -1867,8 +1963,8 @@
         "src/components/beneficiary/BeneficiaryProductRecords.tsx",
         "src/components/forms/DynamicList.tsx"
       ],
-      "sourcePlacements": 8,
-      "sourceHash": "4fbd6ba58f9a93d031eafcb052f313b3b0a5ad85ad8dce27ded324c2cbff5fce"
+      "sourcePlacements": 7,
+      "sourceHash": "785eaf119bbcd0b9a2405e740d8555711cda544bed1ecd9221fbeee7fb0de4bd"
     },
     {
       "key": "component-health-question",
@@ -1877,9 +1973,16 @@
       "role": "shared-piece",
       "contains": [
         "component-dynamic-list",
+        "component-field-grid",
         "component-field-renderer"
       ],
       "parts": [
+        {
+          "name": "Record summary",
+          "kind": "slot",
+          "sourceSymbol": "renderItem",
+          "description": "Supplied summary of mapped stored records. Default health pages share HealthDetailSummary; policy questionnaires retain their explicit field-label summaries."
+        },
         {
           "name": "Answer",
           "kind": "slot",
@@ -1890,20 +1993,21 @@
           "name": "Follow-up details",
           "kind": "slot",
           "sourceSymbol": "fields",
-          "description": "Caller resolves visibility. Direct fields or DynamicList records use independent collection bindings."
+          "description": "Caller resolves visibility, mapping, summary and explicit record bounds. Direct fields or DynamicList records use independent collection bindings."
         }
       ],
       "source": "src/components/forms/HealthQuestion.tsx",
       "storyId": "forms-health-question--repeated-details",
-      "purpose": "Renders an explicit health answer and its direct fields or repeated detail records.",
+      "purpose": "One explicit answer with conditional direct fields or repeated details. Supports supplied mappings, summary content and source-specific record limits.",
       "family": "Repeated records",
-      "assessment": "Keep",
-      "next": "YesNoDetailList already composes DynamicList; DynamicList already composes DynamicListItem and FieldRenderer.",
+      "assessment": "Shared; R4 complete",
+      "next": "One renderer handles configured/default answers, direct/repeated details, mappings, summaries and explicit record bounds. ConfiguredHealthPage shares SI/TELE/DI SUPP composition while policy resolution and participation remain independent.",
       "sourceConsumers": [
+        "src/app/sections/ConfiguredHealthPage.tsx",
         "src/app/sections/ConfiguredHealthQuestions.tsx"
       ],
-      "sourcePlacements": 4,
-      "sourceHash": "0c1f889c2c7a7657ca5a50db698a99a6e35ca915a738ab52b8456835a2cd7364"
+      "sourcePlacements": 7,
+      "sourceHash": "82a8de842db667102bddf33eb204d4b828f585f8e92cc88d54bebb57172af8dd"
     },
     {
       "key": "component-health-question-list",
@@ -1911,7 +2015,8 @@
       "section": "Components / Pages / Health / Sections / Question and follow-up layouts",
       "role": "shared-piece",
       "contains": [
-        "component-applicant-section-divider"
+        "component-applicant-section-divider",
+        "component-section-divider"
       ],
       "parts": [
         {
@@ -1923,39 +2028,15 @@
       ],
       "source": "src/components/forms/HealthQuestionList.tsx",
       "storyId": "forms-health-question-list--member-and-spouse",
-      "purpose": "One question at a time, with independent applicant controls and detail lists.",
+      "purpose": "Questions one at a time, answered separately for member and spouse, with Yes/No answers and follow-up details.",
       "family": "Repeated records",
       "assessment": "Keep",
-      "next": "YesNoDetailList already composes DynamicList; DynamicList already composes DynamicListItem and FieldRenderer.",
+      "next": "HealthQuestion renders direct and repeated details for configured/default questionnaires; DynamicList composes DynamicListItem and FieldRenderer. Independent policies, bindings, mappings, summaries and limits stay explicit.",
       "sourceConsumers": [
         "src/app/sections/ConfiguredHealthQuestionList.tsx"
       ],
-      "sourcePlacements": 5,
-      "sourceHash": "b856c52abd0396830111204ddf4c203f64ad9b12aab4f8df0f1bce2c85f56c4c"
-    },
-    {
-      "key": "component-yes-no-detail-list",
-      "name": "YesNoDetailList",
-      "section": "Components / Pages / Health / Sections / Question and follow-up layouts",
-      "role": "shared-piece",
-      "contains": [
-        "component-dynamic-list",
-        "component-field-renderer"
-      ],
-      "parts": [],
-      "source": "src/components/forms/YesNoDetailList.tsx",
-      "storyId": "application-patterns-yesnodetaillist--interactive",
-      "purpose": "Numbered yes/no questions that reveal a canonical DynamicList on “Yes”.",
-      "family": "Repeated records",
-      "assessment": "Composition; already shared",
-      "next": "Already uses FieldRenderer and DynamicList for yes/no follow-up records. Do not reimplement medical list controls.",
-      "sourceConsumers": [
-        "src/pages/HealthDi.tsx",
-        "src/pages/HealthLi.tsx",
-        "src/pages/HealthSi.tsx"
-      ],
-      "sourcePlacements": 3,
-      "sourceHash": "f3e713ef6468fa58228fe23b21cf579cebc752a2bf8122dcbd7be5ed9248ee6c"
+      "sourcePlacements": 4,
+      "sourceHash": "1297a7b5ac6e46d469ed900133fa360ad1ce24539e1bca076e9af23bd9d9a9f3"
     },
     {
       "key": "component-legal-review-section",
@@ -1963,7 +2044,7 @@
       "section": "Components / Pages / Review / Sections",
       "role": "shared-piece",
       "contains": [
-        "component-button"
+        "component-print-action"
       ],
       "parts": [
         {
@@ -1976,7 +2057,7 @@
           "name": "Print",
           "kind": "action",
           "sourceSymbol": "onPrint",
-          "description": "Calls the supplied print action. The page currently prints the browser document."
+          "description": "Shared PrintAction prints this disclosure only; an explicit caller override is available for previews."
         }
       ],
       "source": "src/components/content/LegalReviewSection.tsx",
@@ -1989,7 +2070,7 @@
         "src/components/review/ReviewSections.tsx"
       ],
       "sourcePlacements": 1,
-      "sourceHash": "8548bafc171f62daef4770f7e94396da0033d1b433e7e1551e742d18a2be5fa8"
+      "sourceHash": "0ea0a92ddd12dc2b74c352b854117ab508c52273a498e2a41ca3d6381c90b47b"
     },
     {
       "key": "component-review-sections",
@@ -1997,10 +2078,14 @@
       "section": "Components / Pages / Review / Sections",
       "role": "page-section",
       "contains": [
+        "component-app-modal",
         "component-applicant-section-divider",
-        "component-button",
+        "component-field-grid",
         "component-field-renderer",
+        "component-legal-doc-list",
         "component-legal-review-section",
+        "component-link",
+        "component-print-action",
         "component-review-statement"
       ],
       "parts": [
@@ -2009,17 +2094,11 @@
           "kind": "slot",
           "sourceSymbol": "documentPreview",
           "description": "Caller supplies the application readout; its adapter resolves saved fields and edit targets."
-        },
-        {
-          "name": "Download application PDF",
-          "kind": "action",
-          "sourceSymbol": "onDownload",
-          "description": "Page supplies the PDF download callback; the view does not build application data."
         }
       ],
       "source": "src/components/review/ReviewSections.tsx",
       "storyId": "pages-review-sections--default",
-      "purpose": "Review composition receives resolved copy, fields, applicant state and document content; the page owns policy and routing.",
+      "purpose": "Application summary, legal disclosures and the required consents.",
       "family": "Review composition",
       "assessment": "Keep",
       "next": "Page controller resolves saved legal/coverage policy and edit routes. Standalone sections receive copy/fields/callbacks; both legal sections share one surface.",
@@ -2027,7 +2106,7 @@
         "src/pages/Review.tsx"
       ],
       "sourcePlacements": 1,
-      "sourceHash": "4eaec20cac4966620d20c3fdfd76958972a0f3a171937d3ffe189c22328c4753"
+      "sourceHash": "1b734dcf763c32f23f5b0c164c6613c66ffd25dd9f141e3298f45a23f86857b9"
     },
     {
       "key": "component-review-statement",
@@ -2046,7 +2125,7 @@
         "src/components/review/ReviewSections.tsx"
       ],
       "sourcePlacements": 1,
-      "sourceHash": "aae8062f2508f2934c3936f6af67b66d00f7896355afb3bdbdccdb1bd5ca8713"
+      "sourceHash": "1839a847fe51fc98bd560923b9d04280d9bbaf0e304024f36cec49371030c764"
     },
     {
       "key": "component-business-information",
@@ -2061,15 +2140,15 @@
       "parts": [],
       "source": "src/components/contact/BusinessInformation.tsx",
       "storyId": "pages-contact-business-and-employer-information--default",
-      "purpose": "Local same-as-home interaction; product eligibility/participation is decided by the caller.",
+      "purpose": "Business address, with a same-as-home option.",
       "family": "Reviewed Contact sections",
       "assessment": "Keep",
-      "next": "Standalone residential, business/employer and spouse views share AddressFields. ContactSections composes supplied sections; application adapters resolve participation.",
+      "next": "Residential and business views share AddressFields; supplied spouse fields use the generic ContactSections field-section path. ContactSections composes supplied sections; application adapters resolve participation.",
       "sourceConsumers": [
         "src/components/contact/ContactSections.tsx"
       ],
       "sourcePlacements": 1,
-      "sourceHash": "ae1bc138721f6fb5d9bfb1f299bf65e7b6621896e5b8acaaf359193a8bc2afbf"
+      "sourceHash": "c9c04a82bb9d368e66979bc623e2b90502a65b1fbe903de36c3b630af8b007ef"
     },
     {
       "key": "component-contact-sections",
@@ -2081,20 +2160,20 @@
         "component-business-information",
         "component-field-renderer",
         "component-residential-address",
-        "component-spouse-contact"
+        "component-section-divider"
       ],
       "parts": [],
       "source": "src/components/contact/ContactSections.tsx",
       "storyId": "pages-contact-sections-together--default",
-      "purpose": "Compose caller-selected sections. Application adapters own visibility and Site rules.",
+      "purpose": "Lays out the contact sections below.",
       "family": "Reviewed Contact sections",
       "assessment": "Keep",
-      "next": "Standalone residential, business/employer and spouse views share AddressFields. ContactSections composes supplied sections; application adapters resolve participation.",
+      "next": "Residential and business views share AddressFields; supplied spouse fields use the generic ContactSections field-section path. ContactSections composes supplied sections; application adapters resolve participation.",
       "sourceConsumers": [
         "src/app/sections/ConfiguredContactSections.tsx"
       ],
       "sourcePlacements": 1,
-      "sourceHash": "8d7f6e474183bd774130956edf2b252be71b835eac1e20b8c2373ad1aaede2eb"
+      "sourceHash": "47bcd7df5288af500a9232fb7e84bb6f34fba4edfe72d4f3d7918e435150e5e8"
     },
     {
       "key": "component-residential-address",
@@ -2103,41 +2182,21 @@
       "role": "page-section",
       "contains": [
         "component-address-fields",
-        "component-field-renderer"
+        "component-field-renderer",
+        "component-section-divider"
       ],
       "parts": [],
       "source": "src/components/contact/ResidentialAddress.tsx",
       "storyId": "pages-contact-residential-address--default",
-      "purpose": "Residential address and any supplied correspondence control.",
+      "purpose": "Residential address and any mailing-address control.",
       "family": "Reviewed Contact sections",
       "assessment": "Keep",
-      "next": "Standalone residential, business/employer and spouse views share AddressFields. ContactSections composes supplied sections; application adapters resolve participation.",
+      "next": "Residential and business views share AddressFields; supplied spouse fields use the generic ContactSections field-section path. ContactSections composes supplied sections; application adapters resolve participation.",
       "sourceConsumers": [
         "src/components/contact/ContactSections.tsx"
       ],
       "sourcePlacements": 1,
-      "sourceHash": "b0fa268734a359855a31c09038abf8adb5a571e9ed5606228edf8ba06a1322bb"
-    },
-    {
-      "key": "component-spouse-contact",
-      "name": "SpouseContact",
-      "section": "Components / Pages / Contact / Sections",
-      "role": "page-section",
-      "contains": [
-        "component-field-renderer"
-      ],
-      "parts": [],
-      "source": "src/components/contact/SpouseContact.tsx",
-      "storyId": "pages-contact-spouse-contact-information--default",
-      "purpose": "Independent contact bindings supplied by the caller.",
-      "family": "Reviewed Contact sections",
-      "assessment": "Keep",
-      "next": "Standalone residential, business/employer and spouse views share AddressFields. ContactSections composes supplied sections; application adapters resolve participation.",
-      "sourceConsumers": [
-        "src/components/contact/ContactSections.tsx"
-      ],
-      "sourcePlacements": 1,
-      "sourceHash": "ea2857e7b0491f65d120a6f60e4189473469d6e5e19e8e6e9198858b2cd3c5a7"
+      "sourceHash": "726b1edf0e2ebd8c6e9816fb0fe22ee3fc6148b08266a7cace5fad0a97278ba1"
     },
     {
       "key": "component-application-preview",
@@ -2157,7 +2216,7 @@
       "sourceConsumers": [
         "src/components/home/HowApplyingWorksPanel.tsx"
       ],
-      "sourcePlacements": 30,
+      "sourcePlacements": 28,
       "sourceHash": "2eeeba6dd49664e0bba3c56ecd5bc3660df81ff7f672263853b9a0f017246b95"
     },
     {
@@ -2169,7 +2228,7 @@
       "parts": [],
       "source": "src/components/home/AssociationIntroduction.tsx",
       "storyId": "pages-home-association-introduction--default",
-      "purpose": "Association logo, tagline and introductory paragraphs on the homepage.",
+      "purpose": "Association logo, tagline and introductory paragraphs.",
       "family": "Reviewed Home sections",
       "assessment": "Keep",
       "next": "Match actual Home composition and clearly identify illustrative content.",
@@ -2177,7 +2236,7 @@
         "src/pages/Home.tsx"
       ],
       "sourcePlacements": 1,
-      "sourceHash": "30378c5dd2081846ff19c7301622e2990bc27673b503d8a75100b0350ac6db09"
+      "sourceHash": "1e0c2459a130b305d09a3079b9e47c9b375e6645ed296138123aa2c51b49e5ee"
     },
     {
       "key": "component-home-coverage-section",
@@ -2190,7 +2249,7 @@
       "parts": [],
       "source": "src/components/home/HomeCoverageSection.tsx",
       "storyId": "pages-home-coverage-options--default",
-      "purpose": "Homepage coverage section with its heading, description, category choices and product information.",
+      "purpose": "Coverage heading, description, category choices and product information.",
       "family": "Reviewed Home sections",
       "assessment": "Keep",
       "next": "Match actual Home composition and clearly identify illustrative content.",
@@ -2198,7 +2257,7 @@
         "src/app/sections/ConfiguredHomeCoverageSection.tsx"
       ],
       "sourcePlacements": 1,
-      "sourceHash": "b4c7664e3a89a36460e03dac813b8a732d0f6e5af33b7b2a817e9f702651979c"
+      "sourceHash": "196df175f5aa6bd14c9bae68cb0ac367b7ccd7ccf5ab5eb1ee7dca3a99bcd069"
     },
     {
       "key": "component-home-hero",
@@ -2207,12 +2266,13 @@
       "role": "page-section",
       "contains": [
         "component-button",
-        "component-eligibility-fields"
+        "component-eligibility-fields",
+        "component-link"
       ],
       "parts": [],
       "source": "src/components/home/HomeHero.tsx",
       "storyId": "pages-home-hero--standard-quote",
-      "purpose": "Homepage introduction, application and resume actions, with a configured quote card or association image.",
+      "purpose": "Global Home introduction with one primary action, a secondary paragraph/link, and a quote card or association image.",
       "family": "Reviewed Home sections",
       "assessment": "Keep",
       "next": "Match actual Home composition and clearly identify illustrative content.",
@@ -2220,7 +2280,7 @@
         "src/app/sections/ConfiguredHomeHero.tsx"
       ],
       "sourcePlacements": 1,
-      "sourceHash": "8103cf4f76ce8d1129b1a07c45ec99e363b78609081d6ce08c6521739c3cb00c"
+      "sourceHash": "cd3b1b1c099c3b1b06173c621107266c50a14fe8e7da898dbd95c182199d41a7"
     },
     {
       "key": "component-how-applying-works-panel",
@@ -2236,7 +2296,7 @@
       "parts": [],
       "source": "src/components/home/HowApplyingWorksPanel.tsx",
       "storyId": "coverage-commerce-howapplyingworkspanel--page-variant",
-      "purpose": "Explains the three application steps using images or a configured animated preview.",
+      "purpose": "Existing application steps and informational drawers on Home.",
       "family": "Reviewed Home sections",
       "assessment": "Keep",
       "next": "Match actual Home composition and clearly identify illustrative content.",
@@ -2244,8 +2304,8 @@
         "src/components/layout/AppMenu.tsx",
         "src/pages/Home.tsx"
       ],
-      "sourcePlacements": 31,
-      "sourceHash": "f87a95019f924212cacee2ef4854e42b4556ac132e0761f402ba29cd4446b398"
+      "sourcePlacements": 29,
+      "sourceHash": "6ffcdaddb411730b96047a87f52a14dec5daa413248506f805a45e5191cbbba6"
     },
     {
       "key": "component-mobile-preview-frame",
@@ -2263,7 +2323,7 @@
       "sourceConsumers": [
         "src/components/home/ApplicationPreview.tsx"
       ],
-      "sourcePlacements": 30,
+      "sourcePlacements": 28,
       "sourceHash": "3dd84f1514a69aa982bb9e858ef29be82032f16a82d69c0f53d6e2c0bf631bf8"
     },
     {
@@ -2275,7 +2335,7 @@
       "parts": [],
       "source": "src/components/home/UnderwriterCredentials.tsx",
       "storyId": "pages-home-new-york-life-credentials--default",
-      "purpose": "Insurer logo, name, ratings, supporting description and footnote.",
+      "purpose": "Insurer logo, name, ratings, description and footnote.",
       "family": "Reviewed Home sections",
       "assessment": "Keep",
       "next": "Match actual Home composition and clearly identify illustrative content.",
@@ -2283,7 +2343,7 @@
         "src/pages/Home.tsx"
       ],
       "sourcePlacements": 1,
-      "sourceHash": "2e7201c11d53b9a6c0315312939a319918089da79017d1bb1fbb17cee55f1cb6"
+      "sourceHash": "9effd18bd9482abfc3525ca9b71cf00e5a05178c8f879c84e9c8bc52cb391320"
     },
     {
       "key": "component-additional-membership-information",
@@ -2298,7 +2358,7 @@
       "parts": [],
       "source": "src/components/membership/AdditionalMembershipInformation.tsx",
       "storyId": "pages-membership-additional-membership-information--member-id",
-      "purpose": "Conditional membership questions, including physician and WAEPA follow-ups.",
+      "purpose": "Conditional membership follow-up questions.",
       "family": "Reviewed Membership sections",
       "assessment": "Keep",
       "next": "These are sections of one page, not competing form libraries.",
@@ -2306,7 +2366,7 @@
         "src/pages/Membership.tsx"
       ],
       "sourcePlacements": 1,
-      "sourceHash": "aa43e0989a1f67bbc1ac5409ecf84896b62b275b478ffef81b8eae5834432046"
+      "sourceHash": "bea93d28e06349d4d37d790cff15e5e085efd2501afbc11e26f0f44a18b1b344"
     },
     {
       "key": "component-member-information",
@@ -2320,7 +2380,7 @@
       "parts": [],
       "source": "src/components/membership/MemberInformation.tsx",
       "storyId": "pages-membership-member-information--default",
-      "purpose": "Applicant name, email and phone collected after membership is confirmed.",
+      "purpose": "Applicant name, email and phone, collected once membership is confirmed.",
       "family": "Reviewed Membership sections",
       "assessment": "Keep",
       "next": "These are sections of one page, not competing form libraries.",
@@ -2328,29 +2388,7 @@
         "src/pages/Membership.tsx"
       ],
       "sourcePlacements": 1,
-      "sourceHash": "510717e18056fb1cd6b2cce36db4fc6b113fbe6913a12b16838157961e5a104e"
-    },
-    {
-      "key": "component-membership-help",
-      "name": "MembershipHelp",
-      "section": "Components / Pages / Membership / Sections",
-      "role": "page-section",
-      "contains": [
-        "component-app-drawer",
-        "component-help-chips"
-      ],
-      "parts": [],
-      "source": "src/components/membership/MembershipHelp.tsx",
-      "storyId": "pages-membership-introduction-and-help--default",
-      "purpose": "The membership page's coverage, applying and estimate help actions.",
-      "family": "Reviewed Membership sections",
-      "assessment": "Keep",
-      "next": "These are sections of one page, not competing form libraries.",
-      "sourceConsumers": [
-        "src/app/sections/ConfiguredMembershipHelp.tsx"
-      ],
-      "sourcePlacements": 1,
-      "sourceHash": "03fae721ff1aa71c07f7e41e734396c25089b9861f3c327367a987f03cb0236b"
+      "sourceHash": "dd2f6afe2a927b86ccdfd507dcc4bac52f02227c76abd396e42d05041854dd80"
     },
     {
       "key": "component-membership-status",
@@ -2364,7 +2402,7 @@
       "parts": [],
       "source": "src/components/membership/MembershipStatus.tsx",
       "storyId": "pages-membership-membership-status--default",
-      "purpose": "Membership question with the page's existing link, eligibility and non-member feedback.",
+      "purpose": "The membership question, with its link, eligibility and non-member feedback.",
       "family": "Reviewed Membership sections",
       "assessment": "Keep",
       "next": "These are sections of one page, not competing form libraries.",
@@ -2372,7 +2410,7 @@
         "src/pages/Membership.tsx"
       ],
       "sourcePlacements": 1,
-      "sourceHash": "e622c44c466c0bcda4e61a73c970336d0f511b372654abe609650c00cd162527"
+      "sourceHash": "9c7c504086da316469783725052ecf9f67f51d45b1c69e6e987d124bb7e1dd33"
     },
     {
       "key": "component-applicant-section-divider",
@@ -2395,12 +2433,11 @@
         "src/components/eligibility/EligibilitySections.tsx",
         "src/components/forms/HealthQuestionList.tsx",
         "src/components/profile/ProfileSections.tsx",
-        "src/components/receipt/ReceiptApplicationSummary.tsx",
         "src/components/receipt/ReceiptCoverageDecision.tsx",
         "src/components/review/ReviewSections.tsx"
       ],
-      "sourcePlacements": 15,
-      "sourceHash": "a7f8c9376fd2420d13e9e724b0d7873274426fdba212d2b66a80caf231448712"
+      "sourcePlacements": 13,
+      "sourceHash": "a2199a7c2880c452bc21b2cda8f9f0f713b6f77345fe61a46a6e2ca1e3282189"
     },
     {
       "key": "component-category-card",
@@ -2443,7 +2480,7 @@
         "src/components/coverage/ProductCatalog.tsx",
         "src/components/layout/CategoryCard.tsx"
       ],
-      "sourcePlacements": 6,
+      "sourcePlacements": 5,
       "sourceHash": "fc964b61c311b3b47f345f35235c6a067f3f07d53c81f4881deb63a40ceb283e"
     },
     {
@@ -2455,7 +2492,7 @@
       "parts": [],
       "source": "src/components/layout/DetailsTable.tsx",
       "storyId": "application-patterns-detailstable--confirmation-details",
-      "purpose": "Presents labeled values in a compact details table.",
+      "purpose": "Labeled values with a follow-up action: applicant email, send time and purge date, or the edit request details.",
       "family": "Section surfaces",
       "assessment": "Keep",
       "next": "Use shared surfaces and data-driven labels; retain applicant/category semantics.",
@@ -2480,17 +2517,28 @@
       "assessment": "Composition; approved exceptions",
       "next": "Stack fields by default; address and name groups may use explicit responsive rows. Preserve other intentional groups as they are reviewed; do not enforce an address-only exception.",
       "sourceConsumers": [
+        "src/app/workflows/QuoteCalculator.tsx",
+        "src/components/coverage/CoverageNeedsCalculator.tsx",
+        "src/components/coverage/CoverageQuestions.tsx",
+        "src/components/coverage/EstimatorProductCard.tsx",
+        "src/components/coverage/ProductCatalog.tsx",
         "src/components/eligibility/EligibilitySections.tsx",
         "src/components/forms/AddressFields.tsx",
         "src/components/forms/DynamicList.tsx",
+        "src/components/forms/EligibilityFields.tsx",
+        "src/components/forms/HealthQuestion.tsx",
         "src/components/forms/PhysicianInformation.tsx",
+        "src/components/forms/SharedPaymentControls.tsx",
         "src/components/membership/AdditionalMembershipInformation.tsx",
         "src/components/membership/MemberInformation.tsx",
+        "src/components/payment/PaymentSections.tsx",
         "src/components/profile/ProfilePersonalInformation.tsx",
+        "src/components/review/ReviewSections.tsx",
+        "src/pages/AdvisorLogin.tsx",
         "src/pages/Beneficiary.tsx"
       ],
-      "sourcePlacements": 15,
-      "sourceHash": "a1d208b6167eb974baca63c3c8096eb78595b8b5838c440593ac48976f6c0eee"
+      "sourcePlacements": 57,
+      "sourceHash": "25649cd56fd2f7c81bbc44b55d23ca7e94c74d0c5b77e147556329b91a8bb53a"
     },
     {
       "key": "component-product-card",
@@ -2517,7 +2565,7 @@
       ],
       "source": "src/components/layout/ProductCard.tsx",
       "storyId": "layout-productcard--unselected",
-      "purpose": "Shared product container with a weight-800 title, optional brochure link, QD indicator, description and page-specific content.",
+      "purpose": "Shared product container with a weight-800 title, optional brochure link, QD indicator, description, optional bold separate-line description notice and supplied flow content.",
       "family": "Section surfaces",
       "assessment": "Composition; aligned",
       "next": "Owns the shared product title, weight 800, optional brochure link/QD mark, description and content slot across Coverage, Beneficiary, Payment, quote estimates and Receipt.",
@@ -2530,8 +2578,8 @@
         "src/components/receipt/ReceiptCoverageDecision.tsx",
         "src/pages/Receipt.tsx"
       ],
-      "sourcePlacements": 37,
-      "sourceHash": "59722f5797b2188072d516da85584c699228d1085ad2164b452f3612cd91de73"
+      "sourcePlacements": 34,
+      "sourceHash": "3f094f4cdfccd8793d967b5d8292d5f688694b2320b69a85386342f5cc4b2829"
     },
     {
       "key": "component-section-divider",
@@ -2539,24 +2587,37 @@
       "section": "Components / Layout / Headings and dividers",
       "role": "shared-piece",
       "contains": [],
-      "parts": [],
+      "parts": [
+        {
+          "name": "FieldGroup",
+          "kind": "export",
+          "sourceSymbol": "FieldGroup",
+          "description": "Named shared field surface exported by SectionDivider; used directly for untitled groups. It is a part of this owner, not another canonical component."
+        }
+      ],
       "source": "src/components/layout/SectionDivider.tsx",
       "storyId": "layout-sectiondivider--subsection-preset",
-      "purpose": "Separates and labels groups of related form content.",
+      "purpose": "Labels field-group sections with uppercase, letter-spaced text. Titled and untitled groups share a rounded FieldGroup surface matching the page background, with white inputs and increased section spacing.",
       "family": "Section surfaces",
       "assessment": "Keep",
       "next": "Use shared surfaces and data-driven labels; retain applicant/category semantics.",
       "sourceConsumers": [
         "src/app/workflows/QuoteCalculator.tsx",
         "src/components/contact/BusinessInformation.tsx",
+        "src/components/contact/ContactSections.tsx",
+        "src/components/contact/ResidentialAddress.tsx",
+        "src/components/coverage/CoverageCategorySelector.tsx",
         "src/components/coverage/CoverageQuestions.tsx",
+        "src/components/eligibility/EligibilitySections.tsx",
+        "src/components/forms/HealthQuestionList.tsx",
         "src/components/forms/PhysicianInformation.tsx",
         "src/components/membership/AdditionalMembershipInformation.tsx",
         "src/components/payment/PaymentSections.tsx",
-        "src/components/profile/ProfileSections.tsx"
+        "src/components/profile/ProfileSections.tsx",
+        "src/pages/Membership.tsx"
       ],
-      "sourcePlacements": 8,
-      "sourceHash": "c846268e29648f9a7074b5db8aaf3c6e5f3be69f204b95d7b4331687f5063d12"
+      "sourcePlacements": 17,
+      "sourceHash": "a6149250245e6df7ba9ce0116ca55b37cae82239692e133ab0601dada5ecbfc4"
     },
     {
       "key": "component-app-body",
@@ -2567,14 +2628,14 @@
       "parts": [],
       "source": "src/components/layout/AppBody.tsx",
       "storyId": "layout-appbody--default",
-      "purpose": "Provides the main application content container and responsive spacing.",
+      "purpose": "Main content container with responsive spacing.",
       "family": "Site chrome",
       "assessment": "Keep",
       "next": "Distinct site chrome responsibilities; keep program support separate from help-ribbon/sales actions.",
       "sourceConsumers": [
         "src/components/layout/AppShell.tsx"
       ],
-      "sourcePlacements": 30,
+      "sourcePlacements": 28,
       "sourceHash": "3678b0b3aec94e1958981c549dbe7901c8a9a3b651ab9ed888799926edc7748e"
     },
     {
@@ -2585,20 +2646,21 @@
       "contains": [
         "component-app-modal",
         "component-legal-doc-list",
-        "component-link"
+        "component-link",
+        "component-print-action"
       ],
       "parts": [],
       "source": "src/components/layout/AppFooter.tsx",
       "storyId": "layout-appfooter--default",
-      "purpose": "Displays administrator, insurer, support and legal details.",
+      "purpose": "Administrator, insurer, support and legal details.",
       "family": "Site chrome",
-      "assessment": "Consolidate selectively",
-      "next": "Keep legal/underwriter identity and address content. Share contact resolution for any Questions card, without merging the complete footer into that card.",
+      "assessment": "Keep distinct; shared contact data",
+      "next": "Footer legal identity and compact links differ from support alerts and menu tools. Preserve shared contact resolution without treating matching MUI Stack markup as the same composition.",
       "sourceConsumers": [
         "src/components/layout/AppShell.tsx"
       ],
-      "sourcePlacements": 30,
-      "sourceHash": "91e9167dc188593a90e31e31e2ed633b3e744eb4265df5bf4aa0b528bdb4010e"
+      "sourcePlacements": 28,
+      "sourceHash": "7bcbea72883fe9e321ebfd598cb3489eb5073516ab26017f12ef7895767e6828"
     },
     {
       "key": "component-app-header",
@@ -2608,22 +2670,20 @@
       "contains": [
         "component-app-drawer",
         "component-app-menu",
-        "component-button",
-        "component-client-help-banner",
-        "component-link"
+        "component-client-help-banner"
       ],
       "parts": [],
       "source": "src/components/layout/AppHeader.tsx",
       "storyId": "layout-appheader--homepage-variant",
-      "purpose": "Displays the portal brand, help actions, application menu, cart, and progress.",
+      "purpose": "Brand, help actions, application menu, cart and the step bar.",
       "family": "Site chrome",
-      "assessment": "Keep",
-      "next": "Distinct site chrome responsibilities; keep program support separate from help-ribbon/sales actions.",
+      "assessment": "Shared; R3 complete",
+      "next": "Coverage details use AppModal; product content, selection and navigation remain owned by the header.",
       "sourceConsumers": [
         "src/components/layout/AppShell.tsx"
       ],
-      "sourcePlacements": 30,
-      "sourceHash": "3c9f5b919d3abd61fe545e5cc10e4e9bd5d6d9c9908e2bdde1442a5175027348"
+      "sourcePlacements": 28,
+      "sourceHash": "37e762e7065302585ad03b6207614ef8bf4dfa6c998ddaebcb092edeef239a1f"
     },
     {
       "key": "component-app-menu",
@@ -2640,14 +2700,14 @@
       "parts": [],
       "source": "src/components/layout/AppMenu.tsx",
       "storyId": "layout-appmenu--default",
-      "purpose": "Provides application navigation and informational drawers.",
+      "purpose": "Application navigation and informational drawers.",
       "family": "Site chrome",
       "assessment": "Keep",
       "next": "Distinct site chrome responsibilities; keep program support separate from help-ribbon/sales actions.",
       "sourceConsumers": [
         "src/components/layout/AppHeader.tsx"
       ],
-      "sourcePlacements": 30,
+      "sourcePlacements": 28,
       "sourceHash": "274ba48e6d0506de2cd285cf2d29eb7cfbd67655f464c9f8846eaf4455f2cd17"
     },
     {
@@ -2659,21 +2719,22 @@
         "component-app-body",
         "component-app-footer",
         "component-app-header",
+        "component-app-snackbar",
         "component-cookie-dialog",
         "component-offline-banner"
       ],
       "parts": [],
       "source": "src/components/layout/AppShell.tsx",
       "storyId": "layout-appshell--application-form-variant",
-      "purpose": "Controls which chrome elements AppLayout renders: - \"applicationForm\" Full chrome: header with hamburger menu + cart icon + progress bar, footer. Used for all application form pages. - \"homepage\" Marketing chrome: header with hamburger menu (no progress bar), footer. Used for the Home/Landing page. - \"advisorLogin\" | \"advisorSend\" Utility chrome: header with logo only, no menu, no progress bar. Used for advisor flow pages. - \"resumeEmailCode\" Utility chrome: header with logo only, no menu, no progress bar. Used for the resume magic-link / phone-code pages.",
+      "purpose": "Chooses which header, menu and footer a page shows (application form, advisor, error).",
       "family": "Site chrome",
       "assessment": "Keep",
       "next": "Distinct site chrome responsibilities; keep program support separate from help-ribbon/sales actions.",
       "sourceConsumers": [
         "src/app/router.tsx"
       ],
-      "sourcePlacements": 30,
-      "sourceHash": "c124029ba895a0d31051d652898cfb6087c385ad192b60b002ff2f130b4a09a9"
+      "sourcePlacements": 28,
+      "sourceHash": "5d184c077789d4831fa3255801785d3e136b19ef2809499212edc0ec1ff7196f"
     },
     {
       "key": "component-client-help-banner",
@@ -2681,20 +2742,21 @@
       "section": "Components / Content and data display / Help and support",
       "role": "application-frame",
       "contains": [
+        "component-app-modal",
         "component-button"
       ],
       "parts": [],
       "source": "src/components/layout/ClientHelpBanner.tsx",
       "storyId": "layout-clienthelpbanner--default",
-      "purpose": "Provides client-configured phone, chat and other support actions.",
+      "purpose": "Client phone, chat and other support actions.",
       "family": "Site chrome",
-      "assessment": "Keep distinct",
-      "next": "Compact global help ribbon may use a help-specific number, chat or scheduling; SiteSupport uses the administrator contact. Do not replace one contact role with another.",
+      "assessment": "Shared; R3 complete",
+      "next": "Scheduling composes AppModal with supplied iframe content; sales/help contact behavior remains independent.",
       "sourceConsumers": [
         "src/components/layout/AppHeader.tsx"
       ],
-      "sourcePlacements": 30,
-      "sourceHash": "376b2e663baf517801f2f76115676519110e7933fbfc545ff19f5586ff4fbc49"
+      "sourcePlacements": 28,
+      "sourceHash": "b0371a2f64da8618b447bd449103c8d3d96b933ea6dc502b3abf890d14787489"
     },
     {
       "key": "component-offline-banner",
@@ -2705,14 +2767,14 @@
       "parts": [],
       "source": "src/components/feedback/OfflineBanner.tsx",
       "storyId": "feedback-technical-error--offline",
-      "purpose": "Application-wide connection notice, above the header and client help bar.",
+      "purpose": "Connection notice shown above the header.",
       "family": "Site chrome",
       "assessment": "Keep distinct",
       "next": "AppShell owns the full-width connection bar above the header. Initial browser connectivity, online/offline events and reported OFFLINE incidents control visibility; no support reference or navigation actions.",
       "sourceConsumers": [
         "src/components/layout/AppShell.tsx"
       ],
-      "sourcePlacements": 30,
+      "sourcePlacements": 28,
       "sourceHash": "9362d119d8196a66d003604b7bada253a9898293cf1c6d991ab4dc68d25544af"
     },
     {
@@ -2731,31 +2793,49 @@
       "sourceConsumers": [
         "src/app/RoutePage.tsx"
       ],
-      "sourcePlacements": 18,
+      "sourcePlacements": 17,
       "sourceHash": "f7b6942247ecf90c252d4e0b1b7e5cef1887261c9e194585d67b9df3b615e527"
     },
     {
-      "key": "component-processing-status-page",
-      "name": "ProcessingStatusPage",
-      "section": "Components / Feedback and overlays / Loading and processing",
+      "key": "component-prototype-handoff-page",
+      "name": "PrototypeHandoffPage",
+      "section": "Components / Feedback and overlays",
       "role": "shared-piece",
       "contains": [
-        "component-application-error-state",
-        "component-recovery-alert"
+        "component-form-route-page"
       ],
-      "parts": [],
-      "source": "src/components/feedback/ProcessingStatusPage.tsx",
-      "storyId": "feedback-processingstatuspage--external-service",
-      "purpose": "Bounded prototype processing state; local completion/timeout variants share the recovery components.",
+      "parts": [
+        {
+          "name": "Prototype screens",
+          "kind": "slot",
+          "sourceSymbol": "screens",
+          "description": "Validated global defaults or effective-Site image assignments, with accessible alternative text and optional placeholder content."
+        },
+        {
+          "name": "Continue",
+          "kind": "action",
+          "sourceSymbol": "requestSubmit",
+          "description": "Intermediate clicks advance the supplied sequence. The final click submits the shared form; pending navigation disables repeat activation."
+        },
+        {
+          "name": "Full-screen surface",
+          "kind": "native-element",
+          "sourceSymbol": "Dialog",
+          "description": "Intentional full-screen image viewport, distinct from compact AppModal workflows. It retains save errors and image-load fallback."
+        }
+      ],
+      "source": "src/components/feedback/PrototypeHandoffPage.tsx",
+      "storyId": "feedback-prototype-handoff--multiple-screens",
+      "purpose": "Full-screen prototype image sequence with normal application saving and transitions.",
       "family": "Transitions",
-      "assessment": "Composition; aligned",
-      "next": "A bounded local status now leads to completion or recovery feedback. Unconfirmed payment/submission examples use the full recovery page without repeat actions.",
+      "assessment": "Keep",
+      "next": "Distinguish layout-preserving navigation placeholders from external-operation processing.",
       "sourceConsumers": [
         "src/pages/DocuSign.tsx",
         "src/pages/HealthQd.tsx"
       ],
       "sourcePlacements": 2,
-      "sourceHash": "24ad485da6382ed245f536762f04ba4e4bbb00e5a979463e471663caece07d4c"
+      "sourceHash": "b2c30a273d47e04547ebb570c985b2b2b7675e1b6c0ee64cc35669884afb411e"
     }
   ]
 }

@@ -10,9 +10,13 @@ The package covers **147 SQL tables**, **141 generic collections**, **100 Librar
 
 ## Package
 
+- [Component reuse audit](component-reuse-audit.md): current global/ASCE review; R1–R7 closed, canonical owners and parts reconciled with source/build verification (November 13, 2026)
+
 - [Advisor component review](advisor-component-review.md): Start/Continue login, sent and edit-request confirmations, shared send dialog and service boundaries
 
 - [Resume component review](resume-component-review.md): email request, delivery method and verification code, shared expiry/resend controls and seven whole-page examples
+
+- [Receipt component review](receipt-component-review.md): final global/ASCE source, four QD outcomes, active payment documents, medical-review guidance, reference storage and email boundary (CHG-074)
 
 - [Payment component review](payment-component-review.md): optional collection, product/shared payment elections, banking fields, rate-state summaries and whole-page scenarios
 
@@ -27,12 +31,12 @@ The package covers **147 SQL tables**, **141 generic collections**, **100 Librar
 - [Global template capability review](global-template-review.md): all ten configurations reconciled across Home through Contact; generic capability examples replace Site selectors
 - [Main steps and breadcrumbs state review](navigation-state-review.md): completed/current/upcoming, hidden/showing, locked, pending and mobile states
 - [Previously reviewed page structure checkpoint](reviewed-page-structure.md): reconciled Home, Membership, Eligibility, Coverage and Beneficiary before continuing
-- [Contact component review](contact-component-review.md): residential, business/employer and spouse sections with real-page scenarios
+- [Contact component review](contact-component-review.md): residential, business/employer and spouse sections with real-page scenarios; CHG-081 records three client copy slots and unchanged employment ownership
 - [Component documentation contract](component-documentation.md): application frame → page sections → shared pieces across saved JSON, Storybook, Library and prototypes
-- [Home component review](home-component-review.md): standard quote and hero-image homepage sections, pieces and Storybook examples
-- [Membership component review](membership-component-review.md): membership sections, reused pieces, conditional examples and removed lookup-step decision
-- [Eligibility component review](eligibility-component-review.md): applicant details, dependent selection, spouse/child sections and reused form pieces
-- [Beneficiary component review](beneficiary-component-review.md): optional participation, applicant/product records, allocation editor and copy flow, with real-page review examples
+- [Home component review](home-component-review.md): standard quote and hero-image homepage sections, pieces and Storybook examples; CHG-076 records client-configurable copy and protected global wording
+- [Membership component review](membership-component-review.md): membership sections, reused pieces, conditional examples and removed lookup-step decision; CHG-077 records six client copy slots and global eligibility boundaries
+- [Eligibility component review](eligibility-component-review.md): applicant details, dependent selection, spouse/child sections and reused form pieces; CHG-078 records five client copy slots including an empty-default member note
+- [Beneficiary component review](beneficiary-component-review.md): optional participation, applicant/product records, allocation editor and copy flow, with real-page review examples; CHG-080 records four client copy slots and separate note assignments
 - [Cross-page reuse review](page-reuse-review.md): shared pieces, repeated behavior/content, and proposed documentation format for Home, Membership and Eligibility
 - [ABE Portal Library requirements](abe-template-requirements.md): ABE requirements organized by the planned Library sections and ownership boundaries, for review before Admin Center entry
 - [Ownership for every table](ownership.md)
@@ -117,3 +121,15 @@ Profile reuse follow-through: physician addresses now share AddressFields using 
 ## October 28 Payment review preparation
 
 [Payment components](payment-component-review.md) follows the completed Health component checkpoint. PaymentSections owns explicit display composition; SharedPaymentControls receives authored fields from its controller and now has canonical standalone examples. Whole-page scenarios cover required/optional collection, restoration, Bill me, adults, multiple products, empty selection and an explicit shared-choice capability fixture. Mock authorization/submission remain in the page.
+
+
+November 15 copy checkpoint (CHG-082): [Profile](profile-component-review.md#client-configuration-and-copy-review-chg-082), [Review](review-component-review.md#client-configuration-and-copy-review-chg-082), [Payment](payment-component-review.md#client-configuration-and-copy-review-chg-082) and [all five Health pages](health-component-review.md#client-configuration-and-copy-review-chg-082) now classify page-copy slots versus global wording and existing field/policy/questionnaire contracts. Confirmed global-only body copy stays global; approved headers and Payment notes remain configurable. No other page-copy review is marked complete by this checkpoint.
+
+
+November 15 copy checkpoint (CHG-083/084): [Advisor entry and its confirmations](advisor-component-review.md#client-configuration-and-copy-review-chg-083), [Resume](resume-component-review.md#client-configuration-and-copy-review-chg-083) and [DocuSign](docusign-component-review.md#client-configuration-and-copy-review-chg-083) have confirmed copy boundaries. Advisor entry permits header overrides; confirmation/Resume/DocuSign copy stays global. Receipt header and individual body/email decisions are implemented in CHG-084; CHG-085 completes redirect variants, with Maintenance as the only configurable redirect copy.
+
+
+The [completed 28-page client copy matrix](../requirements-spec/page-review.md#completed-client-copy-pass--november-15-2026) records all 72 declared page slots and global-only boundaries (CHG-076–085). Receipt has 18 slots after the individual review; Maintenance has three. No page-copy decision remains open. Shared field/product/legal/questionnaire/branding/support contracts remain independently owned.
+
+
+November 15 Home/session/presentation follow-through (CHG-086–088): Home mockup wording is global, hero actions use one button plus a paragraph/link, and the shared QD notice has a reduced-motion-aware reveal animation. Application/MFA sessions share the expiration page; link/code expiry stays inline. Shared link/button typography and real-only eligibility helper rows use global definitions. Final verification: 78 Fresh-start and 97 focused checks, both production bundles and catalog parity pass.

@@ -1,0 +1,27 @@
+{
+  "component": "health-si",
+  "pages": [
+    "health-si"
+  ],
+  "rules": [
+    "health-si-questionnaire",
+    "health-participation-and-storage"
+  ],
+  "validations": [
+    {
+      "validation": "health-required-answer",
+      "trigger": "next",
+      "scope": "page"
+    },
+    {
+      "validation": "health-yes-details",
+      "trigger": "next",
+      "scope": "page"
+    },
+    {
+      "validation": "health-details-limit",
+      "trigger": "next",
+      "scope": "page"
+    }
+  ]
+}

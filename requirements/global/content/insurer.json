@@ -1,0 +1,26 @@
+{
+  "insurer.logo": {
+    "src": "/logo.svg",
+    "alt": "New York Life Logo"
+  },
+  "insurer.name": "New York Life Insurance Company",
+  "insurer.ratings": [
+    {
+      "grade": "A++",
+      "source": "A.M. Best"
+    },
+    {
+      "grade": "AAA",
+      "source": "Fitch Ratings"
+    },
+    {
+      "grade": "Aa1",
+      "source": "Moody's Investors Service"
+    },
+    {
+      "grade": "AA+",
+      "source": "Standard & Poor's"
+    }
+  ],
+  "insurer.ratings-note": "Third Party Rating Reports as of 09/30/2025."
+}

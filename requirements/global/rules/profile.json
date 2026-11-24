@@ -1,0 +1,70 @@
+{
+  "rules": [
+    {
+      "id": "profile-applicant-participation",
+      "name": "Show personal information for active adult applicants",
+      "status": "confirmed",
+      "statement": "Profile personal and physician sections appear only for adults applying for currently selected products. Removed-product applicant maps and saved answers do not activate a section. Spouse-only applications do not collect member personal/physician answers; Contact independently retains the member owner-address/employment rules.",
+      "source": "User Profile review November 13, 2026; Master Client Requirements v78, Main!R165:S169 and Financial questions!A2:B10; requirements/parked/profile.json"
+    },
+    {
+      "id": "profile-other-coverage-followups",
+      "name": "Reveal and validate only applicable follow-ups",
+      "status": "confirmed",
+      "statement": "Each adult has independent existing Life, pending Life and existing disability answers. Yes reveals the corresponding details; replacement DI amount also requires replacement Yes. Changing a controlling answer hides its saved follow-ups without deleting or repurposing them. The page and read-only application summary use the same compiled field visibility predicates. Hiding a personal controlling question suppresses its dependent follow-ups transitively. Omit sections with no visible fields while retaining inactive drafts.",
+      "source": "User Profile review November 13, 2026; Master Client Requirements v78, Main!R165:S169 and Financial questions!A2:B10; requirements/parked/profile.json"
+    },
+    {
+      "id": "profile-disability-records",
+      "name": "Require a carrier for declared existing disability",
+      "status": "confirmed",
+      "statement": "For each active DI applicant answering Yes to existing disability insurance, Next requires the configured minimum of one carrier, up to the shared maximum of ten. Validate every restored record using the shared dialog definitions. Self/spouse reuse one Company surface with separate storage collections. Add/Edit/Save/Cancel and confirmed removal use DynamicList.",
+      "source": "User Profile review November 13, 2026; Master Client Requirements v78, Main!R165:S169 and Financial questions!A2:B10; requirements/parked/profile.json",
+      "replaces": [
+        "rule-profile-repeatable-insurance-company-records"
+      ]
+    },
+    {
+      "id": "profile-ssn-requiredness",
+      "name": "Resolve SSN requiredness from active product assignments",
+      "status": "confirmed",
+      "statement": "SSN is required by the global field default. A Site can assign optionalForProducts per person: the field becomes optional only when every active product for that applicant is listed. Any additional unlisted election retains the field default. Supplied SSNs always receive the shared format check.",
+      "source": "User Profile review November 13, 2026; Master Client Requirements v78, Main!R165:S169 and Financial questions!A2:B10; requirements/parked/profile.json"
+    },
+    {
+      "id": "profile-financial-calculations",
+      "name": "Derive financial totals from current answers",
+      "status": "confirmed",
+      "statement": "When the effective financial questionnaire participates, currency inputs default to zero. Sole-proprietor net earned income equals gross earnings before expenses/taxes minus business expenses. Corporate annual earned income sums salary, S-Corp distributions, dividends, bonus, commission and benefits, including one-time payments. A missing or invalid operand produces $0.00. Totals derive from current answers and are not stored as editable fields. Formula operands, labels and currency are owned by the global fresh-start financialCalculations configuration. This calculation configuration is global-only: effective Sites cannot replace formulas, operands or labels. Superseded scoped values are removed during reconstruction and new scoped assignments are rejected.",
+      "source": "User Profile review November 13, 2026; Master Client Requirements v78, Main!R165:S169 and Financial questions!A2:B10; requirements/parked/profile.json"
+    },
+    {
+      "id": "profile-self-employment-followups",
+      "name": "Resolve financial source and home-work details",
+      "status": "confirmed",
+      "statement": "Self-employed Yes reveals both income-source checkboxes; either or both can be selected. Each selected source reveals its own fields and derived total. Years self-employed and work-from-home follow self-employed Yes independently of source checkboxes. Outside-home work is asked only when work-from-home is Yes; its details require outside-home work Yes. Hidden restored answers do not appear in the application summary.",
+      "source": "User Profile review November 13, 2026; Master Client Requirements v78, Main!R165:S169 and Financial questions!A2:B10; requirements/parked/profile.json"
+    },
+    {
+      "id": "profile-advisor-handoff",
+      "name": "Use the shared advisor handoff before leaving Profile",
+      "status": "confirmed",
+      "statement": "After Profile field and page checks pass, an advisor flow opens the shared SendApplicationDialog for the applicant. Cancel stays on Profile; confirm continues to the existing advisor confirmation destination. Consumer flow continues normally. email behavior is recorded by the shared workflow.",
+      "source": "User Profile review November 13, 2026; Master Client Requirements v78, Main!R165:S169 and Financial questions!A2:B10; requirements/parked/profile.json"
+    },
+    {
+      "id": "profile-content-and-storage",
+      "name": "Keep Profile content and answers in the shared model",
+      "status": "confirmed",
+      "statement": "Keep member and spouse answers independent through stable scalar bindings and separate disability-company collections. Reuse the same definitions and summary presentation for both adults. Physician details describe a third party and must not request the browser owner’s autofill information.",
+      "source": "User Profile copy decision November 15, 2026; User Profile review November 13, 2026; Master Client Requirements v78, Main!R165:S169 and Financial questions!A2:B10; requirements/parked/profile.json"
+    },
+    {
+      "id": "profile-physician-information",
+      "name": "Apply whole-section physician visibility",
+      "status": "confirmed",
+      "statement": "Show Physician Information only when its effective section setting is enabled and the adult participates. Disabling the section excludes saved physician drafts from validation and read-only output without deleting them. The same physician field set is used for each applicable adult.",
+      "source": "User physician clarification November 16, 2026; requirements/global/configurations/profile.json; requirements/parked/profile.json"
+    }
+  ]
+}

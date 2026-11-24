@@ -26,7 +26,6 @@ import {
   pagesDefaults,
   beneficiaryDefaults,
   dialogsDefaults,
-  statusMessagesDefaults,
 } from "../defaults";
 
 // Generated from the complete managed-content tree so new copy automatically
@@ -91,7 +90,6 @@ const globalContent: SiteContent = {
   shared: sharedDefaults,
   beneficiary: beneficiaryDefaults,
   dialogs: dialogsDefaults,
-  statusMessages: statusMessagesDefaults,
 };
 
 const contentBySite = new Map<SiteId, SiteContent>();
@@ -189,9 +187,9 @@ const PUBLIC_PAGE_LABELS: Record<string, string> = {
   review: "Review",
   docusign: "E-Sign (DocuSign)",
   "health-si": "Health Questions (SI)",
-  "health-li": "Health Questions (LI)",
+  "health-tele": "Health Questions (LI)",
   "health-qd": "Health Questions (QD)",
-  "health-di": "Health Questions (DI)",
+  "health-di-supp": "Health Questions (DI)",
   "health-cir": "Health Questions (CIR)",
   payment: "Payment",
   receipt: "Receipt",

@@ -1,5 +1,5 @@
 import {
-  coverageCategories,
+  getCoverageCategories,
   type CoverageCategory,
   type CoverageCategoryId,
 } from "../config/coverageCategories";
@@ -21,7 +21,7 @@ export function groupCoveragesByCategory<T extends HasCategoryId>(
   products: T[],
   allowedCategoryIds?: Set<CoverageCategoryId>,
 ): CoverageCategoryGroup<T>[] {
-  return coverageCategories
+  return getCoverageCategories()
     .filter((cat) => !allowedCategoryIds || allowedCategoryIds.has(cat.id))
     .map((category) => ({
       category,

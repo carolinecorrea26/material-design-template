@@ -1,4 +1,4 @@
-import { Alert, Box, Stack } from "@mui/material";
+import { Alert, Box } from "@mui/material";
 import type { ComponentProps } from "react";
 import type { ApplicationFormValues } from "../../app/ApplicationFormContext";
 import type { ClientConfig } from "../../config/clients/types";
@@ -9,6 +9,7 @@ import FieldGrid from "../layout/FieldGrid";
 import SectionDivider from "../layout/SectionDivider";
 import { clearFields, waepaConditionalFieldIds, type MembershipSetValue } from "./membershipFieldReset";
 import { requirementText } from "../../domain/requirementContent";
+import { useComponentContent } from '../content/ComponentContentContext';
 
 function fieldById(fields: FieldDefinition[], id: string) {
   return fields.find((field) => field.id === id);
@@ -75,8 +76,7 @@ function WAEPAAdditionalFields({
   const associateMembershipAlert = associatedMemberNotice(selectedQualification, associationName);
 
   return (
-    <Stack spacing={2} sx={{ mt: 1 }}>
-      {renderField(declarationField, control, errors)}
+    <FieldGrid>
       {renderField(attestationField, control, errors, () =>
         clearFields(setValue, waepaConditionalFieldIds),
       )}
@@ -110,7 +110,8 @@ function WAEPAAdditionalFields({
       )}
       {renderField(fieldById(fields, "active-military"), control, errors)}
       {fields.filter(field => !["waepa-declaration", "waepa-attestation", ...waepaConditionalFieldIds, "active-military"].includes(field.id)).map(field => renderField(field, control, errors))}
-    </Stack>
+      {renderField(declarationField, control, errors)}
+    </FieldGrid>
   );
 }
 
@@ -124,6 +125,8 @@ type Props = Pick<ComponentProps<typeof FieldRenderer>, "control" | "errors"> & 
 
 /** Conditional membership questions, including physician and WAEPA follow-ups. */
 export default function AdditionalMembershipInformation({ fields: additionalFields, client, control, errors, qualificationValue, setValue, note }: Props) {
+  const messages = useComponentContent().pages.membership?.messages;
+  if (!messages) throw new Error('Missing fresh-start Membership guidance');
   if (!additionalFields.length) return null;
   const hasAmaPhysicianFields = additionalFields.some(field => field.id.startsWith("ama-physician-"));
   const hasWaepaFields = additionalFields.some(field => field.id.startsWith("waepa-"));
@@ -132,15 +135,14 @@ export default function AdditionalMembershipInformation({ fields: additionalFiel
       <SectionDivider
         label={
           hasAmaPhysicianFields
-            ? "Physician Information"
+            ? messages.associatedProfessionalTitle
             : requirementText("membership.additional.title")
         }
         variant="subsection"
       >
       {hasAmaPhysicianFields && (
         <Alert severity="info" sx={{ mt: 1 }}>
-          To apply as a spouse of a physician, please include the
-          physician&apos;s information below.
+          {messages.associatedProfessionalNote}
         </Alert>
       )}
       {note && (
@@ -158,13 +160,13 @@ export default function AdditionalMembershipInformation({ fields: additionalFiel
           setValue={setValue}
         />
       ) : hasAmaPhysicianFields ? (
-        <Stack spacing={0} sx={{ mt: 1 }}>
+        <FieldGrid>
           {renderField(
             fieldById(additionalFields, "ama-physician-type"),
             control,
             errors,
           )}
-          <FieldGrid columns="120px 1fr 1fr">
+          <FieldGrid columns={fieldById(additionalFields, "ama-physician-title") ? "120px 1fr 1fr" : "equal"}>
             {renderField(
               fieldById(additionalFields, "ama-physician-title"),
               control,
@@ -200,13 +202,13 @@ export default function AdditionalMembershipInformation({ fields: additionalFiel
             control,
             errors,
           )}
-        </Stack>
+        </FieldGrid>
       ) : (
-        <Stack spacing={2} sx={{ mt: 1 }}>
+        <FieldGrid>
           {additionalFields.map((field) =>
             renderField(field, control, errors),
           )}
-        </Stack>
+        </FieldGrid>
       )}
       </SectionDivider>
     </Box>

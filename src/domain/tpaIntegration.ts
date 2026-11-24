@@ -1,21 +1,23 @@
 import type { ClientConfig } from "./configuration";
+import people from '../../requirements/global/configurations/people.json';
 
-export const standardTpaLookupFields = ["first-name", "last-name", "birth-date"];
+export const standardTpaLookupFields = people.configurations.find(configuration => configuration.id === 'tpa-lookup-fields')!.default as string[];
 export type TpaResolution = { existingMember: boolean; activeCoverage: boolean };
 export type TpaOutcome = { verifyIdentity: boolean; verified: boolean; portfolio: boolean; decision: "auto-approve" | "manual-review" };
 
 /** Prototype API adapter. An unmatched record represents a new member. */
 export function lookupPrototypeTpa(client: ClientConfig, values: Record<string, unknown>): TpaResolution {
+  if (!client.tpaIntegration || client.tpaIntegration.mode === 'none') return { existingMember: false, activeCoverage: false };
   const fields = client.tpaIntegration?.lookupFields ?? standardTpaLookupFields;
-  const records = client.tpaIntegration?.prototypeRecords ?? (client.features?.memberVerificationMatchFacts
-    ? [{ facts: client.features.memberVerificationMatchFacts, activeCoverage: true }] : []);
-  const record = records.find(({ facts }) => [...new Set([...fields, ...Object.keys(facts)])].every(field =>
+  const records = client.tpaIntegration.prototypeRecords ?? [];
+  const record = records.find(({ facts }) => fields.every(field =>
     facts[field] !== undefined && String(values[field] ?? "").trim().toLowerCase() === facts[field].trim().toLowerCase()));
   return { existingMember: !!record, activeCoverage: record?.activeCoverage ?? false };
 }
 
 /** Approval and portfolio access are distinct outcomes; WAEPA never verifies identity. */
 export function resolveTpaOutcome(client: ClientConfig, member: TpaResolution, identityPassed?: boolean): TpaOutcome {
+  if (!client.tpaIntegration || client.tpaIntegration.mode === 'none') return { verifyIdentity: false, verified: false, portfolio: false, decision: 'manual-review' };
   if (client.tpaIntegration?.mode === "membership-auto-approval") {
     return { verifyIdentity: false, verified: false, portfolio: false, decision: member.existingMember ? "manual-review" : "auto-approve" };
   }

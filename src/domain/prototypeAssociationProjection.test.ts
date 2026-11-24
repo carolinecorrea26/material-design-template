@@ -2,14 +2,15 @@ import { afterEach, beforeAll, expect, it, vi } from "vitest";
 import { createReviewedMigrationDatabase } from "../migration/fixtures";
 import type { EffectiveSiteData } from "./effectiveSite";
 import { buildPrototypeAssociationContext } from "./prototypeAssociationProjection";
-import { installPrototypeLibrary, resolvePrototypeLibrary } from "./prototypeLibrary";
+import { installPrototypeLibrary } from "./prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "../migration/snapshotTestLibrary";
 import { getAssociation, getAssociationsForClient, getAssociationsForSite, getClient, getClientForSite, getSite, getSiteAssociations, getSitesForClient, getTpa, getTpaForClient, siteRepository } from "../repositories/sites";
 import { resolveActiveAssociation } from "../data/associationSelection";
 import { resolveEffectiveBranding } from "../data/resolvers";
 import { getClientPageFields } from "../config/clientFields/getClientPageFields";
 
 let data: EffectiveSiteData;
-beforeAll(() => { data = createReviewedMigrationDatabase(); });
+beforeAll(() => { data = createReviewedMigrationDatabase(); }, 120000);
 afterEach(() => { installPrototypeLibrary(null); vi.restoreAllMocks(); window.history.replaceState(null, "", "/"); window.sessionStorage.clear(); });
 
 it("uses captured membership definitions and enablement without a static read", () => {
@@ -26,7 +27,7 @@ it("uses captured membership definitions and enablement without a static read", 
   expect(resolveActiveAssociation("isitrust", { selectedAssociationId: association.key }).association?.name).toBe("Stored membership organization");
   expect(resolveActiveAssociation("isitrust", { selectedAssociationId: links[1].associationKey }).status).toBe("invalid");
   window.history.replaceState(null, "", "/membership?site=isitrust");
-  expect(getClientPageFields("membership").find(field => field.id === "membership")?.options).toContainEqual({ value: association.key, label: "Stored membership organization" });
+  expect(getClientPageFields("membership").find(field => field.id === "membership")?.options).toContainEqual({ value: association.key, label: "Stored membership organization", outcome: "member" });
   expect(staticRead).not.toHaveBeenCalled();
   association.definition.name = "Later mutation";
   const returned = getAssociationsForSite("isitrust");

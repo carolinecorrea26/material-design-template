@@ -10,6 +10,7 @@ export type SelectionPolicy = {
   riderOnlyApplicants: string[];
   riders: Array<{
     key: string; applicants: string[]; included: boolean;
+    baseAmountSource?: "requested-and-verified-existing";
     minimumBase: number; maximumBase?: number; maximumAge: number | null;
     requires: string[]; incompatible: string[];
     amount: RiderAmount;
@@ -40,6 +41,7 @@ export function isSelectionPolicy(v: unknown): v is SelectionPolicy {
   const keys = new Set<string>();
   for (const r of v.riders) {
     if (!object(r) || typeof r.key !== "string" || !r.key || keys.has(r.key) || !strings(r.applicants) || !r.applicants.length || typeof r.included !== "boolean" || !finite(r.minimumBase) || r.maximumBase !== undefined && (!finite(r.maximumBase) || r.maximumBase < r.minimumBase) || r.maximumAge !== null && (!finite(r.maximumAge) || !Number.isInteger(r.maximumAge)) || !strings(r.requires) || !strings(r.incompatible) || !strings(r.excludedJurisdictions) || !object(r.amount)) return false;
+    if (r.baseAmountSource !== undefined && r.baseAmountSource !== "requested-and-verified-existing") return false;
     keys.add(r.key);
     if (!validAmount(r.amount) || r.amountByApplicant !== undefined && (!object(r.amountByApplicant) || !Object.entries(r.amountByApplicant).every(([key, a]) => (r.applicants as string[]).includes(key) && validAmount(a)))) return false;
     if (r.minimumAge !== undefined && (!finite(r.minimumAge) || !Number.isInteger(r.minimumAge) || r.maximumAge !== null && r.minimumAge > Number(r.maximumAge))) return false;
@@ -71,14 +73,14 @@ export function isSelectionPolicy(v: unknown): v is SelectionPolicy {
 }
 export type SelectionFacts = {
   mode: ApplicationMode; applicantKey: string; baseAmount?: number; ageYears?: number;
-  jurisdiction?: string; existingPolicyVerified?: boolean; existingAmount?: number;
+  jurisdiction?: string; existingPolicyVerified?: boolean; existingAmount?: number; verifiedExistingAmount?: number;
   memberAmount?: number; spouseAmount?: number; childAgeDays?: number; onlyChild?: boolean;
 };
 export type SelectionElection = { riders: string[]; riderAmounts: Record<string, number> };
 
 /** Pure reconciliation. Repeated execution converges, discards orphan amounts and
  * recomputes locked benefits from the same persisted policy as validation. */
-export function reconcileCoverageSelection(policy: SelectionPolicy, facts: SelectionFacts, election: SelectionElection) {
+export function reconcileCoverageSelection(policy: SelectionPolicy, facts: SelectionFacts, election: SelectionElection, options?: { purpose?: "quote" }) {
   const errors: string[] = [], missing = new Set<string>();
   const fail = (reason: string) => ({ status: "unresolved" as const, allowed: false, errors: [reason], missingFacts: [], election: { riders: [], riderAmounts: {} as Record<string, number> }, locked: [] as string[], childAmount: null, skipPayment: false, skipBeneficiary: false, healthRequired: false });
   if (!isSelectionPolicy(policy)) return fail("Invalid selection policy");
@@ -93,13 +95,20 @@ export function reconcileCoverageSelection(policy: SelectionPolicy, facts: Selec
   if (facts.mode === "rider-only" && (!policy.riderOnlyApplicants.includes(facts.applicantKey) || facts.baseAmount !== 0)) errors.push("Rider-only mode requires an eligible applicant and zero new base coverage");
   const base = facts.mode === "rider-only" ? facts.existingAmount : facts.baseAmount;
   if (facts.mode === "rider-only" && !finite(base)) missing.add("existingAmount");
+  const supportingBase = (r: SelectionPolicy["riders"][number]) => finite(base) ? base + (facts.mode === "new" && r.baseAmountSource === "requested-and-verified-existing" && finite(facts.verifiedExistingAmount) ? facts.verifiedExistingAmount : 0) : undefined;
   const eligible = policy.riders.filter(r => {
+    const base = supportingBase(r);
     if (!r.applicants.includes(facts.applicantKey)) return false;
     if (!finite(base) || base < r.minimumBase || r.maximumBase !== undefined && base > r.maximumBase) return false;
-    if ((r.maximumAge !== null || r.minimumAge !== undefined) && (!finite(facts.ageYears) || !Number.isInteger(facts.ageYears))) { if (r.included || election.riders.includes(r.key)) missing.add("ageYears"); return false; }
-    if (r.maximumAge !== null && facts.ageYears! > r.maximumAge || r.minimumAge !== undefined && facts.ageYears! < r.minimumAge) return false;
-    if (r.excludedJurisdictions.length && !facts.jurisdiction) { if (r.included || election.riders.includes(r.key)) missing.add("jurisdiction"); return false; }
-    return finite(base) && base >= r.minimumBase && (r.maximumBase === undefined || base <= r.maximumBase) && !r.excludedJurisdictions.includes(facts.jurisdiction ?? "");
+    // Quotes use the elected base and rider dependencies, without enforcing
+    // eligibility facts that belong to the application.
+    if (options?.purpose !== "quote") {
+      if ((r.maximumAge !== null || r.minimumAge !== undefined) && (!finite(facts.ageYears) || !Number.isInteger(facts.ageYears))) { if (r.included || election.riders.includes(r.key)) missing.add("ageYears"); return false; }
+      if (r.maximumAge !== null && facts.ageYears! > r.maximumAge || r.minimumAge !== undefined && facts.ageYears! < r.minimumAge) return false;
+      if (r.excludedJurisdictions.length && !facts.jurisdiction) { if (r.included || election.riders.includes(r.key)) missing.add("jurisdiction"); return false; }
+      if (r.excludedJurisdictions.includes(facts.jurisdiction ?? "")) return false;
+    }
+    return true;
   });
   // Conflicting optional choices both clear; an included benefit wins over an optional choice.
   const selected = new Set(eligible.filter(r => r.included || election.riders.includes(r.key)).map(r => r.key));
@@ -116,6 +125,7 @@ export function reconcileCoverageSelection(policy: SelectionPolicy, facts: Selec
   const riderAmounts: Record<string, number> = {};
   const locked: string[] = [];
   for (const r of eligible.filter(r => selected.has(r.key))) {
+    const base = supportingBase(r);
     const a = r.amountByApplicant?.[facts.applicantKey] ?? r.amount;
     if (a.kind === "none") continue;
     const cap = Math.min(r.amountCap?.baseFraction === undefined ? Infinity : base! * r.amountCap.baseFraction, r.amountCap?.combinedMaximum === undefined ? Infinity : Math.max(0, r.amountCap.combinedMaximum - base!));

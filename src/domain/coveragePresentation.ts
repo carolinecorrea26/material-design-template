@@ -4,9 +4,26 @@ import type { CoverageCategoryId } from "../config/coverageCategories";
 import presentationConfiguration from "../../requirements/global/configurations/product-presentation.json";
 import amountConfiguration from "../../requirements/global/configurations/coverage-amount-controls.json";
 import type { CoverageApplicantId } from "./coverage";
+import { getCoverageAmountChoices } from '../utils/coverageAmounts';
+import { requirementCoverageMinimumAmounts } from './requirementCoveragePolicy';
+
+/** General base-coverage offering, scoped to each configured applicant/class.
+ * Zero represents no base election, including rider-only paths; it is not a benefit.
+ * Individual age, residency and verified-portfolio restrictions run during selection.
+ */
+export function getCoverageOfferingRanges(product: CoverageDefinition) {
+  return [...new Set(product.applicants)].map(applicant => {
+    const classes = new Set([undefined, ...(product.coverageAmounts ?? [])
+      .filter(assignment => !assignment.scope?.applicantType || assignment.scope.applicantType === applicant)
+      .map(assignment => assignment.scope?.applicantClassId)]);
+    const choices = requirementCoverageMinimumAmounts(product, applicant,
+      [...classes].flatMap(applicantClass => getCoverageAmountChoices(product, applicant, applicantClass)).filter(amount => amount > 0));
+    return { applicant, minAmount: choices.length ? Math.min(...choices) : undefined, maxAmount: choices.length ? Math.max(...choices) : undefined };
+  });
+}
 
 export const defaultCategoryOrder = presentationConfiguration.configurations.find(row => row.id === "category-order")!.default as CoverageCategoryId[];
-const defaultProductOrder = presentationConfiguration.configurations.find(row => row.id === "product-order")!.default;
+const defaultProductOrder = presentationConfiguration.configurations.find(row => row.id === "product-order")!.default as string[];
 
 /** Presentation controls operate only on already policy-filtered amounts. */
 export function getCoverageAmountControl(product: CoverageDefinition, applicant: CoverageApplicantId, available: number[], config: ClientCoverages, entry: unknown) {
@@ -25,7 +42,7 @@ export function getCoverageAmountControl(product: CoverageDefinition, applicant:
   const configured = setting("coverage-amount-default-value", "defaultValue");
   const validConfigured = specified && typeof configured === "number" && positive.includes(configured);
   const defaultAmount = validUrl ? raw : validConfigured ? configured as number : positive.length ? Math.min(...positive) : undefined;
-  const urlLock = typeof scope.dprods === "string" && scope.dprods.split(",").some(id => identifiers.has(id.trim().toUpperCase())) && (!pairs.length || validUrl);
+  const urlLock = validUrl && typeof scope.dprods === "string" && scope.dprods.split(",").some(id => identifiers.has(id.trim().toUpperCase()));
   const configuredLock = setting("coverage-amount-locked", "locked") === true && (!specified || validConfigured);
   return { choices, defaultAmount, locked: defaultAmount !== undefined && (urlLock || configuredLock) };
 }
@@ -35,7 +52,7 @@ export function isCoverageProductOrder(value: unknown, knownProducts?: readonly 
 }
 
 /** URL feature selection explicitly overrides category and product presentation order. */
-export function orderCoveragePresentation<T extends CoverageDefinition>(products: readonly T[], config: ClientCoverages, featuredParam: string | null = null) {
+export function orderCoveragePresentation<T extends CoverageDefinition>(products: readonly T[], config: ClientCoverages, featuredParam: string | null = null, firstCategory: string | null = null) {
   if (config.productOrder !== undefined && !isCoverageProductOrder(config.productOrder)) throw new Error("Invalid configured product order");
   const configuredProducts = new Map((config.productOrder ?? []).map((key, index) => [key, index]));
   const defaultProducts = new Map(defaultProductOrder.map((key, index) => [key, index]));
@@ -44,9 +61,10 @@ export function orderCoveragePresentation<T extends CoverageDefinition>(products
   const identifiers = new Set((featuredParam ?? "").split(",").map(value => value.trim()).filter(Boolean));
   const featured = (product: CoverageDefinition) => identifiers.has(product.id) || !!product.gNumber && [product.gNumber.primary, ...(product.gNumber.scoped ?? []).map(row => row.value.primary)].some(id => !!id && identifiers.has(id));
   const configured = config.categoryOrder ?? config.categories ?? [];
+  const prioritizedCategory = firstCategory?.trim().toUpperCase();
   const categories = [...new Set([...configured, ...defaultCategoryOrder])];
   const featuredCategories = new Set(products.filter(featured).map(product => product.categoryId));
-  categories.sort((a, b) => Number(featuredCategories.has(b)) - Number(featuredCategories.has(a)));
+  categories.sort((a, b) => Number(featuredCategories.has(b)) - Number(featuredCategories.has(a)) || Number(b === prioritizedCategory) - Number(a === prioritizedCategory));
   const ordered = products.map(product => ({ ...product, featured: featured(product) })).sort((a, b) => categories.indexOf(a.categoryId) - categories.indexOf(b.categoryId) || Number(b.featured) - Number(a.featured) || configuredRank(a) - configuredRank(b) || defaultRank(a) - defaultRank(b));
   return { categories, products: ordered };
 }

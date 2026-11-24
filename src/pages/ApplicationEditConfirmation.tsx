@@ -12,7 +12,8 @@ import FormRoutePage from "../app/RoutePage";
 import { getPagePath } from "../config/pages";
 import DetailsTable from "../components/layout/DetailsTable";
 
-import advisorFixture from '../../requirements/global/prototype-fixtures/advisor.json';
+import { advisorRecipient } from '../domain/advisorFlow';
+import { useApplicationForm } from '../app/ApplicationFormContext';
 import { requirementText } from '../domain/requirementContent';
 
 /**
@@ -24,7 +25,8 @@ import { requirementText } from '../domain/requirementContent';
  */
 export default function ApplicationEditConfirmation() {
   const navigate = useNavigate();
-  const sentDate = new Date();
+  const { values } = useApplicationForm();
+  const sentDate = useRef(new Date()).current;
   const announcementRef = useRef<HTMLDivElement>(null);
 
   // This page is reached via a direct client-side navigate() from the Review
@@ -43,7 +45,7 @@ export default function ApplicationEditConfirmation() {
   }, []);
 
   const details = [
-    { label: requirementText('confirmation.edit.recipient'), value: advisorFixture.email },
+    { label: requirementText('confirmation.edit.recipient'), value: advisorRecipient(values) || requirementText('confirmation.edit.recipient-unavailable') },
     {
       label: requirementText('confirmation.edit.sent'),
       value: new Intl.DateTimeFormat("en-US", {

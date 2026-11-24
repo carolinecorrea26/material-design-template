@@ -3,11 +3,13 @@ import {
   useCallback,
   useContext,
   useMemo,
-  useState,
+  useSyncExternalStore,
   type ReactNode,
 } from "react";
 import {
   applicationSessionStorage,
+  emptyApplicationSession,
+  type ApplicationSessionStore,
   type ApplicationSessionState,
 } from "./applicationSessionStorage";
 import { resetApplicationTimeout } from './applicationTimeout';
@@ -22,30 +24,22 @@ export type ApplicationSessionContextValue = ApplicationSessionState & {
 export const ApplicationSessionContext =
   createContext<ApplicationSessionContextValue | null>(null);
 
-export function ApplicationSessionProvider({
-  children,
-}: {
-  children: ReactNode;
-}) {
-  const [state, setState] = useState<ApplicationSessionState>(() =>
-    applicationSessionStorage.read(),
-  );
+const browserSessionStore: ApplicationSessionStore = {
+  ...applicationSessionStorage,
+  resetTimeout: () => resetApplicationTimeout(resolveSiteId()),
+};
 
-  const markReviewSubmitted = useCallback(() => {
-    applicationSessionStorage.writeReviewSubmitted(true);
-    setState((current) => ({ ...current, reviewSubmitted: true }));
-  }, []);
-
-  const setAdvisorApplicantFlow = useCallback((enabled: boolean) => {
-    applicationSessionStorage.writeAdvisorApplicantFlow(enabled);
-    setState((current) => ({ ...current, advisorApplicantFlow: enabled }));
-  }, []);
-
+export function ApplicationSessionProvider({ children, store = browserSessionStore }: { children: ReactNode; store?: ApplicationSessionStore }) {
+  const snapshot = useSyncExternalStore(store.subscribe,
+    () => JSON.stringify(store.read()),
+    () => JSON.stringify(emptyApplicationSession()));
+  const state = useMemo(() => JSON.parse(snapshot) as ApplicationSessionState, [snapshot]);
+  const markReviewSubmitted = useCallback(() => store.writeReviewSubmitted(true), [store]);
+  const setAdvisorApplicantFlow = useCallback((enabled: boolean) => store.writeAdvisorApplicantFlow(enabled), [store]);
   const resetApplicationSession = useCallback(() => {
-    applicationSessionStorage.clear();
-    resetApplicationTimeout(resolveSiteId());
-    setState({ reviewSubmitted: false, advisorApplicantFlow: false });
-  }, []);
+    store.clear();
+    store.resetTimeout?.();
+  }, [store]);
 
   const value = useMemo<ApplicationSessionContextValue>(
     () => ({

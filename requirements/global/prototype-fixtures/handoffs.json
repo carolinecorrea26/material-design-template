@@ -1,0 +1,18 @@
+{
+  "health-qd": [
+    {
+      "alt": "QuickDecision statement of health, page 1",
+      "placeholder": "Image TBD"
+    },
+    {
+      "alt": "QuickDecision statement of health, page 2",
+      "placeholder": "Image TBD"
+    }
+  ],
+  "docusign": [
+    {
+      "alt": "DocuSign signing screen",
+      "placeholder": "Image TBD"
+    }
+  ]
+}

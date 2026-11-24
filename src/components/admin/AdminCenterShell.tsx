@@ -35,13 +35,13 @@ function AdminCenterContent() {
   const setRailCollapsed = (value: boolean) => { setCollapsed(value); localStorage.setItem('adminRailCollapsed', String(value)); };
   const persona = { ...internalPersonas[0], permissions: account?.status.canEdit === false ? internalPersonas[0].permissions.filter(permission => permission.endsWith('.read')) : internalPersonas[0].permissions };
 
-  if (!location.pathname.startsWith("/admin-center/library")) {
+  if (!location.pathname.startsWith("/admin-center/library") && !/^\/admin-center\/(?:tutorials|applicant-admin)(?:\/|$)/.test(location.pathname)) {
     return <Navigate to={`/admin-center/library${location.search}`} replace />;
   }
 
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: "#f5f7fa" }}>
-      <AppBar position="sticky" color="inherit" elevation={0} sx={{ borderBottom: "1px solid", borderColor: "divider" }}>
+      <AppBar position="sticky" color="inherit" elevation={0} sx={{ bgcolor: "background.paper", borderBottom: "1px solid", borderColor: "divider" }}>
         <Toolbar sx={{ minHeight: { xs: 64, md: 68 }, gap: { xs: 1, sm: 2 } }}>
           <Box sx={{ width: { md: expandedRailWidth - 24 }, flexShrink: 0, display: "flex", alignItems: "center", gap: 1.25 }}>
             <Box component="img" src="/logo.svg" alt="New York Life" sx={{ width: 40, height: 40, flexShrink: 0 }} />
@@ -79,7 +79,7 @@ function AdminCenterContent() {
           {adminNavigation.map((group, groupIndex) => (
             <Box key={group.label}>
               {groupIndex > 0 && <Divider sx={{ my: 1 }} />}
-              <Typography variant="overline" color="text.secondary" sx={{ display: collapsed ? "none" : "block", px: 2.25, fontSize: "0.65rem", fontWeight: 800 }}>
+              <Typography variant="overline" color="text.secondary" sx={{ display: collapsed ? "none" : "block", px: 2.25, fontWeight: 800 }}>
                 {group.label}
               </Typography>
               <List dense disablePadding>

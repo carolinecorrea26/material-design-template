@@ -1,5 +1,6 @@
 import { canonicalSiteKey } from '../domain/siteIdentity.mjs';
 import { getPrototypeLibrary } from "../domain/prototypeLibrary";
+import { siteUsesRequirementFields } from '../domain/requirementFields';
 import type { ClientId } from "../types";
 import type { SiteId } from "./model";
 import {
@@ -18,13 +19,19 @@ function isClientId(value: string | null): value is ClientId {
   return Boolean(value && getSiteIdForClientAlias(value as ClientId) !== "demo") || value === "demo";
 }
 
-export function resolveSiteId(): SiteId {
+/** Bootstrap supplies the loaded catalog's active Sites. Detached historical
+ * examples retain their compatibility registry until a revision is installed. */
+export function resolveSiteId(availableSiteKeys?: readonly string[]): SiteId {
+  if (availableSiteKeys && availableSiteKeys.length === 0) throw new Error('The shared catalog has no active Sites.');
+  const available = (key: string) => availableSiteKeys
+    ? availableSiteKeys.includes(key)
+    : siteUsesRequirementFields(key) || !!getSite(key);
   const params = new URLSearchParams(window.location.search);
   const activeBuild = getPrototypeLibrary()?.site.siteKey;
-  if (activeBuild) return activeBuild;
+  if (activeBuild && (!availableSiteKeys || available(activeBuild))) return activeBuild;
   const requestedValue = params.get(SITE_QUERY_PARAM);
   const requestedSite = requestedValue ? canonicalSiteKey(requestedValue) : null;
-  if (requestedSite && getSite(requestedSite)) {
+  if (requestedSite && available(requestedSite)) {
     window.sessionStorage.setItem(SITE_STORAGE_KEY, requestedSite);
     return requestedSite;
   }
@@ -32,19 +39,26 @@ export function resolveSiteId(): SiteId {
   const clientAlias = params.get(LEGACY_CLIENT_QUERY_PARAM);
   if (isClientId(clientAlias)) {
     const siteId = getSiteIdForClientAlias(clientAlias);
-    window.sessionStorage.setItem(SITE_STORAGE_KEY, siteId);
-    window.sessionStorage.setItem(LEGACY_CLIENT_STORAGE_KEY, clientAlias);
-    return siteId;
+    if (available(siteId)) {
+      window.sessionStorage.setItem(SITE_STORAGE_KEY, siteId);
+      window.sessionStorage.setItem(LEGACY_CLIENT_STORAGE_KEY, clientAlias);
+      return siteId;
+    }
   }
 
   const storedValue = window.sessionStorage.getItem(SITE_STORAGE_KEY);
   const storedSiteId = storedValue ? canonicalSiteKey(storedValue) : null;
-  if (storedSiteId && getSite(storedSiteId)) return storedSiteId;
+  if (storedSiteId && available(storedSiteId)) return storedSiteId;
 
   const storedLegacyClientId = window.sessionStorage.getItem(LEGACY_CLIENT_STORAGE_KEY);
-  if (isClientId(storedLegacyClientId)) return getSiteIdForClientAlias(storedLegacyClientId);
+  if (isClientId(storedLegacyClientId)) {
+    const siteId = getSiteIdForClientAlias(storedLegacyClientId);
+    if (available(siteId)) return siteId;
+  }
 
-  return DEFAULT_SITE_ID;
+  const fallback = availableSiteKeys?.[0] ?? DEFAULT_SITE_ID;
+  if (availableSiteKeys) window.sessionStorage.setItem(SITE_STORAGE_KEY, fallback);
+  return fallback;
 }
 
 export function getActiveSite() {

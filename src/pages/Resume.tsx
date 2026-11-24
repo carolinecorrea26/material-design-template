@@ -1,59 +1,84 @@
+import StandaloneFormPage from "../components/layout/StandaloneFormPage";
+import { isAdvisorReviewQuery } from '../config/reviewExperience';
+import { getResumePolicy } from '../config/resumePolicy';
+import { resumeFailureMessage, resumePageIssue, resumeIssueMessage, type ResumePageIssue } from '../domain/resumeFeedback';
+import useDeadline from '../hooks/useDeadline';
+import { useApplicationForm } from '../app/ApplicationFormContext';
 import { requirementText } from "../domain/requirementContent";
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { useForm } from 'react-hook-form';
 import FieldRenderer from '../components/forms/FieldRenderer';
 import { getPageFieldDefinition } from '../config/fields/resolvedFieldRegistry';
-import { Alert, Box, Button, CircularProgress, Stack } from '@mui/material';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import PageHeader from '../components/layout/PageHeader';
-import PageShell from '../components/layout/PageShell';
-import FormShell from '../components/layout/FormShell';
-import { getPageSubhead, getPageTitle } from '../config/pages';
+import { Button, CircularProgress, Stack, Typography } from '@mui/material';
+import { Navigate, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { getPagePath, getPageSubhead, getPageTitle } from '../config/pages';
 import { resolveSiteId } from '../data/activeSite';
-import { applicantRecovery, readSavedApplication } from '../services/applicantSaveService';
+import { applicantRecovery, readAdvisorRecoveryLookup, readSavedApplication, recoveryFromSearch, forgetResumeSession, resumeEntryQuery } from '../services/applicantSaveService';
 import ApplicantMockOutbox from '../components/demo/ApplicantMockOutbox';
 import useCountdown from '../hooks/useCountdown';
 import ExpiringCodeAlert from '../components/feedback/ExpiringCodeAlert';
+import PageAlert from '../components/feedback/PageAlert';
 import ResendCountdownRow from '../components/feedback/ResendCountdownRow';
-import prototypeDefaults from '../../requirements/global/prototype-fixtures/application.json';
 
-export default function Resume() {
+
+/** Explicit preview inputs do not perform lookup or delivery. */
+export default function Resume({ initialError, initialConfirmation }: { initialError?: ResumePageIssue; initialConfirmation?: { recipient: string; secondsLeft: number } }) {
   const navigate = useNavigate();
   const [search] = useSearchParams();
   const siteKey = resolveSiteId();
+  const location = useLocation();
+  const { values } = useApplicationForm();
   const [saved] = useState(() => readSavedApplication(siteKey));
+  const advisorLookup = values?.['advisor-flow-type'] === 'saved' && typeof values['applicant-email'] === 'string' ? values['applicant-email'] : isAdvisorReviewQuery(search) ? '' : readAdvisorRecoveryLookup(siteKey);
+  const phoneField = advisorLookup ? getPageFieldDefinition('resume', siteKey, 'resume-phone') : null;
   const field = getPageFieldDefinition('resume', siteKey, 'resume-email');
-  const form = useForm<Record<string, string | boolean | string[]>>({ defaultValues: { [field.id]: saved?.recipient ?? '' } });
+  const incomingIssue = initialError ?? (location.state as { resumeIssue?: ResumePageIssue } | null)?.resumeIssue;
+  const form = useForm<Record<string, string | boolean | string[]>>({ defaultValues: { [field.id]: incomingIssue?.recipient ?? (initialConfirmation ? initialConfirmation.recipient : advisorLookup ? '' : saved?.recipient ?? '') } });
   const recipient = String(form.watch(field.id) ?? '');
   const [error, setError] = useState('');
+  const [issue, setIssue] = useState<ResumePageIssue | undefined>(incomingIssue);
+  const cooldown = useDeadline(issue?.retryAt);
+  const blocked = cooldown !== null && cooldown > 0 && (!issue?.recipient || issue.recipient.trim().toLowerCase() === recipient.trim().toLowerCase());
+  const visibleIssue = issue && (issue.retryAt === undefined || blocked) ? issue : undefined;
   const [busy, setBusy] = useState(false);
-  const [sent, setSent] = useState<{ applicationId: string; recipient: string } | null>(null);
-  const { secondsLeft, restart } = useCountdown(prototypeDefaults.resumeLinkValidityMs / 1000);
+  const [sent, setSent] = useState<{ applicationId: string; recipient: string } | null>(initialConfirmation ? { applicationId: '', recipient: initialConfirmation.recipient } : null);
+  const { secondsLeft, start, restart } = useCountdown(initialConfirmation?.secondsLeft ?? getResumePolicy().linkValiditySeconds);
+  useEffect(() => { if (initialConfirmation) start(); }, [initialConfirmation, start]);
+  useEffect(() => { if (issue?.kind === 'mfa-expired') forgetResumeSession(siteKey); }, [issue?.kind, siteKey]);
   async function request(event?: FormEvent) {
     event?.preventDefault();
-    if (busy) return;
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recipient.trim())) { setError(requirementText("application.ui.enter-a-valid-email-address")); return; }
-    setError(''); setBusy(true);
+    if (busy || blocked) return;
+
+    setError(''); setIssue(undefined); setBusy(true);
     try {
       if (!import.meta.env.VITE_MOCK_PLATFORM_ENABLED) throw new Error(requirementText("application.ui.application-recovery-is-unavailable-please-try-again-later"));
-      const result = await applicantRecovery.request(search.get('applicationId') ?? (saved?.recipient === recipient.trim().toLowerCase() ? saved.applicationId : ''), siteKey, recipient.trim());
+      const hint = search.get('applicationId') ?? (saved?.recipient === recipient.trim().toLowerCase() ? saved.applicationId : '');
+      const result = advisorLookup ? await applicantRecovery.request('', siteKey, recipient.trim(), undefined, { applicantEmail: advisorLookup, phone: String(form.getValues('resume-phone') ?? '') }) : isAdvisorReviewQuery(search) ? await applicantRecovery.request(hint, siteKey, recipient.trim(), 'advisor') : await applicantRecovery.request(hint, siteKey, recipient.trim());
       restart(Math.max(0, Math.ceil((result.expiresAt - Date.now()) / 1000)));
-      setSent({ applicationId: result.applicationId, recipient: recipient.trim().toLowerCase() });
-    } catch (reason) { setError(reason instanceof Error ? reason.message : requirementText("application.ui.resume-request-failed")); }
+      setSent({ applicationId: saved?.recipient === recipient.trim().toLowerCase() ? saved.applicationId : '', recipient: recipient.trim().toLowerCase() });
+    } catch (reason) {
+      const pageIssue = resumePageIssue(reason, recipient);
+      if (pageIssue) { setIssue(pageIssue); setSent(null); } else setError(resumeFailureMessage(reason));
+    }
     finally { setBusy(false); }
   }
-  return <Box sx={{ flex: 1, px: { xs: 2, sm: 3 }, py: { xs: 4, sm: 6 } }}>
-    <PageShell title={getPageTitle('resume')} maxWidth={600} noTitle><FormShell sx={{ px: { xs: 2, sm: 4 }, py: 6 }}>
-      <PageHeader title={getPageTitle('resume')} subhead={getPageSubhead('resume')} onBack={() => navigate(-1)} />
+  if (!visibleIssue && isAdvisorReviewQuery(search) && recoveryFromSearch(search, siteKey)) return <Navigate replace to={`${getPagePath('resume-method')}?${search}`} />;
+  if (issue?.kind === 'mfa-expired') return <Navigate replace to={`${getPagePath('session-expired')}?${resumeEntryQuery(siteKey, isAdvisorReviewQuery(search))}`} />;
+  return <StandaloneFormPage title={getPageTitle('resume')} subhead={getPageSubhead('resume')} onBack={() => navigate(-1)}>
+
+      {visibleIssue && <PageAlert severity="error" message={resumeIssueMessage(visibleIssue, cooldown)} />}
       <Stack component="form" spacing={3} onSubmit={form.handleSubmit(() => void request())} noValidate sx={{ py: 1 }}>
         {sent ? <>
-          <ExpiringCodeAlert secondsLeft={secondsLeft} kind="link" onResend={() => void request()}>{requirementText("application.ui.a-secure-link-has-been-sent-to")}<strong>{sent.recipient}</strong>{requirementText("application.ui.open-your-email-and-click-the-link-to-continue")}</ExpiringCodeAlert>
+          <ExpiringCodeAlert secondsLeft={secondsLeft} kind="link" disabled={busy} onResend={() => void request()}>{requirementText("application.ui.a-secure-link-has-been-sent-to")}<strong>{sent.recipient}</strong>{requirementText("application.ui.open-your-email-and-click-the-link-to-continue")}</ExpiringCodeAlert>
           <ResendCountdownRow secondsLeft={secondsLeft} kind="link" disabled={busy} onResend={() => void request()} />
-          <ApplicantMockOutbox applicationId={sent.applicationId} siteKey={siteKey} recipient={sent.recipient} />
-        </> : <FieldRenderer field={{ ...field, disabled: field.disabled || busy }} control={form.control} errors={error ? { ...form.formState.errors, [field.id]: { type: 'manual', message: error } } : form.formState.errors} onValueChange={() => setError('')} />}
-        {sent && error && <Alert severity="error">{error}</Alert>}
-        {(!sent || busy) && <Button fullWidth size="large" type="submit" variant="contained" disabled={busy}>{busy ? <CircularProgress size={24} color="inherit" aria-label={requirementText("application.ui.sending-secure-link")} /> : requirementText("navigation.next")}</Button>}
+          {sent.applicationId && <ApplicantMockOutbox applicationId={sent.applicationId} siteKey={siteKey} recipient={sent.recipient} />}
+        </> : <>
+          {advisorLookup && <Typography variant="body2">{requirementText("resume.advisor.identity")}</Typography>}
+          <FieldRenderer field={{ ...field, ...(values?.['advisor-flow-type'] === 'saved' ? { autoComplete: 'off' } : {}), disabled: field.disabled || busy }} control={form.control} errors={error ? { ...form.formState.errors, [field.id]: { type: 'manual', message: error } } : form.formState.errors} onValueChange={() => setError('')} />
+          {phoneField && <FieldRenderer field={{ ...phoneField, disabled: busy }} control={form.control} errors={form.formState.errors} onValueChange={() => setError('')} />}
+        </>}
+        {sent && <PageAlert message={error} />}
+        {(!sent || busy) && <Button fullWidth size="large" type="submit" variant="contained" disabled={busy || blocked}>{busy ? <CircularProgress size={24} color="inherit" aria-label={requirementText("application.ui.sending-secure-link")} /> : requirementText("navigation.next")}</Button>}
       </Stack>
-    </FormShell></PageShell>
-  </Box>;
+  </StandaloneFormPage>;
 }

@@ -5,12 +5,12 @@ import type { PageId } from "../types";
 // ─── Home Page ────────────────────────────────────────────────────────────────
 
 export type HomeContent = {
+  landingNotice: { title: string; text: string };
   hero: {
+    image: { src: string; alt: string };
     tagline: string;
     title: string;
     description: string;
-    welcomeBackTitle: string;
-    welcomeBackDescription: string;
     ctaLabel: string;
     secondaryCtaLabel: string;
   };
@@ -51,6 +51,7 @@ export type HomeContent = {
 // ─── Coverage ─────────────────────────────────────────────────────────────────
 
 export type CoverageContent = {
+  needsCalculator: Record<string, string>;
   categoryDescriptions: Record<CoverageCategoryId, string>;
   applicantLabels: Record<CoverageApplicantId, string>;
   applicantCheckboxLabels: {
@@ -76,8 +77,14 @@ export type NavigationContent = {
 // ─── Pages ────────────────────────────────────────────────────────────────────
 
 export type PageContent = {
+  /** Source-bound page guidance read by shared page sections. */
+  messages?: Record<string, string>;
+  /** Entry loading copy is independent of the forward-transition message pair. */
+  loading?: string;
   title: string;
   subhead?: string;
+  /** Optional guidance in the shared redirect-page template. */
+  recoveryGuidance?: string;
   navTitle: string;
   /** Optional info note displayed below page title/subhead/help and above form questions. */
   infoNote?: string;
@@ -122,9 +129,7 @@ export type FooterContent = {
 // ─── Review ───────────────────────────────────────────────────────────────────
 
 export type ReviewContent = {
-  alertTitle: string;
-  alertItems: Array<{ title: string; description: string }>;
-  healthQuestionsNote: { title: string; description: string };
+  importantNotices?: Record<string, LegalDocContent>;
   readAndSignTitle: string;
   readAndSignContent: string;
   electronicConsentTitle: string;
@@ -139,10 +144,9 @@ export type DecisionStatusContent = {
 };
 
 export type ReceiptContent = {
-  receivedMessage?: string;
+  underwritingNote: { title: string; text: string };
+  email: { subject: string; title: string; intro: string; summary: string; closing: string; signature: string };
   paymentNotice?: string;
-  paymentNoticeTitle?: string;
-  decisionSteps: string[];
   decisionStatuses: {
     fullyUnderwritten: DecisionStatusContent;
     conditionallyApproved: DecisionStatusContent;
@@ -155,20 +159,6 @@ export type ReceiptContent = {
   documentDownloadLabels: {
     application: string;
     payment: string;
-    quickDecision: string;
-  };
-  summaryLabels: {
-    status: string;
-    applying: string;
-    requested: string;
-    submittedStatus: string;
-    defaultApplicant: string;
-    productSingular: string;
-    productPlural: string;
-  };
-  coverageCardLabels: {
-    coverageSuffix: string;
-    requested: string;
   };
   coverageDecisions: {
     title: string;
@@ -177,14 +167,6 @@ export type ReceiptContent = {
   };
   whatHappensNext: {
     title: string;
-    items: Array<{ title: string; description: string }>;
-  };
-  support: {
-    title: string;
-    /** Supports the {{clientName}} placeholder, resolved via resolveTemplate. */
-    administratorLabel: string;
-    callLabel: string;
-    emailLabel: string;
   };
 };
 
@@ -247,6 +229,9 @@ export type HelpContent = {
     }>;
   };
   quickDecision: {
+    availability: string;
+    showMore: string;
+    showLess: string;
     /** Text preceding the "QuickDecision" mark in the drawer title, e.g. "What is". */
     titlePrefix: string;
     /** Text following the QuickDecision mark in the intro paragraph. */
@@ -266,6 +251,27 @@ export type HelpContent = {
 // ─── Shared ───────────────────────────────────────────────────────────────────
 
 export type SharedContent = {
+  interfaceMessages: Record<string, string>;
+  emailMessages: Record<string, string>;
+  emailPurge: Record<string, string>;
+  emailSenderName: string;
+  emailAdvisor: Record<string, string>;
+  emailSalutation: string;
+  emailApplicantFallback: string;
+  insurerLogo: { src: string; alt: string };
+  support: {
+    title: string;
+    technicalTitle: string;
+    technicalEmailLabel: string;
+    technicalEmailAddress: string;
+    administratorSuffix: string;
+    callLabel: string;
+    emailLabel: string;
+    websiteLabel: string;
+    emailSubject: string;
+    applicationReference: string;
+    confirmationReference: string;
+  };
   applicantLabels: Record<CoverageApplicantId, string>;
   applicantSectionTitles: Record<"self" | "spouse" | "child", string>;
   cookieBanner: {
@@ -302,28 +308,7 @@ export type DialogsContent = {
     applyToOthersTitle: string;
     applyToOthersPrompt: string;
   };
-  coverageDetails: {
-    fallbackTitle: string;
-    benefitAmountLabel: string;
-    coverageNoteLabel: string;
-    eligibleApplicantsLabel: string;
-    waitingPeriodsLabel: string;
-    maxBenefitPeriodsLabel: string;
-    availableRidersLabel: string;
-    viewFullDetailsLinkLabel: string;
-  };
-};
 
-// ─── Inline Notes & Status Messages ──────────────────────────────────────────
-
-export type StatusMessagesContent = {
-  docusign: { heading: string; body: string };
-  healthQd: {
-    heading: string;
-    bodyBeforeMark: string;
-    bodyAfterMark: string;
-  };
-  healthCir: { body: string };
 };
 
 // ─── Root ─────────────────────────────────────────────────────────────────────
@@ -340,5 +325,4 @@ export type SiteContent = {
   shared: SharedContent;
   beneficiary: BeneficiaryContent;
   dialogs: DialogsContent;
-  statusMessages: StatusMessagesContent;
 };

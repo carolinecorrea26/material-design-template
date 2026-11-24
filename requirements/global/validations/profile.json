@@ -1,0 +1,14 @@
+{
+  "validations": [
+    {
+      "id": "profile-disability-record-required",
+      "name": "Require valid declared disability carrier records",
+      "status": "confirmed",
+      "check": "page-check",
+      "level": "page",
+      "message": "profile.disability.required",
+      "statement": "For every active DI applicant answering Yes to existing disability, require the configured collection minimum and validate record shape, maximum and each mapped field using the effective dialog definition. Hidden or inapplicable saved records do not block Next.",
+      "source": "User decision November 13, 2026; src/domain/profileValidation.ts; src/domain/fieldCollections.ts"
+    }
+  ]
+}

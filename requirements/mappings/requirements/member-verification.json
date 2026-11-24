@@ -1,0 +1,15 @@
+{
+  "component": "member-verification",
+  "validations": [
+    {
+      "validation": "field-definition-checks",
+      "trigger": "confirm-method",
+      "scope": "registered-fields"
+    },
+    {
+      "validation": "field-definition-checks",
+      "trigger": "confirm-security-answers",
+      "scope": "registered-fields"
+    }
+  ]
+}

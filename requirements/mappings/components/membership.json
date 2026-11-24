@@ -1,13 +1,267 @@
 {
   "component": "membership",
   "fields": [
-    {"field":"membership","people":["self"]},
-    {"field":"title","people":["self"]},
-    {"field":"first-name","people":["self"]},
-    {"field":"last-name","people":["self"]},
-    {"field":"email","people":["self"]},
-    {"field":"phone","people":["self"]},
-    {"field":"phone-type","people":["self"]},
-    {"field":"member-id","people":["self"],"default":"off"}
-  ]
+    {
+      "field": "membership",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "title",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "first-name",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "last-name",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "email",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "phone",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "phone-type",
+      "people": [
+        "self"
+      ]
+    },
+    {
+      "field": "member-id",
+      "people": [
+        "self"
+      ],
+      "default": "off"
+    },
+    {
+      "field": "ama-physician-type",
+      "people": [
+        "self"
+      ],
+      "default": "off"
+    },
+    {
+      "field": "ama-physician-title",
+      "people": [
+        "self"
+      ],
+      "default": "off"
+    },
+    {
+      "field": "ama-physician-first-name",
+      "people": [
+        "self"
+      ],
+      "default": "off"
+    },
+    {
+      "field": "ama-physician-last-name",
+      "people": [
+        "self"
+      ],
+      "default": "off"
+    },
+    {
+      "field": "ama-physician-birth-date",
+      "people": [
+        "self"
+      ],
+      "default": "off"
+    },
+    {
+      "field": "ama-physician-email",
+      "people": [
+        "self"
+      ],
+      "default": "off"
+    },
+    {
+      "field": "waepa-attestation",
+      "people": [
+        "self"
+      ],
+      "default": "off"
+    },
+    {
+      "field": "waepa-employer",
+      "people": [
+        "self"
+      ],
+      "default": "off"
+    },
+    {
+      "field": "waepa-start-date",
+      "people": [
+        "self"
+      ],
+      "default": "off"
+    },
+    {
+      "field": "waepa-retired-employer",
+      "people": [
+        "self"
+      ],
+      "default": "off"
+    },
+    {
+      "field": "waepa-retirement-date",
+      "people": [
+        "self"
+      ],
+      "default": "off"
+    },
+    {
+      "field": "waepa-member-first-name",
+      "people": [
+        "self"
+      ],
+      "default": "off"
+    },
+    {
+      "field": "waepa-member-last-name",
+      "people": [
+        "self"
+      ],
+      "default": "off"
+    },
+    {
+      "field": "waepa-member-id",
+      "people": [
+        "self"
+      ],
+      "default": "off"
+    },
+    {
+      "field": "active-military",
+      "people": [
+        "self"
+      ],
+      "default": "off"
+    },
+    {
+      "field": "waepa-member-middle-initial",
+      "people": [
+        "self"
+      ],
+      "default": "off"
+    },
+    {
+      "field": "membership-referral-source",
+      "people": [
+        "self"
+      ],
+      "default": "off"
+    },
+    {
+      "field": "membership-status",
+      "people": [
+        "self"
+      ],
+      "default": "off"
+    },
+    {
+      "field": "waepa-declaration",
+      "people": [
+        "self"
+      ],
+      "default": "off"
+    },
+    {
+      "field": "abe-member-id",
+      "people": [
+        "self"
+      ],
+      "default": "off"
+    },
+    {
+      "field": "avma-vet-college",
+      "people": [
+        "self"
+      ],
+      "default": "off"
+    },
+    {
+      "field": "avma-graduation-year",
+      "people": [
+        "self"
+      ],
+      "default": "off"
+    },
+    {
+      "field": "avma-occupation",
+      "people": [
+        "self"
+      ],
+      "default": "off"
+    },
+    {
+      "field": "csea-occupation-group",
+      "people": [
+        "self"
+      ],
+      "default": "off"
+    },
+    {
+      "field": "nurse-type",
+      "people": [
+        "self"
+      ],
+      "default": "off"
+    }
+  ],
+  "constraints": {
+    "membership": {
+      "included": true,
+      "required": true
+    },
+    "first-name": {
+      "included": true,
+      "required": true
+    },
+    "last-name": {
+      "included": true,
+      "required": true
+    },
+    "email": {
+      "included": true,
+      "required": true,
+      "fixedProperties": [
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength"
+      ]
+    },
+    "phone": {
+      "included": true,
+      "required": true,
+      "fixedProperties": [
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength"
+      ]
+    },
+    "phone-type": {
+      "included": true,
+      "required": true
+    }
+  }
 }

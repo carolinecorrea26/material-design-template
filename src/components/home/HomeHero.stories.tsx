@@ -5,6 +5,7 @@ import HomeHero from "./HomeHero";
 import withHomeStoryFrame from "../../../.storybook/homeSectionDecorator";
 import type { PrototypeLibrary } from "../../domain/prototypeLibrary";
 import ComponentFixture from "../../../.storybook/fixtures/ComponentFixture";
+import { quoteEligibilityPresentation } from '../../app/sections/ConfiguredEligibilityFields';
 
 const meta = {
   id: "pages-home-hero",
@@ -29,6 +30,7 @@ function HeroExample({ variant, fixture }: { variant: "default" | "hero-image"; 
         effectiveBranding={client.branding}
         variant={variant}
         isSingleTemplate={false}
+        eligibilityPresentation={quoteEligibilityPresentation(fixture)}
         onApply={(event) => { event.preventDefault(); setAction("Start my application selected."); }}
         onOpenQuote={() => setAction("Quote requested. The quote workflow is reviewed in its integration examples.")}
       />

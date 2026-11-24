@@ -1,8 +1,38 @@
-import { getContent } from "../content";
+import { emailExampleTimeline, type EmailExampleKind } from '../domain/emailExampleTimeline';
+import { emailBodyCss, emailTypography } from './emailTypography';
+import { getPagePath } from '../config/pages';
+import controlPresentation from '../../requirements/global/presentation-tokens.json';
+const actionPresentation = controlPresentation.controls;
+import insurer from '../../requirements/global/content/insurer.json';
+import { buildContent } from '../content';
+import { requirementText } from '../domain/requirementContent';
+import { createElement } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { ThemeProvider } from '@mui/material/styles';
+import { emailAlertPresentation, emailAlertTitleStyle } from './emailAlertPresentation';
+import WarningAmberRounded from '@mui/icons-material/WarningAmberRounded';
+import { Alert, AlertTitle } from '@mui/material';
+import CheckCircleRounded from '@mui/icons-material/CheckCircleRounded';
+import SendRounded from '@mui/icons-material/SendRounded';
+import EditNotificationsRounded from '@mui/icons-material/EditNotificationsRounded';
+import DeleteOutlineRounded from '@mui/icons-material/DeleteOutlineRounded';
+import { getResumePolicy } from '../config/resumePolicy';
+import PendingActionsRounded from '@mui/icons-material/PendingActionsRounded';
+import SiteSupport from '../components/layout/SiteSupport';
+import ReceiptCoverageDecision from '../components/receipt/ReceiptCoverageDecision';
+import { getClientCoverages } from '../config/client/getActiveClientCoverages';
+import { getEffectiveSiteConfig } from '../repositories/sites';
+import { getPrototypeLibrary, type PrototypeLibrary } from '../domain/prototypeLibrary';
+import { receiptDecisionPresentation } from '../domain/receiptPresentation';
+import { orderCoveragePresentation } from '../domain/coveragePresentation';
+import { getOrderedDecisionEntries } from './coverageDecisions';
+import advisorExample from '../../requirements/global/prototype-fixtures/advisor.json';
+import emailExampleMetadata from '../../requirements/global/prototype-fixtures/email-metadata.json';
+import receiptEmailExample from '../../requirements/global/prototype-fixtures/receipt-email.json';
 import type { ApplicationFormValues } from "../app/ApplicationFormContext";
 import { applicantRecovery, readSavedApplication } from '../services/applicantSaveService';
 import { applicationSupportReference } from '../domain/applicationSupportReference';
-import { resolveSiteSupportContact, resolveApplicationSupportReference, siteSupportCopy, supportPhoneHref, supportWebsiteHref } from '../data/siteSupport';
+import { resolveSiteSupportContact, resolveApplicationSupportReference } from '../data/siteSupport';
 import theme from "../app/theme";
 import {
   getActiveSite,
@@ -11,19 +41,9 @@ import {
   resolveActiveAssociationFromApplication,
   resolveEffectiveBranding,
   resolveSiteSupport,
-  resolveSiteCoverage,
   type SiteId,
 } from "../data";
 import type { ClientId } from "../types";
-import {
-  getCoverageAmountRequested,
-  getDecisionStatus,
-  getOrderedDecisionEntries,
-  getQdDecisionResult,
-  formatCurrencyAmount,
-  type SelectedCoverageEntry,
-} from "./coverageDecisions";
-
 export type MockEmailType =
   | "autosave"
   | "receipt"
@@ -34,7 +54,9 @@ export type MockEmailType =
   | "advisor-sent-to-applicant"
   | "advisor-pending-reminder"
   | "advisor-edit-request"
-  | "advisor-application-complete";
+  | "advisor-application-complete"
+  | "advisor-purge-reminder"
+  | "advisor-applicant-purge-reminder";
 
 export type MockEmailPreview = {
   id: string;
@@ -51,11 +73,11 @@ export type MockEmailPreview = {
 
 const MOCK_EMAIL_PREVIEWS_KEY = "mockEmail:previews";
 const MOCK_EMAIL_PREVIEWS_CHANGED_EVENT = "mockEmail:previewsChanged";
-const MOCK_APPLICANT_FIRST_NAME = "Caroline";
-const MOCK_APPLICANT_LAST_NAME = "Correa";
-const MOCK_APPLICANT_EMAIL = "returning.user@example.com";
-const MOCK_ADVISOR_EMAIL = "advisor@example.com";
-const MOCK_FROM_EMAIL = "gmad_tpa_portal@ntlab.newyorklife.com";
+const MOCK_APPLICANT_FIRST_NAME = receiptEmailExample.application['first-name'];
+const MOCK_APPLICANT_LAST_NAME = receiptEmailExample.application['last-name'];
+const MOCK_APPLICANT_EMAIL = receiptEmailExample.application.email;
+const MOCK_ADVISOR_EMAIL = advisorExample.email;
+const MOCK_FROM_EMAIL = emailExampleMetadata.senderEmail;
 
 function getStringValue(values: ApplicationFormValues, fieldId: string) {
   const value = values[fieldId];
@@ -89,19 +111,15 @@ function formatMockDateTime(date: Date) {
   }).format(date);
 }
 
-function addDays(date: Date, days: number) {
-  const nextDate = new Date(date);
-  nextDate.setDate(nextDate.getDate() + days);
-  return nextDate;
-}
 
 function getDisplayName(firstName: string, lastName: string) {
-  return [firstName, lastName].filter(Boolean).join(" ").trim() || "Applicant";
+  return [firstName, lastName].filter(Boolean).join(" ").trim() || requirementText('email.applicant-fallback');
 }
 
-function getNormalizedWebsiteUrl(website?: string) {
-  const fallbackUrl =
-    "https://redesignv2--material-design-template.netlify.app";
+function getNormalizedWebsiteUrl(siteId: SiteId, website?: string) {
+  const fallback = new URL(getPagePath('home'), window.location.origin);
+  fallback.searchParams.set('site', siteId);
+  const fallbackUrl = fallback.toString();
 
   if (!website) return fallbackUrl;
 
@@ -116,33 +134,37 @@ function getNormalizedWebsiteUrl(website?: string) {
 function getResumeUrl(siteId: SiteId) {
   const saved = import.meta.env.VITE_MOCK_PLATFORM_ENABLED ? readSavedApplication(siteId) : null;
   const query = new URLSearchParams({ site: siteId, ...(saved ? { applicationId: saved.applicationId } : {}) });
-  return new URL(`/resume?${query}`, window.location.origin).toString();
+  return new URL(`${getPagePath('resume')}?${query}`, window.location.origin).toString();
 }
 
 function getResumeDisplayUrl(clientAcronym: string) {
-  return `${clientAcronym.toLowerCase()}.nylinsure.com/resume`;
+  return `${clientAcronym.toLowerCase()}.${emailExampleMetadata.resumeDisplayDomain}${getPagePath('resume')}`;
 }
 
 function getClientEmailPayload(
   siteId: SiteId = getActiveSite().id,
   values: ApplicationFormValues = {},
+  example?: EmailExampleKind,
+  library?: PrototypeLibrary,
 ) {
-  const client = getClientForSite(siteId)!;
+  const client = library?.clientIdentity ?? getClientForSite(siteId)!;
   const association = resolveActiveAssociationFromApplication(
     siteId,
     values,
   ).association;
-  const branding = resolveEffectiveBranding({
+  const branding = library?.client.branding ?? resolveEffectiveBranding({
     siteId,
     associationId: association?.id,
   });
-  const support = resolveSiteSupport(siteId);
-  const startUrl = getNormalizedWebsiteUrl(support.website);
-  const contact = resolveSiteSupportContact(siteId);
+  const support = library?.client.support ?? resolveSiteSupport(siteId);
+  const startUrl = getNormalizedWebsiteUrl(siteId, support.website);
+  const contact = resolveSiteSupportContact(siteId, library);
 
   return {
     clientId: client.id,
     siteId,
+    applicationValues: values,
+    expiresAt: example ? emailExampleTimeline(example, getResumePolicy().retentionDays).expiresAt : readSavedApplication(siteId)?.expiresAt,
     associationId: association?.id,
     associationName: association?.name ?? client.name,
     clientAcronym: client.acronym,
@@ -175,15 +197,13 @@ function getApplicationEmailPayload(values: ApplicationFormValues, siteId?: Site
 function getInsuranceAdministratorFromName(
   _payload: ReturnType<typeof getClientEmailPayload>,
 ) {
-  void _payload;
-  return "Insurance Administrator";
+  return buildContent(_payload.siteId).shared.emailSenderName;
 }
 
 function getAdvisorNotificationsFromName(
   _payload: ReturnType<typeof getClientEmailPayload>,
 ) {
-  void _payload;
-  return "Insurance Administrator";
+  return buildContent(_payload.siteId).shared.emailSenderName;
 }
 
 function hasRecipientEmail(values: ApplicationFormValues) {
@@ -249,13 +269,13 @@ function getBaseEmailHtml(options: { title: string; bodyHtml: string }) {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
 
-  <body style="margin:0; padding:0; background-color:#eef2f7; font-family:Arial, Helvetica, sans-serif; color:#111827;">
-    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="font-family:Arial, Helvetica, sans-serif; background-color:#eef2f7; margin:0; padding:28px 12px;">
+  <body style="margin:0; padding:0; background-color:#eef2f7; ${emailBodyCss} color:#111827;">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="${emailBodyCss} background-color:#eef2f7; margin:0; padding:28px 12px;">
       <tr>
         <td align="center">
-          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="font-family:Arial, Helvetica, sans-serif; max-width:600px; background-color:#ffffff; border-radius:28px; overflow:hidden;">
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="${emailBodyCss} max-width:600px; background-color:#ffffff; border-radius:28px; overflow:hidden;">
             <tr>
-              <td style="font-family:Arial, Helvetica, sans-serif; padding:32px 32px 0; color:#111827; font-size:16px; line-height:1.55;">
+              <td style="${emailBodyCss} padding:32px 32px 0; color:#111827;">
                 ${options.bodyHtml}
               </td>
             </tr>
@@ -267,11 +287,60 @@ function getBaseEmailHtml(options: { title: string; bodyHtml: string }) {
 </html>`;
 }
 
+function getApplicantSalutationHtml(payload: ReturnType<typeof getClientEmailPayload>) {
+  const applicant = getDisplayName(getStringValue(payload.applicationValues, 'first-name'), getStringValue(payload.applicationValues, 'last-name'));
+  const copy = buildContent(payload.siteId).shared;
+  return `<p style="${emailBodyCss} margin:0 0 24px;">${escapeHtml(requirementText('salutation', { applicant }, { salutation: copy.emailSalutation }))}</p>`;
+}
+
+function advisorEmailText(payload: ReturnType<typeof getClientEmailPayload>, key: string) {
+  const value = buildContent(payload.siteId).shared.emailAdvisor[key.replaceAll('.', '-')];
+  return requirementText('value', { clientAcronym: payload.clientAcronym }, { value });
+}
+
+function emailDeadline(payload: ReturnType<typeof getClientEmailPayload>) {
+  const date = new Date(payload.expiresAt ?? NaN);
+  return Number.isFinite(date.getTime()) ? date : null;
+}
+
+function emailMessageVariables(payload: ReturnType<typeof getClientEmailPayload>): Record<string, string> {
+  const policy = getResumePolicy();
+  const deadline = emailDeadline(payload);
+  return { associationName: payload.associationName, retentionDays: String(policy.retentionDays), linkMinutes: String(policy.linkValiditySeconds / 60), purgeDate: deadline ? formatMockDate(deadline) : '' };
+}
+
+function emailMessageTemplate(payload: ReturnType<typeof getClientEmailPayload>, key: string) {
+  const value = buildContent(payload.siteId).shared.emailMessages[key.replaceAll('.', '-')];
+  if (typeof value !== 'string') throw new Error(`Missing email message: ${key}`);
+  return value;
+}
+
+function emailMessageText(payload: ReturnType<typeof getClientEmailPayload>, key: string) {
+  return requirementText('value', emailMessageVariables(payload), { value: emailMessageTemplate(payload, key) });
+}
+
+/** Escaped text with optional emphasis on supplied variables; JSON never supplies HTML. */
+function emailMessageHtml(payload: ReturnType<typeof getClientEmailPayload>, key: string, bold: string[] = []) {
+  const variables = emailMessageVariables(payload);
+  return emailMessageTemplate(payload, key).split(/(\{\{\w+\}\})/g).map(part => {
+    const token = /^\{\{(\w+)\}\}$/.exec(part)?.[1];
+    if (!token) return escapeHtml(part);
+    if (!(token in variables)) throw new Error(`Missing email variable: ${token}`);
+    const value = escapeHtml(variables[token]);
+    return bold.includes(token) ? `<strong>${value}</strong>` : value;
+  }).join('');
+}
+
+function getRetentionNoticeHtml(payload: ReturnType<typeof getClientEmailPayload>) {
+  if (!emailDeadline(payload)) return '';
+  return getNoticeHtml(emailMessageText(payload, 'common.retention-title'), emailMessageText(payload, 'common.retention-description'));
+}
+
 function getButtonHtml(label: string, href: string) {
-  return `<table role="presentation" cellspacing="0" cellpadding="0" style="font-family:Arial, Helvetica, sans-serif; margin:28px 0;">
+  return `<table role="presentation" cellspacing="0" cellpadding="0" style="${emailBodyCss} margin:28px 0;">
     <tr>
-      <td align="center" style="font-family:Arial, Helvetica, sans-serif; border-radius:999px; background-color:#006fff;">
-        <a href="${escapeHtml(href)}" style="font-family:Arial, Helvetica, sans-serif; display:inline-block; padding:17px 28px; color:#ffffff; font-size:16px; line-height:1; font-weight:700; text-decoration:none; border-radius:999px;">
+      <td align="center" style="${emailBodyCss} border-radius:999px; background-color:#006fff;">
+        <a href="${escapeHtml(href)}" style="${emailBodyCss} display:inline-block; padding:17px 28px; color:#ffffff; line-height:1; font-weight:${actionPresentation.fontWeight}; text-decoration:none; border-radius:999px;">
           ${escapeHtml(label)}
         </a>
       </td>
@@ -279,570 +348,219 @@ function getButtonHtml(label: string, href: string) {
   </table>`;
 }
 
-function getVerifyIdentityNoticeHtml() {
-  return `<p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 16px; font-size:16px; line-height:1.55; color:#374151;">
-    To access your application information, you will be asked to verify your identity using the email and phone number provided in your application.
-  </p>`;
+function getVerifyIdentityNoticeHtml(payload: ReturnType<typeof getClientEmailPayload>) {
+  return `<p style="${emailBodyCss} margin:0 0 16px; color:#374151;">${emailMessageHtml(payload, 'common.identity-notice')}</p>`;
 }
 
-function getDecisionStatusColors(statusLabel: string) {
-  if (statusLabel === "Conditionally approved") {
-    return { background: "rgba(0, 148, 101, 0.08)", color: "#007a53" };
-  }
-
-  if (statusLabel === "Sent for review") {
-    return { background: "rgba(6, 104, 255, 0.08)", color: "#006fff" };
-  }
-
-  return { background: "rgba(255, 152, 0, 0.08)", color: "#b26a00" };
-}
-
-function getDecisionBoxHtml(
-  entry: SelectedCoverageEntry,
-  decisionIndex: number,
-  values: ApplicationFormValues,
-) {
-  const decisionResult = getQdDecisionResult(
-    values,
-    entry.coverageId,
-    entry.applicant,
-    decisionIndex,
-  );
-
-  const status = getDecisionStatus({
-    underwritingType: entry.coverage.underwritingType,
-    decisionResult,
-  });
-
-  const colors = getDecisionStatusColors(status.label);
-  const applicantLabel = getContent().shared.applicantLabels[entry.applicant];
-
-  const amountRequested = getCoverageAmountRequested(
-    values,
-    entry.coverageId,
-    entry.applicant,
-  );
-
-  return `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="font-family:Arial, Helvetica, sans-serif; margin:0 0 14px; border:1px solid #d1d5db; border-radius:14px;">
-    <tr>
-      <td style="font-family:Arial, Helvetica, sans-serif; padding:16px 18px;">
-        <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
-          <tr>
-            <td style="font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:700; color:#111827;">
-              ${escapeHtml(entry.coverage.name)}
-            </td>
-            <td align="right" style="font-family:Arial, Helvetica, sans-serif; white-space:nowrap;">
-              <span style="font-family:Arial, Helvetica, sans-serif; display:inline-block; padding:3px 10px; border-radius:999px; background-color:${colors.background}; color:${colors.color}; font-size:12px; font-weight:700;">
-                ${escapeHtml(status.label)}
-              </span>
-            </td>
-          </tr>
-        </table>
-
-        <p style="font-family:Arial, Helvetica, sans-serif; margin:8px 0 10px; font-size:13px; line-height:1.4; color:#6b7280;">
-          ${escapeHtml(applicantLabel)} coverage${
-            amountRequested
-              ? ` &middot; Requested: ${escapeHtml(formatCurrencyAmount(amountRequested))}`
-              : ""
-          }
-        </p>
-
-        <p style="font-family:Arial, Helvetica, sans-serif; margin:0; font-size:13px; line-height:1.5; color:#374151;">
-          ${escapeHtml(status.description)}
-        </p>
-      </td>
-    </tr>
-  </table>`;
-}
-
-function getDecisionBoxesHtml(values: ApplicationFormValues, siteId: SiteId) {
-  const coverages = resolveSiteCoverage(siteId).map((coverage) => coverage.effective);
-  const entries = getOrderedDecisionEntries(values, coverages);
-
-  if (entries.length === 0) return "";
-
-  return `<p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 4px; font-size:18px; line-height:1.3; font-weight:700; color:#111827;">
-      Coverage decisions
-    </p>
-    <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 16px; font-size:14px; line-height:1.5; color:#6b7280;">
-      Review the current status for each coverage you applied for.
-    </p>
-    ${entries.map((entry, index) => getDecisionBoxHtml(entry, index, values)).join("")}`;
-}
-
-function getSupportHtml(tpaName: string, tpaPhone: string, tpaEmail: string, tpaWebsite?: string, reference?: ReturnType<typeof applicationSupportReference>) {
-  if (!tpaPhone && !tpaEmail && !tpaWebsite && !reference) return '';
-
-  return `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="font-family:Arial, Helvetica, sans-serif; margin:28px 0 0; background-color:${theme.palette.background.paper}; border:1px solid ${theme.palette.divider}; border-radius:16px;">
-    <tr>
-      <td style="font-family:Arial, Helvetica, sans-serif; padding:22px 22px 20px; color:#12233d;">
-        <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 18px; color:#071b3a; font-size:18px; line-height:1.25; font-weight:700;">
-          ${escapeHtml(siteSupportCopy.title)}
-        </p>
-
-        ${reference ? `<p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 14px; color:#12233d; font-size:16px; line-height:1.45;">${escapeHtml(reference.instruction)} <strong>${escapeHtml(reference.id)}</strong></p>` : ''}
-
-        <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 14px; color:#12233d; font-size:16px; line-height:1.45; font-weight:400;">
-          ${escapeHtml(tpaName)} ${escapeHtml(siteSupportCopy.administratorSuffix)}
-        </p>
-
-        ${tpaPhone ? `<p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 12px; color:#12233d; font-size:16px; line-height:1.45; font-weight:700;">
-          ${escapeHtml(siteSupportCopy.callLabel)}
-          <a href="${escapeHtml(supportPhoneHref(tpaPhone))}" style="font-family:Arial, Helvetica, sans-serif; color:#006fff; font-weight:700; text-decoration:underline;">
-            ${escapeHtml(tpaPhone)}
-          </a>
-        </p>` : ''}
-
-        ${tpaEmail ? `<p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 ${tpaWebsite ? "12px" : "0"}; color:#12233d; font-size:16px; line-height:1.45; font-weight:700;">
-          ${escapeHtml(siteSupportCopy.emailLabel)}
-          <a href="mailto:${escapeHtml(tpaEmail)}" style="font-family:Arial, Helvetica, sans-serif; color:#006fff; font-weight:700; text-decoration:underline;">
-            ${escapeHtml(tpaEmail)}
-          </a>
-        </p>` : ''}
-
-        ${
-          tpaWebsite
-            ? `<p style="font-family:Arial, Helvetica, sans-serif; margin:0; color:#12233d; font-size:16px; line-height:1.45; font-weight:700;">
-          ${escapeHtml(siteSupportCopy.websiteLabel)}
-          <a href="${escapeHtml(supportWebsiteHref(tpaWebsite))}" style="font-family:Arial, Helvetica, sans-serif; color:#006fff; font-weight:700; text-decoration:underline;">
-            ${escapeHtml(tpaWebsite)}
-          </a>
-        </p>`
-            : ""
-        }
-      </td>
-    </tr>
-  </table>`;
+function getSupportHtml(payload: ReturnType<typeof getClientEmailPayload>, reference = payload.supportReference) {
+  return renderToStaticMarkup(createElement(ThemeProvider, { theme }, createElement(SiteSupport, {
+    siteId: payload.siteId,
+    presentation: 'email',
+    contact: { name: payload.tpaName, acronym: payload.tpaAcronym, phone: payload.tpaPhone, email: payload.tpaEmail, website: payload.tpaWebsite, hideInEmail: payload.hideSupportContact },
+    ...(reference?.kind === 'application' ? { applicationId: reference.id } : { confirmationId: reference?.id }),
+  })));
 }
 
 function getNoticeHtml(title: string, body: string) {
-  return `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="font-family:Arial, Helvetica, sans-serif; margin:20px 0 0; background-color:${theme.palette.background.paper}; border:1px solid ${theme.palette.divider}; border-radius:16px;">
-    <tr>
-      <td style="font-family:Arial, Helvetica, sans-serif; padding:22px 22px 20px; color:#7a2e0c;">
-        <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 18px; color:#7a2e0c; font-size:18px; line-height:1.25; font-weight:700;">
-          ${escapeHtml(title)}
-        </p>
+  const presentation = emailAlertPresentation(theme, 'warning');
+  return renderToStaticMarkup(createElement(ThemeProvider, { theme },
+    createElement(Alert, {
+      severity: 'warning', ...presentation,
+      style: { ...presentation.style, marginTop: 20 },
+      icon: createElement(WarningAmberRounded, { style: { width: 22, height: 22, fill: 'currentColor' } }),
+    },
+      createElement(AlertTitle, { style: emailAlertTitleStyle(theme) }, title), body,
+    ),
+  ));
+}
 
-        <p style="font-family:Arial, Helvetica, sans-serif; margin:0; color:#7a2e0c; font-size:16px; line-height:1.55;">
-          ${escapeHtml(body)}
-        </p>
+function getNylFooterHtml(siteId: SiteId) {
+  const footer = buildContent(siteId).footer;
+  const logo = insurer['insurer.logo'];
+  return `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="font-family:${emailTypography.fontFamily}; margin:28px 0 0; border-top:1px solid #d1d5db; padding-top:18px;">
+    <tr>
+      <td style="font-family:${emailTypography.fontFamily}; padding-top:18px; vertical-align:top; width:50px;">
+        <img src="${escapeHtml(logo.src)}" alt="${escapeHtml(logo.alt)}" width="50" height="50" style="font-family:${emailTypography.fontFamily}; display:block; width:50px; height:50px; border:0; outline:none; text-decoration:none; border-radius:2px;" />
+      </td>
+      <td style="font-family:${emailTypography.fontFamily}; padding-top:18px; padding-left:14px; vertical-align:top;">
+        <p style="font-family:${emailTypography.fontFamily}; margin:0 0 4px; font-size:${emailTypography.footer.fontSize}px; line-height:1.4; font-weight:700; color:#111827;">${escapeHtml(footer.underwrittenBy.label)}</p>
+        <p style="font-family:${emailTypography.fontFamily}; margin:0 0 4px; font-size:${emailTypography.footer.fontSize}px; line-height:1.4; color:#111827;">${escapeHtml(footer.underwrittenBy.name)}</p>
+        <p style="font-family:${emailTypography.fontFamily}; margin:0 0 4px; font-size:${emailTypography.footer.fontSize}px; line-height:1.4; color:#111827;">${escapeHtml(footer.underwrittenBy.address).replaceAll("\n", "<br />")}</p>
+        <p style="font-family:${emailTypography.fontFamily}; margin:0; font-size:${emailTypography.footer.legalFontSize}px; line-height:1.4; color:#6b7280;">${escapeHtml(footer.legal[1])}</p>
       </td>
     </tr>
   </table>`;
 }
 
-function getNylFooterHtml() {
-  return `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="font-family:Arial, Helvetica, sans-serif; margin:28px 0 0; border-top:1px solid #d1d5db; padding-top:18px;">
-    <tr>
-      <td style="font-family:Arial, Helvetica, sans-serif; padding-top:18px; vertical-align:top; width:50px;">
-        <img src="/logo.svg" alt="New York Life" width="50" height="50" style="font-family:Arial, Helvetica, sans-serif; display:block; width:50px; height:50px; border:0; outline:none; text-decoration:none; border-radius:2px;" />
-      </td>
-      <td style="font-family:Arial, Helvetica, sans-serif; padding-top:18px; padding-left:14px; vertical-align:top;">
-        <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 4px; font-size:11px; line-height:1.4; font-weight:700; color:#111827;">Underwritten By:</p>
-        <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 4px; font-size:11px; line-height:1.4; color:#111827;">New York Life Insurance Company</p>
-        <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 4px; font-size:11px; line-height:1.4; color:#111827;">51 Madison Avenue New York, New York 10010</p>
-        <p style="font-family:Arial, Helvetica, sans-serif; margin:0; font-size:10px; line-height:1.4; color:#6b7280;">NEW YORK LIFE and the NEW YORK LIFE Box Logo are trademarks of New York Life Insurance Company.</p>
-      </td>
-    </tr>
-  </table>`;
-}
-
-function getNoReplyHtml() {
-  return `${getNylFooterHtml()}
-  <div style="font-family:Arial, Helvetica, sans-serif; margin:18px 0 24px; padding-top:14px;">
-    <p style="font-family:Arial, Helvetica, sans-serif; margin:0; color:#6b7280; font-size:13px; line-height:1.45;">
-      Please note: This is an automated message. Replies to this email are not monitored.
+function getNoReplyHtml(siteId: SiteId) {
+  return `<footer data-email-footer>${getNylFooterHtml(siteId)}
+  <div style="font-family:${emailTypography.fontFamily}; margin:18px 0 24px; padding-top:14px;">
+    <p style="font-family:${emailTypography.fontFamily}; margin:0; color:#6b7280; font-size:${emailTypography.footer.noReplyFontSize}px; line-height:1.45;">
+      ${escapeHtml(buildContent(siteId).shared.emailMessages['footer-no-reply'])}
     </p>
-  </div>`;
+  </div></footer>`;
 }
 
-function getAdvisorStatusIconSvg(statusLabel: string) {
-  const isComplete =
-    statusLabel === "Submitted" || statusLabel === "Application submitted";
-  const color = isComplete ? "#109a17" : "#0768ff";
-
-  if (statusLabel === "Submitted" || statusLabel === "Application submitted") {
-    return `<svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22" style="display:block; fill:${color}; flex:0 0 auto;">
-      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.41 14.59L6.35 12.35l1.41-1.41 2.83 2.83 5.66-5.66 1.41 1.41-7.07 7.07z"></path>
-    </svg>`;
-  }
-
-  if (
-    statusLabel === "Sent for signature" ||
-    statusLabel === "Application sent for signature"
-  ) {
-    return `<svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22" style="display:block; fill:${color}; flex:0 0 auto;">
-    <path d="m3.4 20.4 17.45-7.48c.81-.35.81-1.49 0-1.84L3.4 3.6c-.66-.29-1.39.2-1.39.91L2 9.12c0 .5.37.93.87.99L17 12 2.87 13.88c-.5.07-.87.5-.87 1l.01 4.61c0 .71.73 1.2 1.39.91"></path>
-  </svg>`;
-  }
-
-  if (
-    statusLabel === "Edit requested" ||
-    statusLabel === "Application edit requested"
-  ) {
-    return `<svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22" style="display:block; fill:${color}; flex:0 0 auto;">
-  <path d="m17.58 6.25 1.77 1.77-4.84 4.84c-.09.09-.22.14-.35.14H13.1c-.28 0-.5-.22-.5-.5v-1.06c0-.13.05-.26.15-.35zm3.27-.44-1.06-1.06c-.2-.2-.51-.2-.71 0l-.85.85L20 7.37l.85-.85c.2-.2.2-.52 0-.71M20 18c0 .55-.45 1-1 1H5c-.55 0-1-.45-1-1s.45-1 1-1h1v-7c0-2.79 1.91-5.14 4.5-5.8v-.7c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v.7c.82.21 1.57.59 2.21 1.09l-4.52 4.52c-.38.38-.59.88-.59 1.41V13c0 1.1.9 2 2 2h1.77c.53 0 1.04-.21 1.41-.59L18 12.2V17h1c.55 0 1 .45 1 1m-10 2h4c0 1.1-.9 2-2 2s-2-.9-2-2"></path>
-</svg>`;
-  }
-
-  if (
-    statusLabel === "Waiting for signature" ||
-    statusLabel === "Application still pending signature"
-  ) {
-    return `<svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22" style="display:block; fill:${color}; flex:0 0 auto;">
-    <path d="m15.1 19.37 1 1.74c-.96.44-2.01.73-3.1.84v-2.02c.74-.09 1.44-.28 2.1-.56M4.07 13H2.05c.11 1.1.4 2.14.84 3.1l1.74-1c-.28-.66-.47-1.36-.56-2.1M15.1 4.63l1-1.74c-.96-.44-2-.73-3.1-.84v2.02c.74.09 1.44.28 2.1.56M19.93 11h2.02c-.11-1.1-.4-2.14-.84-3.1l-1.74 1c.28.66.47 1.36.56 2.1M8.9 19.37l-1 1.74c.96.44 2.01.73 3.1.84v-2.02c-.74-.09-1.44-.28-2.1-.56M11 4.07V2.05c-1.1.11-2.14.4-3.1.84l1 1.74c.66-.28 1.36-.47 2.1-.56m7.36 3.1 1.74-1.01c-.63-.87-1.4-1.64-2.27-2.27l-1.01 1.74c.59.45 1.1.96 1.54 1.54M4.63 8.9l-1.74-1c-.44.96-.73 2-.84 3.1h2.02c.09-.74.28-1.44.56-2.1m15.3 4.1c-.09.74-.28 1.44-.56 2.1l1.74 1c.44-.96.73-2.01.84-3.1zm-3.1 5.36 1.01 1.74c.87-.63 1.64-1.4 2.27-2.27l-1.74-1.01c-.45.59-.96 1.1-1.54 1.54M7.17 5.64l-1-1.75c-.88.64-1.64 1.4-2.27 2.28l1.74 1.01c.44-.59.95-1.1 1.53-1.54M5.64 16.83l-1.74 1c.63.87 1.4 1.64 2.27 2.27l1.01-1.74c-.59-.44-1.1-.95-1.54-1.53M12 7c-.55 0-1 .45-1 1v3.59c0 .53.21 1.04.59 1.41l3 3c.39.39 1.02.39 1.41 0s.39-1.02 0-1.41l-3-3V8c0-.55-.45-1-1-1"></path>
-  </svg>`;
-  }
-
-  return `<svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22" style="display:block; fill:${color}; flex:0 0 auto;">
-    <path d="M12 2C6.48 2 2 6.48 2 12h-2l3 3.01L6 12H4c0-4.42 3.58-8 8-8 2.21 0 4.21.9 5.66 2.34l1.41-1.41C17.26 3.12 14.76 2 12 2zm8.49 3.51-6.15 6.15-2.83-2.83L10.1 10.24l4.24 4.24 7.56-7.56-1.41-1.41zM20 12c0 4.42-3.58 8-8 8-2.21 0-4.21-.9-5.66-2.34l-1.41 1.41C6.74 20.88 9.24 22 12 22c5.52 0 10-4.48 10-10h2l-3-3.01L18 12h2z"></path>
-  </svg>`;
+type AdvisorEmailStatus = 'submitted' | 'sent-for-signature' | 'edit-requested' | 'pending-signature' | 'deleted';
+function getAdvisorStatusIconHtml(status: AdvisorEmailStatus) {
+  const isComplete = status === 'submitted';
+  const Icon = { submitted: CheckCircleRounded, 'sent-for-signature': SendRounded, 'edit-requested': EditNotificationsRounded, 'pending-signature': PendingActionsRounded, deleted: DeleteOutlineRounded }[status];
+  return renderToStaticMarkup(createElement(Icon, {
+    'aria-hidden': true,
+    style: { display: 'block', width: 22, height: 22, fill: 'currentColor', flex: '0 0 auto', color: isComplete ? theme.palette.success.main : theme.palette.primary.main },
+  }));
 }
 
-function buildAutosaveEmailHtml(
-  payload: ReturnType<typeof getApplicationEmailPayload>,
-) {
-  const fullName = escapeHtml(
-    getDisplayName(MOCK_APPLICANT_FIRST_NAME, MOCK_APPLICANT_LAST_NAME),
-  );
-  const saveDate = new Date();
-  const purgeDate = addDays(saveDate, 9);
-
+function buildSavedApplicationEmailHtml(payload: ReturnType<typeof getApplicationEmailPayload>, kind: 'autosave' | 'invitation' | 'pending') {
   return getBaseEmailHtml({
-    title: "Your insurance application is being saved",
+    title: emailMessageText(payload, `${kind}.subject`),
     bodyHtml: `
-      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 24px; font-size:16px; line-height:1.55;">
-        Dear ${fullName},
-      </p>
-
-      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 20px; font-size:16px; line-height:1.55;">
-        Your insurance application through <strong>${escapeHtml(
-          payload.associationName,
-        )}</strong> has been automatically saved so you don’t lose your progress.
-      </p>
-
-      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 28px; font-size:16px; line-height:1.55;">
-        You can return to complete your application within the next <strong>10 calendar days.</strong>
-      </p>
-
-      ${getVerifyIdentityNoticeHtml()}
-
-      ${getButtonHtml("Continue my application", payload.resumeUrl)}
-
-      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 10px; color:#374151; font-size:15px; line-height:1.5;">
-        Or copy and paste this website address into your browser:
-      </p>
-
-      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 28px; font-size:15px; line-height:1.5; color:#006fff; word-break:break-all;">
-        <a href="${escapeHtml(payload.resumeUrl)}" style="font-family:Arial, Helvetica, sans-serif; color:#006fff; text-decoration:underline;">
-          ${escapeHtml(payload.resumeDisplayUrl)}
-        </a>
-      </p>
-
-      <p style="font-family:Arial, Helvetica, sans-serif; margin:0; font-size:16px; line-height:1.55;">
-        We look forward to serving your insurance needs.
-      </p>
-
-      ${payload.hideSupportContact ? "" : getSupportHtml(payload.tpaName, payload.tpaPhone, payload.tpaEmail, payload.tpaWebsite, payload.supportReference)}
-      ${getNoticeHtml(
-        "Your application will be saved for 10 days.",
-        `For your security, your saved application will be deleted on ${formatMockDate(purgeDate)} . After that, you’ll need to begin a new application.`,
-      )}
-      ${getNoReplyHtml()}
+      ${getApplicantSalutationHtml(payload)}
+      <p style="${emailBodyCss} margin:0 0 20px;">${emailMessageHtml(payload, `${kind}.intro`, ['associationName'])}</p>
+      ${kind !== 'pending' && emailDeadline(payload) ? `<p style="${emailBodyCss} margin:0 0 28px;">${emailMessageHtml(payload, `${kind}.deadline`, ['purgeDate'])}</p>` : ''}
+      ${getVerifyIdentityNoticeHtml(payload)}
+      ${getButtonHtml(emailMessageText(payload, 'common.continue-label'), payload.resumeUrl)}
+      <p style="${emailBodyCss} margin:0 0 10px; color:#374151;">${emailMessageHtml(payload, 'common.copy-address')}</p>
+      <p style="${emailBodyCss} margin:0 0 28px; word-break:break-all;"><a href="${escapeHtml(payload.resumeUrl)}" style="font-weight:${actionPresentation.fontWeight}; color:${theme.palette.primary.main}; text-decoration:${actionPresentation.linkDecoration};">${escapeHtml(payload.resumeDisplayUrl)}</a></p>
+      <p style="${emailBodyCss} margin:0;">${emailMessageHtml(payload, 'common.closing')}</p>
+      ${payload.hideSupportContact ? '' : getSupportHtml(payload)}
+      ${getRetentionNoticeHtml(payload)}
+      ${getNoReplyHtml(payload.siteId)}
     `,
   });
 }
-function buildApplicationSentToApplicantEmailHtml(
-  payload: ReturnType<typeof getApplicationEmailPayload>,
-) {
-  const fullName = escapeHtml(
-    getDisplayName(MOCK_APPLICANT_FIRST_NAME, MOCK_APPLICANT_LAST_NAME),
-  );
-  const saveDate = new Date();
-  const purgeDate = addDays(saveDate, 9);
-  const advisorEmail = `advisor@${payload.clientAcronym.toLowerCase()}.com`;
 
+function buildAutosaveEmailHtml(payload: ReturnType<typeof getApplicationEmailPayload>) {
+  return buildSavedApplicationEmailHtml(payload, 'autosave');
+}
+function buildApplicationSentToApplicantEmailHtml(payload: ReturnType<typeof getApplicationEmailPayload>) {
+  return buildSavedApplicationEmailHtml(payload, 'invitation');
+}
+
+function receiptEmailContent(siteId: SiteId) { return buildContent(siteId).receipt.email; }
+
+function buildReceiptEmailHtml(payload: ReturnType<typeof getApplicationEmailPayload>, confirmationNumber: string, library: PrototypeLibrary | null = getPrototypeLibrary(payload.siteId)) {
+  const content = library?.content ?? buildContent(payload.siteId);
+  const copy = content.receipt.email;
+  const text = (key: keyof typeof copy) => escapeHtml(requirementText(key, { associationName: payload.associationName, tpaAcronym: payload.tpaAcronym }, { ...copy }));
+  const configuration = library?.client ?? getEffectiveSiteConfig(payload.siteId);
+  const products = orderCoveragePresentation(library?.products ?? getClientCoverages(configuration), configuration.coverages).products;
+  const entries = getOrderedDecisionEntries(payload.applicationValues, products, library);
+  const summary = renderToStaticMarkup(createElement(ThemeProvider, { theme },
+    createElement('section', { 'aria-label': content.receipt.coverageDecisions.title }, entries.length ? entries.map(entry => {
+      return createElement(ReceiptCoverageDecision, {
+        key: `${entry.coverageId}:${entry.applicant}`, presentation: 'email', productName: entry.coverage.name,
+        ...receiptDecisionPresentation(entry, payload.applicationValues, content.receipt),
+        applicant: entry.applicant, applicantLabel: content.shared.applicantLabels[entry.applicant],
+        showApplicant: entries.some(item => item.applicant !== 'member'),
+      });
+    }) : createElement('p', null, content.receipt.coverageDecisions.noSelectionsMessage)),
+  ));
   return getBaseEmailHtml({
-    title: "Your insurance application is ready to complete and sign",
+    title: copy.title,
     bodyHtml: `
-      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 24px; font-size:16px; line-height:1.55;">
-        Dear ${fullName},
-      </p>
-
-      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 20px; font-size:16px; line-height:1.55;">
-        Your insurance application through <strong>${escapeHtml(
-          payload.associationName,
-        )}</strong> has been prepared and is ready to complete and sign.
-      </p>
-
-      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 28px; font-size:16px; line-height:1.55;">
-        Please complete the rest of your application within the next <strong>10 calendar days.</strong>
-      </p>
-
-      ${getVerifyIdentityNoticeHtml()}
-
-      ${getButtonHtml("Continue my application", payload.resumeUrl)}
-
-      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 10px; color:#374151; font-size:15px; line-height:1.5;">
-        Or copy and paste this website address into your browser:
-      </p>
-
-      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 28px; font-size:15px; line-height:1.5; color:#006fff; word-break:break-all;">
-        <a href="${escapeHtml(payload.resumeUrl)}" style="font-family:Arial, Helvetica, sans-serif; color:#006fff; text-decoration:underline;">
-          ${escapeHtml(payload.resumeDisplayUrl)}
-        </a>
-      </p>
-
-      <p style="font-family:Arial, Helvetica, sans-serif; margin:0; font-size:16px; line-height:1.55;">
-        We look forward to serving your insurance needs.
-      </p>
-
-      ${payload.hideSupportContact ? "" : getSupportHtml(payload.tpaName, payload.tpaPhone, advisorEmail, payload.tpaWebsite, payload.supportReference)}
-      ${getNoticeHtml(
-        "Your application will be saved for 10 days.",
-        `For your security, your saved application will be deleted on ${formatMockDate(purgeDate)} . After that, you’ll need to begin a new application.`,
-      )}
-      ${getNoReplyHtml()}
+      ${getApplicantSalutationHtml(payload)}
+      <p style="margin:0 0 20px;">${text('intro')}</p>
+      <p style="margin:0 0 16px;">${text('summary')}</p>
+      ${summary}
+      <p style="margin:24px 0 16px;">${text('closing')}</p>
+      <p style="${emailBodyCss} margin:0 0 24px;">${text('signature')}</p>
+      ${payload.hideSupportContact ? "" : getSupportHtml(payload, applicationSupportReference({ confirmationId: confirmationNumber }) ?? payload.supportReference)}
+      ${getNoReplyHtml(payload.siteId)}
     `,
   });
 }
-function buildReceiptEmailHtml(
-  payload: ReturnType<typeof getApplicationEmailPayload>,
-  confirmationNumber: string,
-  values: ApplicationFormValues,
-) {
-  const fullName = escapeHtml(
-    getDisplayName(MOCK_APPLICANT_FIRST_NAME, MOCK_APPLICANT_LAST_NAME),
-  );
 
+function buildResumeMagicLinkEmailHtml(siteId?: SiteId, values: ApplicationFormValues = {}, recipient: 'Applicant' | 'Advisor' = 'Applicant') {
+  const payload = getClientEmailPayload(siteId, values);
   return getBaseEmailHtml({
-    title: "Thank you! We’ve received your insurance request",
+    title: emailMessageText(payload, 'resume.subject'),
     bodyHtml: `
-      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 24px; font-size:16px; line-height:1.55;">
-        Dear ${fullName},
-      </p>
-
-      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 20px; font-size:16px; line-height:1.55;">
-        Your insurance application through <strong>${escapeHtml(
-          payload.associationName,
-        )}</strong> has been received and we’ve begun processing your application.
-      </p>
-
-      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 24px; font-size:16px; line-height:1.55;">
-        If you have any questions, please use the contact information below and refer to your confirmation number: <strong>${escapeHtml(confirmationNumber)}</strong>
-      </p>
-
-      ${getDecisionBoxesHtml(values, payload.siteId)}
-
-      ${payload.hideSupportContact ? "" : getSupportHtml(payload.tpaName, payload.tpaPhone, payload.tpaEmail, payload.tpaWebsite, applicationSupportReference({ confirmationId: confirmationNumber }) ?? payload.supportReference)}
-      ${getNoReplyHtml()}
-    `,
-  });
-}
-function buildResumeMagicLinkEmailHtml(siteId?: SiteId) {
-  const payload = getClientEmailPayload(siteId);
-
-  return getBaseEmailHtml({
-    title: "Your requested link to continue your application",
-    bodyHtml: `
-      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 20px; font-size:16px; line-height:1.55;">
-        A request has been made to return to an insurance application in progress through <strong>${escapeHtml(
-          payload.associationName,
-        )}</strong>. Click the link below to continue to your application.
-      </p>
-
-      ${getButtonHtml("Verify my email", payload.resumeMagicLinkUrl)}
-
-      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 20px; font-size:16px; line-height:1.55;">
-        This link will expire in <strong>10 minutes.</strong>
-      </p>
-
-      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 8px; font-size:16px; line-height:1.55; font-weight:700;">
-        Didn’t request a link?
-      </p>
-
-      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 20px; font-size:16px; line-height:1.55;">
-        If you did not request a link, you may ignore this message. Access to application information will only be granted with verification.
-      </p>
-
-      ${getNoReplyHtml()}
+      ${recipient === 'Applicant' ? getApplicantSalutationHtml(payload) : ''}
+      <p style="${emailBodyCss} margin:0 0 20px;">${emailMessageHtml(payload, 'resume.intro', ['associationName'])}</p>
+      ${getButtonHtml(emailMessageText(payload, 'resume.verify-label'), payload.resumeMagicLinkUrl)}
+      <p style="${emailBodyCss} margin:0 0 20px;">${emailMessageHtml(payload, 'resume.expiry', ['linkMinutes'])}</p>
+      <p style="${emailBodyCss} margin:0 0 8px; font-weight:700;">${emailMessageHtml(payload, 'resume.not-requested-title')}</p>
+      <p style="${emailBodyCss} margin:0 0 20px;">${emailMessageHtml(payload, 'resume.not-requested-description')}</p>
+      ${getNoReplyHtml(payload.siteId)}
     `,
   });
 }
 function buildPendingReminderEmailHtml(siteId?: SiteId) {
-  const payload = getClientEmailPayload(siteId);
-  const startDate = new Date();
-  const purgeDate = addDays(startDate, 9);
+  const payload = getApplicationEmailPayload(receiptEmailExample.application, siteId);
+  payload.expiresAt = emailExampleTimeline('pending', getResumePolicy().retentionDays).expiresAt;
+  return buildSavedApplicationEmailHtml(payload, 'pending');
+}
 
+function buildPurgeReminderEmailHtml(siteId?: SiteId, advisorPrepared = false) {
+  const payload = getClientEmailPayload(siteId, { ...receiptEmailExample.application, ...(advisorPrepared ? { 'advisor-email': advisorExample.email } : {}) });
+  const copy = buildContent(payload.siteId).shared.emailPurge;
+  const rawText = (key: string) => requirementText(key, { associationName: payload.associationName, retentionDays: String(getResumePolicy().retentionDays) }, copy);
+  const text = (key: string) => escapeHtml(rawText(key));
+  const advisorEmail = getStringValue(payload.applicationValues, 'advisor-email');
+  const nextSteps = advisorPrepared ? `
+    <p style="${emailBodyCss} margin:0 0 20px;">${text('advisor-next-step')}</p>
+    ${advisorEmail ? `<p style="${emailBodyCss} margin:0 0 20px;"><a href="mailto:${escapeHtml(advisorEmail)}" style="color:${theme.palette.primary.main}; font-weight:${actionPresentation.fontWeight}; text-decoration:${actionPresentation.linkDecoration};">${text('advisor-contact-label')}</a></p>` : ''}
+  ` : `
+    <p style="${emailBodyCss} margin:0 0 20px;">${text('start-new')}</p>
+    ${getButtonHtml(rawText('apply-label'), payload.startUrl)}
+    <p style="${emailBodyCss} margin:0 0 10px;">${text('copy-address')}</p>
+    <p style="${emailBodyCss} margin:0 0 28px;"><a href="${escapeHtml(payload.startUrl)}" style="color:${theme.palette.primary.main}; font-weight:${actionPresentation.fontWeight}; text-decoration:${actionPresentation.linkDecoration};">${escapeHtml(payload.startUrl)}</a></p>
+    <p style="${emailBodyCss} margin:0 0 20px;">${text('questions')}</p>
+    <p style="${emailBodyCss} margin:0;">${text('closing')}</p>
+    ${payload.hideSupportContact ? '' : getSupportHtml(payload)}
+  `;
   return getBaseEmailHtml({
-    title: "Your insurance application is ready to be completed",
-    bodyHtml: `
-      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 24px; font-size:16px; line-height:1.55;">
-        Dear ${escapeHtml(
-          getDisplayName(MOCK_APPLICANT_FIRST_NAME, MOCK_APPLICANT_LAST_NAME),
-        )},
-      </p>
-
-      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 20px; font-size:16px; line-height:1.55;">
-        We noticed you haven’t finished your <strong>${escapeHtml(
-          payload.associationName,
-        )}</strong> insurance application. Good news—your progress has been saved.
-      </p>
-
-      ${getVerifyIdentityNoticeHtml()}
-
-      ${getButtonHtml("Continue my application", payload.resumeUrl)}
-
-      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 10px; color:#374151; font-size:15px; line-height:1.5;">
-        Or copy and paste this website address into your browser:
-      </p>
-
-      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 28px; font-size:15px; line-height:1.5; color:#006fff; word-break:break-all;">
-        <a href="${escapeHtml(payload.resumeUrl)}" style="font-family:Arial, Helvetica, sans-serif; color:#006fff; text-decoration:underline;">
-          ${escapeHtml(payload.resumeDisplayUrl)}
-        </a>
-      </p>
-
-      <p style="font-family:Arial, Helvetica, sans-serif; margin:0; font-size:16px; line-height:1.55;">
-        We look forward to serving your insurance needs.
-      </p>
-
-      ${payload.hideSupportContact ? "" : getSupportHtml(payload.tpaName, payload.tpaPhone, payload.tpaEmail, payload.tpaWebsite, payload.supportReference)}
-      ${getNoticeHtml(
-        "Your application will be saved for 10 days.",
-        `For your security, your saved application will be deleted on ${formatMockDate(
-          purgeDate,
-        )} . After that, you’ll need to begin a new application.`,
-      )}
-      ${getNoReplyHtml()}
-    `,
+    title: copy.subject,
+    bodyHtml: `${getApplicantSalutationHtml(payload)}
+      <p style="${emailBodyCss} margin:0 0 20px;">${text('intro')}</p>
+      ${nextSteps}
+      ${getNoReplyHtml(payload.siteId)}`,
   });
 }
-function buildPurgeReminderEmailHtml(siteId?: SiteId) {
-  const payload = getClientEmailPayload(siteId);
 
-  return getBaseEmailHtml({
-    title: "Your insurance application progress",
-    bodyHtml: `
-      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 24px; font-size:16px; line-height:1.55;">
-        Dear ${escapeHtml(
-          getDisplayName(MOCK_APPLICANT_FIRST_NAME, MOCK_APPLICANT_LAST_NAME),
-        )},
-      </p>
-
-      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 20px; font-size:16px; line-height:1.55;">
-        Your insurance application through <strong>${escapeHtml(
-          payload.associationName,
-        )}</strong> has expired and has been securely deleted in accordance with our data retention policy. Application data is saved for you for 10 days to complete until it is deleted.
-      </p>
-
-      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 20px; font-size:16px; line-height:1.55;">
-        If you’d still like to apply, you can start a new application.
-      </p>
-
-      ${getButtonHtml("Start my application", payload.startUrl)}
-
-      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 10px; color:#374151; font-size:15px; line-height:1.5;">
-        Or copy and paste this website address into your browser:
-      </p>
-
-      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 28px; font-size:15px; line-height:1.5; color:#006fff; word-break:break-all;">
-        <a href="${escapeHtml(payload.startUrl)}" style="font-family:Arial, Helvetica, sans-serif; color:#006fff; text-decoration:underline;">
-          ${escapeHtml(payload.startUrl)}
-        </a>
-      </p>
-
-      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 20px; font-size:16px; line-height:1.55;">
-        If you have questions about your insurance options, we’re happy to help and provide additional information.
-      </p>
-
-      <p style="font-family:Arial, Helvetica, sans-serif; margin:0; font-size:16px; line-height:1.55;">
-        We look forward to serving your insurance needs.
-      </p>
-
-      ${payload.hideSupportContact ? "" : getSupportHtml(payload.tpaName, payload.tpaPhone, payload.tpaEmail, payload.tpaWebsite, payload.supportReference)}
-
-      <div style="font-family:Arial, Helvetica, sans-serif; margin:20px 0; border-top:1px dashed #d1d5db;"></div>
-
-      ${getNoReplyHtml()}
-    `,
-  });
-}
 function buildAdvisorEmailHtml(options: {
   title: string;
-  message: string;
-  statusLabel: string;
+  status: AdvisorEmailStatus;
   includeEditRequested?: boolean;
   includeSubmissionDate?: boolean;
   payload: ReturnType<typeof getClientEmailPayload>;
 }) {
   const today = new Date();
-  const sentDate = addDays(today, -3);
-  const purgeDate = addDays(sentDate, 9);
-  const editRequestDate = addDays(today, -1);
-
+  const isDeleted = options.status === 'deleted';
+  const timeline = emailExampleTimeline(isDeleted ? 'deleted' : 'advisor', getResumePolicy().retentionDays, today.getTime());
+  const sentDate = new Date(timeline.sentAt);
+  const purgeDate = new Date(timeline.deletedAt ?? timeline.expiresAt);
+  const editRequestDate = new Date(timeline.editRequestedAt);
+  const text = (key: string) => advisorEmailText(options.payload, key);
   const details = [
-    [
-      "Applicant name",
-      `${MOCK_APPLICANT_FIRST_NAME} ${MOCK_APPLICANT_LAST_NAME}`,
-    ],
-    ["Applicant email", MOCK_APPLICANT_EMAIL],
-    ["Sent for signature", formatMockDateTime(sentDate)],
-    ...(options.includeSubmissionDate
-      ? [["Submitted", formatMockDateTime(today)]]
-      : [["Scheduled for deletion", formatMockDateTime(purgeDate)]]),
-    ...(options.includeEditRequested
-      ? [["Edit requested", formatMockDateTime(editRequestDate)]]
-      : []),
+    [text('association'), options.payload.associationName],
+    [text('applicant-name'), getDisplayName(getStringValue(options.payload.applicationValues, 'first-name'), getStringValue(options.payload.applicationValues, 'last-name'))],
+    [text('applicant-email'), MOCK_APPLICANT_EMAIL],
+    [text('sent-for-signature'), formatMockDateTime(sentDate)],
+    ...(isDeleted ? [[text('deleted'), formatMockDateTime(purgeDate)]] : options.includeSubmissionDate ? [[text('submitted'), formatMockDateTime(today)]] : [[text('scheduled-for-deletion'), formatMockDateTime(purgeDate)]]),
+    ...(options.includeEditRequested ? [[text('edit-requested'), formatMockDateTime(editRequestDate)]] : []),
   ];
-
-  const detailRows = details
-    .map(
-      ([label, value]) => `<tr>
-        <td style="font-family:Arial, Helvetica, sans-serif; padding:12px 14px; border-bottom:1px solid #e5e7eb; color:#4b5563; font-size:13px; font-weight:700; width:38%;">
-          ${escapeHtml(label)}
-        </td>
-        <td style="font-family:Arial, Helvetica, sans-serif; padding:12px 14px; border-bottom:1px solid #e5e7eb; color:#111827; font-size:13px;">
-          ${escapeHtml(value)}
-        </td>
-      </tr>`,
-    )
-    .join("");
-
+  const lines = details.map(([label, value]) => `<p style="${emailBodyCss} margin:0 0 12px;"><strong>${escapeHtml(label)}</strong>: ${escapeHtml(value)}</p>`).join('');
+  const loginUrl = new URL(getPagePath('advisor-login'), window.location.origin);
+  loginUrl.searchParams.set('site', options.payload.siteId);
   return getBaseEmailHtml({
     title: options.title,
     bodyHtml: `
-  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="font-family:Arial, Helvetica, sans-serif; border:1px solid #d1d5db; border-radius:14px; overflow:hidden;">
-        <tr>
-          <td colspan="2" style="font-family:Arial, Helvetica, sans-serif; padding:12px 14px; background-color:#f5f5f5; color:#111827; font-size:13px; font-weight:700; border-bottom:1px solid #d1d5db;">
-            Association: ${escapeHtml(options.payload.associationName)}
-          </td>
-        </tr>
-        <tr>
-          <td colspan="2" style="font-family:Arial, Helvetica, sans-serif; padding:12px 14px; background-color:#f5f5f5; color:#111827; font-size:14px; font-weight:700; border-bottom:1px solid #d1d5db;">
-            <span style="font-family:Arial, Helvetica, sans-serif; display:inline-flex; align-items:center; gap:8px;">
-              ${getAdvisorStatusIconSvg(options.statusLabel)}
-              <span>${escapeHtml(options.statusLabel)}</span>
-            </span>
-          </td>
-        </tr>
-        ${detailRows}
-      </table>
-
-      <p style="font-family:Arial, Helvetica, sans-serif; margin:20px 0 0; font-size:16px; line-height:1.55; color:#111827;">
-        Access the ${escapeHtml(options.payload.clientAcronym)} Advisor Portal to start a new application or take action on an application in progress:
-        <a href="${escapeHtml(options.payload.resumeUrl)}" style="font-family:Arial, Helvetica, sans-serif; color:#006fff; text-decoration:underline;">
-          ${escapeHtml(options.payload.resumeDisplayUrl)}
-        </a>
+      <p style="${emailBodyCss} display:flex; align-items:center; gap:8px; margin:0 0 24px; font-weight:700;">
+        ${getAdvisorStatusIconHtml(options.status)} ${escapeHtml(text(`status.${options.status}`))}
       </p>
-
-      ${getNoReplyHtml()}
+      ${isDeleted ? `<p style="${emailBodyCss} margin:0 0 20px;">${escapeHtml(text('purged-message'))}</p>` : ''}
+      <section aria-label="${escapeHtml(options.title)}">${lines}</section>
+      <p style="${emailBodyCss} margin:24px 0 12px;">${escapeHtml(text('portal-intro'))}</p>
+      <p style="${emailBodyCss} margin:0 0 24px;"><a href="${escapeHtml(loginUrl.toString())}" style="color:${theme.palette.primary.main}; font-weight:${actionPresentation.fontWeight}; text-decoration:${actionPresentation.linkDecoration};">${escapeHtml(text('portal-link'))}</a></p>
+      ${getNoReplyHtml(options.payload.siteId)}
     `,
   });
 }
 
-function getAlwaysVisibleMockEmails(siteId: SiteId = getActiveSite().id): MockEmailPreview[] {
-  const payload = getClientEmailPayload(siteId);
+function getAlwaysVisibleMockEmails(siteId: SiteId = getActiveSite().id, library?: PrototypeLibrary): MockEmailPreview[] {
+  const payload = getClientEmailPayload(siteId, receiptEmailExample.application, 'autosave', library);
   const now = new Date().toISOString();
 
   const sampleApplicantPayload = {
@@ -852,9 +570,7 @@ function getAlwaysVisibleMockEmails(siteId: SiteId = getActiveSite().id): MockEm
     lastName: MOCK_APPLICANT_LAST_NAME,
   };
 
-  const sampleReceiptValues: ApplicationFormValues = {
-    coverageSelections: resolveSiteCoverage(siteId).map((coverage) => coverage.effective.id),
-  };
+  const advisorApplicationPayload = { ...sampleApplicantPayload, ...getClientEmailPayload(siteId, receiptEmailExample.application, 'advisor', library) };
 
   return [
     {
@@ -865,7 +581,7 @@ function getAlwaysVisibleMockEmails(siteId: SiteId = getActiveSite().id): MockEm
       fromName: getInsuranceAdministratorFromName(payload),
       fromEmail: MOCK_FROM_EMAIL,
       toEmail: MOCK_APPLICANT_EMAIL,
-      subject: "Your insurance application is being saved",
+      subject: emailMessageText(payload, 'autosave.subject'),
       createdAt: now,
       html: buildAutosaveEmailHtml(sampleApplicantPayload),
     },
@@ -877,7 +593,7 @@ function getAlwaysVisibleMockEmails(siteId: SiteId = getActiveSite().id): MockEm
       fromName: getInsuranceAdministratorFromName(payload),
       fromEmail: MOCK_FROM_EMAIL,
       toEmail: MOCK_APPLICANT_EMAIL,
-      subject: "Your insurance application is ready to be completed",
+      subject: emailMessageText(payload, 'pending.subject'),
       createdAt: now,
       html: buildPendingReminderEmailHtml(siteId),
     },
@@ -889,7 +605,7 @@ function getAlwaysVisibleMockEmails(siteId: SiteId = getActiveSite().id): MockEm
       fromName: getInsuranceAdministratorFromName(payload),
       fromEmail: MOCK_FROM_EMAIL,
       toEmail: MOCK_APPLICANT_EMAIL,
-      subject: "Your insurance application progress",
+      subject: buildContent(payload.siteId).shared.emailPurge.subject,
       createdAt: now,
       html: buildPurgeReminderEmailHtml(siteId),
     },
@@ -901,12 +617,12 @@ function getAlwaysVisibleMockEmails(siteId: SiteId = getActiveSite().id): MockEm
       fromName: getInsuranceAdministratorFromName(payload),
       fromEmail: MOCK_FROM_EMAIL,
       toEmail: MOCK_APPLICANT_EMAIL,
-      subject: "Thank you! We\u2019ve received your insurance request",
+      subject: receiptEmailContent(payload.siteId).subject,
       createdAt: now,
       html: buildReceiptEmailHtml(
         sampleApplicantPayload,
-        "CONF-2026-001234",
-        sampleReceiptValues,
+        emailExampleMetadata.receiptConfirmationNumber,
+        library,
       ),
     },
     {
@@ -917,9 +633,9 @@ function getAlwaysVisibleMockEmails(siteId: SiteId = getActiveSite().id): MockEm
       fromName: getInsuranceAdministratorFromName(payload),
       fromEmail: MOCK_FROM_EMAIL,
       toEmail: MOCK_APPLICANT_EMAIL,
-      subject: "Your requested link to continue your application",
+      subject: emailMessageText(payload, 'resume.subject'),
       createdAt: now,
-      html: buildResumeMagicLinkEmailHtml(siteId),
+      html: buildResumeMagicLinkEmailHtml(siteId, receiptEmailExample.application),
     },
     {
       id: "advisor-sent-for-signature",
@@ -929,13 +645,12 @@ function getAlwaysVisibleMockEmails(siteId: SiteId = getActiveSite().id): MockEm
       fromName: getAdvisorNotificationsFromName(payload),
       fromEmail: MOCK_FROM_EMAIL,
       toEmail: MOCK_ADVISOR_EMAIL,
-      subject: "Application sent for signature",
+      subject: advisorEmailText(payload, 'status.sent-for-signature'),
       createdAt: now,
       html: buildAdvisorEmailHtml({
-        title: "Application sent for signature",
-        message: "This application has been sent for signature:",
-        statusLabel: "Application sent for signature",
-        payload,
+        title: advisorEmailText(payload, 'status.sent-for-signature'),
+        status: 'sent-for-signature',
+        payload: advisorApplicationPayload,
       }),
     },
     {
@@ -946,9 +661,9 @@ function getAlwaysVisibleMockEmails(siteId: SiteId = getActiveSite().id): MockEm
       fromName: getInsuranceAdministratorFromName(payload),
       fromEmail: MOCK_FROM_EMAIL,
       toEmail: MOCK_APPLICANT_EMAIL,
-      subject: "Your insurance application is ready to complete and sign",
+      subject: emailMessageText(payload, 'invitation.subject'),
       createdAt: now,
-      html: buildApplicationSentToApplicantEmailHtml(sampleApplicantPayload),
+      html: buildApplicationSentToApplicantEmailHtml(advisorApplicationPayload),
     },
     {
       id: "advisor-pending-reminder",
@@ -958,13 +673,12 @@ function getAlwaysVisibleMockEmails(siteId: SiteId = getActiveSite().id): MockEm
       fromName: getAdvisorNotificationsFromName(payload),
       fromEmail: MOCK_FROM_EMAIL,
       toEmail: MOCK_ADVISOR_EMAIL,
-      subject: "Application still pending signature",
+      subject: advisorEmailText(payload, 'status.pending-signature'),
       createdAt: now,
       html: buildAdvisorEmailHtml({
-        title: "Application still pending signature",
-        message: "This application has an update:",
-        statusLabel: "Application still pending signature",
-        payload,
+        title: advisorEmailText(payload, 'status.pending-signature'),
+        status: 'pending-signature',
+        payload: advisorApplicationPayload,
       }),
     },
     {
@@ -975,14 +689,13 @@ function getAlwaysVisibleMockEmails(siteId: SiteId = getActiveSite().id): MockEm
       fromName: getAdvisorNotificationsFromName(payload),
       fromEmail: MOCK_FROM_EMAIL,
       toEmail: MOCK_ADVISOR_EMAIL,
-      subject: "Application edit request",
+      subject: advisorEmailText(payload, 'edit-request-subject'),
       createdAt: now,
       html: buildAdvisorEmailHtml({
-        title: "Application edit request",
-        message: "This application has an update:",
-        statusLabel: "Application edit requested",
+        title: advisorEmailText(payload, 'edit-request-subject'),
+        status: 'edit-requested',
         includeEditRequested: true,
-        payload,
+        payload: advisorApplicationPayload,
       }),
     },
     {
@@ -993,17 +706,35 @@ function getAlwaysVisibleMockEmails(siteId: SiteId = getActiveSite().id): MockEm
       fromName: getAdvisorNotificationsFromName(payload),
       fromEmail: MOCK_FROM_EMAIL,
       toEmail: MOCK_ADVISOR_EMAIL,
-      subject: "Application submitted",
+      subject: advisorEmailText(payload, 'status.submitted'),
       createdAt: now,
       html: buildAdvisorEmailHtml({
-        title: "Application submitted",
-        message: "This application has an update:",
-        statusLabel: "Application submitted",
+        title: advisorEmailText(payload, 'status.submitted'),
+        status: 'submitted',
         includeSubmissionDate: true,
-        payload,
+        payload: advisorApplicationPayload,
       }),
     },
+    {
+      id: 'advisor-purge-reminder', type: 'advisor-purge-reminder', clientId: payload.clientId, siteId: payload.siteId,
+      fromName: getAdvisorNotificationsFromName(payload), fromEmail: MOCK_FROM_EMAIL, toEmail: MOCK_ADVISOR_EMAIL,
+      subject: advisorEmailText(payload, 'status.deleted'), createdAt: now,
+      html: buildAdvisorEmailHtml({ title: advisorEmailText(payload, 'status.deleted'), status: 'deleted', payload: advisorApplicationPayload }),
+    },
+    {
+      id: 'advisor-applicant-purge-reminder', type: 'advisor-applicant-purge-reminder', clientId: payload.clientId, siteId: payload.siteId,
+      fromName: getInsuranceAdministratorFromName(payload), fromEmail: MOCK_FROM_EMAIL, toEmail: MOCK_APPLICANT_EMAIL,
+      subject: buildContent(payload.siteId).shared.emailPurge.subject, createdAt: now,
+      html: buildPurgeReminderEmailHtml(siteId, true),
+    },
   ];
+}
+
+/** Canonical synthetic messages for read-only demonstrations; never reads sent mail. */
+export function getMockEmailSamples(siteId: SiteId, options?: { resumeRecipient?: 'Applicant' | 'Advisor'; library?: PrototypeLibrary }) {
+  return getAlwaysVisibleMockEmails(siteId, options?.library).map(message => message.type === 'resume-magic-link' && options?.resumeRecipient === 'Advisor'
+    ? { ...message, toEmail: MOCK_ADVISOR_EMAIL, html: buildResumeMagicLinkEmailHtml(siteId, receiptEmailExample.application, 'Advisor') }
+    : message);
 }
 
 export function readMockEmailPreviews(siteId: SiteId = getActiveSite().id) {
@@ -1060,7 +791,7 @@ export async function sendAutosaveMockEmail(values: ApplicationFormValues) {
     fromName: getInsuranceAdministratorFromName(payload),
     fromEmail: MOCK_FROM_EMAIL,
     toEmail: payload.toEmail,
-    subject: "Your insurance application is being saved",
+    subject: emailMessageText(payload, 'autosave.subject'),
     createdAt: new Date().toISOString(),
     html: buildAutosaveEmailHtml(payload),
   });
@@ -1082,9 +813,9 @@ export async function sendReceiptMockEmail(
     fromName: getInsuranceAdministratorFromName(payload),
     fromEmail: MOCK_FROM_EMAIL,
     toEmail: payload.toEmail,
-    subject: "Thank you! We\u2019ve received your insurance request",
+    subject: receiptEmailContent(payload.siteId).subject,
     createdAt: new Date().toISOString(),
-    html: buildReceiptEmailHtml(payload, confirmationNumber, values),
+    html: buildReceiptEmailHtml(payload, confirmationNumber),
   });
 }
 
@@ -1108,7 +839,7 @@ export async function sendResumeMagicLinkMockEmail(emailAddress: string) {
     fromName: getInsuranceAdministratorFromName(payload),
     fromEmail: MOCK_FROM_EMAIL,
     toEmail: trimmedEmailAddress,
-    subject: "Your requested link to continue your application",
+    subject: emailMessageText(payload, 'resume.subject'),
     createdAt: new Date().toISOString(),
     html: buildResumeMagicLinkEmailHtml(),
   });

@@ -1,16 +1,17 @@
+import { coverageMinimumAmount } from "./coverageMinimumAmount";
 import type { EffectiveSite } from "./effectiveSite";
-import { isLifeAggregatePolicy } from "./lifeAggregatePolicy";
+import { isLifeAggregatePolicy, resolveLifeAggregateParticipation } from "./lifeAggregatePolicy";
 import { resolveAssociationAmounts } from "./associationAmountPolicy";
 
 /** Checks amounts against the captured normalized Library, without prototype fallback.
  * This validates the amount dimension only; eligibility/other policy remain separate.
  */
-export function validateNormalizedCoverageAmount(site: EffectiveSite, productKey: string, applicantKey: string, amount: number, applicantClass?: string, associationKey?: string, mode: "new" | "increase" | "rider-only" = "new") {
+export function validateNormalizedCoverageAmount(site: EffectiveSite, productKey: string, applicantKey: string, amount: number, applicantClass?: string, associationKey?: string, mode: "new" | "increase" | "rider-only" = "new", verifiedExistingAmount = 0) {
   const product = site.configuration.products.find(product => product.productKey === productKey);
   const applicant = site.products.find(product => product.productKey === productKey)?.applicants.find(applicant => applicant.applicantKey === applicantKey);
   if (!product || !applicant) return { status: "resolved" as const, allowed: false, reason: "Product or applicant is unavailable" };
-  const minimum = site.configuration.coverageRequirements?.find(row => row.product === productKey && row.applicants.includes(applicantKey as "member" | "spouse" | "child") && row.configuration === "coverage-new-application-minimum-amount")?.value;
-  if (mode === "new" && typeof minimum === "number" && amount < minimum) return { status: "resolved" as const, allowed: false, reason: "Amount is below the minimum for a new application" };
+  const minimum = coverageMinimumAmount(site.configuration.coverageRequirements, productKey, applicantKey, verifiedExistingAmount);
+  if (mode === "new" && typeof minimum === "number" && amount < minimum) return { status: "resolved" as const, allowed: false, reason: "Amount is below the applicable minimum" };
   if (!Number.isFinite(amount) || amount <= 0) return { status: "resolved" as const, allowed: false, reason: "Amount must be finite and positive" };
   const assignment = resolveAssociationAmounts(site, productKey, associationKey);
   if (assignment.status !== "resolved") return { status: assignment.status, allowed: false, reason: assignment.reason! };
@@ -37,9 +38,12 @@ export function validateNormalizedCoverageAmount(site: EffectiveSite, productKey
 /** Per-person aggregate. Existing life coverage is an explicit required input,
  * so incomplete portfolio information cannot silently become zero coverage.
  */
-export function validateNormalizedLifeAggregate(site: EffectiveSite, applicantKey: string, selected: Array<{ productKey: string; amount: number }>, existingLifeAmount?: number) {
+export function validateNormalizedLifeAggregate(site: EffectiveSite, applicantKey: string, selected: Array<{ productKey: string; amount: number; verifiedExistingAmount?: number }>, existingLifeAmount?: number) {
+  if (existingLifeAmount !== undefined && (!Number.isFinite(existingLifeAmount) || existingLifeAmount < 0) || selected.some(selection => !Number.isFinite(selection.amount) || selection.amount < 0 || !site.configuration.products.some(product => product.productKey === selection.productKey)) || new Set(selected.map(selection => selection.productKey)).size !== selected.length) return { status: 'unresolved' as const, allowed: false, reason: 'Invalid or duplicate life amounts' };
+  const participation = resolveLifeAggregateParticipation(site);
+  if (participation === 'unresolved') return { status: 'unresolved' as const, allowed: false, reason: 'Invalid or conflicting Life aggregate participation' };
+  if (participation === 'individual-only') return { status: 'resolved' as const, allowed: true, reason: 'Only individual product limits apply' };
   if (existingLifeAmount === undefined) return { status: "needs-information" as const, allowed: false, reason: "Existing life amount is required" };
-  if (!Number.isFinite(existingLifeAmount) || existingLifeAmount < 0 || selected.some(selection => !Number.isFinite(selection.amount) || selection.amount < 0) || new Set(selected.map(selection => selection.productKey)).size !== selected.length) return { status: "unresolved" as const, allowed: false, reason: "Invalid or duplicate life amounts" };
   const authored = site.configuration.lifeAggregates;
   if (authored.length) {
     if (authored.length !== 1 || !isLifeAggregatePolicy(authored[0].value)) return { status: "unresolved" as const, allowed: false, reason: "Aggregate policy is missing or ambiguous" };
@@ -47,14 +51,14 @@ export function validateNormalizedLifeAggregate(site: EffectiveSite, applicantKe
     if (groups.length !== 1 || groups[0].productKeys.some(key => !site.configuration.products.some(product => product.productKey === key))) return { status: "unresolved" as const, allowed: false, reason: "Aggregate group is missing or invalid" };
     if (selected.some(selection => !site.configuration.products.some(product => product.productKey === selection.productKey))) return { status: "unresolved" as const, allowed: false, reason: "Unknown selected product" };
     const included = selected.filter(selection => groups[0].productKeys.includes(selection.productKey));
-    if (included.some(selection => !validateNormalizedCoverageAmount(site, selection.productKey, applicantKey, selection.amount).allowed)) return { status: "resolved" as const, allowed: false, reason: "Invalid selected life amount" };
+    if (included.some(selection => !validateNormalizedCoverageAmount(site, selection.productKey, applicantKey, selection.amount, undefined, undefined, "new", selection.verifiedExistingAmount).allowed)) return { status: "resolved" as const, allowed: false, reason: "Invalid selected life amount" };
     const total = existingLifeAmount + included.reduce((sum, selection) => sum + selection.amount, 0), maximum = groups[0].maximum;
     if (!Number.isFinite(total)) return { status: "unresolved" as const, allowed: false, reason: "Invalid aggregate total" };
     return { status: "resolved" as const, allowed: total <= maximum, total, maximum, productKeys: groups[0].productKeys, reason: total <= maximum ? "Aggregate satisfies the normalized limit" : "Life aggregate exceeds the normalized limit" };
   }
   const life = selected.filter(selection => site.configuration.products.find(product => product.productKey === selection.productKey)?.catalog?.value.categoryKey === "LI");
   if (selected.some(selection => !site.configuration.products.some(product => product.productKey === selection.productKey))) return { status: "unresolved" as const, allowed: false, reason: "Unknown selected product" };
-  if (life.some(selection => !validateNormalizedCoverageAmount(site, selection.productKey, applicantKey, selection.amount).allowed)) return { status: "resolved" as const, allowed: false, reason: "Invalid selected life amount" };
+  if (life.some(selection => !validateNormalizedCoverageAmount(site, selection.productKey, applicantKey, selection.amount, undefined, undefined, "new", selection.verifiedExistingAmount).allowed)) return { status: "resolved" as const, allowed: false, reason: "Invalid selected life amount" };
   const limits = new Map(site.configuration.products.flatMap(product => product.limits).filter(limit => limit.value.productKey === null && limit.value.categoryKey === "LI" && (limit.value.applicantTypeKey === null || limit.value.applicantTypeKey === applicantKey)).map(limit => [limit.key, limit]));
   if (limits.size !== 1 || [...limits.values()].some(limit => limit.status !== "resolved" || limit.value.maximum === null)) return { status: "unresolved" as const, allowed: false, reason: "Aggregate policy is missing or ambiguous" };
   const total = existingLifeAmount + life.reduce((sum, selection) => sum + selection.amount, 0);

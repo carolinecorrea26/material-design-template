@@ -1,0 +1,49 @@
+{
+  "component": "review",
+  "pages": [
+    "review"
+  ],
+  "rules": [
+    "review-applicable-completed-sections",
+    "review-shared-policy",
+    "review-jurisdiction-and-consent",
+    "review-adult-acknowledgements",
+    "review-remaining-steps",
+    "review-edit-workflow",
+    "review-policy-fields",
+    "review-legal-presentation",
+    "review-content-and-storage",
+    "review-important-notice-viewer",
+    "review-configuration-boundaries",
+    "advisor-recovery-identity",
+    "advisor-access-stages",
+    "resume-signing-and-submission"
+  ],
+  "validations": [
+    {
+      "validation": "review-residency",
+      "trigger": "next",
+      "scope": "page"
+    },
+    {
+      "validation": "review-applicant-type",
+      "trigger": "next",
+      "scope": "page"
+    },
+    {
+      "validation": "required-fields",
+      "trigger": "next",
+      "scope": "visible-fields"
+    },
+    {
+      "validation": "field-definition-checks",
+      "trigger": "next",
+      "scope": "visible-fields"
+    },
+    {
+      "validation": "date-value-format",
+      "trigger": "next",
+      "scope": "visible-fields"
+    }
+  ]
+}

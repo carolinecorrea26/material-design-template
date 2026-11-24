@@ -21,7 +21,7 @@ import type { PrototypeLibrary } from "../../domain/prototypeLibrary";
 import { siteEntities, getEffectiveSiteConfig } from "../../data/registry";
 import { getClientCoverages } from "../client/getActiveClientCoverages";
 import { getClientPageRequirement } from "../client/getClientPageRequirement";
-import { coverageUnlocksPage, getFlowGateDefinition } from "../flowGates";
+import { coverageUnlocksPage, getFlowGateDefinition, libraryFlowContext, siteFlowContext } from "../flowGates";
 import { createAnswerFields as siAnswers, detailsFields as siDetails } from "./healthSiFields";
 import { createQuestionFields as liAnswers, detailsFields as liDetails } from "./healthLiFields";
 import { createAnswerFields as diAnswers, QUESTIONS as diQuestions } from "./healthDiFields";
@@ -58,6 +58,7 @@ const cache = new Map<string, InspectedField[]>();
 export function getSiteFieldInventory(siteId: string, library?: PrototypeLibrary): InspectedField[] {
   const cached = !library ? cache.get(siteId) : undefined; if (cached) return cached;
   const client = library?.client ?? getEffectiveSiteConfig(siteId);
+  const routing = library ? libraryFlowContext(library) : siteFlowContext(siteId);
   const products = library?.products ?? getClientCoverages(client);
   const pageSections = library ? Object.fromEntries(library.site.configuration.pages.map(page => [page.key, page.sections.map(section => section.definition.value)])) as typeof defaultPageSections : defaultPageSections;
   const requirement = (page: PageId) => library ? library.site.configuration.pages.find(row => row.key === page)?.requirement ?? "none" : getClientPageRequirement(page, client);
@@ -71,7 +72,7 @@ export function getSiteFieldInventory(siteId: string, library?: PrototypeLibrary
   ]);
   // Saved assignments include conditional portfolio routes as well as simple
   // product gates. Inventory all possible inputs without evaluating a journey.
-  const enabled = (page: PageId) => requirement(page) !== "none" && (!!library || !getFlowGateDefinition(page) || products.some(p => coverageUnlocksPage(page, p)));
+  const enabled = (page: PageId) => requirement(page) !== "none" && (!!library || !getFlowGateDefinition(page, routing) || products.some(p => coverageUnlocksPage(page, p, routing)));
   const add = (pageId: PageId, field: FieldDefinition, area: string, condition: string, storage = field.id, status = "page-defined", notes: string[] = [], definitionKey?: string) => {
     if (enabled(pageId)) result.push({ field, definitionKey, pageId, area, condition, storage, status, notes, sites: [siteId] });
   };
@@ -90,7 +91,7 @@ export function getSiteFieldInventory(siteId: string, library?: PrototypeLibrary
       add(page.id, row.field, section?.id ?? "Page", [section?.visibilityConditionId, row.field.visibilityConditionId].filter(Boolean).join("; ") || "Page and field visibility rules apply", row.field.id, row.status, row.notes);
       if (row.field.format === "phone" && row.field.showPhoneTypeSelector !== false) {
         const id = getPhoneTypeFieldId(row.field);
-        const companion = definitions[id];
+        const companion = resolutions.find(row => row.included && row.field.id === id)?.field ?? definitions[id];
         if (!companion) throw new Error(`Missing configured phone type field: ${id}`);
         add(page.id, companion, section?.id ?? "Page", `Shown with ${row.field.id}`, id, "component-defined");
       }
@@ -111,13 +112,13 @@ export function getSiteFieldInventory(siteId: string, library?: PrototypeLibrary
   }
   for (const applicant of ["self", "spouse"] as const) {
     const applicantType = applicant === "self" ? "member" : "spouse";
-    for (const page of ["health-si","health-li","health-di"] as const) {
-      if (!products.some(p => p.applicants.includes(applicantType) && (page === "health-si" || coverageUnlocksPage(page,p)))) continue;
-      const answers = library ? (library.site.configuration.pages.find(row => row.key === page)?.fields ?? []).filter(row => row.included && row.key.startsWith(`${page}-q`) && row.key.endsWith("-spouse") === (applicant === "spouse")).map(row => row.definition) : page === "health-si" ? siAnswers(applicant) : page === "health-li" ? liAnswers(applicant) : diAnswers(applicant);
+    for (const page of ["health-si","health-tele","health-di-supp"] as const) {
+      if (!products.some(p => p.applicants.includes(applicantType) && (page === "health-si" || coverageUnlocksPage(page,p,routing)))) continue;
+      const answers = library ? (library.site.configuration.pages.find(row => row.key === page)?.fields ?? []).filter(row => row.included && row.key.startsWith(`${page}-q`) && row.key.endsWith("-spouse") === (applicant === "spouse")).map(row => row.definition) : page === "health-si" ? siAnswers(applicant) : page === "health-tele" ? liAnswers(applicant) : diAnswers(applicant);
       answers.forEach((field,index) => {
         add(page, field, applicant, "Applicant participating in this health page");
-        const name = page === "health-si" ? "healthSiDetails" : page === "health-li" ? "healthLiDetails" : `healthDi${field.id.replace('health-di-', '').replace('-spouse', '')}Details`;
-        const details = surfaceFields(name, page === "health-si" ? siDetails : page === "health-li" ? liDetails : diQuestions[index].mapping.fields);
+        const name = page === "health-si" ? "healthSiDetails" : page === "health-tele" ? "healthLiDetails" : `healthDi${field.id.replace('health-di-', '').replace('-spouse', '')}Details`;
+        const details = surfaceFields(name, page === "health-si" ? siDetails : page === "health-tele" ? liDetails : diQuestions[index].mapping.fields);
         for (const detail of details) {
           const storage = `${field.id}-details[].${surface(name)?.mapping.fieldToKey[detail.id] ?? detail.id}`;
           add(page, library ? detail : {...detail, id: storage}, `${applicant} / ${field.id} details`, `${field.id} = yes; repeated detail records`, storage);

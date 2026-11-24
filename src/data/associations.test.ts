@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { getClientPageFields, resolveAssociationMembershipField } from "../config/clientFields/getClientPageFields";
-import type { FieldDefinition } from "../config/fields/types";
+import { resolveMappedFields } from "../domain/requirementFields";
 import {
   associationEntities,
   getAssociation,
@@ -19,15 +19,7 @@ import {
   type Site,
 } from ".";
 
-const membershipField: FieldDefinition = {
-  id: "membership",
-  label: "Membership",
-  inputType: "radio",
-  options: [
-    { label: "Yes", value: "yes" },
-    { label: "No", value: "no" },
-  ],
-};
+const membershipField = resolveMappedFields({ component: "membership" }, { includeAll: true }).find(field => field.id === "membership")!;
 
 const urlSite: Site = {
   id: "asce-url-proof",
@@ -182,27 +174,27 @@ describe("canonical Association model", () => {
       associations.map((association) => ({
         label: association.name,
         value: association.id,
+        outcome: "member",
       })),
     );
   });
 
   it("retains every ISITRUST Association choice after migration", () => {
     window.history.replaceState(null, "", "/?site=isitrust");
-    const membership = getClientPageFields("membership").find(
-      (field) => field.id === "membership",
-    );
+    const site = getSite("isitrust")!;
+    const membership = resolveAssociationMembershipField(membershipField, site, getAssociationsForSite(site.id), { status: "unselected" });
     expect(membership).toMatchObject({
-      label: "I am a member of",
+      label: membershipField.configurations!.association.label,
       inputType: "searchable-select",
     });
     expect(membership?.options).toHaveLength(25);
     expect(membership?.options?.[0]).toEqual({
       label: "Akron Bar Association",
-      value: "akron-bar-association",
+      value: "akron-bar-association", outcome: "member",
     });
     expect(membership?.options?.at(-1)).toEqual({
       label: "USA Fencing",
-      value: "usa-fencing",
+      value: "usa-fencing", outcome: "member",
     });
   });
 

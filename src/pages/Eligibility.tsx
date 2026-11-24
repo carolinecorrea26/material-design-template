@@ -1,3 +1,5 @@
+import { noEligibleProductsMessage } from '../domain/coverageRuntime';
+import { getActiveClientCoverages } from '../config/client/getActiveClientCoverages';
 import { requirementValidationMessage } from "../domain/requirementValidations";
 import { eligibilityIneligibilityMessage } from "../domain/applicantExperience";
 import { getClientPageFields } from "../config/clientFields/getClientPageFields";
@@ -6,9 +8,10 @@ import FormRoutePage from "../app/RoutePage";
 import EligibilitySections from "../app/sections/ConfiguredEligibilitySections";
 import MemberVerification from "../components/verification/MemberVerification";
 import VerificationAddress from "../components/verification/VerificationAddress";
-import { resolveMappedFields } from "../domain/requirementFields";
-import { getActiveSite } from "../data";
-import { lookupPrototypeTpa, resolveTpaOutcome, tpaOutcomeValues, type TpaResolution } from "../domain/tpaIntegration";
+import { getSurfaceFields } from '../config/fields/storedSurfaces';
+import { getPrototypeLibrary } from '../domain/prototypeLibrary';
+import { validateFieldCollection } from '../domain/fieldCollections';
+import { lookupPrototypeTpa, resolveTpaOutcome, tpaOutcomeValues, standardTpaLookupFields, type TpaResolution } from "../domain/tpaIntegration";
 import { useApplicationForm, type ApplicationFormValues } from "../app/ApplicationFormContext";
 import { getActiveClient } from "../config/client/getActiveClient";
 
@@ -41,12 +44,16 @@ export default function Eligibility() {
       <FormRoutePage
         pageId="eligibility"
         validate={(nextValues) => {
-          const disqualification = eligibilityIneligibilityMessage(client.applicantExperience, nextValues);
-          if (disqualification) return requirementValidationMessage('applicant-ineligible');
-          if (client.applicantExperience?.eligibleStatesOnly && !getClientPageFields("eligibility").find(f => f.id === "state-province")?.options?.some(option => option.value === nextValues['state-province'])) return requirementValidationMessage('eligible-state-required');
+          const fields = getClientPageFields('eligibility', nextValues);
           const dependents = Array.isArray(nextValues.dependents)
-            ? nextValues.dependents
+            ? nextValues.dependents.filter(person => fields.find(field => field.id === 'dependents')?.options?.some(option => option.value === person))
             : [];
+          const collection = getPrototypeLibrary()?.fieldCollections.children;
+          const childFacts = Array.isArray(nextValues.children) ? nextValues.children.map(child => child && typeof child === 'object' && !Array.isArray(child)
+            ? Object.fromEntries((collection?.mapping.fields ?? []).map(field => { const key = collection!.mapping.fieldToKey[field.id]; return [key, (child as Record<string, unknown>)[key]]; })) : child) : [];
+          const disqualification = eligibilityIneligibilityMessage(client.applicantExperience, { ...nextValues, dependents, children: childFacts });
+          if (disqualification) return requirementValidationMessage('applicant-ineligible');
+          if (client.applicantExperience?.eligibleStatesOnly && !fields.find(field => field.id === 'state-province')?.options?.some(option => option.value === nextValues['state-province'])) return requirementValidationMessage('eligible-state-required');
 
           if (dependents.includes("child") && client.applicantExperience?.childEligibility?.mode !== "notice-only") {
             const children = Array.isArray(nextValues.children)
@@ -55,27 +62,25 @@ export default function Eligibility() {
             if (children.length === 0) {
               return requirementValidationMessage('child-required');
             }
+            if (!collection) throw new Error('Missing fresh-start Eligibility collection');
+            const collectionError = validateFieldCollection(collection, children);
+            if (collectionError) return collectionError;
           }
 
           if (dependents.includes("spouse")) {
-            const spouseFirstName = String(
-              nextValues["spouse-first-name"] ?? "",
-            ).trim();
-            const spouseLastName = String(
-              nextValues["spouse-last-name"] ?? "",
-            ).trim();
-            if (!spouseFirstName && !spouseLastName) {
+            const names = fields.filter(field => ['spouse-first-name', 'spouse-last-name'].includes(field.id));
+            if (names.length && names.every(field => !String(nextValues[field.id] ?? '').trim())) {
               return requirementValidationMessage('spouse-details-required');
             }
           }
 
-          return undefined;
+          return noEligibleProductsMessage(getActiveClientCoverages(), nextValues);
         }}
         onBeforeNext={({ values: nextValues }) => {
           const member = lookupPrototypeTpa(client, nextValues);
           const outcome = resolveTpaOutcome(client, member);
           const lookupKey = JSON.stringify([client.id, client.tpaIntegration, member,
-            (client.tpaIntegration?.lookupFields ?? ["first-name", "last-name", "birth-date", ...Object.keys(client.features?.memberVerificationMatchFacts ?? {})]).map(field => nextValues[field])]);
+            (client.tpaIntegration?.lookupFields ?? standardTpaLookupFields).map(field => nextValues[field])]);
           if (outcome.verifyIdentity && tpaCompletedRef.current !== lookupKey) {
             tpaMemberRef.current = member;
             tpaPendingRef.current = lookupKey;
@@ -110,7 +115,7 @@ export default function Eligibility() {
       </FormRoutePage>
 
       {verificationAddressValues && <VerificationAddress
-        fields={resolveMappedFields({ component: "verification-address" }, { siteId: getActiveSite().id, page: "eligibility" })}
+        fields={getSurfaceFields('verificationAddress')}
         values={verificationAddressValues}
         onContinue={address => {
           setPageValues(address);

@@ -1,0 +1,22 @@
+{
+  "component": "health-cir",
+  "pages": [
+    "health-cir"
+  ],
+  "rules": [
+    "health-cir-questionnaire",
+    "health-participation-and-storage"
+  ],
+  "validations": [
+    {
+      "validation": "health-cir-questionnaire-assignment",
+      "trigger": "next",
+      "scope": "page"
+    },
+    {
+      "validation": "health-questionnaire-resolution",
+      "trigger": "next",
+      "scope": "page"
+    }
+  ]
+}

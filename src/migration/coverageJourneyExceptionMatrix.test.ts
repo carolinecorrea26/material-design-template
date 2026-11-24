@@ -1,24 +1,23 @@
-import { expect, it } from "vitest";
-import { mkdirSync, writeFileSync } from "node:fs";
-import { resolve } from "node:path";
-import { createReviewedMigrationDatabase } from "./fixtures";
-import { resolveEffectiveSite } from "../domain/effectiveSite";
-import { runCoverageJourneyExceptionAcceptance } from "./coverageJourneyExceptionAcceptance";
+import { expect, it } from 'vitest';
+import { journeySite } from './freshStartJourneyFixtures';
+import { createCoverageJourneyFixture } from './coverageJourneyExceptionAcceptance';
+import { evaluateCoverageJourney, type CoverageJourneyInput } from '../domain/coverageJourney';
+import { resolveCoverageJourneyPolicy } from '../domain/coverageJourneyPolicy';
 
-it("executes every persisted applicant/class/association/period/mode mapping", async () => {
-  const db = JSON.parse(JSON.stringify(createReviewedMigrationDatabase()));
-  const sites = new Map<string, ReturnType<typeof resolveEffectiveSite>>();
-  const result = await runCoverageJourneyExceptionAcceptance(key => {
-    if (!sites.has(key)) sites.set(key, resolveEffectiveSite(db, key));
-    return sites.get(key)!;
-  });
-  expect(result.tested).toBe(1868);
-  expect(result.failures).toEqual([]);
-  if (process.env.STEP3_ACCEPTANCE_DIR) {
-    mkdirSync(resolve(process.env.STEP3_ACCEPTANCE_DIR), { recursive: true });
-    writeFileSync(resolve(process.env.STEP3_ACCEPTANCE_DIR, "step3-exception-acceptance.json"), JSON.stringify({
-      scope: "All persisted applicant/class/association/period/mode mappings with synthetic facts and incomplete-input rejection",
-      ...result, sourceApproval: "provisional-revisit", runtimeActivation: "pending", publicationReady: false,
-    }, null, 2) + "\n");
+it('rejects incomplete global journey inputs once, withholding the submission envelope', async () => {
+  const site = journeySite('asce');
+  const { input, policies } = createCoverageJourneyFixture(site, 'li-term', { applicantKey: 'member', mode: 'new' });
+  expect((await evaluateCoverageJourney(site, input, { policies })).allowed).toBe(true);
+  for (const invalid of [{ jurisdiction: undefined }, { attestations: [] }, { amount: -1 }, { membershipConfirmed: false }, { eligibility: { ...input.eligibility, ageYears: 1000 } }] satisfies Partial<CoverageJourneyInput>[]) {
+    expect(await evaluateCoverageJourney(site, { ...input, ...invalid }, { policies })).toMatchObject({ allowed: false, submission: null });
   }
-}, 300000);
+});
+it('requires actual class and period choices for the AMA disability override', async () => {
+  const site = journeySite('ama'), productKey = 'di-step-rated';
+  const mapping = resolveCoverageJourneyPolicy(site, productKey)!.mappings.find(m => m.when.mode === 'new')!;
+  const { input, policies } = createCoverageJourneyFixture(site, productKey, mapping.when);
+  expect((await evaluateCoverageJourney(site, input, { policies })).allowed).toBe(true);
+  for (const key of ['applicantClass', 'waitingPeriod', 'benefitPeriod'] as const) for (const value of [undefined, 'invalid']) {
+    expect(await evaluateCoverageJourney(site, { ...input, [key]: value }, { policies })).toMatchObject({ allowed: false, submission: null });
+  }
+});

@@ -1,0 +1,17 @@
+{
+  "page.payment.title": "Choose your payment method",
+  "page.payment.subhead": "Select how you would like to pay for your coverage.",
+  "page.payment.nav-title": "Payment",
+  "payment.controls-label": "Payment",
+  "payment.bank-label": "Banking Information",
+  "payment.error.shared-method": "Choose a payment method available for all products.",
+  "payment.error.shared-frequency": "Choose a payment frequency available for all products.",
+  "payment.error.all-products": "Please add payment information for all applicable products before continuing.",
+  "payment.error.available-choices": "Choose an available payment method and frequency.",
+  "payment.error.policy-choices": "Choose a payment method and frequency available in the Library.",
+  "payment.estimated-cost": "Estimated {{frequency}} cost",
+  "payment.shared.no-common-method": "These products do not have a payment method in common. Contact us for help with payment options.",
+  "payment.shared.no-common-frequency": "Select payment methods with a frequency available for every product.",
+  "payment.notes": [],
+  "payment.error.products-required": "Return to Coverage and select coverage before continuing."
+}

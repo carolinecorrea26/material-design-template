@@ -56,24 +56,112 @@
         "self",
         "spouse"
       ]
-    },
-    {
-      "field": "health-si-detail-onset",
-      "people": [
-        "self"
+    }
+  ],
+  "constraints": {
+    "health-si-q1": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
       ]
     },
-    {
-      "field": "health-si-detail-conditions-details",
-      "people": [
-        "self"
+    "health-si-q2": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
       ]
     },
-    {
-      "field": "health-si-detail-physician-address",
-      "people": [
-        "self"
+    "health-si-q3": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "health-si-q4": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "health-si-q5": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "health-detail-onset": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "health-detail-conditions": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
+      ]
+    },
+    "health-detail-physician-address": {
+      "included": true,
+      "fixedProperties": [
+        "label",
+        "required",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength",
+        "optionalForProducts"
       ]
     }
-  ]
+  }
 }

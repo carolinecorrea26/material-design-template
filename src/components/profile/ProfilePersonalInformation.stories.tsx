@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import ProfilePersonalInformation from './ProfilePersonalInformation';
 import SectionStoryForm from '../../../.storybook/forms/SectionStoryForm';
-import { fieldCatalog } from '../../config/fields';
-import { pageSections } from '../../config/pageSections/pageSections';
+import ComponentFixture from '../../../.storybook/fixtures/ComponentFixture';
+import ApplicantSectionDivider from '../layout/ApplicantSectionDivider';
 
 const meta = {
   id: "pages-profile-personal-information",
@@ -17,17 +17,15 @@ const meta = {
   },
 } satisfies Meta<typeof ProfilePersonalInformation>;
 export default meta;
-const fields = Object.values(fieldCatalog);
-const fieldIds = (applicant: 'self' | 'spouse') => (pageSections.profile ?? []).find(section => section.id === (applicant === 'self' ? 'profilePersonalSelf' : 'profilePersonalSpouse'))!.fieldIds;
-export const Default: StoryObj = {
-  render: () => <SectionStoryForm fields={fields}>{props => <ProfilePersonalInformation {...props} fieldIds={fieldIds('self')} />}</SectionStoryForm>,
-};
-export const Spouse: StoryObj = {
-  render: () => <SectionStoryForm fields={fields}>{props => <ProfilePersonalInformation {...props} applicant="spouse" fieldIds={fieldIds('spouse')} />}</SectionStoryForm>,
-};
-export const IndependentApplicants: StoryObj = {
-  render: () => <SectionStoryForm fields={fields}>{props => <>
-    <h2>Member</h2><ProfilePersonalInformation {...props} fieldIds={fieldIds('self')} />
-    <h2>Spouse</h2><ProfilePersonalInformation {...props} applicant="spouse" fieldIds={fieldIds('spouse')} />
-  </>}</SectionStoryForm>,
-};
+function Example({ applicants }: { applicants: Array<'self' | 'spouse'> }) {
+  return <ComponentFixture>{fixture => {
+    const page = fixture.site.configuration.pages.find(page => page.key === 'profile')!;
+    const fields = page.fields.filter(row => row.included).map(row => row.definition);
+    return <SectionStoryForm fields={fields}>{props => <>{applicants.map(applicant => <ApplicantSectionDivider key={applicant} applicant={applicant} labels={fixture.client.applicantLabels} showLabel={applicants.length > 1}>
+      <ProfilePersonalInformation {...props} applicant={applicant} fieldIds={page.sections.find(section => section.definition.value.id === (applicant === 'self' ? 'profilePersonalSelf' : 'profilePersonalSpouse'))!.definition.value.fieldIds} />
+    </ApplicantSectionDivider>)}</>}</SectionStoryForm>;
+  }}</ComponentFixture>;
+}
+export const Default: StoryObj = { render: () => <Example applicants={['self']} /> };
+export const Spouse: StoryObj = { render: () => <Example applicants={['spouse']} /> };
+export const IndependentApplicants: StoryObj = { render: () => <Example applicants={['self', 'spouse']} /> };

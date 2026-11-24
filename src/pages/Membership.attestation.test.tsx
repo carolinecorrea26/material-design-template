@@ -1,3 +1,4 @@
+import { requirementText } from '../domain/requirementContent';
 import { readFileSync } from "node:fs";
 import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
@@ -10,6 +11,7 @@ import { validateSharedCatalog } from "../persistence/sharedCatalog";
 import { applicationRecovery } from "../content/applicationRecovery";
 import { MESSAGE_DURATION } from "../config/transitionMessages";
 import membershipContent from "../../requirements/global/content/membership.json";
+import { freshStartSource } from '../domain/freshStartCatalog';
 
 const form = vi.hoisted(() => ({ values: {} as Record<string, unknown>, setPageValues: vi.fn(), saveApplication: vi.fn(async () => null) }));
 vi.mock("../app/ApplicationFormContext", () => ({ useApplicationForm: () => form }));
@@ -32,13 +34,16 @@ afterEach(async () => {
   window.sessionStorage.clear();
 });
 
-async function renderPage(page: "membership" | "eligibility", values: Record<string, unknown>) {
+async function renderPage(page: "membership" | "eligibility", values: Record<string, unknown>, membership?: Record<string, unknown>, copy?: Record<string, unknown>) {
   vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true);
   vi.spyOn(window, "scrollTo").mockImplementation(() => {});
   Object.defineProperty(Element.prototype, "scrollIntoView", { configurable: true, value: vi.fn() });
   window.history.replaceState(null, "", `/${page}?site=asce`);
   const catalog = validateSharedCatalog(JSON.parse(readFileSync("public/catalog/portal.json", "utf8")));
-  const library = resolvePrototypeLibrary(catalog.data, "asce", "test:membership-exception");
+  const source = membership || copy ? structuredClone(freshStartSource()) : undefined;
+  if (source && membership) (source.fields.sites.asce as { fields: Record<string, unknown> }).fields.membership = membership!;
+  if (source && copy) source.fields.sitePages!.asce.membership = { ...source.fields.sitePages!.asce.membership as object, content: copy };
+  const library = resolvePrototypeLibrary(catalog.data, "asce", "test:membership-exception", source);
   // Exercise a configured disqualification rather than relying on ASCE having one today.
   library.client.applicantExperience = {
     ...library.client.applicantExperience,
@@ -65,8 +70,8 @@ it("stops inline only for No and restores Membership after changing to Yes", asy
   expect(feedback?.textContent).toContain(membershipContent["membership.not-member.message"]);
   expect(feedback?.textContent).toContain(membershipContent["membership.not-member.heading"]);
   expect(feedback?.querySelector('a')?.getAttribute('href')).toBe('https://asceinsurance.com');
-  expect(container.textContent).toContain(membershipContent["membership.help.coverage-options"]);
-  expect(container.textContent).toContain(membershipContent["membership.help.how-applying-works"]);
+  expect(container.textContent).toContain(requirementText("membership.help.coverage-options"));
+  expect(container.textContent).toContain(requirementText("membership.help.how-applying-works"));
   expect(container.textContent).not.toContain("How much does it cost?");
   expect(feedback?.closest("form")).not.toBeNull();
   expect(container.querySelector('[name="first-name"]')).toBeNull();
@@ -95,6 +100,21 @@ it("validates an unanswered membership attestation on submission", async () => {
   expect(container.querySelector('.MuiAlert-standardError')).toBeNull();
   await submit();
   expect(container.textContent).toContain(applicationRecovery.validation.message);
+  expect(next().disabled).toBe(false);
+  expect(form.saveApplication).not.toHaveBeenCalled();
+});
+
+it('uses the submission error for a not-eligible category without extending the yes/no inline exception', async () => {
+  await renderPage('membership', { membership: 'visitor' }, { configuration: 'category', options: [
+    { value: 'engineer', label: 'Professional member', outcome: 'member' },
+    { value: 'visitor', label: 'Visitor', outcome: 'not-eligible' },
+  ] });
+  expect(next().disabled).toBe(false);
+  expect(container.querySelector('[name="first-name"]')).toBeNull();
+  expect(container.querySelector('[name="member-id"]')).toBeNull();
+  expect(container.querySelector('.MuiAlert-standardWarning')).toBeNull();
+  await submit();
+  expect(container.textContent).toContain(membershipContent['membership.not-member.message']);
   expect(next().disabled).toBe(false);
   expect(form.saveApplication).not.toHaveBeenCalled();
 });
@@ -137,4 +157,29 @@ it("keeps Eligibility enabled and reports a disqualification in the page alert o
   expect(alert!.closest("form")).toBeNull();
   expect(next().disabled).toBe(false);
   expect(form.saveApplication).not.toHaveBeenCalled();
+});
+
+it('renders configured Membership copy without changing the non-member stop and restores fields on acceptance', async () => {
+  await renderPage('membership', { membership: 'no' }, undefined, {
+    'membership.title': 'Apply for {{clientAcronym}} coverage',
+    'membership.subhead': 'Configured Membership introduction.',
+    'membership.page-note': 'Configured Membership information.',
+    'membership.not-member.heading': 'Join your association',
+    'membership.not-member.body': 'Configured joining instructions for {{clientName}}.',
+    'membership.not-member.website': 'Join at {{clientWebsite}} or call {{clientPhone}}.',
+  });
+  for (const text of ['Apply for ASCE coverage', 'Configured Membership introduction.', 'Configured Membership information.', 'Join your association', 'Configured joining instructions']) expect(container.textContent).toContain(text);
+  expect(container.textContent).not.toContain('Civil Engineering profession');
+  expect(container.textContent).toContain(membershipContent['membership.not-member.message']);
+  expect(container.querySelector('form [role="alert"] a')?.getAttribute('href')).toBe('https://asceinsurance.com');
+  expect(next().disabled).toBe(true);
+  expect(container.querySelector('[name="first-name"]')).toBeNull();
+  await act(async () => container.querySelector<HTMLInputElement>('input[name="membership"][value="yes"]')!.click());
+  expect(next().disabled).toBe(false);
+  expect(container.querySelector('[name="first-name"]')).not.toBeNull();
+  expect(container.textContent).not.toContain('Join your association');
+});
+it('omits a blank configured Membership information note', async () => {
+  await renderPage('membership', {}, undefined, { 'membership.page-note': '' });
+  expect(container.textContent).not.toContain('Civil Engineering profession');
 });

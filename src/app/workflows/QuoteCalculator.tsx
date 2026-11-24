@@ -1,8 +1,9 @@
+import { riderDescription } from '../../domain/riderDescription';
 import { requirementText } from "../../domain/requirementContent";
 import { combineRateDisplays, rateDisplayForAmount } from '../../domain/rateDisplay';
 import { resolveSiteId } from "../../data/activeSite";
 import { orderCoveragePresentation } from "../../domain/coveragePresentation";
-import { activeFeaturedProduct } from "../../config/client/coverageProductScope";
+import { activeFirstCoverageCategory, activeFeaturedProduct } from "../../config/client/coverageProductScope";
 import { coverageLinkUnavailableMessage } from "../../content/interactionLabels";
 import { fieldValidationChecks } from "../../utils/fieldValidation";
 import { getSurfaceFields, getSurfaceField } from "../../config/fields/storedSurfaces";
@@ -11,11 +12,8 @@ import { usePrototypeRates } from "../usePrototypeRates";
 import { getQuoteRequirements } from "../../config/fields/homeQuoteFields";
 import { useForm, useWatch } from "react-hook-form";
 import FieldRenderer from "../../components/forms/FieldRenderer";
-import { fieldCatalog } from "../../config/fields";
-import { coverageFactFieldIds } from "../../config/fields/coverageFactFields";
 import { resolveApplicationCoverage, validateApplicationCoverages } from "../../domain/coverageRuntime";
 import { numericFact } from "../../utils/applicantFacts";
-import { categoryEligibility, readCategoryEligibilityPolicy } from "../../domain/categoryEligibilityPolicy";
 import { useEffect, useMemo, useRef, useState } from "react";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import {
@@ -49,7 +47,7 @@ import TotalCostSummary, {
   type TotalCostSummaryItem,
 } from "../sections/ConfiguredTotalCostSummary";
 import {
-  coverageCategories,
+  getCoverageCategories,
   getCoverageCategorySectionLabel,
 } from "../../config/coverageCategories";
 import type {
@@ -65,6 +63,7 @@ import { getActiveClientCoverages } from "../../config/client/getActiveClientCov
 import type { EstimatedRateFrequency } from "../../config/clients/types";
 import { getPagePath } from "../../config/pages";
 import { sectionLabels } from "../../config/pageSections";
+import FieldGrid from '../../components/layout/FieldGrid';
 import { useApplicationForm } from "../ApplicationFormContext";
 import { useStartApplication } from "../useStartApplication";
 import {
@@ -137,14 +136,12 @@ export default function QuoteCalculator({
   const startApplication = useStartApplication();
   const activeClient = useMemo(() => getActiveClient(), []);
   const coverages = useMemo(() => getActiveClientCoverages(), []);
-  const categoryPolicy = readCategoryEligibilityPolicy(getPrototypeLibrary()?.site.configuration.categoryEligibilityPolicies ?? []);
-  const categoryAnswer = categoryPolicy ? values[categoryPolicy.fieldId] : undefined;
   const availableCategories = useMemo(
     () =>
-      orderCoveragePresentation(coverages, activeClient.coverages, activeFeaturedProduct(resolveSiteId())).categories.map(id => coverageCategories.find(category => category.id === id)!).filter((category) =>
-        coverages.some((coverage) => coverage.categoryId === category.id) && categoryEligibility(categoryPolicy, categoryAnswer, category.id, true) === "eligible",
+      orderCoveragePresentation(coverages, activeClient.coverages, activeFeaturedProduct(resolveSiteId()), activeFirstCoverageCategory(resolveSiteId())).categories.map(id => getCoverageCategories(activeClient.coverages.categoryNames).find(category => category.id === id)!).filter((category) =>
+        coverages.some((coverage) => coverage.categoryId === category.id),
       ),
-    [coverages, categoryPolicy, categoryAnswer, activeClient],
+    [coverages, activeClient],
   );
   const singleAvailableCategory =
     availableCategories.length === 1 ? availableCategories[0] : null;
@@ -175,7 +172,7 @@ export default function QuoteCalculator({
   >(() => (singleAvailableCategory ? [singleAvailableCategory.id] : []));
 
   const requirements = getQuoteRequirements(activeClient, selectedCategories);
-  const allQuoteFields = withRequirementFields(getSurfaceFields('quoteInputs'), { component: "quote-calculator" }, resolveSiteId(), quoteFollowUps);
+  const allQuoteFields = getPrototypeLibrary() ? getSurfaceFields('quoteInputs') : withRequirementFields(getSurfaceFields('quoteInputs'), { component: "quote-calculator" }, resolveSiteId(), quoteFollowUps);
   const quoteInputForm = useForm<Record<string, string | boolean | string[]>>({ defaultValues: Object.fromEntries(
     allQuoteFields.map(field => {
       const value = values[field.id];
@@ -231,24 +228,24 @@ export default function QuoteCalculator({
 
   const categoryProducts = useMemo(
     () =>
-      orderCoveragePresentation(coverages, activeClient.coverages, activeFeaturedProduct(resolveSiteId())).products
-        .filter((c) => selectedCategories.includes(c.categoryId) && categoryEligibility(categoryPolicy, categoryAnswer, c.categoryId, true) === "eligible"),
-    [coverages, selectedCategories, categoryPolicy, categoryAnswer, activeClient],
+      orderCoveragePresentation(coverages, activeClient.coverages, activeFeaturedProduct(resolveSiteId()), activeFirstCoverageCategory(resolveSiteId())).products
+        .filter((c) => selectedCategories.includes(c.categoryId)),
+    [coverages, selectedCategories, activeClient],
   );
 
-  const factForm = useForm<Record<string, string | boolean | string[]>>({ defaultValues: Object.fromEntries(coverageFactFieldIds(coverages, values, "presented").map(id => [id, String(values[id] ?? "")])) });
-  const contextualFacts = factForm.watch();
-  const quoteFacts = { ...values, ...contextualFacts, ...inputValues,
+  const activeInputValues = Object.fromEntries(quoteInputFields.map(field => [field.id, inputValues[field.id]]));
+  const quoteFacts = { ...values, ...activeInputValues,
     "birth-date": collectEligibility ? eligibilityValues.birthday : initialEligibility?.birthday ?? values["birth-date"],
     "state-province": collectEligibility ? eligibilityValues.state : initialEligibility?.state ?? values["state-province"],
-    "hours-worked-per-week": quoteInputFields.some(field => field.id === "hours-worked-per-week") ? hoursPerWeek : contextualFacts["hours-worked-per-week"] ?? values["hours-worked-per-week"], "average-monthly-income": avgIncome, "monthly-business-expenses": monthlyExpenses, "business-expense-responsibility": responsibilityPct,
+    "hours-worked-per-week": quoteInputFields.some(field => field.id === "hours-worked-per-week") ? hoursPerWeek : values["hours-worked-per-week"], "average-monthly-income": avgIncome, "monthly-business-expenses": monthlyExpenses, "business-expense-responsibility": responsibilityPct,
     productApplicants, coverageAmounts: amountsByKey };
   const quoteRiderElections = reconcileApplicationRiders(
     categoryProducts.map(product => ({ ...product, riders: quoteRiders(product) })),
     { ...quoteFacts, dependents: [], coverageRiders: riderChoices, coverageRiderAmounts: riderAmountChoices },
+    { purpose: "quote" },
   );
   const quoteValues = { ...quoteFacts, ...quoteRiderElections, coverageSelections: categoryProducts.filter(product => (productApplicants[product.id] ?? []).length > 0).map(product => product.id) };
-  const quoteBehavior = (product: CoverageDefinition, applicant: CoverageApplicantId = "member") => resolveApplicationCoverage(product, applicant, quoteValues, coverages, { deferUnansweredMembership: true });
+  const quoteBehavior = (product: CoverageDefinition, applicant: CoverageApplicantId = "member") => resolveApplicationCoverage(product, applicant, quoteValues, coverages, { purpose: "quote" });
 
   const workThresholds = categoryProducts.map(product => product.requirements?.eligibility?.find(rule => rule.applicantType === "member")?.minimumWorkHoursPerWeek);
   const minimumWorkHours = Math.min(...workThresholds.map(hours => hours ?? Infinity));
@@ -483,11 +480,7 @@ export default function QuoteCalculator({
       setApplyError(requirementText("home.quote.please-correct-the-quote-answers-before-applying"));
       return;
     }
-    if (!await factForm.trigger(coverageFactFieldIds(categoryProducts, quoteValues, "presented"))) {
-      setApplyError(requirementText("home.quote.please-complete-the-coverage-eligibility-information-before-applying"));
-      return;
-    }
-    const covereligibilityError = validateApplicationCoverages(coverages, quoteValues, { deferUnansweredMembership: true, deferProfileUnderwriting: true });
+    const covereligibilityError = validateApplicationCoverages(coverages, quoteValues, { purpose: "quote" });
     if (covereligibilityError) {
       setApplyError(covereligibilityError);
       return;
@@ -531,8 +524,8 @@ export default function QuoteCalculator({
         hideSmokerQuestion: activeClient.coverages.hideSmokerQuestion,
       },
       {},
-      [...coverageFactFieldIds(categoryProducts, quoteValues, "presented"), ...(requirements.needsActiveWork ? ['actively-at-work' as const] : []), ...(['tobacco-last-used', 'tobacco-products'] as const).filter(id => quoteInputFields.some(field => field.id === id))].flatMap(id => {
-        const value = id === 'actively-at-work' || id === 'tobacco-last-used' || id === 'tobacco-products' ? inputValues[id] : contextualFacts[id];
+      [...(requirements.needsActiveWork ? ['actively-at-work' as const] : []), ...(['tobacco-last-used', 'tobacco-products'] as const).filter(id => quoteInputFields.some(field => field.id === id))].flatMap(id => {
+        const value = inputValues[id];
         return value === undefined ? [] : [{ fieldId: id, value }];
       }),
     );
@@ -608,13 +601,13 @@ export default function QuoteCalculator({
         {needsAdditionalFields &&
           selectedCategories.length > 0 &&
           (displayMode === "drawer" || inlineStep === 1) && (
-            <Stack spacing={2}>
+            <FieldGrid>
               {quoteInputFields.map((field, index) => {
                 const section = (id: string) => ['gender', 'smoker', 'tobacco-last-used', 'tobacco-products'].includes(id) ? sectionLabels.personalDetails : ['average-monthly-income', 'hours-worked-per-week', 'actively-at-work'].includes(id) ? sectionLabels.workAndIncome : sectionLabels.businessDetails;
-                return <Stack key={field.id} spacing={2}>
+                return <FieldGrid key={field.id}>
                   {(index === 0 || section(quoteInputFields[index - 1].id) !== section(field.id)) && <SectionDivider label={section(field.id)} variant="subsection" />}
                   <FieldRenderer field={field} onValueChange={handleQuoteFieldChange} control={quoteInputForm.control} errors={fieldsAttempted ? Object.fromEntries(Object.entries(fieldErrors).map(([id, message]) => [id, { type: 'validate', message }])) : {}} />
-                </Stack>;
+                </FieldGrid>;
               })}
 
             {!showProducts && displayMode === "drawer" && (
@@ -625,7 +618,7 @@ export default function QuoteCalculator({
               >
                 {requirementText("home.quote.see-my-quote")}</Button>
             )}
-            </Stack>
+            </FieldGrid>
           )}
 
         {/* ── Empty state ── */}
@@ -642,7 +635,6 @@ export default function QuoteCalculator({
           (displayMode === "drawer" || inlineStep === 2) && (
           <Stack spacing={2} ref={productsSectionRef} tabIndex={-1}>
             <Divider />
-            {!productsLoading && coverageFactFieldIds(categoryProducts, quoteValues, "presented").map(id => <FieldRenderer key={id} field={getPrototypeLibrary()?.site.configuration.pages.find(p => p.key === "coverage")?.fields.find(f => f.key === id)?.definition ?? fieldCatalog[id]} control={factForm.control} errors={factForm.formState.errors} />)}
             {productsLoading ? (
               <Stack
                 spacing={2}
@@ -717,8 +709,8 @@ export default function QuoteCalculator({
                               riders={quoteRiders(product).map(rider => {
                                 const riderKey = `${product.id}:${rider.id}:member`;
                                 const checked = !!quoteRiderElections.coverageRiders[riderKey];
-                                const options = applicationRiderOptions(product, rider, "member", quoteValues);
-                                return { id: rider.id, name: rider.name, description: rider.description, checked, disabled: !!rider.included || currentAmount <= 0 || !options.available,
+                                const options = applicationRiderOptions(product, rider, "member", quoteValues, { purpose: "quote" });
+                                return { id: rider.id, name: rider.name, description: riderDescription(rider, "member"), checked, disabled: !!rider.included || currentAmount <= 0 || !options.available,
                                   amount: rider.hasAmount && rider.coverageAmounts ? { label: rider.amountLabel ?? requirementText("home.quote.rider-benefit-amount"), value: quoteRiderElections.coverageRiderAmounts[riderKey] ?? rider.defaultAmount ?? 0, choices: [...(rider.included || options.configured ? [] : [0]), ...options.choices] } : undefined };
                               })}
                               onRiderToggle={riderId => handleRiderToggle(product, riderId)}
@@ -733,7 +725,7 @@ export default function QuoteCalculator({
                 <Typography variant="caption" color="text.secondary">
                   <Box
                     component="sup"
-                    sx={{ fontSize: "0.85em", lineHeight: 1 }}
+                    sx={{ fontSize: "caption.fontSize", lineHeight: 1 }}
                   >
                     1
                   </Box>

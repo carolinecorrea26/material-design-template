@@ -6,7 +6,7 @@ import ProductCard from "./ProductCard";
  * ProductCard is the bordered card wrapper underneath every product row —
  * ProductCatalog's full card, EstimatorProductCard's simplified card,
  * QuoteCalculator, Beneficiary, Payment, Receipt. `selected` swaps the border and
- * background tint to a green "chosen" treatment.
+ * background tint from a light primary wash to a green "chosen" treatment.
  */
 const meta = {
   id: "layout-productcard",
@@ -33,18 +33,9 @@ export const Selected: StoryObj = {
   ),
 };
 
-export const SideBySide: StoryObj = {
-  render: () => (
-    <Stack direction="row" spacing={2}>
-      <ProductCard productName="Unselected" sx={{ maxWidth: 280 }} />
-      <ProductCard selected productName="Selected" sx={{ maxWidth: 280 }} />
-    </Stack>
-  ),
-};
-
 export const SharedTitle: StoryObj = {
   render: () => <Stack spacing={2} sx={{ maxWidth: 440 }}>
-    <ProductCard productName="Term Life Insurance" quickDecision brochureUrl="/" description="Coverage and quote examples can include a description and brochure link.">
+    <ProductCard productName="Term Life Insurance" quickDecision brochureUrl="/" description="Coverage and quote examples can include a description and brochure link." descriptionNotice="A configured product notice appears in bold on its own line.">
       <Typography variant="body2">Coverage controls appear here.</Typography>
     </ProductCard>
     <ProductCard productName="Term Life Insurance" quickDecision>

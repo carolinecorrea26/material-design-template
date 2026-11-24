@@ -6,6 +6,38 @@
       "people": [
         "self"
       ]
+    },
+    {
+      "field": "resume-phone",
+      "people": [
+        "self"
+      ]
     }
-  ]
+  ],
+  "constraints": {
+    "resume-email": {
+      "included": true,
+      "required": true,
+      "fixedProperties": [
+        "label",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength"
+      ]
+    },
+    "resume-phone": {
+      "included": true,
+      "required": true,
+      "fixedProperties": [
+        "label",
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength"
+      ]
+    }
+  }
 }

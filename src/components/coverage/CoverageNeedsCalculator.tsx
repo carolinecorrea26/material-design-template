@@ -1,13 +1,21 @@
 import { fieldValidationChecks } from "../../utils/fieldValidation";
-import { needsCalculatorFields } from "../../config/fields/needsCalculatorFields";
+import { getContent } from '../../content';
+import { getPrototypeLibrary } from '../../domain/prototypeLibrary';
+import { getFieldSurface, getSurfaceFields } from '../../config/fields/storedSurfaces';
 import type { FieldDefinition } from "../../config/fields/types";
 import { useForm, useWatch } from "react-hook-form";
 import FieldRenderer from "../forms/FieldRenderer";
+import FieldGrid from '../layout/FieldGrid';
 import { Box, Stack, Typography } from "@mui/material";
 
 import { formatUSD } from "../../utils/formatUSD";
 
-export default function CoverageNeedsCalculator({ fields = needsCalculatorFields, bindings = {} }: { fields?: FieldDefinition[]; bindings?: Record<string, string> } = {}) {
+export default function CoverageNeedsCalculator({ fields: suppliedFields, bindings: suppliedBindings }: { fields?: FieldDefinition[]; bindings?: Record<string, string> } = {}) {
+  const library = getPrototypeLibrary();
+  if (!suppliedFields && !library) throw new Error('Missing fresh-start needs calculator projection');
+  const fields = suppliedFields ?? getSurfaceFields('needsCalculator', library!);
+  const bindings = suppliedBindings ?? (!suppliedFields && library ? getFieldSurface('needsCalculator', library).mapping.fieldToKey : {});
+  const copy = getContent().coverage.needsCalculator;
   const binding = (id: string) => bindings[id] ?? id;
   const form = useForm<Record<string, string | boolean | string[]>>({ defaultValues: {} });
   const inputs = useWatch({ control: form.control });
@@ -39,11 +47,10 @@ export default function CoverageNeedsCalculator({ fields = needsCalculatorFields
   return (
     <Stack spacing={2.5}>
       <Typography variant="body2" color="text.secondary">
-        Use this simple calculator to get a rough estimate of how much life
-        insurance coverage may be appropriate for your situation.
+        {copy.intro}
       </Typography>
 
-      {fields.map(field => <FieldRenderer key={field.id} field={field} control={form.control} margin="none" errors={hasInput ? Object.fromEntries(Object.entries(validationErrors).map(([id, message]) => [id, { type: 'validate', message }])) : {}} />)}
+      <FieldGrid>{fields.map(field => <FieldRenderer key={field.id} field={field} control={form.control} errors={hasInput ? Object.fromEntries(Object.entries(validationErrors).map(([id, message]) => [id, { type: 'validate', message }])) : {}} />)}</FieldGrid>
 
       {hasInput && !Object.keys(validationErrors).length && (
         <Box
@@ -59,7 +66,7 @@ export default function CoverageNeedsCalculator({ fields = needsCalculatorFields
         >
           <Stack spacing={1}>
             <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
-              Estimated coverage need
+              {copy.title}
             </Typography>
             <Typography
               variant="h5"
@@ -69,14 +76,14 @@ export default function CoverageNeedsCalculator({ fields = needsCalculatorFields
             </Typography>
             <Stack spacing={0.5}>
               <Typography variant="caption" color="text.secondary">
-                Income replacement: {formatUSD(incomeNeed, 0)}
+                {copy['income-label']} {formatUSD(incomeNeed, 0)}
               </Typography>
               <Typography variant="caption" color="text.secondary">
-                Outstanding debts: {formatUSD(debts, 0)}
+                {copy['debts-label']} {formatUSD(debts, 0)}
               </Typography>
               {existing > 0 && (
                 <Typography variant="caption" color="text.secondary">
-                  Less existing coverage: -{formatUSD(existing, 0)}
+                  {copy['existing-label']} -{formatUSD(existing, 0)}
                 </Typography>
               )}
             </Stack>
@@ -85,8 +92,7 @@ export default function CoverageNeedsCalculator({ fields = needsCalculatorFields
               color="text.secondary"
               sx={{ mt: 1, fontStyle: "italic" }}
             >
-              This is a simplified estimate. Your actual needs may vary based on
-              your full financial picture.
+              {copy.disclaimer}
             </Typography>
           </Stack>
         </Box>

@@ -1,5 +1,5 @@
 import { useState, type MouseEvent } from "react";
-import { Box, Button, Chip, CircularProgress, Stack, Typography } from "@mui/material";
+import { Box, Button, Chip, CircularProgress, Link, Stack, Typography } from "@mui/material";
 import VerifiedUserRoundedIcon from "@mui/icons-material/VerifiedUserRounded";
 import { Link as RouterLink } from "react-router-dom";
 import EligibilityFields, { validateEligibility, type EligibilityPresentation } from "../forms/EligibilityFields";
@@ -8,6 +8,7 @@ import type { SiteContent } from "../../content/types";
 import type { ClientConfig, HomePageVariant } from "../../config/clients/types";
 import type { AssociationId } from "../../data/model";
 import { requirementText } from "../../domain/requirementContent";
+import { resolveBrandingTemplate } from "../../content";
 import { homeQuoteSurfaceSx } from "./homeQuoteSurfaceSx";
 
 const SINGLE_TEMPLATE_FORM_MAX_WIDTH = 800;
@@ -15,7 +16,7 @@ type HomeContent = SiteContent;
 type Branding = ClientConfig["branding"];
 
 // ── Home page quote card ───────────────────────────────────────────────────
-// Collects DOB/ZIP/State, then opens the QuoteCalculator drawer pre-filled.
+// Collects DOB/ZIP/State and passes them internally to the calculator.
 type HomeQuoteSectionProps = {
   onOpenQuote: (eligibility: QuoteCalculatorInitialValues) => void;
   eligibilityPresentation?: EligibilityPresentation;
@@ -106,7 +107,7 @@ type HomeHeroProps = {
 };
 
 // The hero owns its existing pieces; they do not need separate component APIs.
-export default function HomeHero({ content, client, effectiveBranding, variant, isSingleTemplate,
+export default function HomeHero({ content, effectiveBranding, variant, isSingleTemplate,
   previewClient, animationSx, onApply, onOpenQuote, eligibilityPresentation, paths = { membership: "/membership", resume: "/resume" }, description }: HomeHeroProps) {
   const showQuoteTool = !isSingleTemplate && variant === "default";
   const showHeroImage = !isSingleTemplate && (variant === "hero-image" || variant === "welcome-back");
@@ -156,12 +157,11 @@ export default function HomeHero({ content, client, effectiveBranding, variant, 
                     sx={{ fontSize: "1rem !important" }}
                   />
                 }
-                label={content.home.hero.tagline}
+                label={resolveBrandingTemplate(content.home.hero.tagline, previewClient?.branding ?? effectiveBranding)}
                 variant="outlined"
                 sx={{
                   borderColor: "divider",
                   bgcolor: "background.default",
-                  fontSize: "0.75rem",
                   height: "auto",
                   py: 0.5,
                   borderRadius: "999px",
@@ -179,17 +179,13 @@ export default function HomeHero({ content, client, effectiveBranding, variant, 
                       : undefined
                   }
                 >
-                  {isSingleTemplate
-                    ? `Coverage designed for ${effectiveBranding.acronym} members.`
-                    : variant === "welcome-back"
-                    ? content.home.hero.welcomeBackTitle
+                  {variant === "welcome-back"
+                    ? requirementText("home.hero.welcome-title")
                     : content.home.hero.title}
                 </Typography>
                 <Typography variant="body1" color="text.secondary">
-                  {isSingleTemplate
-                    ? `Underwritten by New York Life Insurance Company and tailored exclusively for ${effectiveBranding.name} members. Get started below!`
-                    : variant === "welcome-back"
-                    ? content.home.hero.welcomeBackDescription
+                  {variant === "welcome-back"
+                    ? requirementText("home.hero.welcome-description")
                     : previewClient
                       ? content.home.hero.description
                           .replace(
@@ -204,74 +200,25 @@ export default function HomeHero({ content, client, effectiveBranding, variant, 
                             /\{\{associationName\}\}/g,
                             previewClient.branding.name,
                           )
-                      : description ?? content.home.hero.description.replace(/\{\{(?:clientName|associationName)\}\}/g, client.branding.name).replace(/\{\{clientAcronym\}\}/g, client.branding.acronym ?? client.branding.name)}
+                      : description ?? content.home.hero.description.replace(/\{\{(?:clientName|associationName)\}\}/g, effectiveBranding.name).replace(/\{\{clientAcronym\}\}/g, effectiveBranding.acronym ?? effectiveBranding.name)}
                 </Typography>
               </Stack>
 
               {!isSingleTemplate && (
-                <Stack
-                  direction="row"
-                  spacing={1.5}
-                  alignItems="center"
-                  useFlexGap
-                  sx={{ flexWrap: "wrap" }}
-                  mb={1.5}
-                >
-                  <Button
-                    component={RouterLink}
+                <Stack spacing={1.5} alignItems={showQuoteTool || showHeroImage ? "flex-start" : { xs: "flex-start", md: "center" }} sx={{ width: "100%" }}>
+                  <Button component={RouterLink}
                     to={paths[variant === "welcome-back" ? "resume" : "membership"]}
                     onClick={variant === "welcome-back" ? undefined : onApply}
-                    variant="contained"
-                    size="large"
-                    // endIcon={<ArrowRightAltRoundedIcon />}
-                    sx={{
-                      width: { xs: "100%", sm: "auto" },
-                      px: 3.5,
-                      py: "16px",
-                      fontWeight: 700,
-                      whiteSpace: "nowrap",
-                      flexShrink: 0,
-                    }}
-                  >
-                    {variant === "welcome-back"
-                      ? "Continue application"
-                      : content.home.hero.ctaLabel}
+                    variant="contained" size="large"
+                    sx={{ width: { xs: "100%", sm: "auto" }, px: 3.5, py: "16px", whiteSpace: "nowrap" }}>
+                    {variant === "welcome-back" ? requirementText("home.hero.continue-label") : content.home.hero.ctaLabel}
                   </Button>
-
-                  {variant === "welcome-back" ? (
-                    <Button
-                      component={RouterLink}
-                      to={paths.membership}
-                      onClick={onApply}
-                      variant="outlined"
-                      size="large"
-                      sx={{
-                        width: { xs: "100%", sm: "auto" },
-                        px: 3.5,
-                        py: "16px",
-                        whiteSpace: "nowrap",
-                        flexShrink: 0,
-                      }}
-                    >
-                      {content.home.hero.ctaLabel}
-                    </Button>
-                  ) : (
-                    <Button
-                      component={RouterLink}
-                      to={paths.resume}
-                      variant="outlined"
-                      size="large"
-                      sx={{
-                        width: { xs: "100%", sm: "auto" },
-                        px: 3.5,
-                        py: "16px",
-                        whiteSpace: "nowrap",
-                        flexShrink: 0,
-                      }}
-                    >
-                      {content.home.hero.secondaryCtaLabel}
-                    </Button>
-                  )}
+                  <Typography variant="body2">
+                    {requirementText(variant === "welcome-back" ? "home.hero.start-prefix" : "home.hero.resume-prefix")}{" "}
+                    <Link component={RouterLink} to={paths[variant === "welcome-back" ? "membership" : "resume"]} onClick={variant === "welcome-back" ? onApply : undefined}>
+                      {variant === "welcome-back" ? content.home.hero.ctaLabel : content.home.hero.secondaryCtaLabel}
+                    </Link>
+                  </Typography>
                 </Stack>
               )}
 
@@ -285,8 +232,8 @@ export default function HomeHero({ content, client, effectiveBranding, variant, 
             {showHeroImage && (
               <Box
                 component="img"
-                src={`/client/${client.id}/hero.png`}
-                alt={`${client.branding.name} hero`}
+                src={content.home.hero.image.src}
+                alt={content.home.hero.image.alt.replace(/\{\{(?:clientName|associationName)\}\}/g, effectiveBranding.name).replace(/\{\{clientAcronym\}\}/g, effectiveBranding.acronym ?? effectiveBranding.name)}
                 sx={{
                   display: "block",
                   width: "100%",

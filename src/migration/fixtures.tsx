@@ -281,7 +281,7 @@ export function createMigrationDatabase(): DatabaseSchema {
     const client = clientEntities.find((r) => r.id === site.clientId)!;
     const settings = merge(client.configurationDefaults, site.configurationOverrides);
     db.sitePages.push(...pages.map((page, position) => {
-      const explicit = page.id === "health-ci" ? "none" : page.id === "beneficiary" || page.id === "payment" ? settings.pages.requirements?.[page.id] : undefined;
+      const explicit = page.id === "health-tele" ? "none" : page.id === "beneficiary" || page.id === "payment" ? settings.pages.requirements?.[page.id] : undefined;
       const requirement = explicit ?? (settings.pages.excluded?.includes(page.id) ? "none" : settings.pages.optional?.includes(page.id) ? "optional" : "required");
       return { ...identity(`${site.id}.${page.id}`), siteKey: site.id, pageKey: page.id, requirement, position };
     }));
@@ -346,7 +346,7 @@ export function createReviewedMigrationDatabase(): DatabaseSchema {
   applyRatePresentationAdoption(db);
   // Persist the existing page-owned health questions for candidate execution.
   // The compatibility/live fixture is untouched.
-  for (const [pageKey, createFields] of [["health-li", lifeHealthFields], ["health-di", disabilityHealthFields], ["health-si", simplifiedHealthFields]] as const) {
+  for (const [pageKey, createFields] of [["health-tele", lifeHealthFields], ["health-di-supp", disabilityHealthFields], ["health-si", simplifiedHealthFields]] as const) {
     for (const applicant of ["self", "spouse"] as const) for (const [position, definition] of createFields(applicant).entries()) {
       const fieldKey = definition.id;
       if (!db.fields.some(f => f.key === fieldKey)) db.fields.push({ ...row(fieldKey, definition, position), ...libraryMetadata("fields", fieldKey, `prototype:${pageKey}`) });

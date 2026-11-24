@@ -1,0 +1,36 @@
+{
+  "title": "Troubleshooting",
+  "description": "Common questions about application access, technical issues and emails.",
+  "questions": [
+    {
+      "id": "applicant-technical-issue",
+      "question": "The applicant experienced a technical issue while completing the application. How can they resume?",
+      "answers": [
+        { "label": "Before DocuSign", "text": "The applicant can return to their email and open the application link sent by the advisor. Alternatively, the advisor can reopen the saved application and resend the application-link email to the applicant." },
+        { "label": "During or after DocuSign", "text": "Only the applicant can resume the application, using the application link in the email the advisor already sent. At this point, the advisor cannot reopen the application to resend the link." }
+      ]
+    },
+    {
+      "id": "authentication-issue",
+      "question": "The applicant or advisor cannot resume because of an authentication issue. What should they do?",
+      "answers": [
+        { "text": "Check that the browser is up to date, then try the authentication process again." }
+      ]
+    },
+    {
+      "id": "missing-application-emails",
+      "question": "The applicant cannot find the application emails. What should the advisor suggest?",
+      "answers": [
+        { "text": "Advise the applicant to check their spam or junk folder for the application emails." }
+      ]
+    },
+    {
+      "id": "advisor-technical-issue",
+      "question": "The advisor experienced a technical issue while starting or preparing an application. How can they recover?",
+      "answers": [
+        { "text": "If the application was saved and has not reached DocuSign, return to Advisor Login, choose Continue, locate the saved application using the applicant email, and complete authentication before continuing." },
+        { "text": "Once the application has reached DocuSign, the advisor cannot reopen it to resend the link. The applicant must use the application-link email already sent by the advisor." }
+      ]
+    }
+  ]
+}

@@ -2,7 +2,41 @@
   "page": "resume",
   "components": [
     {
-      "type": "resume"
+      "type": "StandaloneFormPage",
+      "components": [
+        {
+          "type": "PageShell",
+          "components": [
+            {
+              "type": "FormShell",
+              "components": [
+                {
+                  "type": "PageHeader"
+                },
+                {
+                  "type": "PageAlert",
+                  "purpose": "expired or invalid magic-link page error; link request remains available"
+                },
+                {
+                  "type": "FieldRenderer",
+                  "section": "email"
+                },
+                {
+                  "type": "ExpiringCodeAlert",
+                  "purpose": "successful link request and expiry feedback"
+                },
+                {
+                  "type": "ResendCountdownRow"
+                },
+                {
+                  "type": "Button"
+                }
+              ]
+            }
+          ],
+          "mapping": "resume"
+        }
+      ]
     }
   ],
   "definition": {
@@ -14,14 +48,27 @@
     "displayName": "Resume"
   },
   "position": 17,
-  "fieldBindings": [
-    "resume-email"
-  ],
-  "looseFields": [
-    "resume-email"
-  ],
   "layout": {
-    "sections": {}
+    "sections": {
+      "email": {
+        "id": "resumeEmail",
+        "for": "self",
+        "fields": [
+          "resume-email"
+        ]
+      },
+      "advisor-identity": {
+        "id": "resumeAdvisorIdentity",
+        "for": "self",
+        "fields": [
+          "resume-phone"
+        ],
+        "when": {
+          "field": "advisor-flow-type",
+          "equals": "saved"
+        }
+      }
+    }
   },
   "content": {
     "wording": [
@@ -30,19 +77,44 @@
       "page.resume.nav-title"
     ],
     "runtime": [
-      "application.ui.enter-a-valid-email-address",
-      "application.ui.application-recovery-is-unavailable-please-try-again-later",
-      "application.ui.resume-request-failed",
       "application.ui.a-secure-link-has-been-sent-to",
-      "application.ui.open-your-email-and-click-the-link-to-continue",
-      "application.ui.sending-secure-link",
-      "navigation.next",
-      "application.ui.your",
-      "application.ui.secure-link",
-      "application.ui.verification-code",
+      "application.ui.application-recovery-is-unavailable-please-try-again-later",
       "application.ui.has-expired",
-      "application.ui.resend",
-      "application.ui.expires-in"
+      "application.ui.open-your-email-and-click-the-link-to-continue",
+      "application.ui.secure-link",
+      "application.ui.sending-secure-link",
+      "application.ui.verification-code",
+      "application.ui.your",
+      "navigation.next",
+      "recovery.link-expired.message",
+      "resume.error.attempts-locked",
+      "resume.error.code-limit",
+      "resume.error.code-replaced",
+      "resume.error.invalid-code",
+      "resume.error.link-limit",
+      "resume.error.technical",
+      "resume.feedback.code",
+      "resume.feedback.expired",
+      "resume.feedback.expires-in",
+      "resume.feedback.link",
+      "resume.feedback.resend-code",
+      "resume.feedback.resend-link",
+      "resume.mfa.remaining",
+      "resume.mfa.warning-message",
+      "resume.mfa.warning-title",
+      "resume.advisor.identity"
+    ],
+    "linkExpiry": [
+      "recovery.link-expired.title",
+      "recovery.link-expired.message",
+      "recovery.link-expired.guidance"
     ]
-  }
+  },
+  "fieldMapping": {
+    "page": "resume"
+  },
+  "retiredContentKeys": [
+    "resume.error.mfa-expired",
+    "resume.error.mfaExpired"
+  ]
 }

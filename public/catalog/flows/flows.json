@@ -14,21 +14,7 @@
       "sourceReference": "prototype:flows/client:waepa.tpaVerification"
     }
   ],
-  "siteFlows": [
-    {
-      "id": "client:waepa.tpaVerification",
-      "key": "client:waepa.tpaVerification",
-      "scope": "client",
-      "clientKey": "waepa",
-      "siteKey": null,
-      "flowKey": "client:waepa.tpaVerification",
-      "flowId": "tpaVerification",
-      "position": 0,
-      "displayId": 68641818211060,
-      "providedBy": null,
-      "sourceReference": "prototype:siteFlows/client:waepa.tpaVerification"
-    }
-  ],
+  "siteFlows": [],
   "flowSteps": [
     {
       "id": "client:waepa.tpaVerification.waepa-attestation",

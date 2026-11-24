@@ -1,3 +1,5 @@
+// Historical adoption: resolve the captured input, never today's application source.
+// Historical normalization: assertions resolve the captured snapshot explicitly.
 import { expect, it, afterEach } from "vitest";
 import { existsSync, writeFileSync } from "node:fs";
 import { createMigrationDatabase, createReviewedMigrationDatabase } from "./fixtures";
@@ -5,16 +7,17 @@ import { consolidateRuleDocumentationOwnership } from "./ruleDocumentationOwners
 import { materializeRuleDocumentation } from "../domain/ruleDocumentation";
 import { ruleAuthority } from "../domain/ruleAuthority";
 import { validateMigrationDatabase } from "./integrity";
-import { resolveEffectiveSite } from "../domain/effectiveSite";
-import { installPrototypeLibrary, resolvePrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotSite as resolveEffectiveSite } from "../domain/effectiveSite";
+import { installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import { evaluateConditionDefinition } from "../config/conditions/evaluateConditions";
 
 const db = createReviewedMigrationDatabase();
 afterEach(() => installPrototypeLibrary(null));
 
-it("replaces 95 duplicate descriptions with rule documentation links and retains the distinct source detail", () => {
+it("replaces captured duplicate descriptions with rule documentation links and retains the distinct source detail", () => {
   const previous = createMigrationDatabase();
-  expect(db.ruleActions.filter(row => row.definition.kind === "rule-documentation")).toHaveLength(95);
+  expect(db.ruleActions.filter(row => row.definition.kind === "rule-documentation")).toHaveLength(previous.ruleActions.filter(row => row.definition.kind === "documented-behavior" && row.key.endsWith(".behavior")).length);
   for (const action of db.ruleActions) {
     const rule = db.rules.find(rule => rule.key === action.ruleKey)!;
     expect(materializeRuleDocumentation(rule, action)).toEqual(previous.ruleActions.find(row => row.key === action.key)!.definition);
@@ -74,8 +77,8 @@ it("accounts for every rule while distinguishing routing, planned behavior and n
       assignments: db.ruleAssignments.filter(assignment => assignment.ruleKey === row.key), conditionKeys: db.ruleConditions.filter(link => link.ruleKey === row.key).map(link => link.conditionKey),
       sourcePredicateKeys: db.rulePredicates.filter(predicate => predicate.ruleKey === row.key).map(predicate => predicate.key), sourceActionKeys: db.structuredRuleActions.filter(action => action.ruleKey === row.key).map(action => action.key) };
   });
-  expect(rows).toHaveLength(115);
-  expect(new Set(rows.map(row => row.key)).size).toBe(115);
+  expect(rows).toHaveLength(db.rules.length);
+  expect(new Set(rows.map(row => row.key)).size).toBe(db.rules.length);
   expect(rows.filter(row => row.authority.kind === "routing")).toHaveLength(5);
   expect(rows.filter(row => row.authority.kind === "planned")).toHaveLength(4);
   expect(rows.filter(row => row.authority.kind === "source-pattern")).toHaveLength(9);

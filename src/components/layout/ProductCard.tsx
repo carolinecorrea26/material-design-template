@@ -2,6 +2,7 @@ import { forwardRef, type ReactNode } from "react";
 import { Link, Paper, Stack, Typography, type PaperProps } from "@mui/material";
 import { alpha, styled } from "@mui/material/styles";
 import QuickDecisionIndicator from "../coverage/QuickDecisionIndicator";
+import presentation from '../../../requirements/global/presentation-tokens.json';
 
 const ProductSurface = styled(Paper, {
   shouldForwardProp: prop => prop !== "selected",
@@ -12,6 +13,7 @@ const ProductSurface = styled(Paper, {
   gap: theme.spacing(1.5),
   border: `1px solid ${selected ? theme.palette.success.main : theme.palette.divider}`,
   boxShadow: selected ? theme.shadows[1] : "none",
+  ...(selected === false && { backgroundColor: alpha(theme.palette.primary.main, presentation.productCards.unselectedPrimaryOpacity) }),
   ...(selected && { backgroundColor: alpha(theme.palette.success.main, 0.03) }),
 }));
 
@@ -19,6 +21,7 @@ export type ProductCardProps = PaperProps & {
   selected?: boolean;
   productName?: ReactNode;
   description?: ReactNode;
+  descriptionNotice?: string;
   brochureUrl?: string;
   quickDecision?: boolean;
   titleAdornment?: ReactNode;
@@ -27,7 +30,7 @@ export type ProductCardProps = PaperProps & {
 
 /** Shared product container and heading for shopping, beneficiary, payment and receipt flows. */
 const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(function ProductCard({
-  productName, description, brochureUrl, quickDecision, titleAdornment, headerAction, children, ...props
+  productName, description, descriptionNotice, brochureUrl, quickDecision, titleAdornment, headerAction, children, ...props
 }, ref) {
   return <ProductSurface ref={ref} {...props}>
     {productName != null && <Stack spacing={0.25}>
@@ -40,6 +43,7 @@ const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(function Produc
         {headerAction}
       </Stack>
       {description && <Typography variant="body2" color="text.secondary">{description}</Typography>}
+      {descriptionNotice && <Typography variant="body2" color="text.secondary" component="strong" sx={{ display: 'block', fontWeight: 700 }}>{descriptionNotice}</Typography>}
     </Stack>}
     {children}
   </ProductSurface>;

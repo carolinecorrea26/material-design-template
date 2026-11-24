@@ -61,5 +61,112 @@
         "self"
       ]
     }
-  ]
+  ],
+  "constraints": {
+    "payment-information-opt-in": {
+      "included": true,
+      "required": true,
+      "fixedProperties": [
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength"
+      ]
+    },
+    "payment-method": {
+      "included": true,
+      "required": true,
+      "fixedProperties": [
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength"
+      ]
+    },
+    "payment-frequency": {
+      "included": true,
+      "required": true,
+      "fixedProperties": [
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength"
+      ]
+    },
+    "payment-shared-method": {
+      "included": true,
+      "required": true,
+      "fixedProperties": [
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength"
+      ]
+    },
+    "payment-shared-frequency": {
+      "included": true,
+      "required": true,
+      "fixedProperties": [
+        "options",
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength"
+      ]
+    },
+    "bank-name-on-account": {
+      "included": true,
+      "required": true,
+      "fixedProperties": [
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength"
+      ]
+    },
+    "bank-institution": {
+      "included": true,
+      "required": true,
+      "fixedProperties": [
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength"
+      ]
+    },
+    "bank-routing-number": {
+      "included": true,
+      "required": true,
+      "fixedProperties": [
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength"
+      ]
+    },
+    "bank-account-number": {
+      "included": true,
+      "required": true,
+      "fixedProperties": [
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength"
+      ]
+    },
+    "bank-authorization": {
+      "included": true,
+      "required": true,
+      "fixedProperties": [
+        "format",
+        "inputMode",
+        "minLength",
+        "maxLength"
+      ]
+    }
+  }
 }

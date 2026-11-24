@@ -2,7 +2,15 @@
   "page": "docusign",
   "components": [
     {
-      "type": "docusign"
+      "type": "PrototypeHandoffPage",
+      "purpose": "shared full-screen prototype sequence; delegates saving and transition lifecycle to FormRoutePage",
+      "components": [
+        {
+          "type": "FormRoutePage",
+          "mapping": "form-route-page"
+        }
+      ],
+      "mapping": "docusign"
     }
   ],
   "definition": {
@@ -12,11 +20,9 @@
     "groupId": "review",
     "flow": "application",
     "healthGate": false,
-    "displayName": "Docusign"
+    "displayName": "DocuSign"
   },
   "position": 15,
-  "fieldBindings": [],
-  "looseFields": [],
   "layout": {
     "sections": {}
   },
@@ -27,10 +33,13 @@
       "page.docusign.nav-title"
     ],
     "runtime": [
-      "application.ui.complete-the-simulated-signing-step-before-continuing",
-      "application.ui.prototype-preview-docusign-is-not-connected-use-the-simulation-below-to-previe",
-      "application.ui.simulate-signing-completion",
-      "application.ui.support-reference"
+      "handoff.continue",
+      "handoff.image-unavailable",
+      "resume.error.technical"
     ]
-  }
+  },
+  "retiredContentKeys": [
+    "application.ui.prototype-preview-docusign-is-not-connected-use-the-simulation-below-to-previe",
+    "application.ui.simulate-signing-completion"
+  ]
 }

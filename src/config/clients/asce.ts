@@ -1,4 +1,3 @@
-import { tpaVerificationFlow } from "../../content/docs/flows/tpaVerificationFlow";
 import type { ClientConfig } from "./types";
 import { rangeAssignments } from "../coverages/amounts";
 
@@ -14,11 +13,6 @@ const chatUrl =
 export const asceClient: ClientConfig = {
   id: "asce",
   theme: { type: "preset", preset: "default" },
-  flows: { overrides: { tpaVerification: {
-    ...tpaVerificationFlow,
-    intro: "ASCE lookup uses Membership ID, First Name, Last Name, DOB and state. When triggered, collect the full residential address before opening member verification. Existing member + active coverage proceeds to LexisNexis; pass enables portfolio and TPA auto-approval, fail/skipped goes to TPA admin manual review without a portfolio.",
-    nodes: tpaVerificationFlow.nodes.map(node => node.id === "tpa-eligibility-lookup" ? { ...node, description: "Look up First Name, Last Name, DOB, Membership ID and state. When triggered, collect the full residential address before member verification. Return existing-member and active-coverage status." } : node),
-  } } },
   tpaIntegration: { mode: "coverage-verification", requireAddressBeforeVerification: true, lookupFields: ["first-name", "last-name", "birth-date", "member-id", "state-province"], prototypeRecords: [{ facts: { "first-name": "Taylor", "last-name": "Morgan", "birth-date": "1990-08-26", "member-id": "ASCE12345", "state-province": "NY" }, activeCoverage: true }] },
   branding: {
     name: "American Society of Civil Engineers",
@@ -41,7 +35,7 @@ export const asceClient: ClientConfig = {
     },
   },
   pages: {
-    excluded: ["health-si", "health-li", "health-di", "health-ci", "health-cir"],
+    excluded: ["health-si", "health-tele", "health-di-supp", "health-cir"],
     requirements: {
       beneficiary: "required",
       payment: "required",

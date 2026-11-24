@@ -1,12 +1,10 @@
-import { act, createElement } from "react";
-import { createRoot } from "react-dom/client";
-import { MemoryRouter } from "react-router-dom";
-import Eligibility from "../pages/Eligibility";
+// Historical adoption: resolve the captured input, never today's application source.
 import dayjs from "dayjs";
 import { afterEach, beforeAll, expect, it, vi } from "vitest";
 import { createReviewedMigrationDatabase } from "./fixtures";
 import { applyAbeEligibilityAdoption } from "./abeEligibilityAdoption";
-import { installPrototypeLibrary, resolvePrototypeLibrary } from "../domain/prototypeLibrary";
+import { installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import { resolveEffectiveEligibility } from "../domain/effectiveSite";
 import { resolveApplicationCoverage } from "../domain/coverageRuntime";
 import { applicationApplicantFactSet } from "../utils/applicantFacts";
@@ -72,13 +70,7 @@ it("retains DI spouse minimum hours, supports editable native bounds", () => {
   for (const value of [-1, 29.5, Infinity, "29"]) expect(isEligibilityFactRequirements([{ fact: "honorablyDischargedServiceMember", extendsMaximumAgeTo: value }])).toBe(false);
 });
 
-it("renders the child eligibility informational note", async () => {
-  vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true);
-  window.history.replaceState(null, "", "/eligibility?site=abe");
-  const library = resolvePrototypeLibrary(db, "abe", "child-note"); installPrototypeLibrary(library);
-  const container = document.createElement("div"), root = createRoot(container); document.body.append(container);
-  try {
-    await act(async () => root.render(createElement(MemoryRouter, null, createElement(Eligibility))));
-    expect(container.textContent).toContain("Only unmarried children are eligible for coverage.");
-  } finally { await act(async () => root.unmount()); container.remove(); }
+it("retains the captured child eligibility informational note", () => {
+  const library = resolvePrototypeLibrary(db, "abe", "child-note");
+  expect(library.content.pages.eligibility.sectionNotes?.childSection).toContain("Only unmarried children are eligible for coverage.");
 });

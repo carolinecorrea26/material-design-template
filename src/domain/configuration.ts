@@ -146,10 +146,12 @@ export type ClientAmountByFrequency = {
 
 export type ClientProductEstimatedCostBreakdown = {
   enabled?: boolean;
+  /** Historical unreviewed-client shape only; reviewed cards use quote itemization. */
   policyFee?: {
     label?: string;
     amount: ClientAmountByFrequency;
   };
+  /** Historical unreviewed-client shape only; never adds a display-owned charge. */
   childApplicantRider?: {
     enabled?: boolean;
     label?: string;
@@ -168,17 +170,18 @@ export type ClientCoverages = {
   productOrder?: CoverageId[];
   /** Display order override; omitted categories follow the canonical default order. */
   categoryOrder?: CoverageCategoryId[];
+  /** Shared category names used by Home, Coverage and About Coverage. */
+  categoryNames?: Partial<Record<CoverageCategoryId, string>>;
   categories?: CoverageCategoryId[];
   enabled?: CoverageId[];
   /** Replaces global amount assignments with the same exact scope; unmatched scopes are inherited. */
   coverageAmounts?: Partial<Record<CoverageId, CoverageAmountAssignment[]>>;
   descriptions?: Partial<Record<CoverageId, string>>;
   overrides?: Partial<Record<CoverageId, ClientCoverageOverrides>>;
-  /** When true, all coverage category accordions are expanded by default. */
-  allCategoriesExpanded?: boolean;
   estimatedRateDisplay?: ClientEstimatedRateDisplay;
   /**
    * Controls the wording of the "apply for additional coverage" warning on the Coverage page.
+   * Message selection only; does not change benefit calculations or in-force deductions.
    * "applyForAdditional" (default): "...apply only for the additional coverage you want."
    * "applyForTotal": "...apply for the total amount of coverage you want (amount you currently have + amount you're requesting)."
    */
@@ -270,7 +273,8 @@ export type ClientFeatures = {
   linkUrl?: string;
   linkLabel?: string;
   homePageVariant?: HomePageVariant;
-  applyingStepsPresentation?: "image" | "animated";
+  homeLandingNotice?: boolean;
+  applyingStepsPresentation?: "static" | "image" | "animated";
   /** Optional decorative scene, used only by the single-page template. */
   singlePageArtwork?: "none" | "clouds-cat-umbrella";
   defaultTemplate?: FormTemplate;
@@ -333,6 +337,8 @@ export type ClientEmailSupport = {
 };
 
 export type ClientConfig = {
+  /** Derived executable gates from the captured fresh-start rule projection. */
+  routingGates?: import("./routingRules").FlowGateDefinition[];
   applicantExperience?: import("./applicantExperience").ApplicantExperience;
   id: ClientId;
   branding: ClientBranding;
@@ -348,7 +354,7 @@ export type ClientConfig = {
   flows?: ClientFlows;
   /** Client-owned TPA policy; prototype records stand in for API responses. */
   tpaIntegration?: {
-    mode: "coverage-verification" | "membership-auto-approval";
+    mode: "none" | "coverage-verification" | "membership-auto-approval";
     lookupFields: string[];
     requireAddressBeforeVerification?: boolean;
     prototypeRecords?: Array<{ facts: Record<string, string>; activeCoverage: boolean }>;

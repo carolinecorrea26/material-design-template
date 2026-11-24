@@ -2,7 +2,33 @@
   "page": "resume-method",
   "components": [
     {
-      "type": "resume-method"
+      "type": "StandaloneFormPage",
+      "components": [
+        {
+          "type": "PageShell",
+          "components": [
+            {
+              "type": "FormShell",
+              "components": [
+                {
+                  "type": "PageHeader"
+                },
+                {
+                  "type": "ResumeSessionWarning",
+                  "purpose": "fixed MFA-session deadline warning; shared PageAlert without session extension"
+                },
+                {
+                  "type": "FieldRenderer",
+                  "section": "delivery-method"
+                },
+                {
+                  "type": "Button"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
   "definition": {
@@ -14,14 +40,16 @@
     "displayName": "Resume Method"
   },
   "position": 18,
-  "fieldBindings": [
-    "resume-delivery-method"
-  ],
-  "looseFields": [
-    "resume-delivery-method"
-  ],
   "layout": {
-    "sections": {}
+    "sections": {
+      "delivery-method": {
+        "id": "resumeDeliveryMethod",
+        "for": "self",
+        "fields": [
+          "resume-delivery-method"
+        ]
+      }
+    }
   },
   "content": {
     "wording": [
@@ -30,11 +58,27 @@
       "page.resume-method.nav-title"
     ],
     "runtime": [
-      "application.ui.challenge-failed",
-      "application.ui.choose-how-you-would-like-to-receive-your-verification-code",
-      "application.ui.open-a-valid-link-from-your-resume-request-no-application-has-been-loaded",
       "application.ui.sending-code",
-      "navigation.next"
+      "navigation.next",
+      "recovery.link-expired.message",
+      "resume.error.attempts-locked",
+      "resume.error.code-limit",
+      "resume.error.code-replaced",
+      "resume.error.invalid-code",
+      "resume.error.link-limit",
+      "resume.error.technical",
+      "resume.feedback.code",
+      "resume.feedback.expired",
+      "resume.feedback.expires-in",
+      "resume.feedback.link",
+      "resume.feedback.resend-code",
+      "resume.feedback.resend-link",
+      "resume.mfa.remaining",
+      "resume.mfa.warning-message",
+      "resume.mfa.warning-title"
     ]
+  },
+  "fieldMapping": {
+    "page": "resume-method"
   }
 }

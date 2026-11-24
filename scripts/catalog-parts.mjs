@@ -1,5 +1,5 @@
 import fs from 'node:fs';
-import { compileReviewedRequirements } from './requirement-source.mjs';
+import { compileReviewedRequirements, readRequirementSource } from './requirement-source.mjs';
 import { libraryOwners } from '../src/domain/libraryOwnership.ts';
 import { normalizedSnapshotTables } from '../src/persistence/catalogTables.ts';
 import { validateIdentityCatalog } from '../src/persistence/identityCatalog.ts';
@@ -62,9 +62,9 @@ export function readCatalogParts() {
   return { formatVersion: 1, data: compileReviewedRequirements(tables), analyticsTags };
 }
 
-// Sites the deployment bundle carries. Only ASCE is active while it is being finalized; the
-// part files keep every site, so adding a key back here and rebuilding restores it.
-export const activeSites = ['asce'];
+// Deployment enrollment follows the authored effective-Site sources. Other
+// captured sites remain parked in the part files until explicitly migrated.
+export const activeSites = Object.keys(readRequirementSource().fields.sites);
 
 /** The part files filtered to the active sites: the bundle the prototype, Library and Storybook load. */
 export function activeCatalog(catalog = readCatalogParts()) {

@@ -4,14 +4,16 @@ import ControlledFieldRenderer from "../forms/ControlledFieldRenderer";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Button } from "@mui/material";
 import PageShell from "./PageShell";
-import HelpChips from '../content/HelpChips';
+import PageHelpChips from '../content/PageHelpChips';
+import { resolveMappedFields } from '../../domain/requirementFields';
+import { requirementValidationMessage } from '../../domain/requirementValidations';
+const fields = [...resolveMappedFields({ component: 'membership' }), ...resolveMappedFields({ component: 'quote-calculator' })];
 
 /**
  * PageShell is the generic centered page wrapper (title, error banner, help
  * content, max-width, action row) underneath the shared FormRoutePage
- * template. In practice it's only ever used through FormRoutePage — no page
- * file calls it directly — but it's documented standalone here since it's
- * the real reusable primitive.
+ * template and StandaloneFormPage. The header and page feedback delegate
+ * to PageHeader and PageAlert.
  */
 const meta = {
   id: "layout-pageshell",
@@ -25,8 +27,8 @@ export default meta;
 export const Default: StoryObj = {
   render: () => (
     <PageShell title="Profile" subhead="Tell us a bit about yourself.">
-      <ExampleField field={{ id: "first-name", label: "First name", inputType: "text" }} />
-      <ExampleField field={{ id: "last-name", label: "Last name", inputType: "text" }} />
+      <ExampleField fieldId="first-name" />
+      <ExampleField fieldId="last-name" />
     </PageShell>
   ),
 };
@@ -34,7 +36,7 @@ export const Default: StoryObj = {
 export const WithBackButton: StoryObj = {
   render: () => (
     <PageShell title="Profile" onBack={() => {}}>
-      <ExampleField field={{ id: "first-name", label: "First name", inputType: "text" }} />
+      <ExampleField fieldId="first-name" />
     </PageShell>
   ),
 };
@@ -42,7 +44,7 @@ export const WithBackButton: StoryObj = {
 export const WithError: StoryObj = {
   render: () => (
     <PageShell title="Profile" error="Please complete the required fields before continuing.">
-      <ExampleField field={{ id: "first-name", label: "First name", inputType: "text", required: true }} error="First name is required." />
+      <ExampleField fieldId="first-name" error={requirementValidationMessage("required-fields", { label: "First name" })} />
     </PageShell>
   ),
 };
@@ -52,10 +54,10 @@ export const WithHelpAndActions: StoryObj = {
     <PageShell
       title="Coverage"
       subhead="Choose the coverage you'd like to apply for."
-      help={<HelpChips items={[{ id: 'coverage-options', label: 'Coverage options' }]} onSelect={() => {}} />}
+      help={<PageHelpChips items={[{ id: 'coverage-options', label: 'Coverage options' }]} onSelect={() => {}} />}
       actions={<Button variant="contained">Continue</Button>}
     >
-      <ExampleField field={{ id: 'coverage-amount', label: 'Coverage amount', inputType: 'number' }} />
+      <ExampleField fieldId="average-monthly-income" />
     </PageShell>
   ),
 };
@@ -64,7 +66,7 @@ export const NoTitle: StoryObj = {
   name: "noTitle (title/back/error/help suppressed)",
   render: () => (
     <PageShell title="This title is not rendered" noTitle>
-      <ExampleField field={{ id: 'first-name', label: 'First name', inputType: 'text' }} />
+      <ExampleField fieldId="first-name" />
     </PageShell>
   ),
 };
@@ -73,7 +75,7 @@ export const NarrowMaxWidth: StoryObj = {
   name: "maxWidth — narrow (resume-style pages)",
   render: () => (
     <PageShell title="Verify your email" maxWidth={480}>
-      <ExampleField field={{ id: "email", label: "Email", inputType: "text" }} />
+      <ExampleField fieldId="email" />
     </PageShell>
   ),
 };
@@ -82,12 +84,12 @@ export const FullWidth: StoryObj = {
   name: 'maxWidth="100%" (vertical-stepper pages)',
   render: () => (
     <PageShell title="Coverage" maxWidth="100%">
-      <ExampleField field={{ id: 'coverage-amount', label: 'Coverage amount', inputType: 'number' }} />
+      <ExampleField fieldId="average-monthly-income" />
     </PageShell>
   ),
 };
 
-function ExampleField(props: Omit<React.ComponentProps<typeof ControlledFieldRenderer>, "value" | "onChange">) {
+function ExampleField({ fieldId, ...props }: Omit<React.ComponentProps<typeof ControlledFieldRenderer>, "field" | "value" | "onChange"> & { fieldId: string }) {
   const [value, setValue] = useState<string | boolean | string[]>("");
-  return <ControlledFieldRenderer {...props} value={value} onChange={setValue} />;
+  return <ControlledFieldRenderer field={fields.find(field => field.id === fieldId)!} {...props} value={value} onChange={setValue} />;
 }

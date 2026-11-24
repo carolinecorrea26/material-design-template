@@ -1,9 +1,10 @@
+import type { QuotePriceComponent } from './rateBreakdown';
 import type { ReferenceRateTable } from './ratePresentation';
 import type { quoteCandidateWithMock } from './mockRating';
 
 /** UI presentation is explicit: a missing number is never evidence of a service failure. */
 export type RateDisplayState =
-  | { status: 'available'; amount: number }
+  | { status: 'available'; amount: number; breakdown?: QuotePriceComponent[] }
   | { status: 'loading'; previousAmount?: number }
   | { status: 'unavailable'; reason: 'technical' }
   | { status: 'reference-table'; table: ReferenceRateTable }
@@ -15,7 +16,7 @@ export function rateDisplayForAmount(amount: number): RateDisplayState {
   return Number.isFinite(amount) && amount >= 0 ? { status: 'available', amount } : { status: 'needs-information' };
 }
 export function rateDisplayFromQuote(quote: Awaited<ReturnType<typeof quoteCandidateWithMock>>): RateDisplayState {
-  if (quote.displayPrice && quote.amount !== null) return rateDisplayForAmount(quote.amount);
+  if (quote.displayPrice && quote.amount !== null) return { ...rateDisplayForAmount(quote.amount), ...('breakdown' in quote && quote.breakdown ? { breakdown: quote.breakdown } : {}) };
   if ('failureKind' in quote && quote.failureKind === 'technical') return { status: 'unavailable', reason: 'technical' };
   if (quote.status === 'needs-information' || 'failureKind' in quote && quote.failureKind === 'inputs') return { status: 'needs-information' };
   return { status: 'provided-separately' };

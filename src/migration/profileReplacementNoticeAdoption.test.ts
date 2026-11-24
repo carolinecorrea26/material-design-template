@@ -1,8 +1,9 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import { expect, it } from "vitest";
 import { createReviewedMigrationDatabase } from "./fixtures";
 import { applyProfileReplacementNoticeAdoption } from "./profileReplacementNoticeAdoption";
 import { currentMcrSource } from "./currentMcr";
-import { resolvePrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import { isApplicantExperience } from "../domain/applicantExperience";
 import { validateMigrationDatabase } from "./integrity";
 it("adopts the complete source text as editable shared Profile configuration and preserves ABE Review", () => {

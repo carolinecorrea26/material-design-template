@@ -43,7 +43,7 @@ export default function LibrarySiteSelector({ siteId, onChange }: { siteId: Libr
   if (error) return <Alert severity="error">Site identities could not be loaded: {error}<Button onClick={() => { setError(null); setGeneration(value => value + 1); }}>Retry</Button></Alert>;
   if (!catalog) return <Typography>Loading Site identities…</Typography>;
   const { sites, clients } = catalog;
-  const options = [{ id: "all", label: "All sites", group: "All sites" }, ...sites.map(site => {
+  const options = [{ id: "all", label: "Global template", group: "Global template" }, ...sites.map(site => {
     const client = clients.find(c => c.id === site.clientId);
     const clientKey = client?.key;
     return { id: site.key, label: `${client?.acronym ?? site.clientId} · ${site.key}${site.key === clientKey ? '' : ` · ${site.name}`}`, group: client?.acronym ?? site.clientId };
@@ -53,6 +53,6 @@ export default function LibrarySiteSelector({ siteId, onChange }: { siteId: Libr
   return <Paper component="section" aria-label="Site scope selector" variant="outlined" sx={{ p: 2 }}>
     <Typography variant="subtitle1" sx={{ fontWeight: 800 }}>Effective Site scope</Typography>
     <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>All shows the complete Library catalog and default placements. Choose a Site to see its effective configuration and applicable shared standards.</Typography>
-    <Autocomplete options={options} value={selected} disableClearable groupBy={option => option.group} getOptionLabel={option => option.label} isOptionEqualToValue={(a, b) => a.id === b.id} onChange={(_, option) => onChange(option.id)} sx={{ maxWidth: 640 }} renderInput={params => <TextField {...params} label="Search sites by client or site name" placeholder="Search, e.g. WAEPA" />} />
+    <Autocomplete options={options} value={selected} disableClearable groupBy={option => option.group} getOptionLabel={option => option.label} isOptionEqualToValue={(a, b) => a.id === b.id} onChange={(_, option) => onChange(option.id)} sx={{ maxWidth: 640 }} renderInput={params => <TextField {...params} label="Search sites by client or site name" placeholder="Search by client or site name" />} />
   </Paper>;
 }

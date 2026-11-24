@@ -2,7 +2,80 @@
   "page": "profile",
   "components": [
     {
-      "type": "profile"
+      "type": "FormRoutePage",
+      "mapping": "form-route-page",
+      "components": [
+        {
+          "type": "PageHeader"
+        },
+        {
+          "type": "PageAlert"
+        },
+        {
+          "type": "ProfileSections",
+          "mapping": "profile",
+          "components": [
+            {
+              "type": "ProfilePersonalInformation",
+              "section": "profile-personal-self"
+            },
+            {
+              "type": "PhysicianInformation",
+              "section": "profile-personal-self-physician"
+            },
+            {
+              "type": "ProfilePersonalInformation",
+              "section": "profile-personal-spouse"
+            },
+            {
+              "type": "PhysicianInformation",
+              "section": "profile-personal-spouse-physician"
+            },
+            {
+              "type": "SectionDivider",
+              "section": "profile-financial-self",
+              "components": [
+                {
+                  "type": "FieldRenderer"
+                },
+                {
+                  "type": "DynamicList",
+                  "purpose": "configured existing-disability records for self"
+                }
+              ]
+            },
+            {
+              "type": "SectionDivider",
+              "section": "profile-financial-spouse",
+              "components": [
+                {
+                  "type": "FieldRenderer"
+                },
+                {
+                  "type": "DynamicList",
+                  "purpose": "configured existing-disability records for spouse"
+                }
+              ]
+            },
+            {
+              "type": "SectionDivider",
+              "section": "profile-financial-questionnaire-self",
+              "components": [
+                {
+                  "type": "FieldRenderer"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "PageNav"
+        }
+      ]
+    },
+    {
+      "type": "SendApplicationDialog",
+      "purpose": "existing advisor handoff"
     }
   ],
   "definition": {
@@ -15,180 +88,6 @@
     "displayName": "Profile"
   },
   "position": 6,
-  "fieldBindings": [
-    "physician-first-name",
-    "physician-last-name",
-    "physician-phone",
-    "medical-facility-name",
-    "medical-facility-street-address",
-    "medical-facility-apt-suite",
-    "medical-city",
-    "medical-state",
-    "medical-zip-code",
-    "height-feet",
-    "height-inches",
-    "weight-lbs",
-    "weight-12-months-ago-lbs",
-    "social-security-number",
-    "marital-status",
-    "has-drivers-license",
-    "drivers-license-number",
-    "drivers-license-state",
-    "intend-live-outside-us",
-    "outside-us-months",
-    "outside-us-country",
-    "travel-outside-us-six-months",
-    "travel-outside-us-country",
-    "spouse-height-feet",
-    "spouse-height-inches",
-    "spouse-weight-lbs",
-    "spouse-weight-12-months-ago-lbs",
-    "spouse-social-security-number",
-    "spouse-has-drivers-license",
-    "spouse-drivers-license-number",
-    "spouse-drivers-license-state",
-    "spouse-intend-live-outside-us",
-    "spouse-outside-us-months",
-    "spouse-outside-us-country",
-    "spouse-travel-outside-us-six-months",
-    "spouse-travel-outside-us-country",
-    "spouse-physician-first-name",
-    "spouse-physician-last-name",
-    "spouse-physician-phone",
-    "spouse-medical-facility-name",
-    "spouse-medical-facility-street-address",
-    "spouse-medical-facility-apt-suite",
-    "spouse-medical-city",
-    "spouse-medical-state",
-    "spouse-medical-zip-code",
-    "has-other-life-insurance",
-    "existing-life-insurance-amount",
-    "is-replacing-life-insurance",
-    "has-pending-life-insurance-applications",
-    "pending-life-insurance-amount",
-    "pending-life-insurance-company",
-    "has-disability-insurance",
-    "is-replacing-disability-insurance",
-    "disability-replacement-amount",
-    "total-net-worth",
-    "total-annual-unearned-income",
-    "is-self-employed",
-    "is-sole-proprietor",
-    "is-professional-corporation",
-    "sole-proprietor-gross-income",
-    "sole-proprietor-gross-earnings",
-    "sole-proprietor-business-expenses",
-    "professional-corporation-annual-salary",
-    "professional-corporation-s-corp-distribution",
-    "professional-corporation-dividends",
-    "professional-corporation-bonus",
-    "bonus-payment-frequency",
-    "professional-corporation-commission",
-    "commission-payment-frequency",
-    "professional-corporation-benefits-cost",
-    "years-self-employed",
-    "work-from-home",
-    "has-work-location-outside-home",
-    "work-location-details",
-    "spouse-has-other-life-insurance",
-    "spouse-existing-life-insurance-amount",
-    "spouse-is-replacing-life-insurance",
-    "spouse-has-pending-life-insurance-applications",
-    "spouse-pending-life-insurance-amount",
-    "spouse-pending-life-insurance-company",
-    "spouse-has-disability-insurance",
-    "spouse-is-replacing-disability-insurance",
-    "spouse-disability-replacement-amount",
-    "di-company-name",
-    "di-company-monthly-benefit",
-    "di-company-benefit-period",
-    "di-company-waiting-period"
-  ],
-  "looseFields": [
-    "physician-first-name",
-    "physician-last-name",
-    "physician-phone",
-    "medical-facility-name",
-    "medical-facility-street-address",
-    "medical-facility-apt-suite",
-    "medical-city",
-    "medical-state",
-    "medical-zip-code",
-    "height-feet",
-    "height-inches",
-    "weight-lbs",
-    "weight-12-months-ago-lbs",
-    "social-security-number",
-    "marital-status",
-    "has-drivers-license",
-    "drivers-license-number",
-    "drivers-license-state",
-    "intend-live-outside-us",
-    "outside-us-months",
-    "outside-us-country",
-    "travel-outside-us-six-months",
-    "travel-outside-us-country",
-    "spouse-height-feet",
-    "spouse-height-inches",
-    "spouse-weight-lbs",
-    "spouse-weight-12-months-ago-lbs",
-    "spouse-social-security-number",
-    "spouse-has-drivers-license",
-    "spouse-drivers-license-number",
-    "spouse-drivers-license-state",
-    "spouse-intend-live-outside-us",
-    "spouse-outside-us-months",
-    "spouse-outside-us-country",
-    "spouse-travel-outside-us-six-months",
-    "spouse-travel-outside-us-country",
-    "spouse-physician-first-name",
-    "spouse-physician-last-name",
-    "spouse-physician-phone",
-    "spouse-medical-facility-name",
-    "spouse-medical-facility-street-address",
-    "spouse-medical-facility-apt-suite",
-    "spouse-medical-city",
-    "spouse-medical-state",
-    "spouse-medical-zip-code",
-    "has-other-life-insurance",
-    "existing-life-insurance-amount",
-    "is-replacing-life-insurance",
-    "has-pending-life-insurance-applications",
-    "pending-life-insurance-amount",
-    "pending-life-insurance-company",
-    "has-disability-insurance",
-    "is-replacing-disability-insurance",
-    "disability-replacement-amount",
-    "total-net-worth",
-    "total-annual-unearned-income",
-    "is-self-employed",
-    "is-sole-proprietor",
-    "is-professional-corporation",
-    "sole-proprietor-gross-income",
-    "sole-proprietor-gross-earnings",
-    "sole-proprietor-business-expenses",
-    "professional-corporation-annual-salary",
-    "professional-corporation-s-corp-distribution",
-    "professional-corporation-dividends",
-    "professional-corporation-bonus",
-    "bonus-payment-frequency",
-    "professional-corporation-commission",
-    "commission-payment-frequency",
-    "professional-corporation-benefits-cost",
-    "years-self-employed",
-    "work-from-home",
-    "has-work-location-outside-home",
-    "work-location-details",
-    "spouse-has-other-life-insurance",
-    "spouse-existing-life-insurance-amount",
-    "spouse-is-replacing-life-insurance",
-    "spouse-has-pending-life-insurance-applications",
-    "spouse-pending-life-insurance-amount",
-    "spouse-pending-life-insurance-company",
-    "spouse-has-disability-insurance",
-    "spouse-is-replacing-disability-insurance",
-    "spouse-disability-replacement-amount"
-  ],
   "layout": {
     "sections": {
       "profile-personal-self": {
@@ -204,8 +103,8 @@
           "intend-live-outside-us",
           "travel-outside-us-six-months"
         ],
-        "applicant": "self",
-        "description": "page.profile.profile-personal-self"
+        "for": "self",
+        "title": "profile.section.personal"
       },
       "profile-personal-self-drivers-license": {
         "id": "profilePersonalSelfDriversLicense",
@@ -213,25 +112,33 @@
           "drivers-license-number",
           "drivers-license-state"
         ],
-        "applicant": "self",
-        "visibilityConditionId": "condition-member-has-drivers-license"
+        "for": "self",
+        "when": {
+          "field": "has-drivers-license",
+          "equals": "yes"
+        }
       },
       "profile-personal-self-outside-us": {
         "id": "profilePersonalSelfOutsideUs",
         "fields": [
-          "outside-us-months",
           "outside-us-country"
         ],
-        "applicant": "self",
-        "visibilityConditionId": "condition-member-lives-outside-us"
+        "for": "self",
+        "when": {
+          "field": "intend-live-outside-us",
+          "equals": "yes"
+        }
       },
       "profile-personal-self-travel-outside-us": {
         "id": "profilePersonalSelfTravelOutsideUs",
         "fields": [
           "travel-outside-us-country"
         ],
-        "applicant": "self",
-        "visibilityConditionId": "condition-member-travels-outside-us"
+        "for": "self",
+        "when": {
+          "field": "travel-outside-us-six-months",
+          "equals": "yes"
+        }
       },
       "profile-personal-self-physician": {
         "id": "profilePersonalSelfPhysician",
@@ -246,7 +153,9 @@
           "medical-state",
           "medical-zip-code"
         ],
-        "applicant": "self"
+        "for": "self",
+        "title": "physician.title",
+        "enabledByConfiguration": "physician-information"
       },
       "profile-financial-self": {
         "id": "profileFinancialSelf",
@@ -261,8 +170,13 @@
           "is-replacing-disability-insurance",
           "disability-replacement-amount"
         ],
-        "applicant": "self",
-        "description": "page.profile.profile-financial-self"
+        "for": "self",
+        "title": "profile.section.other-coverage",
+        "coverageCategories": [
+          "LI",
+          "DI"
+        ],
+        "enabledByConfiguration": "other-coverage-information"
       },
       "profile-financial-questionnaire-self": {
         "id": "profileFinancialQuestionnaireSelf",
@@ -288,99 +202,678 @@
           "has-work-location-outside-home",
           "work-location-details"
         ],
-        "applicant": "self",
-        "description": "page.profile.profile-financial-questionnaire-self"
+        "for": "self",
+        "title": "profile.section.financial-questionnaire"
       },
       "profile-personal-spouse": {
         "id": "profilePersonalSpouse",
         "fields": [
-          "spouse-height-feet",
-          "spouse-height-inches",
-          "spouse-weight-lbs",
-          "spouse-weight-12-months-ago-lbs",
-          "spouse-social-security-number",
-          "spouse-has-drivers-license",
-          "spouse-intend-live-outside-us",
-          "spouse-travel-outside-us-six-months"
+          "height-feet",
+          "height-inches",
+          "weight-lbs",
+          "weight-12-months-ago-lbs",
+          "social-security-number",
+          "has-drivers-license",
+          "intend-live-outside-us",
+          "travel-outside-us-six-months"
         ],
-        "applicant": "spouse",
-        "visibilityConditionId": "condition-spouse-selected"
+        "for": "spouse",
+        "title": "profile.section.personal",
+        "when": {
+          "field": "dependents",
+          "includes": "spouse"
+        }
       },
       "profile-personal-spouse-drivers-license": {
         "id": "profilePersonalSpouseDriversLicense",
         "fields": [
-          "spouse-drivers-license-number",
-          "spouse-drivers-license-state"
+          "drivers-license-number",
+          "drivers-license-state"
         ],
-        "applicant": "spouse",
-        "visibilityConditionId": "condition-spouse-has-drivers-license"
+        "for": "spouse",
+        "when": {
+          "all": [
+            {
+              "field": "dependents",
+              "includes": "spouse"
+            },
+            {
+              "field": "has-drivers-license",
+              "equals": "yes",
+              "of": "spouse"
+            }
+          ]
+        }
       },
       "profile-personal-spouse-outside-us": {
         "id": "profilePersonalSpouseOutsideUs",
         "fields": [
-          "spouse-outside-us-months",
-          "spouse-outside-us-country"
+          "outside-us-country"
         ],
-        "applicant": "spouse",
-        "visibilityConditionId": "condition-spouse-lives-outside-us"
+        "for": "spouse",
+        "when": {
+          "all": [
+            {
+              "field": "dependents",
+              "includes": "spouse"
+            },
+            {
+              "field": "intend-live-outside-us",
+              "equals": "yes",
+              "of": "spouse"
+            }
+          ]
+        }
       },
       "profile-personal-spouse-travel-outside-us": {
         "id": "profilePersonalSpouseTravelOutsideUs",
         "fields": [
-          "spouse-travel-outside-us-country"
+          "travel-outside-us-country"
         ],
-        "applicant": "spouse",
-        "visibilityConditionId": "condition-spouse-travels-outside-us"
+        "for": "spouse",
+        "when": {
+          "all": [
+            {
+              "field": "dependents",
+              "includes": "spouse"
+            },
+            {
+              "field": "travel-outside-us-six-months",
+              "equals": "yes",
+              "of": "spouse"
+            }
+          ]
+        }
       },
       "profile-personal-spouse-physician": {
         "id": "profilePersonalSpousePhysician",
         "fields": [
-          "spouse-physician-first-name",
-          "spouse-physician-last-name",
-          "spouse-physician-phone",
-          "spouse-medical-facility-name",
-          "spouse-medical-facility-street-address",
-          "spouse-medical-facility-apt-suite",
-          "spouse-medical-city",
-          "spouse-medical-state",
-          "spouse-medical-zip-code"
+          "physician-first-name",
+          "physician-last-name",
+          "physician-phone",
+          "medical-facility-name",
+          "medical-facility-street-address",
+          "medical-facility-apt-suite",
+          "medical-city",
+          "medical-state",
+          "medical-zip-code"
         ],
-        "applicant": "spouse",
-        "visibilityConditionId": "condition-spouse-selected"
+        "for": "spouse",
+        "title": "physician.title",
+        "when": {
+          "field": "dependents",
+          "includes": "spouse"
+        },
+        "enabledByConfiguration": "physician-information"
       },
       "profile-financial-spouse": {
         "id": "profileFinancialSpouse",
         "fields": [
-          "spouse-has-other-life-insurance",
-          "spouse-existing-life-insurance-amount",
-          "spouse-is-replacing-life-insurance",
-          "spouse-has-pending-life-insurance-applications",
-          "spouse-pending-life-insurance-amount",
-          "spouse-pending-life-insurance-company",
-          "spouse-has-disability-insurance",
-          "spouse-is-replacing-disability-insurance",
-          "spouse-disability-replacement-amount"
+          "has-other-life-insurance",
+          "existing-life-insurance-amount",
+          "is-replacing-life-insurance",
+          "has-pending-life-insurance-applications",
+          "pending-life-insurance-amount",
+          "pending-life-insurance-company",
+          "has-disability-insurance",
+          "is-replacing-disability-insurance",
+          "disability-replacement-amount"
         ],
-        "applicant": "spouse",
-        "visibilityConditionId": "condition-spouse-selected"
+        "for": "spouse",
+        "title": "profile.section.other-coverage",
+        "when": {
+          "field": "dependents",
+          "includes": "spouse"
+        },
+        "coverageCategories": [
+          "LI",
+          "DI"
+        ],
+        "enabledByConfiguration": "other-coverage-information"
+      }
+    },
+    "dialogs": {
+      "disability-company": {
+        "for": "self",
+        "fields": [
+          "di-company-name",
+          "di-company-monthly-benefit",
+          "di-company-benefit-period",
+          "di-company-waiting-period"
+        ]
       }
     }
   },
   "content": {
-    "wording": [
+    "header": [
       "page.profile.title",
       "page.profile.subhead",
-      "page.profile.nav-title",
-      "page.profile.profile-personal-self",
-      "page.profile.profile-financial-self",
-      "page.profile.profile-financial-questionnaire-self"
+      "page.profile.nav-title"
+    ],
+    "sections": [
+      "profile.section.personal",
+      "profile.section.other-coverage",
+      "profile.section.financial-questionnaire",
+      "profile.other-coverage-note",
+      "physician.title",
+      "profile.disability.company",
+      "profile.disability.member-modal",
+      "profile.disability.spouse-modal"
     ],
     "runtime": [
-      "page.profile.profile-financial-questionnaire-self",
       "application.ui.company",
       "application.ui.zero-amount",
       "application.ui.benefit-period-not-provided",
-      "application.ui.waiting-period-not-provided"
+      "application.ui.waiting-period-not-provided",
+      "profile.financial.net-earned-income",
+      "profile.financial.total-earned-income",
+      "profile.disability.required",
+      "resume.error.technical"
+    ],
+    "wording": [
+      "page.profile.title",
+      "page.profile.subhead"
     ]
-  }
+  },
+  "fieldMapping": {
+    "page": "profile"
+  },
+  "sections": {
+    "profile-financial-self": {
+      "note": "profile.other-coverage-note"
+    },
+    "profile-financial-spouse": {
+      "note": "profile.other-coverage-note"
+    }
+  },
+  "surfaces": {
+    "disabilityCompany": {
+      "mapping": {
+        "page": "profile"
+      },
+      "for": "self",
+      "definition": {
+        "label": "profile.disability.company",
+        "maxItems": 10,
+        "fields": [
+          {
+            "fieldKey": "di-company-name",
+            "valueKey": "company"
+          },
+          {
+            "fieldKey": "di-company-monthly-benefit",
+            "valueKey": "monthlyBenefitAmount"
+          },
+          {
+            "fieldKey": "di-company-benefit-period",
+            "valueKey": "benefitPeriod"
+          },
+          {
+            "fieldKey": "di-company-waiting-period",
+            "valueKey": "waitingPeriod"
+          }
+        ],
+        "minItems": 1
+      }
+    }
+  },
+  "collections": {
+    "selfDisabilityCompanies": {
+      "surface": "disabilityCompany",
+      "section": "profile-financial-self",
+      "storageName": "selfDisabilityCompanies",
+      "libraryGroup": {
+        "label": "profile.disability.member-modal",
+        "applicant": "self",
+        "afterFieldKey": "has-disability-insurance"
+      }
+    },
+    "spouseDisabilityCompanies": {
+      "surface": "disabilityCompany",
+      "section": "profile-financial-spouse",
+      "storageName": "spouseDisabilityCompanies",
+      "libraryGroup": {
+        "label": "profile.disability.spouse-modal",
+        "applicant": "spouse",
+        "afterFieldKey": "spouse-has-disability-insurance"
+      }
+    }
+  },
+  "fieldVisibility": [
+    {
+      "field": "existing-life-insurance-amount",
+      "section": "profile-financial-self",
+      "when": {
+        "all": [
+          {
+            "field": "has-other-life-insurance",
+            "of": "self",
+            "equals": "yes"
+          }
+        ]
+      }
+    },
+    {
+      "field": "is-replacing-life-insurance",
+      "section": "profile-financial-self",
+      "when": {
+        "all": [
+          {
+            "field": "has-other-life-insurance",
+            "of": "self",
+            "equals": "yes"
+          }
+        ]
+      }
+    },
+    {
+      "field": "pending-life-insurance-amount",
+      "section": "profile-financial-self",
+      "when": {
+        "all": [
+          {
+            "field": "has-pending-life-insurance-applications",
+            "of": "self",
+            "equals": "yes"
+          }
+        ]
+      }
+    },
+    {
+      "field": "pending-life-insurance-company",
+      "section": "profile-financial-self",
+      "when": {
+        "all": [
+          {
+            "field": "has-pending-life-insurance-applications",
+            "of": "self",
+            "equals": "yes"
+          }
+        ]
+      }
+    },
+    {
+      "field": "is-replacing-disability-insurance",
+      "section": "profile-financial-self",
+      "when": {
+        "all": [
+          {
+            "field": "has-disability-insurance",
+            "of": "self",
+            "equals": "yes"
+          }
+        ]
+      }
+    },
+    {
+      "field": "disability-replacement-amount",
+      "section": "profile-financial-self",
+      "when": {
+        "all": [
+          {
+            "field": "has-disability-insurance",
+            "of": "self",
+            "equals": "yes"
+          },
+          {
+            "field": "is-replacing-disability-insurance",
+            "of": "self",
+            "equals": "yes"
+          }
+        ]
+      }
+    },
+    {
+      "field": "existing-life-insurance-amount",
+      "section": "profile-financial-spouse",
+      "when": {
+        "all": [
+          {
+            "field": "has-other-life-insurance",
+            "of": "spouse",
+            "equals": "yes"
+          }
+        ]
+      }
+    },
+    {
+      "field": "is-replacing-life-insurance",
+      "section": "profile-financial-spouse",
+      "when": {
+        "all": [
+          {
+            "field": "has-other-life-insurance",
+            "of": "spouse",
+            "equals": "yes"
+          }
+        ]
+      }
+    },
+    {
+      "field": "pending-life-insurance-amount",
+      "section": "profile-financial-spouse",
+      "when": {
+        "all": [
+          {
+            "field": "has-pending-life-insurance-applications",
+            "of": "spouse",
+            "equals": "yes"
+          }
+        ]
+      }
+    },
+    {
+      "field": "pending-life-insurance-company",
+      "section": "profile-financial-spouse",
+      "when": {
+        "all": [
+          {
+            "field": "has-pending-life-insurance-applications",
+            "of": "spouse",
+            "equals": "yes"
+          }
+        ]
+      }
+    },
+    {
+      "field": "is-replacing-disability-insurance",
+      "section": "profile-financial-spouse",
+      "when": {
+        "all": [
+          {
+            "field": "has-disability-insurance",
+            "of": "spouse",
+            "equals": "yes"
+          }
+        ]
+      }
+    },
+    {
+      "field": "disability-replacement-amount",
+      "section": "profile-financial-spouse",
+      "when": {
+        "all": [
+          {
+            "field": "has-disability-insurance",
+            "of": "spouse",
+            "equals": "yes"
+          },
+          {
+            "field": "is-replacing-disability-insurance",
+            "of": "spouse",
+            "equals": "yes"
+          }
+        ]
+      }
+    },
+    {
+      "field": "is-sole-proprietor",
+      "section": "profile-financial-questionnaire-self",
+      "when": {
+        "all": [
+          {
+            "field": "is-self-employed",
+            "equals": "yes"
+          }
+        ]
+      }
+    },
+    {
+      "field": "is-professional-corporation",
+      "section": "profile-financial-questionnaire-self",
+      "when": {
+        "all": [
+          {
+            "field": "is-self-employed",
+            "equals": "yes"
+          }
+        ]
+      }
+    },
+    {
+      "field": "sole-proprietor-gross-income",
+      "section": "profile-financial-questionnaire-self",
+      "when": {
+        "all": [
+          {
+            "field": "is-self-employed",
+            "equals": "yes"
+          },
+          {
+            "field": "is-sole-proprietor",
+            "equals": true
+          }
+        ]
+      }
+    },
+    {
+      "field": "sole-proprietor-gross-earnings",
+      "section": "profile-financial-questionnaire-self",
+      "when": {
+        "all": [
+          {
+            "field": "is-self-employed",
+            "equals": "yes"
+          },
+          {
+            "field": "is-sole-proprietor",
+            "equals": true
+          }
+        ]
+      }
+    },
+    {
+      "field": "sole-proprietor-business-expenses",
+      "section": "profile-financial-questionnaire-self",
+      "when": {
+        "all": [
+          {
+            "field": "is-self-employed",
+            "equals": "yes"
+          },
+          {
+            "field": "is-sole-proprietor",
+            "equals": true
+          }
+        ]
+      }
+    },
+    {
+      "field": "professional-corporation-annual-salary",
+      "section": "profile-financial-questionnaire-self",
+      "when": {
+        "all": [
+          {
+            "field": "is-self-employed",
+            "equals": "yes"
+          },
+          {
+            "field": "is-professional-corporation",
+            "equals": true
+          }
+        ]
+      }
+    },
+    {
+      "field": "professional-corporation-s-corp-distribution",
+      "section": "profile-financial-questionnaire-self",
+      "when": {
+        "all": [
+          {
+            "field": "is-self-employed",
+            "equals": "yes"
+          },
+          {
+            "field": "is-professional-corporation",
+            "equals": true
+          }
+        ]
+      }
+    },
+    {
+      "field": "professional-corporation-dividends",
+      "section": "profile-financial-questionnaire-self",
+      "when": {
+        "all": [
+          {
+            "field": "is-self-employed",
+            "equals": "yes"
+          },
+          {
+            "field": "is-professional-corporation",
+            "equals": true
+          }
+        ]
+      }
+    },
+    {
+      "field": "professional-corporation-bonus",
+      "section": "profile-financial-questionnaire-self",
+      "when": {
+        "all": [
+          {
+            "field": "is-self-employed",
+            "equals": "yes"
+          },
+          {
+            "field": "is-professional-corporation",
+            "equals": true
+          }
+        ]
+      }
+    },
+    {
+      "field": "bonus-payment-frequency",
+      "section": "profile-financial-questionnaire-self",
+      "when": {
+        "all": [
+          {
+            "field": "is-self-employed",
+            "equals": "yes"
+          },
+          {
+            "field": "is-professional-corporation",
+            "equals": true
+          }
+        ]
+      }
+    },
+    {
+      "field": "professional-corporation-commission",
+      "section": "profile-financial-questionnaire-self",
+      "when": {
+        "all": [
+          {
+            "field": "is-self-employed",
+            "equals": "yes"
+          },
+          {
+            "field": "is-professional-corporation",
+            "equals": true
+          }
+        ]
+      }
+    },
+    {
+      "field": "commission-payment-frequency",
+      "section": "profile-financial-questionnaire-self",
+      "when": {
+        "all": [
+          {
+            "field": "is-self-employed",
+            "equals": "yes"
+          },
+          {
+            "field": "is-professional-corporation",
+            "equals": true
+          }
+        ]
+      }
+    },
+    {
+      "field": "professional-corporation-benefits-cost",
+      "section": "profile-financial-questionnaire-self",
+      "when": {
+        "all": [
+          {
+            "field": "is-self-employed",
+            "equals": "yes"
+          },
+          {
+            "field": "is-professional-corporation",
+            "equals": true
+          }
+        ]
+      }
+    },
+    {
+      "field": "years-self-employed",
+      "section": "profile-financial-questionnaire-self",
+      "when": {
+        "all": [
+          {
+            "field": "is-self-employed",
+            "equals": "yes"
+          }
+        ]
+      }
+    },
+    {
+      "field": "work-from-home",
+      "section": "profile-financial-questionnaire-self",
+      "when": {
+        "all": [
+          {
+            "field": "is-self-employed",
+            "equals": "yes"
+          }
+        ]
+      }
+    },
+    {
+      "field": "has-work-location-outside-home",
+      "section": "profile-financial-questionnaire-self",
+      "when": {
+        "all": [
+          {
+            "field": "is-self-employed",
+            "equals": "yes"
+          },
+          {
+            "field": "work-from-home",
+            "equals": "yes"
+          }
+        ]
+      }
+    },
+    {
+      "field": "work-location-details",
+      "section": "profile-financial-questionnaire-self",
+      "when": {
+        "all": [
+          {
+            "field": "is-self-employed",
+            "equals": "yes"
+          },
+          {
+            "field": "work-from-home",
+            "equals": "yes"
+          },
+          {
+            "field": "has-work-location-outside-home",
+            "equals": "yes"
+          }
+        ]
+      }
+    }
+  ],
+  "contentSlots": {
+    "page.profile.title": {
+      "name": "Page title"
+    },
+    "page.profile.subhead": {
+      "name": "Page introduction"
+    }
+  },
+  "hideFollowupsWhenQuestionHidden": true
 }

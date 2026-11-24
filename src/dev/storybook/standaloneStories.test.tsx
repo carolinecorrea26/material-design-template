@@ -5,7 +5,6 @@ import { MemoryRouter } from 'react-router-dom';
 import * as library from '../../domain/prototypeLibrary';
 import residentialMeta, { Default as residential } from '../../components/contact/ResidentialAddress.stories';
 import businessMeta, { Default as business } from '../../components/contact/BusinessInformation.stories';
-import spouseMeta, { Default as spouse } from '../../components/contact/SpouseContact.stories';
 import personalMeta, { IndependentApplicants } from '../../components/profile/ProfilePersonalInformation.stories';
 import addressMeta, { MappedPhysicianAddresses } from '../../components/forms/AddressFields.stories';
 import reviewMeta, { MemberAndSpouse as ReviewMemberAndSpouse } from '../../components/review/ReviewSections.stories';
@@ -13,6 +12,12 @@ import { WithEditButtons } from '../../components/content/ApplicationDocumentPre
 import { Default as LegalSection } from '../../components/content/LegalReviewSection.stories';
 import profileMeta, { PersonalInformation, OtherCoverage, FinancialQuestionnaire, SpouseInformation } from '../../components/profile/ProfileSections.stories';
 import physicianMeta, { Default as physician } from '../../components/forms/PhysicianInformation.stories';
+import * as fieldStories from '../../components/forms/FieldRenderer.stories';
+import * as phoneStories from '../../components/forms/PhoneField.stories';
+import * as heightStories from '../../components/forms/HeightFields.stories';
+import * as conditionalStories from '../../components/forms/ConditionalGroup.stories';
+import * as addressStories from '../../components/forms/AddressFields.stories';
+import * as dividerStories from '../../components/layout/SectionDivider.stories';
 import memberMeta, { Default as member } from '../../components/membership/MemberInformation.stories';
 
 vi.mock('../../persistence/sharedCatalog', async original => {
@@ -27,7 +32,6 @@ afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); });
 it.each([
   ['Residential address', residentialMeta, residential, 'street-address'],
   ['Business information', businessMeta, business, 'business-address-same-as-home'],
-  ['Spouse contact', spouseMeta, spouse, 'spouse-phone'],
   ['Member information', memberMeta, member, 'first-name'],
   ['Profile personal information', profileMeta, PersonalInformation, 'height-feet'],
   ['Profile other coverage', profileMeta, OtherCoverage, 'has-other-life-insurance'],
@@ -104,5 +108,18 @@ it('invokes document edit and disclosure Print callbacks in their standalone exa
     expect(LegalSection.args?.onPrint).toHaveBeenCalledOnce();
     expect(container.textContent).not.toContain('Print callback requested.');
     expect(installed).not.toHaveBeenCalled();
+  } finally { await act(async () => root.unmount()); container.remove(); }
+});
+
+
+it.each([...Object.entries(fieldStories), ...Object.entries(dividerStories), ...Object.entries(phoneStories), ...Object.entries(heightStories), ...Object.entries(conditionalStories), ...Object.entries(addressStories)].filter(([name]) => name !== 'default'))('renders authored field/layout example %s', async (_name, story) => {
+  const container = document.createElement('div'), root = createRoot(container);
+  document.body.append(container);
+  try {
+    const sample = story as { args?: object; render?: unknown };
+    const render = sample.render as (args: object, context: object) => ReactNode;
+    await act(async () => root.render(<MemoryRouter>{render(sample.args ?? {}, {})}</MemoryRouter>));
+    expect(container.querySelector('input, textarea')).not.toBeNull();
+    expect(container.textContent).not.toContain('undefined');
   } finally { await act(async () => root.unmount()); container.remove(); }
 });

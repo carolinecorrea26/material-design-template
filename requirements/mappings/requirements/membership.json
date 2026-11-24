@@ -1,5 +1,13 @@
 {
   "component": "membership",
-  "rules": ["membership-attestation-inline-stop", "membership-follow-up-fields", "abandoned-lead-nightly-batch", "membership-initial-autosave-email"],
-  "workflows": ["membership-starts-autosave"]
+  "rules": [
+    "membership-attestation-inline-stop",
+    "membership-follow-up-fields",
+    "abandoned-lead-nightly-batch",
+    "membership-initial-autosave-email",
+    "membership-core-configuration-constraints"
+  ],
+  "workflows": [
+    "membership-starts-autosave"
+  ]
 }

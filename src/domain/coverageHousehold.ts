@@ -27,6 +27,7 @@ export async function evaluateCoverageHousehold(site: EffectiveSite, people: Hou
     if (primaryAmounts[lookup.productKey][lookup.applicantKey] !== undefined) { errors.push("Ambiguous existing primary policy"); continue; }
     primaryAmounts[lookup.productKey][lookup.applicantKey] = verified.policy.amount;
   }
+  const verifiedAmounts = structuredClone(primaryAmounts);
   const portfolios: Awaited<ReturnType<typeof evaluateCoveragePortfolio>>[] = [];
   for (const role of ["member", "spouse", "child"] as const) for (const person of people.filter(person => person.applicantKey === role)) {
     const inputs = person.inputs.map(input => {
@@ -34,7 +35,7 @@ export async function evaluateCoverageHousehold(site: EffectiveSite, people: Hou
       const selectedApplicants = [...new Set(sameProduct.map(selected => selected.applicantKey))];
       const baseAmounts = primaryAmounts[input.productKey] ?? {};
       const memberAmount = baseAmounts.member;
-      return { ...input, memberAmount, spouseAmount: baseAmounts.spouse ?? 0, onlyChild: sameProduct.every(selected => selected.applicantKey === "child"), eligibility: { ...input.eligibility, selectedPlans: selections.map(selected => ({ productKey: selected.productKey, categoryKey: site.configuration.products.find(product => product.productKey === selected.productKey)?.catalog?.value.categoryKey ?? "", applicantKey: selected.applicantKey })) }, dependent: { ...input.dependent, baseAmounts, selectedApplicants, coveredApplicants: Object.keys(baseAmounts), selectedProductKeys: person.inputs.map(selected => selected.productKey) }, benefit: { ...input.benefit, memberCoverage: memberAmount !== undefined, memberRequestedBenefit: memberAmount, memberTotalMonthlyBenefit: memberAmount } };
+      return { ...input, memberAmount, spouseAmount: baseAmounts.spouse ?? 0, onlyChild: sameProduct.every(selected => selected.applicantKey === "child"), eligibility: { ...input.eligibility, selectedPlans: selections.map(selected => ({ productKey: selected.productKey, categoryKey: site.configuration.products.find(product => product.productKey === selected.productKey)?.catalog?.value.categoryKey ?? "", applicantKey: selected.applicantKey })) }, dependent: { ...input.dependent, verifiedMemberAmount: verifiedAmounts[input.productKey]?.member ?? 0, verifiedExistingAmount: verifiedAmounts[input.productKey]?.[role] ?? 0, baseAmounts, selectedApplicants, coveredApplicants: Object.keys(baseAmounts), selectedProductKeys: person.inputs.map(selected => selected.productKey) }, benefit: { ...input.benefit, memberCoverage: memberAmount !== undefined, memberRequestedBenefit: memberAmount, memberTotalMonthlyBenefit: memberAmount } };
     });
     const result = await evaluateCoveragePortfolio(site, inputs, services, person.existingLifeAmount);
     portfolios.push(result);
@@ -42,7 +43,7 @@ export async function evaluateCoverageHousehold(site: EffectiveSite, people: Hou
     missingFacts.push(...result.missingFacts.map(fact => `${person.personKey}: ${fact}`));
     if (result.allowed) for (const submission of result.submissions ?? []) {
       primaryAmounts[submission.productKey] ??= {};
-      primaryAmounts[submission.productKey][role] = submission.mode === "rider-only" ? submission.existingAmount! : submission.amount;
+      primaryAmounts[submission.productKey][role] = submission.mode === "rider-only" ? submission.existingAmount! : submission.amount + (submission.mode === "new" ? verifiedAmounts[submission.productKey]?.[role] ?? 0 : 0);
     }
   }
   const collected = portfolios.flatMap(portfolio => portfolio.results.flatMap(result => result.allowed && "skipPayment" in result && !result.skipPayment ? [result.payment] : []));

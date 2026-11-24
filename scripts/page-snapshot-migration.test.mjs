@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { expect, it } from 'vitest';
 import { mkdtempSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
@@ -50,7 +51,7 @@ it('saves, reloads, restarts and explicitly publishes a converted release withou
     await stop(); request = await start(true);
     const reloaded = await request('/prototype/library', { siteKey: draft.siteKey });
     expect(reloaded.payload).toEqual(draft);
-    expect(resolvePrototypeLibrary(reloaded.payload.data, draft.siteKey, reloaded.revision).pages.find(page => page.key === 'review').definition.path).toBe('/saved-review');
+    expect(resolvePrototypeLibrary(reloaded.payload.data, draft.siteKey, reloaded.revision).pages.find(page => page.key === 'review').definition.path).toBe('/review');
     const published = await request('/library/publish', { id: saved.id, expectedVersion: saved.version, expectedReleaseId: original.id });
     expect(published.payload).toEqual(draft);
     await stop(); await start();

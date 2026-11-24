@@ -1,9 +1,10 @@
+import { recordedFilesMatch } from "./sourceEvidence";
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { DatabaseSchema } from "../persistence/types";
-import { resolveSnapshotSite as resolveEffectiveSite } from "../domain/effectiveSite";
+import { resolveAuditSnapshotSite as resolveEffectiveSite } from "./snapshotSiteResolution";
 import { buildPrototypeAssociationContext } from "../domain/prototypeAssociationProjection";
 import { buildPrototypeContent } from "../domain/prototypeConfigurationProjection";
 import type { CrosswalkRow } from "./requirementCrosswalk";
@@ -14,7 +15,7 @@ const ref = (table: string, key: string): Owner => ({ table, key });
 const unique = (owners: Owner[]) => owners.filter((owner, index) => owners.findIndex(other => other.table === owner.table && other.key === owner.key) === index);
 const hash = (value: unknown) => createHash("sha256").update(JSON.stringify(value)).digest("hex");
 export function reviewedNamedOwnerCodeMatches(read = (path: string) => readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), "../..", path))) {
-  return Object.keys(evidence.files).length > 0 && Object.entries(evidence.files).every(([path, digest]) => createHash("sha256").update(read(path)).digest("hex") === digest);
+  return recordedFilesMatch(evidence.files, read);
 }
 
 /** Capture effective values AND participating stored records. A new assignment,

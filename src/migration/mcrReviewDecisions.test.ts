@@ -1,3 +1,4 @@
+// Historical adoption: resolve the captured input, never today's application source.
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { afterEach, beforeAll, expect, it } from "vitest";
@@ -7,7 +8,8 @@ import { activeSiteMigrationScope } from "./activeSiteScope";
 import { ruleDependencyFindings } from "../domain/ruleOrganization";
 import { associatedMemberNotice, waepaQualifications } from "../domain/membershipQualifications";
 import { getClientPageFields } from "../config/clientFields/getClientPageFields";
-import { installPrototypeLibrary, resolvePrototypeLibrary } from "../domain/prototypeLibrary";
+import { installPrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveSnapshotTestLibrary as resolvePrototypeLibrary } from "./snapshotTestLibrary";
 import type { DatabaseSchema } from "../persistence/types";
 
 let db: DatabaseSchema;
