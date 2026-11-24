@@ -37,6 +37,10 @@ import AccessibilityWorkspace from "../pages/admin/AccessibilityWorkspace";
 import { getFormTemplate } from "../config/template/resolveTemplate";
 import { getResolvedFormFlow } from "../config/formFlow";
 import AdministrationWorkspace from "../pages/admin/AdministrationWorkspace";
+import PortalPortfolio from '../pages/admin/PortalPortfolio';
+import PortalBuilderWorkspace from '../pages/admin/PortalBuilderWorkspace';
+import PortalUsers from '../pages/admin/PortalUsers';
+import { portalDatabaseEnabled } from '../services/portalClient';
 
 /**
  * Maps each page ID to its React component.
@@ -94,7 +98,7 @@ export const router = createRouter(
         { path: "account/settings", element: <AccountSettings /> },
         ...['TPA Admin', 'Customer Admin', 'Advisor Admin', 'Adobe Analytics', 'Contentsquare'].map(title => ({ path: title.toLowerCase().replaceAll(' ', '-'), element: <AdminPlaceholder title={title} /> })),
         { path: "migration-schedule", element: <MigrationScheduleWorkspace /> },
-        { path: "sites", element: <SitesWorkspace /> },
+        { path: "sites", element: portalDatabaseEnabled ? <PortalPortfolio /> : <SitesWorkspace /> },
         { path: "library", element: <PortalLibrary /> },
         { path: "library/:domainId", element: <PortalLibrary /> },
         { path: "changes", element: <ChangesWorkspace /> },
@@ -104,13 +108,13 @@ export const router = createRouter(
         { path: "applicant-admin", element: <ApplicantAdminWorkspace /> },
         { path: "tutorials", element: <TutorialsWorkspace /> },
         { path: "tutorials/:tutorialId", element: <TutorialsWorkspace /> },
-        { path: "site-builder", element: <SiteBuilderWorkspace /> },
+        { path: "site-builder", element: portalDatabaseEnabled ? <PortalBuilderWorkspace /> : <SiteBuilderWorkspace /> },
         { path: "applications", element: <ApplicationsWorkspace /> },
         { path: "applications/:applicationId", element: <ApplicationsWorkspace /> },
         { path: "analytics", element: <AnalyticsWorkspace /> },
         { path: "issue-log", element: <IssueLogWorkspace /> },
         { path: "accessibility", element: <AccessibilityWorkspace /> },
-        { path: "administration", element: <AdministrationWorkspace /> },
+        { path: "administration", element: portalDatabaseEnabled ? <PortalUsers /> : <AdministrationWorkspace /> },
       ],
     },
   ],

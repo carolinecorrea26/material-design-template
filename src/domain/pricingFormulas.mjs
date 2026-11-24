@@ -40,3 +40,16 @@ export function premiumForFrequency(formulas, monthly, frequency) {
   if (factor === undefined) throw new Error(`Unknown payment frequency ${frequency}`);
   return cents(monthly * factor);
 }
+
+export function syntheticQuotePrice(formulas, categoryId, amount, frequency, riders = []) {
+  const factor = formulas.frequency.factors[frequency];
+  const monthlyCents = Math.round(monthlyPremium(formulas, categoryId, amount, riders) * 100);
+  let previousCents = Math.round(monthlyPremium(formulas, categoryId, amount) * 100);
+  const components = [{ key: 'base', kind: 'base', amount: previousCents * factor / 100 }];
+  for (const [riderIndex] of riders.entries()) {
+    const totalCents = Math.round(monthlyPremium(formulas, categoryId, amount, riders.slice(0, riderIndex + 1)) * 100);
+    components.push({ key: `rider:${riderIndex}`, kind: 'rider', riderIndex, amount: (totalCents - previousCents) * factor / 100 });
+    previousCents = totalCents;
+  }
+  return { monthlyCents, premiumCents: monthlyCents * factor, components };
+}

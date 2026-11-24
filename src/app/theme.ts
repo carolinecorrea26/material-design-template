@@ -1,3 +1,4 @@
+import '@fontsource-variable/inter';
 import { createTheme, darken, alpha, responsiveFontSizes, type PaletteOptions } from "@mui/material/styles";
 import type { ClientThemeConfig, ThemeColorId } from "../config/clients/types";
 import controlPresentation from '../../requirements/global/presentation-tokens.json';
@@ -48,7 +49,7 @@ export function createAppTheme(
       breakpoints: { values: { xs: 0, sm: 600, md: 1e6, lg: 1e6, xl: 1e6 } },
     }),
     typography: {
-      fontFamily: 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+      fontFamily: '"Inter Variable", system-ui, -apple-system, "Segoe UI", Arial, sans-serif',
       h1: { fontSize: "2.25rem", fontWeight: 800 },
       h2: { fontSize: "1.75rem", fontWeight: 800 },
       h3: { fontSize: "1.5rem", fontWeight: 800 },

@@ -1,5 +1,7 @@
-import { useAccount } from '../../admin/AccountContext';
+import { useAccount, usePortalUser } from '../../admin/AccountContext';
 import MockAdminGate from "./MockAdminGate";
+import PortalAdminGate from './PortalAdminGate';
+import { portalDatabaseEnabled } from '../../services/portalClient';
 import { useMemo, useRef, useState } from "react";
 import { Link as RouterLink, Navigate, Outlet, useLocation } from "react-router-dom";
 import {
@@ -28,15 +30,22 @@ const expandedRailWidth = 228;
 function AdminCenterContent() {
   const location = useLocation();
   const account = useAccount();
+  const user = usePortalUser();
   const [collapsed, setCollapsed] = useState(() => localStorage.getItem('adminRailCollapsed') === 'true');
   const dragStart = useRef<number | null>(null);
   const railWidth = collapsed ? 64 : expandedRailWidth;
-  const adminNavigation = visibleAdminNavigation();
+  const adminNavigation = visibleAdminNavigation(portalDatabaseEnabled, user?.roleKey === 'portal-admin');
   const setRailCollapsed = (value: boolean) => { setCollapsed(value); localStorage.setItem('adminRailCollapsed', String(value)); };
-  const persona = { ...internalPersonas[0], permissions: account?.status.canEdit === false ? internalPersonas[0].permissions.filter(permission => permission.endsWith('.read')) : internalPersonas[0].permissions };
+  const defaultPersona = internalPersonas[0];
+  const managerPersona = internalPersonas.find(persona => persona.id === 'account-manager')!;
+  const persona: Persona = user?.roleKey === 'account-manager'
+    ? { ...managerPersona, scope: { type: 'site', ids: user.siteKeys } }
+    : { ...defaultPersona, permissions: account?.status.canEdit === false ? defaultPersona.permissions.filter(permission => permission.endsWith('.read')) : defaultPersona.permissions };
 
-  if (!location.pathname.startsWith("/admin-center/library") && !/^\/admin-center\/(?:tutorials|applicant-admin)(?:\/|$)/.test(location.pathname)) {
-    return <Navigate to={`/admin-center/library${location.search}`} replace />;
+  const legacyRoute = /^\/admin-center\/(?:library|tutorials|applicant-admin)(?:\/|$)/.test(location.pathname);
+  const databaseRoute = /^\/admin-center\/(?:sites|applications|site-builder|administration)(?:\/|$)/.test(location.pathname);
+  if (!legacyRoute && !(portalDatabaseEnabled && databaseRoute)) {
+    return <Navigate to={`/admin-center/${portalDatabaseEnabled ? 'sites' : 'library'}${location.search}`} replace />;
   }
 
   return (
@@ -126,6 +135,6 @@ export default function AdminCenterShell() {
   // Applicant single-page breakpoints must not change the administration layout.
   const adminTheme = useMemo(() => createAppTheme(getActiveClient().theme), []);
   return <ThemeProvider theme={adminTheme}>
-    {import.meta.env.VITE_MOCK_PLATFORM_ENABLED ? <MockAdminGate><AdminCenterContent /></MockAdminGate> : <AdminCenterContent />}
+    {portalDatabaseEnabled ? <PortalAdminGate><AdminCenterContent /></PortalAdminGate> : import.meta.env.VITE_MOCK_PLATFORM_ENABLED ? <MockAdminGate><AdminCenterContent /></MockAdminGate> : <AdminCenterContent />}
   </ThemeProvider>;
 }

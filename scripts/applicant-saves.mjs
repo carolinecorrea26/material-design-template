@@ -4,7 +4,7 @@ import { normalizeSiteReferences } from '../src/domain/siteIdentity.mjs';
 import { createHash, randomBytes, randomInt, randomUUID, timingSafeEqual } from 'node:crypto';
 import { mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
-const policyDefinitions = JSON.parse(readFileSync(new URL('../requirements/global/configurations/resume.json', import.meta.url), 'utf8'));
+import policyDefinitions from '../requirements/global/configurations/resume.json' with { type: 'json' };
 
 const digest = value => createHash('sha256').update(value).digest('hex');
 const secret = () => randomBytes(32).toString('hex');
@@ -20,8 +20,8 @@ const record = value => value && typeof value === 'object' && !Array.isArray(val
 
 /** Separate local applicant store. No Library drafts, administrator credentials,
  * real delivery or production authentication. Outbox credentials are simulation only. */
-export function createApplicantSaves({ statePath, clock = Date.now, availableSite, revisionFor, policyFor = () => resumePolicy(policyDefinitions) }) {
-  let state = { version: 1, applications: {}, recoveries: {}, mfaSessions: {}, requestBudgets: {}, outbox: [] };
+export function createApplicantSaves({ statePath, initialState, clock = Date.now, availableSite, revisionFor, policyFor = () => resumePolicy(policyDefinitions) }) {
+  let state = initialState ? structuredClone(initialState) : { version: 1, applications: {}, recoveries: {}, mfaSessions: {}, requestBudgets: {}, outbox: [] };
   if (statePath) {
     try { state = normalizeSiteReferences(JSON.parse(readFileSync(statePath, 'utf8'))); if (state.version !== 1) throw new Error('Unsupported applicant store'); }
     catch (error) { if (error.code !== 'ENOENT') throw error; }
@@ -126,6 +126,7 @@ export function createApplicantSaves({ statePath, clock = Date.now, availableSit
   };
   return {
     handles: path => paths.has(path),
+    snapshot: () => structuredClone(state),
     request(path, body) {
       purge();
       if (path === '/applicant/save') {
@@ -154,6 +155,7 @@ export function createApplicantSaves({ statePath, clock = Date.now, availableSit
         strict(body, ['applicationId', 'siteKey', 'recipient', 'writeCapability', 'event']);
         const application = scoped(body);
         if (!sameSecret(body.writeCapability, application.writeHash)) fail(403, 'Application write capability required');
+        if (body.event === 'complete-signing' && application.workflowStage === 'submitted') return { mode: 'mock', stage: 'submitted' };
         const transitions = {
           'send-to-applicant': { stage: 'applicant', actor: 'advisor', from: ['preparing', 'revising'], advisorOnly: true },
           'request-edit': { stage: 'revising', actor: 'applicant', from: ['applicant'], advisorOnly: true },
@@ -164,6 +166,7 @@ export function createApplicantSaves({ statePath, clock = Date.now, availableSit
         if (!transition || application.writeActor !== transition.actor || !transition.from.includes(application.workflowStage) || transition.advisorOnly && !advisorApplication(application)) fail(409, 'Unavailable workflow transition');
         return commit(() => {
           application.workflowStage = transition.stage;
+          if (transition.stage === 'submitted') application.submittedAt = clock();
           if (['send-to-applicant', 'request-edit'].includes(body.event)) application.writeHash = digest(secret());
           revoke(application.id); revokeMfa(application.id);
           return { mode: 'mock', stage: transition.stage };

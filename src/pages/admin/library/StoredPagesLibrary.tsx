@@ -17,7 +17,6 @@ export default function StoredPagesLibrary({ siteKey }: { siteKey: string }) {
   const [search, setSearch] = useSearchParams();
   const { domainId } = useParams();
   const view = search.get('pageView') ?? (['content', 'documents'].includes(domainId ?? '') ? 'content' : 'pages');
-  const previewSite = siteKey === "all" ? "demo" : siteKey;
   const rows = useMemo(() => pageCatalogRows(catalog, siteKey), [catalog, siteKey]);
   const components = (pageKey: string) => {
     const declared = declaredPageComponents(pageKey);
@@ -29,8 +28,8 @@ export default function StoredPagesLibrary({ siteKey }: { siteKey: string }) {
     </Tabs>
     {view === 'content' ? <ContentLibrary siteKey={siteKey} /> : <BrowseTable label="Pages" tableName="pages" identityPosition="first" searchOnly
     rows={rows} rowKey={row => row.key} columns={[
-      { id: "displayId", label: "Page ID", width: 210, value: row => row.name, render: row => row.enabled
-        ? <Link href={getSitePagePrototypeUrl(previewSite, row.definition.id, row.definition.path)} target="_blank" rel="noopener noreferrer">{row.name}</Link>
+      { id: "displayId", label: "Page ID", width: 210, value: row => row.name, render: row => row.enabled && siteKey !== 'all'
+        ? <Link href={getSitePagePrototypeUrl(siteKey, row.definition.id, row.definition.path)} target="_blank" rel="noopener noreferrer">{row.name}</Link>
         : <Typography variant="body2" fontWeight={700}>{row.name}</Typography> },
       { id: "flow", label: "Flow", width: 120, value: row => row.flow, filter: true },
       { id: "requirement", label: "Requirement", width: 130, value: row => row.requirement, filter: true },

@@ -1,5 +1,5 @@
 import { normalizeSiteReferences } from '../src/domain/siteIdentity.mjs';
-import { monthlyPremium, pricingFormulas } from '../src/domain/pricingFormulas.mjs';
+import { pricingFormulas, syntheticQuotePrice } from '../src/domain/pricingFormulas.mjs';
 import { verifyRegistration, verifyAuthentication } from './webauthn.mjs';
 import { accountGroups, memberAccounts, publicAccount } from './account-groups.mjs';
 import { builderRelease } from './builder-release.mjs';
@@ -400,16 +400,8 @@ export function createMockPlatform({ database, prototypeTables = Object.keys(dat
         if (body.revision !== undefined && body.revision !== revision) fail(409, 'Prototype Library changed; reload before requesting a quote');
         if (body.dimensions?.applicant !== undefined && !['member','spouse','child'].includes(body.dimensions.applicant)) fail(400, 'Invalid applicant dimension');
         const categoryKey = prototypePayload(body.siteKey, body.environment).data.products?.find(product => product.key === body.productKey)?.categoryKey ?? '';
-        const monthlyCents = Math.round(monthlyPremium(pricing, categoryKey, body.amount, body.riders ?? []) * 100);
-        let premiumCents = monthlyCents * frequencies[body.frequency];
-        const factor = frequencies[body.frequency];
-        let previousCents = Math.round(monthlyPremium(pricing, categoryKey, body.amount) * 100);
-        const components = [{ key: 'base', kind: 'base', amount: previousCents * factor / 100 }];
-        for (const [riderIndex] of (body.riders ?? []).entries()) {
-          const cents = Math.round(monthlyPremium(pricing, categoryKey, body.amount, body.riders.slice(0, riderIndex + 1)) * 100);
-          components.push({ key: `rider:${riderIndex}`, kind: 'rider', riderIndex, amount: (cents - previousCents) * factor / 100 });
-          previousCents = cents;
-        }
+        const { monthlyCents, components, premiumCents: syntheticCents } = syntheticQuotePrice(pricing, categoryKey, body.amount, body.frequency, body.riders);
+        let premiumCents = syntheticCents;
         if (body.paymentMethod !== undefined) {
           const data = prototypePayload(body.siteKey, body.environment).data;
           const keys = data.configurationDefinitions?.filter(d => d.definition.target?.kind === 'product-journey-policy' && d.definition.target.productKey === body.productKey).map(d => d.key) ?? [];

@@ -52,6 +52,10 @@ export const adminNavigation: AdminNavigationGroup[] = [
     { label: "Contentsquare", path: "/admin-center/contentsquare", icon: TrackChangesRoundedIcon },
   ] },
 ];
-export const visibleAdminNavigation = () => adminNavigation
-  .map(group => ({ ...group, items: group.items.filter(item => item.label === "Portal Library" || item.label === "Storybook" || item.label === "Tutorials" || item.label === "Applicant Admin") }))
+const libraryNavigation = ['Portal Library', 'Storybook', 'Tutorials', 'Applicant Admin'];
+const databaseNavigation = ['Sites', 'Applications', 'Site Builder'];
+export const visibleAdminNavigation = (database = false, admin = false) => adminNavigation
+  .map(group => ({ ...group, items: group.items
+    .filter(item => libraryNavigation.includes(item.label) || database && (databaseNavigation.includes(item.label) || admin && item.masterAdminOnly))
+    .map(item => database && item.masterAdminOnly ? { ...item, label: 'Portal users' } : item) }))
   .filter(group => group.items.length > 0);

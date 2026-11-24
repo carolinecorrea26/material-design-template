@@ -74,7 +74,16 @@ export function activeCatalog(catalog = readCatalogParts()) {
     ? rows.filter(site => activeSites.includes(site.key))
     : rows.filter(row => !(keys.has(row?.siteKey) || ids.has(row?.siteId)))]));
   validateIdentityCatalog(data);
-  return { ...catalog, data: compileReviewedRequirements(data), analyticsTags: catalog.analyticsTags.filter(tag => !keys.has(tag?.siteKey)) };
+  const compiled = compileReviewedRequirements(data);
+  const ruleKeys = new Set(compiled.rules.map(row => row.key));
+  for (const action of compiled.ruleActions) {
+    if (!ruleKeys.has(action.ruleKey)) throw new Error(`Catalog rule action ${action.key} references unknown rule ${action.ruleKey}`);
+  }
+  for (const table of ['configurationDefinitions', 'configurationValues', 'conditions']) {
+    const invalid = compiled[table].find(row => !Number.isSafeInteger(row.position) || row.position < 0);
+    if (invalid) throw new Error(`Invalid catalog position: ${table}/${invalid.key}`);
+  }
+  return { ...catalog, data: compiled, analyticsTags: catalog.analyticsTags.filter(tag => !keys.has(tag?.siteKey)) };
 }
 
 export function writeCatalogBundle() {

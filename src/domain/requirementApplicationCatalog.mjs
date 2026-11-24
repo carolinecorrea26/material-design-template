@@ -75,8 +75,7 @@ export function compileApplicationCatalog(data, source, sites) {
   output.configurationValues = output.configurationValues.filter(row => row.scope === 'global' || !globalOnlyKeys.has(row.configurationKey));
   // Canonical shared requirements retire their captured relational descriptions
   // and associations, including those arriving from older saved catalogs.
-  const explicitlyRetired = new Set(source.application.retiredRuleKeys ?? []);
-  const retired = new Set(explicitlyRetired);
+  const retired = new Set(source.application.retiredRuleKeys ?? []);
   if (source.rules?.some(rule => retired.has(rule.id))) throw new Error('Active retired application rule');
   for (const rule of source.rules ?? []) for (const key of rule.replaces ?? []) {
     if (typeof key !== 'string' || key === rule.id || retired.has(key) || source.application.records.rules?.some(row => identity(row) === key)) throw new Error(`Invalid replaced application rule: ${key}`);
@@ -105,7 +104,7 @@ export function compileApplicationCatalog(data, source, sites) {
   };
   const merge = (table, records, reference) => {
     if (!Array.isArray(output[table])) return;
-    if (records.some(row => explicitlyRetired.has(row.ruleKey))) throw new Error(`Assignment to retired application rule: ${table}`);
+    if (records.some(row => retired.has(row.ruleKey))) throw new Error(`Assignment to retired application rule: ${table}`);
     if ((table === 'contentEntries' || table === 'contentValues') && records.some(row => retiredContent(table === 'contentEntries' ? identity(row) : row.contentKey))) throw new Error('Assignment to retired application content');
     const keys = new Set(records.map(identity));
     output[table] = [...output[table].filter(row => !keys.has(identity(row))), ...records.map(authored => {

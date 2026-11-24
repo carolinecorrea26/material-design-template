@@ -1,5 +1,6 @@
 import { completePrototypeQdOutcomes } from '../domain/prototypeQdOutcomes';
 import { advanceApplicationWorkflow } from '../services/applicantSaveService';
+import { portalDatabaseEnabled } from '../services/portalClient';
 import { getPrototypeLibrary } from "../domain/prototypeLibrary";
 import FormFieldDefinitions from '../components/forms/FormFieldDefinitions';
 import { applicantHasSelectedCategory } from '../config/flowGates';
@@ -526,8 +527,11 @@ export default function FormRoutePage({
     analyticsEvent("submit");
     setPageError(undefined);
     try {
-      if (getConfiguredPages().find(page => page.id === pageId)?.saveProgress !== false) await saveApplication?.(nextNavigationValues, pageId === 'membership' || pageId === 'coverage' || pageId === 'review' ? pageId : undefined);
-      if (pageId === 'docusign') await advanceApplicationWorkflow(resolveSiteId(), 'complete-signing');
+      if (!(portalDatabaseEnabled && pageId === 'docusign') && getConfiguredPages().find(page => page.id === pageId)?.saveProgress !== false) await saveApplication?.(nextNavigationValues, pageId === 'membership' || pageId === 'coverage' || pageId === 'review' ? pageId : undefined);
+      if (pageId === 'docusign') {
+        const submission = await advanceApplicationWorkflow(resolveSiteId(), 'complete-signing');
+        if (submission?.applicationNumber) nextNavigationValues['mock-submission-id'] = submission.applicationNumber;
+      }
     } catch {
       setPageError(applicationRecovery['technical-error'].message);
       return;

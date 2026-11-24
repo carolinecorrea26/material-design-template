@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react';
 import { Card, CardContent, Stack, Typography as MuiTypography } from '@mui/material';
-import { docsFontFamily } from '../shared/DocsBlocks';
 import PageTitle from '../../components/layout/PageTitle';
 import CategoryHeader from '../../components/layout/CategoryHeader';
 import { ApplicantSectionLabel } from '../../components/layout/ApplicantSectionDivider';
@@ -18,7 +17,7 @@ const supporting = [
 ] as const;
 
 function Label({ children }: { children: ReactNode }) {
-  return <MuiTypography variant="body2" color="text.secondary" sx={{ fontFamily: docsFontFamily }}>{children}</MuiTypography>;
+  return <MuiTypography variant="body2" color="text.secondary">{children}</MuiTypography>;
 }
 
 function Example({ label, children }: { label: string; children: ReactNode }) {

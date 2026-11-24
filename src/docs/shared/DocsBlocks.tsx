@@ -1,4 +1,3 @@
-import './documentationFonts.css';
 import type { ReactNode } from "react";
 import {
   Box,
@@ -14,8 +13,6 @@ import {
   Typography,
 } from "@mui/material";
 import Card from "@mui/material/Card";
-
-export const docsFontFamily = '"Roboto", "Helvetica", "Arial", sans-serif';
 
 /**
  * Shared presentational building blocks for Storybook Docs-style story
@@ -44,16 +41,16 @@ export function DocsPage({
         <Typography
           variant="overline"
           color="primary"
-          sx={{ display: "block", mb: 0.5, fontFamily: docsFontFamily }}
+          sx={{ display: "block", mb: 0.5 }}
         >
           {eyebrow}
         </Typography>
       )}
-      <Typography variant="h4" gutterBottom sx={{ fontFamily: docsFontFamily }}>
+      <Typography component="h1" variant="h4" gutterBottom>
         {title}
       </Typography>
       {intro && (
-        <Typography variant="body1" color="text.secondary" sx={{ mb: 3, maxWidth: 760, fontFamily: docsFontFamily }}>
+        <Typography variant="body1" color="text.secondary" sx={{ mb: 3, maxWidth: 760 }}>
           {intro}
         </Typography>
       )}
@@ -73,11 +70,11 @@ export function DocsSection({
 }) {
   return (
     <Box>
-      <Typography variant="h6" gutterBottom sx={{ fontWeight: 800, fontFamily: docsFontFamily }}>
+      <Typography component="h2" variant="h6" gutterBottom>
         {title}
       </Typography>
       {description && (
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 2, maxWidth: 720, fontFamily: docsFontFamily }}>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 2, maxWidth: 720 }}>
           {description}
         </Typography>
       )}

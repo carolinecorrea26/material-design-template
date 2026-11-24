@@ -6,12 +6,13 @@ import { normalizedSnapshotTables, validateSnapshotData, type SnapshotTable } fr
 import type { DatabaseSchema } from "../persistence/types";
 import type { AnalyticsTag } from "../domain/analytics";
 import { mockRequest } from "../mock/client";
+import { portalDatabaseEnabled } from './portalClient';
 
 export type LibraryCatalog = CatalogScope & { revision: string; data: Pick<DatabaseSchema, SnapshotTable>; analyticsTags: AnalyticsTag[] };
 /** Read the shared catalog, then apply the authoritative fresh-start projection. Read failures remain failures. */
 export async function readLibraryCatalog(siteKey: string): Promise<LibraryCatalog> {
   const tables = [...new Set(normalizedSnapshotTables)];
-  if (import.meta.env.VITE_MOCK_PLATFORM_ENABLED) {
+  if (!portalDatabaseEnabled && import.meta.env.VITE_MOCK_PLATFORM_ENABLED) {
     const result = await mockRequest<LibraryCatalog>("/library/catalog", { siteKey, tables });
     validateSnapshotData(result.data, tables);
     if (!result.revision || !Array.isArray(result.analyticsTags)) throw new Error("Invalid Library catalog response");

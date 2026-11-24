@@ -60,9 +60,10 @@ its authored owner. Local drafts are not deployed or included in the base requir
 application saves, account state and operational demo records stay in their
 existing private local stores and are not part of the public catalog.
 
-The static Netlify build reads the catalog directly. It does not provide shared
-server saves; catalog updates require a file change and redeployment. Catalog
-records cannot be overwritten through browser-only persistence. A failed catalog
+The default static build reads the generated catalog. The GitHub-connected
+Netlify deployment can enable PostgreSQL for the same catalog, demo admin
+accounts, Site Builder drafts, and submitted prototype applications. See
+[Portal database setup](docs/project-review/portal-database.md). A failed catalog
 read is reported instead of substituting code defaults or browser copies.
 
 Startup accepts only active Sites in the loaded catalog. With no available Site

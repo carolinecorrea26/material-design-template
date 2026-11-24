@@ -578,6 +578,7 @@
       {
         "id": "features.scheduleUrl",
         "key": "features.scheduleUrl",
+        "position": 0,
         "definition": {
           "path": [
             "features",
@@ -592,6 +593,7 @@
       {
         "id": "theme.buttonShape",
         "key": "theme.buttonShape",
+        "position": 0,
         "definition": {
           "path": [
             "theme",
@@ -606,6 +608,7 @@
       {
         "id": "applicantExperience.membershipLookup",
         "key": "applicantExperience.membershipLookup",
+        "position": 0,
         "definition": {
           "path": [
             "applicantExperience",
@@ -622,6 +625,7 @@
       {
         "id": "theme.primary",
         "key": "theme.primary",
+        "position": 0,
         "definition": {
           "path": [
             "theme",
@@ -636,6 +640,7 @@
       {
         "id": "theme.primaryAction",
         "key": "theme.primaryAction",
+        "position": 0,
         "definition": {
           "path": [
             "theme",
@@ -650,6 +655,7 @@
       {
         "id": "applicantExperience.factMappings.activeMilitary.field",
         "key": "applicantExperience.factMappings.activeMilitary.field",
+        "position": 0,
         "definition": {
           "path": [
             "applicantExperience",
@@ -666,6 +672,7 @@
       {
         "id": "applicantExperience.factMappings.activeMilitary.values.yes",
         "key": "applicantExperience.factMappings.activeMilitary.values.yes",
+        "position": 0,
         "definition": {
           "path": [
             "applicantExperience",
@@ -683,6 +690,7 @@
       {
         "id": "applicantExperience.factMappings.activeMilitary.values.no",
         "key": "applicantExperience.factMappings.activeMilitary.values.no",
+        "position": 0,
         "definition": {
           "path": [
             "applicantExperience",
@@ -700,6 +708,7 @@
       {
         "id": "applicantExperience.membershipDisqualifications",
         "key": "applicantExperience.membershipDisqualifications",
+        "position": 0,
         "definition": {
           "path": [
             "applicantExperience",
@@ -714,6 +723,7 @@
       {
         "id": "applicantExperience.eligibilityDisqualifications",
         "key": "applicantExperience.eligibilityDisqualifications",
+        "position": 0,
         "definition": {
           "path": [
             "applicantExperience",
@@ -730,6 +740,7 @@
       {
         "id": "applicantExperience.factMappings.applicantClass",
         "key": "applicantExperience.factMappings.applicantClass",
+        "position": 0,
         "definition": {
           "path": [
             "applicantExperience",
@@ -745,6 +756,7 @@
       {
         "id": "applicantExperience.factSources",
         "key": "applicantExperience.factSources",
+        "position": 0,
         "definition": {
           "path": [
             "applicantExperience",
@@ -1278,6 +1290,7 @@
       {
         "id": "condition-membership-referral",
         "key": "condition-membership-referral",
+        "position": 0,
         "definition": {
           "id": "condition-membership-referral",
           "match": "any",
@@ -4846,149 +4859,6 @@
         "displayId": 90299598991410,
         "providedBy": null,
         "sourceReference": "prototype:ruleActions/rule-feedback-snackbar-positioning.behavior"
-      },
-      {
-        "id": "rule-beneficiary-applicable-applicants-products.behavior",
-        "key": "rule-beneficiary-applicable-applicants-products.behavior",
-        "definition": {
-          "kind": "rule-documentation",
-          "version": 2
-        },
-        "position": 0,
-        "ruleKey": "rule-beneficiary-applicable-applicants-products",
-        "displayId": 205648465120173,
-        "providedBy": null,
-        "sourceReference": "prototype:ruleActions/rule-beneficiary-applicable-applicants-products.behavior"
-      },
-      {
-        "id": "rule-beneficiary-optional-page-opt-in.behavior",
-        "key": "rule-beneficiary-optional-page-opt-in.behavior",
-        "definition": {
-          "kind": "rule-documentation",
-          "version": 2
-        },
-        "position": 0,
-        "ruleKey": "rule-beneficiary-optional-page-opt-in",
-        "displayId": 242536282208315,
-        "providedBy": null,
-        "sourceReference": "prototype:ruleActions/rule-beneficiary-optional-page-opt-in.behavior"
-      },
-      {
-        "id": "rule-beneficiary-required-beneficiary-per-applicable-product.behavior",
-        "key": "rule-beneficiary-required-beneficiary-per-applicable-product.behavior",
-        "definition": {
-          "kind": "rule-documentation",
-          "version": 2
-        },
-        "position": 0,
-        "ruleKey": "rule-beneficiary-required-beneficiary-per-applicable-product",
-        "displayId": 274003362899722,
-        "providedBy": null,
-        "sourceReference": "prototype:ruleActions/rule-beneficiary-required-beneficiary-per-applicable-product.behavior"
-      },
-      {
-        "id": "rule-beneficiary-add-edit-remove-modal.behavior",
-        "key": "rule-beneficiary-add-edit-remove-modal.behavior",
-        "definition": {
-          "kind": "rule-documentation",
-          "version": 2
-        },
-        "position": 0,
-        "ruleKey": "rule-beneficiary-add-edit-remove-modal",
-        "displayId": 186098360045262,
-        "providedBy": null,
-        "sourceReference": "prototype:ruleActions/rule-beneficiary-add-edit-remove-modal.behavior"
-      },
-      {
-        "id": "rule-beneficiary-primary-contingent-designation.behavior",
-        "key": "rule-beneficiary-primary-contingent-designation.behavior",
-        "definition": {
-          "kind": "rule-documentation",
-          "version": 2
-        },
-        "position": 0,
-        "ruleKey": "rule-beneficiary-primary-contingent-designation",
-        "displayId": 275207203368485,
-        "providedBy": null,
-        "sourceReference": "prototype:ruleActions/rule-beneficiary-primary-contingent-designation.behavior"
-      },
-      {
-        "id": "rule-beneficiary-individual-vs-trust.behavior",
-        "key": "rule-beneficiary-individual-vs-trust.behavior",
-        "definition": {
-          "kind": "rule-documentation",
-          "version": 2
-        },
-        "position": 0,
-        "ruleKey": "rule-beneficiary-individual-vs-trust",
-        "displayId": 162854893709695,
-        "providedBy": null,
-        "sourceReference": "prototype:ruleActions/rule-beneficiary-individual-vs-trust.behavior"
-      },
-      {
-        "id": "rule-beneficiary-maximum-beneficiaries.behavior",
-        "key": "rule-beneficiary-maximum-beneficiaries.behavior",
-        "definition": {
-          "kind": "rule-documentation",
-          "version": 2
-        },
-        "position": 0,
-        "ruleKey": "rule-beneficiary-maximum-beneficiaries",
-        "displayId": 43730671853019,
-        "providedBy": null,
-        "sourceReference": "prototype:ruleActions/rule-beneficiary-maximum-beneficiaries.behavior"
-      },
-      {
-        "id": "rule-beneficiary-individual-allocation.behavior",
-        "key": "rule-beneficiary-individual-allocation.behavior",
-        "definition": {
-          "kind": "rule-documentation",
-          "version": 2
-        },
-        "position": 0,
-        "ruleKey": "rule-beneficiary-individual-allocation",
-        "displayId": 9633522562965,
-        "providedBy": null,
-        "sourceReference": "prototype:ruleActions/rule-beneficiary-individual-allocation.behavior"
-      },
-      {
-        "id": "rule-beneficiary-allocation-reaches-100.behavior",
-        "key": "rule-beneficiary-allocation-reaches-100.behavior",
-        "definition": {
-          "kind": "rule-documentation",
-          "version": 2
-        },
-        "position": 0,
-        "ruleKey": "rule-beneficiary-allocation-reaches-100",
-        "displayId": 4829975616713,
-        "providedBy": null,
-        "sourceReference": "prototype:ruleActions/rule-beneficiary-allocation-reaches-100.behavior"
-      },
-      {
-        "id": "rule-beneficiary-trust-exclusivity.behavior",
-        "key": "rule-beneficiary-trust-exclusivity.behavior",
-        "definition": {
-          "kind": "rule-documentation",
-          "version": 2
-        },
-        "position": 0,
-        "ruleKey": "rule-beneficiary-trust-exclusivity",
-        "displayId": 135189337323549,
-        "providedBy": null,
-        "sourceReference": "prototype:ruleActions/rule-beneficiary-trust-exclusivity.behavior"
-      },
-      {
-        "id": "rule-beneficiary-apply-to-other-coverages.behavior",
-        "key": "rule-beneficiary-apply-to-other-coverages.behavior",
-        "definition": {
-          "kind": "rule-documentation",
-          "version": 2
-        },
-        "position": 0,
-        "ruleKey": "rule-beneficiary-apply-to-other-coverages",
-        "displayId": 77799541461498,
-        "providedBy": null,
-        "sourceReference": "prototype:ruleActions/rule-beneficiary-apply-to-other-coverages.behavior"
       },
       {
         "id": "rule-profile-conditional-follow-up-fields.behavior",

@@ -1,6 +1,7 @@
 import type { Timestamped, SoftDeletable, RecordStatus, Json, ApplicationStatus, ActionOwnerType, ChangeRequestStatus, ReleaseStatus } from "./common";
 export interface Application extends Timestamped, SoftDeletable {
   id: string; applicationNumber: string; siteId: string; productKey: string;
+  coverages?: { productKey: string; applicant: string; amount: number | null }[];
   status: ApplicationStatus; currentActionOwnerType: ActionOwnerType; currentActionOwnerId: string | null;
   submittedAt: string | null;
   productCatalogKey?: string | null; legacyActionOwnerId?: string | null;

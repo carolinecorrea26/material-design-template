@@ -407,6 +407,7 @@
       {
         "id": "{{site}}.applicantExperience.factMappings.applicantClass",
         "key": "{{site}}.applicantExperience.factMappings.applicantClass",
+        "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
         "clientKey": null,
@@ -423,6 +424,7 @@
       {
         "id": "{{site}}.applicantExperience.factSources",
         "key": "{{site}}.applicantExperience.factSources",
+        "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
         "clientKey": null,

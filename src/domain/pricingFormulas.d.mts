@@ -9,3 +9,6 @@ export function pricingFormulas(document: unknown): PricingFormulas;
 export function categoryMonthly(formulas: PricingFormulas, categoryId: string, amount: number): number;
 export function monthlyPremium(formulas: PricingFormulas, categoryId: string, amount: number, riders?: RiderCharge[]): number;
 export function premiumForFrequency(formulas: PricingFormulas, monthly: number, frequency: string): number;
+export function syntheticQuotePrice(formulas: PricingFormulas, categoryId: string, amount: number, frequency: keyof PricingFormulas['frequency']['factors'], riders?: RiderCharge[]): {
+  monthlyCents: number; premiumCents: number; components: import('./rateBreakdown').QuotePriceComponent[];
+};

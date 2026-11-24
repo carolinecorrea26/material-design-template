@@ -3,6 +3,11 @@ import { mockRequest } from '../mock/client';
 import { getPrototypeLibrary } from '../domain/prototypeLibrary';
 import { isApplicationSessionExpired } from '../app/applicationTimeout';
 import { applicationStateChanged, type ApplicationWorkflowStage } from '../domain/applicationLifecycle.mjs';
+import { portalDatabaseEnabled, portalPageInspection, portalRequest } from './portalClient';
+
+const prototypeApplicantServicesEnabled = () => import.meta.env.VITE_MOCK_PLATFORM_ENABLED || portalDatabaseEnabled;
+const applicantRequest = <T,>(path: string, body: unknown) => portalDatabaseEnabled ? portalRequest<T>(path, body) : mockRequest<T>(path, body);
+const databasePreview = (siteKey: string) => portalDatabaseEnabled && (portalPageInspection || getPrototypeLibrary(siteKey)?.revision.startsWith('draft:'));
 
 export type SavedApplication = {
   mode: 'mock'; applicationId: string; siteKey: string; recipient: string;
@@ -19,7 +24,7 @@ export type ResumeMessage = { id: string; kind: 'link' | 'code'; applicationId: 
 export type ApplicationSavePage = 'membership' | 'coverage' | 'review';
 export const resumeMfaParameter = products.catalog.urlParameters.find(row => row.parameter === 'mfaSessionId')!.parameter;
 const previewPrefix = () => typeof window !== 'undefined' && window.location.pathname.includes('/admin-center/tutorial-preview/') ? 'tutorial-preview:' : '';
-const handleKey = (siteKey: string) => `${previewPrefix()}applicantSave:${siteKey}`;
+const handleKey = (siteKey: string) => `${previewPrefix()}${portalDatabaseEnabled ? 'portal-db:' : ''}applicantSave:${siteKey}`;
 
 export function readSavedApplication(siteKey: string): SavedApplication | null {
   try {
@@ -77,14 +82,20 @@ export function createApplicantSaveClient(siteKey: string) {
           throw new Error('Your session has expired. Resume your application to continue.');
         }
         const library = getPrototypeLibrary(siteKey);
-        if (!import.meta.env.VITE_MOCK_PLATFORM_ENABLED || !library || !snapshot.email) return null;
+        if (!prototypeApplicantServicesEnabled() || !library || !snapshot.email || databasePreview(siteKey)) return null;
         const existing = readSavedApplication(siteKey);
         if (!existing && submittedPage !== 'membership') return null;
         // Membership starts saving; only Coverage/Review completion clears revalidation.
         const validatedPage = submittedPage === 'coverage' || submittedPage === 'review' ? submittedPage : undefined;
         const environment = sessionStorage.getItem('prototypeReleaseEnvironment') ?? undefined;
-        const application = await mockRequest<SavedApplication>('/applicant/save', {
-          siteKey, recipient: String(snapshot.email).trim().toLowerCase(), revision: library.revision, values: snapshot, validatedPage, environment,
+        const valuesToSave = portalDatabaseEnabled ? {
+          email: snapshot.email,
+          coverageSelections: snapshot.coverageSelections,
+          productApplicants: snapshot.productApplicants,
+          coverageAmounts: snapshot.coverageAmounts,
+        } : snapshot;
+        const application = await applicantRequest<SavedApplication>('/applicant/save', {
+          siteKey, recipient: String(snapshot.email).trim().toLowerCase(), revision: library.revision, values: valuesToSave, validatedPage, environment,
           ...(existing ? { applicationId: existing.applicationId, writeCapability: existing.writeCapability } : {}),
         });
         if (capturedGeneration !== generation) return null;
@@ -101,20 +112,25 @@ export function recoveryFromSearch(search: URLSearchParams, siteKey: string): Re
   return search.get('site') === siteKey && Object.values(details).every(Boolean) ? details : null;
 }
 export const applicantRecovery = {
-  request: (applicationId: string, siteKey: string, recipient: string, flow?: 'advisor', advisor?: { applicantEmail: string; phone: string }) => mockRequest<{ expiresAt: number }>('/applicant/resume/request', { applicationId, siteKey, recipient, ...(flow ? { flow } : {}), ...(advisor ? { advisor } : {}) }),
-  challenge: (details: RecoveryDetails | MfaDetails, method: string) => mockRequest<MfaChallenge>('/applicant/resume/challenge', { ...details, method }),
+  request: (applicationId: string, siteKey: string, recipient: string, flow?: 'advisor', advisor?: { applicantEmail: string; phone: string }) => applicantRequest<{ expiresAt: number }>('/applicant/resume/request', { applicationId, siteKey, recipient, ...(flow ? { flow } : {}), ...(advisor ? { advisor } : {}) }),
+  challenge: (details: RecoveryDetails | MfaDetails, method: string) => applicantRequest<MfaChallenge>('/applicant/resume/challenge', { ...details, method }),
   verify: async (details: MfaDetails, code: string): Promise<VerifiedApplication> => {
-    const application = await mockRequest<VerifiedApplication>('/applicant/resume/verify', { ...details, code });
+    const application = await applicantRequest<VerifiedApplication>('/applicant/resume/verify', { ...details, code });
     if (application.applicationId !== details.applicationId || application.siteKey !== details.siteKey || !['advisor', 'applicant'].includes(application.recoveryActor) || typeof application.advisorFlow !== 'boolean' || !['eligibility', 'review', 'docusign'].includes(application.resumePage) || application.recoveryActor === 'advisor' && (application.advisorFlow || application.resumePage !== 'eligibility')) throw new Error('Invalid recovery result');
     return application;
   },
-  outbox: (applicationId: string, siteKey: string, recipient: string) => mockRequest<{ messages: ResumeMessage[] }>('/applicant/outbox', { applicationId, siteKey, recipient }),
+  outbox: (applicationId: string, siteKey: string, recipient: string) => applicantRequest<{ messages: ResumeMessage[] }>('/applicant/outbox', { applicationId, siteKey, recipient }),
 };
 
 /** Local workflow simulation only; never production signing evidence or real delivery. */
 export async function advanceApplicationWorkflow(siteKey: string, event: 'send-to-applicant' | 'request-edit' | 'start-signing' | 'complete-signing') {
   const saved = readSavedApplication(siteKey);
-  if (!import.meta.env.VITE_MOCK_PLATFORM_ENABLED || !saved) return;
-  const result = await mockRequest<{ stage: ApplicationWorkflowStage }>('/applicant/workflow', { applicationId: saved.applicationId, siteKey, recipient: saved.recipient, writeCapability: saved.writeCapability, event });
+  if (!prototypeApplicantServicesEnabled() || databasePreview(siteKey)) return;
+  if (!saved) {
+    if (portalDatabaseEnabled && event === 'complete-signing') throw new Error('Start and save the application before submitting.');
+    return;
+  }
+  const result = await applicantRequest<{ stage: ApplicationWorkflowStage; applicationNumber?: string }>('/applicant/workflow', { applicationId: saved.applicationId, siteKey, recipient: saved.recipient, writeCapability: saved.writeCapability, event });
   rememberSavedApplication({ ...saved, workflowStage: result.stage });
+  return result;
 }

@@ -1,10 +1,20 @@
 import pricingDocument from "../../requirements/global/formulas/pricing.json";
 import type { CoverageApplicantId, CoverageDefinition, RiderDefinition } from "./coverage";
-import { categoryMonthly, monthlyPremium, premiumForFrequency, pricingFormulas, type RiderCharge } from "./pricingFormulas.mjs";
+import { categoryMonthly, monthlyPremium, premiumForFrequency, pricingFormulas, syntheticQuotePrice, type RiderCharge } from "./pricingFormulas.mjs";
+import type { MockRatingService } from './mockRating';
 
 /** Mock pricing from requirements/global/formulas/pricing.json; PRASE is not connected. */
 const formulas = pricingFormulas(pricingDocument);
 type Priced = Pick<CoverageDefinition, "id" | "categoryId" | "riders">;
+
+export function syntheticRatingService(products: Pick<Priced, 'id' | 'categoryId'>[]): MockRatingService {
+  return { async quote({ productKey, amount, frequency, riders }) {
+    const product = products.find(item => item.id === productKey);
+    if (!product) throw new Error('Unavailable prototype product.');
+    const { premiumCents, components } = syntheticQuotePrice(formulas, product.categoryId, amount, frequency, riders);
+    return { mode: 'mock', premiumCents, components, expiresAt: Date.now() + 15 * 60000, authority: 'Synthetic test rates; not an insurance quote' };
+  } };
+}
 
 /** Riders a self-only quote can offer: member riders not attached to a dependent. */
 export function quoteRiders(product: Pick<CoverageDefinition, "riders">): RiderDefinition[] {

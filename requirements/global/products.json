@@ -2523,6 +2523,7 @@
       {
         "id": "coverages.productOrder",
         "key": "coverages.productOrder",
+        "position": 0,
         "definition": {
           "path": [
             "coverages",
@@ -2537,6 +2538,7 @@
       {
         "id": "products.presentation.li-15yr.description",
         "key": "products.presentation.li-15yr.description",
+        "position": 0,
         "definition": {
           "path": [
             "products",
@@ -2557,6 +2559,7 @@
       {
         "id": "products.presentation.li-preferred.description",
         "key": "products.presentation.li-preferred.description",
+        "position": 0,
         "definition": {
           "path": [
             "products",
@@ -2577,6 +2580,7 @@
       {
         "id": "products.presentation.li-premier-accident.description",
         "key": "products.presentation.li-premier-accident.description",
+        "position": 0,
         "definition": {
           "path": [
             "products",
@@ -2597,6 +2601,7 @@
       {
         "id": "products.presentation.di-step-rated.description",
         "key": "products.presentation.di-step-rated.description",
+        "position": 0,
         "definition": {
           "path": [
             "products",
@@ -2617,6 +2622,7 @@
       {
         "id": "products.presentation.di-level-rated.description",
         "key": "products.presentation.di-level-rated.description",
+        "position": 0,
         "definition": {
           "path": [
             "products",
@@ -2637,6 +2643,7 @@
       {
         "id": "products.presentation.oo-office-overhead.description",
         "key": "products.presentation.oo-office-overhead.description",
+        "position": 0,
         "definition": {
           "path": [
             "products",
@@ -2657,6 +2664,7 @@
       {
         "id": "products.presentation.sh-hospital-income.description",
         "key": "products.presentation.sh-hospital-income.description",
+        "position": 0,
         "definition": {
           "path": [
             "products",
@@ -2677,6 +2685,7 @@
       {
         "id": "products.presentation.li-15yr.name",
         "key": "products.presentation.li-15yr.name",
+        "position": 0,
         "definition": {
           "path": [
             "products",
@@ -2697,6 +2706,7 @@
       {
         "id": "products.presentation.li-15yr.applicants",
         "key": "products.presentation.li-15yr.applicants",
+        "position": 0,
         "definition": {
           "path": [
             "products",
@@ -2717,6 +2727,7 @@
       {
         "id": "products.presentation.li-term.featured",
         "key": "products.presentation.li-term.featured",
+        "position": 0,
         "definition": {
           "path": [
             "products",
@@ -2737,6 +2748,7 @@
       {
         "id": "products.presentation.li-preferred.name",
         "key": "products.presentation.li-preferred.name",
+        "position": 0,
         "definition": {
           "path": [
             "products",
@@ -2757,6 +2769,7 @@
       {
         "id": "products.presentation.li-preferred.applicants",
         "key": "products.presentation.li-preferred.applicants",
+        "position": 0,
         "definition": {
           "path": [
             "products",
@@ -2777,6 +2790,7 @@
       {
         "id": "products.presentation.li-premier-accident.name",
         "key": "products.presentation.li-premier-accident.name",
+        "position": 0,
         "definition": {
           "path": [
             "products",
@@ -2797,6 +2811,7 @@
       {
         "id": "products.presentation.li-premier-accident.applicants",
         "key": "products.presentation.li-premier-accident.applicants",
+        "position": 0,
         "definition": {
           "path": [
             "products",
@@ -2817,6 +2832,7 @@
       {
         "id": "products.presentation.di-step-rated.name",
         "key": "products.presentation.di-step-rated.name",
+        "position": 0,
         "definition": {
           "path": [
             "products",
@@ -2837,6 +2853,7 @@
       {
         "id": "coverages.overrides.di-step-rated.requirements.eligibility",
         "key": "coverages.overrides.di-step-rated.requirements.eligibility",
+        "position": 0,
         "definition": {
           "path": [
             "coverages",
@@ -2854,6 +2871,7 @@
       {
         "id": "products.presentation.di-step-rated.applicants",
         "key": "products.presentation.di-step-rated.applicants",
+        "position": 0,
         "definition": {
           "path": [
             "products",
@@ -2874,6 +2892,7 @@
       {
         "id": "products.presentation.di-step-rated.waitingPeriodOptions",
         "key": "products.presentation.di-step-rated.waitingPeriodOptions",
+        "position": 0,
         "definition": {
           "path": [
             "products",
@@ -2894,6 +2913,7 @@
       {
         "id": "products.presentation.di-level-rated.name",
         "key": "products.presentation.di-level-rated.name",
+        "position": 0,
         "definition": {
           "path": [
             "products",
@@ -2914,6 +2934,7 @@
       {
         "id": "products.presentation.di-level-rated.applicants",
         "key": "products.presentation.di-level-rated.applicants",
+        "position": 0,
         "definition": {
           "path": [
             "products",
@@ -2934,6 +2955,7 @@
       {
         "id": "products.presentation.di-level-rated.waitingPeriodOptions",
         "key": "products.presentation.di-level-rated.waitingPeriodOptions",
+        "position": 0,
         "definition": {
           "path": [
             "products",
@@ -2954,6 +2976,7 @@
       {
         "id": "products.presentation.oo-office-overhead.name",
         "key": "products.presentation.oo-office-overhead.name",
+        "position": 0,
         "definition": {
           "path": [
             "products",
@@ -2974,6 +2997,7 @@
       {
         "id": "products.presentation.oo-office-overhead.applicants",
         "key": "products.presentation.oo-office-overhead.applicants",
+        "position": 0,
         "definition": {
           "path": [
             "products",
@@ -2994,6 +3018,7 @@
       {
         "id": "products.presentation.oo-office-overhead.waitingPeriodOptions",
         "key": "products.presentation.oo-office-overhead.waitingPeriodOptions",
+        "position": 0,
         "definition": {
           "path": [
             "products",
@@ -3014,6 +3039,7 @@
       {
         "id": "products.presentation.oo-office-overhead.maxBenefitPeriodOptions",
         "key": "products.presentation.oo-office-overhead.maxBenefitPeriodOptions",
+        "position": 0,
         "definition": {
           "path": [
             "products",
@@ -3034,6 +3060,7 @@
       {
         "id": "products.presentation.sh-hospital-income.name",
         "key": "products.presentation.sh-hospital-income.name",
+        "position": 0,
         "definition": {
           "path": [
             "products",
@@ -3054,6 +3081,7 @@
       {
         "id": "products.presentation.sh-hospital-income.applicants",
         "key": "products.presentation.sh-hospital-income.applicants",
+        "position": 0,
         "definition": {
           "path": [
             "products",
@@ -3074,6 +3102,7 @@
       {
         "id": "template.product-benefit-policy.di-step-rated",
         "key": "template.product-benefit-policy.di-step-rated",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3091,6 +3120,7 @@
       {
         "id": "template.product-benefit-policy.di-level-rated",
         "key": "template.product-benefit-policy.di-level-rated",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3108,6 +3138,7 @@
       {
         "id": "template.product-benefit-policy.oo-office-overhead",
         "key": "template.product-benefit-policy.oo-office-overhead",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3125,6 +3156,7 @@
       {
         "id": "template.product-dependent-policy.sh-hospital-income",
         "key": "template.product-dependent-policy.sh-hospital-income",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3141,6 +3173,7 @@
       {
         "id": "template.product-dependent-policy.li-premier-accident",
         "key": "template.product-dependent-policy.li-premier-accident",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3157,6 +3190,7 @@
       {
         "id": "template.product-rating-adjustments.li-term",
         "key": "template.product-rating-adjustments.li-term",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3173,6 +3207,7 @@
       {
         "id": "template.product-rate-outcome.li-15yr",
         "key": "template.product-rate-outcome.li-15yr",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3189,6 +3224,7 @@
       {
         "id": "template.product-rate-outcome.li-preferred",
         "key": "template.product-rate-outcome.li-preferred",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3205,6 +3241,7 @@
       {
         "id": "template.product-rate-outcome.li-premier-accident",
         "key": "template.product-rate-outcome.li-premier-accident",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3221,6 +3258,7 @@
       {
         "id": "template.product-rate-outcome.di-step-rated",
         "key": "template.product-rate-outcome.di-step-rated",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3237,6 +3275,7 @@
       {
         "id": "template.product-rate-outcome.di-level-rated",
         "key": "template.product-rate-outcome.di-level-rated",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3253,6 +3292,7 @@
       {
         "id": "template.product-rate-outcome.oo-office-overhead",
         "key": "template.product-rate-outcome.oo-office-overhead",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3269,6 +3309,7 @@
       {
         "id": "template.product-rate-outcome.sh-hospital-income",
         "key": "template.product-rate-outcome.sh-hospital-income",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3285,6 +3326,7 @@
       {
         "id": "template.product-selection-policy.li-15yr",
         "key": "template.product-selection-policy.li-15yr",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3301,6 +3343,7 @@
       {
         "id": "template.product-journey-policy.li-15yr",
         "key": "template.product-journey-policy.li-15yr",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3317,6 +3360,7 @@
       {
         "id": "template.product-residency-policy.li-15yr",
         "key": "template.product-residency-policy.li-15yr",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3333,6 +3377,7 @@
       {
         "id": "template.product-selection-policy.li-preferred",
         "key": "template.product-selection-policy.li-preferred",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3349,6 +3394,7 @@
       {
         "id": "template.product-journey-policy.li-preferred",
         "key": "template.product-journey-policy.li-preferred",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3365,6 +3411,7 @@
       {
         "id": "template.product-residency-policy.li-preferred",
         "key": "template.product-residency-policy.li-preferred",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3381,6 +3428,7 @@
       {
         "id": "template.product-selection-policy.li-premier-accident",
         "key": "template.product-selection-policy.li-premier-accident",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3397,6 +3445,7 @@
       {
         "id": "template.product-journey-policy.li-premier-accident",
         "key": "template.product-journey-policy.li-premier-accident",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3413,6 +3462,7 @@
       {
         "id": "template.product-residency-policy.li-premier-accident",
         "key": "template.product-residency-policy.li-premier-accident",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3429,6 +3479,7 @@
       {
         "id": "template.product-selection-policy.di-step-rated",
         "key": "template.product-selection-policy.di-step-rated",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3445,6 +3496,7 @@
       {
         "id": "template.product-journey-policy.di-step-rated",
         "key": "template.product-journey-policy.di-step-rated",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3461,6 +3513,7 @@
       {
         "id": "template.product-residency-policy.di-step-rated",
         "key": "template.product-residency-policy.di-step-rated",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3477,6 +3530,7 @@
       {
         "id": "template.product-selection-policy.di-level-rated",
         "key": "template.product-selection-policy.di-level-rated",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3493,6 +3547,7 @@
       {
         "id": "template.product-journey-policy.di-level-rated",
         "key": "template.product-journey-policy.di-level-rated",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3509,6 +3564,7 @@
       {
         "id": "template.product-residency-policy.di-level-rated",
         "key": "template.product-residency-policy.di-level-rated",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3525,6 +3581,7 @@
       {
         "id": "template.product-selection-policy.oo-office-overhead",
         "key": "template.product-selection-policy.oo-office-overhead",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3541,6 +3598,7 @@
       {
         "id": "template.product-journey-policy.oo-office-overhead",
         "key": "template.product-journey-policy.oo-office-overhead",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3557,6 +3615,7 @@
       {
         "id": "template.product-residency-policy.oo-office-overhead",
         "key": "template.product-residency-policy.oo-office-overhead",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3573,6 +3632,7 @@
       {
         "id": "template.product-selection-policy.sh-hospital-income",
         "key": "template.product-selection-policy.sh-hospital-income",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3589,6 +3649,7 @@
       {
         "id": "template.product-journey-policy.sh-hospital-income",
         "key": "template.product-journey-policy.sh-hospital-income",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3605,6 +3666,7 @@
       {
         "id": "template.product-residency-policy.sh-hospital-income",
         "key": "template.product-residency-policy.sh-hospital-income",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3621,6 +3683,7 @@
       {
         "id": "template.product-rate-modifier-policy.li-15yr",
         "key": "template.product-rate-modifier-policy.li-15yr",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3636,6 +3699,7 @@
       {
         "id": "template.product-rate-input-policy.li-15yr",
         "key": "template.product-rate-input-policy.li-15yr",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3651,6 +3715,7 @@
       {
         "id": "template.product-rate-modifier-policy.li-preferred",
         "key": "template.product-rate-modifier-policy.li-preferred",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3666,6 +3731,7 @@
       {
         "id": "template.product-rate-input-policy.li-preferred",
         "key": "template.product-rate-input-policy.li-preferred",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3681,6 +3747,7 @@
       {
         "id": "template.product-rate-modifier-policy.li-premier-accident",
         "key": "template.product-rate-modifier-policy.li-premier-accident",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3696,6 +3763,7 @@
       {
         "id": "template.product-rate-input-policy.li-premier-accident",
         "key": "template.product-rate-input-policy.li-premier-accident",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3711,6 +3779,7 @@
       {
         "id": "template.product-rate-modifier-policy.di-step-rated",
         "key": "template.product-rate-modifier-policy.di-step-rated",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3726,6 +3795,7 @@
       {
         "id": "template.product-rate-input-policy.di-step-rated",
         "key": "template.product-rate-input-policy.di-step-rated",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3741,6 +3811,7 @@
       {
         "id": "template.product-rate-modifier-policy.di-level-rated",
         "key": "template.product-rate-modifier-policy.di-level-rated",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3756,6 +3827,7 @@
       {
         "id": "template.product-rate-input-policy.di-level-rated",
         "key": "template.product-rate-input-policy.di-level-rated",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3771,6 +3843,7 @@
       {
         "id": "template.product-rate-modifier-policy.oo-office-overhead",
         "key": "template.product-rate-modifier-policy.oo-office-overhead",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3786,6 +3859,7 @@
       {
         "id": "template.product-rate-input-policy.oo-office-overhead",
         "key": "template.product-rate-input-policy.oo-office-overhead",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3801,6 +3875,7 @@
       {
         "id": "template.product-rate-modifier-policy.sh-hospital-income",
         "key": "template.product-rate-modifier-policy.sh-hospital-income",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3816,6 +3891,7 @@
       {
         "id": "template.product-rate-input-policy.sh-hospital-income",
         "key": "template.product-rate-input-policy.sh-hospital-income",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3831,6 +3907,7 @@
       {
         "id": "template.product-rider-set.di-level-rated",
         "key": "template.product-rider-set.di-level-rated",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3846,6 +3923,7 @@
       {
         "id": "template.product-rider-set.di-step-rated",
         "key": "template.product-rider-set.di-step-rated",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3861,6 +3939,7 @@
       {
         "id": "template.product-rider-set.li-15yr",
         "key": "template.product-rider-set.li-15yr",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3876,6 +3955,7 @@
       {
         "id": "template.product-rider-set.li-preferred",
         "key": "template.product-rider-set.li-preferred",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3891,6 +3971,7 @@
       {
         "id": "template.product-rider-set.li-premier-accident",
         "key": "template.product-rider-set.li-premier-accident",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3906,6 +3987,7 @@
       {
         "id": "template.product-rider-set.oo-office-overhead",
         "key": "template.product-rider-set.oo-office-overhead",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3921,6 +4003,7 @@
       {
         "id": "template.product-rider-set.sh-hospital-income",
         "key": "template.product-rider-set.sh-hospital-income",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3936,6 +4019,7 @@
       {
         "id": "coveragePolicy.questionOverrides",
         "key": "coveragePolicy.questionOverrides",
+        "position": 0,
         "definition": {
           "path": [
             "coveragePolicy",
@@ -3950,6 +4034,7 @@
       {
         "id": "template.product-eligibility-facts.di-step-rated.member",
         "key": "template.product-eligibility-facts.di-step-rated.member",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3966,6 +4051,7 @@
       {
         "id": "template.product-eligibility-facts.di-level-rated.member",
         "key": "template.product-eligibility-facts.di-level-rated.member",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3982,6 +4068,7 @@
       {
         "id": "template.site-category-eligibility",
         "key": "template.site-category-eligibility",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -3996,6 +4083,7 @@
       {
         "id": "products.presentation.li-group-term.description",
         "key": "products.presentation.li-group-term.description",
+        "position": 0,
         "definition": {
           "path": [
             "products",
@@ -4016,6 +4104,7 @@
       {
         "id": "products.presentation.di-short-term.description",
         "key": "products.presentation.di-short-term.description",
+        "position": 0,
         "definition": {
           "path": [
             "products",
@@ -4036,6 +4125,7 @@
       {
         "id": "products.presentation.li-group-term.underwritingType",
         "key": "products.presentation.li-group-term.underwritingType",
+        "position": 0,
         "definition": {
           "path": [
             "products",
@@ -4056,6 +4146,7 @@
       {
         "id": "coverages.overrides.li-group-term.productWarning.severity",
         "key": "coverages.overrides.li-group-term.productWarning.severity",
+        "position": 0,
         "definition": {
           "path": [
             "coverages",
@@ -4073,6 +4164,7 @@
       {
         "id": "coverages.overrides.li-group-term.productWarning.title",
         "key": "coverages.overrides.li-group-term.productWarning.title",
+        "position": 0,
         "definition": {
           "path": [
             "coverages",
@@ -4090,6 +4182,7 @@
       {
         "id": "coverages.overrides.li-group-term.productWarning.message",
         "key": "coverages.overrides.li-group-term.productWarning.message",
+        "position": 0,
         "definition": {
           "path": [
             "coverages",
@@ -4107,6 +4200,7 @@
       {
         "id": "products.presentation.di-short-term.underwritingType",
         "key": "products.presentation.di-short-term.underwritingType",
+        "position": 0,
         "definition": {
           "path": [
             "products",
@@ -4127,6 +4221,7 @@
       {
         "id": "coverages.hideSmokerQuestion",
         "key": "coverages.hideSmokerQuestion",
+        "position": 0,
         "definition": {
           "path": [
             "coverages",
@@ -4141,6 +4236,7 @@
       {
         "id": "products.presentation.li-group-term.name",
         "key": "products.presentation.li-group-term.name",
+        "position": 0,
         "definition": {
           "path": [
             "products",
@@ -4161,6 +4257,7 @@
       {
         "id": "products.presentation.di-short-term.name",
         "key": "products.presentation.di-short-term.name",
+        "position": 0,
         "definition": {
           "path": [
             "products",
@@ -4181,6 +4278,7 @@
       {
         "id": "template.product-benefit-policy.di-short-term",
         "key": "template.product-benefit-policy.di-short-term",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -4198,6 +4296,7 @@
       {
         "id": "template.product-dependent-policy.li-group-term",
         "key": "template.product-dependent-policy.li-group-term",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -4214,6 +4313,7 @@
       {
         "id": "template.product-rate-outcome.li-group-term",
         "key": "template.product-rate-outcome.li-group-term",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -4230,6 +4330,7 @@
       {
         "id": "template.product-rate-outcome.di-short-term",
         "key": "template.product-rate-outcome.di-short-term",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -4246,6 +4347,7 @@
       {
         "id": "template.product-amount-cap-policy.li-group-term",
         "key": "template.product-amount-cap-policy.li-group-term",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -4261,6 +4363,7 @@
       {
         "id": "template.product-residency-policy.li-group-term",
         "key": "template.product-residency-policy.li-group-term",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -4276,6 +4379,7 @@
       {
         "id": "template.product-residency-policy.di-short-term",
         "key": "template.product-residency-policy.di-short-term",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -4291,6 +4395,7 @@
       {
         "id": "template.product-selection-policy.li-group-term",
         "key": "template.product-selection-policy.li-group-term",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -4307,6 +4412,7 @@
       {
         "id": "template.product-journey-policy.li-group-term",
         "key": "template.product-journey-policy.li-group-term",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -4323,6 +4429,7 @@
       {
         "id": "template.product-selection-policy.di-short-term",
         "key": "template.product-selection-policy.di-short-term",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -4339,6 +4446,7 @@
       {
         "id": "template.product-journey-policy.di-short-term",
         "key": "template.product-journey-policy.di-short-term",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -4355,6 +4463,7 @@
       {
         "id": "template.product-rate-modifier-policy.li-group-term",
         "key": "template.product-rate-modifier-policy.li-group-term",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -4370,6 +4479,7 @@
       {
         "id": "template.product-rate-input-policy.li-group-term",
         "key": "template.product-rate-input-policy.li-group-term",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -4385,6 +4495,7 @@
       {
         "id": "template.product-rate-modifier-policy.di-short-term",
         "key": "template.product-rate-modifier-policy.di-short-term",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -4400,6 +4511,7 @@
       {
         "id": "template.product-rate-input-policy.di-short-term",
         "key": "template.product-rate-input-policy.di-short-term",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -4415,6 +4527,7 @@
       {
         "id": "template.product-rider-set.di-short-term",
         "key": "template.product-rider-set.di-short-term",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -4430,6 +4543,7 @@
       {
         "id": "template.product-rider-set.li-group-term",
         "key": "template.product-rider-set.li-group-term",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {
@@ -4445,6 +4559,7 @@
       {
         "id": "template.product-eligibility-facts.li-group-term.spouse",
         "key": "template.product-eligibility-facts.li-group-term.spouse",
+        "position": 0,
         "definition": {
           "path": null,
           "target": {
@@ -4462,6 +4577,7 @@
       {
         "id": "template.product-eligibility-facts.li-group-term.member",
         "key": "template.product-eligibility-facts.li-group-term.member",
+        "position": 0,
         "definition": {
           "path": null,
           "metadata": {

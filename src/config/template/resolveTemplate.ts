@@ -16,6 +16,8 @@ function isTemplate(v: string | null): v is FormTemplate {
 }
 
 export function resolveFormTemplate(): FormTemplate {
+  const library = getPrototypeLibrary();
+  if (library?.revision.startsWith('draft:') && library.client.features?.defaultTemplate) return library.client.features.defaultTemplate;
   const params = new URLSearchParams(window.location.search);
   const urlVal = params.get(TEMPLATE_QUERY_PARAM);
   if (isTemplate(urlVal)) {
@@ -24,7 +26,7 @@ export function resolveFormTemplate(): FormTemplate {
   }
   const stored = window.sessionStorage.getItem(TEMPLATE_STORAGE_KEY);
   if (isTemplate(stored)) return stored;
-  const clientDefault = getPrototypeLibrary()?.client.features?.defaultTemplate ?? getEffectiveSiteConfig(resolveSiteId())?.features?.defaultTemplate;
+  const clientDefault = library?.client.features?.defaultTemplate ?? getEffectiveSiteConfig(resolveSiteId())?.features?.defaultTemplate;
   if (clientDefault) return clientDefault;
   return DEFAULT_TEMPLATE;
 }

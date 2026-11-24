@@ -3,13 +3,14 @@ import { resolveRatePresentation } from '../domain/ratePresentation';
 import { currentMembershipLookup } from "../domain/membershipLookup";
 import { useEffect, useState } from 'react';
 import { getPrototypeLibrary } from '../domain/prototypeLibrary';
-import { selectedRiderCharges } from '../domain/pricing';
+import { selectedRiderCharges, syntheticRatingService } from '../domain/pricing';
 import { quoteCandidateWithMock } from '../domain/mockRating';
 import { resolveCoverageJourneyPolicy } from '../domain/coverageJourneyPolicy';
 import { candidateMockRatingService } from '../mock/client';
 import { applicationApplicantFacts } from '../utils/applicantFacts';
 import type { CoverageApplicantId } from '../domain/coverage';
 import type { PaymentFrequency, PaymentMethod } from '../domain/paymentPolicy';
+import { portalDatabaseEnabled } from '../services/portalClient';
 
 /** Selected riders priced on their own or the base amount; the mock rating server adds them to the base premium. */
 function riderCharges(library: NonNullable<ReturnType<typeof getPrototypeLibrary>>, productKey: string, applicant: CoverageApplicantId, amount: number, values: Record<string, unknown>) {
@@ -41,6 +42,7 @@ export function usePrototypeRates(requests: Array<{ productKey: string; applican
   useEffect(() => {
     if (!library) return;
     let current = true;
+    const ratingService = portalDatabaseEnabled ? syntheticRatingService(library.products) : candidateMockRatingService;
     const rows = JSON.parse(serialized) as Array<{ key: string; request: NonNullable<ReturnType<typeof prototypeRateRequest>> }>;
     void Promise.all(rows.map(async row => {
       const presentation = resolveRatePresentation(library.site, row.request.productKey, typeof row.request.facts.association === 'string' ? row.request.facts.association : undefined);
@@ -50,7 +52,7 @@ export function usePrototypeRates(requests: Array<{ productKey: string; applican
       else if (!row.request.facts.amount) display = { status: 'needs-information' };
       else {
         try {
-          const quote = await quoteCandidateWithMock(library.site, row.request.productKey, row.request.facts, row.request.payment, candidateMockRatingService, Date.now(), purpose, row.request.riders);
+          const quote = await quoteCandidateWithMock(library.site, row.request.productKey, row.request.facts, row.request.payment, ratingService, Date.now(), purpose, row.request.riders);
           display = rateDisplayFromQuote(quote);
         } catch { display = { status: 'unavailable', reason: 'technical' }; }
       }

@@ -1990,6 +1990,18 @@ describe("fresh-start reviewed page ownership", () => {
     expect(configurationRows({ ...catalog, data }, 'asce').find(row => row.key === 'shared.beneficiary-participation')).toMatchObject({ scope: 'Global template', owner: 'rules' });
   });
 
+  it('removes captured actions for replaced Beneficiary rules and rejects newly authored actions for them', () => {
+    const data = withoutReviewedRecords();
+    const source = structuredClone(freshStartSource());
+    const ruleKey = 'rule-beneficiary-optional-page-opt-in';
+    const action = { ...deployed.data.ruleActions[0], id: 'stale-beneficiary-action', key: 'stale-beneficiary-action', ruleKey };
+    data.ruleActions.push(action);
+    const compiled = compileRequirementCatalog(data, source, 'asce');
+    expect(compiled.ruleActions.some(row => row.ruleKey === ruleKey)).toBe(false);
+    source.application.records.ruleActions.push(action);
+    expect(() => compileRequirementCatalog(data, source, 'asce')).toThrow('Assignment to retired application rule: ruleActions');
+  });
+
   it('retires category expansion and isolates additional/total message selection from amount policy', () => {
     const input = withoutReviewedRecords(), source = structuredClone(freshStartSource());
     const retired = 'rule-coverage-category-initial-expansion';

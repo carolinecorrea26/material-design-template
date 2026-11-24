@@ -1,6 +1,7 @@
 import CommunicationsLibrary from './library/CommunicationsLibrary';
 import { Link as RouterLink, useParams, useSearchParams } from "react-router-dom";
-import { Box, Stack, Tab, Tabs, useMediaQuery, Typography } from "@mui/material";
+import { Box, Button, Stack, Tab, Tabs, useMediaQuery, Typography } from "@mui/material";
+import { portalDatabaseEnabled } from '../../services/portalClient';
 import { Workspace } from "../../components/admin/AdminPrimitives";
 import SitePreview from "../../components/docs/SitePreview";
 import LibrarySiteSelector, { useLibrarySelection } from "./library/LibrarySiteSelector";
@@ -81,6 +82,11 @@ function StoredSitePreview({ siteKey }: { siteKey: string }) {
 function LibraryOverview({ siteKey, legacyPreview }: { siteKey: string; legacyPreview: boolean }) {
   const [search, setSearch] = useSearchParams();
   const view = search.get("view") === "site-preview" || legacyPreview && !search.has("view") ? "site-preview" : "client-information";
+  if (portalDatabaseEnabled && siteKey === 'all') return <Stack spacing={1} alignItems="flex-start">
+    <Typography>Choose a Site for its effective configuration, or browse the shared template definitions.</Typography>
+    <Button component={RouterLink} to="/admin-center/library/pages?scope=global">Browse template pages</Button>
+    <Button component={RouterLink} to="/admin-center/sites">View Site portfolio</Button>
+  </Stack>;
   return <Stack spacing={3}>
     <Tabs value={view} aria-label="Overview views" onChange={(_, next: string) => setSearch({ site: siteKey, view: next })}>
       <Tab value="client-information" label="Client information" /><Tab value="site-preview" label="Site preview" />
@@ -109,7 +115,7 @@ export default function PortalLibrary() {
       <Stack spacing={3} sx={{ flex: 1, minWidth: 0 }}>
         <Stack component="header" aria-label="Library domain heading" spacing={0.75}>
           <Typography component="h2" variant="h5" sx={{ fontWeight: 800 }}>{domain.label}</Typography>
-          <Typography variant="body2" color="text.secondary">{domainDescriptions[domain.id]}</Typography>
+          {(domain.id !== 'overview' || selection !== 'all' || !portalDatabaseEnabled) && <Typography variant="body2" color="text.secondary">{domainDescriptions[domain.id]}</Typography>}
         </Stack>
         {domain.id === "accessibility" ? <AccessibilityLibrary siteKey={selection} /> : domain.id === "changes" ? <RequirementChangesLibrary /> : domain.id === "formulas" ? <FormulasLibrary /> : <LibraryCatalogProvider siteKey={selection}>
           {domain.id === "forms" ? <FormsLibrary /> : domain.id === "components" ? <LibraryComponents /> : domain.id === "pages" ? <StoredPagesLibrary siteKey={selection} /> : domain.id === "fields" ? <StoredFieldsLibrary siteKey={selection} /> : domain.id === "overview" ? <LibraryOverview siteKey={selection} legacyPreview={domainId === "site-preview"} /> : domain.id === "rules" ? <RulesLibrary siteKey={selection} /> : domain.id === "configurations" ? <ConfigurationsLibrary domain={domainId} siteKey={selection} /> : domain.id === "flows" ? <StoredFlowsLibrary siteKey={selection} /> : domain.id === "analytics" ? <AnalyticsLibrary siteKey={selection} /> : domain.id === "content" ? <ContentLibrary siteKey={selection} /> : domain.id === "emails" ? <CommunicationsLibrary siteKey={selection} /> : domain.id === "validation" ? <ValidationLibrary siteKey={selection} /> : <StoredLibraryDomain domain={domain.id} siteKey={selection} />}

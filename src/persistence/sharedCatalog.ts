@@ -5,6 +5,7 @@ import { localSnapshotRevision, validateSnapshotData, type SnapshotTable } from 
 import type { DatabaseSchema } from './types';
 import { validateIdentityCatalog } from './identityCatalog';
 import { validateComponentStructure } from '../domain/componentCatalog';
+import { portalDatabaseEnabled } from '../services/portalClient';
 
 export type CatalogScope = { siteScope?: readonly string[] };
 export type SharedCatalog = CatalogScope & {
@@ -45,11 +46,17 @@ export function prototypeCatalogData(catalog: SharedCatalog) {
 }
 
 /** One fetch per document load keeps the prototype and Library on one revision. */
-export function createSharedCatalogReader(fetcher: typeof fetch, baseUrl: string) {
+export function createSharedCatalogReader(fetcher: typeof fetch, baseUrl: string, database = false) {
   let pending: Promise<SharedCatalog & { revision: string }> | undefined;
   return () => pending ??= (async () => {
-    const response = await fetcher(`${baseUrl}${sharedCatalogPath}`, { cache: 'no-cache' });
+    const response = await fetcher(database ? '/api/portal/catalog' : `${baseUrl}${sharedCatalogPath}`, { cache: 'no-cache' });
     if (!response.ok) throw new Error(`Shared JSON catalog unavailable (${response.status}).`);
+    if (database) {
+      const revision = response.headers.get('X-Portal-Catalog-Revision');
+      if (!revision || !/^postgres:v1:sha256:[a-f0-9]{64}$/.test(revision) || !response.body) throw new Error('Invalid database catalog revision.');
+      const content = new Response(response.body.pipeThrough(new DecompressionStream('gzip')));
+      return { ...validateSharedCatalog(await content.json()), revision };
+    }
     const catalog = validateSharedCatalog(await response.json());
     return { ...catalog, revision: await localSnapshotRevision({ ...catalog.data, analyticsTags: catalog.analyticsTags }) };
   })();
@@ -61,4 +68,5 @@ export const readSharedCatalog = createSharedCatalogReader(
     ? async () => new Response(embeddedCatalog.textContent, { headers: { 'Content-Type': 'application/json' } })
     : (...args) => fetch(...args),
   import.meta.env.BASE_URL,
+  !embeddedCatalog && portalDatabaseEnabled,
 );

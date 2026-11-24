@@ -11693,7 +11693,7 @@
     {
       "table": "ruleActions",
       "file": "public/catalog/rules/rules.json",
-      "rowCount": 78,
+      "rowCount": 67,
       "rowType": "RuleActionRow",
       "properties": [
         {
@@ -14055,7 +14055,7 @@
           "description": "Semantic identity used by key-based relationships. Preserve existing values.",
           "declaration": {
             "file": "src/persistence/types/organization.ts",
-            "line": 18
+            "line": 19
           }
         },
         {
@@ -14066,7 +14066,7 @@
           "description": "Stored row identity. Preserve existing values.",
           "declaration": {
             "file": "src/persistence/types/organization.ts",
-            "line": 18
+            "line": 19
           }
         },
         {
@@ -14077,7 +14077,7 @@
           "description": "See the property declaration and owning domain contract.",
           "declaration": {
             "file": "src/persistence/types/organization.ts",
-            "line": 18
+            "line": 19
           }
         },
         {
@@ -14088,7 +14088,7 @@
           "description": "See the property declaration and owning domain contract.",
           "declaration": {
             "file": "src/persistence/types/organization.ts",
-            "line": 18
+            "line": 19
           }
         },
         {
@@ -14099,7 +14099,7 @@
           "description": "See the property declaration and owning domain contract.",
           "declaration": {
             "file": "src/persistence/types/organization.ts",
-            "line": 18
+            "line": 19
           }
         },
         {
@@ -14137,9 +14137,9 @@
         },
         {
           "name": "createdAt",
-          "required": true,
+          "required": false,
           "nullable": false,
-          "type": "string",
+          "type": "string | undefined",
           "description": "See the property declaration and owning domain contract.",
           "declaration": {
             "file": "src/persistence/types/common.ts",
@@ -14148,9 +14148,9 @@
         },
         {
           "name": "updatedAt",
-          "required": true,
+          "required": false,
           "nullable": false,
-          "type": "string",
+          "type": "string | undefined",
           "description": "See the property declaration and owning domain contract.",
           "declaration": {
             "file": "src/persistence/types/common.ts",
@@ -14173,7 +14173,7 @@
           "description": "Semantic identity used by key-based relationships. Preserve existing values.",
           "declaration": {
             "file": "src/persistence/types/organization.ts",
-            "line": 19
+            "line": 20
           }
         },
         {
@@ -14184,7 +14184,7 @@
           "description": "Stored row identity. Preserve existing values.",
           "declaration": {
             "file": "src/persistence/types/organization.ts",
-            "line": 19
+            "line": 20
           }
         },
         {
@@ -14195,7 +14195,7 @@
           "description": "See the property declaration and owning domain contract.",
           "declaration": {
             "file": "src/persistence/types/organization.ts",
-            "line": 19
+            "line": 20
           }
         },
         {
@@ -14206,7 +14206,7 @@
           "description": "See the property declaration and owning domain contract.",
           "declaration": {
             "file": "src/persistence/types/organization.ts",
-            "line": 19
+            "line": 20
           }
         },
         {
@@ -14217,7 +14217,7 @@
           "description": "See the property declaration and owning domain contract.",
           "declaration": {
             "file": "src/persistence/types/organization.ts",
-            "line": 19
+            "line": 20
           }
         },
         {
@@ -14255,9 +14255,9 @@
         },
         {
           "name": "createdAt",
-          "required": true,
+          "required": false,
           "nullable": false,
-          "type": "string",
+          "type": "string | undefined",
           "description": "See the property declaration and owning domain contract.",
           "declaration": {
             "file": "src/persistence/types/common.ts",
@@ -14266,9 +14266,9 @@
         },
         {
           "name": "updatedAt",
-          "required": true,
+          "required": false,
           "nullable": false,
-          "type": "string",
+          "type": "string | undefined",
           "description": "See the property declaration and owning domain contract.",
           "declaration": {
             "file": "src/persistence/types/common.ts",

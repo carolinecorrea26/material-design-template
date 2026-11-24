@@ -5,13 +5,24 @@ import { resolveSiteId } from "./data/activeSite";
 import { installPrototypeLibrary, resolveCompiledPrototypeLibrary, validatePrototypeEnvelope } from "./domain/prototypeLibrary";
 import { prototypeCatalogData, readSharedCatalog } from './persistence/sharedCatalog';
 import { mockRequest } from "./mock/client";
+import { portalDatabaseEnabled, portalPageInspection } from './services/portalClient';
+import { openPortalDraft, resolvePortalDraft } from './services/portalDrafts';
 
 async function start() {
   const catalog = await readSharedCatalog();
   const data = withFreshStartCatalog(prototypeCatalogData(catalog), undefined, catalog.siteScope);
   const sourceSite = resolveSiteId(data.sites.filter(site => site.status === 'active' && !site.deletedAt).map(site => site.key));
-  if (import.meta.env.VITE_MOCK_PLATFORM_ENABLED) {
-    const params = new URLSearchParams(window.location.search);
+  const params = new URLSearchParams(window.location.search);
+  const draftId = portalDatabaseEnabled ? params.get('portalDraft') : null;
+  if (draftId) {
+    try {
+      if (params.get('site') !== sourceSite) throw new Error('Choose the Site associated with this draft.');
+      installPrototypeLibrary(resolvePortalDraft(catalog, sourceSite, await openPortalDraft(draftId)));
+    } catch (error) {
+      document.getElementById('root')!.textContent = `Draft preview unavailable. ${error instanceof Error ? error.message : ''}`;
+      return;
+    }
+  } else if (!portalDatabaseEnabled && import.meta.env.VITE_MOCK_PLATFORM_ENABLED) {
     // Only explicit preview links select release data; default applicant activation stays unchanged.
     const environment = params.get('environment');
     if (environment && ['uat', 'production'].includes(environment)) sessionStorage.setItem('prototypeReleaseEnvironment', environment);
@@ -31,7 +42,12 @@ async function start() {
   }
   // Applicant modules capture their configuration at import time.
   const { default: App } = await import('./app/App');
-  ReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode><App /></React.StrictMode>);
+  const prototypeNotice = draftId ? 'Site Builder draft preview. Submissions are disabled.'
+    : portalPageInspection ? 'Library page preview. Submissions are disabled.' : 'Prototype only. Use fictional information.';
+  ReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode>
+    {portalDatabaseEnabled && <p role="status" style={{ margin: 0, padding: '0.5rem', textAlign: 'center', background: '#e9f3ff' }}>{prototypeNotice}</p>}
+    <App />
+  </React.StrictMode>);
 }
 void start().catch(error => {
   console.error('Prototype startup failed', error);

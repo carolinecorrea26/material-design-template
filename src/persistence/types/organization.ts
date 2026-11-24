@@ -15,8 +15,9 @@ export interface Site extends Partial<LibraryMetadata>, Timestamped, SoftDeletab
   status: RecordStatus; environment: string; legacyClientId: string;
 }
 export interface SiteCoverage extends Partial<LibraryMetadata>, Timestamped { key?: string; id: string; siteId: string; coverageKey: string; enabled: boolean }
-export interface SiteProduct extends Partial<LibraryMetadata>, Timestamped { key?: string; id: string; siteId: string; productKey: string; enabled: boolean }
-export interface SiteRider extends Partial<LibraryMetadata>, Timestamped { key?: string; id: string; siteId: string; riderKey: string; enabled: boolean }
+/** Authored Site assignments carry timestamps only when recorded in their source. */
+export interface SiteProduct extends Partial<LibraryMetadata>, Partial<Timestamped> { key?: string; id: string; siteId: string; productKey: string; enabled: boolean }
+export interface SiteRider extends Partial<LibraryMetadata>, Partial<Timestamped> { key?: string; id: string; siteId: string; riderKey: string; enabled: boolean }
 export interface SiteConfiguration extends Timestamped, SoftDeletable {
   id: string; siteId: string; configurationKey: string; valueJson: Json; source: string; effectiveDate: string | null;
 }

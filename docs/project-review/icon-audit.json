@@ -837,6 +837,13 @@
         },
         {
           "icon": "ExpandMoreRounded",
+          "file": "src/pages/admin/PortalPortfolio.tsx",
+          "line": 2,
+          "scope": "admin",
+          "used": true
+        },
+        {
+          "icon": "ExpandMoreRounded",
           "file": "src/pages/admin/tutorials/TutorialTroubleshooting.tsx",
           "line": 2,
           "scope": "admin",
