@@ -2,7 +2,7 @@ import { createHash, randomBytes, scryptSync, timingSafeEqual } from 'node:crypt
 import pg from 'pg';
 
 export function connectPortalDatabase() {
-  const connectionString = process.env.NETLIFY_DB_URL || process.env.DATABASE_URL;
+  const connectionString = process.env.DATABASE_URL || process.env.NETLIFY_DB_URL;
   if (!connectionString) throw new Error('Set NETLIFY_DB_URL or DATABASE_URL for the Portal database.');
   return new pg.Pool({ connectionString, max: 2, connectionTimeoutMillis: 5000 });
 }

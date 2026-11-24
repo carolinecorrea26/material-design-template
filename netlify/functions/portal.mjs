@@ -1,5 +1,6 @@
 import { randomBytes, randomUUID } from 'node:crypto';
 import { gzipSync } from 'node:zlib';
+import { getDatabase } from '@netlify/database';
 import { createApplicantSaves } from '../../scripts/applicant-saves.mjs';
 import { connectPortalDatabase, digest, inTransaction, verifyPassword } from '../../scripts/portal-db.mjs';
 
@@ -211,7 +212,14 @@ export function createPortalHandler(db) {
 
 let handler;
 export default async request => {
-  if (!process.env.NETLIFY_DB_URL && !process.env.DATABASE_URL) return reply({ error: 'Portal database connection is not configured.' }, 503);
-  handler ??= createPortalHandler(connectPortalDatabase());
+  if (!handler) {
+    try {
+      const pool = process.env.DATABASE_URL ? connectPortalDatabase() : getDatabase().pool;
+      handler = createPortalHandler(pool);
+    } catch (error) {
+      if (error.name !== 'MissingDatabaseConnectionError') console.error('Portal database initialization failed', error.name);
+      return reply({ error: 'Portal database connection is not configured.' }, 503);
+    }
+  }
   return handler(request);
 };

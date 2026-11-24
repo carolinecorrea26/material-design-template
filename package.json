@@ -49,6 +49,7 @@
     "@mui/icons-material": "^7.3.9",
     "@mui/material": "^7.3.9",
     "@mui/x-date-pickers": "^9.0.0",
+    "@netlify/database": "2.0.4",
     "@xyflow/react": "^12.11.6",
     "dayjs": "^1.11.20",
     "framer-motion": "^12.38.0",
