@@ -2,10 +2,10 @@ import { persistence } from "../persistence/client";
 import type { PersistenceAdapter } from "../persistence/adapter";
 import { migrationStages, migrationStatuses, type MigrationSchedule } from "../persistence/types";
 
-export function defaultMigrationSchedule(clientKey: string): MigrationSchedule {
-  const key = clientKey.toLowerCase();
+export function defaultMigrationSchedule(hostingAssociationKey: string): MigrationSchedule {
+  const key = hostingAssociationKey.toLowerCase();
   return {
-    id: `migration-${key}`, clientKey, migrating: ["asce", "aafp"].includes(key),
+    id: `migration-${key}`, hostingAssociationKey, migrating: ["asce", "aafp"].includes(key),
     milestones: Object.fromEntries(migrationStages.map(({ key }) => [key, { status: "Not assessed", expectedDate: null }])) as MigrationSchedule["milestones"],
     expectedDate: null, notes: "", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(),
   };

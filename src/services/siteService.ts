@@ -5,7 +5,7 @@ import type { PersistenceAdapter } from "../persistence/adapter";
 import type { Site, UserScope } from "../persistence/types";
 import { active, audit, DEMO_ACTOR } from "./serviceUtils";
 
-export type CreateSiteInput = Pick<Site, "key" | "clientId" | "name" | "displayName" | "environment" | "templateType" | "legacyClientId">;
+export type CreateSiteInput = Pick<Site, "key" | "hostingAssociationId" | "name" | "displayName" | "environment" | "templateType" | "legacyClientId">;
 export class SiteService {
   private readonly adapter: PersistenceAdapter;
   private readonly repositories: ReturnType<typeof createFoundationRepositories>;
@@ -14,6 +14,7 @@ export class SiteService {
   async getSiteById(id: string) { return this.repositories.sites.get(id); }
   async getSiteByKey(key: string) { return (await this.repositories.sites.list()).find((site) => site.key === key) ?? null; }
   async createSite(input: CreateSiteInput, performedBy = DEMO_ACTOR) {
+    if (!await this.repositories.associationEntities.get(input.hostingAssociationId)) throw new Error("Choose an existing hosting Association.");
     const timestamp = now();
     const site = await this.adapter.insert("sites", { id: newId(), ...input, status: "active", createdAt: timestamp, updatedAt: timestamp, deletedAt: null });
     await audit(this.adapter, { entityType: "site", entityId: site.id, action: "create", newValue: site as unknown as never, performedBy });
@@ -29,8 +30,8 @@ export class SiteService {
   async getSitesForScope(scope: UserScope) {
     const sites = await this.getSites(); if (scope.scopeType === "global") return sites;
     if (scope.scopeType === "site") return sites.filter((site) => site.id === scope.scopeId);
-    if (scope.scopeType === "client") return sites.filter((site) => site.clientId === scope.scopeId);
-    if (scope.scopeType === "organization") { const clients = await this.repositories.clients.list(); const ids = new Set(clients.filter((client) => client.organizationId === scope.scopeId).map((client) => client.id)); return sites.filter((site) => ids.has(site.clientId)); }
+    if (scope.scopeType === "association") return sites.filter((site) => site.hostingAssociationId === scope.scopeId);
+    if (scope.scopeType === "organization") { const clients = await this.repositories.associationEntities.list(); const ids = new Set(clients.filter((client) => client.organizationId === scope.scopeId).map((client) => client.id)); return sites.filter((site) => ids.has(site.hostingAssociationId)); }
     return [];
   }
   async getSitesForUser(userId: string) { const scopes = (await this.adapter.list("userScopes")).filter((scope) => scope.userId === userId); const lists = await Promise.all(scopes.map((scope) => this.getSitesForScope(scope))); return [...new Map(lists.flat().map((site) => [site.id, site])).values()]; }

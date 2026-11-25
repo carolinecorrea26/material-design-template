@@ -45,11 +45,16 @@ async function change() { await act(async () => [...container.querySelectorAll("
 async function submit() { await act(async () => container.querySelector("form")!.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }))); }
 
 it("awaits a successful Membership save, retains fields and shows progress feedback on the destination", async () => {
+  let completeSave!: () => void;
+  save.mockImplementation(() => new Promise<null>(resolve => { completeSave = () => resolve(null); }));
   await render(); await change(); await submit();
+  expect(container.querySelector("[data-path]")?.textContent).toBe("/membership");
+  expect(container.querySelector<HTMLButtonElement>('button[type="submit"]')?.disabled).toBe(true);
+  expect(container.querySelector("#membership-form")).not.toBeNull();
+  await act(async () => completeSave());
   expect(save).toHaveBeenCalledWith(expect.objectContaining({ "first-name": "Changed" }), "membership");
   expect(observed["first-name"]).toBe("Changed");
   expect(sendAutosaveMockEmail).not.toHaveBeenCalled();
-  await act(async () => vi.advanceTimersByTimeAsync(4400));
   expect(container.querySelector("[data-path]")?.textContent).toBe("/eligibility");
   expect(container.querySelector('[role="status"]')?.textContent).toContain("Progress saved");
 });
@@ -70,7 +75,6 @@ it("preserves current fields on Back and on an unsaved unmount", async () => {
   await act(async () => container.querySelector<HTMLButtonElement>('[aria-label="Go back"]')!.click());
   expect(observed["first-name"]).toBe("Changed");
   expect(save).not.toHaveBeenCalled();
-  await act(async () => vi.advanceTimersByTimeAsync(2200));
   expect(container.querySelector("[data-path]")?.textContent).toBe("/membership");
   write.mockClear(); await change();
   await act(async () => root.render(<div>Closed page</div>));
@@ -85,7 +89,6 @@ it.each(["coverage", "review"])("marks only an explicit %s completion as revalid
 it("saves before expanding the next single-page section and shows success without changing the URL", async () => {
   await render("membership", true); await change(); await submit();
   expect(save).toHaveBeenCalledWith(expect.objectContaining({ "first-name": "Changed" }), "membership");
-  await act(async () => vi.advanceTimersByTimeAsync(4400));
   expect(container.querySelector("#eligibility-form")).not.toBeNull();
   expect(container.querySelector("[data-path]")?.textContent).toBe("/membership");
   expect(observed["first-name"]).toBe("Changed");

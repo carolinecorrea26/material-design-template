@@ -17,7 +17,7 @@ function upsert<T extends { key: string }>(rows: T[], row: T) {
 export function applyAmaActiveWorkAdoption(db: DatabaseSchema) {
   const store = (key: string, value: Json, target?: ConfigurationTarget, path?: string[]) => {
     upsert(db.configurationDefinitions, { ...meta("configurationDefinitions", key), position: 0, definition: { path: path ?? null, metadata: { authority }, ...(target ? { target } : {}) } });
-    upsert(db.configurationValues, { ...meta("configurationValues", key), position: 0, scope: "site", siteKey, clientKey: null, configurationKey: key, value });
+    upsert(db.configurationValues, { ...meta("configurationValues", key), position: 0, scope: "site", siteKey, hostingAssociationKey: null, configurationKey: key, value });
   };
   store("ama.coverage-question-overrides", { DI: { self: ["gender", "actively-at-work", "average-monthly-income"] } }, undefined, ["coveragePolicy", "questionOverrides"]);
   // Home uses the same stored field and DI applicability when a quote tool is enabled.
@@ -38,7 +38,7 @@ export function applyAmaActiveWorkAdoption(db: DatabaseSchema) {
   } });
   const authoredRule = db.rules.find(row => row.key === ruleKey)!;
   authoredRule.definition.organization = organizeRule(authoredRule.definition);
-  upsert(db.ruleAssignments, { ...meta("ruleAssignments", `${ruleKey}.ama`), ruleKey, position: 0, scope: "site", siteKey, clientKey: null });
+  upsert(db.ruleAssignments, { ...meta("ruleAssignments", `${ruleKey}.ama`), ruleKey, position: 0, scope: "site", siteKey, hostingAssociationKey: null });
   for (const cell of ["R118", "R119"]) {
     const key = `requirement-target.ama.active-work.${cell}`;
     upsert(db.requirementTargets, { ...meta("requirementTargets", key), requirementKey: `mcr.main.${cell}`, targetTable: "rules", targetKey: ruleKey, targetColumn: "definition" });

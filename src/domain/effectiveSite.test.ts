@@ -87,14 +87,14 @@ describe("Historical snapshot resolution and current repository boundary", () =>
   });
   it("rejects unavailable Sites, missing Clients and duplicate assignments", () => {
     expect(() => resolveEffectiveSite(db, "missing")).toThrow("Unavailable Site");
-    expect(() => resolveEffectiveSite({ ...db, clients: [] }, "asce")).toThrow("Unavailable Client");
+    expect(() => resolveEffectiveSite({ ...db, associationEntities: [] }, "asce")).toThrow("Unavailable Client");
     expect(() => resolveEffectiveSite({ ...db, sites: db.sites.map(s => ({ ...s, status: "inactive" })) }, "asce")).toThrow("Unavailable Site");
     expect(() => resolveEffectiveSite({ ...db, siteProducts: [...db.siteProducts, db.siteProducts.find(p => p.siteId === "asce")!] }, "asce")).toThrow("Duplicate");
   });
   it("reads only persisted normalized inputs, refreshes reads, propagates failures", async () => {
     const current = { ...db, ...journeyCatalog.data };
     const adapter = new LocalStorageAdapter(current);
-    const allowed = new Set([...effectiveConfigurationTables, "sites", "clients", "organizations", "organizationProfiles", "associationEntities", "associationContacts", "siteProducts", "siteProductApplicants", "eligibilityConstraints", "underwritingBands", "semanticRequirements", "associations", "siteAssociations", "sitePolicies"]);
+    const allowed = new Set([...effectiveConfigurationTables, "sites", "associationEntities", "organizations", "organizationProfiles", "associationEntities", "associationContacts", "siteProducts", "siteProductApplicants", "eligibilityConstraints", "underwritingBands", "semanticRequirements", "associations", "siteAssociations", "sitePolicies"]);
     const snapshot = adapter.readSnapshot.bind(adapter);
     adapter.readSnapshot = async tables => { for (const table of tables) if (!allowed.has(table)) throw new Error(`Forbidden: ${table}`); return snapshot(tables); };
     const repository = createEffectiveSiteRepository(adapter);

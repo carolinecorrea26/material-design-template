@@ -23,7 +23,7 @@ export function applyBeneficiaryParticipationAdoption(db: DatabaseSchema) {
     ] } },
   ] satisfies Array<{ siteKey: string; policy: BeneficiaryParticipationPolicy }>;
   for (const { siteKey, policy } of selected) {
-    const key = `${siteKey}.beneficiary-participation`, row = { ...meta("configurationValues", key), position: 0, scope: "site" as const, siteKey, clientKey: null, configurationKey, value: policy as unknown as Json };
+    const key = `${siteKey}.beneficiary-participation`, row = { ...meta("configurationValues", key), position: 0, scope: "site" as const, siteKey, hostingAssociationKey: null, configurationKey, value: policy as unknown as Json };
     const index = db.configurationValues.findIndex(row => row.key === key);
     if (index < 0) db.configurationValues.push(row); else db.configurationValues[index] = row;
   }

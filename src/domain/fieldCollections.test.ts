@@ -18,9 +18,9 @@ const policies = (data: DatabaseSchema) => (data.configurationValues.find(row =>
 const compiled = () => compileRequirementCatalog(structuredClone(baseline), freshStartSource(), 'asce');
 const resolveCollections = (data: DatabaseSchema) => {
   const site = data.sites.find(site => site.key === 'asce')!;
-  const clientKey = data.clients.find(client => client.id === site.clientId)!.key;
+  const hostingAssociationKey = data.associationEntities.find(client => client.id === site.hostingAssociationId)!.key;
   const products = data.siteProducts.filter(product => product.siteId === site.id && product.enabled).map(product => product.productKey);
-  return resolveStoredFieldCollections(data, { siteKey: 'asce', clientKey, configuration: resolveEffectiveConfiguration(data, 'asce', clientKey, site.id, products) } as Parameters<typeof resolveStoredFieldCollections>[1]);
+  return resolveStoredFieldCollections(data, { siteKey: 'asce', hostingAssociationKey, configuration: resolveEffectiveConfiguration(data, 'asce', hostingAssociationKey, site.id, products) } as Parameters<typeof resolveStoredFieldCollections>[1]);
 };
 
 it('uses fresh children and Profile record definitions instead of stale snapshot settings', () => {
@@ -30,7 +30,7 @@ it('uses fresh children and Profile record definitions instead of stale snapshot
   policies(data).children.label = 'Dependent'; policies(data).children.maxItems = 3;
   policies(data).children.fields.find(row => row.fieldKey === 'child-first-name')!.valueKey = 'givenName';
   policies(data).selfDisabilityCompanies.fields.reverse();
-  data.siteFieldConfigurations.push({ id: 'collection-override', key: 'collection-override', fieldKey: 'di-company-name', pageKey: 'profile', position: 0, scope: 'site', clientKey: null, siteKey: 'asce', include: null, hidden: null, values: { label: 'ASCE carrier' } });
+  data.siteFieldConfigurations.push({ id: 'collection-override', key: 'collection-override', fieldKey: 'di-company-name', pageKey: 'profile', position: 0, scope: 'site', hostingAssociationKey: null, siteKey: 'asce', include: null, hidden: null, values: { label: 'ASCE carrier' } });
   const collection = resolvePrototypeLibrary(data, 'asce', 'test').fieldCollections;
   expect(collection.children).toMatchObject({ name: 'children', label: 'Child', maxItems: 10 });
   expect(collection.children.mapping.fields[0].label).toBe('First Name');
@@ -63,7 +63,7 @@ it('refuses missing configuration, unsafe or duplicate bindings and conflicting 
     expect(() => resolveCollections(invalid)).toThrow('Invalid collection binding');
   }
   const conflicting = compiled();
-  for (const id of ['first', 'second']) conflicting.siteFieldConfigurations.push({ id, key: id, fieldKey: 'di-company-name', pageKey: 'profile', position: 0, scope: 'site', siteKey: 'asce', clientKey: null, hidden: null, include: null, values: { label: id } });
+  for (const id of ['first', 'second']) conflicting.siteFieldConfigurations.push({ id, key: id, fieldKey: 'di-company-name', pageKey: 'profile', position: 0, scope: 'site', siteKey: 'asce', hostingAssociationKey: null, hidden: null, include: null, values: { label: id } });
   expect(() => resolveCollections(conflicting)).toThrow(/Ambiguous (collection )?field override/);
 });
 

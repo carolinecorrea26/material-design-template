@@ -40,7 +40,7 @@ export default function PortalPortfolio() {
         <AccordionSummary expandIcon={<ExpandMoreRounded />}><Typography fontWeight={700}>{group[0].organizationName} · {group.length} {group.length === 1 ? 'Site' : 'Sites'}</Typography></AccordionSummary>
         <AccordionDetails>
           <Stack spacing={2}>
-            {[...groupSites(group, site => site.hostingAssociationId ?? '')].map(([associationId, associationSites]) => <Stack key={associationId} spacing={1}>
+            {[...groupSites(group, site => site.hostingAssociationId)].map(([associationId, associationSites]) => <Stack key={associationId} spacing={1}>
               <Typography component="h2" variant="subtitle1" fontWeight={700}>{associationSites[0].associationName}</Typography>
               {associationSites.map(site => <Stack key={site.key} direction={{ xs: 'column', sm: 'row' }} alignItems={{ sm: 'center' }} gap={1}>
                 <Typography sx={{ flex: 1 }}>{site.name}</Typography>

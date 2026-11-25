@@ -22,7 +22,6 @@ import {
   Button,
   // Checkbox,
   // Chip,
-  CircularProgress,
   Divider,
   // InputLabel,
   // MenuItem,
@@ -216,7 +215,6 @@ export default function QuoteCalculator({
   const [riderChoices, setRiderChoices] = useState<Record<string, boolean>>({});
   const [riderAmountChoices, setRiderAmountChoices] = useState<Record<string, number>>({});
   const [showProducts, setShowProducts] = useState(false);
-  const [productsLoading, setProductsLoading] = useState(false);
   const [calculatingRates, setCalculatingRates] = useState<Set<string>>(
     new Set(),
   );
@@ -299,21 +297,17 @@ export default function QuoteCalculator({
   function handleGetEstimates() {
     setFieldsAttempted(true);
     if (!isFieldsValid) return;
-    setProductsLoading(true);
     setShowProducts(true);
     initAmountsForProducts(categoryProducts);
-    setTimeout(() => {
-      setProductsLoading(false);
-      if (displayMode === "drawer") {
-        requestAnimationFrame(() => {
-          productsSectionRef.current?.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-          });
-          productsSectionRef.current?.focus();
+    if (displayMode === "drawer") {
+      requestAnimationFrame(() => {
+        productsSectionRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
         });
-      }
-    }, 1000);
+        productsSectionRef.current?.focus();
+      });
+    }
   }
 
   useEffect(() => {
@@ -364,12 +358,10 @@ export default function QuoteCalculator({
       !showProducts
     ) {
       setShowProducts(true);
-      setProductsLoading(true);
       const prods = coverages.filter((c) =>
         selectedCategories.includes(c.categoryId),
       );
       initAmountsForProducts(prods);
-      setTimeout(() => setProductsLoading(false), 800);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCategories, needsAdditionalFields]);
@@ -635,19 +627,7 @@ export default function QuoteCalculator({
           (displayMode === "drawer" || inlineStep === 2) && (
           <Stack spacing={2} ref={productsSectionRef} tabIndex={-1}>
             <Divider />
-            {productsLoading ? (
-              <Stack
-                spacing={2}
-                alignItems="center"
-                sx={{ py: 4 }}
-                role="status"
-                aria-live="polite"
-              >
-                <CircularProgress size={28} aria-hidden />
-                <Typography variant="body2" color="text.secondary">
-                  {requirementText("home.quote.loading-your-coverage-options")}</Typography>
-              </Stack>
-            ) : allProductsIneligible ? (
+            {allProductsIneligible ? (
               <Alert severity="error">
                 {isHoursIneligible ? <>{requirementText("home.quote.we-re-sorry-but-products-in-this-category-require-working-at-least")}{minimumWorkHours} {requirementText("home.quote.hours-per-week")}</> : requirementText("home.quote.based-on-your-answers-you-are-not-eligible-for-coverage-in-this-category-at-this")}
               </Alert>
@@ -737,7 +717,6 @@ export default function QuoteCalculator({
 
         {/* ── Estimated cost total + Apply ── */}
         {showProducts &&
-          !productsLoading &&
           selectedCategories.length > 0 &&
           !allProductsIneligible &&
           (displayMode === "drawer" || inlineStep === 2) && (
@@ -794,7 +773,7 @@ export default function QuoteCalculator({
                 inlineStep === 2 ? <ArrowForwardRoundedIcon /> : undefined
               }
               onClick={inlineStep === 2 ? handleApply : handleInlineContinue}
-              disabled={inlineStep === 2 && (productsLoading || allProductsIneligible)}
+              disabled={inlineStep === 2 && allProductsIneligible}
             >
               {inlineStep === 2 ? requirementText("home.quote.apply-for-coverage") : "Continue"}
             </Button>

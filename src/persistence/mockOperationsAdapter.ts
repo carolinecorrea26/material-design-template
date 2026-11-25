@@ -7,7 +7,7 @@ import { localSnapshotRevision, validateSnapshotData, validateSnapshotRequest } 
 import { normalizedSnapshotTables } from './catalogTables';
 const catalogTables = new Set<TableName>(normalizedSnapshotTables);
 const tables = new Set<TableName>(['sites', 'applications', 'applicationParticipants', 'applicationEvents', 'changeRequests', 'changeItems', 'releases', 'releaseChanges', 'siteBuilderDrafts', 'auditEvents', 'migrationSchedules']);
-const identityTables = new Set<TableName>(['organizations', 'organizationProfiles', 'clients', 'associations', 'siteAssociations', 'sitePolicies', 'associationEntities', 'associationAliases', 'associationAffiliations', 'siteAssociationContexts', 'supportProfiles', 'brandingProfiles']);
+const identityTables = new Set<TableName>(['organizations', 'organizationProfiles', 'associationEntities', 'associations', 'siteAssociations', 'sitePolicies', 'associationEntities', 'associationAliases', 'associationAffiliations', 'siteAssociationContexts', 'supportProfiles', 'brandingProfiles']);
 /** Operational edits live on the mock server, which enforces the current account. */
 export class MockOperationsAdapter implements PersistenceAdapter {
   readonly kind = 'local' as const;

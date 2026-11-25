@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import { transferableAbortController } from "node:util";
+import { RATE_CALCULATION_DELAY_MS } from "../config/coverageConstants";
 import { act, type ComponentType } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterAll, afterEach, beforeAll, expect, it, vi } from "vitest";
@@ -8,7 +8,6 @@ import { installPrototypeLibrary, resolvePrototypeLibrary } from "../domain/prot
 import { applicationStorageKey } from "./ApplicationFormContext";
 import { applicationSessionStorage } from "./applicationSessionStorage";
 import { applicationTimeoutKey, timeoutMilliseconds } from "./applicationTimeout";
-import { MESSAGE_DURATION } from "../config/transitionMessages";
 import asceEligibility from "../../requirements/parked/sites/asce/eligibility.json";
 import verificationFixture from "../../requirements/global/prototype-fixtures/verification.json";
 import { requirementText } from "../domain/requirementContent";
@@ -38,23 +37,20 @@ afterEach(async () => {
   root = undefined;
   container?.remove();
   sessionStorage.clear();
+  vi.unstubAllGlobals();
   vi.useRealTimers();
   vi.restoreAllMocks();
-  vi.unstubAllGlobals();
 });
 afterAll(() => { router?.dispose(); installPrototypeLibrary(null); });
 
 async function open(path = "/?site=asce", expired = false) {
   vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true);
-  // Node Request and jsdom AbortSignal use different realms; the real router
-  // needs Node's matching signal implementation in this test environment.
-  vi.stubGlobal("AbortController", function AbortController() { return transferableAbortController(); });
   vi.stubGlobal("localStorage", browserStorage());
   localStorage.setItem("cookieConsent", "accepted");
   vi.spyOn(window, "scrollTo").mockImplementation(() => {});
-  vi.stubGlobal("requestAnimationFrame", (callback: FrameRequestCallback) => window.setTimeout(() => callback(Date.now()), 16));
-  vi.stubGlobal("cancelAnimationFrame", (id: number) => window.clearTimeout(id));
   vi.useFakeTimers();
+  vi.stubGlobal("requestAnimationFrame", (callback: FrameRequestCallback) => setTimeout(() => callback(Date.now()), 16));
+  vi.stubGlobal("cancelAnimationFrame", (id: number) => clearTimeout(id));
   vi.setSystemTime(new Date("2026-11-08T17:00:00Z"));
   sessionStorage.clear();
   if (expired) {
@@ -71,7 +67,6 @@ async function clickLink(label: string) {
   const link = [...container.querySelectorAll<HTMLAnchorElement>("a")].find(link => link.textContent === label);
   expect(link, label).toBeTruthy();
   await act(async () => link!.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true, button: 0 })));
-  await act(async () => vi.advanceTimersByTime(MESSAGE_DURATION + 50));
 }
 function expectMembership() {
   expect(router.state.location.pathname).toBe("/membership");
@@ -97,7 +92,7 @@ it.each(['eligibility', 'contact'])('shows shared resume feedback on %s and pres
   expect(container.textContent).not.toContain('Saved application loaded successfully.');
 });
 
-it('clicks through external images and uses the standard transition to Receipt', async () => {
+it('clicks through external images and opens Receipt after signing', async () => {
   await open();
   await clickLink(requirementText('home.hero.cta-label'));
   await act(async () => router.navigate('/health-qd?site=asce'));
@@ -107,16 +102,12 @@ it('clicks through external images and uses the standard transition to Receipt',
   expect(image()?.getAttribute('src')).toBe('/prototype/qd-page-2.png');
   expect(router.state.location.pathname).toBe('/health-qd');
   await act(async () => document.querySelector<HTMLButtonElement>('[aria-label="Click to continue"]')!.click());
-  expect(image()).toBeNull();
-  expect(container.querySelector('.MuiSkeleton-root')).not.toBeNull();
-  await act(async () => vi.advanceTimersByTimeAsync(MESSAGE_DURATION * 2 + 300));
+  expect(router.state.location.pathname).not.toBe('/health-qd');
   await act(async () => applicationSessionStorage.writeReviewSubmitted(true));
   await act(async () => router.navigate('/docusign?site=asce'));
   expect(router.state.location.pathname).toBe('/docusign');
   expect(document.querySelector('[role="dialog"][aria-label="DocuSign signing screen"] img')?.getAttribute('src')).toBe('/prototype/docusign.png');
-  await act(async () => document.querySelector<HTMLButtonElement>('[aria-label="Click to continue"]')!.click());
-  expect(container.querySelector('.MuiSkeleton-root')).not.toBeNull();
-  await act(async () => vi.advanceTimersByTimeAsync(MESSAGE_DURATION * 2 + 300));
+  await act(async () => document.querySelector<HTMLButtonElement>('[role="dialog"][aria-label="DocuSign signing screen"] [aria-label="Click to continue"]')!.click());
   expect(router.state.location.pathname).toBe('/receipt');
   expect(container.textContent).toContain('Confirmation number:');
 });
@@ -131,12 +122,6 @@ async function fill(name: string, value: string) {
 }
 async function submit(page: string) {
   await act(async () => container.querySelector(`#${page}-form`)!.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true })));
-  if (page === 'membership') {
-    expect(container.textContent).toContain('Saving your membership information...');
-    await act(async () => vi.advanceTimersByTime(MESSAGE_DURATION + 50));
-    expect(container.textContent).toContain('Checking your member details before we continue...');
-    await act(async () => vi.advanceTimersByTime(MESSAGE_DURATION + 50));
-  } else await act(async () => vi.advanceTimersByTime(MESSAGE_DURATION * 2 + 100));
 }
 
 it("starts a fresh application from the real Home page", async () => {
@@ -194,7 +179,6 @@ it.each([false, true])("continues through Membership and Eligibility to Coverage
     await act(async () => container.querySelector<HTMLInputElement>('input[name="gender"][value="male"]')!.click());
     await act(async () => container.querySelector<HTMLInputElement>('input[name="smoker"][value="no"]')!.click());
     await act(async () => [...container.querySelectorAll<HTMLButtonElement>("button")].find(button => button.textContent?.trim() === requirementText("coverage.reveal.button"))!.click());
-    await act(async () => vi.advanceTimersByTimeAsync(MESSAGE_DURATION * 2 + 1000));
     const amount = document.getElementById("li-term:member-amount") as HTMLInputElement;
     expect(amount).not.toBeNull();
     expect(amount.disabled || amount.getAttribute("aria-disabled") === "true").toBe(true);
@@ -205,7 +189,7 @@ it.each([false, true])("continues through Membership and Eligibility to Coverage
     const add = document.querySelector<HTMLInputElement>('input[name="li-term:member-selected"]');
     expect(add).not.toBeNull();
     await act(async () => add!.click());
-    await act(async () => vi.advanceTimersByTimeAsync(MESSAGE_DURATION * 2 + 1000));
+    await act(async () => vi.advanceTimersByTimeAsync(RATE_CALCULATION_DELAY_MS));
     await submit("coverage");
     expect(router.state.location.pathname, container.textContent ?? "").toBe("/beneficiary");
   }
@@ -247,8 +231,8 @@ it.each(["passed", "failed", "skipped"] as const)("runs the existing-insured-mem
     expect(document.body.textContent).toContain(requirementText(outcome === "passed" ? "eligibility.verification.success.title" : "eligibility.verification.failure.title"));
   }
   await act(async () => dialogButton(requirementText("eligibility.verification.continue")).click());
-  await act(async () => vi.advanceTimersByTimeAsync(MESSAGE_DURATION * 2 + 200));
-  expect(router.state.location.pathname).toBe("/coverage");
+  await act(async () => vi.advanceTimersByTimeAsync(16));
+  expect(router.state.location.pathname, container.textContent ?? "").toBe("/coverage");
   const portfolio = [...container.querySelectorAll<HTMLButtonElement>("button")].find(button => button.textContent?.trim() === requirementText("coverage.portfolio.button"));
   const saved = JSON.parse(sessionStorage.getItem(applicationStorageKey("asce"))!);
   expect(saved).toMatchObject({ "tpa-existing-member": true, "tpa-active-coverage": true, "tpa-verified": outcome === "passed", "tpa-portfolio-enabled": outcome === "passed" });
@@ -268,7 +252,6 @@ it.each(["passed", "failed", "skipped"] as const)("runs the existing-insured-mem
   await act(async () => container.querySelector<HTMLInputElement>('input[name="smoker"][value="no"]')!.click());
   const reveal = [...container.querySelectorAll<HTMLButtonElement>("button")].find(button => button.textContent?.trim() === requirementText("coverage.reveal.button"))!;
   await act(async () => reveal.click());
-  await act(async () => vi.advanceTimersByTimeAsync(MESSAGE_DURATION * 2 + 1000));
   const amountSelect = document.getElementById("li-term:member-amount");
   expect(amountSelect, container.textContent ?? "").not.toBeNull();
   await act(async () => amountSelect!.dispatchEvent(new MouseEvent("mousedown", { bubbles: true, button: 0 })));

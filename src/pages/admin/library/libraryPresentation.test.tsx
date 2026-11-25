@@ -10,7 +10,7 @@ import ContentLibrary from './ContentLibrary';
 import ConfigurationsLibrary from './ConfigurationsLibrary';
 import BusinessRulesLibrary from './BusinessRulesLibrary';
 import ProductsLibrary from './ProductsLibrary';
-import ClientInformationLibrary from './ClientInformationLibrary';
+import SiteInformationLibrary from './SiteInformationLibrary';
 import UrlParametersLibrary from './UrlParametersLibrary';
 import ValidationLibrary from './ValidationLibrary';
 import StoredFlowsLibrary from './StoredFlowsLibrary';
@@ -37,7 +37,7 @@ it.each([
   ['coverage review', ConfigurationsLibrary, '&view=coverage&coverageView=review'], ['applicant settings', ConfigurationsLibrary, '&view=applicants'],
   ['email content', CommunicationsLibrary, ''], ['theme settings', ConfigurationsLibrary, '&view=theme'], ['contact settings', ConfigurationsLibrary, '&view=contacts'],
   ['validation', ValidationLibrary, ''], ['flows', StoredFlowsLibrary, ''],
-  ['rules', BusinessRulesLibrary, ''], ['products', ProductsLibrary, ''], ['client information', ClientInformationLibrary, ''], ['URL parameters', UrlParametersLibrary, ''],
+  ['rules', BusinessRulesLibrary, ''], ['products', ProductsLibrary, ''], ['client information', SiteInformationLibrary, ''], ['URL parameters', UrlParametersLibrary, ''],
 ] as const)('keeps workbook provenance outside the rendered %s Library', async (label, Component, search) => {
   for (const siteKey of ['all', 'asce']) {
     const view = <MemoryRouter initialEntries={[`/?site=${siteKey}${search}`]}><Component siteKey={siteKey} /></MemoryRouter>;

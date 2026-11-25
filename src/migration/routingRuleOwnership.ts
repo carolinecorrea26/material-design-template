@@ -29,7 +29,7 @@ export function consolidateRoutingRuleOwnership(db: DatabaseSchema) {
     const rules = db.rules.filter(row => row.key === key);
     if (rules.length !== 1 || rules[0].definition.id !== key || rules[0].definition.documentationStatus !== "current"
       || rules[0].definition.execution || rules[0].definition.dependsOn?.length || db.ruleConditions.some(row => row.ruleKey === key)
-      || db.ruleAssignments.filter(row => row.ruleKey === key && row.scope === "global" && row.clientKey === null && row.siteKey === null).length !== 1) throw new Error(`Unresolved routing owner: ${key}`);
+      || db.ruleAssignments.filter(row => row.ruleKey === key && row.scope === "global" && row.hostingAssociationKey === null && row.siteKey === null).length !== 1) throw new Error(`Unresolved routing owner: ${key}`);
     const execution = executions.get(key) ?? { kind: "page-routing", gates: [] };
     execution.gates.push(gate);
     executions.set(key, execution);

@@ -266,6 +266,11 @@ export type FieldDefinition = {
 
 export type Field = { id: FieldId };
 
+/** Long labels sit above the control so they can wrap without clipping. */
+export function getLabelVariant(field: Pick<FieldDefinition, "label" | "labelVariant">) {
+  return field.labelVariant ?? ((field.label?.length ?? 0) >= 40 ? "standard" : "floating");
+}
+
 /** Library shows product-dependent requiredness without pretending an election is active. */
 export function fieldRequirednessLabel(field: Pick<FieldDefinition, 'required' | 'optionalForProducts'>): string {
   return field.required && field.optionalForProducts?.length ? 'By product' : field.required ? 'Yes' : 'No';

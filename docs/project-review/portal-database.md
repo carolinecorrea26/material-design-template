@@ -5,24 +5,47 @@ site and runs `/api/portal/*` in a Netlify Function. One PostgreSQL database
 stores the published Library revision, migration statuses, demo accounts and
 Site assignments, Site Builder drafts, and submitted prototype applications.
 
+## Catalog ownership and local copies
+
+The global template and effective Site assignments are authored in
+`requirements/`. The catalog build compiles them into one public
+`public/catalog/portal.json` bundle. The local prototype and Storybook read the
+bundle directly. The downloadable Admin Center embeds it with local assets.
+PostgreSQL receives that same JSON during publication. There is one authoring
+path and the publication step is one-way.
+
+Database accounts, Site Builder drafts, migration statuses and submitted
+applications have their own storage. A downloaded source ZIP or standalone
+HTML is a copy of the public configuration at its build revision. Hosted
+operational records require a separate database backup.
+
 ## Enable on Netlify
 
-Use the [`redesignv6` GitHub branch](https://github.com/carolinecorrea26/material-design-template/tree/redesignv6) and its [Netlify branch deploy](https://redesignv6--material-design-template.netlify.app/) for this pilot. Scope the pilot environment variables to `redesignv6`.
+The existing Netlify projects build from the same GitHub repository. Use
+[`AGENTS.md`](../../AGENTS.md#development-and-publishing-on-redesignv6) for
+initialization, authentication, validation and release commands.
 
-1. Use a Postgres database dedicated to the pilot. For Netlify Database, open **Data & Storage → Database** and use the connection string for the intended database branch. An existing Postgres instance can also host a dedicated pilot database. [Netlify Database tooling](https://docs.netlify.com/build/data-and-storage/netlify-database/tooling/)
-2. In the GitHub project's workspace, set `DATABASE_URL` to that connection string and set `PORTAL_DEMO_ADMIN_PASSWORD` and `PORTAL_DEMO_MANAGER_PASSWORD` to separate demo passwords of 12–128 characters. Run `npm ci`, `npm run catalog:check`, and `npm run db:setup` under Node 24. The setup command creates the schema and imports `public/catalog/portal.json` in one transaction. Omitting the demo password variables on a later import preserves the existing accounts and passwords.
-3. In Netlify set `VITE_PORTAL_DATABASE_ENABLED=true` for `redesignv6` Builds. With external Postgres, set `DATABASE_URL` for `redesignv6` Functions. If using Netlify Database, confirm the deploy's `NETLIFY_DB_URL` targets the pilot database branch. Keep connection strings and demo passwords out of GitHub and frontend variables. [Netlify deploy contexts](https://docs.netlify.com/build/environment-variables/overview/) · [Functions environment variables](https://docs.netlify.com/build/functions/environment-variables/)
-4. Trigger a deploy from GitHub and open `/admin-center`. The seeded accounts are `portal.admin@example.test` and `account.manager@example.test`. The manager can view ASCE. Use fictional information for applicant journeys.
+| Project | Git deploy | Configuration |
+| --- | --- | --- |
+| [Portal and prototypes](https://redesignv6--material-design-template.netlify.app/) | Enable branch deploys for `redesignv6`. Production remains on `main`. | Root [`netlify.toml`](../../netlify.toml), repository root as the build base, and Netlify Database enabled. |
+| [Storybook](https://material-design-template-storybook.netlify.app/) | Production branch is `redesignv6`. | Repository root as the build base, `netlify/storybook` as the Netlify package directory, and [its own `netlify.toml`](../../netlify/storybook/netlify.toml) for static output. |
 
-For a new published catalog, import the generated JSON from the same checkout
-that Netlify will deploy. Build [the separately hosted Storybook](https://material-design-template-storybook.netlify.app/) from that checkout
-with the database flag unset so it reads the matching static catalog.
-Reimporting preserves submissions, account Site
-assignments, migration statuses and drafts. Builder previews require the
-published revision they were created from, so a newer catalog requires a new
-draft. For local verification run `npm run test:db`. It uses an isolated embedded
-PostgreSQL engine with no database credentials. The existing `npm run dev`
-continues to provide the local mock environment.
+Netlify provides the database URL to the Portal Function. The release command
+gets the intended branch connection from the authenticated Netlify CLI in
+memory. The branch database must already exist. Keep database URLs and demo
+passwords out of Git and Vite variables. [Netlify Database tooling](https://docs.netlify.com/build/data-and-storage/netlify-database/tooling/)
+
+The import preserves submissions, account Site assignments, migration statuses
+and drafts. Equivalent catalog imports move layout drafts to the new revision,
+including after the legacy identity conversion. Drafts based on a changed
+catalog remain stored under their original revision. Existing demo accounts
+keep their passwords during coordinated releases. For a dedicated local
+PostgreSQL database, `npm run db:setup` can optionally seed the two demo
+accounts from separate 12–128 character passwords in an ignored `.env`. The
+accounts are `portal.admin@example.test` and `account.manager@example.test`,
+with the manager scoped to ASCE. Use fictional information for applicant
+journeys. `npm run test:db` exercises a fresh install and migration of existing
+records using an isolated embedded PostgreSQL engine.
 
 ## Ownership and next phase
 
@@ -32,8 +55,9 @@ continues to provide the local mock environment.
   view and prototype.
 - The Builder saves a draft Site layout override and previews it through the
   fresh-start compiler. The first pass covers the existing ten Sites. Follow-on
-  work should let the Builder select supported products and Site settings, then
-  publish a reviewed Site assignment through the same authored contract.
+  work is planned in the [New Site Builder field map](new-site-builder-field-map.md).
+  It covers Site creation, inline relationships, product setup, page overrides,
+  validation and preview through the same authored contract.
 - The hosted signing POC records submitted coverage selections and activity.
   The save workflow retains the recipient and selected coverage. Health,
   payment, and other form answers are excluded from its database snapshots.
@@ -46,10 +70,36 @@ continues to provide the local mock environment.
   records as their roles and actions are implemented. The screenshot PDF tool
   and site Q&A can use the published Site revision and selected journey inputs.
 
+## TPA, Association, and Site identity
+
+The hierarchy is **TPA → Association → Site**. Each active TPA has at
+least one Association. Every Association belongs to exactly one TPA and can
+host multiple Sites. Every Site points to one hosting Association and derives
+its TPA from that record. On a Site that offers several member Associations,
+the applicant's resolved membership context is a separate relationship.
+
+The active catalog uses `organizations`, `associationEntities` and
+`sites.hostingAssociationId`. The ten existing Sites resolve to eight hosting
+Associations. AMA and AMA-GI share one, and WAEPA and WAEPA GI share another.
+Historical aliases preserve original records from the retired `clients`
+collection. [Association crosswalk](../schema-step1/association-site-model.md)
+
+The database import adds TPA and Association tables, backfills Site ownership
+in place and enforces the two required foreign keys. The import keeps
+`site_key` stable for applications, drafts and migration status. Apply the
+import and the corresponding Portal build together on the intended pilot
+database. [Database migration](../../netlify/database/migrations/0002_association_identity.sql) ·
+[Import and backfill](../../scripts/seed-portal-db.mjs)
+
+The planned New Site Builder collects the first Association when adding a
+TPA. The TPA, Association and Site will be committed together. For an existing
+TPA the form can reuse an Association or add one inline. [New Site Builder form](new-site-builder-field-map.md#site-details)
+
 ## Audit findings addressed in this phase
 
 | Severity | Finding and cause | Affected source | Resolution |
 | --- | --- | --- | --- |
+| High | The hosted reader accepted any well-formed database revision and then used this build's requirements to resolve it. Local artifacts could show different configuration. | `vite.config.ts`, `src/persistence/sharedCatalog.ts`, `scripts/seed-portal-db.mjs` | Hosted startup checks the revision and JSON bytes. The read-only `db:check` verifies release parity before deployment. Storybook builds validate the same bundle and serve it statically. |
 | High | The compiled catalog retained 11 actions for superseded Beneficiary rules. The merge guard only checked explicitly retired IDs. | `requirements/global/application.json`, `src/domain/requirementApplicationCatalog.mjs` | Removed the obsolete authored actions and applied the guard to replaced rule IDs. The import rejects orphan rule actions. |
 | High | Signing and the Admin application list used separate stores. | `scripts/applicant-saves.mjs`, `src/app/RoutePage.tsx`, `src/pages/admin/ApplicationsWorkspace.tsx` | Write the fictional submission and audit event together, with a stable Receipt reference on retry. |
 | High | Hosted applicant pages requested rates from the local mock server and redirected to a technical error. | `src/app/usePrototypeRates.ts`, `src/domain/pricingFormulas.mjs` | Use the same fictional quote calculation within the hosted prototype and the local mock server. |

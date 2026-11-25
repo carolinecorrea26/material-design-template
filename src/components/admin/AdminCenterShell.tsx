@@ -2,7 +2,7 @@ import { useAccount, usePortalUser } from '../../admin/AccountContext';
 import MockAdminGate from "./MockAdminGate";
 import PortalAdminGate from './PortalAdminGate';
 import { portalDatabaseEnabled } from '../../services/portalClient';
-import { useMemo, useRef, useState } from "react";
+import { Suspense, useMemo, useRef, useState } from "react";
 import { Link as RouterLink, Navigate, Outlet, useLocation } from "react-router-dom";
 import {
   AppBar,
@@ -22,19 +22,20 @@ import { visibleAdminNavigation } from "../../admin/navigation";
 import { internalPersonas, type Persona } from "../../admin/access";
 import { ThemeProvider } from "@mui/material/styles";
 import { createAppTheme } from "../../app/theme";
+import PageTransitionSkeleton from "../feedback/PageTransitionSkeleton";
 import { getActiveClient } from "../../config/client/getActiveClient";
 
 export type AdminCenterContext = { persona: Persona };
 const expandedRailWidth = 228;
 
-function AdminCenterContent() {
+function AdminCenterContent({ mockPlatformEnabled }: { mockPlatformEnabled: boolean }) {
   const location = useLocation();
   const account = useAccount();
   const user = usePortalUser();
   const [collapsed, setCollapsed] = useState(() => localStorage.getItem('adminRailCollapsed') === 'true');
   const dragStart = useRef<number | null>(null);
   const railWidth = collapsed ? 64 : expandedRailWidth;
-  const adminNavigation = visibleAdminNavigation(portalDatabaseEnabled, user?.roleKey === 'portal-admin');
+  const adminNavigation = visibleAdminNavigation(portalDatabaseEnabled, user?.roleKey === 'portal-admin', mockPlatformEnabled);
   const setRailCollapsed = (value: boolean) => { setCollapsed(value); localStorage.setItem('adminRailCollapsed', String(value)); };
   const defaultPersona = internalPersonas[0];
   const managerPersona = internalPersonas.find(persona => persona.id === 'account-manager')!;
@@ -43,9 +44,11 @@ function AdminCenterContent() {
     : { ...defaultPersona, permissions: account?.status.canEdit === false ? defaultPersona.permissions.filter(permission => permission.endsWith('.read')) : defaultPersona.permissions };
 
   const legacyRoute = /^\/admin-center\/(?:library|tutorials|applicant-admin)(?:\/|$)/.test(location.pathname);
-  const databaseRoute = /^\/admin-center\/(?:sites|applications|site-builder|administration)(?:\/|$)/.test(location.pathname);
-  if (!legacyRoute && !(portalDatabaseEnabled && databaseRoute)) {
-    return <Navigate to={`/admin-center/${portalDatabaseEnabled ? 'sites' : 'library'}${location.search}`} replace />;
+  const siteRoute = /^\/admin-center\/(?:sites|site-builder)(?:\/|$)/.test(location.pathname);
+  const databaseRoute = /^\/admin-center\/(?:applications|administration)(?:\/|$)/.test(location.pathname);
+  const siteWorkspacesEnabled = portalDatabaseEnabled || mockPlatformEnabled;
+  if (!legacyRoute && !(siteWorkspacesEnabled && siteRoute) && !(portalDatabaseEnabled && databaseRoute)) {
+    return <Navigate to={`/admin-center/${siteWorkspacesEnabled ? 'sites' : 'library'}${location.search}`} replace />;
   }
 
   return (
@@ -124,7 +127,9 @@ function AdminCenterContent() {
               </ListItemButton>
             ))}
           </Box>
-          <Outlet context={{ persona } satisfies AdminCenterContext} />
+          <Suspense fallback={<Box sx={{ p: 3 }}><PageTransitionSkeleton /></Box>}>
+            <Outlet context={{ persona } satisfies AdminCenterContext} />
+          </Suspense>
         </Box>
       </Box>
     </Box>
@@ -134,7 +139,9 @@ function AdminCenterContent() {
 export default function AdminCenterShell() {
   // Applicant single-page breakpoints must not change the administration layout.
   const adminTheme = useMemo(() => createAppTheme(getActiveClient().theme), []);
+  const mockPlatformEnabled = Boolean(import.meta.env.VITE_MOCK_PLATFORM_ENABLED);
+  const content = <AdminCenterContent mockPlatformEnabled={mockPlatformEnabled} />;
   return <ThemeProvider theme={adminTheme}>
-    {portalDatabaseEnabled ? <PortalAdminGate><AdminCenterContent /></PortalAdminGate> : import.meta.env.VITE_MOCK_PLATFORM_ENABLED ? <MockAdminGate><AdminCenterContent /></MockAdminGate> : <AdminCenterContent />}
+    {portalDatabaseEnabled ? <PortalAdminGate>{content}</PortalAdminGate> : mockPlatformEnabled ? <MockAdminGate>{content}</MockAdminGate> : content}
   </ThemeProvider>;
 }

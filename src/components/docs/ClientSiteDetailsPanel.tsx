@@ -25,15 +25,15 @@ import { HEALTH_PAGE_IDS } from "../../config/progressSteps";
 import type { PageId } from "../../types";
 import { themeColorLabels } from "../../config/clients/types";
 import {
-  getClientsForTpa,
+  getHostingAssociationsForTpa,
   getAssociation,
-  getClientForSite,
+  getHostingAssociationForSite,
   getSiteAssociations,
   getSiteIdForClientAlias,
-  getSitesForClient,
-  getTpaForClient,
+  getSitesForHostingAssociation,
+  getTpaForAssociation,
   tpaEntities,
-  type Client,
+  type HostingAssociation,
   type Site,
   type Tpa,
 } from "../../data";
@@ -226,16 +226,16 @@ const overridesSummary = summarizeClientOverrides(activeClient);
 // ---------------------------------------------------------------------------
 
 const activeSiteId = getSiteIdForClientAlias(activeClient.id);
-const activeSite = getSitesForClient(getClientForSite(activeSiteId)!.id).find(
+const activeSite = getSitesForHostingAssociation(getHostingAssociationForSite(activeSiteId)!.id).find(
   (site) => site.id === activeSiteId,
 )!;
-const activeCanonicalClient = getClientForSite(activeSite.id)!;
-const activeTpa = getTpaForClient(activeCanonicalClient.id)!;
+const activeCanonicalClient = getHostingAssociationForSite(activeSite.id)!;
+const activeTpa = getTpaForAssociation(activeCanonicalClient.id)!;
 const applicableSiteRules = getApplicableSiteRules({
   clientId: activeCanonicalClient.id,
   siteId: activeSite.id,
 });
-const activeClientSites = getSitesForClient(activeCanonicalClient.id);
+const activeClientSites = getSitesForHostingAssociation(activeCanonicalClient.id);
 const activeSiteAssociationRows = getSiteAssociations(activeSite.id).map(
   (relationship) => ({
     relationship,
@@ -277,7 +277,7 @@ export default function ClientSiteDetailsPanel({
   const [fieldPageFilter, setFieldPageFilter] = useState(ALL_PAGES);
   const [coverageFilter, setCoverageFilter] = useState("");
   const [logoError, setLogoError] = useState(false);
-  const [selectedClient, setSelectedClient] = useState<Client>(activeCanonicalClient);
+  const [selectedClient, setSelectedClient] = useState<HostingAssociation>(activeCanonicalClient);
   const [selectedTpa, setSelectedTpa] = useState<Tpa>(activeTpa);
   const [selectedSiteId, setSelectedSiteId] = useState(activeSite.id);
 
@@ -289,10 +289,10 @@ export default function ClientSiteDetailsPanel({
   }, []);
 
   const handleClientChange = useCallback(
-    (nextClient: Client | null) => {
+    (nextClient: HostingAssociation | null) => {
       if (!nextClient) return;
       setSelectedClient(nextClient);
-      const nextSite = getSitesForClient(nextClient.id)[0];
+      const nextSite = getSitesForHostingAssociation(nextClient.id)[0];
       setSelectedSiteId(nextSite.id);
       navigateToSite(nextSite);
     },
@@ -303,7 +303,7 @@ export default function ClientSiteDetailsPanel({
     (nextTpa: Tpa | null) => {
       if (!nextTpa) return;
       setSelectedTpa(nextTpa);
-      const nextClient = getClientsForTpa(nextTpa.id)[0];
+      const nextClient = getHostingAssociationsForTpa(nextTpa.id)[0];
       if (nextClient) handleClientChange(nextClient);
     },
     [handleClientChange],
@@ -582,7 +582,7 @@ export default function ClientSiteDetailsPanel({
               renderInput={(params) => <TextField {...params} label="TPA" />}
             />
             <Autocomplete
-              options={getClientsForTpa(selectedTpa.id)}
+              options={getHostingAssociationsForTpa(selectedTpa.id)}
               value={selectedClient}
               onChange={(_, value) => handleClientChange(value)}
               disableClearable
@@ -591,15 +591,15 @@ export default function ClientSiteDetailsPanel({
               isOptionEqualToValue={(option, value) => option.id === value.id}
               sx={{ flex: 1, maxWidth: 420 }}
               renderInput={(params) => (
-                <TextField {...params} label="Client" placeholder="Search clients…" />
+                <TextField {...params} label="Association" placeholder="Search associations…" />
               )}
             />
             <Autocomplete
-              options={getSitesForClient(selectedClient.id)}
-              value={getSitesForClient(selectedClient.id).find((s) => s.id === selectedSiteId) ?? getSitesForClient(selectedClient.id)[0]}
+              options={getSitesForHostingAssociation(selectedClient.id)}
+              value={getSitesForHostingAssociation(selectedClient.id).find((s) => s.id === selectedSiteId) ?? getSitesForHostingAssociation(selectedClient.id)[0]}
               onChange={(_, value) => handleSiteChange(value)}
               disableClearable
-              disabled={getSitesForClient(selectedClient.id).length <= 1}
+              disabled={getSitesForHostingAssociation(selectedClient.id).length <= 1}
               getOptionLabel={(option) => getSiteAcronym(option.id)}
               getOptionKey={(option) => option.id}
               isOptionEqualToValue={(option, value) => option.id === value.id}
@@ -749,8 +749,8 @@ export default function ClientSiteDetailsPanel({
                       <TableCell sx={{ fontFamily: "monospace" }}>{activeSite.id}</TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell sx={{ fontWeight: 700 }}>Client ID</TableCell>
-                      <TableCell sx={{ fontFamily: "monospace" }}>{activeSite.clientId}</TableCell>
+                      <TableCell sx={{ fontWeight: 700 }}>Hosting Association ID</TableCell>
+                      <TableCell sx={{ fontFamily: "monospace" }}>{activeSite.hostingAssociationId}</TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell sx={{ fontWeight: 700 }}>Site name</TableCell>

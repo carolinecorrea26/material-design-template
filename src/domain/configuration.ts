@@ -36,6 +36,7 @@ export type ClientSupportContact = {
   address?: {
     organization?: string;
     street?: string;
+    unit?: string;
     city?: string;
     state?: string;
     zip?: string;

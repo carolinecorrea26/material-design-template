@@ -13,7 +13,7 @@ export function applyNsoNurseTypeAdoption(db: DatabaseSchema) {
   const condition = { ...meta("conditions", conditionKey), position: 30000, definition: { id: conditionKey, conditions: [{ fieldId: "membership" as const, operator: "equals" as const, value: "yes" }], match: "all" as const } };
   const field = { ...meta("fields", fieldKey), position: 30000, definition: { id: fieldKey, label: "Nurse Type", inputType: "dropdown" as const, required: true, visibilityConditionId: conditionKey,
     options: [{ value: "rn", label: "RN" }, { value: "lpn", label: "LPN" }, { value: "other-nurse-professional", label: "Other Nurse Professional Type" }] } };
-  const assignment = { ...meta("siteFieldConfigurations", "site:nso.membership.nurse-type.include"), position: 30000, scope: "site" as const, siteKey: "nso", clientKey: null, pageKey: "membership", fieldKey, include: true, hidden: false, values: {} };
+  const assignment = { ...meta("siteFieldConfigurations", "site:nso.membership.nurse-type.include"), position: 30000, scope: "site" as const, siteKey: "nso", hostingAssociationKey: null, pageKey: "membership", fieldKey, include: true, hidden: false, values: {} };
   for (const [table, record] of [["conditions", condition], ["fields", field], ["siteFieldConfigurations", assignment]] as const) {
     const rows = db[table] as Array<{ key: string }>;
     const index = rows.findIndex(row => row.key === record.key);

@@ -9,7 +9,7 @@ const storage = (): StorageLike => {
 };
 describe("migration schedule persistence", () => {
   it("defaults only ASCE and AAFP to migrating without assuming acceptance or dates", () => {
-    for (const key of [...createSeedDatabase().clients.map(client => client.key), "aafp"]) {
+    for (const key of [...createSeedDatabase().associationEntities.map(client => client.key), "aafp"]) {
       const schedule = defaultMigrationSchedule(key);
       expect(schedule.migrating).toBe(["asce", "aafp"].includes(key.toLowerCase()));
       expect(schedule.expectedDate).toBeNull();
@@ -39,7 +39,7 @@ describe("migration schedule persistence", () => {
     const service = new MigrationScheduleService(adapter);
     expect(await service.list()).toEqual([]);
     await service.save(defaultMigrationSchedule("asce"));
-    expect(await adapter.list("clients")).toEqual(legacy.clients);
+    expect(await adapter.list("associationEntities")).toEqual(legacy.associationEntities);
   });
   it("rejects invalid dates and statuses before persisting", async () => {
     const service = new MigrationScheduleService(new LocalStorageAdapter(createSeedDatabase()));

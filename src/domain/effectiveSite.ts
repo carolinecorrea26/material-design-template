@@ -15,7 +15,7 @@ import { compileRequirementCatalog, type RequirementCatalogSource } from './requ
 
 import { resolveStoredFieldSurfaces, type ResolvedFieldSurface } from './fieldSurfaces';
 
-export type EffectiveSiteData = EffectiveConfigurationData & Pick<DatabaseSchema, "sites" | "clients" | "organizations" | "organizationProfiles" | "siteProducts" | "siteProductApplicants" | "eligibilityConstraints" | "underwritingBands" | "semanticRequirements" | "associations" | "siteAssociations" | "sitePolicies">;
+export type EffectiveSiteData = EffectiveConfigurationData & Pick<DatabaseSchema, "sites" | "associationEntities" | "organizations" | "organizationProfiles" | "siteProducts" | "siteProductApplicants" | "eligibilityConstraints" | "underwritingBands" | "semanticRequirements" | "associations" | "siteAssociations" | "sitePolicies">;
 export type RuleProvenance = Partial<LibraryMetadata> & { table: string; key: string; approvalKey?: string };
 export type ResolvedValue<T> = { value: T; provenance: RuleProvenance[] };
 export type EffectiveApplicant = {
@@ -31,7 +31,7 @@ export type EffectiveSite = {
   assignedAssociationKeys: string[];
   enabledAssociationKeys: string[];
   siteKey: string;
-  clientKey: string;
+  hostingAssociationKey: string;
   name: ResolvedValue<string>;
   runtimeActivation: "pending-phase-6";
   resolution: { completeness: "partial"; implementedScopes: { productKey: string; applicantKey: string; decisions: ("eligibility" | "underwriting")[] }[] };
@@ -64,8 +64,8 @@ function resolveSiteProjection(data: EffectiveSiteData, siteKey: string, snapsho
   const sites = data.sites.filter(s => s.key === siteKey);
   if (sites.length !== 1 || sites[0].deletedAt || sites[0].status !== "active") throw new Error(`Unavailable Site: ${siteKey}`);
   const site = sites[0];
-  const clients = data.clients.filter(c => c.id === site.clientId);
-  if (clients.length !== 1 || clients[0].status !== "active") throw new Error(`Unavailable Client: ${site.clientId}`);
+  const hostingAssociations = data.associationEntities.filter(c => c.id === site.hostingAssociationId);
+  if (hostingAssociations.length !== 1 || hostingAssociations[0].status !== "active") throw new Error(`Unavailable hosting Association: ${site.hostingAssociationId}`);
   if (siteKey === "asce" && snapshot) {
     const invalid = inspectAsceBusinessDecisions(data).filter(d => !d.approved);
     if (invalid.length) throw new Error(`Unapproved ASCE rules: ${invalid.map(d => d.key).join(", ")}`);
@@ -112,7 +112,7 @@ function resolveSiteProjection(data: EffectiveSiteData, siteKey: string, snapsho
       return result;
     }) };
   });
-  const configuration = resolveEffectiveConfiguration(data, siteKey, clients[0].key, site.id, products.map(p => p.productKey));
+  const configuration = resolveEffectiveConfiguration(data, siteKey, hostingAssociations[0].key, site.id, products.map(p => p.productKey));
   readCategoryEligibilityPolicy(configuration.categoryEligibilityPolicies);
   const assignedProducts = new Set(data.siteProducts.filter(link => link.siteId === site.id).map(link => link.productKey));
   const assignedApplicant = (productKey: string, applicantKey: string) => data.siteProductApplicants.some(link => link.siteKey === siteKey && link.productKey === productKey && link.applicantKey === applicantKey);
@@ -141,7 +141,7 @@ function resolveSiteProjection(data: EffectiveSiteData, siteKey: string, snapsho
     return [{ productKey: p.productKey, applicantKey: a.applicantKey, decisions }];
   }));
   const provisionalDecisions = data.semanticRequirements.filter(decision => decision.domain === "provisional-source-decision" && decision.subjectTable === "sites" && decision.subjectKey === siteKey).sort((a, b) => compare(a.key, b.key)).map(decision => ({ key: decision.key, value: decision.value, provenance: [provenance("semanticRequirements", decision)] }));
-  return structuredClone({ ...(!snapshot ? { fieldSurfaces: resolveStoredFieldSurfaces(data, { siteKey, clientKey: clients[0].key, configuration }) } : {}), assignedAssociationKeys: data.siteAssociations.filter(link => link.siteKey === siteKey).map(link => link.associationKey), enabledAssociationKeys: data.siteAssociations.filter(link => link.siteKey === siteKey && link.enabled).map(link => link.associationKey), provisionalDecisions, siteKey, clientKey: clients[0].key, name: { value: site.name, provenance: [provenance("sites", site)] }, runtimeActivation: "pending-phase-6", resolution: { completeness: "partial", implementedScopes }, configuration, products });
+  return structuredClone({ ...(!snapshot ? { fieldSurfaces: resolveStoredFieldSurfaces(data, { siteKey, hostingAssociationKey: hostingAssociations[0].key, configuration }) } : {}), assignedAssociationKeys: data.siteAssociations.filter(link => link.siteKey === siteKey).map(link => link.associationKey), enabledAssociationKeys: data.siteAssociations.filter(link => link.siteKey === siteKey && link.enabled).map(link => link.associationKey), provisionalDecisions, siteKey, hostingAssociationKey: hostingAssociations[0].key, name: { value: site.name, provenance: [provenance("sites", site)] }, runtimeActivation: "pending-phase-6", resolution: { completeness: "partial", implementedScopes }, configuration, products });
 }
 
 /** Historical extraction and ownership audits compare their captured snapshot.

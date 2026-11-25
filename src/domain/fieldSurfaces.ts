@@ -15,7 +15,7 @@ export type ResolvedFieldSurface = Omit<FieldSurfaceDefinition, 'fields'> & {
 };
 const safeKey = (key: unknown): key is string => typeof key === 'string' && /^[a-zA-Z][a-zA-Z0-9-]*$/.test(key) && !['constructor', 'prototype', '__proto__'].includes(key);
 const requiredSurfaces = ['beneficiaryIndividual', 'beneficiaryTrust', 'beneficiaryControls', 'healthLiDetails', 'healthSiDetails', ...Array.from({ length: 7 }, (_, i) => `healthDiq${i + 1}Details`), 'needsCalculator', 'quoteInputs', 'paymentControls', 'paymentBank', 'verificationControls', 'verificationQuestions', 'coverageControls', 'coverageSpouseControls', 'coverageChildControls'];
-export function resolveStoredFieldSurfaces(data: EffectiveSiteData, site: Pick<ReturnType<typeof resolveEffectiveSite>, 'configuration' | 'siteKey' | 'clientKey'>) {
+export function resolveStoredFieldSurfaces(data: EffectiveSiteData, site: Pick<ReturnType<typeof resolveEffectiveSite>, 'configuration' | 'siteKey' | 'hostingAssociationKey'>) {
   const rows = site.configuration.configurations.filter(row => data.configurationDefinitions.find(def => def.key === row.key)?.definition.path?.join('.') === 'fieldSurfaces');
   if (rows.length !== 1 || !rows[0].value || typeof rows[0].value !== 'object' || Array.isArray(rows[0].value)) throw new Error('Missing or ambiguous stored field surface configuration');
   const definitions = rows[0].value as unknown as Record<string, FieldSurfaceDefinition>;
@@ -39,8 +39,8 @@ export function resolveStoredFieldSurfaces(data: EffectiveSiteData, site: Pick<R
       if (!saved || saved.definition.id !== saved.key) throw new Error(`Missing surface field: ${binding.fieldKey}`);
       let field = resolveSharedFieldDefinition(saved, data.validationRules, site.configuration.fieldDefinitionOwnership).definition;
       let included = true;
-      const rank = { global: 0, client: 1, site: 2 };
-      const overrides = data.siteFieldConfigurations.filter(row => row.pageKey === definition.pageKey && row.fieldKey === saved.key && (row.scope === 'global' || row.scope === 'client' && row.clientKey === site.clientKey || row.scope === 'site' && row.siteKey === site.siteKey)).sort((a, b) => rank[a.scope] - rank[b.scope] || a.position - b.position);
+      const rank = { global: 0, association: 1, site: 2 };
+      const overrides = data.siteFieldConfigurations.filter(row => row.pageKey === definition.pageKey && row.fieldKey === saved.key && (row.scope === 'global' || row.scope === 'association' && row.hostingAssociationKey === site.hostingAssociationKey || row.scope === 'site' && row.siteKey === site.siteKey)).sort((a, b) => rank[a.scope] - rank[b.scope] || a.position - b.position);
       const written = new Set<string>();
       for (const row of overrides) {
         for (const property of [...Object.keys(row.values), ...(row.hidden !== null ? ['hidden'] : []), ...(row.include !== null ? ['include'] : [])]) {

@@ -6,7 +6,7 @@ import { migrationSiteKeys } from "./fixtures";
 import { resolveDatabaseSite, evaluateDatabaseCondition, resolveDatabaseBranding, databaseCoverageUnlocksPage, resolveDatabaseAssociation, databaseQuestionFields } from "./resolve";
 import { jsonValue } from "./values";
 import { LocalStorageAdapter } from "../persistence/localAdapter";
-import { getEffectiveSiteConfig, getAssociationsForSite, getClientForSite, siteEntities, getSite } from "../data/registry";
+import { getEffectiveSiteConfig, getAssociationsForSite, getHostingAssociationForSite, siteEntities, getSite } from "../data/registry";
 import { resolveEffectiveBranding, resolveSiteSupport, resolveSitePages, resolveSiteCoverage, resolveSiteFlows } from "../data/resolvers";
 import { getResolvedFieldResolutionsForSite } from "../config/fields/resolvedFieldRegistry";
 import { pageSections } from "../config/pageSections/pageSections";
@@ -60,7 +60,7 @@ describe("phase 1–4 migration gate — independently resolved database behavio
       }
     });
     it("rules: applicable scope, predicates and preserved behavior", () => {
-      const oldRules = getApplicableSiteRules({ siteId: siteKey, clientId: getClientForSite(siteKey)!.id });
+      const oldRules = getApplicableSiteRules({ siteId: siteKey, clientId: getHostingAssociationForSite(siteKey)!.id });
       expect(migrated.rules.map((r) => ({ id: r.id, conditions: r.conditionIds, behavior: r.behavior }))).toEqual(oldRules.map((r) => ({ id: r.id, conditions: r.conditionIds ?? [], behavior: r.behavior })));
       for (const rule of migrated.rules) expect(rule.actions[0].description).toBe(rule.behavior);
     });
@@ -95,7 +95,7 @@ describe("phase 1–4 migration gate — independently resolved database behavio
     });
     it("email: contact visibility and fallback precedence", () => {
       expect(db.siteEmailTemplates.filter((r) => r.siteKey === siteKey && r.enabled).map((r) => r.emailTemplateKey).sort()).toEqual(db.emailTemplates.map(row => row.key).sort());
-      const email = old.emailSupport, client = getClientForSite(siteKey)!;
+      const email = old.emailSupport, client = getHostingAssociationForSite(siteKey)!;
       expect(migrated.emailConfiguration).toEqual({ hideContactBox: Boolean(email?.hideContactBox), name: email?.contactOverride?.name || client.name, acronym: email?.contactOverride?.acronym || client.acronym,
         phone: email?.supportOverride?.phone || old.support.phoneDisplay || old.support.phone || "", email: email?.supportOverride?.email || old.support.email || "", website: email?.supportOverride?.website || old.support.website || "" });
     });
@@ -123,7 +123,7 @@ describe("phase 1–4 migration gate — independently resolved database behavio
   });
   it("database edits change the new result without changing static runtime", () => {
     const changed = structuredClone(db);
-    changed.siteFieldConfigurations.push({ id: "test-required", key: "test-required", scope: "site", siteKey: "ama", clientKey: null, pageKey: "membership", fieldKey: "membership", include: null, hidden: null, values: { required: false }, position: 99999 });
+    changed.siteFieldConfigurations.push({ id: "test-required", key: "test-required", scope: "site", siteKey: "ama", hostingAssociationKey: null, pageKey: "membership", fieldKey: "membership", include: null, hidden: null, values: { required: false }, position: 99999 });
     const before = getResolvedFieldResolutionsForSite("membership", "ama").find((r) => r.fieldId === "membership")!;
     expect(before.field.required).toBe(true);
     expect(resolveDatabaseSite(changed, "ama").fields.find((p) => p.pageId === "membership")!.fields.find((r) => r.field.id === "membership")!.field.required).toBe(false);

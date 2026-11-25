@@ -21,7 +21,7 @@ export function applyIsitrustSportAssociationCapAdoption(db: DatabaseSchema) {
     const configurationKey = `shared.${productKey}.association-amount-restrictions`, key = `isitrust.${productKey}.sport-association-member-amounts`;
     if (!db.configurationDefinitions.some(row => row.key === configurationKey)) db.configurationDefinitions.push({ ...meta("configurationDefinitions", configurationKey), position: 0, definition: { path: null, metadata: { reusable: true, assignmentRequired: true }, target: { kind: "product-association-amounts", productKey } } });
     const value = { version: 1, associationKeys: [...sportAssociationKeys], amounts: [{ applicantKey: "member", amountPatternKey }] };
-    const row = { ...meta("configurationValues", key), position: 0, scope: "site" as const, siteKey: "isitrust", clientKey: null, configurationKey, value: value as unknown as Json };
+    const row = { ...meta("configurationValues", key), position: 0, scope: "site" as const, siteKey: "isitrust", hostingAssociationKey: null, configurationKey, value: value as unknown as Json };
     const index = db.configurationValues.findIndex(row => row.key === key); if (index < 0) db.configurationValues.push(row); else db.configurationValues[index] = row;
     return { productKey, key, value, minimum, increment, amountPatternKey, band: structuredClone(db.amountBands.find(row => row.amountPatternKey === amountPatternKey)!) };
   });

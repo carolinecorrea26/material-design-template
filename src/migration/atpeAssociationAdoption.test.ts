@@ -62,7 +62,7 @@ it("offers ATPE as the 26th association on seven products while retaining the ar
   installPrototypeLibrary(library); window.history.replaceState(null, "", "/?site=isitrust");
   expect(library.associationContext.associations).toHaveLength(26);
   expect(library.associationContext.associations.find(row => row.id === atpeAssociationKey)?.name).toBe("Association of Texas Professional Educators");
-  expect(db.associations.some(row => row.key === "mcr.association.atpe.388" && row.clientKey === "mcr.client.atpe")).toBe(true);
+  expect(db.associations.some(row => row.key === "mcr.association.atpe.388" && row.hostingAssociationKey === "mcr.client.atpe")).toBe(true);
   for (const product of library.site.configuration.products) {
     const offered = resolveCoverageJourneyPolicy(library.site, product.productKey)!.associationChoices.some(choice => choice.key === atpeAssociationKey);
     expect(offered, product.productKey).toBe(atpeProducts.some(slice => slice.productKey === product.productKey));

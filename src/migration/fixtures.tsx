@@ -116,9 +116,9 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { MemoryRouter } from "react-router-dom";
 import { createSeedDatabase } from "../persistence/seed";
 import { applyStep1BusinessDecisions } from "./step1BusinessDecisions";
-import { synchronizeAssociationStructure } from '../persistence/associationStructure';
+import { deriveAssociationContexts } from '../persistence/associationStructure';
 import type { DatabaseSchema, Scope } from "../persistence/types";
-import { clientEntities, siteEntities, tpaEntities } from "../data/registry";
+import { hostingAssociations, siteEntities, tpaEntities } from "../data/registry";
 import { associationEntities, siteAssociationEntities } from "../data/associations";
 import { pages } from "../config/pages";
 import { pageSections } from "../config/pageSections/pageSections";
@@ -149,7 +149,7 @@ export const migrationSiteKeys = activeMigrationSiteKeys;
 export function createMigrationDatabase(): DatabaseSchema {
   const db = createSeedDatabase();
   db.organizationProfiles = tpaEntities.map(({ id, ...definition }, position) => ({ ...row(id, definition, position), organizationKey: id }));
-  db.associations = associationEntities.map(({ id, clientId, ...definition }, position) => ({ ...row(id, definition, position), clientKey: clientId }));
+  db.associations = associationEntities.map(({ id, hostingAssociationId, ...definition }, position) => ({ ...row(id, definition, position), hostingAssociationKey: hostingAssociationId }));
   db.siteAssociations = siteAssociationEntities.map(({ id, siteId, associationId, enabled }, position) => ({ ...identity(id), siteKey: siteId, associationKey: associationId, enabled, position }));
   db.sitePolicies = siteEntities.map(({ id, associationSelection, associationBranding }) => ({ ...row(id, { associationSelection, associationBranding }), siteKey: id }));
   db.components = componentCatalog.map(({ id, ...definition }, position) => ({ ...row(id, { ...definition, storybookPath: `?path=/story/${definition.storyId}` }, position), providedBy: null, sourceReference: definition.source }));
@@ -223,7 +223,7 @@ export function createMigrationDatabase(): DatabaseSchema {
       db.configurationValues.push({ ...identity(`${scopeKey(scope)}.${key}`), ...scope, configurationKey: key, value, position });
     });
   }
-  clientEntities.forEach((client) => {
+  hostingAssociations.forEach((client) => {
     const scope = clientScope(client.id);
     db.brandingProfiles.push({ ...row(scopeKey(scope), client.branding), ...scope });
     db.supportProfiles.push({ ...row(scopeKey(scope), client.support), ...scope });
@@ -278,7 +278,7 @@ export function createMigrationDatabase(): DatabaseSchema {
   // Compile authored defaults + overrides into explicit placement/assignment rows.
   // This deliberately does not call getEffectiveSiteConfig or any old resolver.
   for (const site of siteEntities) {
-    const client = clientEntities.find((r) => r.id === site.clientId)!;
+    const client = hostingAssociations.find((r) => r.id === site.hostingAssociationId)!;
     const settings = merge(client.configurationDefaults, site.configurationOverrides);
     db.sitePages.push(...pages.map((page, position) => {
       const explicit = page.id === "health-tele" ? "none" : page.id === "beneficiary" || page.id === "payment" ? settings.pages.requirements?.[page.id] : undefined;
@@ -323,7 +323,7 @@ export function createMigrationDatabase(): DatabaseSchema {
   reviewStoredRules(db);
   addLibraryMetadata(db);
   // Strict JSON boundary: prototypes and undefined object members never reach storage.
-  return synchronizeAssociationStructure(jsonValue(db) as unknown as DatabaseSchema);
+  return deriveAssociationContexts(jsonValue(db) as unknown as DatabaseSchema);
 }
 
 /** Explicit Step 3 review compiler. Compatibility fixtures and live consumers stay unchanged. */
@@ -437,5 +437,5 @@ export function createReviewedMigrationDatabase(): DatabaseSchema {
   applyAbeCirQuestionnaireAdoption(db);
   // Later adoption passes add catalog records after the initial review pass.
   db.rules.forEach(rule => { rule.definition.organization = organizeRule(rule.definition); });
-  return synchronizeAssociationStructure(jsonValue(db) as unknown as DatabaseSchema);
+  return deriveAssociationContexts(jsonValue(db) as unknown as DatabaseSchema);
 }

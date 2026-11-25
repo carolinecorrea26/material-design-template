@@ -1,17 +1,19 @@
-import { withFreshStartCatalog } from './domain/freshStartCatalog';
+import { freshStartSource, withFreshStartCatalog } from './domain/freshStartCatalog';
+import { compileApplicationSiteIdentities } from './domain/requirementApplicationCatalog.mjs';
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { resolveSiteId } from "./data/activeSite";
 import { installPrototypeLibrary, resolveCompiledPrototypeLibrary, validatePrototypeEnvelope } from "./domain/prototypeLibrary";
-import { prototypeCatalogData, readSharedCatalog } from './persistence/sharedCatalog';
+import { prototypeCatalogData, PublishedCatalogMismatchError, readSharedCatalog } from './persistence/sharedCatalog';
 import { mockRequest } from "./mock/client";
 import { portalDatabaseEnabled, portalPageInspection } from './services/portalClient';
 import { openPortalDraft, resolvePortalDraft } from './services/portalDrafts';
 
 async function start() {
   const catalog = await readSharedCatalog();
-  const data = withFreshStartCatalog(prototypeCatalogData(catalog), undefined, catalog.siteScope);
-  const sourceSite = resolveSiteId(data.sites.filter(site => site.status === 'active' && !site.deletedAt).map(site => site.key));
+  const data = prototypeCatalogData(catalog);
+  const identities = compileApplicationSiteIdentities(data, freshStartSource(), undefined, catalog.siteScope);
+  const sourceSite = resolveSiteId(identities.sites.filter(site => site.status === 'active' && !site.deletedAt).map(site => site.key));
   const params = new URLSearchParams(window.location.search);
   const draftId = portalDatabaseEnabled ? params.get('portalDraft') : null;
   if (draftId) {
@@ -33,23 +35,29 @@ async function start() {
     const siteKey = admin ? sourceSite : params.get('buildSite') ?? sessionStorage.getItem('previewBuildSite') ?? sourceSite;
     installPrototypeLibrary(validatePrototypeEnvelope(await mockRequest('/prototype/library', { siteKey }), siteKey));
   } else {
-    installPrototypeLibrary(resolveCompiledPrototypeLibrary(data, sourceSite, catalog.revision));
+    const compiled = withFreshStartCatalog(data, undefined, catalog.siteScope);
+    installPrototypeLibrary(resolveCompiledPrototypeLibrary(compiled, sourceSite, catalog.revision));
   }
   if (window.location.pathname.includes('/admin-center/tutorial-preview/')) {
     const { renderTutorialPreview } = await import('./dev/preview/TutorialPreviewApp');
     renderTutorialPreview();
     return;
   }
+  const { normalizeInitialCoverageEntry } = await import('./app/coverageEntryNavigation');
+  const invalidEntry = normalizeInitialCoverageEntry(new URL(window.location.href), import.meta.env.BASE_URL, !!import.meta.env.VITE_STANDALONE_HTML);
+  if (invalidEntry) window.history.replaceState(window.history.state, '', invalidEntry);
   // Applicant modules capture their configuration at import time.
   const { default: App } = await import('./app/App');
-  const prototypeNotice = draftId ? 'Site Builder draft preview. Submissions are disabled.'
-    : portalPageInspection ? 'Library page preview. Submissions are disabled.' : 'Prototype only. Use fictional information.';
+  const previewNotice = draftId ? 'Site Builder draft preview. Submissions are disabled.'
+    : portalPageInspection ? 'Library page preview. Submissions are disabled.' : null;
   ReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode>
-    {portalDatabaseEnabled && <p role="status" style={{ margin: 0, padding: '0.5rem', textAlign: 'center', background: '#e9f3ff' }}>{prototypeNotice}</p>}
+    {previewNotice && <p role="status" style={{ margin: 0, padding: '0.5rem', textAlign: 'center', background: '#e9f3ff' }}>{previewNotice}</p>}
     <App />
   </React.StrictMode>);
 }
 void start().catch(error => {
-  console.error('Prototype startup failed', error);
-  document.getElementById('root')!.textContent = 'The shared prototype catalog is unavailable. Restore the catalog and reload to continue.';
+  console.error('Portal startup failed', error);
+  document.getElementById('root')!.textContent = error instanceof PublishedCatalogMismatchError
+    ? error.message
+    : 'The shared catalog is unavailable. Restore the catalog and reload to continue.';
 });

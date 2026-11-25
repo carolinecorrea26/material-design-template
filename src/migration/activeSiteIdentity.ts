@@ -45,7 +45,7 @@ export function reviewActiveSiteIdentities(db: DatabaseSchema, cells: readonly S
   };
   const assignments = activeSiteMigrationScope.sites.flatMap(scope => {
     const sites = db.sites.filter(site => site.key === scope.key);
-    if (sites.length !== 1 || db.clients.find(client => client.id === sites[0].clientId)?.key !== scope.clientKey) throw new Error(`Invalid identity Site ownership: ${scope.key}`);
+    if (sites.length !== 1 || db.associationEntities.find(client => client.id === sites[0].hostingAssociationId)?.key !== scope.hostingAssociationKey) throw new Error(`Invalid identity Site ownership: ${scope.key}`);
     const products = db.siteProducts.filter(row => row.siteId === sites[0].id && row.enabled);
     if (new Set(products.map(row => row.productKey)).size !== products.length) throw new Error(`Duplicate identity assignments: ${scope.key}`);
     for (const key of Object.keys(activeSiteMainRows[scope.key] ?? {})) if (!products.some(product => product.productKey === key)) throw new Error(`Stale crosswalk product: ${scope.key}.${key}`);

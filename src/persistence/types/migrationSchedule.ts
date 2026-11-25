@@ -13,7 +13,7 @@ export type MigrationStage = typeof migrationStages[number]["key"];
 export type MigrationMilestone = { status: MigrationStatus; expectedDate: string | null };
 export interface MigrationSchedule extends Timestamped {
   id: string;
-  clientKey: string;
+  hostingAssociationKey: string;
   migrating: boolean;
   milestones: Record<MigrationStage, MigrationMilestone>;
   expectedDate: string | null;

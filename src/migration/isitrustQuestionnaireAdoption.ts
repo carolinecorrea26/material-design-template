@@ -23,7 +23,7 @@ export function applyIsitrustQuestionnaireAdoption(db: DatabaseSchema) {
   life.items = life.items.map(item => ({ ...item, sourceReferences: item.sourceReferences.map(ref => generalReferences.get(ref) ?? ref) }));
   const definitionKey = "shared.general-life-ci-questionnaires", key = "isitrust.general.health-questionnaires";
   if (!db.configurationDefinitions.some(row => row.key === definitionKey)) db.configurationDefinitions.push({ ...meta("configurationDefinitions", definitionKey), position: 0, definition: { path: null, metadata: { reusable: true, assignmentRequired: true }, target: { kind: "site-health-questionnaires" } } });
-  const value = { ...meta("configurationValues", key), position: 0, scope: "site" as const, siteKey: "isitrust", clientKey: null, configurationKey: definitionKey, value: policy as unknown as Json };
+  const value = { ...meta("configurationValues", key), position: 0, scope: "site" as const, siteKey: "isitrust", hostingAssociationKey: null, configurationKey: definitionKey, value: policy as unknown as Json };
   const index = db.configurationValues.findIndex(row => row.key === key);
   if (index < 0) db.configurationValues.push(value); else db.configurationValues[index] = value;
   const review = db.configurationValues.find(row => row.key === "isitrust.review-policy");

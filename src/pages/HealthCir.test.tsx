@@ -15,7 +15,7 @@ it("renders an assigned CIR questionnaire from real global fields with independe
   source.fields.sitePages!.example['health-cir'] = { page: 'health-cir', requirement: 'required' };
   const key = 'test.cir-questionnaire';
   source.products.catalog.configurationDefinitions.push({ id: key, key, position: 0, definition: { target: { kind: 'site-health-questionnaires' } } });
-  source.siteProducts.example.catalog!.configurationValues.push({ id: key, key, configurationKey: key, scope: 'site', siteKey: '{{site}}', clientKey: null, position: 0, value: {
+  source.siteProducts.example.catalog!.configurationValues.push({ id: key, key, configurationKey: key, scope: 'site', siteKey: '{{site}}', hostingAssociationKey: null, position: 0, value: {
     version: 1, applicability: 'site', associationKeys: [], pageId: 'health-cir', whenRider: { productKey: 'li-term', riderId: 'cir' },
     variants: [{ key: 'synthetic', when: { any: ['li-term'] }, items: [
       { key: 'condition', sourceReferences: ['Synthetic shared-component regression'], questionFieldKey: 'health-ci-q1', repeated: true, fieldKeys: ['health-si-detail-onset', 'health-si-detail-conditionsDetails', 'health-si-detail-physicianAddress'] },

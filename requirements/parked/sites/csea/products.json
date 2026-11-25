@@ -8,7 +8,7 @@
         "sourceReference": "docs/step3-provisional-decisions.md",
         "position": 0,
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "template.di-ltd.reviewed-benefit-policy",
         "value": {
@@ -72,7 +72,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "products.presentation.li-add.name",
         "value": "Group Accidental Death and Dismemberment"
       },
@@ -83,7 +83,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.li-add.description",
         "value": "Optional member AD&D coverage. Choose a principal sum of $10,000, $30,000, $50,000 or $100,000. $5,000 Basic AD&D coverage is already included in the DI plan."
       },
@@ -94,7 +94,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.li-add.options",
         "value": [
           {
@@ -117,7 +117,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.li-add.reference-table",
         "value": {
           "version": 1,
@@ -170,7 +170,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.li-add.journey-residency",
         "value": {
           "version": 1,
@@ -193,7 +193,7 @@
         "key": "{{site}}.li-add.provisional-rate-outcome",
         "sourceReference": "docs/step3-provisional-decisions.md",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "template.li-add.provisional-rate-outcome",
         "value": {
@@ -209,7 +209,7 @@
         "key": "{{site}}.di-ltd.provisional-rate-outcome",
         "sourceReference": "docs/step3-provisional-decisions.md",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "template.di-ltd.provisional-rate-outcome",
         "value": {
@@ -226,7 +226,7 @@
         "sourceReference": "Main!M246; Main!N246",
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.coveragePolicy.residency.di-ltd",
         "value": {
           "version": 1,
@@ -250,7 +250,7 @@
         "key": "rates.reviewed-presentation.{{site}}",
         "sourceReference": "docs/archive/step3-major-outstanding-items.md",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "rates.reviewed-presentation",
         "value": {
@@ -266,7 +266,7 @@
         "key": "{{site}}.di-ltd.provisional-reference-table",
         "sourceReference": "docs/archive/step3-major-outstanding-items.md",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "template.di-ltd.provisional-reference-table",
         "value": {
@@ -394,7 +394,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.li-add.selection-policy",
         "value": {
           "version": 1,
@@ -426,7 +426,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.li-add.journey-policy",
         "value": {
           "underwritingByApplicant": {},
@@ -555,7 +555,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.di-ltd.selection-policy",
         "value": {
           "version": 2,
@@ -621,7 +621,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.di-ltd.journey-policy",
         "value": {
           "underwritingByApplicant": {
@@ -920,7 +920,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.coveragePolicy.lifeAggregateParticipation",
         "value": {
           "version": 1,
@@ -937,7 +937,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.li-add.rate-modifier-policy",
         "value": {
           "version": 1,
@@ -955,7 +955,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.li-add.rate-input-policy",
         "value": {
           "version": 1,
@@ -993,7 +993,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.di-ltd.rate-modifier-policy",
         "value": {
           "version": 1,
@@ -1011,7 +1011,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.di-ltd.rate-input-policy",
         "value": {
           "version": 1,
@@ -1050,7 +1050,7 @@
         "sourceReference": "User-confirmed relational rider ownership, October 19, 2026",
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "position": 0,
         "configurationKey": "template.di-ltd.rider-set",
         "value": {
@@ -1064,7 +1064,7 @@
         "sourceReference": "User-confirmed relational rider ownership, October 19, 2026",
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "position": 0,
         "configurationKey": "template.li-add.rider-set",
         "value": {
@@ -1079,7 +1079,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.page-participation",
         "value": {
           "version": 2,
@@ -1093,7 +1093,7 @@
         "position": 0,
         "configurationKey": "template.product-availability",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "value": {
           "version": 2,
@@ -1107,7 +1107,7 @@
         "position": 0,
         "configurationKey": "template.site-structure",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "value": {
           "version": 2,
@@ -1233,7 +1233,7 @@
         "key": "{{site}}.li-add.amount-pattern.rule",
         "sourceReference": "User clarification October 5, 2026; supplied AD&D rate table",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "productKey": "li-add",
         "applicantTypeKey": "member",
         "applicantClass": null,
@@ -1250,7 +1250,7 @@
         "applicantClass": "clerical",
         "amountPatternKey": "{{site}}.di-ltd.benefit-amount.member.clerical.pattern",
         "conditionKey": null,
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "position": 0
       },
@@ -1259,7 +1259,7 @@
         "key": "{{site}}.di-ltd.benefit-amount.member.non-clerical.rule",
         "sourceReference": "docs/step3-provisional-decisions.md",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "productKey": "di-ltd",
         "applicantTypeKey": "member",
         "applicantClass": "non-clerical",
@@ -1276,7 +1276,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "productKey": "li-add",
         "kind": "gNumber",
         "definition": {
@@ -1290,7 +1290,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "productKey": "li-add",
         "kind": "planCode",
         "definition": {
@@ -1302,7 +1302,7 @@
         "key": "{{site}}.di-ltd.provisional-identity.gNumber",
         "sourceReference": "docs/step3-provisional-decisions.md",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "productKey": "di-ltd",
         "kind": "gNumber",
@@ -1316,7 +1316,7 @@
         "key": "{{site}}.di-ltd.provisional-identity.planCode",
         "sourceReference": "docs/step3-provisional-decisions.md",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "productKey": "di-ltd",
         "kind": "planCode",
@@ -1332,7 +1332,7 @@
         "key": "{{site}}.di-ltd.csea.spouse-accident",
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "productKey": "di-ltd",
         "riderKey": "csea.spouse-accident",
         "position": 0
@@ -1342,7 +1342,7 @@
         "key": "{{site}}.di-ltd.csea.child-outpatient",
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "productKey": "di-ltd",
         "riderKey": "csea.child-outpatient",
         "position": 1

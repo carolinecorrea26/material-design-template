@@ -34,7 +34,7 @@ export function normalizePrototypeCoverage(db: DatabaseSchema) {
         else for (const [i, option] of (selection.type === "amountList" ? selection.values.map(value => ({ value: String(value), label: String(value) })) : selection.options).entries()) db.amountOptions.push({ ...identity("amountOptions", `${key}.${index}.${i}`, `prototype:${key}`), amountPatternKey: key, ...option, position: index * 10000 + i });
       }
       if (riderKey) db.riderAmountRules.push({ ...identity("riderAmountRules", key, `prototype:${key}`), riderKey, applicantTypeKey: assignment.scope?.applicantType ?? null, amountPatternKey: key, baseProductKey: productKey, conditionKey: null });
-      else db.productAmountRules.push({ ...identity("productAmountRules", key, `prototype:${key}`), productKey, applicantTypeKey: assignment.scope?.applicantType ?? null, applicantClass: assignment.scope?.applicantClassId ?? null, amountPatternKey: key, conditionKey: null, clientKey: null, siteKey, position });
+      else db.productAmountRules.push({ ...identity("productAmountRules", key, `prototype:${key}`), productKey, applicantTypeKey: assignment.scope?.applicantType ?? null, applicantClass: assignment.scope?.applicantClassId ?? null, amountPatternKey: key, conditionKey: null, hostingAssociationKey: null, siteKey, position });
     });
   }
   function product(product: CoverageDefinition, siteKey: string | null) {

@@ -18,7 +18,7 @@ import {
 import { CheckRounded, SettingsRounded, SwapHorizRounded } from "@mui/icons-material";
 import {
   getActiveSite,
-  getClientForSite,
+  getHostingAssociationForSite,
   siteEntities,
   type SiteId,
 } from "../data";
@@ -74,7 +74,7 @@ export default function DevTools() {
     React.useState<null | HTMLElement>(null);
 
   const currentSite = getActiveSite();
-  const currentClient = getClientForSite(currentSite.id)!;
+  const currentClient = getHostingAssociationForSite(currentSite.id)!;
   const isFormPage = getConfiguredPages().some(page => page.path === window.location.pathname && page.type === 'form');
   const hasUrlOverride = new URLSearchParams(window.location.search).has(
     SITE_QUERY_PARAM,
@@ -219,7 +219,7 @@ export default function DevTools() {
                 <Divider />
 
                 {siteEntities.map((site) => {
-                  const client = getClientForSite(site.id)!;
+                  const client = getHostingAssociationForSite(site.id)!;
                   return (
                   <MenuItem
                     key={site.id}

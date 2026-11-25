@@ -81,10 +81,10 @@ it("supports explicit Site references without changing other Sites or captured r
     ...changed.rules.find(row => row.key === ruleKey)!.definition, id: key,
     execution: { kind: "page-routing", gates: [{ pageId: "beneficiary", gate: { kind: "selected-category", categoryIds: ["DI"] } }] },
   } });
-  changed.ruleAssignments.push({ ...meta("ruleAssignments", "test.ama.assignment"), ruleKey: key, scope: "site", siteKey: "ama", clientKey: null, position: 0 });
+  changed.ruleAssignments.push({ ...meta("ruleAssignments", "test.ama.assignment"), ruleKey: key, scope: "site", siteKey: "ama", hostingAssociationKey: null, position: 0 });
   const value = config(changed).value;
   if (!value || typeof value !== "object" || Array.isArray(value) || !Array.isArray(value.ruleKeys)) throw new Error("Missing references");
-  changed.configurationValues.push({ ...config(changed), ...meta("configurationValues", "test.ama.routing"), scope: "site", siteKey: "ama", clientKey: null,
+  changed.configurationValues.push({ ...config(changed), ...meta("configurationValues", "test.ama.routing"), scope: "site", siteKey: "ama", hostingAssociationKey: null,
     value: { ...value, ruleKeys: value.ruleKeys.map(current => current === ruleKey ? key : current) } });
   expect(preview(changed).site.configuration.routing!.definitions[0].gate).toEqual({ kind: "selected-category", categoryIds: ["DI"] });
   expect(preview(changed, "avma").site.configuration.routing!.definitions[0].gate).toEqual(flowGateDefinitions[0].gate);
@@ -97,7 +97,7 @@ it("supports explicit Site references without changing other Sites or captured r
 
 it("refuses a new array override over linked routing and preserves archived array behavior", () => {
   const changed = structuredClone(db);
-  changed.configurationValues.push({ ...config(changed), ...meta("configurationValues", "test.array-override"), scope: "site", siteKey: "ama", clientKey: null, value: [] });
+  changed.configurationValues.push({ ...config(changed), ...meta("configurationValues", "test.array-override"), scope: "site", siteKey: "ama", hostingAssociationKey: null, value: [] });
   expect(() => preview(changed)).toThrow("Routing arrays cannot override");
   const original = createMigrationDatabase();
   config(changed).value = config(original).value;

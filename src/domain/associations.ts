@@ -1,4 +1,4 @@
-import type { ClientEntityId } from "./organizations";
+import type { HostingAssociationId } from "./organizations";
 import type { SiteId } from "./sites";
 
 export type AssociationId = string;
@@ -6,7 +6,7 @@ export type SiteAssociationId = string;
 export type AssociationSelectionMode = "fixed" | "url-parameter" | "select";
 export type Association = {
   id: AssociationId;
-  clientId: ClientEntityId;
+  hostingAssociationId: HostingAssociationId;
   name: string;
   acronym?: string;
   logo?: string;

@@ -11,13 +11,6 @@ export function isZipOrPostalField(field: FieldDefinition) {
   return field.format === 'postal-code' || field.autoComplete === "postal-code";
 }
 
-export function getLabelVariant(field: FieldDefinition) {
-  if (field.labelVariant) return field.labelVariant;
-  // Auto-switch to standard (external) label for long labels to prevent clipping
-  if (field.label && field.label.length >= 40) return "standard";
-  return "floating";
-}
-
 export function hasCompletedValue(field: FieldDefinition, value: unknown) {
   if (Array.isArray(value)) {
     return value.length > 0;

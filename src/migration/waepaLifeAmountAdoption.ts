@@ -15,7 +15,7 @@ const meta = (table: string, key: string, source: string) => ({ id: key, key, ..
  * child schedules and existing policy/service rules retain their prior scope. */
 export function applyWaepaLifeAmountAdoption(db: DatabaseSchema, cells: readonly SourceCell[]) {
   const site = db.sites.find(row => row.key === siteKey);
-  if (!site || db.clients.find(row => row.id === site.clientId)?.key !== "waepa"
+  if (!site || db.associationEntities.find(row => row.id === site.hostingAssociationId)?.key !== "waepa"
     || !db.siteProducts.some(row => row.siteId === site.id && row.productKey === productKey && row.enabled)) throw new Error("Missing WAEPA Life target");
   for (const slice of slices) {
     const expected = mcrSource.cells.filter(row => row.sheet === "Main" && row.cell === slice.cell);
@@ -77,6 +77,6 @@ export function applyWaepaLifeAmountAdoption(db: DatabaseSchema, cells: readonly
   db.configurationDefinitions.push({ ...meta("configurationDefinitions", policyKey, reference), position: 0,
     definition: { path: null, metadata: { authority }, target: { kind: "product-amount-cap-policy", productKey } } });
   db.configurationValues = db.configurationValues.filter(row => row.key !== policyKey);
-  db.configurationValues.push({ ...meta("configurationValues", policyKey, reference), position: 0, scope: "site", siteKey, clientKey: null,
+  db.configurationValues.push({ ...meta("configurationValues", policyKey, reference), position: 0, scope: "site", siteKey, hostingAssociationKey: null,
     configurationKey: policyKey, value: { version: 1, limitKeys } satisfies Json });
 }

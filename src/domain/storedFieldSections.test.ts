@@ -33,7 +33,7 @@ it('resolves a new ordinary section placement with saved field values and Site o
   const fieldKey = 'stored-section-note';
   data.fields.push({ id: fieldKey, key: fieldKey, position: 0, definition: { id: fieldKey, label: 'Stored note', inputType: 'text' } });
   data.pageSectionFields.push({ id: fieldKey, key: fieldKey, sectionKey: section.key, fieldKey, position: 10 } as DatabaseSchema['pageSectionFields'][number]);
-  data.siteFieldConfigurations.push({ id: fieldKey, key: fieldKey, pageKey: 'coverage', fieldKey, position: 0, scope: 'site', siteKey: 'asce', clientKey: null, hidden: null, include: null, values: { label: 'ASCE note', required: true } });
+  data.siteFieldConfigurations.push({ id: fieldKey, key: fieldKey, pageKey: 'coverage', fieldKey, position: 0, scope: 'site', siteKey: 'asce', hostingAssociationKey: null, hidden: null, include: null, values: { label: 'ASCE note', required: true } });
   const library = resolvePrototypeLibrary(data, 'asce', 'test');
   expect(library.site.configuration.pages.find(page => page.key === 'coverage')?.fields.find(field => field.key === fieldKey)?.definition).toMatchObject({ label: 'ASCE note', required: true });
   expect(resolvePrototypeLibrary(data, 'ama', 'test').site.configuration.pages.find(page => page.key === 'coverage')?.fields.find(field => field.key === fieldKey)?.definition.label).toBe('Stored note');

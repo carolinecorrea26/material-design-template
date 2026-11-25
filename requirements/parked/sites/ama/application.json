@@ -6,7 +6,7 @@
         "id": "client:{{site}}.theme.type",
         "key": "client:{{site}}.theme.type",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "theme.type",
         "value": "preset",
@@ -17,7 +17,7 @@
         "id": "client:{{site}}.theme.preset",
         "key": "client:{{site}}.theme.preset",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "theme.preset",
         "value": "default",
@@ -28,7 +28,7 @@
         "id": "client:{{site}}.features.scheduleUrl",
         "key": "client:{{site}}.features.scheduleUrl",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "features.scheduleUrl",
         "value": "https://calendly.com/ama-advisor/30min",
@@ -39,7 +39,7 @@
         "id": "client:{{site}}.licenseInfo",
         "key": "client:{{site}}.licenseInfo",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "licenseInfo",
         "value": [
@@ -53,7 +53,7 @@
         "id": "client:{{site}}.theme.buttonShape",
         "key": "client:{{site}}.theme.buttonShape",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "theme.buttonShape",
         "value": "pill",
@@ -67,7 +67,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "shared.review-policy",
         "value": {
           "version": 1,
@@ -278,7 +278,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "shared.beneficiary-notes",
         "value": {
           "version": 1,
@@ -377,7 +377,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "shared.beneficiary-participation",
         "value": {
           "version": 1,
@@ -398,7 +398,7 @@
         "configurationKey": "applicantExperience.membershipLookup",
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "value": {
           "provider": "ama-mock",
           "title": "AMA record lookup"
@@ -410,7 +410,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "applicantExperience.factMappings.applicantClass",
         "value": {
           "field": "applicant-class",
@@ -427,7 +427,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "applicantExperience.factSources",
         "value": {
           "di-step-rated:member:existingMonthlyBenefit": {
@@ -455,7 +455,7 @@
         },
         "position": 0,
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "sourceReference": "prototype:brandingProfiles/client:ama"
       }
@@ -483,7 +483,7 @@
         },
         "position": 0,
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "sourceReference": "Associations!D15; New UX Multi-page Requirements!AX43; New UX Multi-page Requirements!BA43"
       }
@@ -641,7 +641,7 @@
     "sites": [
       {
         "id": "ama",
-        "clientId": "ama",
+        "hostingAssociationId": "ama",
         "key": "ama",
         "name": "AMA Site",
         "displayName": "AMA Site",
@@ -650,7 +650,6 @@
         "templateType": "multi",
         "legacyClientId": "ama",
         "deletedAt": null,
-        "hostingAssociationId": "ama",
         "sourceReference": "prototype:sites/ama",
         "createdAt": "2026-09-01T12:00:00.000Z",
         "updatedAt": "2026-09-01T12:00:00.000Z"

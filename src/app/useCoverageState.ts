@@ -46,26 +46,14 @@ export function useCoverageState() {
     () => new Set(),
   );
   const [showProducts, setShowProducts] = useState(false);
-  const [productsLoading, setProductsLoading] = useState(false);
   const [summaryDrawerOpen, setSummaryDrawerOpen] = useState(false);
   // Existing selections count as an established cart. Only the first addition
   // to a previously empty cart opens the drawer; later additions use a snackbar.
   const initialDrawerShownRef = useRef(Array.isArray(values.coverageSelections) && values.coverageSelections.length > 0);
   const [addedSnackbarOpen, setAddedSnackbarOpen] = useState(false);
   const rateCalculationTimersRef = useRef<Record<string, number>>({});
-  const productsLoadingTimerRef = useRef<number | null>(null);
 
-  const revealProducts = useCallback(() => {
-    setShowProducts(true);
-    setProductsLoading(true);
-    if (productsLoadingTimerRef.current != null) {
-      window.clearTimeout(productsLoadingTimerRef.current);
-    }
-    productsLoadingTimerRef.current = window.setTimeout(() => {
-      setProductsLoading(false);
-      productsLoadingTimerRef.current = null;
-    }, RATE_CALCULATION_DELAY_MS);
-  }, []);
+  const revealProducts = useCallback(() => setShowProducts(true), []);
 
   // ── Rate frequency ──────────────────────────────────────────────────────
   const rateDisplayConfig = activeClient.coverages.estimatedRateDisplay;
@@ -275,9 +263,6 @@ export function useCoverageState() {
       Object.values(rateCalculationTimers).forEach((timerId) => {
         window.clearTimeout(timerId);
       });
-      if (productsLoadingTimerRef.current != null) {
-        window.clearTimeout(productsLoadingTimerRef.current);
-      }
       if (frequencyTimerRef.current != null) {
         window.clearTimeout(frequencyTimerRef.current);
       }
@@ -317,10 +302,10 @@ export function useCoverageState() {
   }, []);
 
   useEffect(() => {
-    if (!showProducts || productsLoading) return;
+    if (!showProducts) return;
     const patch = coveragePreselection(categoryProducts, values);
     if (patch) setPageValues(patch);
-  }, [showProducts, productsLoading, categoryProducts, values, setPageValues]);
+  }, [showProducts, categoryProducts, values, setPageValues]);
 
   // Seed configured/campaign defaults without turning them into elections.
   useEffect(() => {
@@ -661,7 +646,6 @@ export function useCoverageState() {
     // Product state
     showProducts,
     setShowProducts,
-    productsLoading,
     categoryProducts,
     categoryEligibility,
     allCategoriesIneligible,

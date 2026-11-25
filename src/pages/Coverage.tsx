@@ -113,7 +113,6 @@ export default function Coverage() {
       onBeforeNext={handleBeforeNext}
       hideNextButton={() =>
         // Hide Next while products are loading
-        (state.showProducts && state.productsLoading) ||
         // Hide Next when "See my coverage options" button is visible
         (state.selectedCategories.length > 0 &&
           !state.showProducts &&
@@ -261,7 +260,6 @@ function CoveragePageContent({
             selectionCalculating={state.selectionCalculating}
             showRateFrequencyToggle={state.showRateFrequencyToggle}
             showProducts={state.showProducts}
-            productsLoading={state.productsLoading}
             grandTotal={state.grandTotal}
             activeClient={state.activeClient}
             onToggleApplicant={state.toggleApplicantForProduct}

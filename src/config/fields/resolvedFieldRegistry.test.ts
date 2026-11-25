@@ -96,7 +96,7 @@ describe("resolved field registry architecture", () => {
         pageId: "membership",
         fieldId: "membership",
         scope: "client",
-        clientIds: [site.clientId],
+        clientIds: [site.hostingAssociationId],
         values: { label: "Client label" },
       },
     ];

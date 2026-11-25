@@ -1,6 +1,6 @@
-import type { ReactNode } from "react";
+import { useRef, type ReactNode } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Stack, Typography } from "@mui/material";
+import { Button, Stack, Typography } from "@mui/material";
 import FormRoutePage, { type FormRouteRenderProps } from "./RoutePage";
 import {
   ApplicationFormContext,
@@ -75,23 +75,32 @@ export const StandardFormPage: Story = {
   },
 };
 
+function SavingProgressExample() {
+  const completeSave = useRef<(() => void) | null>(null);
+  return (
+    <ApplicationFormContext.Provider
+      value={{
+        values: {},
+        setPageValues: () => {},
+        resetValues: () => {},
+        saveApplication: () => new Promise(resolve => { completeSave.current = () => resolve(null); }),
+      }}
+    >
+      <FormRoutePage pageId="membership">
+        {props => <DemoFields {...props} />}
+      </FormRoutePage>
+      <Button onClick={() => completeSave.current?.()}>Complete save</Button>
+    </ApplicationFormContext.Provider>
+  );
+}
+
 export const InitialTransition: Story = {
-  name: "Initial transition state",
-  render: () =>
-    withValues(
-      {},
-      <FormRoutePage
-        pageId="membership"
-        initialTransitionMessage="Loading your membership application..."
-      >
-        {(props) => <DemoFields {...props} />}
-      </FormRoutePage>,
-    ),
+  name: "Saving progress",
+  render: () => <SavingProgressExample />,
   parameters: {
     docs: {
       description: {
-        story:
-          "FormRoutePage temporarily replaces the heading and form with PageTransitionSkeleton, then restores the standard template. The transition is intentionally live rather than a static imitation.",
+        story: "Fill in the required fields and submit to see the loading placeholders while the save is pending. Complete the save to finish navigation.",
       },
     },
   },

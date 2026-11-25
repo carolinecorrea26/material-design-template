@@ -3,7 +3,7 @@ import type { SnapshotTable } from '../persistence/snapshot';
 
 /** Logical ownership is independent from storage. Shared/legacy tables are classified per row. */
 export const libraryOwners = {
-  'client-information': ['organizations', 'organizationProfiles', 'clients', 'sites', 'associations', 'siteAssociations', 'associationEntities', 'associationAliases', 'associationAffiliations', 'siteAssociationContexts', 'siteEnvironmentLinks', 'supportProfiles'],
+  'client-information': ['organizations', 'organizationProfiles', 'sites', 'associations', 'siteAssociations', 'associationEntities', 'associationAliases', 'associationAffiliations', 'siteAssociationContexts', 'siteEnvironmentLinks', 'supportProfiles'],
   components: ['components'],
   pages: ['pages', 'sitePages', 'pageSections'],
   fields: ['fields', 'pageFields', 'pageSectionFields', 'siteFieldConfigurations', 'questionDefinitions', 'questionSets', 'questionSetQuestions', 'questionSetFields', 'productQuestionSets'],
@@ -26,7 +26,7 @@ export const libraryOwners = {
 
 export type LibraryOwner = Exclude<keyof typeof libraryOwners, 'shared' | 'evidence'>;
 export const ownerLabels: Record<LibraryOwner, string> = {
-  'client-information': 'Client information', components: 'Components', pages: 'Pages', fields: 'Fields', flows: 'Flows',
+  'client-information': 'Site information', components: 'Components', pages: 'Pages', fields: 'Fields', flows: 'Flows',
   products: 'Products & riders', rules: 'Business rules', configurations: 'Configurations', 'url-parameters': 'URL parameters',
   validation: 'Validations', accessibility: 'Accessibility', analytics: 'Analytics', features: 'Features', content: 'Content', communications: 'Emails', themes: 'Branding & Design',
 };

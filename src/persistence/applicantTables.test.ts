@@ -22,7 +22,7 @@ describe('applicant table storage compatibility', () => {
     expect(await adapter.list('applicationApplicants')).toEqual([]);
     expect(await adapter.list('applicationAssociations')).toEqual([]);
     await adapter.insert('applicants', {
-      id: 'person-1', clientId: seed.clients[0].id, displayName: 'Person', email: null,
+      id: 'person-1', hostingAssociationId: seed.associationEntities[0].id, displayName: 'Person', email: null,
       status: 'active', createdAt: '2026-10-12T12:00:00Z', updatedAt: '2026-10-12T12:00:00Z', deletedAt: null,
     });
     const reopened = new LocalStorageAdapter(seed, storage);

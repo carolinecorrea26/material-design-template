@@ -98,7 +98,7 @@ export function extractMcrSemantics(db: DatabaseSchema, source: Source) {
     }
     const clientName = get('Main', 'A', n);
     const owner = db.productClients.find(r => r.productKey === p);
-    if (owner && clientName && normalized(String(clientName.value)).includes(normalized(db.clients.find(c => c.key === owner.clientKey)!.acronym))) link(clientName, 'productClients', owner.key, 'clientKey');
+    if (owner && clientName && normalized(String(clientName.value)).includes(normalized(db.associationEntities.find(c => c.key === owner.hostingAssociationKey)!.acronym))) link(clientName, 'productClients', owner.key, 'hostingAssociationKey');
   }
   // Reconcile overlays using the intersection of independently normalized identifiers.
   const identifiers = new Map<string, string[]>();
@@ -203,9 +203,9 @@ export function extractMcrSemantics(db: DatabaseSchema, source: Source) {
     }
   }
   for (const n of rows('Associations')) {
-    const acronym = value('Associations', 'C', n), clients = db.clients.filter(c => normalized(c.acronym) === normalized(acronym));
+    const acronym = value('Associations', 'C', n), clients = db.associationEntities.filter(c => normalized(c.acronym) === normalized(acronym));
     if (clients.length !== 1) continue;
-    for (const col of ['E','F','G','H']) if (isNA(value('Associations', col, n))) fact(get('Associations', col, n), 'associations', 'clients', clients[0].key, `${slug(value('Associations', col, 1))}.applicable`, false);
+    for (const col of ['E','F','G','H']) if (isNA(value('Associations', col, n))) fact(get('Associations', col, n), 'associations', 'associationEntities', clients[0].key, `${slug(value('Associations', col, 1))}.applicable`, false);
   }
   // Deduplicate exact question wording, preserving every evidence link and set membership.
   const questions = new Map<string, string>();
@@ -294,7 +294,7 @@ export function extractMcrSemantics(db: DatabaseSchema, source: Source) {
   // URL catalog and explicit usage, independent of runnable Site provisioning.
   for (const n of rows('URLs')) {
     const ownerLabel = value('URLs', 'A', n);
-    const owners = db.clients.filter(c => normalized(c.acronym) === normalized(ownerLabel));
+    const owners = db.associationEntities.filter(c => normalized(c.acronym) === normalized(ownerLabel));
     for (const [col, usage] of [['B','production'], ['C','test'], ['D','pre-production'], ['E','automation'], ['G','featured-product'], ['I','campaign'], ['K','bypass-landing-production'], ['M','bypass-landing-test'], ['O','verification-without-analytics']]) {
       const r = get('URLs', col, n), text = value('URLs', col, n);
       if (!r || !/^https?:\/\/\S+$/.test(text)) continue;
@@ -302,10 +302,10 @@ export function extractMcrSemantics(db: DatabaseSchema, source: Source) {
       const key = `mcr.url.${libraryDisplayId('url', text)}`;
       if (!db.urlDefinitions.some(u => u.key === key)) db.urlDefinitions.push({ ...metadata('urlDefinitions', key, r.sourceReference!), url: text, protocol: url.protocol, host: url.host, pathname: url.pathname, parameters: Object.fromEntries(url.searchParams) });
       const usageKey = `${r.key}.usage`;
-      db.urlUsages.push({ ...metadata('urlUsages', usageKey, r.sourceReference!), urlKey: key, clientKey: owners.length === 1 ? owners[0].key : null, usage, sourceOwner: ownerLabel, status: owners.length === 1 ? 'documented' : 'unresolved' });
+      db.urlUsages.push({ ...metadata('urlUsages', usageKey, r.sourceReference!), urlKey: key, hostingAssociationKey: owners.length === 1 ? owners[0].key : null, usage, sourceOwner: ownerLabel, status: owners.length === 1 ? 'documented' : 'unresolved' });
       link(r, 'urlDefinitions', key, 'url');
       link(r, 'urlUsages', usageKey, 'usage');
-      if (owners.length === 1) link(get('URLs', 'A', n), 'urlUsages', usageKey, 'clientKey');
+      if (owners.length === 1) link(get('URLs', 'A', n), 'urlUsages', usageKey, 'hostingAssociationKey');
       else { const owner = get('URLs', 'A', n); if (owner && owner.classification === 'UNMAPPED_SEMANTIC') { owner.classification = 'IDENTITY_CONFLICT'; owner.reason = 'URL is cataloged, but source site label has no unique canonical client; no Site is fabricated.'; } }
     }
   }

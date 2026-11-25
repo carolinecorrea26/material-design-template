@@ -112,7 +112,7 @@ describe("canonical corrective Phase 4 gates", () => {
     expect(xml).toContain('key="p&amp;1" displayId="5"'); expect(xml).toContain("&lt;hello&gt;");
   });
   it("has no client-ID conditionals in new behavioral logic", () => {
-    for (const file of ["src/migration/mcr.ts", "src/migration/normalizeCoverage.ts", "src/pages/admin/library/PatternsFlagsLibrary.tsx", "src/services/libraryExport.ts"]) expect(readFileSync(file, "utf8")).not.toMatch(/(?:clientId|clientKey|siteId|siteKey)\s*===?\s*["'](?:ama|asce|waepa)/);
+    for (const file of ["src/migration/mcr.ts", "src/migration/normalizeCoverage.ts", "src/pages/admin/library/PatternsFlagsLibrary.tsx", "src/services/libraryExport.ts"]) expect(readFileSync(file, "utf8")).not.toMatch(/(?:clientId|hostingAssociationKey|siteId|siteKey)\s*===?\s*["'](?:ama|asce|waepa)/);
   });
   it("exports the coverage report for review", () => {
     if (process.env.MIGRATION_EXPORT_DIR) {

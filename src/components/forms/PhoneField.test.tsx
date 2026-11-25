@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import FieldRenderer from './FieldRenderer';
 import PhoneField from './PhoneField';
+import ControlledFieldRenderer from './ControlledFieldRenderer';
 import { FieldDefinitionsContext } from './FieldDefinitionsContext';
 import { fieldCatalog } from '../../config/fields';
 
@@ -26,6 +27,18 @@ beforeEach(() => {
   container = document.createElement('div'); document.body.append(container); root = createRoot(container);
 });
 afterEach(async () => { await act(async () => root.unmount()); container.remove(); vi.unstubAllGlobals(); });
+it('formats and returns a controlled phone number without collecting a phone type', async () => {
+  const onChange = vi.fn();
+  const field = { ...fieldCatalog.phone, id: 'builder-phone', label: 'Phone', showPhoneTypeSelector: false };
+  await act(async () => root.render(<ControlledFieldRenderer field={field} value="" onChange={onChange} />));
+  const phone = container.querySelector<HTMLInputElement>('input[type="tel"]')!;
+  await act(async () => {
+    Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(phone, '2125550100');
+    phone.dispatchEvent(new Event('input', { bubbles: true }));
+  });
+  expect(onChange).toHaveBeenLastCalledWith('(212) 555-0100');
+  expect(container.querySelector('[role="combobox"]')).toBeNull();
+});
 async function choose(id: string, value: string) {
   await act(async () => document.getElementById(id)!.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, button: 0 })));
   const option = [...document.querySelectorAll<HTMLElement>('[role="option"]')].find(option => option.dataset.value === value);

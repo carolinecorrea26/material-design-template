@@ -31,7 +31,7 @@ export interface PatternAssignments extends LibraryMetadata {
   id: string;
   key: string;
   patternKey: string;
-  clientKey: string | null;
+  hostingAssociationKey: string | null;
   siteKey: string | null;
   productKey: string | null;
   applicantKey: string | null;

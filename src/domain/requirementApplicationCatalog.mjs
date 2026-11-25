@@ -26,8 +26,8 @@ export function validateApplicationCatalog(document, scope) {
     for (const row of rows) {
       if (!row || typeof row.id !== 'string' || typeof identity(row) !== 'string' || keys.has(identity(row))) throw new Error(`Invalid fresh-start application identity: ${table}`);
       keys.add(identity(row));
-      if (scope === 'global' && (row.scope && row.scope !== 'global' || row.siteKey != null || row.siteId != null || row.clientKey != null)) throw new Error(`Site assignment in global application definitions: ${table}`);
-      if (scope === 'site' && (row.scope && row.scope !== 'site' || row.siteKey != null && row.siteKey !== '{{site}}' || row.siteId != null && row.siteId !== '{{siteId}}' || row.clientKey != null)) throw new Error(`Invalid effective-Site application assignment: ${table}`);
+      if (scope === 'global' && (row.scope && row.scope !== 'global' || row.siteKey != null || row.siteId != null || row.hostingAssociationKey != null)) throw new Error(`Site assignment in global application definitions: ${table}`);
+      if (scope === 'site' && (row.scope && row.scope !== 'site' || row.siteKey != null && row.siteKey !== '{{site}}' || row.siteId != null && row.siteId !== '{{siteId}}' || row.hostingAssociationKey != null)) throw new Error(`Invalid effective-Site application assignment: ${table}`);
     }
   }
   return document.records;
@@ -44,8 +44,8 @@ export function compileApplicationSiteIdentities(data, source, selectedSite, sit
     const site = records.sites[0];
     // Authored identities own enrollment. Callers supply an explicit Site scope
     // for restricted snapshots; saved Site rows do not define that scope.
-    if (!selectedSite && !data.clients.some(client => client.id === site.clientId)) continue;
-    if (site.key !== key || site.id !== key || !data.clients.some(client => client.id === site.clientId) || !['single', 'multi'].includes(site.templateType) || output.sites.some(row => row.id === site.id && row.key !== key)) throw new Error(`Invalid authored Site identity: ${key}`);
+    if (!selectedSite && !data.associationEntities.some(client => client.id === site.hostingAssociationId)) continue;
+    if (site.key !== key || site.id !== key || !data.associationEntities.some(client => client.id === site.hostingAssociationId) || !['single', 'multi'].includes(site.templateType) || output.sites.some(row => row.id === site.id && row.key !== key)) throw new Error(`Invalid authored Site identity: ${key}`);
     output.sites = [...output.sites.filter(row => row.key !== key), { ...libraryMetadata('sites', key), ...structuredClone(site), sourceReference: `requirements/parked/sites/${key}/application.json#sites/${key}` }];
   }
   return output;

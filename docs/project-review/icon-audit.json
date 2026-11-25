@@ -473,13 +473,6 @@
           "line": 18,
           "scope": "development-and-reference",
           "used": true
-        },
-        {
-          "icon": "CheckRounded",
-          "file": "src/pages/ResumeCode.tsx",
-          "line": 10,
-          "scope": "applicant",
-          "used": true
         }
       ]
     },

@@ -41,7 +41,7 @@ export function parseFlowGates(value: unknown, pages: RoutingData["pages"]): Flo
 
 /** Exact references opt a saved revision into rule-owned routing. Rule prose and
  * other imported action/predicate types never become executable by implication. */
-export function resolveRoutingRules(data: RoutingData, configuration: Configuration | undefined, siteKey: string, clientKey: string) {
+export function resolveRoutingRules(data: RoutingData, configuration: Configuration | undefined, siteKey: string, hostingAssociationKey: string) {
   if (!configuration) return null;
   const value = configuration.value;
   if (Array.isArray(value)) return { source: "legacy" as const, definitions: parseFlowGates(value, data.pages), ruleKeys: [] as string[], provenance: [...configuration.provenance] };
@@ -51,8 +51,8 @@ export function resolveRoutingRules(data: RoutingData, configuration: Configurat
   const provenance = [...configuration.provenance];
   for (const key of value.ruleKeys) {
     const rows = data.rules.filter(row => row.key === key);
-    const assignments = data.ruleAssignments.filter(row => row.ruleKey === key && (row.scope === "global" && row.clientKey === null && row.siteKey === null
-      || row.scope === "client" && row.clientKey === clientKey && row.siteKey === null || row.scope === "site" && row.siteKey === siteKey && row.clientKey === null));
+    const assignments = data.ruleAssignments.filter(row => row.ruleKey === key && (row.scope === "global" && row.hostingAssociationKey === null && row.siteKey === null
+      || row.scope === "association" && row.hostingAssociationKey === hostingAssociationKey && row.siteKey === null || row.scope === "site" && row.siteKey === siteKey && row.hostingAssociationKey === null));
     if (rows.length !== 1 || !assignments.length || new Set(assignments.map(row => row.scope)).size !== assignments.length) throw new Error(`Missing or ambiguous routing rule assignment: ${key}`);
     const rule = rows[0];
     validateRuleTemplates(rule.definition.templates);

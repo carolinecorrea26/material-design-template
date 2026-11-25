@@ -19,8 +19,8 @@ export function validateProductCatalog(catalog, scope) {
       if (!object(row) || typeof row.id !== 'string' || !row.id || typeof identity(row) !== 'string' || !identity(row) || ids.has(row.id) || keys.has(identity(row))) throw new Error(`Invalid fresh-start product identity: ${table}`);
       ids.add(row.id); keys.add(identity(row));
       if (table === 'riders' && row.definition?.applicantDescriptions !== undefined && (!object(row.definition.applicantDescriptions) || Object.entries(row.definition.applicantDescriptions).some(([applicant, text]) => !['member', 'spouse', 'child'].includes(applicant) || typeof text !== 'string' || !text.trim()))) throw new Error(`Invalid rider applicant descriptions: ${identity(row)}`);
-      if (scope === 'global' && (row.siteKey != null || row.siteId != null || row.clientKey != null || row.scope && row.scope !== 'global')) throw new Error(`Site assignment in global product definitions: ${table}/${identity(row)}`);
-      if (scope === 'site' && (row.siteKey != null && row.siteKey !== '{{site}}' || row.siteId != null && row.siteId !== '{{siteId}}' || row.clientKey != null || row.scope && row.scope !== 'site')) throw new Error(`Invalid effective-Site product assignment: ${table}/${identity(row)}`);
+      if (scope === 'global' && (row.siteKey != null || row.siteId != null || row.hostingAssociationKey != null || row.scope && row.scope !== 'global')) throw new Error(`Site assignment in global product definitions: ${table}/${identity(row)}`);
+      if (scope === 'site' && (row.siteKey != null && row.siteKey !== '{{site}}' || row.siteId != null && row.siteId !== '{{siteId}}' || row.hostingAssociationKey != null || row.scope && row.scope !== 'site')) throw new Error(`Invalid effective-Site product assignment: ${table}/${identity(row)}`);
     }
   }
   return catalog;
@@ -49,6 +49,16 @@ export function compileProductCatalog(data, source, sites) {
     output[table] = [...output[table].filter(row => !keys.has(identity(row))), ...records.map(record => ({ ...libraryMetadata(table, identity(record)), ...structuredClone(record), sourceReference: `${reference}#${table}/${identity(record)}${record.sourceReference ? `; ${record.sourceReference}` : ''}` }))];
   };
   const global = validateProductCatalog(source.products.catalog, 'global');
+  const urlParameters = new Set(global.urlParameters.map(row => row.parameter));
+  const errorPages = new Set(Object.values(source.pages).filter(page => page.definition?.type === 'error').map(page => page.consumerKey ?? page.page));
+  for (const { parameter, entryValidation } of global.urlParameters) {
+    if (entryValidation === undefined && parameter !== 'prods') continue;
+    const { requiredParameter, alias, errorPage } = entryValidation ?? {};
+    if (!object(entryValidation) || !urlParameters.has(requiredParameter) || !urlParameters.has(alias)
+      || new Set([parameter, requiredParameter, alias]).size !== 3 || !errorPages.has(errorPage)) {
+      throw new Error(`Invalid fresh-start URL entry validation: ${parameter}`);
+    }
+  }
   // The one global template owns URL definitions and value contracts in full.
   // Superseded contracts cannot survive as additional saved-catalog records.
   for (const table of ['urlParameters', 'urlParameterValues']) if (Array.isArray(output[table])) output[table] = [];
@@ -83,19 +93,19 @@ export function compileProductCatalog(data, source, sites) {
     const catalog = instantiate(validateProductCatalog(authored, 'site'), { ...site, lifeMaximum: source.siteCoveragePolicies[site.key]?.lifeMaximum?.maximum });
     for (const value of catalog.configurationValues) if (!definitions.has(value.configurationKey)) throw new Error(`Missing fresh-start configuration definition: ${value.configurationKey}`);
     for (const assignment of catalog.siteProducts) if (!globalProducts.has(assignment.productKey)) throw new Error(`Missing fresh-start product definition: ${assignment.productKey}`);
-    const clientKey = data.clients.find(client => client.id === site.clientId)?.key;
+    const hostingAssociationKey = data.associationEntities.find(client => client.id === site.hostingAssociationId)?.key;
     const productKeys = new Set(catalog.siteProducts.map(row => row.productKey));
     for (const [table, rows] of Object.entries(catalog)) {
       if (!Array.isArray(output[table])) continue;
       if (table === 'configurationValues') {
         const owned = new Set(rows.map(row => targetIdentity(definitions.get(row.configurationKey) ?? output.configurationDefinitions.find(definition => definition.key === row.configurationKey)?.definition ?? {})));
         const ownedKeys = new Set(output.configurationDefinitions.filter(row => owned.has(targetIdentity(row.definition))).map(row => row.key));
-        output[table] = output[table].filter(row => !ownedKeys.has(row.configurationKey) || !(row.siteKey === site.key || row.scope === 'client' && row.clientKey === clientKey));
+        output[table] = output[table].filter(row => !ownedKeys.has(row.configurationKey) || !(row.siteKey === site.key || row.scope === 'association' && row.hostingAssociationKey === hostingAssociationKey));
         output.configurationDefinitions = output.configurationDefinitions.filter(row => !ownedKeys.has(row.key) || definitions.has(row.key) || output.configurationValues.some(value => value.configurationKey === row.key));
       } else {
         // Site tables are complete sets for the assigned products, including
         // empty applicant/underwriting sets. Additional stale rows cannot leak in.
-        output[table] = output[table].filter(row => !(row.siteKey === site.key || row.siteId === site.id || row.scope === 'client' && row.clientKey === clientKey) || row.productKey && !productKeys.has(row.productKey));
+        output[table] = output[table].filter(row => !(row.siteKey === site.key || row.siteId === site.id || row.scope === 'association' && row.hostingAssociationKey === hostingAssociationKey) || row.productKey && !productKeys.has(row.productKey));
       }
       merge(table, rows, `requirements/parked/sites/${site.key}/products.json`);
     }

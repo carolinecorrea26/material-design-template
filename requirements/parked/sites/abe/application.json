@@ -6,7 +6,7 @@
         "id": "site:{{site}}.theme.type",
         "key": "site:{{site}}.theme.type",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "theme.type",
         "value": "preset",
@@ -17,7 +17,7 @@
         "id": "site:{{site}}.theme.preset",
         "key": "site:{{site}}.theme.preset",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "theme.preset",
         "value": "default",
@@ -28,7 +28,7 @@
         "id": "site:{{site}}.licenseInfo",
         "key": "site:{{site}}.licenseInfo",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "licenseInfo",
         "value": [],
@@ -42,7 +42,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "field-collections",
         "value": {
           "children": {
@@ -141,7 +141,7 @@
         "configurationKey": "coveragePolicy.questionRequirements",
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "position": 0,
         "value": {
           "LI": {
@@ -197,7 +197,7 @@
         "key": "{{site}}.facts.factSources",
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "applicantExperience.factSources",
         "value": {
           "existingMonthlyBenefit": {
@@ -220,7 +220,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "shared.review-policy",
         "value": {
           "version": 1,
@@ -464,7 +464,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "shared.beneficiary-notes",
         "value": {
           "version": 1,
@@ -556,7 +556,7 @@
         },
         "position": 0,
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "sourceReference": "prototype:brandingProfiles/client:abe"
       }
@@ -579,7 +579,7 @@
         },
         "position": 0,
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "sourceReference": "prototype:supportProfiles/client:abe"
       }
@@ -737,7 +737,7 @@
     "sites": [
       {
         "id": "abe",
-        "clientId": "abe",
+        "hostingAssociationId": "abe",
         "key": "abe",
         "name": "ABE Site",
         "displayName": "ABE Site",
@@ -746,7 +746,6 @@
         "templateType": "multi",
         "legacyClientId": "abe",
         "deletedAt": null,
-        "hostingAssociationId": "abe",
         "sourceReference": "prototype:sites/abe",
         "createdAt": "2026-09-01T12:00:00.000Z",
         "updatedAt": "2026-09-01T12:00:00.000Z"

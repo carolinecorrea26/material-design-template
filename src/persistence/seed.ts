@@ -1,9 +1,9 @@
 import { siteEnvironmentLinks } from "../data/siteEnvironmentLinks";
 import { emptyLibrary } from "./emptyLibrary";
-import { synchronizeAssociationStructure } from './associationStructure';
+import { deriveAssociationContexts } from './associationStructure';
 import { associationEntities as associationDefinitions, siteAssociationEntities as associationLinks } from '../data/associations';
 import { portalChanges, portalReleases, applicationRecords, siteBuilderDrafts } from "../admin/domain";
-import { clientEntities, getClientAliasForSite, siteCoverageEntities, siteEntities, tpaEntities } from "../data";
+import { hostingAssociations, getClientAliasForSite, siteCoverageEntities, siteEntities, tpaEntities } from "../data";
 import type { AnalyticsMeasurement, ApplicationStatus, DatabaseSchema, Json } from "./types";
 
 const createdAt = "2026-09-01T12:00:00.000Z";
@@ -13,12 +13,12 @@ export function createSeedDatabase(): DatabaseSchema {
   const organizations = tpaEntities.map((tpa) => ({
     id: tpa.id, key: tpa.id, name: tpa.name, type: "tpa", status: "active" as const, createdAt, updatedAt: createdAt,
   }));
-  const clients = clientEntities.map((client) => ({
+  const associationEntities = hostingAssociations.map((client) => ({
     id: client.id, organizationId: client.tpaId, key: client.id, name: client.name, acronym: client.acronym,
-    status: "active" as const, createdAt, updatedAt: createdAt,
+    kind: "hosting" as const, status: "active" as const, createdAt, updatedAt: createdAt, deletedAt: null,
   }));
   const sites = siteEntities.map((site) => ({
-    id: site.id, clientId: site.clientId, key: site.id, name: site.name,
+    id: site.id, hostingAssociationId: site.hostingAssociationId, key: site.id, name: site.name,
     displayName: site.name, status: site.status, environment: "demo", templateType: site.templateType,
     // Database compatibility column for records created before SiteId became canonical.
     legacyClientId: getClientAliasForSite(site.id), createdAt, updatedAt: createdAt, deletedAt: null,
@@ -51,7 +51,7 @@ export function createSeedDatabase(): DatabaseSchema {
     createdAt, updatedAt: updatedAt(application.updated), deletedAt: null,
   }));
   const drafts = siteBuilderDrafts.map((draft) => ({
-    id: draft.id, clientId: clientEntities.find((client) => draft.client.includes(client.acronym))?.id ?? null,
+    id: draft.id, hostingAssociationId: hostingAssociations.find((client) => draft.client.includes(client.acronym))?.id ?? null,
     siteKey: draft.id.toLowerCase(), siteName: draft.proposedSite, status: draft.status,
     currentStep: draft.progress, draftDataJson: { clientLabel: draft.client } as Json,
     ownerId: draft.owner, createdAt, updatedAt: createdAt, deletedAt: null,
@@ -75,7 +75,7 @@ export function createSeedDatabase(): DatabaseSchema {
       id: `${metricKey}-${year}-${String(index + 1).padStart(2, "0")}`,
       metricKey, periodStart: `${year}-${String(index + 1).padStart(2, "0")}-01`,
       periodEnd: `${year}-${String(index + 1).padStart(2, "0")}-${monthEnd[index]}`,
-      periodType: "month" as const, siteId: null, clientId: null, device: null, value,
+      periodType: "month" as const, siteId: null, hostingAssociationId: null, device: null, value,
       sourceReport: report, sourceSystem: "Adobe Analytics", definitionVersion: "2026-08-31",
       notes: sourceNote, createdAt, updatedAt: createdAt,
     }))),
@@ -86,25 +86,25 @@ export function createSeedDatabase(): DatabaseSchema {
       ["application_rate", "2025", 41.8], ["application_rate", "2026", 41.7],
     ].map(([metricKey, year, value]) => ({
       id: `${metricKey}-${year}-ytd-08`, metricKey: String(metricKey), periodStart: `${year}-01-01`, periodEnd: `${year}-08-31`,
-      periodType: "ytd" as const, siteId: null, clientId: null, device: null, value: Number(value), sourceReport: report,
+      periodType: "ytd" as const, siteId: null, hostingAssociationId: null, device: null, value: Number(value), sourceReport: report,
       sourceSystem: "Adobe Analytics", definitionVersion: "2026-08-31", notes: sourceNote, createdAt, updatedAt: createdAt,
     })),
     ...[
       ["desktop", "2025", 47.3], ["desktop", "2026", 47.2], ["mobile", "2025", 34.0], ["mobile", "2026", 35.0],
     ].map(([device, year, value]) => ({
       id: `application_rate-${device}-${year}-ytd-08`, metricKey: "application_rate", periodStart: `${year}-01-01`, periodEnd: `${year}-08-31`,
-      periodType: "ytd" as const, siteId: null, clientId: null, device: device as "desktop" | "mobile", value: Number(value),
+      periodType: "ytd" as const, siteId: null, hostingAssociationId: null, device: device as "desktop" | "mobile", value: Number(value),
       sourceReport: report, sourceSystem: "Adobe Analytics", definitionVersion: "2026-08-31", notes: sourceNote, createdAt, updatedAt: createdAt,
     })),
   );
 
-  return synchronizeAssociationStructure({
+  return deriveAssociationContexts({
     ...emptyLibrary(),
-    associations: associationDefinitions.map(({ id, clientId, ...definition }, position) => ({ id, key: id, clientKey: clientId, definition, position })),
+    associations: associationDefinitions.map(({ id, hostingAssociationId, ...definition }, position) => ({ id, key: id, hostingAssociationKey: hostingAssociationId, definition, position })),
     siteAssociations: associationLinks.map(({ id, siteId, associationId, enabled }, position) => ({ id, key: id, siteKey: siteId, associationKey: associationId, enabled, position })),
     sitePolicies: siteEntities.map(({ id, associationSelection, associationBranding }, position) => ({ id, key: id, siteKey: id, definition: { associationSelection, associationBranding }, position })),
     migrationSchedules: [],
-    organizations, clients, sites,
+    organizations, associationEntities, sites,
     siteEnvironmentLinks,
     siteCoverages: siteCoverageEntities.map((item) => ({ id: item.id, siteId: item.siteId, coverageKey: item.coverageId, enabled: item.enabled, createdAt, updatedAt: createdAt })),
     siteProducts: siteCoverageEntities.map((item) => ({ id: `${item.id}--product`, siteId: item.siteId, productKey: item.coverageId, enabled: item.enabled, createdAt, updatedAt: createdAt })),

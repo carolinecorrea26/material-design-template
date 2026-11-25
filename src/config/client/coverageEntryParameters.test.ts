@@ -4,9 +4,11 @@ import { installPrototypeLibrary, resolvePrototypeLibrary } from '../../domain/p
 import { activeCoverageCategoryRestriction, coverageCategoryParameter } from './coverageCategoryScope';
 import { activeCoverageApplicantRestriction } from './coverageApplicantScope';
 import { activeFeaturedProduct, activeFirstCoverageCategory, captureCoverageAmountParameters, capturedCoverageEntryScope, restoreCoverageEntryScope, withCapturedCoverageEntryScope } from './coverageProductScope';
-import { getActiveClientCoverages } from './getActiveClientCoverages';
+import { getActiveClientCoverages, getEntryScopedCoverages } from './getActiveClientCoverages';
 import { getCoverageAmountControl, orderCoveragePresentation } from '../../domain/coveragePresentation';
 import { coveragePreselection } from '../../domain/coveragePreselection';
+import { normalizeInitialCoverageEntry } from '../../app/coverageEntryNavigation';
+import { resolveCoverageJourneyPolicy, resolveSubmissionMapping } from '../../domain/coverageJourneyPolicy';
 
 const catalog = JSON.parse(readFileSync('public/catalog/portal.json', 'utf8'));
 const library = resolvePrototypeLibrary(catalog.data, 'asce', 'test:url-contract');
@@ -36,6 +38,49 @@ it('gives explicit category precedence and treats empty scope as empty even with
   expect(enter('category=&categories=li')).toEqual([]);
   expect(enter('category=li&categories=di').every(row => row.categoryId === 'LI')).toBe(true);
   expect(enter('categories=%20ALL%20')).toHaveLength(library.products.length);
+});
+
+it('sends invalid product links to the shared 400 page before campaign capture', () => {
+  const g = term.gNumber!.primary!;
+  enter('categories=di&applicant=member');
+  const scope = capturedCoverageEntryScope('asce');
+  for (const query of [`prods=${g}`, `prods=${g}&categories=%20`, `prods=${g}&category=&categories=li`]) {
+    const url = new URL(`https://portal.example.test/preview/coverage?site=asce&${query}&apply=true`);
+    expect(normalizeInitialCoverageEntry(url, '/preview/', false)?.href).toBe('https://portal.example.test/preview/400?site=asce');
+  }
+  for (const query of ['category=li', 'categories=li,di', 'category=all']) {
+    expect(normalizeInitialCoverageEntry(new URL(`https://portal.example.test/?prods=${g}&${query}`), '/', false)).toBeNull();
+  }
+  expect(normalizeInitialCoverageEntry(new URL(`https://portal.example.test/admin-center?prods=${g}`), '/', false)).toBeNull();
+  const file = new URL(`file:///portal.html#/coverage?prods=${g}`);
+  expect(normalizeInitialCoverageEntry(file, './', true)?.href).toBe('file:///portal.html#/400');
+  expect(capturedCoverageEntryScope('asce')).toEqual(scope);
+});
+
+it('uses applicant and membership G-number variants to show one product and resolves its mapping from application facts', () => {
+  const associate = 'G-90000-2', spouse = 'G-90000-3';
+  const variant = { ...term, gNumber: { ...term.gNumber, scoped: [
+    { scope: { applicantType: 'member' as const, applicantClassId: 'associate' }, value: { primary: associate } },
+    { scope: { applicantType: 'spouse' as const }, value: { primary: spouse } },
+  ] } };
+  const offering = { ...library, products: library.products.map(product => product.id === term.id ? variant : product) };
+  for (const g of [associate, spouse, `${associate},${spouse}`]) {
+    window.history.replaceState(null, '', `/?site=asce&category=li&prods=${g}`);
+    expect(getEntryScopedCoverages(offering).map(product => ({ id: product.id, applicants: product.applicants }))).toEqual([
+      { id: term.id, applicants: term.applicants },
+    ]);
+  }
+  const original = resolveCoverageJourneyPolicy(library.site, term.id)!;
+  const policy = {
+    ...original,
+    mappings: original.mappings.filter(row => row.when.mode === 'new').map(row => row.when.applicantKey === 'member'
+      ? { ...row, when: { ...row.when, applicantClass: 'associate' }, identifiers: { ...row.identifiers, gNumber: { ...row.identifiers.gNumber, display: associate, issue: 'G-90000-0' } } }
+      : row),
+  };
+  expect(resolveSubmissionMapping(policy, { mode: 'new', applicantKey: 'member' }).status).toBe('needs-information');
+  expect(resolveSubmissionMapping(policy, { mode: 'new', applicantKey: 'member', applicantClass: 'associate' })).toMatchObject({
+    status: 'resolved', mapping: { identifiers: { gNumber: { display: associate, issue: 'G-90000-0' } } },
+  });
 });
 
 it('starts an alias campaign without carrying previous products, people, amounts, locks or ordering', () => {

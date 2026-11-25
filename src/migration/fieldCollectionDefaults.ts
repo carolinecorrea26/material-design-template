@@ -27,7 +27,7 @@ export function migrateFieldCollectionData(data: EffectiveSiteData) {
   const existing = data.configurationDefinitions.filter(row => row.definition.path?.join('.') === 'fieldCollections');
   if (existing.length) return changes;
   data.configurationDefinitions.push({ ...meta('configurationDefinitions', key), position: data.configurationDefinitions.length, definition: { path: ['fieldCollections'], metadata: null } });
-  data.configurationValues.push({ ...meta('configurationValues', `global.${key}`), position: 0, configurationKey: key, scope: 'global', clientKey: null, siteKey: null, value: definitions as unknown as Json });
+  data.configurationValues.push({ ...meta('configurationValues', `global.${key}`), position: 0, configurationKey: key, scope: 'global', hostingAssociationKey: null, siteKey: null, value: definitions as unknown as Json });
   changes.push(`configurationDefinitions:${key}`, `configurationValues:global.${key}`);
   return changes;
 }

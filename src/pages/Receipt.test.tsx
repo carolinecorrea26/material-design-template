@@ -97,7 +97,7 @@ it("keeps document actions as placeholders and has no forward or back navigation
   await act(async () => buttons.find(button => button.textContent === "Application PDF")!.click());
   await act(async () => buttons.find(button => button.textContent === "Payment PDF")!.click());
   expect(downloadApplicationPdf).not.toHaveBeenCalled();
-  expect(document.body.textContent).toContain("Document downloads are placeholders in this prototype.");
+  expect(document.body.textContent).toContain("Document downloads are currently unavailable.");
   expect(container.querySelectorAll("h1")).toHaveLength(1);
   const notice = [...container.querySelectorAll('.MuiAlert-standardInfo')].find(alert => alert.textContent?.includes(receiptDefaults.whatHappensNext.title))!;
   expect(notice.textContent).toContain(receiptDefaults.paymentNotice);

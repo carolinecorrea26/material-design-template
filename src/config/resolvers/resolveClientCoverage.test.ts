@@ -25,8 +25,8 @@ describe("resolveClientCoverage", () => {
 
   it("inherited: an enabled coverage with no client range/override/description", () => {
     const minimalClient = {
-      ...clients.demo,
-      coverages: { ...clients.demo.coverages, coverageAmounts: {}, overrides: {}, descriptions: {} },
+      ...associationEntities.demo,
+      coverages: { ...associationEntities.demo.coverages, coverageAmounts: {}, overrides: {}, descriptions: {} },
     };
     const resolved = resolveClientCoverage(minimalClient);
     const liTerm = resolved.find((c) => c.id === "li-term");
@@ -64,11 +64,11 @@ describe("resolveClientCoverage", () => {
 
   it("resolves scoped identifiers through the normal client override path", () => {
     const client: ClientConfig = {
-      ...clients.demo,
+      ...associationEntities.demo,
       coverages: {
-        ...clients.demo.coverages,
+        ...associationEntities.demo.coverages,
         overrides: {
-          ...clients.demo.coverages.overrides,
+          ...associationEntities.demo.coverages.overrides,
           "li-term": {
             gNumber: {
               primary: "G-DEFAULT",

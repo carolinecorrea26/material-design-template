@@ -1,4 +1,4 @@
-import type { ClientEntityId } from "./organizations";
+import type { HostingAssociationId } from "./organizations";
 import type { SiteId } from "./sites";
 import type { FieldId } from "./fields";
 
@@ -35,6 +35,6 @@ export type RuleDefinition = {
   type?: "behavioral" | "conditional";
   scope?: "global" | "client" | "site";
   conditionIds?: ConditionId[];
-  clientIds?: ClientEntityId[];
+  clientIds?: HostingAssociationId[];
   siteIds?: SiteId[];
 };

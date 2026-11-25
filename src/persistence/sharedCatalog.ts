@@ -15,6 +15,12 @@ export type SharedCatalog = CatalogScope & {
 };
 export const sharedCatalogPath = 'catalog/portal.json';
 
+export class PublishedCatalogMismatchError extends Error {
+  constructor() {
+    super('The published Library catalog does not match this Portal build.');
+  }
+}
+
 /** A public configuration catalog, with no operational or account tables. */
 export function validateSharedCatalog(value: unknown): SharedCatalog {
   const catalog = value as SharedCatalog;
@@ -46,16 +52,23 @@ export function prototypeCatalogData(catalog: SharedCatalog) {
 }
 
 /** One fetch per document load keeps the prototype and Library on one revision. */
-export function createSharedCatalogReader(fetcher: typeof fetch, baseUrl: string, database = false) {
+export function createSharedCatalogReader(fetcher: typeof fetch, baseUrl: string, databaseCatalogHash?: string) {
   let pending: Promise<SharedCatalog & { revision: string }> | undefined;
   return () => pending ??= (async () => {
+    const database = databaseCatalogHash !== undefined;
     const response = await fetcher(database ? '/api/portal/catalog' : `${baseUrl}${sharedCatalogPath}`, { cache: 'no-cache' });
     if (!response.ok) throw new Error(`Shared JSON catalog unavailable (${response.status}).`);
     if (database) {
       const revision = response.headers.get('X-Portal-Catalog-Revision');
       if (!revision || !/^postgres:v1:sha256:[a-f0-9]{64}$/.test(revision) || !response.body) throw new Error('Invalid database catalog revision.');
+      if (revision !== `postgres:v1:sha256:${databaseCatalogHash}`) throw new PublishedCatalogMismatchError();
       const content = new Response(response.body.pipeThrough(new DecompressionStream('gzip')));
-      return { ...validateSharedCatalog(await content.json()), revision };
+      const bytes = await content.arrayBuffer();
+      const hash = await crypto.subtle.digest('SHA-256', bytes);
+      if (Array.from(new Uint8Array(hash), byte => byte.toString(16).padStart(2, '0')).join('') !== databaseCatalogHash) {
+        throw new PublishedCatalogMismatchError();
+      }
+      return { ...validateSharedCatalog(JSON.parse(new TextDecoder().decode(bytes))), revision };
     }
     const catalog = validateSharedCatalog(await response.json());
     return { ...catalog, revision: await localSnapshotRevision({ ...catalog.data, analyticsTags: catalog.analyticsTags }) };
@@ -68,5 +81,5 @@ export const readSharedCatalog = createSharedCatalogReader(
     ? async () => new Response(embeddedCatalog.textContent, { headers: { 'Content-Type': 'application/json' } })
     : (...args) => fetch(...args),
   import.meta.env.BASE_URL,
-  !embeddedCatalog && portalDatabaseEnabled,
+  !embeddedCatalog && portalDatabaseEnabled ? import.meta.env.PORTAL_CATALOG_SHA256 ?? '' : undefined,
 );

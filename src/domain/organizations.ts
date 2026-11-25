@@ -1,13 +1,13 @@
 import type { ClientConfig, ClientBranding, ClientSupport } from "./configuration";
 
-export type ClientEntityId = string;
+export type HostingAssociationId = string;
 export type TpaId = string;
 export type ClientConfigurationDefaults = Omit<
   ClientConfig,
   "id" | "branding" | "support"
 >;
-export type Client = {
-  id: ClientEntityId;
+export type HostingAssociation = {
+  id: HostingAssociationId;
   tpaId: TpaId;
   name: string;
   acronym: string;
@@ -21,7 +21,7 @@ export type Tpa = {
   acronym?: string;
   branding?: Partial<ClientBranding>;
   support?: ClientSupport & { contactName?: string };
-  administrationContacts?: { clientKey: string; details: string; source: string }[];
+  administrationContacts?: { hostingAssociationKey: string; details: string; source: string }[];
   /** Compatibility TPAs require confirmation from the business data owner. */
   provisional?: boolean;
 };

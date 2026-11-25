@@ -6,7 +6,7 @@ import { resumePolicy } from './resumePolicy.mjs';
 import { applicationSessionPolicy } from './applicationSessionPolicy.mjs';
 import { validateRecoveryDefinition } from './recoveryDefinition.mjs';
 import { compileCoveragePolicies } from "./requirementCoveragePolicies.mjs";
-import { resolveMappedFields, resolveAnswerKey } from './requirementFieldDefinitions.mjs';
+import { createMappedFieldResolver, resolveAnswerKey } from './requirementFieldDefinitions.mjs';
 import { libraryMetadata } from './provenance.ts';
 import { parseCoverageAssignments } from './requirementCoverageValidation.mjs';
 import { compileProductCatalog } from './requirementProductCatalog.mjs';
@@ -15,7 +15,7 @@ import { requirementPageSections, validateRequirementOutcomeCondition, validateR
 import { requirementSurfaceFields } from './requirementSurfaceFields.mjs';
 
 const answerKey = (field, person) => person === 'self' ? field : `${person}-${field}`;
-const scoped = (siteKey, extra) => ({ scope: 'site', siteKey, clientKey: null, ...extra });
+const scoped = (siteKey, extra) => ({ scope: 'site', siteKey, hostingAssociationKey: null, ...extra });
 const row = (table, key, sourceReference, extra) => ({ id: key, key, ...libraryMetadata(table, key, sourceReference), ...extra });
 const projectedConfigurationValue = (configuration, value) => configuration.runtimeValues ? configuration.runtimeValues[value] : value;
 
@@ -35,6 +35,7 @@ const sectionConditions = (when, fieldKey = answerKey) => {
 export function compileRequirementCatalog(data, source, selectedSite, siteScope) {
   data = compileApplicationSiteIdentities(data, source, selectedSite, siteScope);
   source = { ...source, content: resolveContentReferences(source.content, source.contentReferences), fields: { ...source.fields, pageMappings: Object.fromEntries(Object.values(source.pages).filter(page => page.fieldMapping).map(page => [page.page, page.fieldMapping])) } };
+  const mappedFields = createMappedFieldResolver(source.fields);
   const validateDecisionCopy = (key, value) => {
     if (/^receipt\.decision-statuses\.[^.]+\.description$/.test(key) && (typeof value !== 'string' || /\{\{/.test(value))) throw new Error(`Receipt decision descriptions must be literal configured copy: ${key}`);
   };
@@ -46,8 +47,8 @@ export function compileRequirementCatalog(data, source, selectedSite, siteScope)
   // Enrolled Sites reconstruct their complete configuration from authored
   // defaults and assignments. Saved client/Site configuration is superseded.
   const siteKeys = new Set(sites.map(site => site.key));
-  const clientKeys = new Set(data.clients.filter(client => sites.some(site => site.clientId === client.id)).map(client => client.key));
-  data = { ...data, configurationValues: data.configurationValues.filter(value => !(value.scope === 'site' && siteKeys.has(value.siteKey) || value.scope === 'client' && clientKeys.has(value.clientKey))) };
+  const clientKeys = new Set(data.associationEntities.filter(client => sites.some(site => site.hostingAssociationId === client.id)).map(client => client.key));
+  data = { ...data, configurationValues: data.configurationValues.filter(value => !(value.scope === 'site' && siteKeys.has(value.siteKey) || value.scope === 'association' && clientKeys.has(value.hostingAssociationKey))) };
   data = compileProductCatalog(data, source, sites);
   data = compileApplicationCatalog(data, source, sites);
   const pages = Object.values(source.pages).filter(page => page.definition && page.layout);
@@ -91,13 +92,14 @@ export function compileRequirementCatalog(data, source, selectedSite, siteScope)
   output.pages = output.pages.filter(record => !retiredPages.has(record.key));
   for (const table of ['sitePages', 'pageFields', 'pageSections', 'siteFieldConfigurations']) output[table] = output[table].filter(record => !retiredPages.has(record.pageKey));
   output.pageSectionFields = output.pageSectionFields.filter(record => !retiredSections.has(record.sectionKey));
+  const boundContent = new Set(Object.values(source.contentBindings).flat());
   const retiredContentKeys = new Set(pages.flatMap(page => {
     const keys = page.retiredContentKeys ?? [];
-    const active = new Set(Object.values(source.contentBindings).flat());
-    if (!Array.isArray(keys) || keys.some(key => typeof key !== 'string' || !key.trim() || active.has(key)) || new Set(keys).size !== keys.length) throw new Error(`Invalid retired page content: ${page.page}`);
+    if (!Array.isArray(keys) || keys.some(key => typeof key !== 'string' || !key.trim() || boundContent.has(key)) || new Set(keys).size !== keys.length) throw new Error(`Invalid retired page content: ${page.page}`);
     return keys;
   }));
-  const retiredContent = key => retiredContentKeys.has(key) || [...source.recovery.retiredContentRoots, ...[...retiredPages].map(page => `pages.${page}`)].some(root => key === root || key.startsWith(`${root}.`));
+  const retiredContentRoots = [...source.recovery.retiredContentRoots, ...[...retiredPages].map(page => `pages.${page}`)];
+  const retiredContent = key => retiredContentKeys.has(key) || retiredContentRoots.some(root => key === root || key.startsWith(`${root}.`));
   output.contentEntries = output.contentEntries.filter(record => !retiredContent(record.key));
   output.contentValues = output.contentValues.filter(record => !retiredContent(record.contentKey));
   const retiredComponents = new Set([...source.recovery.retiredComponentKeys, ...pages.flatMap(page => {
@@ -160,13 +162,13 @@ export function compileRequirementCatalog(data, source, selectedSite, siteScope)
     if (value === undefined) throw new Error(`Missing fresh-start content: ${key}`);
     return structuredClone(value);
   };
-  const clientKey = site => data.clients.find(client => client.id === site.clientId)?.key;
+  const hostingAssociationKey = site => data.associationEntities.find(client => client.id === site.hostingAssociationId)?.key;
   const setConfiguration = (site, path, value, reference) => {
     const matches = output.configurationDefinitions.filter(row => row.definition.path?.join('.') === path);
     if (matches.length > 1) throw new Error(`Ambiguous fresh-start configuration path: ${path}`);
     const key = matches[0]?.key ?? `requirements.${path}`;
     if (!matches.length) output.configurationDefinitions.push(row('configurationDefinitions', key, reference, { position: output.configurationDefinitions.length, definition: { path: path.split('.') } }));
-    output.configurationValues = output.configurationValues.filter(value => value.configurationKey !== key || !(value.siteKey === site.key || value.scope === 'client' && value.clientKey === clientKey(site)));
+    output.configurationValues = output.configurationValues.filter(value => value.configurationKey !== key || !(value.siteKey === site.key || value.scope === 'association' && value.hostingAssociationKey === hostingAssociationKey(site)));
     const valueKey = `requirements.${site.key}.${path}`;
     output.configurationValues.push(row('configurationValues', valueKey, reference, scoped(site.key, { configurationKey: key, value: structuredClone(value), position: 0 })));
   };
@@ -180,7 +182,7 @@ export function compileRequirementCatalog(data, source, selectedSite, siteScope)
     if (owner) contentOwners.set(key, canonicalContentKey(owner, source.contentReferences));
     output.contentEntries = output.contentEntries.filter(entry => entry.key !== key);
     output.contentEntries.push(row('contentEntries', key, reference, { position: output.contentEntries.length, definition: { path: key.split('.') } }));
-    output.contentValues = output.contentValues.filter(entry => entry.contentKey !== key || !(entry.scope === 'global' || entry.siteKey === site.key || entry.scope === 'client' && entry.clientKey === clientKey(site)));
+    output.contentValues = output.contentValues.filter(entry => entry.contentKey !== key || !(entry.scope === 'global' || entry.siteKey === site.key || entry.scope === 'association' && entry.hostingAssociationKey === hostingAssociationKey(site)));
     const identity = `requirements.${site.key}.${key}`;
     output.contentValues.push(row('contentValues', identity, reference, scoped(site.key, { contentKey: key, value, position: output.contentValues.length })));
   };
@@ -195,7 +197,7 @@ export function compileRequirementCatalog(data, source, selectedSite, siteScope)
   if (!questionDefinitions.length) output.configurationDefinitions.push(row('configurationDefinitions', questionKey, questionReference, { definition: { path: questionPath.split('.') }, position: output.configurationDefinitions.length }));
   const authoredQuestionSites = new Set(sites.filter(site => [...(source.siteApplication[site.key]?.records.configurationValues ?? []), ...(source.siteProducts[site.key]?.catalog?.configurationValues ?? [])].some(value => value.configurationKey === questionKey)).map(site => site.key));
   output.configurationValues = output.configurationValues.filter(record => record.configurationKey !== questionKey || record.scope === 'site' && authoredQuestionSites.has(record.siteKey));
-  output.configurationValues.push(row('configurationValues', `requirements.global.${questionPath}`, questionReference, { configurationKey: questionKey, scope: 'global', siteKey: null, clientKey: null, value: structuredClone(source.coverageQuestions), position: 0 }));
+  output.configurationValues.push(row('configurationValues', `requirements.global.${questionPath}`, questionReference, { configurationKey: questionKey, scope: 'global', siteKey: null, hostingAssociationKey: null, value: structuredClone(source.coverageQuestions), position: 0 }));
 
   // Page-owned dialog surfaces use the same consumer contract as shared tools.
   // Materialize global placement before any Site configuration is composed, so
@@ -242,7 +244,7 @@ export function compileRequirementCatalog(data, source, selectedSite, siteScope)
     const collections = structuredClone(defaults[0].value);
     for (const { page, group } of repeatingSections) {
       const person = group.for ?? 'self';
-      const fields = resolveMappedFields(page.fieldMapping, { person, page: page.page, includeAll: true, source: source.fields }).filter(field => group.remaining || group.fields?.includes(field.id));
+      const fields = mappedFields(page.fieldMapping, { person, page: page.page, includeAll: true }).filter(field => group.remaining || group.fields?.includes(field.id));
       const maxItems = source.configurations.find(configuration => configuration.id === group.repeats.max)?.default;
       if (!Number.isSafeInteger(maxItems) || maxItems < 1 || maxItems > 100) throw new Error('Invalid fresh-start repeated list maximum');
       const keyFor = id => resolveAnswerKey(id, person, page.answerKeyPatterns);
@@ -280,7 +282,7 @@ export function compileRequirementCatalog(data, source, selectedSite, siteScope)
   }
   const handoffKey = 'prototype-handoffs';
   const containers = new Set(output.configurationDefinitions.filter(record => ['fieldSurfaces', 'fieldCollections'].includes(record.definition.path?.join('.'))).map(record => record.key));
-  output.configurationValues = output.configurationValues.filter(record => !containers.has(record.configurationKey) || record.scope === 'global' || !sites.some(site => record.siteKey === site.key || record.scope === 'client' && record.clientKey === clientKey(site)));
+  output.configurationValues = output.configurationValues.filter(record => !containers.has(record.configurationKey) || record.scope === 'global' || !sites.some(site => record.siteKey === site.key || record.scope === 'association' && record.hostingAssociationKey === hostingAssociationKey(site)));
   const handoffReference = 'requirements/global/prototype-fixtures/handoffs.json';
   const handoffDefaults = validatePrototypeHandoffs(source.prototypeHandoffs);
   const handoffDefinition = source.application.records.configurationDefinitions.find(entry => entry.key === handoffKey);
@@ -289,8 +291,9 @@ export function compileRequirementCatalog(data, source, selectedSite, siteScope)
   output.configurationDefinitions = output.configurationDefinitions.filter(entry => !handoffKeys.has(entry.key));
   output.configurationDefinitions.push(row('configurationDefinitions', handoffKey, 'requirements/global/application.json#configurationDefinitions/prototype-handoffs', { position: handoffDefinition.position, definition: structuredClone(handoffDefinition.definition) }));
   output.configurationValues = output.configurationValues.filter(entry => !handoffKeys.has(entry.configurationKey));
-  output.configurationValues.push(row('configurationValues', 'global.prototype-handoffs', handoffReference, { configurationKey: handoffKey, scope: 'global', siteKey: null, clientKey: null, value: structuredClone(handoffDefaults), position: 0 }));
+  output.configurationValues.push(row('configurationValues', 'global.prototype-handoffs', handoffReference, { configurationKey: handoffKey, scope: 'global', siteKey: null, hostingAssociationKey: null, value: structuredClone(handoffDefaults), position: 0 }));
   for (const site of sites) setConfiguration(site, 'prototypeHandoffs', { ...handoffDefaults, ...validatePrototypeHandoffs(source.sitePrototypeHandoffs[site.key] ?? {}, true) }, `requirements/parked/sites/${site.key}/prototype-handoffs.json`);
+  const authoredFieldKeys = new Set(source.fields.mappings.flatMap(mapping => (mapping.fields ?? []).flatMap(field => field.people.map(person => answerKey(field.field, person)))));
   for (const page of pages) {
     if (Object.hasOwn(page, 'fieldBindings') || Object.hasOwn(page, 'looseFields')) throw new Error(`Retired fresh-start page bindings are not supported: ${page.page}`);
     const requirementKey = page.page;
@@ -307,12 +310,12 @@ export function compileRequirementCatalog(data, source, selectedSite, siteScope)
       }
     }
     for (const root of page.contentRoots ?? []) {
-      output.contentValues = output.contentValues.filter(value => !value.contentKey.startsWith(`${root}.`) || !(value.scope === 'global' || sites.some(site => value.siteKey === site.key || value.scope === 'client' && value.clientKey === clientKey(site))));
+      output.contentValues = output.contentValues.filter(value => !value.contentKey.startsWith(`${root}.`) || !(value.scope === 'global' || sites.some(site => value.siteKey === site.key || value.scope === 'association' && value.hostingAssociationKey === hostingAssociationKey(site))));
       output.contentEntries = output.contentEntries.filter(value => !value.key.startsWith(`${root}.`));
     }
     // A reviewed page owns its whole content object, including the absence of an
     // old note. Unknown properties from an earlier snapshot cannot leak back in.
-    output.contentValues = output.contentValues.filter(value => !value.contentKey.startsWith(`pages.${pageKey}.`) || !(value.scope === 'global' || sites.some(site => value.siteKey === site.key || value.scope === 'client' && value.clientKey === clientKey(site))));
+    output.contentValues = output.contentValues.filter(value => !value.contentKey.startsWith(`pages.${pageKey}.`) || !(value.scope === 'global' || sites.some(site => value.siteKey === site.key || value.scope === 'association' && value.hostingAssociationKey === hostingAssociationKey(site))));
     output.contentEntries = output.contentEntries.filter(value => !value.key.startsWith(`pages.${pageKey}.`));
     const sectionKeys = new Set(output.pageSections.filter(section => section.pageKey === pageKey).map(section => section.key));
     output.pages = output.pages.filter(row => row.key !== pageKey);
@@ -345,7 +348,7 @@ export function compileRequirementCatalog(data, source, selectedSite, siteScope)
     const used = new Set();
     const groups = [];
     const sharedByPerson = Object.fromEntries(['self', 'spouse', 'child'].map(person => [person,
-      new Map(page.fieldMapping ? resolveMappedFields(page.fieldMapping, { page: requirementKey, person, includeAll: true, source: source.fields }).map(field => [field.id, field]) : [])]));
+      new Map(page.fieldMapping ? mappedFields(page.fieldMapping, { page: requirementKey, person, includeAll: true }).map(field => [field.id, field]) : [])]));
     const allByPerson = Object.fromEntries(['self', 'spouse', 'child'].map(person => [person, [...sharedByPerson[person].values()]]));
     const pageGroups = requirementPageSections(page, source.sectionOrders);
     for (const rule of page.shownWhen?.fields ?? []) {
@@ -357,7 +360,7 @@ export function compileRequirementCatalog(data, source, selectedSite, siteScope)
       if (!sharedByPerson.self.has(rule.field) || !group || !group.remaining && !(group.fields ?? []).includes(owner ?? rule.field) || fieldConditions.has(rule.field)) throw new Error(`Invalid fresh-start field visibility: ${pageKey}/${rule.field}`);
       const key = outcomeCondition(rule.shownWhen, `condition-requirements-${pageKey}-field-${rule.field}`);
       fieldConditions.set(rule.field, key);
-      output.siteFieldConfigurations.push(row('siteFieldConfigurations', `requirements.global.${pageKey}.${rule.field}`, reference, { scope: 'global', siteKey: null, clientKey: null, pageKey, fieldKey: rule.field, include: null, hidden: null, values: { visibilityConditionId: key }, position: fieldConditions.size }));
+      output.siteFieldConfigurations.push(row('siteFieldConfigurations', `requirements.global.${pageKey}.${rule.field}`, reference, { scope: 'global', siteKey: null, hostingAssociationKey: null, pageKey, fieldKey: rule.field, include: null, hidden: null, values: { visibilityConditionId: key }, position: fieldConditions.size }));
     }
     for (const binding of page.fieldVisibility ?? []) {
       const group = page.layout.sections[binding.section];
@@ -366,11 +369,10 @@ export function compileRequirementCatalog(data, source, selectedSite, siteScope)
       if (!group || !sharedByPerson[person].has(binding.field) || !(group.fields ?? []).includes(binding.field) || fieldConditions.has(id)) throw new Error(`Invalid fresh-start field visibility: ${pageKey}/${id}`);
       const key = `condition-requirements-${pageKey}-field-${id}`;
       const predicates = [...(group.when ? sectionConditions(group.when, pageAnswerKey) : []), ...sectionConditions(binding.when, pageAnswerKey)];
-      const authoredKeys = new Set(source.fields.mappings.flatMap(mapping => (mapping.fields ?? []).flatMap(field => field.people.map(person => answerKey(field.field, person)))));
-      if (predicates.some(predicate => !authoredKeys.has(predicate.fieldId))) throw new Error(`Unmapped fresh-start field predicate: ${pageKey}/${id}`);
+      if (predicates.some(predicate => !authoredFieldKeys.has(predicate.fieldId))) throw new Error(`Unmapped fresh-start field predicate: ${pageKey}/${id}`);
       output.conditions.push(row('conditions', key, reference, { position: output.conditions.length, definition: { id: key, match: 'all', conditions: predicates } }));
       fieldConditions.set(id, key);
-      output.siteFieldConfigurations.push(row('siteFieldConfigurations', `requirements.global.${pageKey}.${id}`, reference, { scope: 'global', siteKey: null, clientKey: null, pageKey, fieldKey: id, include: null, hidden: null, values: { visibilityConditionId: key }, position: fieldConditions.size }));
+      output.siteFieldConfigurations.push(row('siteFieldConfigurations', `requirements.global.${pageKey}.${id}`, reference, { scope: 'global', siteKey: null, hostingAssociationKey: null, pageKey, fieldKey: id, include: null, hidden: null, values: { visibilityConditionId: key }, position: fieldConditions.size }));
     }
     for (const [name, group] of pageGroups) {
       if (!group.id) continue;
@@ -429,10 +431,10 @@ export function compileRequirementCatalog(data, source, selectedSite, siteScope)
       const siteReference = `requirements/parked/sites/${site.key}/pages/${requirementKey}.json`;
       output.sitePages = output.sitePages.filter(row => row.siteKey !== site.key || row.pageKey !== pageKey);
       output.sitePages.push(row('sitePages', `${site.key}.${pageKey}`, reference, { siteKey: site.key, pageKey: pageKey, requirement: sitePage.requirement ?? source.pageDefaults.pages[requirementKey].requirement, position: page.position }));
-      output.siteFieldConfigurations = output.siteFieldConfigurations.filter(row => row.pageKey !== pageKey || !(row.siteKey === site.key || row.scope === 'client' && row.clientKey === clientKey(site)));
+      output.siteFieldConfigurations = output.siteFieldConfigurations.filter(row => row.pageKey !== pageKey || !(row.siteKey === site.key || row.scope === 'association' && row.hostingAssociationKey === hostingAssociationKey(site)));
       const coveredPeople = effectiveRequirementConfiguration(site, 'site-people');
       if (!Array.isArray(coveredPeople) || !coveredPeople.includes('self') || coveredPeople.some(person => !['self', 'spouse', 'child'].includes(person))) throw new Error(`Invalid fresh-start covered people: ${site.key}`);
-      const available = Object.fromEntries(['self', 'spouse', 'child'].map(person => [person, new Map(page.fieldMapping ? resolveMappedFields(page.fieldMapping, { page: requirementKey, person, siteId: site.key, source: source.fields }).filter(() => requirementKey !== 'eligibility' || coveredPeople.includes(person)).flatMap(field => { const resolved = field.id === 'dependents' ? { ...field, options: field.options.filter(option => coveredPeople.includes(option.value)) } : field; return field.id === 'dependents' && !resolved.options.length ? [] : [[field.id, resolved]]; }) : [])]));
+      const available = Object.fromEntries(['self', 'spouse', 'child'].map(person => [person, new Map(page.fieldMapping ? mappedFields(page.fieldMapping, { page: requirementKey, person, siteId: site.key }).filter(() => requirementKey !== 'eligibility' || coveredPeople.includes(person)).flatMap(field => { const resolved = field.id === 'dependents' ? { ...field, options: field.options.filter(option => coveredPeople.includes(option.value)) } : field; return field.id === 'dependents' && !resolved.options.length ? [] : [[field.id, resolved]]; }) : [])]));
       for (const { name, group, fields } of groups) for (const base of fields) {
         const person = group.for ?? 'self', id = pageAnswerKey(base.id, person);
         if (group.enabledByConfiguration && source.configurations.find(configuration => configuration.id === group.enabledByConfiguration)?.type !== 'boolean') throw new Error(`Invalid fresh-start section configuration: ${pageKey}/${name}`);
@@ -518,7 +520,7 @@ export function compileRequirementCatalog(data, source, selectedSite, siteScope)
           if (typeof wording !== 'string' || !wording.trim()) throw new Error(`Invalid product note text: ${site.key}/${pageKey}/${productKey}`);
           return { productKeys: [productKey], applicants: [...note.applicants], text: wording, sourceReferences: [...note.sourceReferences] };
         });
-        output.configurationValues = output.configurationValues.filter(value => value.configurationKey !== configurationKey || !(value.siteKey === site.key || value.scope === 'client' && value.clientKey === clientKey(site)));
+        output.configurationValues = output.configurationValues.filter(value => value.configurationKey !== configurationKey || !(value.siteKey === site.key || value.scope === 'association' && value.hostingAssociationKey === hostingAssociationKey(site)));
         if (notes.length) output.configurationValues.push(row('configurationValues', `${site.key}.${pageKey}-notes`, siteReference, scoped(site.key, { configurationKey, value: { version: 1, notes }, position: 0 })));
       }
       if (sitePage.note ?? page.note) setContent(site, `pages.${pageKey}.infoNote`, text(sitePage.note ?? page.note, site.key), siteReference, sitePage.note ?? page.note);
@@ -561,7 +563,7 @@ export function compileRequirementCatalog(data, source, selectedSite, siteScope)
     } }));
     output.configurationValues = output.configurationValues.filter(record => record.configurationKey !== key || !configuration.globalOnly && record.scope !== 'global');
     if (configuration.runtimeValues && (configuration.type !== 'enum' || configuration.options.some(value => typeof configuration.runtimeValues[value] !== 'string') || Object.keys(configuration.runtimeValues).some(value => !configuration.options.includes(value)))) throw new Error(`Invalid fresh-start configuration projection: ${id}`);
-    output.configurationValues.push(row('configurationValues', `requirements.global.${target}`, 'requirements/global/configuration-bindings.json', { configurationKey: key, scope: 'global', siteKey: null, clientKey: null, value: structuredClone(projectedConfigurationValue(configuration, configuration.default)), position: 0 }));
+    output.configurationValues.push(row('configurationValues', `requirements.global.${target}`, 'requirements/global/configuration-bindings.json', { configurationKey: key, scope: 'global', siteKey: null, hostingAssociationKey: null, value: structuredClone(projectedConfigurationValue(configuration, configuration.default)), position: 0 }));
   }
   for (const site of sites) {
     resumePolicy(recoveryDefinitions, definition => effectiveRequirementConfiguration(site, definition.id));
@@ -588,7 +590,7 @@ export function compileRequirementCatalog(data, source, selectedSite, siteScope)
         if (effectiveRequirementConfiguration(site, 'tpa-integration') !== 'none') {
           const lookupPage = source.pages.eligibility;
           const available = new Set(pages.filter(page => page.definition.type === 'form' && page.definition.flow === lookupPage.definition.flow && page.position <= lookupPage.position)
-            .flatMap(page => page.fieldMapping ? resolveMappedFields(page.fieldMapping, { page: page.page, siteId: site.key, person: 'self', source: source.fields }) : []).map(field => field.id));
+            .flatMap(page => page.fieldMapping ? mappedFields(page.fieldMapping, { page: page.page, siteId: site.key, person: 'self' }) : []).map(field => field.id));
           if (value.some(field => !available.has(field))) throw new Error(`Unavailable fresh-start TPA lookup field: ${site.key}`);
           const signatures = new Set();
           for (const record of source.siteEligibility[site.key]?.tpa?.prototypeRecords ?? []) {
@@ -618,7 +620,7 @@ export function compileRequirementCatalog(data, source, selectedSite, siteScope)
       const values = { ...base, ...copy };
       output.products = output.products.map(row => row.key === definition.id ? { ...row, definition: values, sourceReference: 'requirements/global/products.json' } : row);
       const presentationKeys = new Set(output.configurationDefinitions.filter(row => row.definition.target?.kind === 'product-presentation' && row.definition.target.productKey === definition.id && (Object.hasOwn(copy, row.definition.target.property) || row.definition.target.property === 'brochureUrl')).map(row => row.key));
-      output.configurationValues = output.configurationValues.filter(row => !presentationKeys.has(row.configurationKey) || !(row.scope === 'global' || row.siteKey === site.key || row.clientKey === clientKey(site)));
+      output.configurationValues = output.configurationValues.filter(row => !presentationKeys.has(row.configurationKey) || !(row.scope === 'global' || row.siteKey === site.key || row.hostingAssociationKey === hostingAssociationKey(site)));
       // Site brochure links remain scoped values. A second enrolled site must
       // never overwrite the first site's product presentation in the shared row.
       for (const [property, value] of Object.entries(source.siteProducts[site.key]?.products[definition.id] ?? {})) {
@@ -660,7 +662,7 @@ export function compileRequirementCatalog(data, source, selectedSite, siteScope)
   output.contentValues = output.contentValues.filter(entry => entry.scope !== 'global' || !globalContent.has(entry.contentKey));
   for (const [key, { value, reference }] of globalContent) {
     output.contentEntries.push(row('contentEntries', key, reference, { position: output.contentEntries.length, definition: { path: key.split('.') } }));
-    output.contentValues.push(row('contentValues', `requirements.global.${key}`, reference, { scope: 'global', siteKey: null, clientKey: null, contentKey: key, value: structuredClone(value), position: output.contentValues.length }));
+    output.contentValues.push(row('contentValues', `requirements.global.${key}`, reference, { scope: 'global', siteKey: null, hostingAssociationKey: null, contentKey: key, value: structuredClone(value), position: output.contentValues.length }));
   }
   output.contentEntries = output.contentEntries.map(entry => contentOwners.has(entry.key)
     ? { ...entry, definition: { ...entry.definition, sourceKey: contentOwners.get(entry.key) } } : entry);

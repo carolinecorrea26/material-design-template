@@ -7,8 +7,8 @@ it('preserves every bundled record across separate entity files', () => {
   const parts = readCatalogParts();
   expect(activeCatalog(parts)).toEqual(saved());
   const groups = {
-    tpas: ['organizations', 'organizationProfiles'], clients: ['clients', 'supportProfiles'],
-    associations: ['associations', 'associationEntities', 'associationAliases', 'associationAffiliations'],
+    tpas: ['organizations', 'organizationProfiles'],
+    associations: ['associations', 'associationEntities', 'associationAliases', 'associationAffiliations', 'supportProfiles'],
     sites: ['sites', 'siteEnvironmentLinks', 'siteAssociations', 'siteAssociationContexts'],
   };
   for (const [file, tables] of Object.entries(groups)) {

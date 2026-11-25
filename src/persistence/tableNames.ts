@@ -122,7 +122,7 @@ export const tableNames: Record<TableName, string> = {
   siteDocuments: "site_documents",
   sitePolicies: "site_policies",
   siteEnvironmentLinks: "site_environment_links",
-  organizations: "organizations", clients: "clients", sites: "sites", siteCoverages: "site_coverages",
+  organizations: "organizations", sites: "sites", siteCoverages: "site_coverages",
   siteProducts: "site_products", siteRiders: "site_riders", siteConfigurations: "site_configurations",
   applications: "applications", applicationParticipants: "application_participants", applicationEvents: "application_events",
   applicants: "applicants", applicationApplicants: "application_applicants", applicationAssociations: "application_associations",

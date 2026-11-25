@@ -2,10 +2,10 @@ import { canonicalSiteKey } from '../domain/siteIdentity.mjs';
 import { mergeConfiguration } from "./compatibility";
 import type { ClientConfig } from "../config/clients/types";
 import type { ClientId } from "../types";
-import type { Association, AssociationId, Client, Site, SiteAssociation, SiteCoverage, SiteId, Tpa, TpaId } from "../data/model";
+import type { Association, AssociationId, HostingAssociation, Site, SiteAssociation, SiteCoverage, SiteId, Tpa, TpaId } from "../data/model";
 
 export interface SiteSnapshot {
-  clientEntities: Client[];
+  hostingAssociations: HostingAssociation[];
   tpaEntities: Tpa[];
   siteEntities: Site[];
   associationEntities: Association[];
@@ -17,12 +17,12 @@ export interface SiteReadAdapter { read(): SiteSnapshot }
 
 /** Synchronous compatibility repository. No normalized rule becomes executable here. */
 export function createSiteRepository(adapter: SiteReadAdapter) {
-  const { clientEntities, tpaEntities, siteEntities, associationEntities, siteAssociationEntities, siteCoverageEntities, aliases } = adapter.read();
+  const { hostingAssociations, tpaEntities, siteEntities, associationEntities, siteAssociationEntities, siteCoverageEntities, aliases } = adapter.read();
   const siteIdByClientAlias = new Map(aliases);
   const clientAliasBySiteId = new Map(aliases.map(([alias, siteId]) => [siteId, alias]));
   function resolveEntityConfiguration(site: Site): ClientConfig {
-    const client = clientEntities.find((entry) => entry.id === site.clientId);
-    if (!client) throw new Error(`Unknown client id: ${site.clientId}`);
+    const client = hostingAssociations.find((entry) => entry.id === site.hostingAssociationId);
+    if (!client) throw new Error(`Unknown client id: ${site.hostingAssociationId}`);
     return {
       id: getClientAliasForSite(site.id),
       branding: mergeConfiguration(client.branding, site.brandingOverride),
@@ -31,43 +31,43 @@ export function createSiteRepository(adapter: SiteReadAdapter) {
     };
   }
 
-  const clientsById = new Map(clientEntities.map((client) => [client.id, client]));
+  const clientsById = new Map(hostingAssociations.map((client) => [client.id, client]));
   const tpasById = new Map(tpaEntities.map((tpa) => [tpa.id, tpa]));
   const sitesById = new Map(siteEntities.map((site) => [site.id, site]));
   const associationsById = new Map(
     associationEntities.map((association) => [association.id, association]),
   );
 
-  function getClient(clientId: string): Client | undefined {
-    return clientsById.get(clientId);
+  function getHostingAssociation(hostingAssociationId: string): HostingAssociation | undefined {
+    return clientsById.get(hostingAssociationId);
   }
 
   function getTpa(tpaId: TpaId): Tpa | undefined {
     return tpasById.get(tpaId);
   }
 
-  function getTpaForClient(clientId: string): Tpa | undefined {
-    const client = getClient(clientId);
+  function getTpaForAssociation(hostingAssociationId: string): Tpa | undefined {
+    const client = getHostingAssociation(hostingAssociationId);
     return client ? getTpa(client.tpaId) : undefined;
   }
 
-  function getClientsForTpa(
+  function getHostingAssociationsForTpa(
     tpaId: TpaId,
-    clients: Client[] = clientEntities,
-  ): Client[] {
-    return clients.filter((client) => client.tpaId === tpaId);
+    associations: HostingAssociation[] = hostingAssociations,
+  ): HostingAssociation[] {
+    return associations.filter((client) => client.tpaId === tpaId);
   }
 
   function getSitesForTpa(tpaId: TpaId): Site[] {
-    const clientIds = new Set(getClientsForTpa(tpaId).map((client) => client.id));
-    return siteEntities.filter((site) => clientIds.has(site.clientId));
+    const clientIds = new Set(getHostingAssociationsForTpa(tpaId).map((client) => client.id));
+    return siteEntities.filter((site) => clientIds.has(site.hostingAssociationId));
   }
 
   function validateTpaIntegrity(): string[] {
     const errors: string[] = [];
-    for (const client of clientEntities) {
+    for (const client of hostingAssociations) {
       if (!tpasById.has(client.tpaId)) {
-        errors.push(`Client ${client.id} references unknown TPA ${client.tpaId}`);
+        errors.push(`HostingAssociation ${client.id} references unknown TPA ${client.tpaId}`);
       }
     }
     return errors;
@@ -81,8 +81,8 @@ export function createSiteRepository(adapter: SiteReadAdapter) {
     return associationsById.get(associationId);
   }
 
-  function getAssociationsForClient(clientId: string): Association[] {
-    return associationEntities.filter((association) => association.clientId === clientId);
+  function getMemberAssociationsForHost(hostingAssociationId: string): Association[] {
+    return associationEntities.filter((association) => association.hostingAssociationId === hostingAssociationId);
   }
 
   function getSiteAssociations(siteId: SiteId): SiteAssociation[] {
@@ -111,8 +111,8 @@ export function createSiteRepository(adapter: SiteReadAdapter) {
   function validateAssociationIntegrity(): string[] {
     const errors: string[] = [];
     for (const association of associationEntities) {
-      if (!clientsById.has(association.clientId)) {
-        errors.push(`Association ${association.id} references unknown client ${association.clientId}`);
+      if (!clientsById.has(association.hostingAssociationId)) {
+        errors.push(`Association ${association.id} references unknown client ${association.hostingAssociationId}`);
       }
     }
     for (const relationship of siteAssociationEntities) {
@@ -120,24 +120,24 @@ export function createSiteRepository(adapter: SiteReadAdapter) {
       const association = associationsById.get(relationship.associationId);
       if (!site) errors.push(`SiteAssociation ${relationship.id} references unknown site ${relationship.siteId}`);
       if (!association) errors.push(`SiteAssociation ${relationship.id} references unknown association ${relationship.associationId}`);
-      if (site && association && site.clientId !== association.clientId) {
-        errors.push(`SiteAssociation ${relationship.id} crosses clients ${site.clientId} and ${association.clientId}`);
+      if (site && association && site.hostingAssociationId !== association.hostingAssociationId) {
+        errors.push(`SiteAssociation ${relationship.id} crosses clients ${site.hostingAssociationId} and ${association.hostingAssociationId}`);
       }
     }
     return errors;
   }
 
-  function getSitesForClient(clientId: string): Site[] {
-    return siteEntities.filter((site) => site.clientId === clientId);
+  function getSitesForHostingAssociation(hostingAssociationId: string): Site[] {
+    return siteEntities.filter((site) => site.hostingAssociationId === hostingAssociationId);
   }
 
   function getSiteCoverages(siteId: SiteId): SiteCoverage[] {
     return siteCoverageEntities.filter((relationship) => relationship.siteId === canonicalSiteKey(siteId));
   }
 
-  function getClientForSite(siteId: string): Client | undefined {
+  function getHostingAssociationForSite(siteId: string): HostingAssociation | undefined {
     const site = getSite(siteId);
-    return site ? getClient(site.clientId) : undefined;
+    return site ? getHostingAssociation(site.hostingAssociationId) : undefined;
   }
 
   /** Read-only compatibility for inbound `?client=` URLs and old stored records. */
@@ -152,7 +152,7 @@ export function createSiteRepository(adapter: SiteReadAdapter) {
 
   /**
    * Compatibility projection for consumers that have not yet been split into a
-   * domain-specific resolver. The data is resolved from canonical Client and
+   * domain-specific resolver. The data is resolved from canonical HostingAssociation and
    * Site entities; the legacy registry is not consulted.
    */
   function getEffectiveSiteConfig(siteId: SiteId): ClientConfig {
@@ -161,5 +161,5 @@ export function createSiteRepository(adapter: SiteReadAdapter) {
     return resolveEntityConfiguration(site);
   }
 
-  return { clientEntities, tpaEntities, siteEntities, associationEntities, siteAssociationEntities, siteCoverageEntities, getClient, getTpa, getTpaForClient, getClientsForTpa, getSitesForTpa, validateTpaIntegrity, getSite, getAssociation, getAssociationsForClient, getSiteAssociations, getAssociationsForSite, getSitesForAssociation, validateAssociationIntegrity, getSitesForClient, getSiteCoverages, getClientForSite, getSiteIdForClientAlias, getClientAliasForSite, getEffectiveSiteConfig };
+  return { hostingAssociations, tpaEntities, siteEntities, associationEntities, siteAssociationEntities, siteCoverageEntities, getHostingAssociation, getTpa, getTpaForAssociation, getHostingAssociationsForTpa, getSitesForTpa, validateTpaIntegrity, getSite, getAssociation, getMemberAssociationsForHost, getSiteAssociations, getAssociationsForSite, getSitesForAssociation, validateAssociationIntegrity, getSitesForHostingAssociation, getSiteCoverages, getHostingAssociationForSite, getSiteIdForClientAlias, getClientAliasForSite, getEffectiveSiteConfig };
 }

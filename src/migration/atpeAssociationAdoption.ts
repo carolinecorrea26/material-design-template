@@ -87,7 +87,7 @@ export function applyAtpeAssociationAdoption(db: DatabaseSchema) {
     row.configurationKey = key;
     if (previous !== key && !db.configurationValues.some(value => value.configurationKey === previous)) db.configurationDefinitions = db.configurationDefinitions.filter(definition => definition.key !== previous);
   }
-  if (!db.associations.some(row => row.key === atpeAssociationKey)) db.associations.push({ ...meta("associations", atpeAssociationKey), clientKey: "isitrust", position: db.associations.filter(row => row.clientKey === "isitrust").length,
+  if (!db.associations.some(row => row.key === atpeAssociationKey)) db.associations.push({ ...meta("associations", atpeAssociationKey), hostingAssociationKey: "isitrust", position: db.associations.filter(row => row.hostingAssociationKey === "isitrust").length,
     definition: { name: "Association of Texas Professional Educators", acronym: "ATPE" } });
   const linkKey = `isitrust--${atpeAssociationKey}`;
   if (!db.siteAssociations.some(row => row.key === linkKey)) db.siteAssociations.push({ ...meta("siteAssociations", linkKey), siteKey: "isitrust", associationKey: atpeAssociationKey, enabled: true, position: Math.max(...db.siteAssociations.filter(row => row.siteKey === "isitrust").map(row => row.position)) + 1 });
@@ -139,7 +139,7 @@ export function applyAtpeAssociationAdoption(db: DatabaseSchema) {
       definition: { path: null, metadata: { reusable: true, assignmentRequired: true }, target: { kind: "product-association-eligibility", productKey } } });
     const existing = db.configurationValues.find(row => row.key === key)?.value as unknown as { rules?: typeof rules } | undefined;
     const value = { version: 1, rules: [...rules, ...(existing?.rules ?? []).filter(rule => rule.associationKey !== atpeAssociationKey)] };
-    const record = { ...meta("configurationValues", key), position: 0, scope: "site" as const, siteKey: "isitrust", clientKey: null, configurationKey: definitionKey, value: value as unknown as Json, sourceReference: `Main!${sourceRow === 180 ? "R180/S180" : `O${sourceRow}/P${sourceRow}/Q${sourceRow}/T${sourceRow}`}; Main!J${sourceRow}; ${reference}` };
+    const record = { ...meta("configurationValues", key), position: 0, scope: "site" as const, siteKey: "isitrust", hostingAssociationKey: null, configurationKey: definitionKey, value: value as unknown as Json, sourceReference: `Main!${sourceRow === 180 ? "R180/S180" : `O${sourceRow}/P${sourceRow}/Q${sourceRow}/T${sourceRow}`}; Main!J${sourceRow}; ${reference}` };
     const index = db.configurationValues.findIndex(row => row.key === key);
     if (index < 0) db.configurationValues.push(record); else db.configurationValues[index] = record;
   }
@@ -157,7 +157,7 @@ export function applyAtpeAssociationAdoption(db: DatabaseSchema) {
     });
     const definitionKey = `shared.${slice.productKey}.association-amounts`, key = `isitrust.${slice.productKey}.atpe-amounts`;
     if (!db.configurationDefinitions.some(row => row.key === definitionKey)) db.configurationDefinitions.push({ ...meta("configurationDefinitions", definitionKey), position: 0, definition: { path: null, metadata: { reusable: true, assignmentRequired: true }, target: { kind: "product-association-amounts", productKey: slice.productKey } } });
-    const record = { ...meta("configurationValues", key), position: 0, scope: "site" as const, siteKey: "isitrust", clientKey: null, configurationKey: definitionKey,
+    const record = { ...meta("configurationValues", key), position: 0, scope: "site" as const, siteKey: "isitrust", hostingAssociationKey: null, configurationKey: definitionKey,
       value: { version: 1, associationKey: atpeAssociationKey, amounts: assignments } as unknown as Json, sourceReference: `Main!H${slice.row}/I${slice.row}/J${slice.row}; ${reference}` };
     const index = db.configurationValues.findIndex(row => row.key === key);
     if (index < 0) db.configurationValues.push(record); else db.configurationValues[index] = record;
@@ -172,7 +172,7 @@ export function applyAtpeAssociationAdoption(db: DatabaseSchema) {
   const noticeKey = "dependent.spouse-half-member-advisory";
   if (!db.contentEntries.some(row => row.key === noticeKey)) db.contentEntries.push({ ...meta("contentEntries", noticeKey), position: 0, definition: { path: null } });
   const noticeValueKey = `isitrust.${noticeKey}`;
-  if (!db.contentValues.some(row => row.key === noticeValueKey)) db.contentValues.push({ ...meta("contentValues", noticeValueKey), position: 0, scope: "site", siteKey: "isitrust", clientKey: null, contentKey: noticeKey,
+  if (!db.contentValues.some(row => row.key === noticeValueKey)) db.contentValues.push({ ...meta("contentValues", noticeValueKey), position: 0, scope: "site", siteKey: "isitrust", hostingAssociationKey: null, contentKey: noticeKey,
     value: "Spouse coverage should not exceed 50% of member coverage. This is an advisory comparison and does not prevent applying for an amount within the available range." });
   const amountPatternKey = "shared.range.10000-500000-by-5000", amountKey = "isitrust.li-10yr.atpe-amounts";
   const decisionKey = "business-decision.rules-review.atpe-ten-year-eligibility";

@@ -2,7 +2,7 @@ import { getPrototypeLibrary } from "../domain/prototypeLibrary";
 import { getActiveSite } from "../data/activeSite";
 import {
   getAssociationsForSite,
-  getClientForSite,
+  getHostingAssociationForSite,
   getSiteIdForClientAlias,
 } from "../data/registry";
 import type { AssociationId, SiteId } from "../data/model";
@@ -156,7 +156,7 @@ export function resolveTemplate(
   associationId?: AssociationId | null,
 ): string {
   const site = getActiveSite();
-  const client = getClientForSite(site.id)!;
+  const client = getHostingAssociationForSite(site.id)!;
   const association = associationId
     ? getAssociationsForSite(site.id).find(
         (candidate) => candidate.id === associationId,

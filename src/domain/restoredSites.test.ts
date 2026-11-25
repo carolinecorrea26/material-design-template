@@ -19,6 +19,8 @@ import { buildSelectedCoverageEntries } from '../utils/coverageDecisions';
 import { beneficiaryQuestionsEnabled } from './beneficiaryParticipation';
 
 const catalog = JSON.parse(readFileSync('public/catalog/portal.json', 'utf8')) as LibraryCatalog;
+let projected: LibraryCatalog | undefined;
+const publishedLibrary = () => projected ??= projectLibraryCatalog(catalog);
 const expected = {
   ama: ['li-term', 'li-10yr', 'li-15yr', 'li-20yr', 'li-preferred', 'li-premier-accident', 'di-step-rated', 'di-level-rated', 'oo-office-overhead', 'sh-hospital-income'],
   waepa: ['li-group-term', 'di-short-term'],
@@ -30,7 +32,7 @@ afterEach(() => installPrototypeLibrary(null));
 it('inherits AMA child participation consistently in Eligibility and the assigned Coverage products', () => {
   const childProducts = ['li-10yr', 'li-15yr', 'li-20yr', 'li-preferred', 'li-premier-accident', 'sh-hospital-income'];
   window.history.replaceState(null, '', '/eligibility?site=ama');
-  for (const data of [catalog.data, projectLibraryCatalog(catalog).data]) {
+  for (const data of [catalog.data, publishedLibrary().data]) {
     const library = resolvePrototypeLibrary(data, 'ama', 'ama-child-participation');
     installPrototypeLibrary(library);
     expect(library.client.applicantExperience?.coveredPeople).toEqual(['self', 'spouse', 'child']);
@@ -43,7 +45,7 @@ it('inherits AMA child participation consistently in Eligibility and the assigne
 });
 
 it('uses WAEPA rider base thresholds and disables standalone CIR across Library and prototype', () => {
-  for (const data of [catalog.data, projectLibraryCatalog(catalog).data]) {
+  for (const data of [catalog.data, publishedLibrary().data]) {
     const library = resolvePrototypeLibrary(data, 'waepa', 'waepa-rider-policy');
     installPrototypeLibrary(library);
     const product = library.products.find(product => product.id === 'li-group-term')!;
@@ -65,7 +67,7 @@ it('uses WAEPA rider base thresholds and disables standalone CIR across Library 
 });
 
 it('assigns optional WAEPA beneficiaries and the exclusive $5,000 member DI financial threshold', () => {
-  for (const data of [catalog.data, projectLibraryCatalog(catalog).data]) {
+  for (const data of [catalog.data, publishedLibrary().data]) {
     const library = resolvePrototypeLibrary(data, 'waepa', 'waepa-page-policies');
     const requirement = library.site.configuration.pages.find(page => page.key === 'beneficiary')!.requirement;
     expect(requirement).toBe('optional');
@@ -85,7 +87,7 @@ it('assigns optional WAEPA beneficiaries and the exclusive $5,000 member DI fina
 
 it('projects the supplied WAEPA Membership note through the existing page-note slot', () => {
   const note = 'Note: Receipt of Accelerated Death Benefits may affect eligibility for Public Assistance Programs and may be taxable\nNOTICE FOR NEW YORK RESIDENTS, THE POLICY CONTAINS A WAR RESTRICTION';
-  const projected = projectLibraryCatalog(catalog);
+  const projected = publishedLibrary();
   for (const data of [catalog.data, projected.data])
     expect(resolvePrototypeLibrary(data, 'waepa', 'membership-note').content.pages.membership?.infoNote).toBe(note);
   expect(resolvePrototypeLibrary(catalog.data, 'waepa-gi', 'membership-note').content.pages.membership?.infoNote).not.toBe(note);
@@ -109,7 +111,7 @@ it.each(['waepa', 'waepa-gi'])('shares %s question participation across Quote an
 
 it.each(Object.keys(freshStartSource().fields.sites))('projects %s from authored assignments across Library and prototype', site => {
   const products = expected[site as keyof typeof expected];
-  const library = projectLibraryCatalog(catalog);
+  const library = publishedLibrary();
   const prototype = resolvePrototypeLibrary(portalLibraryData(catalog.data), site, 'restored-sites');
   const reconstructed = resolvePrototypeLibrary(library.data, site, 'restored-sites');
   if (products) expect(prototype.products.map(product => product.id).sort()).toEqual([...products].sort());

@@ -12,9 +12,9 @@ import { defaultMigrationSchedule, migrationScheduleService } from "../../servic
 import { migrationStages, migrationStatuses, type MigrationSchedule, type MigrationStatus } from "../../persistence/types";
 
 const load = async () => {
-  const [clients, schedules, drafts] = await Promise.all([foundationRepositories.clients.list(), migrationScheduleService.list(), siteBuilderService.getDrafts()]);
+  const [clients, schedules, drafts] = await Promise.all([foundationRepositories.associationEntities.list(), migrationScheduleService.list(), siteBuilderService.getDrafts()]);
   const builtSites = drafts.filter(d => isLibraryDraft(d.draftDataJson)).map(d => ({ key: d.siteKey, acronym: d.siteKey, name: `${d.siteName} · Site implementation in Majesco` }));
-  return { clients, schedules, builtSites };
+  return { associationEntities: clients, schedules, builtSites };
 };
 const statusColor = (status: MigrationStatus) => status === "Complete" ? "success" : status === "Blocked" ? "error" : status === "In review" ? "warning" : status === "In progress" ? "primary" : "default";
 const displayDate = (date: string | null) => date ? new Date(`${date}T12:00:00`).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "TBD";
@@ -30,13 +30,13 @@ export default function MigrationScheduleWorkspace() {
   const [saved, setSaved] = useState("");
   const rows = useMemo(() => {
     if (!data) return [];
-    const clients = data.clients.map(client => ({ key: client.key, acronym: client.acronym, name: client.name }));
+    const clients = data.associationEntities.filter(association => association.kind === "hosting").map(client => ({ key: client.key, acronym: client.acronym, name: client.name }));
     for (const site of data.builtSites) if (!clients.some(c => c.key === site.key)) clients.push(site);
     // AAFP can be planned before its portal configuration is added to the Library.
     if (!clients.some(client => client.key.toLowerCase() === "aafp" || client.acronym.toUpperCase() === "AAFP")) clients.push({ key: "aafp", acronym: "AAFP", name: "American Academy of Family Physicians" });
     return clients.filter(client => !/prase/i.test(`${client.key} ${client.acronym}`)).map(client => ({
       ...client,
-      schedule: data.schedules.find(row => row.clientKey === client.key) ?? defaultMigrationSchedule(["ASCE", "AAFP"].includes(client.acronym.toUpperCase()) ? client.acronym.toLowerCase() : client.key),
+      schedule: data.schedules.find(row => row.hostingAssociationKey === client.key) ?? defaultMigrationSchedule(["ASCE", "AAFP"].includes(client.acronym.toUpperCase()) ? client.acronym.toLowerCase() : client.key),
     })).sort((a, b) => Number(b.schedule.migrating) - Number(a.schedule.migrating) || a.acronym.localeCompare(b.acronym));
   }, [data]);
   const visible = rows.filter(row => `${row.acronym} ${row.name}`.toLowerCase().includes(search.toLowerCase()) && (filter === "all" || row.schedule.migrating === (filter === "yes")));
@@ -51,24 +51,24 @@ export default function MigrationScheduleWorkspace() {
     finally { setSaving(false); }
   };
   return <Workspace>
-    <WorkspaceHeader title="Migration schedule" description="Track client migration requirements, prototype progress, and Majesco environments with expected dates." />
+    <WorkspaceHeader title="Migration schedule" description="Track Association migration requirements, prototype progress, and Majesco environments with expected dates." />
     <Typography variant="body2" color="text.secondary">Changes are saved in this browser’s local prototype data. Statuses start as Not assessed and dates as TBD. Schedule statuses are planning records; acceptance and activation require their own verification.</Typography>
     {error && <Alert severity="error">{error.message}</Alert>}
     {saved && <Alert severity="success" onClose={() => setSaved("")}>{saved}</Alert>}
     <Stack direction={{ xs: "column", sm: "row" }} gap={2} alignItems={{ sm: "center" }}>
-      <SearchField value={search} onChange={setSearch} placeholder="Search clients" />
-      <TextField select size="small" label="Migrating" value={filter} onChange={event => setFilter(event.target.value)} sx={{ minWidth: 150 }}><MenuItem value="all">All clients</MenuItem><MenuItem value="yes">Yes</MenuItem><MenuItem value="no">No</MenuItem></TextField>
-      <Typography variant="body2" color="text.secondary">{rows.filter(row => row.schedule.migrating).length} migrating · {rows.length} clients</Typography>
+      <SearchField value={search} onChange={setSearch} placeholder="Search Associations" />
+      <TextField select size="small" label="Migrating" value={filter} onChange={event => setFilter(event.target.value)} sx={{ minWidth: 150 }}><MenuItem value="all">All Associations</MenuItem><MenuItem value="yes">Yes</MenuItem><MenuItem value="no">No</MenuItem></TextField>
+      <Typography variant="body2" color="text.secondary">{rows.filter(row => row.schedule.migrating).length} migrating · {rows.length} Associations</Typography>
     </Stack>
     {loading ? <Typography>Loading migration schedule…</Typography> : <ResponsiveTableContainer><Table size="small" aria-label="Migration schedule" sx={{ minWidth: 1100 }}>
-      <TableHead><TableRow><TableCell rowSpan={2}>Client</TableCell><TableCell rowSpan={2}>Migrating</TableCell><TableCell rowSpan={2}>Requirements</TableCell><TableCell rowSpan={2}>Prototype</TableCell><TableCell colSpan={3} align="center">Majesco environment</TableCell><TableCell rowSpan={2}>Date expected</TableCell><TableCell rowSpan={2}>Actions</TableCell></TableRow><TableRow><TableCell>UAT</TableCell><TableCell>Preprod</TableCell><TableCell>Production</TableCell></TableRow></TableHead>
+      <TableHead><TableRow><TableCell rowSpan={2}>Association</TableCell><TableCell rowSpan={2}>Migrating</TableCell><TableCell rowSpan={2}>Requirements</TableCell><TableCell rowSpan={2}>Prototype</TableCell><TableCell colSpan={3} align="center">Majesco environment</TableCell><TableCell rowSpan={2}>Date expected</TableCell><TableCell rowSpan={2}>Actions</TableCell></TableRow><TableRow><TableCell>UAT</TableCell><TableCell>Preprod</TableCell><TableCell>Production</TableCell></TableRow></TableHead>
       <TableBody>{visible.map(row => <TableRow key={row.key} hover>
         <TableCell><Typography variant="body2" fontWeight={700}>{row.acronym}</Typography><Typography variant="caption" color="text.secondary">{row.name}</Typography>{row.schedule.notes && <Typography variant="caption" display="block" sx={{ mt: 0.5, maxWidth: 250, whiteSpace: "pre-wrap" }}>{row.schedule.notes}</Typography>}</TableCell>
         <TableCell><Chip size="small" label={row.schedule.migrating ? "Yes" : "No"} color={row.schedule.migrating ? "primary" : "default"} variant="outlined" /></TableCell>
         {migrationStages.map(({ key }) => <TableCell key={key}><Stack gap={0.5} alignItems="flex-start"><Chip size="small" variant="outlined" label={row.schedule.milestones[key].status} color={statusColor(row.schedule.milestones[key].status)} /><Typography variant="caption" color="text.secondary">Expected: {displayDate(row.schedule.milestones[key].expectedDate)}</Typography></Stack></TableCell>)}
         <TableCell sx={{ whiteSpace: "nowrap" }}>{displayDate(row.schedule.expectedDate)}</TableCell>
-        <TableCell><Button size="small" disabled={!canEdit} aria-label={`Edit ${row.acronym} migration schedule`} onClick={() => { setEditing({ label: row.acronym, schedule: { ...structuredClone(row.schedule), clientKey: row.key } }); setSaveError(""); }}>Edit</Button></TableCell>
-      </TableRow>)}{visible.length === 0 && <TableRow><TableCell colSpan={9}>No clients match these filters.</TableCell></TableRow>}</TableBody>
+        <TableCell><Button size="small" disabled={!canEdit} aria-label={`Edit ${row.acronym} migration schedule`} onClick={() => { setEditing({ label: row.acronym, schedule: { ...structuredClone(row.schedule), hostingAssociationKey: row.key } }); setSaveError(""); }}>Edit</Button></TableCell>
+      </TableRow>)}{visible.length === 0 && <TableRow><TableCell colSpan={9}>No Associations match these filters.</TableCell></TableRow>}</TableBody>
     </Table></ResponsiveTableContainer>}
     <Dialog open={Boolean(editing)} onClose={() => { if (!saving) setEditing(null); }} fullWidth maxWidth="md"><DialogTitle>Edit {editing?.label} migration schedule</DialogTitle><DialogContent><Stack gap={2} sx={{ pt: 1 }}>
       {saveError && <Alert severity="error">{saveError}</Alert>}

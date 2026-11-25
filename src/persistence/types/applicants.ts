@@ -3,7 +3,7 @@ import type { RecordStatus, SoftDeletable, Timestamped } from './common';
 /** A person within a Client; a sign-in account is not required. */
 export interface Applicant extends Timestamped, SoftDeletable {
   id: string;
-  clientId: string;
+  hostingAssociationId: string;
   displayName: string;
   email: string | null;
   status: RecordStatus;
@@ -14,7 +14,7 @@ export interface ApplicationApplicant extends Timestamped {
   id: string;
   applicationId: string;
   siteId: string;
-  clientId: string;
+  hostingAssociationId: string;
   applicantId: string;
   applicantTypeKey: string;
 }

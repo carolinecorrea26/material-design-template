@@ -53,9 +53,9 @@ export const adminNavigation: AdminNavigationGroup[] = [
   ] },
 ];
 const libraryNavigation = ['Portal Library', 'Storybook', 'Tutorials', 'Applicant Admin'];
-const databaseNavigation = ['Sites', 'Applications', 'Site Builder'];
-export const visibleAdminNavigation = (database = false, admin = false) => adminNavigation
+const siteNavigation = ['Sites', 'Site Builder'];
+export const visibleAdminNavigation = (database = false, admin = false, mock = false) => adminNavigation
   .map(group => ({ ...group, items: group.items
-    .filter(item => libraryNavigation.includes(item.label) || database && (databaseNavigation.includes(item.label) || admin && item.masterAdminOnly))
+    .filter(item => libraryNavigation.includes(item.label) || (database || mock) && siteNavigation.includes(item.label) || database && (item.label === 'Applications' || admin && item.masterAdminOnly))
     .map(item => database && item.masterAdminOnly ? { ...item, label: 'Portal users' } : item) }))
   .filter(group => group.items.length > 0);

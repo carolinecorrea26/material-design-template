@@ -16,7 +16,7 @@ assert len(evidence)==sum(map(len,refs.values())), 'missing source reference'
 items=[]
 for table in ['configurationValues','contentValues','brandingProfiles','supportProfiles','sitePolicies','siteFieldConfigurations','sitePages','ruleAssignments']:
  for x in d[table]:
-  scope=x.get('scope','site'); client=x.get('clientKey'); site=x.get('siteKey')
+  scope=x.get('scope','site'); client=x.get('hostingAssociationKey',x.get('clientKey')); site=x.get('siteKey')
   if scope!='global' and client not in aset and site not in aset: continue
   key=x.get('configurationKey',x.get('contentKey',x.get('key',x['id'])))
   target=site or client
@@ -40,7 +40,7 @@ for s in d['sites']:
  if s['key'] not in aset:continue
  p=[x['productKey'] for x in d['siteProducts'] if x['siteId']==s['id'] and x['enabled']]
  c=[x['coverageKey'] for x in d['siteCoverages'] if x['siteId']==s['id'] and x['enabled']]
- v=next((x['value'] for x in d['configurationValues'] if x['configurationKey']=='coverages.enabled' and x['clientKey']==s['clientId']),None)
+ v=next((x['value'] for x in d['configurationValues'] if x['configurationKey']=='coverages.enabled' and x.get('hostingAssociationKey',x.get('clientKey'))==s.get('hostingAssociationId',s.get('clientId'))),None)
  portfolios.append({'siteKey':s['key'],'siteProducts':p,'siteCoverages':c,'legacyClientEnabled':v,'legacyClientEnabledStatus':'retired-or-absent' if v is None else 'retained','productsOnly':sorted(set(p)-set(c)),'coveragesOnly':sorted(set(c)-set(p))})
 isi=[]
 for x in d['configurationValues']:

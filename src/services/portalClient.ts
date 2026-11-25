@@ -15,6 +15,6 @@ export async function portalRequest<T>(path: string, body?: unknown): Promise<T>
 }
 
 export type PortalUser = { id: string; email: string; displayName: string; roleKey: 'portal-admin' | 'account-manager'; siteKeys: string[] };
-export type PortalSite = { id: string; key: string; name: string; templateType: 'single' | 'multi'; organizationId: string; organizationName: string; hostingAssociationId?: string; associationName: string; migrationStage: string | null; migrationStatus: string };
+export type PortalSite = { id: string; key: string; name: string; templateType: 'single' | 'multi'; organizationId: string; organizationName: string; hostingAssociationId: string; associationName: string; migrationStage: string | null; migrationStatus: string };
 
 export const readPortalSites = () => portalRequest<PortalSite[]>('/sites');

@@ -6,7 +6,7 @@
         "id": "site:{{site}}.theme.type",
         "key": "site:{{site}}.theme.type",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "theme.type",
         "value": "preset",
@@ -17,7 +17,7 @@
         "id": "site:{{site}}.theme.preset",
         "key": "site:{{site}}.theme.preset",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "theme.preset",
         "value": "teal",
@@ -28,7 +28,7 @@
         "id": "site:{{site}}.licenseInfo",
         "key": "site:{{site}}.licenseInfo",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "licenseInfo",
         "value": [
@@ -45,7 +45,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "shared.review-policy",
         "value": {
           "version": 1,
@@ -171,7 +171,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "shared.beneficiary-notes",
         "value": {
           "version": 1,
@@ -263,7 +263,7 @@
         },
         "position": 0,
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "sourceReference": "prototype:brandingProfiles/client:nso"
       }
@@ -287,7 +287,7 @@
         },
         "position": 0,
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "sourceReference": "prototype:supportProfiles/client:nso"
       }
@@ -445,7 +445,7 @@
     "sites": [
       {
         "id": "nso",
-        "clientId": "nso",
+        "hostingAssociationId": "nso",
         "key": "nso",
         "name": "NSO Site",
         "displayName": "NSO Site",
@@ -454,7 +454,6 @@
         "templateType": "multi",
         "legacyClientId": "nso",
         "deletedAt": null,
-        "hostingAssociationId": "nso",
         "sourceReference": "prototype:sites/nso",
         "createdAt": "2026-09-01T12:00:00.000Z",
         "updatedAt": "2026-09-01T12:00:00.000Z"

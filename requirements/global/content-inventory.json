@@ -6,8 +6,6 @@
       "component": "AppFooter",
       "when": "When the site footer is displayed",
       "keys": [
-        "footer.security-seal.src",
-        "footer.security-seal.alt",
         "footer.administered-by-label",
         "footer.underwritten-by.label",
         "footer.underwritten-by.policy-form",
@@ -68,156 +66,15 @@
       "channel": "Site"
     },
     {
-      "id": "transition-contact",
-      "location": "Page transition",
-      "component": "PageTransitionSkeleton",
-      "when": "While moving forward from this page",
+      "id": "receipt-document-downloads",
+      "location": "Receipt document downloads",
+      "renderer": "src/pages/Receipt.tsx",
+      "when": "When a requested document download is unavailable",
       "keys": [
-        "navigation.transition-messages.contact"
-      ],
-      "pages": [
-        "contact"
-      ],
-      "channel": "Site"
-    },
-    {
-      "id": "transition-profile",
-      "location": "Page transition",
-      "component": "PageTransitionSkeleton",
-      "when": "While moving forward from this page",
-      "keys": [
-        "navigation.transition-messages.profile"
-      ],
-      "pages": [
-        "profile"
-      ],
-      "channel": "Site"
-    },
-    {
-      "id": "transition-review",
-      "location": "Page transition",
-      "component": "PageTransitionSkeleton",
-      "when": "While moving forward from this page",
-      "keys": [
-        "navigation.transition-messages.review"
-      ],
-      "pages": [
-        "review"
-      ],
-      "channel": "Site"
-    },
-    {
-      "id": "transition-health-si",
-      "location": "Page transition",
-      "component": "PageTransitionSkeleton",
-      "when": "While moving forward from this page",
-      "keys": [
-        "navigation.transition-messages.health-si"
-      ],
-      "pages": [
-        "health-si"
-      ],
-      "channel": "Site"
-    },
-    {
-      "id": "transition-health-qd",
-      "location": "Page transition",
-      "component": "PageTransitionSkeleton",
-      "when": "While moving forward from this page",
-      "keys": [
-        "navigation.transition-messages.health-qd"
-      ],
-      "pages": [
-        "health-qd"
-      ],
-      "channel": "Site"
-    },
-    {
-      "id": "transition-health-cir",
-      "location": "Page transition",
-      "component": "PageTransitionSkeleton",
-      "when": "While moving forward from this page",
-      "keys": [
-        "navigation.transition-messages.health-cir"
-      ],
-      "pages": [
-        "health-cir"
-      ],
-      "channel": "Site"
-    },
-    {
-      "id": "transition-payment",
-      "location": "Page transition",
-      "component": "PageTransitionSkeleton",
-      "when": "While moving forward from this page",
-      "keys": [
-        "navigation.transition-messages.payment"
-      ],
-      "pages": [
-        "payment"
-      ],
-      "channel": "Site"
-    },
-    {
-      "id": "transition-docusign",
-      "location": "Page transition",
-      "component": "PageTransitionSkeleton",
-      "when": "While moving forward from this page",
-      "keys": [
-        "navigation.transition-messages.docusign"
-      ],
-      "pages": [
-        "docusign"
-      ],
-      "channel": "Site"
-    },
-    {
-      "id": "transition-receipt",
-      "location": "Page transition",
-      "component": "PageTransitionSkeleton",
-      "when": "While moving forward from this page",
-      "keys": [
-        "navigation.transition-messages.receipt"
+        "application.ui.document-downloads-unavailable"
       ],
       "pages": [
         "receipt"
-      ],
-      "channel": "Site"
-    },
-    {
-      "id": "transition-membership",
-      "location": "Page transition",
-      "component": "PageTransitionSkeleton",
-      "when": "While moving forward from this page",
-      "keys": [
-        "navigation.transition-messages.membership"
-      ],
-      "pages": [
-        "membership"
-      ],
-      "channel": "Site"
-    },
-    {
-      "id": "transition-health-di-supp",
-      "location": "Page transition",
-      "component": "PageTransitionSkeleton",
-      "when": "While moving forward from this page",
-      "keys": [
-        "navigation.transition-messages.health-di-supp"
-      ],
-      "pages": [
-        "health-di-supp"
-      ],
-      "channel": "Site"
-    },
-    {
-      "id": "transitions",
-      "location": "Application page transition",
-      "component": "PageTransitionSkeleton",
-      "when": "Default forward transition or return to previous page",
-      "keys": [
-        "navigation.transition-defaults",
-        "navigation.back-message"
       ],
       "channel": "Site"
     },
@@ -751,6 +608,28 @@
     }
   ],
   "exclusions": [
+    {
+      "reason": "Retained wording for the former timed transitions. Applicant pages now wait for the save or load itself.",
+      "keys": [
+        "membership.loading",
+        "eligibility.loading",
+        "coverage.loading",
+        "beneficiary.loading",
+        "navigation.transition-defaults",
+        "navigation.back-message",
+        "navigation.transition-messages.membership",
+        "navigation.transition-messages.contact",
+        "navigation.transition-messages.profile",
+        "navigation.transition-messages.review",
+        "navigation.transition-messages.health-si",
+        "navigation.transition-messages.health-qd",
+        "navigation.transition-messages.health-di-supp",
+        "navigation.transition-messages.health-cir",
+        "navigation.transition-messages.payment",
+        "navigation.transition-messages.docusign",
+        "navigation.transition-messages.receipt"
+      ]
+    },
     {
       "reason": "Form inventory descriptions and contextual names describe implementations in the Forms Library; they are not site wording.",
       "keys": [

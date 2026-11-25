@@ -9,7 +9,7 @@ import type { SiteContent } from "../content/types";
 type PrototypeClientProjection = {
   client: ClientConfig;
   settings: Record<string, unknown>;
-  clientIdentity: EffectiveSiteData["clients"][number];
+  clientIdentity: EffectiveSiteData["associationEntities"][number];
 };
 
 function put(root: Record<string, unknown>, path: string[], value: unknown) {
@@ -26,7 +26,7 @@ function put(root: Record<string, unknown>, path: string[], value: unknown) {
  */
 export function buildPrototypeClient(data: EffectiveSiteData, site: EffectiveSite): PrototypeClientProjection {
   const siteKey = site.siteKey;
-  const root: Record<string, unknown> = { id: site.clientKey, branding: {}, support: {}, pages: {}, fields: {}, coverages: {}, features: {}, flows: {} };
+  const root: Record<string, unknown> = { id: site.hostingAssociationKey, branding: {}, support: {}, pages: {}, fields: {}, coverages: {}, features: {}, flows: {} };
   for (const row of site.configuration.configurations) {
     const path = data.configurationDefinitions.find(d => d.key === row.key)?.definition.path;
     if (path) put(root, path, row.value);
@@ -39,8 +39,8 @@ export function buildPrototypeClient(data: EffectiveSiteData, site: EffectiveSit
   if (client.coverages.productOrder !== undefined && !isCoverageProductOrder(client.coverages.productOrder, data.products.map(product => product.key))) throw new Error("Invalid configured product order");
   const identity = data.sites.find(s => s.key === siteKey);
   if (!identity) throw new Error(`Unavailable Site: ${siteKey}`);
-  const clientIdentity = data.clients.find(c => c.id === identity.clientId);
-  if (!clientIdentity) throw new Error(`Unavailable Client: ${identity.clientId}`);
+  const clientIdentity = data.associationEntities.find(c => c.id === identity.hostingAssociationId);
+  if (!clientIdentity) throw new Error(`Unavailable Client: ${identity.hostingAssociationId}`);
   client.features = { ...client.features, defaultTemplate: identity.templateType };
   if (client.applicantExperience !== undefined && !isApplicantExperience(client.applicantExperience)) throw new Error("Invalid applicant experience configuration");
   if (client.applicantExperience?.contact?.businessAddressProducts?.some(key => !site.products.some(product => product.productKey === key))) throw new Error("Invalid business-address product scope");

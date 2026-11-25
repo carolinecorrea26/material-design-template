@@ -73,7 +73,6 @@ it.each(['all', 'asce'])('includes displayed content with real placements and ex
     sourceFile: 'requirements/global/content/application.json',
     usages: [expect.objectContaining({ location: 'Site footer › Terms of Use dialog', component: 'AppFooter', when: 'After opening Terms of Use' })],
   });
-  expect(rows.find(row => row.key === 'navigation.transition-messages.health-di-supp')?.usages).toContainEqual(expect.objectContaining({ pageKey: 'health-di-supp', component: 'PageTransitionSkeleton' }));
   if (site === 'asce') expect(rows.find(row => row.key === 'membership.page-note')?.overrideFile).toBe('requirements/parked/sites/asce/pages/membership.json');
 });
 
@@ -83,7 +82,7 @@ it('keeps planned header copy and retired status containers out of active projec
   expect(planned.status).toBe('planned');
   const input = structuredClone(catalog);
   input.data.contentEntries.push({ ...input.data.contentEntries[0], id: 'statusMessages', key: 'statusMessages', definition: { path: ['statusMessages'] } });
-  input.data.contentValues.push({ ...input.data.contentValues[0], id: 'retired-status-container', key: 'retired-status-container', contentKey: 'statusMessages', scope: 'global', siteKey: null, clientKey: null, value: { healthCir: { body: 'Old placeholder content' } } });
+  input.data.contentValues.push({ ...input.data.contentValues[0], id: 'retired-status-container', key: 'retired-status-container', contentKey: 'statusMessages', scope: 'global', siteKey: null, hostingAssociationKey: null, value: { healthCir: { body: 'Old placeholder content' } } });
   const data = compileRequirementCatalog(input.data, source);
   expect(data.contentEntries.some(row => row.key === 'statusMessages')).toBe(false);
   expect(data.contentValues.some(row => row.contentKey === 'statusMessages')).toBe(false);

@@ -47,7 +47,7 @@ it('rejects Beneficiary product/applicant policy assignments outside the effecti
     if (row && typeof row === 'object' && 'siteKey' in row && row.siteKey === 'asce') row.siteKey = 'beneficiary-test';
   }
   const key = 'shared.beneficiary-participation';
-  data.configurationValues.push({ ...data.configurationValues[0], id: key, key, configurationKey: key, scope: 'site', siteKey: 'beneficiary-test', clientKey: null, value: { version: 1, rules: [{ productKey: 'li-term', applicantKey: 'spouse', collect: true }] } });
+  data.configurationValues.push({ ...data.configurationValues[0], id: key, key, configurationKey: key, scope: 'site', siteKey: 'beneficiary-test', hostingAssociationKey: null, value: { version: 1, rules: [{ productKey: 'li-term', applicantKey: 'spouse', collect: true }] } });
   const options = { freshStart: false };
   expect(() => resolveEffectiveSite(data, 'beneficiary-test', options)).not.toThrow();
   data.siteProductApplicants = data.siteProductApplicants.filter(row => !(row.siteKey === 'beneficiary-test' && row.productKey === 'li-term' && row.applicantKey === 'spouse'));

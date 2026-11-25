@@ -29,7 +29,7 @@ const meanings = {
   providedBy: 'Source/provider metadata; null is retained when unspecified.',
   sourceReference: 'Trace to implementation or source evidence; not necessarily a URL.',
   scope: 'Applicability layer: global, client or site.',
-  clientKey: 'Client scope selector where this row uses the Scope contract.',
+  hostingAssociationKey: 'Client scope selector where this row uses the Scope contract.',
   siteKey: 'Site selector; scope rules differ between scoped and Site assignment tables.',
   value: 'Stored value for the referenced definition; interpretation belongs to its resolver.',
 };

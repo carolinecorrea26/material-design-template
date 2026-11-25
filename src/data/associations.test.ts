@@ -4,7 +4,7 @@ import { resolveMappedFields } from "../domain/requirementFields";
 import {
   associationEntities,
   getAssociation,
-  getAssociationsForClient,
+  getMemberAssociationsForHost,
   getAssociationsForSite,
   getSite,
   getSiteAssociations,
@@ -23,7 +23,7 @@ const membershipField = resolveMappedFields({ component: "membership" }, { inclu
 
 const urlSite: Site = {
   id: "asce-url-proof",
-  clientId: "asce",
+  hostingAssociationId: "asce",
   name: "URL Association proof",
   templateType: "multi",
   status: "active",
@@ -33,7 +33,7 @@ const urlSite: Site = {
 
 const urlAssociation: Association = {
   id: "url-proof-association",
-  clientId: "asce",
+  hostingAssociationId: "asce",
   name: "URL Proof Association",
   logo: "/association/url-proof.png",
   logoAlt: "URL Proof Association logo",
@@ -59,7 +59,7 @@ describe("canonical Association model", () => {
       "waepa",
       "waepa-gi",
     ]);
-    expect(getAssociationsForClient("waepa")).toHaveLength(1);
+    expect(getMemberAssociationsForHost("waepa")).toHaveLength(1);
   });
 
   it("represents one Client → one Site → many Associations", () => {
@@ -78,8 +78,8 @@ describe("canonical Association model", () => {
       siteAssociationEntities.length,
     );
     for (const relationship of siteAssociationEntities) {
-      expect(getSite(relationship.siteId)?.clientId).toBe(
-        getAssociation(relationship.associationId)?.clientId,
+      expect(getSite(relationship.siteId)?.hostingAssociationId).toBe(
+        getAssociation(relationship.associationId)?.hostingAssociationId,
       );
     }
   });
@@ -87,7 +87,7 @@ describe("canonical Association model", () => {
   it("does not resolve an Association owned by another Client", () => {
     const foreignAssociation: Association = {
       id: "foreign-association",
-      clientId: "ama",
+      hostingAssociationId: "ama",
       name: "Foreign Association",
     };
     expect(

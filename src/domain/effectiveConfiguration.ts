@@ -33,23 +33,28 @@ export function source(table: string, row: Source): RuleProvenance {
   return { table, key: row.key ?? row.id, displayId: row.displayId, providedBy: row.providedBy ?? null, sourceReference: row.sourceReference ?? null };
 }
 const order = <T extends { key: string; position?: number }>(rows: T[]) => [...rows].sort((a, b) => (a.position ?? 0) - (b.position ?? 0) || (a.key < b.key ? -1 : a.key > b.key ? 1 : 0));
-const rank = { global: 0, client: 1, site: 2 };
+const rank = { global: 0, association: 1, site: 2 };
 
 /** Domain configuration, keyed by semantic identity; never reconstructs ClientConfig paths. */
-export function resolveEffectiveConfiguration(db: EffectiveConfigurationData, siteKey: string, clientKey: string, siteId: string, productKeys: string[]) {
+export function resolveEffectiveConfiguration(db: EffectiveConfigurationData, siteKey: string, hostingAssociationKey: string, siteId: string, productKeys: string[]) {
+  const byTable = new Map<keyof EffectiveConfigurationData, Map<string, Source>>();
   for (const table of effectiveConfigurationTables) {
-    const keys = db[table].map(r => "key" in r ? r.key ?? r.id : r.id);
-    if (new Set(keys).size !== keys.length) throw new Error(`Duplicate normalized identity: ${table}`);
+    const rows = new Map<string, Source>();
+    for (const record of db[table]) {
+      const key = "key" in record ? record.key ?? record.id : record.id;
+      if (rows.has(key)) throw new Error(`Duplicate normalized identity: ${table}`);
+      rows.set(key, record);
+    }
+    byTable.set(table, rows);
   }
   const issues: DomainIssue[] = [];
   const issue = (domain: string, key: string, reason: string, provenance: RuleProvenance[] = []) => { issues.push({ domain, key, reason, provenance }); };
-  const applicable = (r: Scope) => r.scope === "global" ? r.clientKey === null && r.siteKey === null : r.scope === "client" ? r.clientKey === clientKey && r.siteKey === null : r.scope === "site" && r.siteKey === siteKey;
+  const applicable = (r: Scope) => r.scope === "global" ? r.hostingAssociationKey === null && r.siteKey === null : r.scope === "association" ? r.hostingAssociationKey === hostingAssociationKey && r.siteKey === null : r.scope === "site" && r.siteKey === siteKey;
   const scoped = <T extends Scope & { key: string; position?: number }>(rows: T[]) => order(rows.filter(applicable)).sort((a, b) => rank[a.scope] - rank[b.scope]);
-  const one = <T extends Source>(rows: T[], key: string, table: string): T | undefined => {
-    const matches = rows.filter(r => r.key === key);
-    if (matches.length > 1) throw new Error(`Ambiguous ${table}: ${key}`);
-    if (!matches.length) issue(table, key, "Missing referenced normalized record");
-    return matches[0];
+  const one = <T extends keyof EffectiveConfigurationData>(table: T, key: string): EffectiveConfigurationData[T][number] | undefined => {
+    const match = byTable.get(table)?.get(key);
+    if (match?.key === key) return match as EffectiveConfigurationData[T][number];
+    issue(table, key, "Missing referenced normalized record");
   };
   const wrap = <T extends Source>(table: string, rows: T[]) => rows.map(row => {
     const { id: _id, key: _key, displayId: _display, providedBy: _provider, sourceReference: _reference, ...value } = row;
@@ -82,7 +87,7 @@ export function resolveEffectiveConfiguration(db: EffectiveConfigurationData, si
   const globalOnlyKeys = new Set(db.configurationDefinitions.filter(row => globalOnlyDefinitions.some(definition => definition.key === row.key) || globalOnlyPaths.has(row.definition.path?.join('.'))).map(row => row.key));
   if (db.configurationValues.some(row => applicable(row) && row.scope !== 'global' && globalOnlyKeys.has(row.configurationKey))) throw new Error('Global-only configuration cannot be overridden');
   const configurations = values("configurationValues", db.configurationValues, r => r.configurationKey);
-  for (const value of configurations) one(db.configurationDefinitions, value.key, "configurationDefinitions");
+  for (const value of configurations) one("configurationDefinitions", value.key);
   const productAvailabilityOwnership = resolveProductAvailabilityOwnership(db, configurations, siteKey);
   const siteStructureOwnership = resolveSiteStructureOwnership(db, configurations, siteKey);
   const pageParticipation = resolvePageParticipationOwnership(db, configurations, siteKey);
@@ -93,16 +98,16 @@ export function resolveEffectiveConfiguration(db: EffectiveConfigurationData, si
   if (routingConfigurations.length > 1) throw new Error("Ambiguous routing configuration");
   if (routingConfigurations[0] && Array.isArray(routingConfigurations[0].value) && routingConfigurations[0].provenance.some(provenance =>
     db.configurationValues.some(row => row.key === provenance.key && !Array.isArray(row.value)))) throw new Error("Routing arrays cannot override rule-owned routing");
-  const routing = resolveRoutingRules(db, routingConfigurations[0], siteKey, clientKey);
+  const routing = resolveRoutingRules(db, routingConfigurations[0], siteKey, hostingAssociationKey);
   const content = values("contentValues", db.contentValues, r => r.contentKey);
-  for (const value of content) one(db.contentEntries, value.key, "contentEntries");
+  for (const value of content) one("contentEntries", value.key);
   const branding = profile("brandingProfiles", db.brandingProfiles);
   const support = profile("supportProfiles", db.supportProfiles);
   if (!branding.length) issue("branding", siteKey, "No branding profile");
   if (!support.length) issue("support", siteKey, "No support profile");
 
   const amounts = (key: string) => {
-    const pattern = one(db.coverageAmountPatterns, key, "coverageAmountPatterns");
+    const pattern = one("coverageAmountPatterns", key);
     if (!pattern) return null;
     const bands = order(db.amountBands.filter(r => r.amountPatternKey === key));
     const options = order(db.amountOptions.filter(r => r.amountPatternKey === key));
@@ -111,8 +116,8 @@ export function resolveEffectiveConfiguration(db: EffectiveConfigurationData, si
     return { status: supported ? "resolved" as const : "unresolved" as const, pattern: wrap("coverageAmountPatterns", [pattern])[0], bands: wrap("amountBands", bands), options: wrap("amountOptions", options) };
   };
   const products = productKeys.map(productKey => {
-    const row = one(db.products, productKey, "products");
-    const category = row && one(db.coverageCategories, row.categoryKey, "coverageCategories");
+    const row = one("products", productKey);
+    const category = row && one("coverageCategories", row.categoryKey);
     const presentationKeys = ["name", "definition", "description", "descriptionNotice", "brochureUrl", "coverageNote", "featured", "applicantNotes", "productWarning", "productContent", "groupPolicySitus", "options", "riders"] as const;
     const presentation = presentationKeys.flatMap(key => {
       const overrideKeys = new Set(db.configurationDefinitions.filter(d => {
@@ -130,8 +135,8 @@ export function resolveEffectiveConfiguration(db: EffectiveConfigurationData, si
     // are catalog inputs, not implicit substitutes for missing Site policy.
     const selected = <T extends { productKey: string; siteKey: string | null; key: string; position?: number }>(rows: T[]) => order(rows.filter(r => r.productKey === productKey && r.siteKey === siteKey));
     const amountRules = selected(db.productAmountRules).map(r => {
-      if (r.conditionKey || (r.clientKey !== null && r.clientKey !== clientKey)) issue("amounts", r.key, "Conditional or mismatched amount assignment", [source("productAmountRules", r)]);
-      return { ...wrap("productAmountRules", [r])[0], status: r.conditionKey || (r.clientKey !== null && r.clientKey !== clientKey) ? "unresolved" as const : "resolved" as const, amount: amounts(r.amountPatternKey) };
+      if (r.conditionKey || (r.hostingAssociationKey !== null && r.hostingAssociationKey !== hostingAssociationKey)) issue("amounts", r.key, "Conditional or mismatched amount assignment", [source("productAmountRules", r)]);
+      return { ...wrap("productAmountRules", [r])[0], status: r.conditionKey || (r.hostingAssociationKey !== null && r.hostingAssociationKey !== hostingAssociationKey) ? "unresolved" as const : "resolved" as const, amount: amounts(r.amountPatternKey) };
     });
     if (!amountRules.length) issue("amounts", productKey, "No Site amount rules");
     const limits = order(db.aggregateLimits.filter(r => r.siteKey === siteKey && (r.productKey === productKey || (r.productKey === null && r.categoryKey === row?.categoryKey)))).map(r => {
@@ -159,13 +164,13 @@ export function resolveEffectiveConfiguration(db: EffectiveConfigurationData, si
         if (configuration.provenance.some(provenance => db.configurationValues.some(row => row.key === provenance.key && row.scope === "site"))) throw new Error(`Unassigned rider override: ${target.riderKey}`);
         // Client properties apply only where the rider is assigned. An explicit
         // empty Site set (for example WAEPA GI) must remain empty.
-        const base = one(db.riders, target.riderKey, "riders");
+        const base = one("riders", target.riderKey);
         if (!base) throw new Error(`Missing rider override definition: ${target.riderKey}`);
         applyRiderOverrides(base.definition, [{ key: target.property, value: configuration.value }]);
       }
     }
     const riders = riderAssignments.filter(r => marker ? r.scope === marker.scope : r.scope === "global").map(r => {
-      const rider = one(db.riders, r.riderKey, "riders");
+      const rider = one("riders", r.riderKey);
       const switches = db.siteRiders.filter(s => s.siteId === siteId && s.riderKey === r.riderKey);
       if (switches.length > 1) throw new Error(`Ambiguous Site rider: ${r.riderKey}`);
       const overrideTargets = new Map(db.configurationDefinitions.flatMap(definition => {
@@ -231,13 +236,13 @@ export function resolveEffectiveConfiguration(db: EffectiveConfigurationData, si
     if (rateOutcomes.length > 1 || rateOutcomes.length && !rateUnavailable) issue("rates", productKey, "Invalid or conflicting rate outcome", rateOutcomes.flatMap(outcome => outcome.provenance));
     const rating = { status: rateUnavailable ? "unavailable" as const : "unresolved" as const, outcome: rateOutcome, adjustments: ratingAdjustments };
     const rates = order(db.productRateTables.filter(r => r.productKey === productKey && (r.siteKey === siteKey || r.siteKey === null))).map(r => {
-      const table = one(db.rateTables, r.rateTableKey, "rateTables");
+      const table = one("rateTables", r.rateTableKey);
       if (!rateUnavailable) issue("rates", r.key, "Rate source is reference material; executable rate cells/inputs are not modeled", [source("productRateTables", r)]);
       return { ...wrap("productRateTables", [r])[0], status: "unresolved" as const, table: table ? wrap("rateTables", [table])[0] : null, presentations: wrap("rateTablePresentations", order(db.rateTablePresentations.filter(p => p.rateTableKey === r.rateTableKey && (p.siteKey === siteKey || p.siteKey === null) && (p.productKey === productKey || p.productKey === null)))) };
     });
     if (!rates.length && !rateUnavailable) issue("rates", productKey, "No normalized rate inputs");
     const plans = order(db.productCoveragePlans.filter(r => r.productKey === productKey)).map(link => {
-      const plan = one(db.coveragePlanDefinitions, link.planKey, "coveragePlanDefinitions");
+      const plan = one("coveragePlanDefinitions", link.planKey);
       return { ...wrap("productCoveragePlans", [link])[0], definition: plan ? wrap("coveragePlanDefinitions", [plan])[0] : null,
         variants: order(db.coveragePlanVariants.filter(v => v.planKey === link.planKey && (v.applicantTypeKey === null || v.applicantTypeKey === link.applicantTypeKey))).map(v => ({ ...wrap("coveragePlanVariants", [v])[0],
           amounts: order(db.planAmountRules.filter(a => a.variantKey === v.key)).map(a => {
@@ -246,15 +251,15 @@ export function resolveEffectiveConfiguration(db: EffectiveConfigurationData, si
           }), periods: wrap("planBenefitPeriods", order(db.planBenefitPeriods.filter(p => p.variantKey === v.key))) })) };
     });
     const questionSets = order(db.productQuestionSets.filter(r => r.productKey === productKey)).map(link => {
-      const set = one(db.questionSets, link.questionSetKey, "questionSets");
+      const set = one("questionSets", link.questionSetKey);
       return { ...wrap("productQuestionSets", [link])[0], definition: set ? wrap("questionSets", [set])[0] : null,
         questions: order(db.questionSetQuestions.filter(q => q.questionSetKey === link.questionSetKey)).map(q => {
-          const question = one(db.questionDefinitions, q.questionKey, "questionDefinitions");
+          const question = one("questionDefinitions", q.questionKey);
           if (q.conditionKey) issue("questions", q.key, "Conditional question requires evaluation", [source("questionSetQuestions", q)]);
           if (question?.status !== "documented") issue("questions", q.questionKey, "Question is not documented", question ? [source("questionDefinitions", question)] : []);
           return { ...wrap("questionSetQuestions", [q])[0], definition: question ? wrap("questionDefinitions", [question])[0] : null };
         }), fields: order(db.questionSetFields.filter(f => f.questionSetKey === link.questionSetKey)).map(f => {
-          const field = one(db.fields, f.fieldKey, "fields");
+          const field = one("fields", f.fieldKey);
           if (f.conditionKey) issue("questions", f.key, "Conditional question field requires evaluation", [source("questionSetFields", f)]);
           return { ...wrap("questionSetFields", [f])[0], definition: field ? definition("fields", field) : null };
         }) };
@@ -318,10 +323,10 @@ export function resolveEffectiveConfiguration(db: EffectiveConfigurationData, si
     });
   }));
   const pages = order(db.sitePages.filter(p => p.siteKey === siteKey)).map(assignment => {
-    const page = one(db.pages, assignment.pageKey, "pages");
+    const page = one("pages", assignment.pageKey);
     const fieldKeys = new Map<string, { included: boolean; definition: DatabaseSchema["fields"][number]["definition"]; provenance: RuleProvenance[] }>();
     const field = (key: string) => {
-      const row = one(db.fields, key, "fields");
+      const row = one("fields", key);
       if (!row) return undefined;
       const resolved = resolveSharedFieldDefinition(row, db.validationRules, fieldDefinitionOwnership);
       return { included: true, ...resolved };
@@ -351,12 +356,12 @@ export function resolveEffectiveConfiguration(db: EffectiveConfigurationData, si
     for (const value of fieldKeys.values()) {
       if (value.definition.optionalForProducts?.some(key => !productKeys.includes(key))) throw new Error(`Unassigned optional field product: ${assignment.pageKey}/${value.definition.id}`);
       const conditionKeys = [value.definition.visibilityConditionId, ...(value.definition.optionExclusions ?? []).map(e => e.conditionId)].filter((key): key is NonNullable<typeof key> => key !== undefined);
-      for (const key of conditionKeys) one(db.conditions, key, "conditions");
+      for (const key of conditionKeys) one("conditions", key);
     }
     const sections = order(db.pageSections.filter(s => s.pageKey === assignment.pageKey)).map(s => ({ key: s.key, definition: { ...definition("pageSections", s), value: { ...s.definition,
       fieldIds: order(db.pageSectionFields.filter(f => f.sectionKey === s.key)).map(f => f.fieldKey as typeof s.definition.fieldIds[number]),
     } }, fields: order(db.pageSectionFields.filter(f => f.sectionKey === s.key)).map(f => {
-      const field = one(db.fields, f.fieldKey, "fields");
+      const field = one("fields", f.fieldKey);
       return { ...wrap("pageSectionFields", [f])[0], definition: field ? definition("fields", field) : null };
     }) }));
     return { key: assignment.pageKey, sections, requirement: assignment.requirement, definition: page ? definition("pages", page) : null, provenance: [source("sitePages", assignment)], fields: [...fieldKeys].map(([key, value]) => ({ key, ...value })) };
@@ -370,7 +375,7 @@ export function resolveEffectiveConfiguration(db: EffectiveConfigurationData, si
     flowSeen.add(key); flowAssignments.set(row.flowId, row);
   }
   const flows = [...flowAssignments.values()].sort((a,b) => a.flowId.localeCompare(b.flowId)).map(assignment => {
-    const flow = one(db.flows, assignment.flowKey, "flows");
+    const flow = one("flows", assignment.flowKey);
     const steps = order(db.flowSteps.filter(r => r.flowKey === assignment.flowKey));
     const transitions = order(db.flowTransitions.filter(r => r.flowKey === assignment.flowKey));
     for (const edge of transitions) {
@@ -381,9 +386,9 @@ export function resolveEffectiveConfiguration(db: EffectiveConfigurationData, si
   });
   if (!flows.length) issue("flows", siteKey, "No flow assignments");
   const rules = scoped(db.ruleAssignments).map(assignment => {
-    const row = one(db.rules, assignment.ruleKey, "rules");
+    const row = one("rules", assignment.ruleKey);
     const conditions = order(db.ruleConditions.filter(r => r.ruleKey === assignment.ruleKey)).map(r => {
-      const condition = one(db.conditions, r.conditionKey, "conditions");
+      const condition = one("conditions", r.conditionKey);
       return { provenance: [source("ruleConditions", r)], condition: condition ? definition("conditions", condition) : null };
     });
     const actions = order(db.ruleActions.filter(action => action.ruleKey === assignment.ruleKey)).map(action => {
@@ -396,7 +401,7 @@ export function resolveEffectiveConfiguration(db: EffectiveConfigurationData, si
     return { key: assignment.ruleKey, executionStatus: executable ? "resolved" as const : "documented" as const, definition: row ? definition("rules", row) : null, provenance: [source("ruleAssignments", assignment)], conditions, actions };
   });
   const features = order(db.siteFeatures.filter(r => r.siteKey === siteKey)).map(r => {
-    const row = one(db.features, r.featureKey, "features");
+    const row = one("features", r.featureKey);
     return { key: r.featureKey, enabled: r.enabled, provenance: [source("siteFeatures", r)], definition: row ? definition("features", row) : null };
   });
   const lifeAggregates = configurations.filter(configuration => db.configurationDefinitions.find(definition => definition.key === configuration.key)?.definition.target?.kind === "site-life-aggregate");
@@ -449,7 +454,7 @@ export function resolveEffectiveConfiguration(db: EffectiveConfigurationData, si
   if (financialQuestionnairePolicies.length > 1 || financialQuestionnairePolicies.some(row => !isFinancialQuestionnairePolicy(row.value) || row.value.rules.some(rule => rule.productKeys.some(key => !productKeys.includes(key))))) throw new Error("Invalid financial questionnaire policy or product scope");
   const categoryEligibilityPolicies = configurations.filter(configuration => db.configurationDefinitions.find(definition => definition.key === configuration.key)?.definition.target?.kind === "site-category-eligibility");
   const healthQuestionnairePolicies = configurations.filter(configuration => db.configurationDefinitions.find(definition => definition.key === configuration.key)?.definition.target?.kind === "site-health-questionnaires").map(configuration => ({ ...configuration, fields: isHealthQuestionnairePolicy(configuration.value) ? healthQuestionnaireFieldKeys(configuration.value).flatMap(key => {
-    const row = one(db.fields, key, "fields");
+    const row = one("fields", key);
     if (!row) return [];
     const resolved = resolveSharedFieldDefinition(row, db.validationRules, fieldDefinitionOwnership);
     return [{ key, definition: resolved.definition, provenance: resolved.provenance }];

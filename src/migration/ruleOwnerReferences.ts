@@ -34,6 +34,6 @@ export function addRuleOwnerReferences(db: DatabaseSchema) {
       definition: reviewedRule({ ...definition, documentationStatus: "current", documentedIn: "rules", sequence: 8000 + position }, position) });
     const assignmentKey = `${key}.global`;
     db.ruleAssignments.push({ id: assignmentKey, key: assignmentKey, ...libraryMetadata("ruleAssignments", assignmentKey, authority), ruleKey: key,
-      position, scope: "global", siteKey: null, clientKey: null });
+      position, scope: "global", siteKey: null, hostingAssociationKey: null });
   }
 }

@@ -35,7 +35,7 @@ it('keeps the WAEPA cart a summary even when application eligibility facts are i
   const keys = ['coverage.coverage-cart.eligibility-concern', 'coverage.coverage-cart.based-on-your-answers-you-may-not-be', 'coverage.coverage-cart.you-may-still-continue-with-your-other-selected'];
   for (const key of keys) {
     catalog.data.contentEntries.push({ ...catalog.data.contentEntries[0], id: key, key });
-    catalog.data.contentValues.push({ ...catalog.data.contentValues[0], id: key, key, contentKey: key, value: 'Obsolete cart warning', scope: 'site', siteKey: 'waepa', clientKey: null });
+    catalog.data.contentValues.push({ ...catalog.data.contentValues[0], id: key, key, contentKey: key, value: 'Obsolete cart warning', scope: 'site', siteKey: 'waepa', hostingAssociationKey: null });
   }
   const rebuilt = withFreshStartCatalog(catalog.data);
   expect(rebuilt.contentEntries.some((row: { key: string }) => keys.includes(row.key))).toBe(false);

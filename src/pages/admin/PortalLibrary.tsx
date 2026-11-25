@@ -1,4 +1,5 @@
-import CommunicationsLibrary from './library/CommunicationsLibrary';
+import { lazy, Suspense } from "react";
+import PageTransitionSkeleton from "../../components/feedback/PageTransitionSkeleton";
 import { Link as RouterLink, useParams, useSearchParams } from "react-router-dom";
 import { Box, Button, Stack, Tab, Tabs, useMediaQuery, Typography } from "@mui/material";
 import { portalDatabaseEnabled } from '../../services/portalClient';
@@ -12,18 +13,20 @@ import { resolvePageCatalog } from "../../domain/pageCatalog";
 import StoredLibraryDomain from "./library/StoredLibraryDomain";
 import StoredPagesLibrary from "./library/StoredPagesLibrary";
 import StoredFieldsLibrary from "./library/StoredFieldsLibrary";
-import StoredFlowsLibrary from "./library/StoredFlowsLibrary";
 import AnalyticsLibrary from "./library/AnalyticsLibrary";
 import ContentLibrary from "./library/ContentLibrary";
-import ClientInformationLibrary from "./library/ClientInformationLibrary";
+import SiteInformationLibrary from "./library/SiteInformationLibrary";
 import RulesLibrary from "./library/RulesLibrary";
 import ConfigurationsLibrary from "./library/ConfigurationsLibrary";
 import ValidationLibrary from "./library/ValidationLibrary";
 import AccessibilityLibrary from "./library/AccessibilityLibrary";
-import RequirementChangesLibrary from "./library/RequirementChangesLibrary";
 import FormsLibrary from "./library/FormsLibrary";
 import FormulasLibrary from "./library/FormulasLibrary";
 import ComponentCatalogTable from "../../components/docs/ComponentCatalogTable";
+
+const CommunicationsLibrary = lazy(() => import('./library/CommunicationsLibrary'));
+const StoredFlowsLibrary = lazy(() => import("./library/StoredFlowsLibrary"));
+const RequirementChangesLibrary = lazy(() => import("./library/RequirementChangesLibrary"));
 
 export const libraryTabs = [
   { id: "overview", label: "Overview" },
@@ -43,7 +46,7 @@ export const libraryTabs = [
   { id: "changes", label: "Fresh-start changelog" },
 ];
 const domainDescriptions: Record<string, string> = {
-  overview: "Client, association and TPA information, with an interactive Site preview.",
+  overview: "Site, Association and TPA information, with an interactive Site preview.",
   pages: "Browse pages by flow, requirement and available fields, grouped by page, modal and drawer. Select a Site to see its configured requirements, including pages set to none. Page sequence is defined by the navigation rules for each flow.",
   forms: "Inventory of application pages, calculators, dialogs and embedded forms, with internal or external hosting, providers and prototype implementation.",
   fields: "Browse field IDs, input labels, types, Storybook components, keyboards, options, defaults and helper text. Page and section usage is listed below the field catalog.",
@@ -82,16 +85,11 @@ function StoredSitePreview({ siteKey }: { siteKey: string }) {
 function LibraryOverview({ siteKey, legacyPreview }: { siteKey: string; legacyPreview: boolean }) {
   const [search, setSearch] = useSearchParams();
   const view = search.get("view") === "site-preview" || legacyPreview && !search.has("view") ? "site-preview" : "client-information";
-  if (portalDatabaseEnabled && siteKey === 'all') return <Stack spacing={1} alignItems="flex-start">
-    <Typography>Choose a Site for its effective configuration, or browse the shared template definitions.</Typography>
-    <Button component={RouterLink} to="/admin-center/library/pages?scope=global">Browse template pages</Button>
-    <Button component={RouterLink} to="/admin-center/sites">View Site portfolio</Button>
-  </Stack>;
   return <Stack spacing={3}>
     <Tabs value={view} aria-label="Overview views" onChange={(_, next: string) => setSearch({ site: siteKey, view: next })}>
-      <Tab value="client-information" label="Client information" /><Tab value="site-preview" label="Site preview" />
+      <Tab value="client-information" label="Site information" /><Tab value="site-preview" label="Site preview" />
     </Tabs>
-    {view === "site-preview" ? <StoredSitePreview siteKey={siteKey} /> : <ClientInformationLibrary siteKey={siteKey} />}
+    {view === "site-preview" ? <StoredSitePreview siteKey={siteKey} /> : <SiteInformationLibrary siteKey={siteKey} />}
   </Stack>;
 }
 
@@ -104,6 +102,7 @@ export default function PortalLibrary() {
   const domains = libraryTabs;
   const requested = domainId === "content" && search.get("view") === "emails" ? "emails" : aliases[domainId ?? ""] ?? domainId;
   const domain = domains.find(entry => entry.id === requested) ?? libraryTabs[0];
+  const globalOverview = domain.id === 'overview' && selection === 'all' && (portalDatabaseEnabled || import.meta.env.VITE_MOCK_PLATFORM_ENABLED);
   return <Workspace>
     <Typography component="h1" variant="h5" sx={{ fontWeight: 800 }}>Portal Library</Typography>
     <LibraryScopeContext.Provider value={scope}>
@@ -115,11 +114,17 @@ export default function PortalLibrary() {
       <Stack spacing={3} sx={{ flex: 1, minWidth: 0 }}>
         <Stack component="header" aria-label="Library domain heading" spacing={0.75}>
           <Typography component="h2" variant="h5" sx={{ fontWeight: 800 }}>{domain.label}</Typography>
-          {(domain.id !== 'overview' || selection !== 'all' || !portalDatabaseEnabled) && <Typography variant="body2" color="text.secondary">{domainDescriptions[domain.id]}</Typography>}
+          {!globalOverview && <Typography variant="body2" color="text.secondary">{domainDescriptions[domain.id]}</Typography>}
         </Stack>
-        {domain.id === "accessibility" ? <AccessibilityLibrary siteKey={selection} /> : domain.id === "changes" ? <RequirementChangesLibrary /> : domain.id === "formulas" ? <FormulasLibrary /> : <LibraryCatalogProvider siteKey={selection}>
+        <Suspense fallback={<PageTransitionSkeleton />}>
+        {globalOverview ? <Stack spacing={1} alignItems="flex-start">
+          <Typography>Choose a Site for its effective configuration, or browse the shared template definitions.</Typography>
+          <Button component={RouterLink} to="/admin-center/library/pages?scope=global">Browse template pages</Button>
+          <Button component={RouterLink} to="/admin-center/sites">View Site portfolio</Button>
+        </Stack> : domain.id === "accessibility" ? <AccessibilityLibrary siteKey={selection} /> : domain.id === "changes" ? <RequirementChangesLibrary /> : domain.id === "formulas" ? <FormulasLibrary /> : <LibraryCatalogProvider siteKey={selection}>
           {domain.id === "forms" ? <FormsLibrary /> : domain.id === "components" ? <LibraryComponents /> : domain.id === "pages" ? <StoredPagesLibrary siteKey={selection} /> : domain.id === "fields" ? <StoredFieldsLibrary siteKey={selection} /> : domain.id === "overview" ? <LibraryOverview siteKey={selection} legacyPreview={domainId === "site-preview"} /> : domain.id === "rules" ? <RulesLibrary siteKey={selection} /> : domain.id === "configurations" ? <ConfigurationsLibrary domain={domainId} siteKey={selection} /> : domain.id === "flows" ? <StoredFlowsLibrary siteKey={selection} /> : domain.id === "analytics" ? <AnalyticsLibrary siteKey={selection} /> : domain.id === "content" ? <ContentLibrary siteKey={selection} /> : domain.id === "emails" ? <CommunicationsLibrary siteKey={selection} /> : domain.id === "validation" ? <ValidationLibrary siteKey={selection} /> : <StoredLibraryDomain domain={domain.id} siteKey={selection} />}
         </LibraryCatalogProvider>}
+        </Suspense>
       </Stack>
       </Box>
     </LibraryScopeContext.Provider>

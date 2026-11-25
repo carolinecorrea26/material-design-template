@@ -26,9 +26,9 @@ Do not create separate copies of a shared rule for each layout or Site.
 must identify whether it changes a global definition/default or an effective-site
 assignment/override; reviewing ASCE does not change that ownership.
 
-Run `npm run test:fresh-start` for ownership and inheritance changes. This focused
-check is included in `catalog:check` and `build-storybook`, so production, admin
-and Storybook builds stop if its invariants fail. It checks that global Library definitions remain global even for
+Run `npm run test:fresh-start` explicitly for ownership and inheritance changes.
+Prototype and Storybook builds leave test execution to the test commands.
+This check verifies that global Library definitions remain global even for
 an unconfigured Site, two effective Sites share definitions while keeping values
 independent, reviewed surfaces reconstruct without superseded authoring, and
 Library/prototype/Storybook agree despite stale saved records. Other tests remain

@@ -91,9 +91,9 @@ it("copies referenced assignments and patterns so later copied-Site edits stay i
   const draft = createLibraryDraft(revision, "asce");
   draft.data.organizations = db.organizations;
   draft.data.organizationProfiles = db.organizationProfiles;
-  const client = db.clients.find(row => row.key === "asce")!;
+  const client = db.associationEntities.find(row => row.key === "asce")!;
   const organization = db.organizations.find(row => row.id === client.organizationId)!;
-  const copied = createSiteBuild(draft, { siteKey: "asce-amount-copy", siteName: "Amount copy", template: "multi", clientKey: client.key, clientName: client.name, organizationKey: organization.key, organizationName: organization.name, newClient: false, newOrganization: false });
+  const copied = createSiteBuild(draft, { siteKey: "asce-amount-copy", siteName: "Amount copy", template: "multi", hostingAssociationKey: client.key, clientName: client.name, organizationKey: organization.key, organizationName: organization.name, newClient: false, newOrganization: false });
   const copiedRule = copied.data.riderAmountRules.find(row => row.key === `build.asce-amount-copy.${rule().key}`)!;
   expect(copiedRule.amountPatternKey).not.toBe(rule().amountPatternKey);
   copied.data.amountBands.find(row => row.amountPatternKey === copiedRule.amountPatternKey)!.maximum = 100000;

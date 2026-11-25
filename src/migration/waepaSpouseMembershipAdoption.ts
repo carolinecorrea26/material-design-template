@@ -7,7 +7,7 @@ const meta = (table: string, key: string) => ({ id: key, key, ...libraryMetadata
 const message = "A spouse who is currently a WAEPA member or becoming one cannot apply as a dependent spouse. Remove spouse from this application; your spouse may apply separately as an eligible member or Associate Member.";
 
 export function applyWaepaSpouseMembershipAdoption(db: DatabaseSchema) {
-  const assignment = { ...meta("siteFieldConfigurations", "site:waepa.eligibility.spouse-membership.include"), position: 30000, scope: "site" as const, siteKey: "waepa", clientKey: null, pageKey: "eligibility", fieldKey: "spouse-membership", include: true, hidden: false, values: { label: "Is your spouse currently a WAEPA member or becoming a WAEPA member?", required: true } };
+  const assignment = { ...meta("siteFieldConfigurations", "site:waepa.eligibility.spouse-membership.include"), position: 30000, scope: "site" as const, siteKey: "waepa", hostingAssociationKey: null, pageKey: "eligibility", fieldKey: "spouse-membership", include: true, hidden: false, values: { label: "Is your spouse currently a WAEPA member or becoming a WAEPA member?", required: true } };
   const index = db.siteFieldConfigurations.findIndex(row => row.key === assignment.key);
   if (index < 0) db.siteFieldConfigurations.push(assignment); else db.siteFieldConfigurations[index] = assignment;
   const definitions = [
@@ -20,7 +20,7 @@ export function applyWaepaSpouseMembershipAdoption(db: DatabaseSchema) {
     { key: "site:waepa.applicantExperience.eligibilityDisqualifications", configurationKey: definitions[1].key, value: [{ applicant: "spouse", fieldId: "spouse-membership", value: "yes", message }] },
   ];
   for (const value of values) {
-    const row = { ...meta("configurationValues", value.key), position: 0, scope: "site" as const, siteKey: "waepa", clientKey: null, configurationKey: value.configurationKey, value: value.value as Json };
+    const row = { ...meta("configurationValues", value.key), position: 0, scope: "site" as const, siteKey: "waepa", hostingAssociationKey: null, configurationKey: value.configurationKey, value: value.value as Json };
     const index = db.configurationValues.findIndex(row => row.key === value.key);
     if (index < 0) db.configurationValues.push(row); else db.configurationValues[index] = row;
   }

@@ -62,8 +62,8 @@ export function resolveStoredFieldCollections(data: EffectiveSiteData, site: Ret
       if (key === 'children' && binding.fieldKey === 'child-full-time-student' && !siteUsesRequirementFields(site.siteKey) && !data.eligibilityConstraints.some(rule => rule.siteKey === site.siteKey && rule.applicantTypeKey === 'child' && rule.studentMaximumAgeYears !== null)) continue;
       let field = resolveSharedFieldDefinition(saved, data.validationRules, site.configuration.fieldDefinitionOwnership).definition;
       let included = true;
-      const rank = { global: 0, client: 1, site: 2 };
-      const overrides = data.siteFieldConfigurations.filter(row => row.pageKey === definition.pageKey && row.fieldKey === binding.fieldKey && (row.scope === 'global' || row.scope === 'client' && row.clientKey === site.clientKey || row.scope === 'site' && row.siteKey === site.siteKey)).sort((a, b) => rank[a.scope] - rank[b.scope] || a.position - b.position);
+      const rank = { global: 0, association: 1, site: 2 };
+      const overrides = data.siteFieldConfigurations.filter(row => row.pageKey === definition.pageKey && row.fieldKey === binding.fieldKey && (row.scope === 'global' || row.scope === 'association' && row.hostingAssociationKey === site.hostingAssociationKey || row.scope === 'site' && row.siteKey === site.siteKey)).sort((a, b) => rank[a.scope] - rank[b.scope] || a.position - b.position);
       const written = new Set<string>();
       for (const row of overrides) {
         for (const property of [...Object.keys(row.values), ...(row.hidden !== null ? ['hidden'] : []), ...(row.include !== null ? ['include'] : [])]) {

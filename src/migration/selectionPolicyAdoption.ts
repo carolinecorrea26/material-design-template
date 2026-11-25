@@ -14,7 +14,7 @@ export function applySelectionPolicyAdoption(db: DatabaseSchema) {
     const assignments = db.siteProducts.filter(p => p.siteId === site.id && p.enabled);
     for (const assignment of assignments) {
     const product = { productKey: assignment.productKey };
-    const applicable = (row: { scope: string; siteKey: string | null; clientKey: string | null }) => row.scope === "global" || row.scope === "client" && row.clientKey === scoped.clientKey || row.scope === "site" && row.siteKey === scoped.key;
+    const applicable = (row: { scope: string; siteKey: string | null; hostingAssociationKey: string | null }) => row.scope === "global" || row.scope === "association" && row.hostingAssociationKey === scoped.hostingAssociationKey || row.scope === "site" && row.siteKey === scoped.key;
     const markerKeys = new Set(db.configurationDefinitions.filter(d => d.definition.target?.kind === "product-rider-set" && d.definition.target.productKey === product.productKey).map(d => d.key));
     const rank: Record<string, number> = { global: 0, client: 1, site: 2 };
     const marker = db.configurationValues.filter(v => applicable(v) && markerKeys.has(v.configurationKey)).sort((a, b) => rank[a.scope] - rank[b.scope]).at(-1);
@@ -46,7 +46,7 @@ export function applySelectionPolicyAdoption(db: DatabaseSchema) {
     db.configurationDefinitions = db.configurationDefinitions.filter(r => r.key !== key);
     db.configurationValues = db.configurationValues.filter(r => r.key !== key);
     db.configurationDefinitions.push({ ...meta("configurationDefinitions", key), position: 0, definition: { path: null, metadata: { provisional: true, revisit: true }, target: { kind: "product-selection-policy", productKey: product.productKey } } });
-    db.configurationValues.push({ ...meta("configurationValues", key), position: 0, scope: "site", siteKey: scoped.key, clientKey: null, configurationKey: key, value: policy as unknown as Json });
+    db.configurationValues.push({ ...meta("configurationValues", key), position: 0, scope: "site", siteKey: scoped.key, hostingAssociationKey: null, configurationKey: key, value: policy as unknown as Json });
     const decisionKey = `provisional-decision.${key}`;
     if (!scoped.mcrRequired) continue;
     db.semanticRequirements = db.semanticRequirements.filter(r => r.key !== decisionKey);

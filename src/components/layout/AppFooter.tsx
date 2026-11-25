@@ -10,7 +10,6 @@ import AppModal from "../layout/AppModal";
 import LegalDocList from "../content/LegalDocList";
 import { getFormTemplate } from "../../config/template/resolveTemplate";
 import PrintAction from '../content/PrintAction';
-import { requirementText } from '../../domain/requirementContent';
 
 type AppFooterProps = {
   client: ClientConfig;
@@ -268,7 +267,6 @@ export default function AppFooter({ client }: AppFooterProps) {
                 {text}
               </Typography>
             ))}
-            <Box component="img" src={requirementText('footer.security-seal.src')} alt={requirementText('footer.security-seal.alt')} sx={{ width: 140, height: 'auto', alignSelf: 'flex-end', mt: 1 }} />
           </Stack>
         </Box>
       </Box>

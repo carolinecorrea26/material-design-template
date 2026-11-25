@@ -11794,7 +11794,6 @@
       "id": "site:demo.membership.title.override",
       "key": "site:demo.membership.title.override",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "demo",
       "pageKey": "membership",
       "fieldKey": "title",
@@ -11804,13 +11803,13 @@
       "values": {},
       "displayId": 115733887920971,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/site:demo.membership.title.override"
+      "sourceReference": "prototype:siteFieldConfigurations/site:demo.membership.title.override",
+      "hostingAssociationKey": null
     },
     {
       "id": "site:demo.membership.membership.override",
       "key": "site:demo.membership.membership.override",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "demo",
       "pageKey": "membership",
       "fieldKey": "membership",
@@ -11822,13 +11821,13 @@
       },
       "displayId": 55049123337563,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/site:demo.membership.membership.override"
+      "sourceReference": "prototype:siteFieldConfigurations/site:demo.membership.membership.override",
+      "hostingAssociationKey": null
     },
     {
       "id": "site:abe.membership.title.override",
       "key": "site:abe.membership.title.override",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "abe",
       "pageKey": "membership",
       "fieldKey": "title",
@@ -11838,13 +11837,13 @@
       "values": {},
       "displayId": 245625065495458,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/site:abe.membership.title.override"
+      "sourceReference": "prototype:siteFieldConfigurations/site:abe.membership.title.override",
+      "hostingAssociationKey": null
     },
     {
       "id": "site:abe.membership.membership.override",
       "key": "site:abe.membership.membership.override",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "abe",
       "pageKey": "membership",
       "fieldKey": "membership",
@@ -11856,13 +11855,13 @@
       },
       "displayId": 249199151121220,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/site:abe.membership.membership.override"
+      "sourceReference": "prototype:siteFieldConfigurations/site:abe.membership.membership.override",
+      "hostingAssociationKey": null
     },
     {
       "id": "site:avma.membership.title.override",
       "key": "site:avma.membership.title.override",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "avma",
       "pageKey": "membership",
       "fieldKey": "title",
@@ -11872,13 +11871,13 @@
       "values": {},
       "displayId": 128203518854553,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/site:avma.membership.title.override"
+      "sourceReference": "prototype:siteFieldConfigurations/site:avma.membership.title.override",
+      "hostingAssociationKey": null
     },
     {
       "id": "site:avma.membership.membership.override",
       "key": "site:avma.membership.membership.override",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "avma",
       "pageKey": "membership",
       "fieldKey": "membership",
@@ -11890,13 +11889,13 @@
       },
       "displayId": 150386743902417,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/site:avma.membership.membership.override"
+      "sourceReference": "prototype:siteFieldConfigurations/site:avma.membership.membership.override",
+      "hostingAssociationKey": null
     },
     {
       "id": "site:avma.membership.avma-vet-college.override",
       "key": "site:avma.membership.avma-vet-college.override",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "avma",
       "pageKey": "membership",
       "fieldKey": "avma-vet-college",
@@ -11906,13 +11905,13 @@
       "values": {},
       "displayId": 25120405806264,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/site:avma.membership.avma-vet-college.override"
+      "sourceReference": "prototype:siteFieldConfigurations/site:avma.membership.avma-vet-college.override",
+      "hostingAssociationKey": null
     },
     {
       "id": "site:avma.membership.avma-graduation-year.override",
       "key": "site:avma.membership.avma-graduation-year.override",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "avma",
       "pageKey": "membership",
       "fieldKey": "avma-graduation-year",
@@ -11922,13 +11921,13 @@
       "values": {},
       "displayId": 235729286340311,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/site:avma.membership.avma-graduation-year.override"
+      "sourceReference": "prototype:siteFieldConfigurations/site:avma.membership.avma-graduation-year.override",
+      "hostingAssociationKey": null
     },
     {
       "id": "site:avma.membership.avma-occupation.override",
       "key": "site:avma.membership.avma-occupation.override",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "avma",
       "pageKey": "membership",
       "fieldKey": "avma-occupation",
@@ -11938,13 +11937,13 @@
       "values": {},
       "displayId": 208455365570134,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/site:avma.membership.avma-occupation.override"
+      "sourceReference": "prototype:siteFieldConfigurations/site:avma.membership.avma-occupation.override",
+      "hostingAssociationKey": null
     },
     {
       "id": "site:csea.membership.title.override",
       "key": "site:csea.membership.title.override",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "csea",
       "pageKey": "membership",
       "fieldKey": "title",
@@ -11954,13 +11953,13 @@
       "values": {},
       "displayId": 146567950251000,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/site:csea.membership.title.override"
+      "sourceReference": "prototype:siteFieldConfigurations/site:csea.membership.title.override",
+      "hostingAssociationKey": null
     },
     {
       "id": "site:csea.membership.membership.override",
       "key": "site:csea.membership.membership.override",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "csea",
       "pageKey": "membership",
       "fieldKey": "membership",
@@ -11972,13 +11971,13 @@
       },
       "displayId": 230765454743162,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/site:csea.membership.membership.override"
+      "sourceReference": "prototype:siteFieldConfigurations/site:csea.membership.membership.override",
+      "hostingAssociationKey": null
     },
     {
       "id": "site:csea.membership.csea-performing-duties.override",
       "key": "site:csea.membership.csea-performing-duties.override",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "csea",
       "pageKey": "membership",
       "fieldKey": "csea-performing-duties",
@@ -11988,13 +11987,13 @@
       "values": {},
       "displayId": 177985137279447,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/site:csea.membership.csea-performing-duties.override"
+      "sourceReference": "prototype:siteFieldConfigurations/site:csea.membership.csea-performing-duties.override",
+      "hostingAssociationKey": null
     },
     {
       "id": "site:csea.membership.csea-occupation-group.override",
       "key": "site:csea.membership.csea-occupation-group.override",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "csea",
       "pageKey": "membership",
       "fieldKey": "csea-occupation-group",
@@ -12004,13 +12003,13 @@
       "values": {},
       "displayId": 35184194980864,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/site:csea.membership.csea-occupation-group.override"
+      "sourceReference": "prototype:siteFieldConfigurations/site:csea.membership.csea-occupation-group.override",
+      "hostingAssociationKey": null
     },
     {
       "id": "site:isitrust.membership.title.override",
       "key": "site:isitrust.membership.title.override",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "isitrust",
       "pageKey": "membership",
       "fieldKey": "title",
@@ -12020,13 +12019,13 @@
       "values": {},
       "displayId": 207422039063147,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/site:isitrust.membership.title.override"
+      "sourceReference": "prototype:siteFieldConfigurations/site:isitrust.membership.title.override",
+      "hostingAssociationKey": null
     },
     {
       "id": "site:isitrust.membership.membership.override",
       "key": "site:isitrust.membership.membership.override",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "isitrust",
       "pageKey": "membership",
       "fieldKey": "membership",
@@ -12041,13 +12040,13 @@
       },
       "displayId": 252827782436219,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/site:isitrust.membership.membership.override"
+      "sourceReference": "prototype:siteFieldConfigurations/site:isitrust.membership.membership.override",
+      "hostingAssociationKey": null
     },
     {
       "id": "site:nso.membership.title.override",
       "key": "site:nso.membership.title.override",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "nso",
       "pageKey": "membership",
       "fieldKey": "title",
@@ -12057,13 +12056,13 @@
       "values": {},
       "displayId": 203598463836932,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/site:nso.membership.title.override"
+      "sourceReference": "prototype:siteFieldConfigurations/site:nso.membership.title.override",
+      "hostingAssociationKey": null
     },
     {
       "id": "site:nso.membership.membership.override",
       "key": "site:nso.membership.membership.override",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "nso",
       "pageKey": "membership",
       "fieldKey": "membership",
@@ -12075,13 +12074,13 @@
       },
       "displayId": 200284051898334,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/site:nso.membership.membership.override"
+      "sourceReference": "prototype:siteFieldConfigurations/site:nso.membership.membership.override",
+      "hostingAssociationKey": null
     },
     {
       "id": "demo.home.birth-date.placement",
       "key": "demo.home.birth-date.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "demo",
       "pageKey": "home",
       "fieldKey": "birth-date",
@@ -12091,13 +12090,13 @@
       "values": {},
       "displayId": 79123598492034,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/demo.home.birth-date.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/demo.home.birth-date.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "demo.home.zip-postal-code.placement",
       "key": "demo.home.zip-postal-code.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "demo",
       "pageKey": "home",
       "fieldKey": "zip-postal-code",
@@ -12107,13 +12106,13 @@
       "values": {},
       "displayId": 180979011243685,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/demo.home.zip-postal-code.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/demo.home.zip-postal-code.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "demo.home.state-province.placement",
       "key": "demo.home.state-province.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "demo",
       "pageKey": "home",
       "fieldKey": "state-province",
@@ -12123,13 +12122,13 @@
       "values": {},
       "displayId": 236148082832406,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/demo.home.state-province.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/demo.home.state-province.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "demo.home.gender.placement",
       "key": "demo.home.gender.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "demo",
       "pageKey": "home",
       "fieldKey": "gender",
@@ -12139,13 +12138,13 @@
       "values": {},
       "displayId": 176578958858607,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/demo.home.gender.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/demo.home.gender.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "demo.home.smoker.placement",
       "key": "demo.home.smoker.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "demo",
       "pageKey": "home",
       "fieldKey": "smoker",
@@ -12155,13 +12154,13 @@
       "values": {},
       "displayId": 183061041822855,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/demo.home.smoker.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/demo.home.smoker.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "demo.home.average-monthly-income.placement",
       "key": "demo.home.average-monthly-income.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "demo",
       "pageKey": "home",
       "fieldKey": "average-monthly-income",
@@ -12171,13 +12170,13 @@
       "values": {},
       "displayId": 81106888434507,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/demo.home.average-monthly-income.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/demo.home.average-monthly-income.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "demo.home.hours-worked-per-week.placement",
       "key": "demo.home.hours-worked-per-week.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "demo",
       "pageKey": "home",
       "fieldKey": "hours-worked-per-week",
@@ -12187,13 +12186,13 @@
       "values": {},
       "displayId": 13404610494403,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/demo.home.hours-worked-per-week.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/demo.home.hours-worked-per-week.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "demo.home.actively-at-work.placement",
       "key": "demo.home.actively-at-work.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "demo",
       "pageKey": "home",
       "fieldKey": "actively-at-work",
@@ -12203,13 +12202,13 @@
       "values": {},
       "displayId": 223371079585171,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/demo.home.actively-at-work.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/demo.home.actively-at-work.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "demo.home.monthly-business-expenses.placement",
       "key": "demo.home.monthly-business-expenses.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "demo",
       "pageKey": "home",
       "fieldKey": "monthly-business-expenses",
@@ -12219,13 +12218,13 @@
       "values": {},
       "displayId": 120298075293628,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/demo.home.monthly-business-expenses.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/demo.home.monthly-business-expenses.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "demo.home.business-expense-responsibility.placement",
       "key": "demo.home.business-expense-responsibility.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "demo",
       "pageKey": "home",
       "fieldKey": "business-expense-responsibility",
@@ -12235,13 +12234,13 @@
       "values": {},
       "displayId": 117136095751140,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/demo.home.business-expense-responsibility.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/demo.home.business-expense-responsibility.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "demo.coverage.average-employees-6-months.authored.hidden",
       "key": "demo.coverage.average-employees-6-months.authored.hidden",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "demo",
       "pageKey": "coverage",
       "fieldKey": "average-employees-6-months",
@@ -12251,13 +12250,13 @@
       "position": -10000,
       "displayId": 195328098240578,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/demo.coverage.average-employees-6-months.authored.hidden"
+      "sourceReference": "prototype:siteFieldConfigurations/demo.coverage.average-employees-6-months.authored.hidden",
+      "hostingAssociationKey": null
     },
     {
       "id": "abe.home.birth-date.placement",
       "key": "abe.home.birth-date.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "abe",
       "pageKey": "home",
       "fieldKey": "birth-date",
@@ -12267,13 +12266,13 @@
       "values": {},
       "displayId": 126990464264069,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/abe.home.birth-date.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/abe.home.birth-date.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "abe.home.zip-postal-code.placement",
       "key": "abe.home.zip-postal-code.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "abe",
       "pageKey": "home",
       "fieldKey": "zip-postal-code",
@@ -12283,13 +12282,13 @@
       "values": {},
       "displayId": 105301024201980,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/abe.home.zip-postal-code.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/abe.home.zip-postal-code.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "abe.home.state-province.placement",
       "key": "abe.home.state-province.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "abe",
       "pageKey": "home",
       "fieldKey": "state-province",
@@ -12299,13 +12298,13 @@
       "values": {},
       "displayId": 43996067171437,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/abe.home.state-province.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/abe.home.state-province.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "abe.home.gender.placement",
       "key": "abe.home.gender.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "abe",
       "pageKey": "home",
       "fieldKey": "gender",
@@ -12315,13 +12314,13 @@
       "values": {},
       "displayId": 187785778817500,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/abe.home.gender.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/abe.home.gender.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "abe.home.smoker.placement",
       "key": "abe.home.smoker.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "abe",
       "pageKey": "home",
       "fieldKey": "smoker",
@@ -12331,13 +12330,13 @@
       "values": {},
       "displayId": 211144273600424,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/abe.home.smoker.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/abe.home.smoker.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "abe.home.average-monthly-income.placement",
       "key": "abe.home.average-monthly-income.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "abe",
       "pageKey": "home",
       "fieldKey": "average-monthly-income",
@@ -12347,13 +12346,13 @@
       "values": {},
       "displayId": 43470004643372,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/abe.home.average-monthly-income.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/abe.home.average-monthly-income.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "abe.home.hours-worked-per-week.placement",
       "key": "abe.home.hours-worked-per-week.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "abe",
       "pageKey": "home",
       "fieldKey": "hours-worked-per-week",
@@ -12363,13 +12362,13 @@
       "values": {},
       "displayId": 168879053667998,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/abe.home.hours-worked-per-week.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/abe.home.hours-worked-per-week.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "abe.home.actively-at-work.placement",
       "key": "abe.home.actively-at-work.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "abe",
       "pageKey": "home",
       "fieldKey": "actively-at-work",
@@ -12379,13 +12378,13 @@
       "values": {},
       "displayId": 276243762672536,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/abe.home.actively-at-work.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/abe.home.actively-at-work.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "abe.home.monthly-business-expenses.placement",
       "key": "abe.home.monthly-business-expenses.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "abe",
       "pageKey": "home",
       "fieldKey": "monthly-business-expenses",
@@ -12395,13 +12394,13 @@
       "values": {},
       "displayId": 74467289230993,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/abe.home.monthly-business-expenses.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/abe.home.monthly-business-expenses.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "abe.home.business-expense-responsibility.placement",
       "key": "abe.home.business-expense-responsibility.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "abe",
       "pageKey": "home",
       "fieldKey": "business-expense-responsibility",
@@ -12411,13 +12410,13 @@
       "values": {},
       "displayId": 52502001550409,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/abe.home.business-expense-responsibility.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/abe.home.business-expense-responsibility.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "abe.coverage.average-employees-6-months.authored.hidden",
       "key": "abe.coverage.average-employees-6-months.authored.hidden",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "abe",
       "pageKey": "coverage",
       "fieldKey": "average-employees-6-months",
@@ -12427,13 +12426,13 @@
       "position": -10000,
       "displayId": 258306932506357,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/abe.coverage.average-employees-6-months.authored.hidden"
+      "sourceReference": "prototype:siteFieldConfigurations/abe.coverage.average-employees-6-months.authored.hidden",
+      "hostingAssociationKey": null
     },
     {
       "id": "abe.eligibility.spouse-membership.authored.override",
       "key": "abe.eligibility.spouse-membership.authored.override",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "abe",
       "pageKey": "eligibility",
       "fieldKey": "spouse-membership",
@@ -12445,13 +12444,13 @@
       "position": -10000,
       "displayId": 226556588723104,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/abe.eligibility.spouse-membership.authored.override"
+      "sourceReference": "prototype:siteFieldConfigurations/abe.eligibility.spouse-membership.authored.override",
+      "hostingAssociationKey": null
     },
     {
       "id": "avma.home.birth-date.placement",
       "key": "avma.home.birth-date.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "avma",
       "pageKey": "home",
       "fieldKey": "birth-date",
@@ -12461,13 +12460,13 @@
       "values": {},
       "displayId": 24859016397980,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/avma.home.birth-date.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/avma.home.birth-date.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "avma.home.zip-postal-code.placement",
       "key": "avma.home.zip-postal-code.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "avma",
       "pageKey": "home",
       "fieldKey": "zip-postal-code",
@@ -12477,13 +12476,13 @@
       "values": {},
       "displayId": 182441492951871,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/avma.home.zip-postal-code.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/avma.home.zip-postal-code.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "avma.home.state-province.placement",
       "key": "avma.home.state-province.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "avma",
       "pageKey": "home",
       "fieldKey": "state-province",
@@ -12493,13 +12492,13 @@
       "values": {},
       "displayId": 250554724485888,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/avma.home.state-province.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/avma.home.state-province.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "avma.home.gender.placement",
       "key": "avma.home.gender.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "avma",
       "pageKey": "home",
       "fieldKey": "gender",
@@ -12509,13 +12508,13 @@
       "values": {},
       "displayId": 228784237307269,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/avma.home.gender.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/avma.home.gender.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "avma.home.smoker.placement",
       "key": "avma.home.smoker.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "avma",
       "pageKey": "home",
       "fieldKey": "smoker",
@@ -12525,13 +12524,13 @@
       "values": {},
       "displayId": 101333377080617,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/avma.home.smoker.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/avma.home.smoker.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "avma.home.average-monthly-income.placement",
       "key": "avma.home.average-monthly-income.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "avma",
       "pageKey": "home",
       "fieldKey": "average-monthly-income",
@@ -12541,13 +12540,13 @@
       "values": {},
       "displayId": 197401619047269,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/avma.home.average-monthly-income.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/avma.home.average-monthly-income.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "avma.home.hours-worked-per-week.placement",
       "key": "avma.home.hours-worked-per-week.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "avma",
       "pageKey": "home",
       "fieldKey": "hours-worked-per-week",
@@ -12557,13 +12556,13 @@
       "values": {},
       "displayId": 175161228303417,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/avma.home.hours-worked-per-week.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/avma.home.hours-worked-per-week.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "avma.home.actively-at-work.placement",
       "key": "avma.home.actively-at-work.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "avma",
       "pageKey": "home",
       "fieldKey": "actively-at-work",
@@ -12573,13 +12572,13 @@
       "values": {},
       "displayId": 3351731357373,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/avma.home.actively-at-work.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/avma.home.actively-at-work.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "avma.home.monthly-business-expenses.placement",
       "key": "avma.home.monthly-business-expenses.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "avma",
       "pageKey": "home",
       "fieldKey": "monthly-business-expenses",
@@ -12589,13 +12588,13 @@
       "values": {},
       "displayId": 96578064698946,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/avma.home.monthly-business-expenses.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/avma.home.monthly-business-expenses.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "avma.home.business-expense-responsibility.placement",
       "key": "avma.home.business-expense-responsibility.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "avma",
       "pageKey": "home",
       "fieldKey": "business-expense-responsibility",
@@ -12605,13 +12604,13 @@
       "values": {},
       "displayId": 170236088980326,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/avma.home.business-expense-responsibility.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/avma.home.business-expense-responsibility.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "avma.coverage.average-employees-6-months.authored.include",
       "key": "avma.coverage.average-employees-6-months.authored.include",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "avma",
       "pageKey": "coverage",
       "fieldKey": "average-employees-6-months",
@@ -12621,13 +12620,13 @@
       "position": -10000,
       "displayId": 172052319763448,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/avma.coverage.average-employees-6-months.authored.include"
+      "sourceReference": "prototype:siteFieldConfigurations/avma.coverage.average-employees-6-months.authored.include",
+      "hostingAssociationKey": null
     },
     {
       "id": "csea.home.birth-date.placement",
       "key": "csea.home.birth-date.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "csea",
       "pageKey": "home",
       "fieldKey": "birth-date",
@@ -12637,13 +12636,13 @@
       "values": {},
       "displayId": 221112880822689,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/csea.home.birth-date.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/csea.home.birth-date.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "csea.home.zip-postal-code.placement",
       "key": "csea.home.zip-postal-code.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "csea",
       "pageKey": "home",
       "fieldKey": "zip-postal-code",
@@ -12653,13 +12652,13 @@
       "values": {},
       "displayId": 40176225897832,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/csea.home.zip-postal-code.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/csea.home.zip-postal-code.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "csea.home.state-province.placement",
       "key": "csea.home.state-province.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "csea",
       "pageKey": "home",
       "fieldKey": "state-province",
@@ -12669,13 +12668,13 @@
       "values": {},
       "displayId": 258948162690081,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/csea.home.state-province.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/csea.home.state-province.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "csea.home.gender.placement",
       "key": "csea.home.gender.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "csea",
       "pageKey": "home",
       "fieldKey": "gender",
@@ -12685,13 +12684,13 @@
       "values": {},
       "displayId": 97333121349048,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/csea.home.gender.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/csea.home.gender.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "csea.home.smoker.placement",
       "key": "csea.home.smoker.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "csea",
       "pageKey": "home",
       "fieldKey": "smoker",
@@ -12701,13 +12700,13 @@
       "values": {},
       "displayId": 114105180981284,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/csea.home.smoker.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/csea.home.smoker.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "csea.home.average-monthly-income.placement",
       "key": "csea.home.average-monthly-income.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "csea",
       "pageKey": "home",
       "fieldKey": "average-monthly-income",
@@ -12717,13 +12716,13 @@
       "values": {},
       "displayId": 143117119635896,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/csea.home.average-monthly-income.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/csea.home.average-monthly-income.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "csea.home.hours-worked-per-week.placement",
       "key": "csea.home.hours-worked-per-week.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "csea",
       "pageKey": "home",
       "fieldKey": "hours-worked-per-week",
@@ -12733,13 +12732,13 @@
       "values": {},
       "displayId": 222619837934882,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/csea.home.hours-worked-per-week.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/csea.home.hours-worked-per-week.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "csea.home.actively-at-work.placement",
       "key": "csea.home.actively-at-work.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "csea",
       "pageKey": "home",
       "fieldKey": "actively-at-work",
@@ -12749,13 +12748,13 @@
       "values": {},
       "displayId": 77036867994468,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/csea.home.actively-at-work.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/csea.home.actively-at-work.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "csea.home.monthly-business-expenses.placement",
       "key": "csea.home.monthly-business-expenses.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "csea",
       "pageKey": "home",
       "fieldKey": "monthly-business-expenses",
@@ -12765,13 +12764,13 @@
       "values": {},
       "displayId": 19165750736413,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/csea.home.monthly-business-expenses.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/csea.home.monthly-business-expenses.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "csea.home.business-expense-responsibility.placement",
       "key": "csea.home.business-expense-responsibility.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "csea",
       "pageKey": "home",
       "fieldKey": "business-expense-responsibility",
@@ -12781,13 +12780,13 @@
       "values": {},
       "displayId": 66959319101509,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/csea.home.business-expense-responsibility.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/csea.home.business-expense-responsibility.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "csea.coverage.average-employees-6-months.authored.hidden",
       "key": "csea.coverage.average-employees-6-months.authored.hidden",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "csea",
       "pageKey": "coverage",
       "fieldKey": "average-employees-6-months",
@@ -12797,13 +12796,13 @@
       "position": -10000,
       "displayId": 189263762240025,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/csea.coverage.average-employees-6-months.authored.hidden"
+      "sourceReference": "prototype:siteFieldConfigurations/csea.coverage.average-employees-6-months.authored.hidden",
+      "hostingAssociationKey": null
     },
     {
       "id": "nso.home.birth-date.placement",
       "key": "nso.home.birth-date.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "nso",
       "pageKey": "home",
       "fieldKey": "birth-date",
@@ -12813,13 +12812,13 @@
       "values": {},
       "displayId": 210317857120411,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/nso.home.birth-date.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/nso.home.birth-date.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "nso.home.zip-postal-code.placement",
       "key": "nso.home.zip-postal-code.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "nso",
       "pageKey": "home",
       "fieldKey": "zip-postal-code",
@@ -12829,13 +12828,13 @@
       "values": {},
       "displayId": 109963478734610,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/nso.home.zip-postal-code.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/nso.home.zip-postal-code.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "nso.home.state-province.placement",
       "key": "nso.home.state-province.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "nso",
       "pageKey": "home",
       "fieldKey": "state-province",
@@ -12845,13 +12844,13 @@
       "values": {},
       "displayId": 249251000856195,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/nso.home.state-province.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/nso.home.state-province.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "nso.home.gender.placement",
       "key": "nso.home.gender.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "nso",
       "pageKey": "home",
       "fieldKey": "gender",
@@ -12861,13 +12860,13 @@
       "values": {},
       "displayId": 187960069228230,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/nso.home.gender.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/nso.home.gender.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "nso.home.smoker.placement",
       "key": "nso.home.smoker.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "nso",
       "pageKey": "home",
       "fieldKey": "smoker",
@@ -12877,13 +12876,13 @@
       "values": {},
       "displayId": 106941926050806,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/nso.home.smoker.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/nso.home.smoker.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "nso.home.average-monthly-income.placement",
       "key": "nso.home.average-monthly-income.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "nso",
       "pageKey": "home",
       "fieldKey": "average-monthly-income",
@@ -12893,13 +12892,13 @@
       "values": {},
       "displayId": 33485454002938,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/nso.home.average-monthly-income.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/nso.home.average-monthly-income.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "nso.home.hours-worked-per-week.placement",
       "key": "nso.home.hours-worked-per-week.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "nso",
       "pageKey": "home",
       "fieldKey": "hours-worked-per-week",
@@ -12909,13 +12908,13 @@
       "values": {},
       "displayId": 40650790268304,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/nso.home.hours-worked-per-week.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/nso.home.hours-worked-per-week.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "nso.home.actively-at-work.placement",
       "key": "nso.home.actively-at-work.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "nso",
       "pageKey": "home",
       "fieldKey": "actively-at-work",
@@ -12925,13 +12924,13 @@
       "values": {},
       "displayId": 168138178250230,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/nso.home.actively-at-work.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/nso.home.actively-at-work.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "nso.home.monthly-business-expenses.placement",
       "key": "nso.home.monthly-business-expenses.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "nso",
       "pageKey": "home",
       "fieldKey": "monthly-business-expenses",
@@ -12941,13 +12940,13 @@
       "values": {},
       "displayId": 269048955304707,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/nso.home.monthly-business-expenses.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/nso.home.monthly-business-expenses.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "nso.home.business-expense-responsibility.placement",
       "key": "nso.home.business-expense-responsibility.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "nso",
       "pageKey": "home",
       "fieldKey": "business-expense-responsibility",
@@ -12957,13 +12956,13 @@
       "values": {},
       "displayId": 233388989531351,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/nso.home.business-expense-responsibility.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/nso.home.business-expense-responsibility.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "nso.coverage.average-employees-6-months.authored.hidden",
       "key": "nso.coverage.average-employees-6-months.authored.hidden",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "nso",
       "pageKey": "coverage",
       "fieldKey": "average-employees-6-months",
@@ -12973,13 +12972,13 @@
       "position": -10000,
       "displayId": 12014410029783,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/nso.coverage.average-employees-6-months.authored.hidden"
+      "sourceReference": "prototype:siteFieldConfigurations/nso.coverage.average-employees-6-months.authored.hidden",
+      "hostingAssociationKey": null
     },
     {
       "id": "isitrust.home.birth-date.placement",
       "key": "isitrust.home.birth-date.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "isitrust",
       "pageKey": "home",
       "fieldKey": "birth-date",
@@ -12989,13 +12988,13 @@
       "values": {},
       "displayId": 237698617069250,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/isitrust.home.birth-date.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/isitrust.home.birth-date.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "isitrust.home.zip-postal-code.placement",
       "key": "isitrust.home.zip-postal-code.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "isitrust",
       "pageKey": "home",
       "fieldKey": "zip-postal-code",
@@ -13005,13 +13004,13 @@
       "values": {},
       "displayId": 45583006005605,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/isitrust.home.zip-postal-code.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/isitrust.home.zip-postal-code.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "isitrust.home.state-province.placement",
       "key": "isitrust.home.state-province.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "isitrust",
       "pageKey": "home",
       "fieldKey": "state-province",
@@ -13021,13 +13020,13 @@
       "values": {},
       "displayId": 115611572748374,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/isitrust.home.state-province.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/isitrust.home.state-province.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "isitrust.home.gender.placement",
       "key": "isitrust.home.gender.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "isitrust",
       "pageKey": "home",
       "fieldKey": "gender",
@@ -13037,13 +13036,13 @@
       "values": {},
       "displayId": 210011110065199,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/isitrust.home.gender.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/isitrust.home.gender.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "isitrust.home.smoker.placement",
       "key": "isitrust.home.smoker.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "isitrust",
       "pageKey": "home",
       "fieldKey": "smoker",
@@ -13053,13 +13052,13 @@
       "values": {},
       "displayId": 258226610913095,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/isitrust.home.smoker.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/isitrust.home.smoker.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "isitrust.home.average-monthly-income.placement",
       "key": "isitrust.home.average-monthly-income.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "isitrust",
       "pageKey": "home",
       "fieldKey": "average-monthly-income",
@@ -13069,13 +13068,13 @@
       "values": {},
       "displayId": 196928074060811,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/isitrust.home.average-monthly-income.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/isitrust.home.average-monthly-income.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "isitrust.home.hours-worked-per-week.placement",
       "key": "isitrust.home.hours-worked-per-week.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "isitrust",
       "pageKey": "home",
       "fieldKey": "hours-worked-per-week",
@@ -13085,13 +13084,13 @@
       "values": {},
       "displayId": 206094866455811,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/isitrust.home.hours-worked-per-week.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/isitrust.home.hours-worked-per-week.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "isitrust.home.actively-at-work.placement",
       "key": "isitrust.home.actively-at-work.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "isitrust",
       "pageKey": "home",
       "fieldKey": "actively-at-work",
@@ -13101,13 +13100,13 @@
       "values": {},
       "displayId": 252696106610003,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/isitrust.home.actively-at-work.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/isitrust.home.actively-at-work.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "isitrust.home.monthly-business-expenses.placement",
       "key": "isitrust.home.monthly-business-expenses.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "isitrust",
       "pageKey": "home",
       "fieldKey": "monthly-business-expenses",
@@ -13117,13 +13116,13 @@
       "values": {},
       "displayId": 30420852043388,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/isitrust.home.monthly-business-expenses.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/isitrust.home.monthly-business-expenses.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "isitrust.home.business-expense-responsibility.placement",
       "key": "isitrust.home.business-expense-responsibility.placement",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "isitrust",
       "pageKey": "home",
       "fieldKey": "business-expense-responsibility",
@@ -13133,13 +13132,13 @@
       "values": {},
       "displayId": 227787464999332,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/isitrust.home.business-expense-responsibility.placement"
+      "sourceReference": "prototype:siteFieldConfigurations/isitrust.home.business-expense-responsibility.placement",
+      "hostingAssociationKey": null
     },
     {
       "id": "isitrust.coverage.average-employees-6-months.authored.hidden",
       "key": "isitrust.coverage.average-employees-6-months.authored.hidden",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "isitrust",
       "pageKey": "coverage",
       "fieldKey": "average-employees-6-months",
@@ -13149,7 +13148,8 @@
       "position": -10000,
       "displayId": 123318520699266,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/isitrust.coverage.average-employees-6-months.authored.hidden"
+      "sourceReference": "prototype:siteFieldConfigurations/isitrust.coverage.average-employees-6-months.authored.hidden",
+      "hostingAssociationKey": null
     },
     {
       "id": "abe.review.dividend-acknowledgement.notice",
@@ -13160,12 +13160,12 @@
       "position": 30000,
       "scope": "site",
       "siteKey": "abe",
-      "clientKey": null,
       "pageKey": "review",
       "fieldKey": "dividend-acknowledgement",
       "include": true,
       "hidden": false,
-      "values": {}
+      "values": {},
+      "hostingAssociationKey": null
     },
     {
       "id": "abe.review.dividend-first-name.notice",
@@ -13176,12 +13176,12 @@
       "position": 30001,
       "scope": "site",
       "siteKey": "abe",
-      "clientKey": null,
       "pageKey": "review",
       "fieldKey": "dividend-first-name",
       "include": true,
       "hidden": false,
-      "values": {}
+      "values": {},
+      "hostingAssociationKey": null
     },
     {
       "id": "abe.review.dividend-last-name.notice",
@@ -13192,12 +13192,12 @@
       "position": 30002,
       "scope": "site",
       "siteKey": "abe",
-      "clientKey": null,
       "pageKey": "review",
       "fieldKey": "dividend-last-name",
       "include": true,
       "hidden": false,
-      "values": {}
+      "values": {},
+      "hostingAssociationKey": null
     },
     {
       "id": "abe.review.dividend-birth-date.notice",
@@ -13208,12 +13208,12 @@
       "position": 30003,
       "scope": "site",
       "siteKey": "abe",
-      "clientKey": null,
       "pageKey": "review",
       "fieldKey": "dividend-birth-date",
       "include": true,
       "hidden": false,
-      "values": {}
+      "values": {},
+      "hostingAssociationKey": null
     },
     {
       "id": "avma.prototype-fact:di-ltd-plus:member:monthlyLoanPayment",
@@ -13221,7 +13221,6 @@
       "position": 40185,
       "scope": "site",
       "siteKey": "avma",
-      "clientKey": null,
       "pageKey": "coverage",
       "fieldKey": "prototype-fact:di-ltd-plus:member:monthlyLoanPayment",
       "include": true,
@@ -13229,7 +13228,8 @@
       "values": {},
       "displayId": 279916803212399,
       "providedBy": null,
-      "sourceReference": "prototype-cutover:reviewed-benefit-operands"
+      "sourceReference": "prototype-cutover:reviewed-benefit-operands",
+      "hostingAssociationKey": null
     },
     {
       "id": "avma.prototype-fact:oo-professional:member:eligibleExpenseFraction",
@@ -13237,7 +13237,6 @@
       "position": 40186,
       "scope": "site",
       "siteKey": "avma",
-      "clientKey": null,
       "pageKey": "coverage",
       "fieldKey": "prototype-fact:oo-professional:member:eligibleExpenseFraction",
       "include": true,
@@ -13245,7 +13244,8 @@
       "values": {},
       "displayId": 84122081093124,
       "providedBy": null,
-      "sourceReference": "prototype-cutover:reviewed-benefit-operands"
+      "sourceReference": "prototype-cutover:reviewed-benefit-operands",
+      "hostingAssociationKey": null
     },
     {
       "id": "csea.prototype-fact:di-ltd:member:applicantClass",
@@ -13253,7 +13253,6 @@
       "position": 40187,
       "scope": "site",
       "siteKey": "csea",
-      "clientKey": null,
       "pageKey": "coverage",
       "fieldKey": "prototype-fact:di-ltd:member:applicantClass",
       "include": true,
@@ -13261,7 +13260,8 @@
       "values": {},
       "displayId": 23347053523494,
       "providedBy": null,
-      "sourceReference": "prototype-cutover:reviewed-benefit-operands"
+      "sourceReference": "prototype-cutover:reviewed-benefit-operands",
+      "hostingAssociationKey": null
     },
     {
       "id": "site:nso.membership.nurse-type.include",
@@ -13272,12 +13272,12 @@
       "position": 30000,
       "scope": "site",
       "siteKey": "nso",
-      "clientKey": null,
       "pageKey": "membership",
       "fieldKey": "nurse-type",
       "include": true,
       "hidden": false,
-      "values": {}
+      "values": {},
+      "hostingAssociationKey": null
     },
     {
       "id": "site:isitrust.eligibility.spouse-membership.exclude",
@@ -13288,12 +13288,12 @@
       "position": 30000,
       "scope": "site",
       "siteKey": "isitrust",
-      "clientKey": null,
       "pageKey": "eligibility",
       "fieldKey": "spouse-membership",
       "include": false,
       "hidden": true,
-      "values": {}
+      "values": {},
+      "hostingAssociationKey": null
     },
     {
       "id": "site:abe.coverage.firm-member-count.include",
@@ -13304,12 +13304,12 @@
       "position": 30010,
       "scope": "site",
       "siteKey": "abe",
-      "clientKey": null,
       "pageKey": "coverage",
       "fieldKey": "firm-member-count",
       "include": true,
       "hidden": false,
-      "values": {}
+      "values": {},
+      "hostingAssociationKey": null
     },
     {
       "id": "site:abe.eligibility.child-honorably-discharged-service-member.include",
@@ -13320,12 +13320,12 @@
       "position": 30011,
       "scope": "site",
       "siteKey": "abe",
-      "clientKey": null,
       "pageKey": "eligibility",
       "fieldKey": "child-honorably-discharged-service-member",
       "include": true,
       "hidden": null,
-      "values": {}
+      "values": {},
+      "hostingAssociationKey": null
     },
     {
       "id": "abe.membership.member-id",
@@ -13336,12 +13336,12 @@
       "position": 31000,
       "scope": "site",
       "siteKey": "abe",
-      "clientKey": null,
       "pageKey": "membership",
       "fieldKey": "abe-member-id",
       "include": true,
       "hidden": false,
-      "values": {}
+      "values": {},
+      "hostingAssociationKey": null
     }
   ]
 }

@@ -22,6 +22,7 @@ export type RequirementFieldSource = {
 };
 
 const jsonModules = (modules: Record<string, unknown>) => Object.values(modules).map(module => (module as { default?: unknown }).default ?? module);
+const siteFieldFiles = import.meta.glob("../../requirements/parked/sites/*/fields.json", { eager: true });
 export const defaultRequirementFieldSource = (): RequirementFieldSource => ({
   fieldIds,
   fieldDetails,
@@ -33,7 +34,7 @@ export const defaultRequirementFieldSource = (): RequirementFieldSource => ({
     ...jsonModules(import.meta.glob("../../requirements/mappings/components/*.json", { eager: true })),
     ...jsonModules(import.meta.glob("../../requirements/mappings/page-fields/*.json", { eager: true })),
   ],
-  sites: Object.fromEntries(Object.entries(import.meta.glob("../../requirements/parked/sites/*/fields.json", { eager: true }))
+  sites: Object.fromEntries(Object.entries(siteFieldFiles)
     .map(([path, module]) => [path.split("/").at(-2)!, (module as { default?: unknown }).default ?? module])),
   sitePages: Object.entries(import.meta.glob("../../requirements/parked/sites/*/pages/*.json", { eager: true })).reduce<Record<string, Record<string, unknown>>>((sites, [path, module]) => {
     const site = path.split("/").at(-3)!;
@@ -41,12 +42,13 @@ export const defaultRequirementFieldSource = (): RequirementFieldSource => ({
     return sites;
   }, {}),
 });
-
 const object = (value: unknown): value is Record<string, unknown> => value !== null && typeof value === "object" && !Array.isArray(value);
+let runtimeFieldSource: RequirementFieldSource | undefined;
+const getRuntimeFieldSource = () => runtimeFieldSource ??= defaultRequirementFieldSource();
 const mappingName = (mapping: RequirementMapping) => "component" in mapping ? `component ${mapping.component}` : `page ${mapping.page}`;
 
 /** Sites with a requirements/parked/sites/<site> folder load their fields from the requirements JSON. */
-export function siteUsesRequirementFields(siteId: string, source: RequirementFieldSource = defaultRequirementFieldSource()): boolean {
+export function siteUsesRequirementFields(siteId: string, source: RequirementFieldSource = getRuntimeFieldSource()): boolean {
   return Object.hasOwn(source.sites, siteId);
 }
 
@@ -55,7 +57,7 @@ export function siteUsesRequirementFields(siteId: string, source: RequirementFie
  * global definition + field details + option lists, then the site's overrides.
  */
 export function resolveMappedFields(mapping: RequirementMapping, options: { siteId?: string; person?: RequirementPerson; page?: string; includeAll?: boolean; source?: RequirementFieldSource } = {}): FieldDefinition[] {
-  return resolveRequirementFields(mapping, { ...options, source: options.source ?? defaultRequirementFieldSource() });
+  return resolveRequirementFields(mapping, { ...options, source: options.source ?? getRuntimeFieldSource() });
 }
 
 /** Stable saved-answer key for a mapped field and person. */
@@ -64,7 +66,7 @@ export function requirementAnswerKey(fieldId: string, person: RequirementPerson)
 }
 
 /** Parse only fields actually mapped to the indicated person. */
-export function parseRequirementAnswerKey(key: string, source: RequirementFieldSource = defaultRequirementFieldSource()): { field: string; person: RequirementPerson } | undefined {
+export function parseRequirementAnswerKey(key: string, source: RequirementFieldSource = getRuntimeFieldSource()): { field: string; person: RequirementPerson } | undefined {
   const person: RequirementPerson = key.startsWith("spouse-") ? "spouse" : key.startsWith("child-") ? "child" : "self";
   const field = person === "self" ? key : key.slice(person.length + 1);
   return source.mappings.some(mapping => object(mapping) && Array.isArray(mapping.fields) && mapping.fields.some(row => object(row) && row.field === field && Array.isArray(row.people) && row.people.includes(person))) ? { field, person } : undefined;
@@ -84,7 +86,7 @@ const requirementPageFiles = () => jsonModules(import.meta.glob("../../requireme
 export function requirementPageNote(
   pageKey: string,
   siteId: string,
-  source: RequirementFieldSource = defaultRequirementFieldSource(),
+  source: RequirementFieldSource = getRuntimeFieldSource(),
   content: Record<string, unknown> = requirementContent(),
   pages: unknown[] = requirementPageFiles(),
 ): string | undefined {

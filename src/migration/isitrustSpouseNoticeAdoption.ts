@@ -11,8 +11,8 @@ export function applyIsitrustSpouseNoticeAdoption(db: DatabaseSchema) {
   const meta = (table: string, key: string) => ({ id: key, key, ...libraryMetadata(table, key, authority) });
   const contentKey = "pages.eligibility.sectionNotes.spouseSection";
   if (!db.contentEntries.some(row => row.key === contentKey)) db.contentEntries.push({ ...meta("contentEntries", contentKey), position: 0, definition: { path: ["pages", "eligibility", "sectionNotes", "spouseSection"] } });
-  const field = { ...meta("siteFieldConfigurations", "site:isitrust.eligibility.spouse-membership.exclude"), position: 30000, scope: "site" as const, siteKey: "isitrust", clientKey: null, pageKey: "eligibility", fieldKey: "spouse-membership", include: false, hidden: true, values: {} };
-  const content = { ...meta("contentValues", `site:isitrust.${contentKey}`), position: 0, scope: "site" as const, siteKey: "isitrust", clientKey: null, contentKey, value: text };
+  const field = { ...meta("siteFieldConfigurations", "site:isitrust.eligibility.spouse-membership.exclude"), position: 30000, scope: "site" as const, siteKey: "isitrust", hostingAssociationKey: null, pageKey: "eligibility", fieldKey: "spouse-membership", include: false, hidden: true, values: {} };
+  const content = { ...meta("contentValues", `site:isitrust.${contentKey}`), position: 0, scope: "site" as const, siteKey: "isitrust", hostingAssociationKey: null, contentKey, value: text };
   for (const [table, record] of [["siteFieldConfigurations", field], ["contentValues", content]] as const) {
     const rows = db[table] as Array<{ key: string }>; const index = rows.findIndex(row => row.key === record.key);
     if (index < 0) rows.push(record); else rows[index] = record;

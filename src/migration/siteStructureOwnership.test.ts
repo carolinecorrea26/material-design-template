@@ -53,5 +53,5 @@ it.each(["features.defaultTemplate", "fields.eligibility.overrides.spouse-member
   expect(JSON.stringify(changed)).toBe(before);
   const competing = structuredClone(db);
   competing.configurationValues.push(row);
-  expect(() => resolvePrototypeLibrary(competing, row.siteKey ?? row.clientKey!, "test")).toThrow("compete with stored placements");
+  expect(() => resolvePrototypeLibrary(competing, row.siteKey ?? row.hostingAssociationKey!, "test")).toThrow("compete with stored placements");
 });

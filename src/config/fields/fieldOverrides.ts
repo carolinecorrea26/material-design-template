@@ -1,5 +1,5 @@
 import type { ClientConfig } from "../clients/types";
-import type { ClientEntityId, SiteId } from "../../data/model";
+import type { HostingAssociationId, SiteId } from "../../data/model";
 import type { PageId } from "../../types";
 import type { FieldDefinition, FieldId } from "./types";
 
@@ -9,7 +9,7 @@ export type ScopedFieldOverride = {
   fieldId: FieldId;
   pageId: PageId;
   scope: "global" | "client" | "site";
-  clientIds?: ClientEntityId[];
+  clientIds?: HostingAssociationId[];
   siteIds?: SiteId[];
   /** Explicit scoped placement for a canonical field not in the base page order. */
   include?: boolean;
@@ -28,7 +28,7 @@ function withoutIdentity(
 /** Converts the retained ClientConfig authoring shape at one clear boundary. */
 export function normalizeClientFieldOverrides(
   client: ClientConfig,
-  clientId: ClientEntityId,
+  clientId: HostingAssociationId,
 ): ScopedFieldOverride[] {
   return Object.entries(client.fields).flatMap(([pageId, config]) => {
     if (!config) return [];
@@ -247,7 +247,7 @@ const scopeRank: Record<ScopedFieldOverride["scope"], number> = {
 
 export function getApplicableFieldOverrides(
   overrides: ScopedFieldOverride[],
-  context: { clientId: ClientEntityId; siteId: SiteId; pageId: PageId },
+  context: { clientId: HostingAssociationId; siteId: SiteId; pageId: PageId },
 ): ScopedFieldOverride[] {
   return overrides
     .filter((override) => {

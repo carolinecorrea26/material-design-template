@@ -7,8 +7,8 @@ import type { Tpa, TpaId } from "./model";
  * TPA identity, support, and branding are supplied. Client values are not copied
  * into the TPA record merely because the current deployment is often 1:1.
  */
-export function compatibilityTpaId(clientId: string): TpaId {
-  return `tpa-${clientId}`;
+export function compatibilityTpaId(hostingAssociationId: string): TpaId {
+  return `tpa-${hostingAssociationId}`;
 }
 
 export function toCompatibilityTpa(config: ClientConfig): Tpa {

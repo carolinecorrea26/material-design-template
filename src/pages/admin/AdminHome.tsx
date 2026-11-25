@@ -17,7 +17,7 @@ import type { AdminCenterContext } from "../../components/admin/AdminCenterShell
 import { Section, StatusChip, Workspace, WorkspaceHeader } from "../../components/admin/AdminPrimitives";
 
 const load = async () => ({
-  sites: await siteService.getSites(), clients: await foundationRepositories.clients.list(), organizations: await foundationRepositories.organizations.list(),
+  sites: await siteService.getSites(), associationEntities: await foundationRepositories.associationEntities.list(), organizations: await foundationRepositories.organizations.list(),
   releases: await releaseService.getUpcomingReleases(), changes: await changeRequestService.getChangeRequests(), audits: await auditService.getRecent(6),
   applications: await applicationService.getApplications(), analytics: await analyticsService.getDashboard(),
 });
@@ -33,7 +33,7 @@ function DashboardKpi({ label, value, detail, to }: { label: string; value: stri
 export default function AdminHome() {
   const { persona } = useOutletContext<AdminCenterContext>(); const navigate = useNavigate();
   const [selectedSite, setSelectedSite] = useState<Site | null>(null); const { data, error, loading } = useServiceData(load);
-  const clientMap = useMemo(() => new Map(data?.clients.map((client) => [client.id, client]) ?? []), [data]);
+  const clientMap = useMemo(() => new Map(data?.associationEntities.map((client) => [client.id, client]) ?? []), [data]);
   const orgMap = useMemo(() => new Map(data?.organizations.map((org) => [org.id, org]) ?? []), [data]);
   const changes = useMemo(() => [...(data?.changes ?? [])].filter((change) => !change.deletedAt && change.status !== "Released").sort((a, b) => Number(b.status === "QA") - Number(a.status === "QA")), [data]);
   const actionApps = data?.applications.filter((application) => !application.deletedAt && application.status !== "Completed" && application.currentActionOwnerType !== "None") ?? [];
@@ -44,7 +44,7 @@ export default function AdminHome() {
 
   return <Workspace><WorkspaceHeader title="Admin Center" description={`What needs attention across the portal for ${persona.label}. Using persistent local demo data.`} />
     {error && <Alert severity="error">{error.message}</Alert>}{loading && <Typography>Loading operational data…</Typography>}
-    <Paper variant="outlined" sx={{ p: 2 }}><Stack direction={{ xs: "column", sm: "row" }} gap={1.5} alignItems={{ sm: "center" }}><Box sx={{ flex: 1 }}><Typography variant="subtitle2" sx={{ fontWeight: 800, mb: 0.75 }}>Find a site</Typography><Autocomplete fullWidth options={data?.sites ?? []} value={selectedSite} onChange={(_, value) => setSelectedSite(value)} getOptionLabel={(site) => { const client = clientMap.get(site.clientId); const org = client && orgMap.get(client.organizationId); return `${site.name} · ${site.key} · ${client?.acronym ?? ""} · ${org?.name ?? ""}`; }} renderInput={(params) => <TextField {...params} size="small" placeholder="Search by site, key, client, or TPA" />} /></Box><Button variant="contained" disabled={!selectedSite} endIcon={<ArrowForwardRoundedIcon />} onClick={() => selectedSite && navigate(`/admin-center/library/pages?scope=effective&site=${selectedSite.key}`)} sx={{ mt: { sm: 3.4 } }}>Open site</Button></Stack></Paper>
+    <Paper variant="outlined" sx={{ p: 2 }}><Stack direction={{ xs: "column", sm: "row" }} gap={1.5} alignItems={{ sm: "center" }}><Box sx={{ flex: 1 }}><Typography variant="subtitle2" sx={{ fontWeight: 800, mb: 0.75 }}>Find a site</Typography><Autocomplete fullWidth options={data?.sites ?? []} value={selectedSite} onChange={(_, value) => setSelectedSite(value)} getOptionLabel={(site) => { const client = clientMap.get(site.hostingAssociationId); const org = client && orgMap.get(client.organizationId); return `${site.name} · ${site.key} · ${client?.acronym ?? ""} · ${org?.name ?? ""}`; }} renderInput={(params) => <TextField {...params} size="small" placeholder="Search by site, key, client, or TPA" />} /></Box><Button variant="contained" disabled={!selectedSite} endIcon={<ArrowForwardRoundedIcon />} onClick={() => selectedSite && navigate(`/admin-center/library/pages?scope=effective&site=${selectedSite.key}`)} sx={{ mt: { sm: 3.4 } }}>Open site</Button></Stack></Paper>
 
     <Stack sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)", xl: "repeat(4, 1fr)" }, gap: 1.5 }}>
       <DashboardKpi label="Sites" value={data?.sites.filter((site) => site.status === "active").length ?? 0} detail="active sites" to="/admin-center/sites" />

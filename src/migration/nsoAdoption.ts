@@ -35,7 +35,7 @@ export function applyNsoLifeAndPaymentAdoption(db: DatabaseSchema, cells: readon
   if (read("AF318") !== "No\npayment required") throw new Error("NSO payment requirement changed");
   const site = db.sites.find(row => row.key === siteKey);
   const policy = db.sitePolicies.filter(row => row.siteKey === siteKey);
-  if (!site || db.clients.find(client => client.id === site.clientId)?.key !== "nso" || policy.length !== 1 || plans.some(plan => db.siteProducts.filter(row => row.siteId === site.id && row.productKey === plan.productKey && row.enabled).length !== 1)) throw new Error("Unavailable NSO adoption target");
+  if (!site || db.associationEntities.find(client => client.id === site.hostingAssociationId)?.key !== "nso" || policy.length !== 1 || plans.some(plan => db.siteProducts.filter(row => row.siteId === site.id && row.productKey === plan.productKey && row.enabled).length !== 1)) throw new Error("Unavailable NSO adoption target");
   const targets: Array<{ table: TableName; key: string; cell: string; column: string }> = [];
   for (const plan of plans) {
     const { productKey, row } = plan;
@@ -61,7 +61,7 @@ export function applyNsoLifeAndPaymentAdoption(db: DatabaseSchema, cells: readon
         db.amountBands.push({ ...metadata("amountBands", `${patternKey}.band`, `Main!${cell}`), amountPatternKey: patternKey, minimum: plan.min, maximum: plan.max, increment: plan.increment, conditionKey: null, position: 0 });
         targets.push({ table: "amountBands", key: `${patternKey}.band`, cell, column: "minimum" });
       }
-      db.productAmountRules.push({ ...metadata("productAmountRules", `${key}.amount-rule`, `Main!${cell}`), productKey, siteKey, clientKey: null, applicantTypeKey, applicantClass: null, amountPatternKey: patternKey, conditionKey: null, position });
+      db.productAmountRules.push({ ...metadata("productAmountRules", `${key}.amount-rule`, `Main!${cell}`), productKey, siteKey, hostingAssociationKey: null, applicantTypeKey, applicantClass: null, amountPatternKey: patternKey, conditionKey: null, position });
       targets.push({ table: "coverageAmountPatterns", key: patternKey, cell, column: "amountType" }, { table: "productAmountRules", key: `${key}.amount-rule`, cell, column: "amountPatternKey" });
       const ageCell = `${applicantTypeKey === "member" ? "O" : applicantTypeKey === "spouse" ? "P" : "Q"}${row}`;
       const eligibilityKey = `${key}.ages`;
@@ -71,7 +71,7 @@ export function applyNsoLifeAndPaymentAdoption(db: DatabaseSchema, cells: readon
     for (const [kind, column, primary] of [["gNumber", "E", plan.gNumber], ["planCode", "G", String(plan.planCode)]] as const) {
       const key = `${prefix}.${kind}`;
       db.productIdentifiers = db.productIdentifiers.filter(identifier => !(identifier.scope === "site" && identifier.siteKey === siteKey && identifier.productKey === productKey && identifier.kind === kind));
-      db.productIdentifiers.push({ ...metadata("productIdentifiers", key, `Main!${column}${row}`), scope: "site", siteKey, clientKey: null, productKey, kind, definition: { primary }, position: 0 });
+      db.productIdentifiers.push({ ...metadata("productIdentifiers", key, `Main!${column}${row}`), scope: "site", siteKey, hostingAssociationKey: null, productKey, kind, definition: { primary }, position: 0 });
       targets.push({ table: "productIdentifiers", key, cell: `${column}${row}`, column: "definition" });
     }
   }

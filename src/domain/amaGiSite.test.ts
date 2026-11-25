@@ -43,7 +43,7 @@ it('authors AMA-GI identity and assignments under the Site source and reconstruc
   input.siteAssociations = input.siteAssociations.filter((row: { siteKey: string }) => row.siteKey !== 'ama-gi');
   const projected = compileRequirementCatalog(input, source, 'ama-gi');
   expect(input.sites.some((site: { key: string }) => site.key === 'ama-gi')).toBe(false);
-  expect(projected.sites.find(site => site.key === 'ama-gi')).toMatchObject({ clientId: 'ama', templateType: 'single', hostingAssociationId: 'ama' });
+  expect(projected.sites.find(site => site.key === 'ama-gi')).toMatchObject({ templateType: 'single', hostingAssociationId: 'ama' });
   expect(projected.siteAssociations.find(row => row.siteKey === 'ama-gi')).toMatchObject({ associationKey: 'american-medical-association', enabled: true });
   const site = library(projected);
   expect(site.client.features?.defaultTemplate).toBe('single');

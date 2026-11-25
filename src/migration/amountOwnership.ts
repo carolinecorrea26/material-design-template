@@ -45,7 +45,7 @@ export function consolidateAmountOwnership(db: DatabaseSchema) {
       } else db.amountBands.push({ ...meta("amountBands", `${patternKey}.band`, source), amountPatternKey: patternKey,
         minimum: applicant.minimum, maximum: applicant.maximum, increment: applicant.increment, conditionKey: null, position: 0 });
       db.productAmountRules = db.productAmountRules.filter(row => row.key !== ruleKey);
-      db.productAmountRules.push({ ...(previous ?? meta("productAmountRules", ruleKey, source)), siteKey, clientKey: null,
+      db.productAmountRules.push({ ...(previous ?? meta("productAmountRules", ruleKey, source)), siteKey, hostingAssociationKey: null,
         productKey: target.productKey, applicantTypeKey: applicant.applicantKey, applicantClass: applicant.applicantClass ?? null,
         amountPatternKey: patternKey, conditionKey: null, position: used.size - 1 });
       return ruleKey;
@@ -65,11 +65,11 @@ export function consolidateAmountOwnership(db: DatabaseSchema) {
     const definition = db.configurationDefinitions.find(row => row.key === value.configurationKey);
     const path = definition?.definition.path;
     if (path?.length !== 3 || path[0] !== "coverages" || path[1] !== "coverageAmounts"
-      || !business.some(site => value.scope === "site" ? site.key === value.siteKey : value.scope === "client" && site.clientKey === value.clientKey)) continue;
+      || !business.some(site => value.scope === "site" ? site.key === value.siteKey : value.scope === "association" && site.hostingAssociationKey === value.hostingAssociationKey)) continue;
     const key = `ownership-evidence.${value.key}`;
     if (!db.semanticRequirements.some(row => row.key === key)) db.semanticRequirements.push({ ...meta("semanticRequirements", key), domain: "information-ownership",
       subjectTable: "configurationDefinitions", subjectKey: value.configurationKey, predicate: "superseded-amount-copy", status: "documented",
-      value: { authority: reference, previousValue: value.value, scope: value.scope, clientKey: value.clientKey, siteKey: value.siteKey, productKey: path[2], replacement: "productAmountRules" } });
+      value: { authority: reference, previousValue: value.value, scope: value.scope, hostingAssociationKey: value.hostingAssociationKey, siteKey: value.siteKey, productKey: path[2], replacement: "productAmountRules" } });
     retired.add(value.key);
   }
   db.configurationValues = db.configurationValues.filter(row => !retired.has(row.key));

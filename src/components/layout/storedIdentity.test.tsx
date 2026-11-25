@@ -4,7 +4,7 @@ import { MemoryRouter } from "react-router-dom";
 import { createReviewedMigrationDatabase } from "../../migration/fixtures";
 import type { DatabaseSchema } from "../../persistence/types";
 import { installPrototypeLibrary, resolvePrototypeLibrary } from "../../domain/prototypeLibrary";
-import { getTpaForClient } from "../../repositories/sites";
+import { getTpaForAssociation } from "../../repositories/sites";
 import { readMockEmailPreviews } from "../../utils/mockEmail";
 import AppFooter from "./AppFooter";
 import ClientHelpBanner from "./ClientHelpBanner";
@@ -29,7 +29,7 @@ it.each([
   ["isitrust", "ISI", "8552837651", "855-283-7651"],
 ])("%s template renders the stored program contact and resolves its actual administrator", (siteKey, name, phone, display) => {
   const library = install(siteKey);
-  expect(getTpaForClient(library.clientIdentity.key)?.name).toBe(name);
+  expect(getTpaForAssociation(library.clientIdentity.key)?.name).toBe(name);
   const html = renderToStaticMarkup(<MemoryRouter><AppFooter client={library.client} /></MemoryRouter>);
   expect(html).toContain(`href="tel:${phone}"`);
   expect(html).toContain(display);
@@ -53,7 +53,7 @@ it("keeps AMA's configured help-ribbon phone distinct from its administrator con
 it("uses captured administrator identity in applicant emails without substituting the Association name", () => {
   window.history.replaceState(null, "", "/?site=asce");
   const changed = structuredClone(database);
-  const client = changed.clients.find(row => row.key === "asce")!;
+  const client = changed.associationEntities.find(row => row.key === "asce")!;
   changed.organizations.find(row => row.id === client.organizationId)!.name = "Saved administrator example";
   const library = resolvePrototypeLibrary(changed, "asce", "saved-admin");
   delete library.client.emailSupport?.contactOverride;

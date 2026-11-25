@@ -1,6 +1,5 @@
-import { withFreshStartCatalog } from "../../../domain/freshStartCatalog";
 import { getPhoneTypeFieldId } from "../../../domain/phoneFields";
-import type { LibraryCatalog } from "../../../services/libraryCatalogService";
+import { compileLibraryCatalog, type LibraryCatalog } from "../../../services/libraryCatalogService";
 import { resolvePageCatalog } from "../../../domain/pageCatalog";
 import { compiledFieldSurfaceRows, type FieldSurfaceRow } from "./fieldSurfaceRows";
 import { fieldDisplayName } from "./fieldCatalogRows";
@@ -58,7 +57,7 @@ function orderedPageFieldKeys(catalog: LibraryCatalog, pageKey: string, usages: 
 /** Include configured disabled pages for inspection without enabling them. */
 export function pageCatalogRows(catalog: LibraryCatalog, siteKey: string, fieldUsages?: FieldSurfaceRow[]) {
   if (siteKey !== "all" && !catalog.data.sites.some(site => site.key === siteKey)) return [];
-  catalog = { ...catalog, data: withFreshStartCatalog(catalog.data, siteKey === "all" ? undefined : siteKey, catalog.siteScope) };
+  catalog = compileLibraryCatalog(catalog, siteKey);
   const usages = fieldUsages ?? compiledFieldSurfaceRows(catalog, siteKey);
   const definitions = new Set(catalog.data.fields.map(field => field.key));
   const collections = siteKey === "all" ? {} : resolveStoredFieldCollections(catalog.data, resolveCompiledEffectiveSite(catalog.data, siteKey));

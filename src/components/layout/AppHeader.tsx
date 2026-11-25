@@ -14,6 +14,8 @@ import {
 } from "@mui/material";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import ShoppingCartRoundedIcon from "@mui/icons-material/ShoppingCartRounded";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import type { Theme } from "@mui/material/styles";
 import AppMenu from "./AppMenu";
 import AppDrawer from "../layout/AppDrawer";
 import { getConfiguredPages, getPagePath } from "../../config/pages";
@@ -106,6 +108,7 @@ export default function AppHeader({
     () => "/",
   );
 
+  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down("sm"));
   const trigger = useScrollTrigger({ threshold: 8 });
 
   useEffect(() => setImageError(false), [effectiveBranding.logo]);
@@ -140,9 +143,9 @@ export default function AppHeader({
   return (
     <>
       {variant !== 'recovery' && <ClientHelpBanner client={client} />}
-      <Slide appear={false} direction="down" in={!trigger}>
+      <Slide appear={false} direction="down" in={isMobile || !trigger} timeout={isMobile ? 0 : undefined}>
         <AppBar
-          position="sticky"
+          position={isMobile ? "static" : "sticky"}
           color="default"
           elevation={0}
           sx={{

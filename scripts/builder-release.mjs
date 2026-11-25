@@ -1,23 +1,26 @@
 import { randomUUID } from 'node:crypto';
 const fail = (status, message) => { throw Object.assign(new Error(message), { status }); };
 /** Prototype release records deliberately have no access to the production activation pointer. */
-export async function builderRelease({ path, body, state, commit, clock, drafts, quotes, analyticsTags, validatePayload, actor }) {
+export async function builderRelease({ path, body, state, commit, clock, drafts, currentPayload, quotes, analyticsTags, validatePayload, actor }) {
   state.prototypeReleases ??= {}; state.prototypeHeads ??= {}; state.buildReviews ??= {}; state.launchQueue ??= {};
   state.builderDrafts ??= {};
-  const hydrate = row => { const library = drafts[row.libraryDraftId]; return { ...row, canEdit: row.ownerId === actor, draftDataJson: library ? { ...library.payload, mockTransport: { id: library.id, version: library.version, baseReleaseId: library.baseReleaseId } } : null }; };
+  const hydrate = row => { const library = drafts[row.libraryDraftId]; return { ...row, canEdit: row.ownerId === actor, draftDataJson: library ? { ...currentPayload(library.payload), mockTransport: { id: library.id, version: library.version, baseReleaseId: library.baseReleaseId } } : null }; };
   if (path === '/builder/catalog') {
-    const payloads = Object.values(drafts).map(d => d.payload.data);
-    const clients = payloads.flatMap(d => d.clients.filter(c => c.id.startsWith('build-client-')));
+    const payloads = Object.values(drafts).map(d => currentPayload(d.payload).data);
+    const clients = payloads.flatMap(d => d.associationEntities.filter(c => (c.id.startsWith('build-association-') || c.id.startsWith('build-client-'))));
     const keys = new Set(clients.map(c => c.key));
     const unique = rows => [...new Map(rows.map(r => [r.id, r])).values()];
-    return { organizations: unique(payloads.flatMap(d => (d.organizations ?? []).filter(o => o.id.startsWith('build-org-')))), organizationProfiles: unique(payloads.flatMap(d => (d.organizationProfiles ?? []).filter(p => (d.organizations ?? []).some(o => o.key === p.organizationKey && o.id.startsWith('build-org-'))))), clients: unique(clients), configurationValues: unique(payloads.flatMap(d => d.configurationValues.filter(r => r.scope === 'client' && keys.has(r.clientKey)))), brandingProfiles: unique(payloads.flatMap(d => d.brandingProfiles.filter(r => r.scope === 'client' && keys.has(r.clientKey)))), supportProfiles: unique(payloads.flatMap(d => d.supportProfiles.filter(r => r.scope === 'client' && keys.has(r.clientKey)))) };
+    return { organizations: unique(payloads.flatMap(d => (d.organizations ?? []).filter(o => o.id.startsWith('build-org-')))), organizationProfiles: unique(payloads.flatMap(d => (d.organizationProfiles ?? []).filter(p => (d.organizations ?? []).some(o => o.key === p.organizationKey && o.id.startsWith('build-org-'))))), associationEntities: unique(clients), configurationValues: unique(payloads.flatMap(d => d.configurationValues.filter(r => r.scope === 'association' && keys.has(r.hostingAssociationKey)))), brandingProfiles: unique(payloads.flatMap(d => d.brandingProfiles.filter(r => r.scope === 'association' && keys.has(r.hostingAssociationKey)))), supportProfiles: unique(payloads.flatMap(d => d.supportProfiles.filter(r => r.scope === 'association' && keys.has(r.hostingAssociationKey)))) };
   }
   if (path === '/builder/drafts') return Object.values(state.builderDrafts).map(hydrate);
   if (path === '/builder/draft/create') {
-    if (!drafts[body.libraryDraftId] || drafts[body.libraryDraftId].siteKey !== body.siteKey) fail(400, 'Save the Site Library before creating its builder record');
+    const library = drafts[body.libraryDraftId];
+    if (!library || library.siteKey !== body.siteKey) fail(400, 'Save the Site Library before creating its builder record');
+    const site = currentPayload(library.payload).data.sites.find(row => row.key === body.siteKey);
+    if (!site || site.hostingAssociationId !== body.hostingAssociationId) fail(400, 'The hosting Association must match the saved Site');
     const existing = Object.values(state.builderDrafts).find(r => r.siteKey === body.siteKey);
     if (existing) { if (existing.ownerId !== actor) fail(403, 'Only the user who started this Site can edit it'); return hydrate(existing); }
-    const row = { id: randomUUID(), clientId: body.clientId, siteKey: body.siteKey, siteName: body.siteName, status: 'Draft', currentStep: 'Library configuration', libraryDraftId: body.libraryDraftId, ownerId: actor, createdAt: new Date(clock()).toISOString(), updatedAt: new Date(clock()).toISOString(), deletedAt: null };
+    const row = { id: randomUUID(), hostingAssociationId: body.hostingAssociationId, siteKey: body.siteKey, siteName: body.siteName, status: 'Draft', currentStep: 'Library configuration', libraryDraftId: body.libraryDraftId, ownerId: actor, createdAt: new Date(clock()).toISOString(), updatedAt: new Date(clock()).toISOString(), deletedAt: null };
     commit(() => { state.builderDrafts[row.id] = row; }); return hydrate(row);
   }
   if (path === '/builder/draft/update') {
@@ -46,7 +49,7 @@ export async function builderRelease({ path, body, state, commit, clock, drafts,
     strict(['id','expectedVersion','payloadHash','visualChecks','serviceChecks']); current();
     const blockers = [];
     if (!validatePayload) blockers.push('Executable Library validator unavailable');
-    else { try { await validatePayload(draft.payload); } catch (e) { blockers.push(`Library validation: ${e.message}`); } }
+    else { try { await validatePayload(currentPayload(draft.payload)); } catch (e) { blockers.push(`Library validation: ${e.message}`); } }
     const applicableTag = t => t.sites.some(key => key === draft.siteKey || !!draft.payload.data.sites.find(s => s.key === draft.siteKey)?.legacyClientId && draft.payload.data.sites.find(s => s.key === key)?.legacyClientId === draft.payload.data.sites.find(s => s.key === draft.siteKey)?.legacyClientId);
     const applicablePages = new Set(analyticsTags.filter(t => applicableTag(t) && t.kind === 'page').map(t => t.pageId));
     const pages = draft.payload.data.sitePages.filter(p => { const page = draft.payload.data.pages?.find(d => d.key === p.pageKey)?.definition; return p.siteKey === draft.siteKey && p.requirement !== 'none' && page?.type !== 'internal' && (!page?.healthGate || applicablePages.has(p.pageKey)); }).map(p => p.pageKey);

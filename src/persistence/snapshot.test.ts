@@ -14,7 +14,7 @@ describe("normalized revision boundary", () => {
     let stored = JSON.stringify(db);
     const getItem = vi.fn(() => stored);
     const adapter = new LocalStorageAdapter(db, { getItem, setItem: (_, value) => { stored = value; }, removeItem: () => {} });
-    const pending = adapter.readSnapshot(["sites", "clients"]);
+    const pending = adapter.readSnapshot(["sites", "associationEntities"]);
     stored = JSON.stringify({ ...db, sites: db.sites.map(site => ({ ...site, name: "Later" })) });
     const snapshot = await pending;
     expect(getItem).toHaveBeenCalledTimes(1);
@@ -35,7 +35,8 @@ describe("normalized revision boundary", () => {
     const fresh = await repository.open();
     expect(fresh.revision).not.toBe(old.revision);
     expect(old.resolveSite("asce")).toEqual(original);
-    expect(fresh.resolveSite("asce").site.name.value).toBe("Persisted edit");
+    expect(fresh.get("sites", id)!.name).toBe("Persisted edit");
+    expect(fresh.resolveSite("asce").site.name.value).toBe(original.site.name.value);
     expect(old.get("sites", id)!.name).not.toBe("Caller edit");
     await adapter.remove("semanticRequirements", db.semanticRequirements.find(row => row.domain === "approved-business-decision" && row.subjectKey === "asce" && row.predicate === "approved-canonical-site-rule")!.id);
     expect(() => old.resolveSite("asce")).not.toThrow();
@@ -44,10 +45,10 @@ describe("normalized revision boundary", () => {
     expect(() => changed.resolveSite("asce")).not.toThrow(); // Historical approval receipts do not own fresh-start behavior.
   });
   it("hashes content independently of table, row and object key order", async () => {
-    const first = await localSnapshotRevision({ sites: db.sites, clients: db.clients });
+    const first = await localSnapshotRevision({ sites: db.sites, associationEntities: db.associationEntities });
     const reordered = db.sites.map(row => Object.fromEntries(Object.entries(row).reverse())) as DatabaseSchema["sites"];
-    expect(await localSnapshotRevision({ clients: [...db.clients].reverse(), sites: reordered.reverse() })).toBe(first);
-    expect(await localSnapshotRevision({ sites: db.sites.slice(1), clients: db.clients })).not.toBe(first);
+    expect(await localSnapshotRevision({ associationEntities: [...db.associationEntities].reverse(), sites: reordered.reverse() })).toBe(first);
+    expect(await localSnapshotRevision({ sites: db.sites.slice(1), associationEntities: db.associationEntities })).not.toBe(first);
     const a = { id: "test", value: ["a", "b"] };
     const b = { ...a, value: ["b", "a"] };
     expect(await localSnapshotRevision({ sites: [a] } as unknown as Partial<DatabaseSchema>)).not.toBe(await localSnapshotRevision({ sites: [b] } as unknown as Partial<DatabaseSchema>));
@@ -62,7 +63,7 @@ describe("normalized revision boundary", () => {
     const incomplete = new LocalStorageAdapter(db, { getItem: () => "{}", setItem: () => {}, removeItem: () => {} });
     await expect(incomplete.readSnapshot(["siteEnvironmentLinks"])).rejects.toThrow("Malformed snapshot rows");
     const good = await new LocalStorageAdapter(db).readSnapshot(["sites"]);
-    for (const bad of [{ ...good, revision: "invalid" }, { ...good, data: {} }, { ...good, data: { ...good.data, clients: [] } }, { ...good, data: { sites: [db.sites[0], db.sites[0]] } }]) {
+    for (const bad of [{ ...good, revision: "invalid" }, { ...good, data: {} }, { ...good, data: { ...good.data, associationEntities: [] } }, { ...good, data: { sites: [db.sites[0], db.sites[0]] } }]) {
       const reader = { readSnapshot: async () => bad } as unknown as LocalStorageAdapter;
       await expect(createPortalDataRepository(reader).open(["sites"])).rejects.toThrow();
     }

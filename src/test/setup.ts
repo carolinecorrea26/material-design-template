@@ -1,4 +1,5 @@
 import { setImmediate } from 'node:timers';
+import { transferableAbortController } from 'node:util';
 import { afterEach } from 'vitest';
 
 // Large projection suites can run many synchronous tests without returning to
@@ -13,6 +14,12 @@ afterEach(() => new Promise<void>(resolve => scheduleImmediate(resolve)));
 const environment = (globalThis as unknown as { jsdom?: { window: Window } }).jsdom;
 if (environment) for (const name of ['localStorage', 'sessionStorage'] as const) {
   Object.defineProperty(globalThis, name, { configurable: true, writable: true, value: environment.window[name] });
+}
+// React Router builds requests with Node's Fetch implementation, which expects
+// its own AbortSignal. Keep the controller and signal from the same runtime.
+if (environment) {
+  const controller = transferableAbortController();
+  Object.assign(globalThis, { AbortController: controller.constructor, AbortSignal: controller.signal.constructor });
 }
 // jsdom has no layout viewport; validation can still request the browser's
 // standard scroll action without an asynchronous missing-method exception.

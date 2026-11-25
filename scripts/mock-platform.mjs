@@ -1,4 +1,5 @@
 import { normalizeSiteReferences } from '../src/domain/siteIdentity.mjs';
+import { upgradeLegacyAssociationData } from '../src/persistence/legacyAssociationMigration.ts';
 import { pricingFormulas, syntheticQuotePrice } from '../src/domain/pricingFormulas.mjs';
 import { verifyRegistration, verifyAuthentication } from './webauthn.mjs';
 import { accountGroups, memberAccounts, publicAccount } from './account-groups.mjs';
@@ -47,9 +48,23 @@ export function createMockPlatform({ database, prototypeTables = Object.keys(dat
   }));
   const libraryTableSet = new Set(libraryTables);
   analyticsTags = normalizeSiteReferences(analyticsTags);
-  operationsDatabase = normalizeSiteReferences(operationsDatabase);
+  operationsDatabase = upgradeLegacyAssociationData(normalizeSiteReferences(operationsDatabase));
   let state = { version: 1, admin: null, payments: {}, drafts: {}, releases: {}, heads: {}, audit: [], analytics: [] };
   if (statePath) { try { state = normalizeSiteReferences(JSON.parse(readFileSync(statePath, 'utf8'))); if (state.version !== 1) throw new Error('Unsupported mock state'); } catch (e) { if (e.code !== 'ENOENT') throw e; } }
+  // Keep stored revisions intact; translate the historical payload when it is opened.
+  const upgradedPayloads = new WeakMap();
+  const currentPayload = payload => {
+    if (upgradedPayloads.has(payload)) return upgradedPayloads.get(payload);
+    const data = upgradeLegacyAssociationData(payload.data);
+    const result = data === payload.data ? payload : { ...payload, data };
+    upgradedPayloads.set(payload, result);
+    return result;
+  };
+  for (const row of Object.values(state.builderDrafts ?? {})) {
+    if (!Object.hasOwn(row, 'clientId')) continue;
+    row.hostingAssociationId ??= row.clientId;
+    delete row.clientId;
+  }
   const sessions = new Map(), quotes = new Map(), attempts = new Map();
   const persist = () => {
     if (!statePath) return;
@@ -102,7 +117,7 @@ export function createMockPlatform({ database, prototypeTables = Object.keys(dat
   const seedPayloads = new Map(), payloadRevisions = new WeakMap();
   let seedBaseRevision;
   const availableSite = siteKey => siteKeys.includes(siteKey) || !!prototypeDraft(siteKey);
-  const prototypePayload = (siteKey, environment) => {
+  const storedPrototypePayload = (siteKey, environment) => {
     if (environment !== undefined) {
       if (!['uat','production'].includes(environment)) fail(400, 'Invalid prototype environment');
       const release = state.prototypeReleases?.[state.prototypeHeads?.[siteKey]?.[environment]];
@@ -117,8 +132,9 @@ export function createMockPlatform({ database, prototypeTables = Object.keys(dat
     }
     return seedPayloads.get(siteKey);
   };
+  const prototypePayload = (siteKey, environment) => currentPayload(storedPrototypePayload(siteKey, environment));
   const prototypeRevision = (siteKey, environment) => {
-    const payload = prototypePayload(siteKey, environment);
+    const payload = storedPrototypePayload(siteKey, environment);
     // A save replaces the payload object; quotes share its revision without
     // repeatedly hashing the multi-megabyte catalog on every payment request.
     if (!payloadRevisions.has(payload)) payloadRevisions.set(payload, `prototype:${sha(JSON.stringify(payload))}`);
@@ -466,26 +482,28 @@ export function createMockPlatform({ database, prototypeTables = Object.keys(dat
       requireAdmin();
       const readPaths = ['/builder/catalog', '/builder/drafts', '/builder/status', '/builder/queue', '/library/catalog', '/library/history', '/analytics/events'];
       if (!readPaths.includes(path)) requireEditor();
-      if (path.startsWith('/builder/')) return respond(200, await builderRelease({ path, body, state, commit, clock, drafts: state.drafts, quotes, analyticsTags, validatePayload, actor: account().username }));
+      if (path.startsWith('/builder/')) return respond(200, await builderRelease({ path, body, state, commit, clock, drafts: state.drafts, currentPayload, quotes, analyticsTags, validatePayload, actor: account().username }));
       if (path === '/library/catalog') {
-        strictKeys(body, ['siteKey', 'tables']);
+        strictKeys(body, ['siteKey', 'tables', 'includeAnalytics']);
+        if (body.includeAnalytics !== undefined && typeof body.includeAnalytics !== 'boolean') fail(400, 'Invalid Library analytics option');
         if (!database || !Array.isArray(body.tables) || !body.tables.length || new Set(body.tables).size !== body.tables.length || body.tables.some(table => typeof table !== 'string' || !libraryTableSet.has(table) || !Array.isArray(database[table]))) fail(400, 'Invalid Library catalog tables');
         if (body.siteKey !== 'all' && !availableSite(body.siteKey)) fail(404, 'Unavailable Library Site');
-        const payload = body.siteKey === 'all' ? null : prototypeDraft(body.siteKey)?.payload;
+        const draft = body.siteKey === 'all' ? null : prototypeDraft(body.siteKey);
+        const payload = draft ? currentPayload(draft.payload) : null;
         const data = Object.fromEntries(body.tables.map(table => {
-          if (['organizations', 'organizationProfiles', 'clients', 'sites'].includes(table)) {
+          if (['organizations', 'organizationProfiles', 'associationEntities', 'sites'].includes(table)) {
             const records = new Map((database[table] ?? []).map(r => [r.id, r]));
-            for (const draft of Object.values(state.drafts)) for (const row of draft.payload.data[table] ?? []) if (!records.has(row.id) && (row.id.startsWith('build-') || table === 'organizationProfiles' && (draft.payload.data.organizations ?? []).some(o => o.id.startsWith('build-org-') && o.key === row.organizationKey))) records.set(row.id, row);
-            if (table === 'clients' && payload) {
-              const clientId = payload.data.sites.find(s => s.key === body.siteKey)?.clientId;
-              const savedClient = payload.data.clients.find(c => c.id === clientId);
-              if (savedClient && records.has(clientId)) records.set(clientId, { ...records.get(clientId), status: savedClient.status });
+            for (const draft of Object.values(state.drafts)) for (const row of currentPayload(draft.payload).data[table] ?? []) if (!records.has(row.id) && (row.id.startsWith('build-') || table === 'organizationProfiles' && (draft.payload.data.organizations ?? []).some(o => o.id.startsWith('build-org-') && o.key === row.organizationKey))) records.set(row.id, row);
+            if (table === 'associationEntities' && payload) {
+              const associationId = payload.data.sites.find(s => s.key === body.siteKey)?.hostingAssociationId;
+              const savedAssociation = payload.data.associationEntities.find(row => row.id === associationId);
+              if (savedAssociation && records.has(associationId)) records.set(associationId, { ...records.get(associationId), status: savedAssociation.status });
             }
             return [table, [...records.values()]];
           }
           return [table, payload?.data[table] ?? database[table]];
         }));
-        return respond(200, { revision: `library:${sha(JSON.stringify(data))}`, data, analyticsTags: database.analyticsTags ?? analyticsTags });
+        return respond(200, { revision: `library:${sha(JSON.stringify(data))}`, data, ...(body.includeAnalytics !== false && { analyticsTags: database.analyticsTags ?? analyticsTags }) });
       }
       if (path === '/rates/import') {
         strictKeys(body, ['filename','base64','title']);
@@ -519,7 +537,7 @@ export function createMockPlatform({ database, prototypeTables = Object.keys(dat
         strictKeys(body, ['id','expectedVersion','expectedReleaseId']);
         const draft = state.drafts[body.id];
         if (!draft || draft.version !== body.expectedVersion || (state.heads[draft.siteKey] ?? null) !== body.expectedReleaseId || draft.baseReleaseId !== body.expectedReleaseId) fail(409, 'Publication revision conflict');
-        const blockers = await checkReadiness?.(structuredClone(draft)) ?? ['Migration, full applicant parity and analytics acceptance are not complete'];
+        const blockers = await checkReadiness?.(structuredClone({ ...draft, payload: currentPayload(draft.payload) })) ?? ['Migration, full applicant parity and analytics acceptance are not complete'];
         if (blockers.length) fail(409, `Publication remains gated: ${blockers.join('; ')}`);
         // No await between pointer comparison and commit: all state changes form
         // one synchronous replacement, persisted with an atomic rename.
@@ -532,7 +550,7 @@ export function createMockPlatform({ database, prototypeTables = Object.keys(dat
         strictKeys(body, ['siteKey','releaseId','expectedReleaseId']);
         const release = state.releases[body.releaseId];
         if (!release || release.siteKey !== body.siteKey || state.heads[body.siteKey] !== body.expectedReleaseId) fail(409, 'Rollback revision conflict');
-        const blockers = await checkReadiness?.(structuredClone(release)) ?? ['Acceptance evidence missing'];
+        const blockers = await checkReadiness?.(structuredClone({ ...release, payload: currentPayload(release.payload) })) ?? ['Acceptance evidence missing'];
         if (blockers.length) fail(409, 'Rollback acceptance evidence missing');
         if (state.heads[body.siteKey] !== body.expectedReleaseId) fail(409, 'Rollback revision conflict');
         commit(() => { state.heads[body.siteKey] = release.id; state.audit.push({ action: 'rollback', actor: 'caroline', releaseId: release.id, previousReleaseId: body.expectedReleaseId, at: clock() }); }); return respond(200, release);

@@ -22,7 +22,7 @@ export function buildPrototypeAssociationContext(data: EffectiveSiteData, siteKe
     throw new Error("Association snapshot unavailable. Create a new draft/release with stored Association tables.");
   }
   const site = data.sites.find(row => row.key === siteKey);
-  const client = site && data.clients.find(row => row.id === site.clientId);
+  const client = site && data.associationEntities.find(row => row.id === site.hostingAssociationId);
   if (!site || !client) throw new Error(`Unavailable Association Site: ${siteKey}`);
   if (!Array.isArray(data.organizations) || !Array.isArray(data.organizationProfiles)) throw new Error("TPA snapshot unavailable. Create a new draft/release with stored TPA tables.");
   const organizations = data.organizations.filter(row => row.id === client.organizationId);
@@ -43,12 +43,12 @@ export function buildPrototypeAssociationContext(data: EffectiveSiteData, siteKe
       const definitions = data.associations.filter(row => row.key === link.associationKey);
       if (definitions.length !== 1) throw new Error(`Missing or ambiguous Association: ${link.associationKey}`);
       const row = definitions[0];
-      if (row.clientKey !== client.key) throw new Error(`Association belongs to another hosting identity: ${row.key}`);
-      return { ...structuredClone(row.definition), id: row.key, clientId: client.key };
+      if (row.hostingAssociationKey !== client.key) throw new Error(`Association belongs to another hosting identity: ${row.key}`);
+      return { ...structuredClone(row.definition), id: row.key, hostingAssociationId: client.key };
     });
   return { associations, tpa, tpaKey: organization.key,
-    allAssociations: data.associations.filter(row => row.clientKey === client.key).map(row => ({ ...structuredClone(row.definition), id: row.key, clientId: client.key })),
-    links: structuredClone(data.siteAssociations.filter(row => data.sites.some(site => site.key === row.siteKey && site.clientId === client.id))),
-    sites: structuredClone(data.sites.filter(row => row.clientId === client.id)),
+    allAssociations: data.associations.filter(row => row.hostingAssociationKey === client.key).map(row => ({ ...structuredClone(row.definition), id: row.key, hostingAssociationId: client.key })),
+    links: structuredClone(data.siteAssociations.filter(row => data.sites.some(site => site.key === row.siteKey && site.hostingAssociationId === client.id))),
+    sites: structuredClone(data.sites.filter(row => row.hostingAssociationId === client.id)),
     selection: structuredClone(policy.associationSelection), branding: structuredClone(policy.associationBranding) };
 }

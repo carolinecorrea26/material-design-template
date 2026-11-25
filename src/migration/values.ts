@@ -47,13 +47,13 @@ export function merge<T>(base: T, override: unknown): T {
   return result as T;
 }
 function isObject(v: unknown): v is Record<string, unknown> { return !!v && typeof v === "object" && !Array.isArray(v); }
-export const globalScope: Scope = { scope: "global", clientKey: null, siteKey: null };
-export const clientScope = (clientKey: string): Scope => ({ scope: "client", clientKey, siteKey: null });
-export const siteScope = (siteKey: string): Scope => ({ scope: "site", clientKey: null, siteKey });
-export const scopeKey = (scope: Scope) => `${scope.scope}:${scope.clientKey ?? scope.siteKey ?? "*"}`;
+export const globalScope: Scope = { scope: "global", hostingAssociationKey: null, siteKey: null };
+export const clientScope = (hostingAssociationKey: string): Scope => ({ scope: "association", hostingAssociationKey, siteKey: null });
+export const siteScope = (siteKey: string): Scope => ({ scope: "site", hostingAssociationKey: null, siteKey });
+export const scopeKey = (scope: Scope) => `${scope.scope}:${scope.hostingAssociationKey ?? scope.siteKey ?? "*"}`;
 export const identity = (key: string) => ({ id: key, key });
 export const pathKey = (path: string[]) => path.map(encodeURIComponent).join(".");
-export const scopeRank = { global: 0, client: 1, site: 2 };
-export function applicable(scope: Scope, siteKey: string, clientKey: string) {
-  return scope.scope === "global" || (scope.scope === "client" ? scope.clientKey === clientKey : scope.siteKey === siteKey);
+export const scopeRank = { global: 0, association: 1, site: 2 };
+export function applicable(scope: Scope, siteKey: string, hostingAssociationKey: string) {
+  return scope.scope === "global" || (scope.scope === "association" ? scope.hostingAssociationKey === hostingAssociationKey : scope.siteKey === siteKey);
 }

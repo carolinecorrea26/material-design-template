@@ -17,46 +17,45 @@
       "id": "site:abe.home.hero.title",
       "key": "site:abe.home.hero.title",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "abe",
       "contentKey": "home.hero.title",
       "value": "High quality insurance and exclusive rates for members",
       "position": 0,
       "displayId": 50630935296488,
       "providedBy": null,
-      "sourceReference": "prototype:contentValues/site:abe.home.hero.title"
+      "sourceReference": "prototype:contentValues/site:abe.home.hero.title",
+      "hostingAssociationKey": null
     },
     {
       "id": "site:ama.home.hero.description",
       "key": "site:ama.home.hero.description",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "ama",
       "contentKey": "home.hero.description",
       "value": "Coverage designed exclusively for American Medical Association members. Get started today!",
       "position": 0,
       "displayId": 37302933452911,
       "providedBy": null,
-      "sourceReference": "prototype:contentValues/site:ama.home.hero.description"
+      "sourceReference": "prototype:contentValues/site:ama.home.hero.description",
+      "hostingAssociationKey": null
     },
     {
       "id": "site:ama.home.clientSection.tagline",
       "key": "site:ama.home.clientSection.tagline",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "ama",
       "contentKey": "home.clientSection.tagline",
       "value": "Helping physicians protect what matters most",
       "position": 1,
       "displayId": 25645518763447,
       "providedBy": null,
-      "sourceReference": "prototype:contentValues/site:ama.home.clientSection.tagline"
+      "sourceReference": "prototype:contentValues/site:ama.home.clientSection.tagline",
+      "hostingAssociationKey": null
     },
     {
       "id": "site:ama.home.clientSection.paragraphs",
       "key": "site:ama.home.clientSection.paragraphs",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "ama",
       "contentKey": "home.clientSection.paragraphs",
       "value": [
@@ -66,85 +65,86 @@
       "position": 2,
       "displayId": 50963112797704,
       "providedBy": null,
-      "sourceReference": "prototype:contentValues/site:ama.home.clientSection.paragraphs"
+      "sourceReference": "prototype:contentValues/site:ama.home.clientSection.paragraphs",
+      "hostingAssociationKey": null
     },
     {
       "id": "site:avma.pages.membership.infoNote",
       "key": "site:avma.pages.membership.infoNote",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "avma",
       "contentKey": "pages.membership.infoNote",
       "value": "SAVMA members and graduating SAVMA members should visit http://avmalife.org/Students.",
       "position": 0,
       "displayId": 78050183601454,
       "providedBy": null,
-      "sourceReference": "prototype:contentValues/site:avma.pages.membership.infoNote"
+      "sourceReference": "prototype:contentValues/site:avma.pages.membership.infoNote",
+      "hostingAssociationKey": null
     },
     {
       "id": "site:csea.pages.membership.infoNote",
       "key": "site:csea.pages.membership.infoNote",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "csea",
       "contentKey": "pages.membership.infoNote",
       "value": "This program is available exclusively to CSEA members. c/o Pearl Insurance, 13 Airline Drive, Albany, NY 12205.",
       "position": 0,
       "displayId": 172644293388211,
       "providedBy": null,
-      "sourceReference": "prototype:contentValues/site:csea.pages.membership.infoNote"
+      "sourceReference": "prototype:contentValues/site:csea.pages.membership.infoNote",
+      "hostingAssociationKey": null
     },
     {
       "id": "site:waepa.home.hero.title",
       "key": "site:waepa.home.hero.title",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "waepa",
       "contentKey": "home.hero.title",
       "value": "Safeguard your family's future.",
       "position": 0,
       "displayId": 52019063960166,
       "providedBy": null,
-      "sourceReference": "prototype:contentValues/site:waepa.home.hero.title"
+      "sourceReference": "prototype:contentValues/site:waepa.home.hero.title",
+      "hostingAssociationKey": null
     },
     {
       "id": "site:waepa.home.hero.description",
       "key": "site:waepa.home.hero.description",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "waepa",
       "contentKey": "home.hero.description",
       "value": "Group Term Life and Group Short Term Disability Insurance, available exclusively to Civilian Federal Employees. Start your application today.",
       "position": 1,
       "displayId": 260597067701882,
       "providedBy": null,
-      "sourceReference": "prototype:contentValues/site:waepa.home.hero.description"
+      "sourceReference": "prototype:contentValues/site:waepa.home.hero.description",
+      "hostingAssociationKey": null
     },
     {
       "id": "site:waepa.pages.membership.infoNote",
       "key": "site:waepa.pages.membership.infoNote",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "waepa",
       "contentKey": "pages.membership.infoNote",
       "value": "",
       "position": 2,
       "displayId": 18043138781313,
       "providedBy": null,
-      "sourceReference": "prototype:contentValues/site:waepa.pages.membership.infoNote"
+      "sourceReference": "prototype:contentValues/site:waepa.pages.membership.infoNote",
+      "hostingAssociationKey": null
     },
     {
       "id": "site:waepa-gi.pages.membership.infoNote",
       "key": "site:waepa-gi.pages.membership.infoNote",
       "scope": "site",
-      "clientKey": null,
       "siteKey": "waepa-gi",
       "contentKey": "pages.membership.infoNote",
       "value": "Applying for coverage will make you a new member if you are not currently a WAEPA member.",
       "position": 0,
       "displayId": 29661418324708,
       "providedBy": null,
-      "sourceReference": "prototype:contentValues/site:waepa-gi.pages.membership.infoNote"
+      "sourceReference": "prototype:contentValues/site:waepa-gi.pages.membership.infoNote",
+      "hostingAssociationKey": null
     },
     {
       "id": "isitrust.dependent.spouse-half-member-advisory",
@@ -155,9 +155,9 @@
       "position": 0,
       "scope": "site",
       "siteKey": "isitrust",
-      "clientKey": null,
       "contentKey": "dependent.spouse-half-member-advisory",
-      "value": "Spouse coverage should not exceed 50% of member coverage. This is an advisory comparison and does not prevent applying for an amount within the available range."
+      "value": "Spouse coverage should not exceed 50% of member coverage. This is an advisory comparison and does not prevent applying for an amount within the available range.",
+      "hostingAssociationKey": null
     },
     {
       "id": "site:isitrust.pages.eligibility.sectionNotes.spouseSection",
@@ -168,9 +168,9 @@
       "position": 0,
       "scope": "site",
       "siteKey": "isitrust",
-      "clientKey": null,
       "contentKey": "pages.eligibility.sectionNotes.spouseSection",
-      "value": "If your Spouse is also a member of a participating association, they may apply as a Spouse or Member but not both."
+      "value": "If your Spouse is also a member of a participating association, they may apply as a Spouse or Member but not both.",
+      "hostingAssociationKey": null
     }
   ],
   "documentDefinitions": [

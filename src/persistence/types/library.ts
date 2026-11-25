@@ -11,7 +11,7 @@ import type { FlowRow, FlowStepRow, FlowTransitionRow } from "./flows";
 export * from "./flows";
 import type { FeatureRow, ConfigurationDefinitionRow, ContentEntryRow, EmailTemplateRow, DocumentDefinitionRow } from "./content";
 export * from "./content";
-export interface AssociationRow extends LibraryRow<{ name: string; acronym?: string; logo?: string; logoAlt?: string }> { clientKey: string }
+export interface AssociationRow extends LibraryRow<{ name: string; acronym?: string; logo?: string; logoAlt?: string }> { hostingAssociationKey: string }
 
 export type ComponentUsage = { source: string; label: string; pageKey?: string };
 export type ComponentRole = 'application-frame' | 'page-section' | 'shared-piece';

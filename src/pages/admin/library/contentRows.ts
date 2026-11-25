@@ -1,21 +1,24 @@
 import { presentContent } from './contentPresentation';
-import { compileRequirementCatalog } from '../../../domain/requirementCatalog.mjs';
-import type { LibraryCatalog } from '../../../services/libraryCatalogService';
+import { compileRequirementCatalog, type RequirementCatalogSource } from '../../../domain/requirementCatalog.mjs';
+import { compileLibraryCatalog, type LibraryCatalog } from '../../../services/libraryCatalogService';
 import { freshStartSource } from '../../../domain/freshStartCatalog';
 import { canonicalContentKey, resolveContentReferences } from '../../../domain/contentReferences.mjs';
-import { resolveEffectiveSite } from '../../../domain/effectiveSite';
+import { resolveCompiledEffectiveSite } from '../../../domain/effectiveSite';
 import { humanize } from './libraryRecordColumns';
 
 export type ContentUsage = { pageKey?: string; location: string; component?: string; when?: string; channel: string };
 export type ContentRow = { key: string; name: string; defaultValue: unknown; value: unknown; configurable: boolean; status: string; uses: string[]; references: string[]; usages: ContentUsage[]; sourceFile?: string; overrideFile?: string };
 
 /** One authoring item with all its placements. Storage projections are usages, not editable copies. */
-export function contentRows(catalog: LibraryCatalog, siteKey: string, source = freshStartSource()) {
-  const data = compileRequirementCatalog(catalog.data, source, undefined, catalog.siteScope);
+export function contentRows(catalog: LibraryCatalog, siteKey: string, sourceOverride?: RequirementCatalogSource) {
+  const source = sourceOverride ?? freshStartSource();
+  const data = sourceOverride
+    ? compileRequirementCatalog(catalog.data, sourceOverride, undefined, catalog.siteScope)
+    : compileLibraryCatalog(catalog, 'all').data;
   const refs = source.contentReferences ?? {};
   const owner = (key: string) => canonicalContentKey(key, refs);
   const authored = resolveContentReferences(source.content, refs);
-  const effective = siteKey === 'all' ? undefined : resolveEffectiveSite(data, siteKey, { requirements: source });
+  const effective = siteKey === 'all' ? undefined : resolveCompiledEffectiveSite(data, siteKey);
   const effectiveValues = new Map(effective?.configuration.content.map(row => [row.key, row.value]));
   const rows = new Map<string, ContentRow>();
   const entryOwner = new Map(data.contentEntries.map(entry => [entry.key, owner(entry.definition.sourceKey ?? entry.key)]));

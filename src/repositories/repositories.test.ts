@@ -26,7 +26,7 @@ describe("Phase 5 compatibility repository", () => {
   it("uses the injected snapshot for identities, relationships and compatibility settings", () => {
     const source = structuredClone(staticSiteAdapter.read());
     source.siteEntities.find(s => s.id === "asce")!.supportOverride = { phone: "repository-phone" };
-    source.associationEntities.find(a => a.clientId === "asce")!.name = "Repository association";
+    source.associationEntities.find(a => a.hostingAssociationId === "asce")!.name = "Repository association";
     const injected = createSiteRepository({ read: () => source });
     expect(injected.getEffectiveSiteConfig("asce").support.phone).toBe("repository-phone");
     expect(injected.getAssociationsForSite("asce")[0].name).toBe("Repository association");
@@ -57,7 +57,7 @@ describe("Phase 5 persistence and Library boundaries", () => {
     await adapter.update("sites", site.id, { name: "Updated through adapter" });
     expect((await repositories.sites.get(site.id))?.name).toBe("Updated through adapter");
     expect(await repositories.sites.get("missing")).toBeNull();
-    expect(await repositories.clients.list()).toEqual(await adapter.list("clients"));
+    expect(await repositories.associationEntities.list()).toEqual(await adapter.list("associationEntities"));
   });
   it("propagates persistence failures rather than returning static data", async () => {
     const adapter = new LocalStorageAdapter(createSeedDatabase());

@@ -1,6 +1,7 @@
 import { normalizeSiteReferences } from '../domain/siteIdentity.mjs';
 import { emptyLibrary } from "./emptyLibrary";
-import { synchronizeAssociationStructure } from './associationStructure';
+import { deriveAssociationContexts } from './associationStructure';
+import { upgradeLegacyAssociationData } from './legacyAssociationMigration';
 import type { PersistenceAdapter } from "./adapter";
 import type { DatabaseSchema, RowFor, TableName } from "./types";
 import { queryRows, type RowQuery } from "./query";
@@ -33,9 +34,9 @@ export class LocalStorageAdapter implements PersistenceAdapter {
       if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) throw new Error("Invalid local database.");
     } catch { if (strict) throw new Error("Invalid local database. Snapshot read refused."); return clone(this.seed); }
     // Identity conflicts must surface; do not substitute the seed for saved data.
-    parsed = normalizeSiteReferences(parsed);
-    if (parsed.associationEntities === undefined && parsed.clients && parsed.sites && parsed.associations && parsed.siteAssociations && parsed.sitePolicies) {
-      parsed = synchronizeAssociationStructure({ ...emptyLibrary(), ...parsed } as DatabaseSchema);
+    parsed = upgradeLegacyAssociationData(normalizeSiteReferences(parsed));
+    if (parsed.siteAssociationContexts === undefined && parsed.associationEntities && parsed.sites && parsed.associations && parsed.siteAssociations && parsed.sitePolicies) {
+      parsed = deriveAssociationContexts({ ...emptyLibrary(), ...parsed } as DatabaseSchema);
     }
     for (const table of ['portalActors','applicationCoverages','applicationRiders','applicationAnswers','applicationSnapshots','schemaReconciliationIssues','portalReferenceTypes','portalEntityReferences'] as const) parsed[table] ??= [];
     if (strict) return parsed as DatabaseSchema;

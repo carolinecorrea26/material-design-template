@@ -36,7 +36,7 @@ export interface Release extends Timestamped, SoftDeletable {
 }
 export interface ReleaseChange { id: string; releaseId: string; changeRequestId: string; createdAt: string }
 export interface SiteBuilderDraft extends Timestamped, SoftDeletable {
-  id: string; clientId: string | null; siteKey: string; siteName: string; status: string;
+  id: string; hostingAssociationId: string | null; siteKey: string; siteName: string; status: string;
   currentStep: string; draftDataJson: Json; ownerId: string | null;
   ownerActorId?: string | null;
 }
@@ -44,7 +44,7 @@ export interface SiteBuilderDraft extends Timestamped, SoftDeletable {
 export interface PortalUser extends Timestamped { id: string; email: string; displayName: string; status: RecordStatus }
 export interface Role extends Timestamped { id: string; key: string; name: string }
 export interface UserRole { id: string; userId: string; roleId: string; createdAt: string }
-export type UserScopeType = "global" | "organization" | "client" | 'association' | "site" | "advisor";
+export type UserScopeType = "global" | "organization" | "association" | "site" | "advisor";
 export interface UserScope { id: string; userId: string; scopeType: UserScopeType; scopeId: string | null; createdAt: string; referenceState?: 'legacy' | 'resolved'; targetReferenceId?: string | null }
 export type AuditAction = "create" | "update" | "archive" | "restore" | "status_change";
 export interface AuditEvent {
@@ -60,6 +60,6 @@ export interface AnalyticsMetric extends Timestamped {
 }
 export interface AnalyticsMeasurement extends Timestamped {
   id: string; metricKey: string; periodStart: string; periodEnd: string; periodType: "month" | "ytd" | "year";
-  siteId: string | null; clientId: string | null; device: "desktop" | "mobile" | null; value: number;
+  siteId: string | null; hostingAssociationId: string | null; device: "desktop" | "mobile" | null; value: number;
   sourceReport: string; sourceSystem: string; definitionVersion: string; notes: string | null;
 }

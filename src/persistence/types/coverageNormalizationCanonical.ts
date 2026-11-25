@@ -12,7 +12,7 @@ export interface ProductClients extends LibraryMetadata {
   id: string;
   key: string;
   productKey: string;
-  clientKey: string;
+  hostingAssociationKey: string;
 }
 export interface CoveragePlanDefinitions extends LibraryMetadata {
   id: string;
@@ -91,7 +91,7 @@ export interface ProductAmountRules extends LibraryMetadata {
   applicantClass: string | null;
   amountPatternKey: string;
   conditionKey: string | null;
-  clientKey: string | null;
+  hostingAssociationKey: string | null;
   siteKey: string | null;
   position: number;
 }

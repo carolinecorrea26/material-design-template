@@ -1,18 +1,19 @@
 import { freshStartSource } from '../../../domain/freshStartCatalog';
-import { compileRequirementCatalog } from '../../../domain/requirementCatalog.mjs';
+import { compileRequirementCatalog, type RequirementCatalogSource } from '../../../domain/requirementCatalog.mjs';
 import type { FlowDefinition } from "../../../domain/flows";
-import { resolveEffectiveSite } from "../../../domain/effectiveSite";
+import { resolveCompiledEffectiveSite } from "../../../domain/effectiveSite";
 import { resolvePageCatalog } from "../../../domain/pageCatalog";
 import { getSiteDetailsPageLabel } from "../../../config/resolvers/resolveClientPages";
-import type { LibraryCatalog } from "../../../services/libraryCatalogService";
+import { compileLibraryCatalog, type LibraryCatalog } from "../../../services/libraryCatalogService";
 import { flowDefinition } from '../../../domain/flowDefinitions.mjs';
 
 /** Authored graphs replace captured topology; Site assignments supply values and availability. */
-export function storedFlowRows(catalog: LibraryCatalog, siteKey: string, source = freshStartSource()) {
-  const data = compileRequirementCatalog(catalog.data, source, undefined, catalog.siteScope);
+export function storedFlowRows(catalog: LibraryCatalog, siteKey: string, sourceOverride?: RequirementCatalogSource) {
+  const source = sourceOverride ?? freshStartSource();
+  const data = sourceOverride ? compileRequirementCatalog(catalog.data, sourceOverride, undefined, catalog.siteScope) : compileLibraryCatalog(catalog, 'all').data;
   const pages = resolvePageCatalog(data, siteKey === "all" ? undefined : siteKey);
   const globalAssignments = data.siteFlows.filter(row => row.scope === "global").sort((a, b) => a.position - b.position);
-  const effective = siteKey === 'all' ? undefined : resolveEffectiveSite(data, siteKey, { requirements: source });
+  const effective = siteKey === 'all' ? undefined : resolveCompiledEffectiveSite(data, siteKey);
   const assignments = !effective ? globalAssignments : effective.configuration.flows.map(flow => {
     const assignment = data.siteFlows.find(row => row.key === flow.provenance[0].key);
     if (!assignment) throw new Error(`Missing saved flow assignment: ${flow.key}`);

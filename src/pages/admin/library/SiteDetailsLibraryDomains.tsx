@@ -24,7 +24,7 @@ const CoverageAggregateLibrary = lazy(() => import("./CoverageAggregateLibrary")
 
 
 
-import { getAssociationsForSite, getClientForSite, getSite, getTpaForClient, resolveEffectiveBranding, resolveSite, resolveSiteConfigurations, resolveSiteCoverage } from "../../../data";
+import { getAssociationsForSite, getHostingAssociationForSite, getSite, getTpaForAssociation, resolveEffectiveBranding, resolveSite, resolveSiteConfigurations, resolveSiteCoverage } from "../../../data";
 import ResponsiveTableContainer from "../../../components/docs/ResponsiveTableContainer";
 import ResolvedConfigurationList from "../../../components/docs/ResolvedConfigurationList";
 
@@ -49,8 +49,8 @@ function ScopedSiteContent({ children }: { children: (siteId: string) => ReactNo
 export function SiteOverviewLibrary() {
   return <ScopedSiteContent>{(siteId) => {
     const site = getSite(siteId)!;
-    const client = getClientForSite(siteId)!;
-    const tpa = getTpaForClient(client.id)!;
+    const client = getHostingAssociationForSite(siteId)!;
+    const tpa = getTpaForAssociation(client.id)!;
     const resolved = resolveSite(siteId);
     const branding = resolveEffectiveBranding({ siteId });
     const associations = getAssociationsForSite(siteId);

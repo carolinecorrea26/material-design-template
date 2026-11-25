@@ -16,7 +16,7 @@ export function createReadRepository<T extends TableName>(adapter: PersistenceAd
 export function createFoundationRepositories(adapter: PersistenceAdapter) {
   return {
     sites: createReadRepository(adapter, "sites"),
-    clients: createReadRepository(adapter, "clients"),
+    associationEntities: createReadRepository(adapter, "associationEntities"),
     organizations: createReadRepository(adapter, "organizations"),
     associations: createReadRepository(adapter, "associations"),
     siteAssociations: createReadRepository(adapter, "siteAssociations"),

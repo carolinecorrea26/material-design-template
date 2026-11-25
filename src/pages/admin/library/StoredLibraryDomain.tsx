@@ -59,7 +59,7 @@ function StoredDatasetDomain({ domain, siteKey }: { domain: string; siteKey: str
     columns.push({ id: "visibility", label: "When shown", width: 280, value: row => storedFieldVisibility(catalog, row as StoredFieldRow, fields) });
     columns.push({ id: "input", label: "Input", value: row => text((row.definition as Record<string, unknown>).inputType), filter: true, tag: true }, { id: "required", label: "Required", width: 100, value: row => fieldRequirednessLabel(row.definition as FieldDefinition), filter: true, tag: true });
   } else {
-    if (rows.some(row => row.scope !== undefined || row.siteKey !== undefined)) columns.push({ id: "scope", label: "Scope", width: 180, value: row => text(row.siteKey ?? row.clientKey ?? row.scope ?? "Global"), filter: true, tag: true });
+    if (rows.some(row => row.scope !== undefined || row.siteKey !== undefined)) columns.push({ id: "scope", label: "Scope", width: 180, value: row => text(row.siteKey ?? row.hostingAssociationKey ?? row.scope ?? "Global"), filter: true, tag: true });
     const classification = (row: StoredRow) => row.status ?? row.kind ?? row.categoryKey ?? (row.definition as Record<string, unknown>)?.type ?? (row.definition as Record<string, unknown>)?.area;
     if (rows.some(row => classification(row) !== undefined)) columns.push({ id: "type", label: "Type / status", value: row => text(classification(row)), filter: true, tag: true });
     if (rows.some(row => typeof row.enabled === "boolean" || typeof row.include === "boolean")) columns.push({ id: "enabled", label: "Enabled", width: 100, value: row => text(row.enabled ?? row.include), filter: true, tag: true });

@@ -13,12 +13,12 @@ describe("persistent domain services", () => {
 
   it("supports site create, update, archive, restore, and scoped queries", async () => {
     const service = new SiteService(adapter);
-    const created = await service.createSite({ key: "waepa-test", clientId: "waepa", name: "Test", displayName: "Test", environment: "demo", templateType: "multi", legacyClientId: "waepa" });
+    const created = await service.createSite({ key: "waepa-test", hostingAssociationId: "waepa", name: "Test", displayName: "Test", environment: "demo", templateType: "multi", legacyClientId: "waepa" });
     expect((await service.getSiteByKey("waepa-test"))?.id).toBe(created.id);
     expect((await service.updateSite(created.id, { name: "Updated" })).name).toBe("Updated");
     await service.archiveSite(created.id); expect(await service.getSiteById(created.id)).toMatchObject({ deletedAt: expect.any(String) });
     await service.restoreSite(created.id); expect(await service.getSiteById(created.id)).toMatchObject({ deletedAt: null });
-    expect((await service.getSitesForScope({ id: "scope", userId: "u", scopeType: "client", scopeId: "waepa", createdAt: "now" })).every((site) => site.clientId === "waepa")).toBe(true);
+    expect((await service.getSitesForScope({ id: "scope", userId: "u", scopeType: "association", scopeId: "waepa", createdAt: "now" })).map(site => site.id)).toContain(created.id);
   });
 
   it("supports structured change CRUD and release assignment", async () => {
@@ -33,7 +33,7 @@ describe("persistent domain services", () => {
   });
 
   it("persists builder draft progress and archive state", async () => {
-    const service = new SiteBuilderService(adapter); const draft = await service.createDraft({ clientId: "waepa", siteKey: "draft-test", siteName: "Draft", status: "Draft", currentStep: "Organization" });
+    const service = new SiteBuilderService(adapter); const draft = await service.createDraft({ hostingAssociationId: "waepa", siteKey: "draft-test", siteName: "Draft", status: "Draft", currentStep: "Organization" });
     expect((await service.updateDraft(draft.id, { currentStep: "Coverage" })).currentStep).toBe("Coverage");
     await service.archiveDraft(draft.id); expect((await service.getDraft(draft.id))?.deletedAt).not.toBeNull();
     await service.restoreDraft(draft.id); expect((await service.getDraft(draft.id))?.deletedAt).toBeNull();
@@ -57,10 +57,10 @@ describe("persistent domain services", () => {
   it("groups all linked Sites and existing applications under the Association's new TPA without rewriting application history", async () => {
     const applications = new ApplicationService(adapter);
     const sites = new SiteService(adapter);
-    const association = (await adapter.get("clients", "waepa"))!;
+    const association = (await adapter.get("associationEntities", "waepa"))!;
     const otherTPA = (await adapter.list("organizations")).find(row => row.id !== association.organizationId)!;
     const otherApplications = (await applications.getApplicationsForTPA(otherTPA.id)).map(row => row.id);
-    const linkedSites = (await sites.getSitesForScope({ id: "scope", userId: "u", scopeType: "client", scopeId: association.id, createdAt: "now" }));
+    const linkedSites = (await sites.getSitesForScope({ id: "scope", userId: "u", scopeType: "association", scopeId: association.id, createdAt: "now" }));
     expect(linkedSites.length).toBeGreaterThan(1);
     await applications.createApplication({ applicationNumber: "APP-TRANSFER-DRAFT", siteId: linkedSites[1].id, productKey: "li-group-term", status: "In Progress", currentActionOwnerType: "Applicant" });
     const submitted = await applications.createApplication({ applicationNumber: "APP-TRANSFER-SUBMITTED", siteId: linkedSites[0].id, productKey: "li-group-term", status: "Pending TPA Review", currentActionOwnerType: "TPA", submittedAt: "2026-10-19T12:00:00.000Z" });
@@ -69,7 +69,7 @@ describe("persistent domain services", () => {
     expect(existing.some(row => row.submittedAt !== null)).toBe(true);
     const events = await adapter.list("applicationEvents");
 
-    await adapter.update("clients", association.id, { organizationId: otherTPA.id });
+    await adapter.update("associationEntities", association.id, { organizationId: otherTPA.id });
 
     const movedIds = new Set(existing.map(row => row.id));
     expect((await applications.getApplicationsForTPA(association.organizationId)).some(row => movedIds.has(row.id))).toBe(false);
@@ -89,7 +89,7 @@ describe("persistent domain services", () => {
     const values = new Map<string, string>();
     const storage = { getItem: (key: string) => values.get(key) ?? null, setItem: (key: string, value: string) => { values.set(key, value); }, removeItem: (key: string) => { values.delete(key); } };
     const first = new LocalStorageAdapter(createSeedDatabase(), storage); const firstService = new SiteService(first);
-    await firstService.createSite({ key: "persisted", clientId: "demo", name: "Persisted", displayName: "Persisted", environment: "demo", templateType: "multi", legacyClientId: "demo" });
+    await firstService.createSite({ key: "persisted", hostingAssociationId: "demo", name: "Persisted", displayName: "Persisted", environment: "demo", templateType: "multi", legacyClientId: "demo" });
     const secondService = new SiteService(new LocalStorageAdapter(createSeedDatabase(), storage));
     expect((await secondService.getSiteByKey("persisted"))?.name).toBe("Persisted");
   });

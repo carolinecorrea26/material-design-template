@@ -6,7 +6,7 @@
         "id": "client:{{site}}.theme.type",
         "key": "client:{{site}}.theme.type",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "theme.type",
         "value": "preset",
@@ -17,7 +17,7 @@
         "id": "client:{{site}}.theme.preset",
         "key": "client:{{site}}.theme.preset",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "theme.preset",
         "value": "default",
@@ -28,7 +28,7 @@
         "id": "client:{{site}}.licenseInfo",
         "key": "client:{{site}}.licenseInfo",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "licenseInfo",
         "value": [
@@ -42,7 +42,7 @@
         "id": "client:{{site}}.theme.buttonShape",
         "key": "client:{{site}}.theme.buttonShape",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "theme.buttonShape",
         "value": "pill",
@@ -56,7 +56,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "shared.review-policy",
         "value": {
           "version": 1,
@@ -184,7 +184,7 @@
         "configurationKey": "applicantExperience.membershipLookup",
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "value": {
           "provider": "ama-mock",
           "title": "AMA record lookup"
@@ -195,7 +195,7 @@
         "key": "{{site}}.beneficiary-notes",
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "shared.beneficiary-notes",
         "position": 0,
         "value": {
@@ -231,7 +231,7 @@
         },
         "position": 0,
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "sourceReference": "prototype:brandingProfiles/client:ama"
       }
@@ -259,7 +259,7 @@
         },
         "position": 0,
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "sourceReference": "Associations!D15; New UX Multi-page Requirements!AX43; New UX Multi-page Requirements!BA43"
       }
@@ -378,7 +378,7 @@
       {
         "id": "ama-gi",
         "key": "ama-gi",
-        "clientId": "ama",
+        "hostingAssociationId": "ama",
         "name": "AMA-GI",
         "displayName": "AMA-GI",
         "status": "active",
@@ -388,7 +388,6 @@
         "createdAt": "2026-11-19T00:00:00.000Z",
         "updatedAt": "2026-11-19T00:00:00.000Z",
         "deletedAt": null,
-        "hostingAssociationId": "ama",
         "sourceReference": "User AMA-GI enrollment and confirmations November 19, 2026"
       }
     ],

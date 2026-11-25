@@ -10,11 +10,12 @@ export type AddressFieldsProps = Pick<ComponentProps<typeof FieldRenderer>, 'con
   prefix?: string;
   /** Actual answer IDs for address groups whose names do not share one prefix. */
   fieldIds?: Partial<AddressFieldMapping>;
+  onFieldChange?: (fieldId: string) => void;
 };
 /** Shared responsive street/apartment and city/state/ZIP rows. */
-export default function AddressFields({ fields, prefix = '', fieldIds = {}, control, errors }: AddressFieldsProps) {
+export default function AddressFields({ fields, prefix = '', fieldIds = {}, control, errors, onFieldChange }: AddressFieldsProps) {
   const row = (ids: (keyof AddressFieldMapping)[]) => fields.filter(field => ids.some(id => field.id === (fieldIds[id] ?? `${prefix}${id}`)))
-    .map(field => <FieldRenderer key={field.id} field={field} control={control} errors={errors} />);
+    .map(field => <FieldRenderer key={field.id} field={field} control={control} errors={errors} onValueChange={onFieldChange ? () => onFieldChange(field.id) : undefined} />);
   return <FieldGrid>
     <FieldGrid columns="wide-narrow">{row(['street-address', 'apt-suite'])}</FieldGrid>
     <FieldGrid columns="wide-two-narrow">{row(['city', 'state', 'zip-code'])}</FieldGrid>

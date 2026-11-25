@@ -1,9 +1,18 @@
 import type { CoverageDefinition } from "../../domain/coverage";
 import type { CoverageCategoryId } from "../coverageCategories";
+import { requirementUrlContract } from "../../domain/requirementUrlParameters";
+import type { PageId } from "../../domain/identities";
+
+const productEntry = requirementUrlContract('prods');
+const { requiredParameter, alias, errorPage } = productEntry.entryValidation!;
 
 /** Both entry names share one restriction. Explicit category wins, including empty input. */
 export function coverageCategoryParameter(params: URLSearchParams): string | null {
-  return params.get('category') ?? params.get('categories');
+  return params.get(requiredParameter) ?? params.get(alias);
+}
+
+export function invalidCoverageEntryPage(params: URLSearchParams): PageId | null {
+  return params.has(productEntry.parameter) && !coverageCategoryParameter(params)?.trim() ? errorPage as PageId : null;
 }
 
 /** A URL restriction reduces the available portfolio, not just the selected chip. */

@@ -13,16 +13,16 @@ export const activeSiteMigrationScope = {
   sites: [
     // Synthetic runtime/regression example, not an MCR business Site. Keep in
     // technical validation; exclude from the business ownership comparison.
-    { key: "demo", clientKey: "demo", mcrRequired: false },
-    { key: "abe", clientKey: "abe", mcrRequired: true },
-    { key: "ama", clientKey: "ama", mcrRequired: true },
-    { key: "asce", clientKey: "asce", mcrRequired: true },
-    { key: "avma", clientKey: "avma", mcrRequired: true },
-    { key: "csea", clientKey: "csea", mcrRequired: true },
-    { key: "nso", clientKey: "nso", mcrRequired: true },
-    { key: "isitrust", clientKey: "isitrust", mcrRequired: true },
-    { key: "waepa", clientKey: "waepa", mcrRequired: true },
-    { key: "waepa-gi", clientKey: "waepa", mcrRequired: true },
+    { key: "demo", hostingAssociationKey: "demo", mcrRequired: false },
+    { key: "abe", hostingAssociationKey: "abe", mcrRequired: true },
+    { key: "ama", hostingAssociationKey: "ama", mcrRequired: true },
+    { key: "asce", hostingAssociationKey: "asce", mcrRequired: true },
+    { key: "avma", hostingAssociationKey: "avma", mcrRequired: true },
+    { key: "csea", hostingAssociationKey: "csea", mcrRequired: true },
+    { key: "nso", hostingAssociationKey: "nso", mcrRequired: true },
+    { key: "isitrust", hostingAssociationKey: "isitrust", mcrRequired: true },
+    { key: "waepa", hostingAssociationKey: "waepa", mcrRequired: true },
+    { key: "waepa-gi", hostingAssociationKey: "waepa", mcrRequired: true },
   ],
   sources: {
     currentMcr: {
@@ -57,8 +57,8 @@ export const activeSiteMigrationScope = {
   // Source triage hints verified against the pinned Main sheet. These do not
   // approve Client ownership, create Sites or adopt any product configuration.
   clientIdentityReviewHints: [
-    { clientKey: "avma", sourceAcronym: "AVMA LIFE", sourceReference: "Main!B187:B198", status: "review-required" },
-    { clientKey: "isitrust", sourceAcronym: "ISI", sourceReference: "Main!B278:B287", status: "review-required" },
+    { hostingAssociationKey: "avma", sourceAcronym: "AVMA LIFE", sourceReference: "Main!B187:B198", status: "review-required" },
+    { hostingAssociationKey: "isitrust", sourceAcronym: "ISI", sourceReference: "Main!B278:B287", status: "review-required" },
   ],
   // User confirmed standard CSEA; GI rows remain archived, never standard identity hints.
   excludedIdentityEvidence: [{ siteKey: "csea", sourceReference: "Main!B246:B247", reason: "CSEA GI is not the confirmed standard Site" }],

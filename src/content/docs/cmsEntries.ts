@@ -2,7 +2,7 @@ import { coverages } from "../../config/coverages";
 import { resolveSiteCoverage } from "../../data";
 import {
   getClientAliasForSite,
-  getClientForSite,
+  getHostingAssociationForSite,
   resolveEffectiveBranding,
   resolveSiteFeatures,
   resolveSiteLicenseInfo,
@@ -701,7 +701,7 @@ const externalEntries: CmsEntry[] = [
     "Section content",
     "—",
     (siteId) =>
-      getClientForSite(siteId)?.id === "avma"
+      getHostingAssociationForSite(siteId)?.id === "avma"
         ? flattenProductContent(avmaClient.coverages.overrides?.["sh-hospital-income"]?.productContent)
         : "—",
     "coverage-commerce-productcatalog--interactive",

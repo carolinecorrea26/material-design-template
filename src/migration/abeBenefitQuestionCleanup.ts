@@ -11,7 +11,7 @@ export function applyAbeBenefitQuestionCleanup(db: DatabaseSchema) {
   const authority = "User correction October 26, 2026: remove generated existing-benefit, retirement and expense-fraction questions from ABE; reuse expense responsibility percentage";
   const meta = (table: string) => ({ id: key, key, ...libraryMetadata(table, key, authority) });
   const definition = { ...meta("configurationDefinitions"), position: 0, definition: { path: ["applicantExperience", "factSources"], metadata: {} } };
-  const value = { ...meta("configurationValues"), position: 0, scope: "site" as const, siteKey: "abe", clientKey: null, configurationKey: key, value: {
+  const value = { ...meta("configurationValues"), position: 0, scope: "site" as const, siteKey: "abe", hostingAssociationKey: null, configurationKey: key, value: {
     existingMonthlyBenefit: { value: 0 },
     retirement: { value: "no" },
     eligibleExpenseFraction: { field: "business-expense-responsibility", divisor: 100 },

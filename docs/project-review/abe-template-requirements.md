@@ -31,12 +31,13 @@ Applicable ABE pages from the saved page catalog and Site assignments. Applicati
 | `contact` | Contact | `/contact` | Application |
 | `profile` | Profile | `/profile` | Application |
 | `review` | Review | `/review` | Application |
-| `health-li` | Health LI | `/health-li` | Application |
+| `health-si` | Health SI | `/health-si` | Application |
+| `health-tele` | Health TELE | `/health-tele` | Application |
 | `health-qd` | Health QD | `/health-qd` | Application |
-| `health-di` | Health DI | `/health-di` | Application |
-| `health-ci` | Health CI | `/health-ci` | Application |
+| `health-di-supp` | Health DI SUPP | `/health-di-supp` | Application |
+| `health-cir` | Health CIR | `/health-cir` | Application |
 | `payment` | Payment | `/payment` | Application |
-| `docusign` | Docusign | `/docusign` | Application |
+| `docusign` | DocuSign | `/docusign` | Application |
 | `receipt` | Receipt | `/receipt` | Application |
 | `resume` | Resume | `/resume` | Resume |
 | `resume-method` | Resume Method | `/resume-method` | Resume |
@@ -44,13 +45,12 @@ Applicable ABE pages from the saved page catalog and Site assignments. Applicati
 | `advisor-login` | Advisor Login | `/advisor-login` | Advisor |
 | `advisor-send-confirmation` | Advisor Send Confirmation | `/advisor-send-confirmation` | Advisor |
 | `application-edit-confirmation` | Application Edit Confirmation | `/application-edit-confirmation` | Advisor |
+| `error-400` | Error 400 | `/400` | Utility |
 | `error-404` | Error 404 | `/404` | Utility |
 | `error-500` | Error 500 | `/500` | Utility |
 | `session-expired` | Session Expired | `/session-expired` | Utility |
 | `technical-error` | Technical Error | `/technical-error` | Utility |
 | `maintenance` | Maintenance | `/maintenance` | Utility |
-| `application-unavailable` | Application unavailable | `/application-unavailable` | Utility |
-| `outcome-unknown` | Unconfirmed payment/submission result | `/outcome-unknown` | Utility |
 <!-- ABE-PAGE-CATALOG:END -->
 
 Health routes are shown according to the selected coverage and processing outcome.
@@ -268,159 +268,25 @@ One row per saved field ID used by ABE. Labels, input types, formats and options
 <!-- ABE-FIELD-CATALOG:START -->
 | ID | Label | Input type | Format | Options |
 | --- | --- | --- | --- | --- |
-| `membership` | Are you an active member of a State, Local, or Specialty Bar Association? | radio | — | Yes; No |
-| `first-name` | First Name | text | — | — |
-| `last-name` | Last Name | text | — | — |
-| `email` | Email | text | email | — |
-| `phone` | Phone Number | text | phone | — |
-| `phone-type` | Phone Type | dropdown | — | Mobile; Home; Business |
-| `zip-postal-code` | Zip / Postal Code | text | — | — |
-| `state-province` | State / Province | searchable-select | — | Alabama (AL); Alaska (AK); Alberta (AB); Arizona (AZ); Arkansas (AR); British Columbia (BC); California (CA); Colorado (CO); Connecticut (CT); Delaware (DE); District of Columbia (DC); Florida (FL); Georgia (GA); Guam (GU); Hawaii (HI); Idaho (ID); Illinois (IL); Indiana (IN); Iowa (IA); Kansas (KS); Kentucky (KY); Louisiana (LA); Maine (ME); Manitoba (MB); Maryland (MD); Massachusetts (MA); Michigan (MI); Minnesota (MN); Mississippi (MS); Missouri (MO); Montana (MT); New Brunswick (NB); Nebraska (NE); Nevada (NV); New Hampshire (NH); New Jersey (NJ); Newfoundland and Labrador (NL); New Mexico (NM); New York (NY); North Carolina (NC); North Dakota (ND); Northwest Territories (NT); Nova Scotia (NS); Nunavut (NU); Ohio (OH); Oklahoma (OK); Ontario (ON); Oregon (OR); Pennsylvania (PA); Prince Edward Island (PE); Puerto Rico (PR); Quebec (QC); Rhode Island (RI); Saskatchewan (SK); South Carolina (SC); South Dakota (SD); Tennessee (TN); Texas (TX); Utah (UT); Vermont (VT); Virgin Islands (VI); Virginia (VA); Washington (WA); West Virginia (WV); Wisconsin (WI); Wyoming (WY); Yukon Territory (YT) |
-| `birth-date` | Date of Birth | date | — | — |
-| `dependents` | Would you like to add dependent coverage? | checkbox-group | — | Spouse; Child |
-| `spouse-first-name` | First Name | text | — | — |
-| `spouse-last-name` | Last Name | text | — | — |
-| `spouse-birth-date` | Date of Birth | date | — | — |
-| `child-first-name` | First Name | text | — | — |
-| `child-last-name` | Last Name | text | — | — |
-| `child-birth-date` | Date of Birth | date | — | — |
-| `child-gender` | Gender | radio | — | Male; Female |
-| `gender` | Gender | radio | — | Male; Female |
-| `smoker` | Have you used tobacco or any nicotine substitute in any form (including nicotine patches and nicotine chewing gum)? | radio | — | Yes; No |
-| `tobacco-last-used` | Last Used | date | — | — |
-| `tobacco-products` | Product(s) Used | multi-select | — | Cigarettes; Nicotine patch; Nicotine inhaler; Nasal spray; Nicotine gum; Nicotine lozenge; E-Cigarettes; Cigar (Cigars); Pipe; Chewing tobacco; Snuff; Betel nut |
-| `average-monthly-income` | Average Monthly Income | text | currency | — |
-| `actively-at-work` | Are you actively at work performing the normal duties of your occupation? | radio | — | Yes; No |
-| `hours-worked-per-week` | # Hours You Work/Week | number | — | — |
-| `monthly-business-expenses` | Monthly Business Expenses | text | currency | — |
-| `business-expense-responsibility` | % You Are Responsible For | text | percent | — |
-| `spouse-membership` | Is your spouse also an active member of a State, Local, or Specialty Bar Association? | radio | — | Yes; No |
-| `spouse-gender` | Gender | radio | — | Male; Female |
-| `spouse-smoker` | Have you used tobacco or any nicotine substitute in any form (including nicotine patches and nicotine chewing gum)? | radio | — | Yes; No |
-| `spouse-tobacco-last-used` | Last Used | date | — | — |
-| `spouse-tobacco-products` | Product(s) Used | multi-select | — | Cigarettes; Nicotine patch; Nicotine inhaler; Nasal spray; Nicotine gum; Nicotine lozenge; E-Cigarettes; Cigar (Cigars); Pipe; Chewing tobacco; Snuff; Betel nut |
-| `spouse-average-monthly-income` | Average Monthly Income | text | currency | — |
-| `spouse-hours-worked-per-week` | # Hours You Work/Week | number | — | — |
-| `spouse-phone` | Phone Number | text | phone | — |
-| `spouse-phone-type` | Phone Type | dropdown | — | Mobile; Home; Business |
-| `spouse-email` | Email | text | email | — |
-| `street-address` | Street Address | text | — | — |
-| `apt-suite` | Apt/Suite | text | — | — |
-| `city` | City | text | — | — |
-| `state` | State | searchable-select | — | Alabama (AL); Alaska (AK); Alberta (AB); Arizona (AZ); Arkansas (AR); British Columbia (BC); California (CA); Colorado (CO); Connecticut (CT); Delaware (DE); District of Columbia (DC); Florida (FL); Georgia (GA); Guam (GU); Hawaii (HI); Idaho (ID); Illinois (IL); Indiana (IN); Iowa (IA); Kansas (KS); Kentucky (KY); Louisiana (LA); Maine (ME); Manitoba (MB); Maryland (MD); Massachusetts (MA); Michigan (MI); Minnesota (MN); Mississippi (MS); Missouri (MO); Montana (MT); New Brunswick (NB); Nebraska (NE); Nevada (NV); New Hampshire (NH); New Jersey (NJ); Newfoundland and Labrador (NL); New Mexico (NM); New York (NY); North Carolina (NC); North Dakota (ND); Northwest Territories (NT); Nova Scotia (NS); Nunavut (NU); Ohio (OH); Oklahoma (OK); Ontario (ON); Oregon (OR); Pennsylvania (PA); Prince Edward Island (PE); Puerto Rico (PR); Quebec (QC); Rhode Island (RI); Saskatchewan (SK); South Carolina (SC); South Dakota (SD); Tennessee (TN); Texas (TX); Utah (UT); Vermont (VT); Virgin Islands (VI); Virginia (VA); Washington (WA); West Virginia (WV); Wisconsin (WI); Wyoming (WY); Yukon Territory (YT) |
-| `zip-code` | Zip / Postal Code | text | — | — |
-| `correspondence-to` | Where should we send correspondence regarding your application? | radio | — | Home Address (residential); Business Address (business) |
-| `business-name` | Name of Business or Employer | text | — | — |
-| `business-type` | Type of Business | radio | — | Sole Proprietor (sole-proprietor); Corporation; Partnership |
-| `business-address-same-as-home` | Business address is the same as home address | checkbox | — | — |
-| `business-street-address` | Business Street Address | text | — | — |
-| `business-apt-suite` | Apt/Suite | text | — | — |
-| `business-city` | City | text | — | — |
-| `business-state` | State | searchable-select | — | Alabama (AL); Alaska (AK); Alberta (AB); Arizona (AZ); Arkansas (AR); British Columbia (BC); California (CA); Colorado (CO); Connecticut (CT); Delaware (DE); District of Columbia (DC); Florida (FL); Georgia (GA); Guam (GU); Hawaii (HI); Idaho (ID); Illinois (IL); Indiana (IN); Iowa (IA); Kansas (KS); Kentucky (KY); Louisiana (LA); Maine (ME); Manitoba (MB); Maryland (MD); Massachusetts (MA); Michigan (MI); Minnesota (MN); Mississippi (MS); Missouri (MO); Montana (MT); New Brunswick (NB); Nebraska (NE); Nevada (NV); New Hampshire (NH); New Jersey (NJ); Newfoundland and Labrador (NL); New Mexico (NM); New York (NY); North Carolina (NC); North Dakota (ND); Northwest Territories (NT); Nova Scotia (NS); Nunavut (NU); Ohio (OH); Oklahoma (OK); Ontario (ON); Oregon (OR); Pennsylvania (PA); Prince Edward Island (PE); Puerto Rico (PR); Quebec (QC); Rhode Island (RI); Saskatchewan (SK); South Carolina (SC); South Dakota (SD); Tennessee (TN); Texas (TX); Utah (UT); Vermont (VT); Virgin Islands (VI); Virginia (VA); Washington (WA); West Virginia (WV); Wisconsin (WI); Wyoming (WY); Yukon Territory (YT) |
-| `business-zip-code` | Zip Code | text | — | — |
-| `business-phone` | Business Phone Number | text | phone | — |
-| `physician-first-name` | Physician First Name | text | — | — |
-| `physician-last-name` | Physician Last Name | text | — | — |
-| `physician-phone` | Physician Phone Number | text | phone | — |
-| `medical-facility-name` | Medical Facility Name | text | — | — |
-| `medical-facility-street-address` | Street Address | text | — | — |
-| `medical-facility-apt-suite` | Apt/Suite | text | — | — |
-| `medical-city` | City | text | — | — |
-| `medical-state` | State | searchable-select | — | Alabama (AL); Alaska (AK); Alberta (AB); Arizona (AZ); Arkansas (AR); British Columbia (BC); California (CA); Colorado (CO); Connecticut (CT); Delaware (DE); District of Columbia (DC); Florida (FL); Georgia (GA); Guam (GU); Hawaii (HI); Idaho (ID); Illinois (IL); Indiana (IN); Iowa (IA); Kansas (KS); Kentucky (KY); Louisiana (LA); Maine (ME); Manitoba (MB); Maryland (MD); Massachusetts (MA); Michigan (MI); Minnesota (MN); Mississippi (MS); Missouri (MO); Montana (MT); New Brunswick (NB); Nebraska (NE); Nevada (NV); New Hampshire (NH); New Jersey (NJ); Newfoundland and Labrador (NL); New Mexico (NM); New York (NY); North Carolina (NC); North Dakota (ND); Northwest Territories (NT); Nova Scotia (NS); Nunavut (NU); Ohio (OH); Oklahoma (OK); Ontario (ON); Oregon (OR); Pennsylvania (PA); Prince Edward Island (PE); Puerto Rico (PR); Quebec (QC); Rhode Island (RI); Saskatchewan (SK); South Carolina (SC); South Dakota (SD); Tennessee (TN); Texas (TX); Utah (UT); Vermont (VT); Virgin Islands (VI); Virginia (VA); Washington (WA); West Virginia (WV); Wisconsin (WI); Wyoming (WY); Yukon Territory (YT) |
-| `medical-zip-code` | Zip Code | text | — | — |
-| `height-feet` | Height (Feet) | number | — | — |
-| `height-inches` | Inches | number | — | — |
-| `weight-lbs` | Weight (lbs.) | number | — | — |
-| `weight-12-months-ago-lbs` | Weight 12 Mos. Ago | number | — | — |
-| `social-security-number` | Social Security Number | text | ssn | — |
-| `marital-status` | Marital Status | dropdown | — | Single; Married; Divorced; Widowed; Separated |
-| `has-drivers-license` | Do you have a valid driver's license? | radio | — | Yes; No |
-| `drivers-license-number` | Driver's License Number | text | — | — |
-| `drivers-license-state` | Driver's License State | searchable-select | — | Alabama (AL); Alaska (AK); Alberta (AB); Arizona (AZ); Arkansas (AR); British Columbia (BC); California (CA); Colorado (CO); Connecticut (CT); Delaware (DE); District of Columbia (DC); Florida (FL); Georgia (GA); Guam (GU); Hawaii (HI); Idaho (ID); Illinois (IL); Indiana (IN); Iowa (IA); Kansas (KS); Kentucky (KY); Louisiana (LA); Maine (ME); Manitoba (MB); Maryland (MD); Massachusetts (MA); Michigan (MI); Minnesota (MN); Mississippi (MS); Missouri (MO); Montana (MT); New Brunswick (NB); Nebraska (NE); Nevada (NV); New Hampshire (NH); New Jersey (NJ); Newfoundland and Labrador (NL); New Mexico (NM); New York (NY); North Carolina (NC); North Dakota (ND); Northwest Territories (NT); Nova Scotia (NS); Nunavut (NU); Ohio (OH); Oklahoma (OK); Ontario (ON); Oregon (OR); Pennsylvania (PA); Prince Edward Island (PE); Puerto Rico (PR); Quebec (QC); Rhode Island (RI); Saskatchewan (SK); South Carolina (SC); South Dakota (SD); Tennessee (TN); Texas (TX); Utah (UT); Vermont (VT); Virgin Islands (VI); Virginia (VA); Washington (WA); West Virginia (WV); Wisconsin (WI); Wyoming (WY); Yukon Territory (YT) |
-| `intend-live-outside-us` | Do you intend to live outside the United States? | radio | — | Yes; No |
-| `outside-us-months` | How many months? | number | — | — |
-| `outside-us-country` | Country | dropdown | — | Canada; Mexico; United Kingdom (united-kingdom); France; Germany; Japan; Australia; Other |
-| `travel-outside-us-six-months` | Will you travel outside the U.S. for 6+ months in the next year? | radio | — | Yes; No |
-| `travel-outside-us-country` | Country | dropdown | — | Canada; Mexico; United Kingdom (united-kingdom); France; Germany; Japan; Australia; Other |
-| `spouse-height-feet` | Height (Feet) | number | — | — |
-| `spouse-height-inches` | Inches | number | — | — |
-| `spouse-weight-lbs` | Weight (lbs.) | number | — | — |
-| `spouse-weight-12-months-ago-lbs` | Weight 12 Mos. Ago | number | — | — |
-| `spouse-social-security-number` | Social Security Number | text | ssn | — |
-| `spouse-has-drivers-license` | Does your spouse have a valid driver's license? | radio | — | Yes; No |
-| `spouse-drivers-license-number` | Spouse Driver's License Number | text | — | — |
-| `spouse-drivers-license-state` | Spouse Driver's License State | searchable-select | — | Alabama (AL); Alaska (AK); Alberta (AB); Arizona (AZ); Arkansas (AR); British Columbia (BC); California (CA); Colorado (CO); Connecticut (CT); Delaware (DE); District of Columbia (DC); Florida (FL); Georgia (GA); Guam (GU); Hawaii (HI); Idaho (ID); Illinois (IL); Indiana (IN); Iowa (IA); Kansas (KS); Kentucky (KY); Louisiana (LA); Maine (ME); Manitoba (MB); Maryland (MD); Massachusetts (MA); Michigan (MI); Minnesota (MN); Mississippi (MS); Missouri (MO); Montana (MT); New Brunswick (NB); Nebraska (NE); Nevada (NV); New Hampshire (NH); New Jersey (NJ); Newfoundland and Labrador (NL); New Mexico (NM); New York (NY); North Carolina (NC); North Dakota (ND); Northwest Territories (NT); Nova Scotia (NS); Nunavut (NU); Ohio (OH); Oklahoma (OK); Ontario (ON); Oregon (OR); Pennsylvania (PA); Prince Edward Island (PE); Puerto Rico (PR); Quebec (QC); Rhode Island (RI); Saskatchewan (SK); South Carolina (SC); South Dakota (SD); Tennessee (TN); Texas (TX); Utah (UT); Vermont (VT); Virgin Islands (VI); Virginia (VA); Washington (WA); West Virginia (WV); Wisconsin (WI); Wyoming (WY); Yukon Territory (YT) |
-| `spouse-intend-live-outside-us` | Does your spouse intend to reside outside the U.S. or Canada within the next 12 months? | radio | — | Yes; No |
-| `spouse-outside-us-months` | How many months? | number | — | — |
-| `spouse-outside-us-country` | Country | dropdown | — | Canada; Mexico; United Kingdom (united-kingdom); France; Germany; Japan; Australia; Other |
-| `spouse-travel-outside-us-six-months` | Does your spouse intend to travel outside the U.S. or Canada within the next 12 months? | radio | — | Yes; No |
-| `spouse-travel-outside-us-country` | Country | dropdown | — | Canada; Mexico; United Kingdom (united-kingdom); France; Germany; Japan; Australia; Other |
-| `spouse-physician-first-name` | Physician First Name | text | — | — |
-| `spouse-physician-last-name` | Physician Last Name | text | — | — |
-| `spouse-physician-phone` | Physician Phone Number | text | phone | — |
-| `spouse-medical-facility-name` | Medical Facility Name | text | — | — |
-| `spouse-medical-facility-street-address` | Street Address | text | — | — |
-| `spouse-medical-facility-apt-suite` | Apt/Suite | text | — | — |
-| `spouse-medical-city` | City | text | — | — |
-| `spouse-medical-state` | State | searchable-select | — | Alabama (AL); Alaska (AK); Alberta (AB); Arizona (AZ); Arkansas (AR); British Columbia (BC); California (CA); Colorado (CO); Connecticut (CT); Delaware (DE); District of Columbia (DC); Florida (FL); Georgia (GA); Guam (GU); Hawaii (HI); Idaho (ID); Illinois (IL); Indiana (IN); Iowa (IA); Kansas (KS); Kentucky (KY); Louisiana (LA); Maine (ME); Manitoba (MB); Maryland (MD); Massachusetts (MA); Michigan (MI); Minnesota (MN); Mississippi (MS); Missouri (MO); Montana (MT); New Brunswick (NB); Nebraska (NE); Nevada (NV); New Hampshire (NH); New Jersey (NJ); Newfoundland and Labrador (NL); New Mexico (NM); New York (NY); North Carolina (NC); North Dakota (ND); Northwest Territories (NT); Nova Scotia (NS); Nunavut (NU); Ohio (OH); Oklahoma (OK); Ontario (ON); Oregon (OR); Pennsylvania (PA); Prince Edward Island (PE); Puerto Rico (PR); Quebec (QC); Rhode Island (RI); Saskatchewan (SK); South Carolina (SC); South Dakota (SD); Tennessee (TN); Texas (TX); Utah (UT); Vermont (VT); Virgin Islands (VI); Virginia (VA); Washington (WA); West Virginia (WV); Wisconsin (WI); Wyoming (WY); Yukon Territory (YT) |
-| `spouse-medical-zip-code` | Zip Code | text | — | — |
-| `has-other-life-insurance` | Do you have other life insurance in force? | radio | — | Yes; No |
-| `existing-life-insurance-amount` | Total life insurance amount | text | currency | — |
-| `is-replacing-life-insurance` | Is the life insurance applied for intended to replace, discontinue, or change an existing life insurance policy or annuity contract? | radio | — | Yes; No |
-| `has-pending-life-insurance-applications` | Do you have other life insurance applications pending? | radio | — | Yes; No |
-| `pending-life-insurance-amount` | Amount | text | currency | — |
-| `pending-life-insurance-company` | Company | text | — | — |
-| `has-disability-insurance` | Do you now have or are you now applying for any other insurance which provides benefits if you are unable to work because of a disability? | radio | — | Yes; No |
-| `is-replacing-disability-insurance` | Will this disability coverage replace any other company's coverage? | radio | — | Yes; No |
-| `disability-replacement-amount` | Replacement amount | text | currency | — |
-| `total-net-worth` | Total net worth (Assets minus liabilities) | text | currency | — |
-| `total-annual-unearned-income` | Total annual unearned income | text | currency | — |
-| `is-self-employed` | Are you self-employed? | radio | — | Yes; No |
-| `is-sole-proprietor` | Sole proprietor | checkbox | — | — |
-| `is-professional-corporation` | Professional corporation | checkbox | — | — |
-| `sole-proprietor-gross-income` | Annual gross revenue | text | currency | — |
-| `sole-proprietor-gross-earnings` | Annual net income after business expenses | text | currency | — |
-| `sole-proprietor-business-expenses` | Business expenses | text | currency | — |
-| `professional-corporation-annual-salary` | Annual salary | text | currency | — |
-| `professional-corporation-s-corp-distribution` | S-Corp distribution | text | currency | — |
-| `professional-corporation-dividends` | Dividends | text | currency | — |
-| `professional-corporation-bonus` | Bonus amount | text | currency | — |
-| `bonus-payment-frequency` | Bonus payment frequency | radio | — | Annual; Quarterly; Monthly |
-| `professional-corporation-commission` | Commission amount | text | currency | — |
-| `commission-payment-frequency` | Commission payment frequency | radio | — | Annual; Quarterly; Monthly |
-| `professional-corporation-benefits-cost` | Employer-paid benefits cost | text | currency | — |
-| `years-self-employed` | Years self-employed | number | — | — |
-| `work-from-home` | Do you work from home? | radio | — | Yes; No |
-| `has-work-location-outside-home` | Do you have a work location outside your home? | radio | — | Yes; No |
-| `work-location-details` | Please explain where you work outside your home | text | — | — |
-| `spouse-has-other-life-insurance` | Does your spouse have other life insurance in force? | radio | — | Yes; No |
-| `spouse-existing-life-insurance-amount` | Total life insurance amount | text | currency | — |
-| `spouse-is-replacing-life-insurance` | Is the life insurance applied for intended to replace, discontinue, or change an existing life insurance policy or annuity contract? | radio | — | Yes; No |
-| `spouse-has-pending-life-insurance-applications` | Does your spouse have other life insurance applications pending? | radio | — | Yes; No |
-| `spouse-pending-life-insurance-amount` | Amount | text | currency | — |
-| `spouse-pending-life-insurance-company` | Company | text | — | — |
-| `spouse-has-disability-insurance` | Does your spouse now have or is your spouse now applying for any other insurance which provides benefits if they are unable to work because of a disability? | radio | — | Yes; No |
-| `spouse-is-replacing-disability-insurance` | Will this disability coverage replace any other company's coverage? | radio | — | Yes; No |
-| `spouse-disability-replacement-amount` | Replacement amount | text | currency | — |
-| `bank-name-on-account` | Name on Account | text | — | — |
-| `bank-institution` | Bank Institution | text | — | — |
-| `bank-routing-number` | Routing Number | number | — | — |
-| `bank-account-number` | Account Number | number | — | — |
-| `bank-authorization` | I authorize recurring payments from this bank account. | checkbox | — | — |
-| `dividend-acknowledgement` | I attest to having read the above information | checkbox | — | — |
-| `dividend-first-name` | First Name | text | — | — |
-| `dividend-last-name` | Last Name | text | — | — |
-| `dividend-birth-date` | Date of Birth | date | — | — |
-| `review-self-consent` | I confirm that I have reviewed and understand the above material. I consent to the use of electronic signature and delivery of electronic records. | checkbox | — | — |
-| `review-spouse-consent` | I confirm that I have reviewed and understand the above material. I consent to the use of electronic signature and delivery of electronic records. | checkbox | — | — |
-| `advisor-flow-type` | Application Type | text | — | — |
+| `health-chr-activities` | Activities requiring assistance or supervision | multi-select | — | Bathing; Dressing; Eating; Walking; Moving in/out of a bed or chair or wheel chair; Toileting; Bowel or bladder control |
+| `health-chr-dwelling-other` | Please specify | text | — | — |
+| `health-chr-form-98` | Do you currently need or in the past 5 years have you needed human assistance or supervision to perform any of the following activities? Bathing, dressing, eating, walking, moving in/out of a bed or chair or wheel chair, toileting, bowel or bladder control (if "Yes", please circle all that apply. | radio | — | Yes; No |
+| `health-chr-form-99` | Within the past 5 years, have you been bed-ridden at your home or any other private residence for 2 weeks or more? | radio | — | Yes; No |
+| `health-chr-form-100` | Within the past 5 years, have you had a fall or been diagnosed or treated by a member of the medical profession for a   fracture,  paralysis, numbness, balance problems or skin ulcers? | radio | — | Yes; No |
+| `health-chr-form-101` | Within the past 5 years did you lose any part of your fingers, hands, feet or limbs due to amputation, accident, disease, or deformity; or been diagnosed or treated by a member of the medical profession for any conditions causing crippling or limited motion? | radio | — | Yes; No |
+| `health-chr-form-102` | Are you now, or have you been in the past 5 years, in a wheelchair or dependent or required supportive equipment such as braces, crutches, walker, cane, back support, or splint? | radio | — | Yes; No |
+| `health-chr-form-103` | Within the past 6 months, have you had or been recommended by a member of the medical profession   to have physical therapy? | radio | — | Yes; No |
+| `health-chr-form-104` | Within the past 5 years, have you been evaluated, counseled, treated by a member of the medical profession or hospitalized for any problems with memory or ability to think or reason? | radio | — | Yes; No |
+| `health-chr-form-105` | Within the past 5 years, have you been confined or has confinement been recommended by a member of the medical profession, to a hospital, nursing home, rehabilitation facility or extended care facility? | radio | — | Yes; No |
+| `health-chr-form-106` | Have you received Medicaid benefits or any similar federal or state financial assistance within the past 5 years? (Note: Medicaid is not the same as Medicare) | radio | — | Yes; No |
+| `health-chr-form-107` | Have you received Medicare disability benefits within the past 5 years? | radio | — | Yes; No |
+| `health-chr-form-108` | In what type of dwelling do you reside? | dropdown | — | Private Home; Apartment; Retirement Home; Congregate Care Community; Nursing Care Facility; Mobile Home; Continuing Care/Care Community; Retirement Community; Assisted Living Unit; Personal Care Home or an Adult Care Home; Other |
+| `health-chr-form-109` | Within the past 5 years, have you been declined for issue, reinstatement or renewal of any type of long-term care insurance? | radio | — | Yes; No |
+| `advisor-flow-type` | Advisor login type | radio | — | Start (new); Continue (saved) |
 | `advisor-email` | Advisor email | text | email | — |
 | `advisor-phone` | Advisor phone number | text | phone | — |
 | `advisor-code` | Advisor code | text | — | — |
 | `applicant-email` | Applicant email | text | email | — |
-| `resume-delivery-method` | Choose how to get your verification code. | radio | — | Text; Call |
-| `resume-email` | Email | text | email | — |
-| `resume-security-code` | Verification Code | text | — | — |
 | `beneficiary-firstName` | First Name | text | — | — |
 | `beneficiary-lastName` | Last Name | text | — | — |
 | `beneficiary-relationship` | Relationship | dropdown | — | Spouse; Child; Parent; Sibling; Other Relative; Other |
@@ -429,9 +295,75 @@ One row per saved field ID used by ABE. Labels, input types, formats and options
 | `beneficiary-trustDate` | Date of Trust | date | — | — |
 | `beneficiary-information-opt-in` | Do you want to add beneficiary information? | radio | — | Yes; No |
 | `beneficiaryType` | Beneficiary Type | radio | — | Individual; Trust |
-| `health-li-detail-onset` | Month/Year of Onset | text | month-year | — |
-| `health-li-detail-conditionsDetails` | Condition/Medication & Details (Medical Advice Given, Treatment, Results, Date Recovered) | text | — | — |
-| `health-li-detail-physicianAddress` | Name and Address of Each Physician, Practitioner, and Hospital | text | — | — |
+| `beneficiaryApplyTarget` | Apply to this coverage | checkbox | — | — |
+| `correspondence-to` | Where should we send correspondence regarding your application? | radio | — | Home Address (residential); Business Address (business) |
+| `business-name` | Name of Business or Employer | text | — | — |
+| `business-type` | Type of Business | radio | — | Sole Proprietor (sole-proprietor); Corporation; Partnership |
+| `business-address-same-as-home` | Business address is the same as home address | checkbox | — | — |
+| `business-street-address` | Business Street Address | text | — | — |
+| `business-apt-suite` | Apt/Suite | text | — | — |
+| `business-city` | City | text | — | — |
+| `business-state` | State | searchable-select | — | Alabama (AL); Alaska (AK); Alberta (AB); Arizona (AZ); Arkansas (AR); British Columbia (BC); California (CA); Colorado (CO); Connecticut (CT); Delaware (DE); District of Columbia (DC); Florida (FL); Georgia (GA); Guam (GU); Hawaii (HI); Idaho (ID); Illinois (IL); Indiana (IN); Iowa (IA); Kansas (KS); Kentucky (KY); Louisiana (LA); Maine (ME); Manitoba (MB); Maryland (MD); Massachusetts (MA); Michigan (MI); Minnesota (MN); Mississippi (MS); Missouri (MO); Montana (MT); New Brunswick (NB); Nebraska (NE); Nevada (NV); New Hampshire (NH); New Jersey (NJ); Newfoundland and Labrador (NL); New Mexico (NM); New York (NY); North Carolina (NC); North Dakota (ND); Northwest Territories (NT); Nova Scotia (NS); Nunavut (NU); Ohio (OH); Oklahoma (OK); Ontario (ON); Oregon (OR); Pennsylvania (PA); Prince Edward Island (PE); Puerto Rico (PR); Quebec (QC); Rhode Island (RI); Saskatchewan (SK); South Carolina (SC); South Dakota (SD); Tennessee (TN); Texas (TX); Utah (UT); Vermont (VT); Virgin Islands (VI); Virginia (VA); Washington (WA); West Virginia (WV); Wisconsin (WI); Wyoming (WY); Yukon Territory (YT) |
+| `business-zip-code` | Zip Code | text | postal-code | — |
+| `business-phone` | Business Phone Number | text | phone | — |
+| `spouse-phone` | Phone Number | text | phone | — |
+| `spouse-email` | Email | text | email | — |
+| `business-phone-type` | Business Phone Type | dropdown | — | Mobile; Home; Business |
+| `spouse-phone-type` | Phone Type | dropdown | — | Mobile; Home; Business |
+| `spouse-gender` | Gender | radio | — | Male; Female |
+| `spouse-smoker` | Have you used tobacco or any nicotine substitute in any form (including nicotine patches and nicotine chewing gum)? | radio | — | Yes; No |
+| `spouse-tobacco-last-used` | Last Used | date | — | — |
+| `spouse-tobacco-products` | Product(s) Used | multi-select | — | Cigarettes; Nicotine patch; Nicotine inhaler; Nasal spray; Nicotine gum; Nicotine lozenge; E-Cigarettes; Cigar (Cigars); Pipe; Chewing tobacco; Snuff; Betel nut |
+| `spouse-hours-worked-per-week` | # Hours You Work/Week | number | — | — |
+| `spouse-average-monthly-income` | Average Monthly Income | text | currency | — |
+| `coverage-categories` | Which coverage are you interested in? | checkbox-group | — | Life (LI); Accidental Death and Dismemberment (AD); Disability (DI); Office Overhead (OO); Supplemental Health (SH) |
+| `coverage-amount` | Benefit amount | dropdown | — | — |
+| `add-coverage` | Add coverage | checkbox | — | — |
+| `waiting-period` | Waiting Period | dropdown | — | — |
+| `benefit-option` | Benefit Option | dropdown | — | — |
+| `rider` | product-defined | checkbox | — | — |
+| `rider-amount` | Rider Benefit Amount | dropdown | — | — |
+| `rate-frequency` | Toggle between monthly and annual | radio | — | Monthly; Annual |
+| `spouse-coverage-amount` | Benefit amount | dropdown | — | — |
+| `spouse-add-coverage` | Add coverage | checkbox | — | — |
+| `spouse-waiting-period` | Waiting Period | dropdown | — | — |
+| `spouse-benefit-option` | Benefit Option | dropdown | — | — |
+| `spouse-rider` | product-defined | checkbox | — | — |
+| `spouse-rider-amount` | Rider Benefit Amount | dropdown | — | — |
+| `child-coverage-amount` | Benefit amount | dropdown | — | — |
+| `child-add-coverage` | Add coverage | checkbox | — | — |
+| `dependents` | Would you like to add dependent coverage? | checkbox-group | — | Spouse; Child |
+| `spouse-membership` | Is your spouse also an active member? | radio | — | Yes; No |
+| `spouse-first-name` | First Name | text | — | — |
+| `spouse-last-name` | Last Name | text | — | — |
+| `spouse-birth-date` | Date of Birth | date | — | — |
+| `child-first-name` | First Name | text | — | — |
+| `child-last-name` | Last Name | text | — | — |
+| `child-birth-date` | Date of Birth | date | — | — |
+| `child-gender` | Gender | radio | — | Male; Female |
+| `verification-method` | Choose how to provide verification | radio | — | Send text code (text); Send voice code (voice); Answer security questions (security-questions); Skip member verification and apply (skip) |
+| `sq-1` | In what city were you living in 2005? | radio | — | Albany; Rochester; Syracuse; Buffalo; None of the answers apply to me |
+| `sq-2` | What kind of car did you own in 2007? | radio | — | Honda Civic; Toyota Camry; Ford Focus; Chevrolet Malibu; None of the answers apply to me |
+| `sq-3` | Which of the following have you been associated with? | radio | — | Oak Street; Maple Avenue; Cedar Lane; Elm Drive; None of the answers apply to me |
+| `street-address` | Street Address | text | — | — |
+| `apt-suite` | Apt/Suite | text | — | — |
+| `city` | City | text | — | — |
+| `state` | State | searchable-select | — | Alabama (AL); Alaska (AK); Alberta (AB); Arizona (AZ); Arkansas (AR); British Columbia (BC); California (CA); Colorado (CO); Connecticut (CT); Delaware (DE); District of Columbia (DC); Florida (FL); Georgia (GA); Guam (GU); Hawaii (HI); Idaho (ID); Illinois (IL); Indiana (IN); Iowa (IA); Kansas (KS); Kentucky (KY); Louisiana (LA); Maine (ME); Manitoba (MB); Maryland (MD); Massachusetts (MA); Michigan (MI); Minnesota (MN); Mississippi (MS); Missouri (MO); Montana (MT); New Brunswick (NB); Nebraska (NE); Nevada (NV); New Hampshire (NH); New Jersey (NJ); Newfoundland and Labrador (NL); New Mexico (NM); New York (NY); North Carolina (NC); North Dakota (ND); Northwest Territories (NT); Nova Scotia (NS); Nunavut (NU); Ohio (OH); Oklahoma (OK); Ontario (ON); Oregon (OR); Pennsylvania (PA); Prince Edward Island (PE); Puerto Rico (PR); Quebec (QC); Rhode Island (RI); Saskatchewan (SK); South Carolina (SC); South Dakota (SD); Tennessee (TN); Texas (TX); Utah (UT); Vermont (VT); Virgin Islands (VI); Virginia (VA); Washington (WA); West Virginia (WV); Wisconsin (WI); Wyoming (WY); Yukon Territory (YT) |
+| `zip-code` | Zip / Postal Code | text | postal-code | — |
+| `health-di-q1` | Do you currently need or in the past 5 years have you needed human assistance or supervision to perform any of the following activities? Bathing, dressing, eating, walking, moving in/out of a bed or chair or wheel chair, toileting, bowel or bladder control. If “Yes,” please check all that apply. | radio | — | Yes; No |
+| `health-di-q2` | Within the past 5 years, have you had a fall or been diagnosed or treated by a member of the medical profession for a fracture, paralysis, numbness, balance problems or skin ulcers? | radio | — | Yes; No |
+| `health-di-q3` | Do you currently or in the past 5 years, have you been wheelchair-dependent or required supportive equipment such as braces, crutches, walker, cane, back support, or splint? | radio | — | Yes; No |
+| `health-di-q4` | Within the past 6 months, have you had or been recommended by a member of the medical profession to have physical therapy? | radio | — | Yes; No |
+| `health-di-q5` | Within the past 5 years, have you been evaluated, counseled, treated by a member of the medical profession or hospitalized for any problems with memory or ability to think or reason? | radio | — | Yes; No |
+| `health-di-q6` | Within the past 5 years, have you been confined or had confinement been recommended by a member of the medical profession to a hospital, nursing home, rehabilitation facility, assisted living unit or extended care facility? | radio | — | Yes; No |
+| `health-di-q7` | Within the past 5 years, have you been declined for issue, reinstatement or renewal of any type of long-term care insurance? | radio | — | Yes; No |
+| `health-di-q1-spouse` | Do you currently need or in the past 5 years have you needed human assistance or supervision to perform any of the following activities? Bathing, dressing, eating, walking, moving in/out of a bed or chair or wheel chair, toileting, bowel or bladder control. If “Yes,” please check all that apply. | radio | — | Yes; No |
+| `health-di-q2-spouse` | Within the past 5 years, have you had a fall or been diagnosed or treated by a member of the medical profession for a fracture, paralysis, numbness, balance problems or skin ulcers? | radio | — | Yes; No |
+| `health-di-q3-spouse` | Do you currently or in the past 5 years, have you been wheelchair-dependent or required supportive equipment such as braces, crutches, walker, cane, back support, or splint? | radio | — | Yes; No |
+| `health-di-q4-spouse` | Within the past 6 months, have you had or been recommended by a member of the medical profession to have physical therapy? | radio | — | Yes; No |
+| `health-di-q5-spouse` | Within the past 5 years, have you been evaluated, counseled, treated by a member of the medical profession or hospitalized for any problems with memory or ability to think or reason? | radio | — | Yes; No |
+| `health-di-q6-spouse` | Within the past 5 years, have you been confined or had confinement been recommended by a member of the medical profession to a hospital, nursing home, rehabilitation facility, assisted living unit or extended care facility? | radio | — | Yes; No |
+| `health-di-q7-spouse` | Within the past 5 years, have you been declined for issue, reinstatement or renewal of any type of long-term care insurance? | radio | — | Yes; No |
 | `health-di-q1-detail-assistanceType` | Assistance Type | dropdown | — | Bathing; Dressing; Eating; Walking; Moving in/out of a bed or chair or wheel chair (moving); Toileting; Bowel or bladder control (bowel-bladder) |
 | `health-di-q1-detail-onset` | Month/Year of Onset | text | month-year | — |
 | `health-di-q1-detail-conditionsDetails` | Conditions & Details | text | — | — |
@@ -453,28 +385,19 @@ One row per saved field ID used by ABE. Labels, input types, formats and options
 | `health-di-q6-detail-conditionsDetails` | Conditions & Details | text | — | — |
 | `health-di-q6-detail-physicianAddress` | Name and address of each physician, practitioner, and hospital | text | — | — |
 | `health-di-q7-detail-details` | Details | text | — | — |
-| `needs-annual-income` | Annual household income | text | currency | — |
-| `needs-years-to-replace` | Years of income to replace | number | — | — |
-| `needs-outstanding-debts` | Outstanding debts (mortgage, loans, etc.) | text | currency | — |
-| `needs-existing-coverage` | Existing life insurance coverage | text | currency | — |
-| `quote-selection` | Select for myself | checkbox | — | — |
-| `quote-amount` | Benefit amount | dropdown | — | — |
-| `quote-monthly-amount` | Monthly benefit amount | dropdown | — | — |
-| `quote-categories` | Which coverage are you interested in? | checkbox-group | — | — |
-| `quote-rate-frequency` | Toggle between monthly and annual | radio | — | Monthly; Annual |
-| `payment-information-opt-in` | Do you want to add payment information? | radio | — | Yes; No |
-| `payment-method` | Payment Method | radio | — | Bill me (bill-me); Bank account (bank-account); Credit card (credit-card) |
-| `payment-frequency` | Payment Frequency | dropdown | — | Monthly; Quarterly; Semiannually; Annually |
-| `payment-shared-method` | Payment method for all products | radio | — | Bill me (bill-me); Bank account (bank-account); Credit card (credit-card) |
-| `payment-shared-frequency` | Payment frequency for all products | dropdown | — | Monthly; Quarterly; Semiannually; Annually |
-| `verification-method` | Choose how to provide verification | radio | — | Send text code (text); Send voice code (voice); Answer security questions (security-questions); Skip member verification and apply (skip) |
-| `sq-1` | In what city were you living in 2005? | radio | — | Albany; Rochester; Syracuse; Buffalo; None of the answers apply to me |
-| `sq-2` | What kind of car did you own in 2007? | radio | — | Honda Civic; Toyota Camry; Ford Focus; Chevrolet Malibu; None of the answers apply to me |
-| `sq-3` | Which of the following have you been associated with? | radio | — | Oak Street; Maple Avenue; Cedar Lane; Elm Drive; None of the answers apply to me |
-| `di-company-name` | Company | text | — | — |
-| `di-company-monthly-benefit` | Monthly Benefit Amount | text | currency | — |
-| `di-company-benefit-period` | Benefit Period | text | — | — |
-| `di-company-waiting-period` | Waiting Period | text | — | — |
+| `health-si-q1` | Are you now taking any prescribed medication or receiving or contemplating any medical attention or surgical treatment? | radio | — | Yes; No |
+| `health-si-q2` | During the past five years, have you ever been medically diagnosed by a physician as having or been treated for: heart or circulatory trouble, elevated blood pressure, chest pain or pressure, gynecological or genitourinary disorders, ulcers, cancer, diabetes, mental or nervous disorder or psychotherapeutic treatment, epilepsy, respiratory disorder, kidney or liver disorder, including hepatitis, enlarged lymph nodes or immunodeficiency disorder, thyroid disorder, blood disorder, albumin, blood, pus or sugar in urine, back trouble/disorder, bone or joint disorder, arthritis, varicose veins, or unexplained weight loss? | radio | — | Yes; No |
+| `health-si-q3` | During the past five years have you ever been counseled, treated or hospitalized for the use of alcohol or drugs? | radio | — | Yes; No |
+| `health-si-q4` | Are you now pregnant? | radio | — | Yes; No |
+| `health-si-q5` | Are you now disabled, or applied or applying for, or receiving any disability or Workers’ Compensation benefits or a waiver of premium for life or health insurance? | radio | — | Yes; No |
+| `health-si-q1-spouse` | Are you now taking any prescribed medication or receiving or contemplating any medical attention or surgical treatment? | radio | — | Yes; No |
+| `health-si-q2-spouse` | During the past five years, have you ever been medically diagnosed by a physician as having or been treated for: heart or circulatory trouble, elevated blood pressure, chest pain or pressure, gynecological or genitourinary disorders, ulcers, cancer, diabetes, mental or nervous disorder or psychotherapeutic treatment, epilepsy, respiratory disorder, kidney or liver disorder, including hepatitis, enlarged lymph nodes or immunodeficiency disorder, thyroid disorder, blood disorder, albumin, blood, pus or sugar in urine, back trouble/disorder, bone or joint disorder, arthritis, varicose veins, or unexplained weight loss? | radio | — | Yes; No |
+| `health-si-q3-spouse` | During the past five years have you ever been counseled, treated or hospitalized for the use of alcohol or drugs? | radio | — | Yes; No |
+| `health-si-q4-spouse` | Are you now pregnant? | radio | — | Yes; No |
+| `health-si-q5-spouse` | Are you now disabled, or applied or applying for, or receiving any disability or Workers’ Compensation benefits or a waiver of premium for life or health insurance? | radio | — | Yes; No |
+| `health-si-detail-onset` | Month/Year of Onset | text | month-year | — |
+| `health-si-detail-conditionsDetails` | Condition/Medication & Details (e.g. Medical Advice Given, Treatment, Results, Date Recovered) | text | — | — |
+| `health-si-detail-physicianAddress` | Name and Address of Each Physician, Practitioner, and Hospital | text | — | — |
 | `health-li-q1` | Are you currently confined to a hospital, nursing home, psychiatric facility, incarcerated in a prison/correctional facility, currently on parole or currently receiving home health care/assisted living care? | radio | — | Yes; No |
 | `health-li-q2` | During the last five years, have you ever been declined, postponed, or offered rated life or health insurance or been denied a reinstatement, reissue or renewal for life or health insurance, or are you currently receiving disability benefits? | radio | — | Yes; No |
 | `health-li-q3` | Are you currently undergoing a medical evaluation for any condition not yet given a diagnosis? | radio | — | Yes; No |
@@ -505,84 +428,143 @@ One row per saved field ID used by ABE. Labels, input types, formats and options
 | `health-li-q13-spouse` | During the last five years have you been medically diagnosed by a licensed member of the medical profession as having or been treated for anemia, colitis or arthritis? | radio | — | Yes; No |
 | `health-li-q14-spouse` | During the past five years, have you flown an airplane (other than scheduled commercial or corporate aviation); engaged in any of the following: sky sports, underwater sports, climbing sports, motor sports, in any type vehicle, or any extreme sport (bungee jumping, cave exploration, heliskiing, rodeo riding, etc)? | radio | — | Yes; No |
 | `health-li-q15-spouse` | Have any of your siblings or either of your parents been diagnosed with or died from cancer or cardiovascular disease prior to age 60? | radio | — | Yes; No |
-| `health-di-q1` | Do you currently need or in the past 5 years have you needed human assistance or supervision to perform any of the following activities? Bathing, dressing, eating, walking, moving in/out of a bed or chair or wheel chair, toileting, bowel or bladder control. If “Yes,” please check all that apply. | radio | — | Yes; No |
-| `health-di-q2` | Within the past 5 years, have you had a fall or been diagnosed or treated by a member of the medical profession for a fracture, paralysis, numbness, balance problems or skin ulcers? | radio | — | Yes; No |
-| `health-di-q3` | Do you currently or in the past 5 years, have you been wheelchair-dependent or required supportive equipment such as braces, crutches, walker, cane, back support, or splint? | radio | — | Yes; No |
-| `health-di-q4` | Within the past 6 months, have you had or been recommended by a member of the medical profession to have physical therapy? | radio | — | Yes; No |
-| `health-di-q5` | Within the past 5 years, have you been evaluated, counseled, treated by a member of the medical profession or hospitalized for any problems with memory or ability to think or reason? | radio | — | Yes; No |
-| `health-di-q6` | Within the past 5 years, have you been confined or had confinement been recommended by a member of the medical profession to a hospital, nursing home, rehabilitation facility, assisted living unit or extended care facility? | radio | — | Yes; No |
-| `health-di-q7` | Within the past 5 years, have you been declined for issue, reinstatement or renewal of any type of long-term care insurance? | radio | — | Yes; No |
-| `health-di-q1-spouse` | Do you currently need or in the past 5 years have you needed human assistance or supervision to perform any of the following activities? Bathing, dressing, eating, walking, moving in/out of a bed or chair or wheel chair, toileting, bowel or bladder control. If “Yes,” please check all that apply. | radio | — | Yes; No |
-| `health-di-q2-spouse` | Within the past 5 years, have you had a fall or been diagnosed or treated by a member of the medical profession for a fracture, paralysis, numbness, balance problems or skin ulcers? | radio | — | Yes; No |
-| `health-di-q3-spouse` | Do you currently or in the past 5 years, have you been wheelchair-dependent or required supportive equipment such as braces, crutches, walker, cane, back support, or splint? | radio | — | Yes; No |
-| `health-di-q4-spouse` | Within the past 6 months, have you had or been recommended by a member of the medical profession to have physical therapy? | radio | — | Yes; No |
-| `health-di-q5-spouse` | Within the past 5 years, have you been evaluated, counseled, treated by a member of the medical profession or hospitalized for any problems with memory or ability to think or reason? | radio | — | Yes; No |
-| `health-di-q6-spouse` | Within the past 5 years, have you been confined or had confinement been recommended by a member of the medical profession to a hospital, nursing home, rehabilitation facility, assisted living unit or extended care facility? | radio | — | Yes; No |
-| `health-di-q7-spouse` | Within the past 5 years, have you been declined for issue, reinstatement or renewal of any type of long-term care insurance? | radio | — | Yes; No |
-| `firm-member-count` | How many members are in your firm? | number | — | — |
-| `child-honorably-discharged-service-member` | Was the child honorably discharged from active or reserve military service? | radio | — | Yes; No |
+| `health-li-detail-onset` | Month/Year of Onset | text | month-year | — |
+| `health-li-detail-conditionsDetails` | Condition/Medication & Details (Medical Advice Given, Treatment, Results, Date Recovered) | text | — | — |
+| `health-li-detail-physicianAddress` | Name and Address of Each Physician, Practitioner, and Hospital | text | — | — |
+| `zip-postal-code` | Zip / Postal Code | text | postal-code | — |
+| `state-province` | State / Province | searchable-select | — | Alabama (AL); Alaska (AK); Alberta (AB); Arizona (AZ); Arkansas (AR); British Columbia (BC); California (CA); Colorado (CO); Connecticut (CT); Delaware (DE); District of Columbia (DC); Florida (FL); Georgia (GA); Guam (GU); Hawaii (HI); Idaho (ID); Illinois (IL); Indiana (IN); Iowa (IA); Kansas (KS); Kentucky (KY); Louisiana (LA); Maine (ME); Manitoba (MB); Maryland (MD); Massachusetts (MA); Michigan (MI); Minnesota (MN); Mississippi (MS); Missouri (MO); Montana (MT); New Brunswick (NB); Nebraska (NE); Nevada (NV); New Hampshire (NH); New Jersey (NJ); Newfoundland and Labrador (NL); New Mexico (NM); New York (NY); North Carolina (NC); North Dakota (ND); Northwest Territories (NT); Nova Scotia (NS); Nunavut (NU); Ohio (OH); Oklahoma (OK); Ontario (ON); Oregon (OR); Pennsylvania (PA); Prince Edward Island (PE); Puerto Rico (PR); Quebec (QC); Rhode Island (RI); Saskatchewan (SK); South Carolina (SC); South Dakota (SD); Tennessee (TN); Texas (TX); Utah (UT); Vermont (VT); Virgin Islands (VI); Virginia (VA); Washington (WA); West Virginia (WV); Wisconsin (WI); Wyoming (WY); Yukon Territory (YT) |
+| `birth-date` | Date of Birth | date | — | — |
+| `gender` | Gender | radio | — | Male; Female |
+| `smoker` | Have you used tobacco or any nicotine substitute in any form (including nicotine patches and nicotine chewing gum)? | radio | — | Yes; No |
+| `tobacco-last-used` | Last Used | date | — | — |
+| `tobacco-products` | Product(s) Used | multi-select | — | Cigarettes; Nicotine patch; Nicotine inhaler; Nasal spray; Nicotine gum; Nicotine lozenge; E-Cigarettes; Cigar (Cigars); Pipe; Chewing tobacco; Snuff; Betel nut |
+| `average-monthly-income` | Average Monthly Income | text | currency | — |
+| `hours-worked-per-week` | # Hours You Work/Week | number | — | — |
+| `self-employed-under-one-year` | Are you self-employed for less than 1 year? | radio | — | Yes; No |
+| `actively-at-work` | Are you actively at work performing the normal duties of your occupation? | radio | — | Yes; No |
+| `monthly-business-expenses` | Monthly Business Expenses | text | currency | — |
+| `business-expense-responsibility` | % You Are Responsible For | text | percent | — |
+| `quote-selection` | Select for myself | checkbox | — | — |
+| `quote-amount` | Benefit amount | dropdown | — | — |
+| `quote-monthly-amount` | Monthly benefit amount | dropdown | — | — |
+| `quote-categories` | Which coverage are you interested in? | checkbox-group | — | Life (LI); Accidental Death and Dismemberment (AD); Disability (DI); Office Overhead (OO); Supplemental Health (SH) |
+| `needs-annual-income` | Annual household income | text | currency | — |
+| `needs-years-to-replace` | Years of income to replace | number | — | — |
+| `needs-outstanding-debts` | Outstanding debts (mortgage, loans, etc.) | text | currency | — |
+| `needs-existing-coverage` | Existing life insurance coverage | text | currency | — |
+| `membership` | Are you an active member of a State, Local, or Specialty Bar Association? | radio | — | Yes; No |
+| `title` | Title | dropdown | — | Mr. (mr); Mrs. (mrs); Ms. (ms); Dr. (dr) |
+| `first-name` | First Name | text | — | — |
+| `last-name` | Last Name | text | — | — |
+| `email` | Email | text | email | — |
+| `phone` | Phone Number | text | phone | — |
 | `abe-member-id` | Membership ID | text | — | — |
-| `health-abe-form-197` | Are you  now ill, or receiving or contemplating any medical attention or surgical treatment? | radio | — | Yes; No |
-| `health-abe-form-198` | Are you taking any kind of medication or, so far as you know, in impaired physical or mental health? | radio | — | Yes; No |
-| `health-abe-form-201` | During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Heart attack, heart or circulatory trouble, high blood pressure, pain or pressure in chest? | radio | — | Yes; No |
-| `health-abe-form-202` | During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Organ transplant? | radio | — | Yes; No |
-| `health-abe-form-203` | During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Stroke? | radio | — | Yes; No |
-| `health-abe-form-204` | During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Coma? | radio | — | Yes; No |
-| `health-abe-form-205` | During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Cancer, carcinoma in situ, tumor or cyst? | radio | — | Yes; No |
-| `health-abe-form-206` | During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Dementia or problems with memory or ability to think or reason? | radio | — | Yes; No |
-| `health-abe-form-207` | During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Diabetes, kidney trouble, ulcers or digestive disorder? | radio | — | Yes; No |
-| `health-abe-form-208` | During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Thyroid, liver or respiratory disorder? | radio | — | Yes; No |
-| `health-abe-form-209` | During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Alcoholism or drug habit? | radio | — | Yes; No |
-| `health-abe-form-210` | During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Disorder of the blood, except for HIV (Human Immunodeficiency Virus)? | radio | — | Yes; No |
-| `health-abe-form-211` | During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Blindness or glaucoma or partial or total loss of hearing in one or both ears; partial or total loss of speech, motor neuron disease or paralysis? | radio | — | Yes; No |
-| `health-abe-form-213` | During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Other health or physical impairment including: (i) Being medically diagnosed as having Acquired Immune Deficiency Syndrome (AIDS) or AIDS-related complex (ARC); immune system? | radio | — | Yes; No |
-| `health-abe-form-214` | During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Other health or physical impairment including: (ii) Chronic cough, persistent diarrhea, enlarged lymph glands, chronic fatigue, in the past five years? | radio | — | Yes; No |
-| `health-abe-form-215` | During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Other health or physical impairment including: (iii) Any other impairment? | radio | — | Yes; No |
-| `health-abe-form-79` | Are you or your spouse now ill, or receiving or contemplating any medical attention or surgical treatment? | radio | — | Yes; No |
-| `health-abe-form-80` | Are you or your spouse taking any kind of medication or, so far as you know, in impaired physical or mental health? | radio | — | Yes; No |
-| `health-abe-form-83` | During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Heart attack, heart or circulatory trouble, high blood pressure, pain or pressure in chest? | radio | — | Yes; No |
-| `health-abe-form-84` | During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Organ transplant? | radio | — | Yes; No |
-| `health-abe-form-85` | During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Stroke? | radio | — | Yes; No |
-| `health-abe-form-86` | During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Coma? | radio | — | Yes; No |
-| `health-abe-form-87` | During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Cancer, carcinoma in situ, tumor or cyst? | radio | — | Yes; No |
-| `health-abe-form-88` | During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Dementia or problems with memory or ability to think or reason? | radio | — | Yes; No |
-| `health-abe-form-89` | During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Diabetes, kidney trouble, ulcers or digestive disorder? | radio | — | Yes; No |
-| `health-abe-form-90` | During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Thyroid, liver or respiratory disorder? | radio | — | Yes; No |
-| `health-abe-form-91` | During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Alcoholism or drug habit? | radio | — | Yes; No |
-| `health-abe-form-92` | During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Disorder of the blood, except for HIV (Human Immunodeficiency Virus)? | radio | — | Yes; No |
-| `health-abe-form-93` | During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Blindness or glaucoma or partial or total loss of hearing in one or both ears; partial or total loss of speech, motor neuron disease or paralysis? | radio | — | Yes; No |
-| `health-abe-form-95` | During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Other health or physical impairment including: (i) Being medically diagnosed as having Acquired Immune Deficiency Syndrome (AIDS) or AIDS-related complex (ARC); immune system? | radio | — | Yes; No |
-| `health-abe-form-96` | During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Other health or physical impairment including: (ii) Chronic cough, persistent diarrhea, enlarged lymph glands, chronic fatigue, in the past five years? | radio | — | Yes; No |
-| `health-abe-form-97` | During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Other health or physical impairment including: (iii) Any other impairment? | radio | — | Yes; No |
-| `health-abe-supp-di-detail-physician` | Name and address of physician and hospital | text | — | — |
-| `health-abe-supp-di-detail-onset` | Date of onset (MM/YYYY) | text | month-year | — |
-| `health-abe-supp-di-detail-illness` | Illness or injury | text | — | — |
-| `health-abe-supp-di-detail-symptoms` | Symptoms | text | — | — |
-| `health-abe-supp-di-detail-last-treatment` | Last date of treatment (MM/YYYY) | text | month-year | — |
-| `health-abe-supp-di-detail-episodes` | Number of episodes | text | — | — |
-| `health-abe-supp-di-detail-treatment-results` | Treatment and results | text | — | — |
-| `health-abe-supp-di-detail-date` | Date | date | — | — |
-| `health-abe-supp-di-detail-treatment` | Treatment | text | — | — |
-| `health-abe-supp-di-detail-condition` | Condition | text | — | — |
-| `health-abe-form-160` | Do you contemplate any medical or surgical treatment? | radio | — | Yes; No |
-| `health-abe-supp-di-detail-medication` | Medication/Treatment | text | — | — |
-| `health-abe-supp-di-detail-dosage` | Dosage | text | — | — |
-| `health-abe-supp-di-detail-frequency` | Frequency | text | — | — |
-| `health-abe-supp-di-detail-reason` | Reason for use of medication | text | — | — |
-| `health-abe-form-161` | Are you receiving any treatment or taking any medication at the present time? | radio | — | Yes; No |
-| `health-abe-form-163` | During the past five years have you ever been medically diagnosed by a physician as having or been treated for: abnormal urine, venereal disease, or any disease/disorder of the kidneys, bladder, prostate, breast or reproductive organs? | radio | — | Yes; No |
-| `health-abe-form-164` | During the past five years have you ever been medically diagnosed by a physician as having or been treated for: ulcer, jaundice, chronic diarrhea, gallbladder or liver disease/disorder, or any other disease/disorder of the stomach, intestines, rectum, colon, or digestive system? | radio | — | Yes; No |
-| `health-abe-form-165` | During the past five years have you ever been medically diagnosed by a physician as having or been treated for: rheumatic/arthritic disease, fibrositis, ruptured disc, back or neck pain, knee problems, whiplash, amputation or any other disease/disorder, injury or deformity of the spine, joints, bones or muscles? | radio | — | Yes; No |
-| `health-abe-form-166` | During the past five years have you ever been medically diagnosed by a physician as having or been treated for: abnormal blood pressure, chest pain, phlebitis, or any other disease/disorder of the heart or blood vessels? | radio | — | Yes; No |
-| `health-abe-supp-di-detail-last-use` | Date of last use | date | — | — |
-| `health-abe-supp-di-detail-drug` | Drug | text | — | — |
-| `health-abe-supp-di-detail-drug-details` | Details | text | — | — |
-| `health-abe-form-167` | During the past five years have you ever used marijuana, hashish, cocaine, narcotics, hallucinogens or any other drugs not prescribed by a physician or obtained over the counter? | radio | — | Yes; No |
-| `health-abe-supp-di-detail-benefits` | Details | text | — | — |
-| `health-abe-form-168` | Have you ever received or claimed benefits or a pension for sickness, injury or impairment or are you satisfying an elimination period? | radio | — | Yes; No |
-| `business-phone-type` | Business Phone Type | dropdown | — | Mobile; Home; Business |
-| `health-abe-form-209-ca` | During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Substance Abuse? | radio | — | Yes; No |
-| `health-abe-form-91-ca` | During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for: Substance Abuse? | radio | — | Yes; No |
+| `phone-type` | Phone Type | dropdown | — | Mobile; Home; Business |
+| `payment-information-opt-in` | Do you want to add payment information? | radio | — | Yes; No |
+| `payment-method` | Payment Method | radio | — | Bill me (bill-me); Bank account (bank-account); Credit card (credit-card) |
+| `payment-frequency` | Payment Frequency | dropdown | — | Monthly; Quarterly; Semiannually; Annually |
+| `payment-shared-method` | Payment method for all products | radio | — | Bill me (bill-me); Bank account (bank-account); Credit card (credit-card) |
+| `payment-shared-frequency` | Payment frequency for all products | dropdown | — | Monthly; Quarterly; Semiannually; Annually |
+| `bank-name-on-account` | Name on Account | text | — | — |
+| `bank-institution` | Bank Institution | text | — | — |
+| `bank-routing-number` | Routing Number | number | — | — |
+| `bank-account-number` | Account Number | number | — | — |
+| `bank-authorization` | I authorize recurring payments from this bank account. | checkbox | — | — |
+| `height-feet` | Height (Feet) | number | — | — |
+| `height-inches` | Inches | number | — | — |
+| `weight-lbs` | Weight (lbs.) | number | — | — |
+| `weight-12-months-ago-lbs` | Weight 12 Mos. Ago | number | — | — |
+| `social-security-number` | Social Security Number | text | ssn | — |
+| `marital-status` | Marital Status | dropdown | — | Single; Married; **Domestic Partner (domestic-partner); **Civil Union (civil-union); Divorced; Widowed |
+| `has-drivers-license` | Do you have a valid driver's license? | radio | — | Yes; No |
+| `intend-live-outside-us` | Do you intend to live outside the United States? | radio | — | Yes; No |
+| `travel-outside-us-six-months` | Will you travel outside the U.S. for 6+ months in the next year? | radio | — | Yes; No |
+| `drivers-license-number` | Driver's License Number | text | alphanumeric | — |
+| `drivers-license-state` | Driver's License State | searchable-select | — | Alabama (AL); Alaska (AK); Alberta (AB); Arizona (AZ); Arkansas (AR); British Columbia (BC); California (CA); Colorado (CO); Connecticut (CT); Delaware (DE); District of Columbia (DC); Florida (FL); Georgia (GA); Guam (GU); Hawaii (HI); Idaho (ID); Illinois (IL); Indiana (IN); Iowa (IA); Kansas (KS); Kentucky (KY); Louisiana (LA); Maine (ME); Manitoba (MB); Maryland (MD); Massachusetts (MA); Michigan (MI); Minnesota (MN); Mississippi (MS); Missouri (MO); Montana (MT); New Brunswick (NB); Nebraska (NE); Nevada (NV); New Hampshire (NH); New Jersey (NJ); Newfoundland and Labrador (NL); New Mexico (NM); New York (NY); North Carolina (NC); North Dakota (ND); Northwest Territories (NT); Nova Scotia (NS); Nunavut (NU); Ohio (OH); Oklahoma (OK); Ontario (ON); Oregon (OR); Pennsylvania (PA); Prince Edward Island (PE); Puerto Rico (PR); Quebec (QC); Rhode Island (RI); Saskatchewan (SK); South Carolina (SC); South Dakota (SD); Tennessee (TN); Texas (TX); Utah (UT); Vermont (VT); Virgin Islands (VI); Virginia (VA); Washington (WA); West Virginia (WV); Wisconsin (WI); Wyoming (WY); Yukon Territory (YT) |
+| `outside-us-country` | Country | dropdown | — | Afghanistan; Albania; Algeria; Andorra; Angola; Antigua and Deps; Argentina; Armenia; Australia; Austria; Azerbaijan; Bahamas; Bahrain; Bangladesh; Barbados; Belarus; Belgium; Belize; Benin; Bhutan; Bolivia; Bosnia Herzegovina; Botswana; Brazil; Brunei; Bulgaria; Burkina; Burma; Burundi; Cambodia; Cameroon; Canada; Cape Verde; Central African Rep; Chad; Chile; China; Colombia; Comoros; Congo {Democratic Rep} (Congo); Congo (CongoDemocratic Rep); Costa Rica; Croatia; Cuba; Cyprus; Czech Republic; Denmark; Djibouti; Dominica; Dominican Republic; East Timor; Ecuador; Egypt; El Salvador; Equatorial Guinea; Eritrea; Estonia; Ethiopia; Fiji; Finland; France; Gabon; Gambia; Georgia; Germany; Ghana; Greece; Grenada; Guatemala; Guinea; Guinea-Bissau; Guyana; Haiti; Honduras; Hungary; Iceland; India; Indonesia; Iran; Iraq; Ireland {Republic} (IrelandRepublic); Israel; Italy; Ivory Coast; Jamaica; Japan; Jordan; Kazakhstan; Kenya; Kiribati; Korea North; Korea South; Kosovo; Kuwait; Kyrgyzstan; Laos; Latvia; Lebanon; Lesotho; Liberia; Libya; Liechtenstein; Lithuania; Luxembourg; Macedonia; Madagascar; Malawi; Malaysia; Maldives; Mali; Malta; Marshall Islands; Mauritania; Mauritius; Mexico; Micronesia; Moldova; Monaco; Mongolia; Montenegro; Morocco; Mozambique; Myanmar; Namibia; Nauru; Nepal; Netherlands; New Zealand; Nicaragua; Niger; Nigeria; Norway; Oman; Pakistan; Palau; Panama; Papua New Guinea; Paraguay; Peru; Philippines; Poland; Portugal; Qatar; Romania; Russian Federation; Rwanda; Saint Vincent and the Grenadines; Samoa; San Marino; Sao Tome and Principe; Saudi Arabia; Senegal; Serbia; Seychelles; Sierra Leone; Singapore; Slovakia; Slovenia; Solomon Islands; Somalia; South Africa; South Sudan; Spain; Sri Lanka; St Kitts and Nevis; St Lucia; Sudan; Suriname; Swaziland; Sweden; Switzerland; Syria; Taiwan; Tajikistan; Tanzania; Thailand; Togo; Tonga; Trinidad and Tobago; Tunisia; Turkey; Turkmenistan; Tuvalu; Uganda; Ukraine; United Arab Emirates; United Kingdom; Uruguay; Uzbekistan; Vanuatu; Vatican City; Venezuela; Vietnam; Yemen; Zambia; Zimbabwe |
+| `travel-outside-us-country` | Country | dropdown | — | Afghanistan; Albania; Algeria; Andorra; Angola; Antigua and Deps; Argentina; Armenia; Australia; Austria; Azerbaijan; Bahamas; Bahrain; Bangladesh; Barbados; Belarus; Belgium; Belize; Benin; Bhutan; Bolivia; Bosnia Herzegovina; Botswana; Brazil; Brunei; Bulgaria; Burkina; Burma; Burundi; Cambodia; Cameroon; Canada; Cape Verde; Central African Rep; Chad; Chile; China; Colombia; Comoros; Congo {Democratic Rep} (Congo); Congo (CongoDemocratic Rep); Costa Rica; Croatia; Cuba; Cyprus; Czech Republic; Denmark; Djibouti; Dominica; Dominican Republic; East Timor; Ecuador; Egypt; El Salvador; Equatorial Guinea; Eritrea; Estonia; Ethiopia; Fiji; Finland; France; Gabon; Gambia; Georgia; Germany; Ghana; Greece; Grenada; Guatemala; Guinea; Guinea-Bissau; Guyana; Haiti; Honduras; Hungary; Iceland; India; Indonesia; Iran; Iraq; Ireland {Republic} (IrelandRepublic); Israel; Italy; Ivory Coast; Jamaica; Japan; Jordan; Kazakhstan; Kenya; Kiribati; Korea North; Korea South; Kosovo; Kuwait; Kyrgyzstan; Laos; Latvia; Lebanon; Lesotho; Liberia; Libya; Liechtenstein; Lithuania; Luxembourg; Macedonia; Madagascar; Malawi; Malaysia; Maldives; Mali; Malta; Marshall Islands; Mauritania; Mauritius; Mexico; Micronesia; Moldova; Monaco; Mongolia; Montenegro; Morocco; Mozambique; Myanmar; Namibia; Nauru; Nepal; Netherlands; New Zealand; Nicaragua; Niger; Nigeria; Norway; Oman; Pakistan; Palau; Panama; Papua New Guinea; Paraguay; Peru; Philippines; Poland; Portugal; Qatar; Romania; Russian Federation; Rwanda; Saint Vincent and the Grenadines; Samoa; San Marino; Sao Tome and Principe; Saudi Arabia; Senegal; Serbia; Seychelles; Sierra Leone; Singapore; Slovakia; Slovenia; Solomon Islands; Somalia; South Africa; South Sudan; Spain; Sri Lanka; St Kitts and Nevis; St Lucia; Sudan; Suriname; Swaziland; Sweden; Switzerland; Syria; Taiwan; Tajikistan; Tanzania; Thailand; Togo; Tonga; Trinidad and Tobago; Tunisia; Turkey; Turkmenistan; Tuvalu; Uganda; Ukraine; United Arab Emirates; United Kingdom; Uruguay; Uzbekistan; Vanuatu; Vatican City; Venezuela; Vietnam; Yemen; Zambia; Zimbabwe |
+| `physician-first-name` | Physician First Name | text | — | — |
+| `physician-last-name` | Physician Last Name | text | — | — |
+| `physician-phone` | Physician Phone Number | text | phone | — |
+| `medical-facility-name` | Medical Facility Name | text | — | — |
+| `medical-facility-street-address` | Street Address | text | — | — |
+| `medical-facility-apt-suite` | Apt/Suite | text | — | — |
+| `medical-city` | City | text | — | — |
+| `medical-state` | State | searchable-select | — | Alabama (AL); Alaska (AK); Alberta (AB); Arizona (AZ); Arkansas (AR); British Columbia (BC); California (CA); Colorado (CO); Connecticut (CT); Delaware (DE); District of Columbia (DC); Florida (FL); Georgia (GA); Guam (GU); Hawaii (HI); Idaho (ID); Illinois (IL); Indiana (IN); Iowa (IA); Kansas (KS); Kentucky (KY); Louisiana (LA); Maine (ME); Manitoba (MB); Maryland (MD); Massachusetts (MA); Michigan (MI); Minnesota (MN); Mississippi (MS); Missouri (MO); Montana (MT); New Brunswick (NB); Nebraska (NE); Nevada (NV); New Hampshire (NH); New Jersey (NJ); Newfoundland and Labrador (NL); New Mexico (NM); New York (NY); North Carolina (NC); North Dakota (ND); Northwest Territories (NT); Nova Scotia (NS); Nunavut (NU); Ohio (OH); Oklahoma (OK); Ontario (ON); Oregon (OR); Pennsylvania (PA); Prince Edward Island (PE); Puerto Rico (PR); Quebec (QC); Rhode Island (RI); Saskatchewan (SK); South Carolina (SC); South Dakota (SD); Tennessee (TN); Texas (TX); Utah (UT); Vermont (VT); Virgin Islands (VI); Virginia (VA); Washington (WA); West Virginia (WV); Wisconsin (WI); Wyoming (WY); Yukon Territory (YT) |
+| `medical-zip-code` | Zip Code | text | postal-code | — |
+| `has-other-life-insurance` | Do you have other life insurance in force? | radio | — | Yes; No |
+| `existing-life-insurance-amount` | Total life insurance amount | text | currency | — |
+| `is-replacing-life-insurance` | Is the life insurance applied for intended to replace, discontinue, or change an existing life insurance policy or annuity contract? | radio | — | Yes; No |
+| `has-pending-life-insurance-applications` | Do you have other life insurance applications pending? | radio | — | Yes; No |
+| `pending-life-insurance-amount` | Amount | text | currency | — |
+| `pending-life-insurance-company` | Company | text | — | — |
+| `has-disability-insurance` | Do you now have or are you now applying for any other insurance which provides benefits if you are unable to work because of a disability? | radio | — | Yes; No |
+| `is-replacing-disability-insurance` | Will this disability coverage replace any other company's coverage? | radio | — | Yes; No |
+| `disability-replacement-amount` | Replacement amount | text | currency | — |
+| `total-net-worth` | Total net worth (Assets minus liabilities) | text | currency | — |
+| `total-annual-unearned-income` | Total annual unearned income | text | currency | — |
+| `is-self-employed` | Are you self-employed? | radio | — | Yes; No |
+| `is-sole-proprietor` | Sole proprietor | checkbox | — | — |
+| `is-professional-corporation` | Professional corporation | checkbox | — | — |
+| `sole-proprietor-gross-income` | Annual gross revenue | text | currency | — |
+| `sole-proprietor-gross-earnings` | Gross earnings before business expenses and taxes | text | currency | — |
+| `sole-proprietor-business-expenses` | Business expenses | text | currency | — |
+| `professional-corporation-annual-salary` | Annual salary | text | currency | — |
+| `professional-corporation-s-corp-distribution` | S-Corp distribution | text | currency | — |
+| `professional-corporation-dividends` | Dividends | text | currency | — |
+| `professional-corporation-bonus` | Bonus amount | text | currency | — |
+| `bonus-payment-frequency` | Bonus payment frequency | radio | — | Annual; Quarterly; Monthly |
+| `professional-corporation-commission` | Commission amount | text | currency | — |
+| `commission-payment-frequency` | Commission payment frequency | radio | — | Annual; Quarterly; Monthly |
+| `professional-corporation-benefits-cost` | Employer-paid benefits cost | text | currency | — |
+| `years-self-employed` | Years self-employed | number | — | — |
+| `work-from-home` | Do you work from home? | radio | — | Yes; No |
+| `has-work-location-outside-home` | Do you have a work location outside your home? | radio | — | Yes; No |
+| `work-location-details` | Please explain where you work outside your home | text | — | — |
+| `spouse-height-feet` | Height (Feet) | number | — | — |
+| `spouse-height-inches` | Inches | number | — | — |
+| `spouse-weight-lbs` | Weight (lbs.) | number | — | — |
+| `spouse-weight-12-months-ago-lbs` | Weight 12 Mos. Ago | number | — | — |
+| `spouse-social-security-number` | Social Security Number | text | ssn | — |
+| `spouse-has-drivers-license` | Does your spouse have a valid driver's license? | radio | — | Yes; No |
+| `spouse-intend-live-outside-us` | Does your spouse intend to reside outside the U.S. or Canada within the next 12 months? | radio | — | Yes; No |
+| `spouse-travel-outside-us-six-months` | Does your spouse intend to travel outside the U.S. or Canada within the next 12 months? | radio | — | Yes; No |
+| `spouse-drivers-license-number` | Spouse Driver's License Number | text | alphanumeric | — |
+| `spouse-drivers-license-state` | Spouse Driver's License State | searchable-select | — | Alabama (AL); Alaska (AK); Alberta (AB); Arizona (AZ); Arkansas (AR); British Columbia (BC); California (CA); Colorado (CO); Connecticut (CT); Delaware (DE); District of Columbia (DC); Florida (FL); Georgia (GA); Guam (GU); Hawaii (HI); Idaho (ID); Illinois (IL); Indiana (IN); Iowa (IA); Kansas (KS); Kentucky (KY); Louisiana (LA); Maine (ME); Manitoba (MB); Maryland (MD); Massachusetts (MA); Michigan (MI); Minnesota (MN); Mississippi (MS); Missouri (MO); Montana (MT); New Brunswick (NB); Nebraska (NE); Nevada (NV); New Hampshire (NH); New Jersey (NJ); Newfoundland and Labrador (NL); New Mexico (NM); New York (NY); North Carolina (NC); North Dakota (ND); Northwest Territories (NT); Nova Scotia (NS); Nunavut (NU); Ohio (OH); Oklahoma (OK); Ontario (ON); Oregon (OR); Pennsylvania (PA); Prince Edward Island (PE); Puerto Rico (PR); Quebec (QC); Rhode Island (RI); Saskatchewan (SK); South Carolina (SC); South Dakota (SD); Tennessee (TN); Texas (TX); Utah (UT); Vermont (VT); Virgin Islands (VI); Virginia (VA); Washington (WA); West Virginia (WV); Wisconsin (WI); Wyoming (WY); Yukon Territory (YT) |
+| `spouse-outside-us-country` | Country | dropdown | — | Afghanistan; Albania; Algeria; Andorra; Angola; Antigua and Deps; Argentina; Armenia; Australia; Austria; Azerbaijan; Bahamas; Bahrain; Bangladesh; Barbados; Belarus; Belgium; Belize; Benin; Bhutan; Bolivia; Bosnia Herzegovina; Botswana; Brazil; Brunei; Bulgaria; Burkina; Burma; Burundi; Cambodia; Cameroon; Canada; Cape Verde; Central African Rep; Chad; Chile; China; Colombia; Comoros; Congo {Democratic Rep} (Congo); Congo (CongoDemocratic Rep); Costa Rica; Croatia; Cuba; Cyprus; Czech Republic; Denmark; Djibouti; Dominica; Dominican Republic; East Timor; Ecuador; Egypt; El Salvador; Equatorial Guinea; Eritrea; Estonia; Ethiopia; Fiji; Finland; France; Gabon; Gambia; Georgia; Germany; Ghana; Greece; Grenada; Guatemala; Guinea; Guinea-Bissau; Guyana; Haiti; Honduras; Hungary; Iceland; India; Indonesia; Iran; Iraq; Ireland {Republic} (IrelandRepublic); Israel; Italy; Ivory Coast; Jamaica; Japan; Jordan; Kazakhstan; Kenya; Kiribati; Korea North; Korea South; Kosovo; Kuwait; Kyrgyzstan; Laos; Latvia; Lebanon; Lesotho; Liberia; Libya; Liechtenstein; Lithuania; Luxembourg; Macedonia; Madagascar; Malawi; Malaysia; Maldives; Mali; Malta; Marshall Islands; Mauritania; Mauritius; Mexico; Micronesia; Moldova; Monaco; Mongolia; Montenegro; Morocco; Mozambique; Myanmar; Namibia; Nauru; Nepal; Netherlands; New Zealand; Nicaragua; Niger; Nigeria; Norway; Oman; Pakistan; Palau; Panama; Papua New Guinea; Paraguay; Peru; Philippines; Poland; Portugal; Qatar; Romania; Russian Federation; Rwanda; Saint Vincent and the Grenadines; Samoa; San Marino; Sao Tome and Principe; Saudi Arabia; Senegal; Serbia; Seychelles; Sierra Leone; Singapore; Slovakia; Slovenia; Solomon Islands; Somalia; South Africa; South Sudan; Spain; Sri Lanka; St Kitts and Nevis; St Lucia; Sudan; Suriname; Swaziland; Sweden; Switzerland; Syria; Taiwan; Tajikistan; Tanzania; Thailand; Togo; Tonga; Trinidad and Tobago; Tunisia; Turkey; Turkmenistan; Tuvalu; Uganda; Ukraine; United Arab Emirates; United Kingdom; Uruguay; Uzbekistan; Vanuatu; Vatican City; Venezuela; Vietnam; Yemen; Zambia; Zimbabwe |
+| `spouse-travel-outside-us-country` | Country | dropdown | — | Afghanistan; Albania; Algeria; Andorra; Angola; Antigua and Deps; Argentina; Armenia; Australia; Austria; Azerbaijan; Bahamas; Bahrain; Bangladesh; Barbados; Belarus; Belgium; Belize; Benin; Bhutan; Bolivia; Bosnia Herzegovina; Botswana; Brazil; Brunei; Bulgaria; Burkina; Burma; Burundi; Cambodia; Cameroon; Canada; Cape Verde; Central African Rep; Chad; Chile; China; Colombia; Comoros; Congo {Democratic Rep} (Congo); Congo (CongoDemocratic Rep); Costa Rica; Croatia; Cuba; Cyprus; Czech Republic; Denmark; Djibouti; Dominica; Dominican Republic; East Timor; Ecuador; Egypt; El Salvador; Equatorial Guinea; Eritrea; Estonia; Ethiopia; Fiji; Finland; France; Gabon; Gambia; Georgia; Germany; Ghana; Greece; Grenada; Guatemala; Guinea; Guinea-Bissau; Guyana; Haiti; Honduras; Hungary; Iceland; India; Indonesia; Iran; Iraq; Ireland {Republic} (IrelandRepublic); Israel; Italy; Ivory Coast; Jamaica; Japan; Jordan; Kazakhstan; Kenya; Kiribati; Korea North; Korea South; Kosovo; Kuwait; Kyrgyzstan; Laos; Latvia; Lebanon; Lesotho; Liberia; Libya; Liechtenstein; Lithuania; Luxembourg; Macedonia; Madagascar; Malawi; Malaysia; Maldives; Mali; Malta; Marshall Islands; Mauritania; Mauritius; Mexico; Micronesia; Moldova; Monaco; Mongolia; Montenegro; Morocco; Mozambique; Myanmar; Namibia; Nauru; Nepal; Netherlands; New Zealand; Nicaragua; Niger; Nigeria; Norway; Oman; Pakistan; Palau; Panama; Papua New Guinea; Paraguay; Peru; Philippines; Poland; Portugal; Qatar; Romania; Russian Federation; Rwanda; Saint Vincent and the Grenadines; Samoa; San Marino; Sao Tome and Principe; Saudi Arabia; Senegal; Serbia; Seychelles; Sierra Leone; Singapore; Slovakia; Slovenia; Solomon Islands; Somalia; South Africa; South Sudan; Spain; Sri Lanka; St Kitts and Nevis; St Lucia; Sudan; Suriname; Swaziland; Sweden; Switzerland; Syria; Taiwan; Tajikistan; Tanzania; Thailand; Togo; Tonga; Trinidad and Tobago; Tunisia; Turkey; Turkmenistan; Tuvalu; Uganda; Ukraine; United Arab Emirates; United Kingdom; Uruguay; Uzbekistan; Vanuatu; Vatican City; Venezuela; Vietnam; Yemen; Zambia; Zimbabwe |
+| `spouse-physician-first-name` | Physician First Name | text | — | — |
+| `spouse-physician-last-name` | Physician Last Name | text | — | — |
+| `spouse-physician-phone` | Physician Phone Number | text | phone | — |
+| `spouse-medical-facility-name` | Medical Facility Name | text | — | — |
+| `spouse-medical-facility-street-address` | Street Address | text | — | — |
+| `spouse-medical-facility-apt-suite` | Apt/Suite | text | — | — |
+| `spouse-medical-city` | City | text | — | — |
+| `spouse-medical-state` | State | searchable-select | — | Alabama (AL); Alaska (AK); Alberta (AB); Arizona (AZ); Arkansas (AR); British Columbia (BC); California (CA); Colorado (CO); Connecticut (CT); Delaware (DE); District of Columbia (DC); Florida (FL); Georgia (GA); Guam (GU); Hawaii (HI); Idaho (ID); Illinois (IL); Indiana (IN); Iowa (IA); Kansas (KS); Kentucky (KY); Louisiana (LA); Maine (ME); Manitoba (MB); Maryland (MD); Massachusetts (MA); Michigan (MI); Minnesota (MN); Mississippi (MS); Missouri (MO); Montana (MT); New Brunswick (NB); Nebraska (NE); Nevada (NV); New Hampshire (NH); New Jersey (NJ); Newfoundland and Labrador (NL); New Mexico (NM); New York (NY); North Carolina (NC); North Dakota (ND); Northwest Territories (NT); Nova Scotia (NS); Nunavut (NU); Ohio (OH); Oklahoma (OK); Ontario (ON); Oregon (OR); Pennsylvania (PA); Prince Edward Island (PE); Puerto Rico (PR); Quebec (QC); Rhode Island (RI); Saskatchewan (SK); South Carolina (SC); South Dakota (SD); Tennessee (TN); Texas (TX); Utah (UT); Vermont (VT); Virgin Islands (VI); Virginia (VA); Washington (WA); West Virginia (WV); Wisconsin (WI); Wyoming (WY); Yukon Territory (YT) |
+| `spouse-medical-zip-code` | Zip Code | text | postal-code | — |
+| `spouse-has-other-life-insurance` | Does your spouse have other life insurance in force? | radio | — | Yes; No |
+| `spouse-existing-life-insurance-amount` | Total life insurance amount | text | currency | — |
+| `spouse-is-replacing-life-insurance` | Is the life insurance applied for intended to replace, discontinue, or change an existing life insurance policy or annuity contract? | radio | — | Yes; No |
+| `spouse-has-pending-life-insurance-applications` | Does your spouse have other life insurance applications pending? | radio | — | Yes; No |
+| `spouse-pending-life-insurance-amount` | Amount | text | currency | — |
+| `spouse-pending-life-insurance-company` | Company | text | — | — |
+| `spouse-has-disability-insurance` | Does your spouse now have or is your spouse now applying for any other insurance which provides benefits if they are unable to work because of a disability? | radio | — | Yes; No |
+| `spouse-is-replacing-disability-insurance` | Will this disability coverage replace any other company's coverage? | radio | — | Yes; No |
+| `spouse-disability-replacement-amount` | Replacement amount | text | currency | — |
+| `di-company-name` | Company | text | — | — |
+| `di-company-monthly-benefit` | Monthly Benefit Amount | text | currency | — |
+| `di-company-benefit-period` | Benefit Period | text | — | — |
+| `di-company-waiting-period` | Waiting Period | text | — | — |
+| `resume-security-code` | Verification Code | text | digits | — |
+| `resume-delivery-method` | Choose how to get your verification code. | radio | — | Text; Call |
+| `resume-email` | Email | text | email | — |
+| `resume-phone` | Advisor phone | text | phone | — |
+| `review-self-consent` | I confirm that I have reviewed and understand the above material. I consent to the use of electronic signature and delivery of electronic records. | checkbox | — | — |
+| `dividend-acknowledgement` | I attest to having read the above information | checkbox | — | — |
+| `dividend-first-name` | First Name | text | — | — |
+| `dividend-last-name` | Last Name | text | — | — |
+| `dividend-birth-date` | Date of Birth | date | — | — |
+| `review-spouse-consent` | I confirm that I have reviewed and understand the above material. I consent to the use of electronic signature and delivery of electronic records. | checkbox | — | — |
 <!-- ABE-FIELD-CATALOG:END -->
 
 ### Page and section usage
@@ -592,41 +574,42 @@ A field can be referenced on several pages or in repeated records. Product, appl
 <!-- ABE-FIELD-USAGE:START -->
 | Page | Section or tool | Field references |
 | --- | --- | --- |
-| `home` | Home eligibility card | `zip-postal-code`; `needs-annual-income`; `state-province`; `needs-years-to-replace`; `birth-date`; `needs-outstanding-debts`; `needs-existing-coverage`; `quote-selection`; `quote-amount`; `quote-monthly-amount`; `quote-rate-frequency` |
-| `membership` | Membership page | `membership`; `first-name`; `last-name`; `email`; `phone`; `phone-type` |
-| `membership` | Membership page · Membership Information | `abe-member-id` |
-| `eligibility` | Eligibility page · Member | `zip-postal-code`; `state-province`; `birth-date` |
-| `eligibility` | Eligibility page · Dependent Selection | `dependents` |
+| `home` | Home eligibility card | `zip-postal-code`; `state-province`; `birth-date` |
+| `membership` | Membership page · Member | `membership`; `title`; `first-name`; `last-name`; `email`; `phone`; `phone-type`; `abe-member-id` |
+| `eligibility` | Eligibility page · Member | `zip-postal-code`; `state-province`; `birth-date`; `dependents` |
 | `eligibility` | Eligibility page · Spouse | `spouse-membership`; `spouse-first-name`; `spouse-last-name`; `spouse-birth-date` |
-| `eligibility` | Eligibility page · Child | `child-first-name`; `child-last-name`; `child-birth-date`; `child-gender`; `child-honorably-discharged-service-member` |
+| `eligibility` | Eligibility page · Child | `child-first-name`; `child-last-name`; `child-birth-date`; `child-gender` |
 | `eligibility` | Eligibility page · Verification Controls | `verification-method` |
 | `eligibility` | Eligibility page · Verification Questions | `sq-1`; `sq-2`; `sq-3` |
+| `eligibility` | Eligibility page · Verification Address | `street-address`; `apt-suite`; `city`; `state`; `zip-code` |
 | `coverage` | Coverage page · Member · Personal Details | `gender`; `smoker`; `tobacco-last-used`; `tobacco-products` |
-| `coverage` | Coverage page · Member · Work & Income | `hours-worked-per-week`; `actively-at-work`; `average-monthly-income` |
+| `coverage` | Coverage page · Member · Work & Income | `hours-worked-per-week`; `average-monthly-income`; `self-employed-under-one-year`; `actively-at-work` |
 | `coverage` | Coverage page · Member · Business Details | `monthly-business-expenses`; `business-expense-responsibility` |
 | `coverage` | Coverage page · Spouse · Personal Details | `spouse-gender`; `spouse-smoker`; `spouse-tobacco-last-used`; `spouse-tobacco-products` |
 | `coverage` | Coverage page · Spouse · Work & Income | `spouse-hours-worked-per-week`; `spouse-average-monthly-income` |
-| `coverage` | Coverage page | `firm-member-count` |
-| `coverage` | Coverage page · Long-Term Disability / Member | Applicant selection (product control); Coverage Amount (product control); Waiting Period (product control) |
-| `coverage` | Coverage page · Long-Term Disability / Spouse | Applicant selection (product control); Coverage Amount (product control); Waiting Period (product control) |
+| `coverage` | Coverage page · Coverage Controls | `coverage-categories`; `coverage-amount`; `add-coverage`; `waiting-period`; `benefit-option`; `rider`; `rider-amount`; `rate-frequency` |
+| `coverage` | Coverage page · Coverage Spouse Controls | `spouse-coverage-amount`; `spouse-add-coverage`; `spouse-waiting-period`; `spouse-benefit-option`; `spouse-rider`; `spouse-rider-amount` |
+| `coverage` | Coverage page · Coverage Child Controls | `child-coverage-amount`; `child-add-coverage` |
+| `coverage` | Coverage page · Group Disability Income Insurance / Member | Applicant selection (product control); Coverage Amount (product control); Waiting Period (product control) |
+| `coverage` | Coverage page · Group Disability Income Insurance / Spouse | Applicant selection (product control); Coverage Amount (product control); Waiting Period (product control) |
 | `coverage` | Coverage page · Long-Term Disability Plus / Member | Applicant selection (product control); Coverage Amount (product control); Waiting Period (product control) |
 | `coverage` | Coverage page · Long-Term Disability Plus / Spouse | Applicant selection (product control); Coverage Amount (product control); Waiting Period (product control) |
 | `coverage` | Coverage page · Mid-Term Disability / Member | Applicant selection (product control); Coverage Amount (product control); Waiting Period (product control) |
 | `coverage` | Coverage page · Mid-Term Disability / Spouse | Applicant selection (product control); Coverage Amount (product control); Waiting Period (product control) |
-| `coverage` | Coverage page · 10-Year Level Term / Member | Applicant selection (product control); Coverage Amount (product control) |
-| `coverage` | Coverage page · 10-Year Level Term / Spouse | Applicant selection (product control); Coverage Amount (product control) |
-| `coverage` | Coverage page · 10-Year Level Term / Child | Applicant selection (product control); Coverage Amount (product control) |
-| `coverage` | Coverage page · 20-Year Level Term / Member | Applicant selection (product control); Coverage Amount (product control) |
-| `coverage` | Coverage page · 20-Year Level Term / Spouse | Applicant selection (product control); Coverage Amount (product control) |
-| `coverage` | Coverage page · 20-Year Level Term / Child | Applicant selection (product control); Coverage Amount (product control) |
+| `coverage` | Coverage page · Group 10-Year Level Term Life Insurance / Member | Applicant selection (product control); Coverage Amount (product control) |
+| `coverage` | Coverage page · Group 10-Year Level Term Life Insurance / Spouse | Applicant selection (product control); Coverage Amount (product control) |
+| `coverage` | Coverage page · Group 10-Year Level Term Life Insurance / Child | Applicant selection (product control); Coverage Amount (product control) |
+| `coverage` | Coverage page · Group 20-Year Level Term Life Insurance / Member | Applicant selection (product control); Coverage Amount (product control) |
+| `coverage` | Coverage page · Group 20-Year Level Term Life Insurance / Spouse | Applicant selection (product control); Coverage Amount (product control) |
+| `coverage` | Coverage page · Group 20-Year Level Term Life Insurance / Child | Applicant selection (product control); Coverage Amount (product control) |
 | `coverage` | Coverage page · 50+ Life / Member | Applicant selection (product control); Coverage Amount (product control) |
 | `coverage` | Coverage page · 50+ Life / Spouse | Applicant selection (product control); Coverage Amount (product control) |
-| `coverage` | Coverage page · Accidental Death and Dismemberment / Member | Applicant selection (product control); Coverage Amount (product control) |
-| `coverage` | Coverage page · Accidental Death and Dismemberment / Spouse | Applicant selection (product control); Coverage Amount (product control) |
-| `coverage` | Coverage page · Accidental Death and Dismemberment / Child | Applicant selection (product control); Coverage Amount (product control) |
-| `coverage` | Coverage page · Term Life / Member | Applicant selection (product control); Coverage Amount (product control); Chronic Illness Rider (CIR) (product control) |
-| `coverage` | Coverage page · Term Life / Spouse | Applicant selection (product control); Coverage Amount (product control); Chronic Illness Rider (CIR) (product control) |
-| `coverage` | Coverage page · Term Life / Child | Applicant selection (product control); Coverage Amount (product control); Chronic Illness Rider (CIR) (product control) |
+| `coverage` | Coverage page · High-Limit Death and Dismemberment Insurance / Member | Applicant selection (product control); Coverage Amount (product control) |
+| `coverage` | Coverage page · High-Limit Death and Dismemberment Insurance / Spouse | Applicant selection (product control); Coverage Amount (product control) |
+| `coverage` | Coverage page · High-Limit Death and Dismemberment Insurance / Child | Applicant selection (product control); Coverage Amount (product control) |
+| `coverage` | Coverage page · Group Term Life Insurance / Member | Applicant selection (product control); Coverage Amount (product control); Chronic Illness Rider (CIR) (product control) |
+| `coverage` | Coverage page · Group Term Life Insurance / Spouse | Applicant selection (product control); Coverage Amount (product control); Chronic Illness Rider (CIR) (product control) |
+| `coverage` | Coverage page · Group Term Life Insurance / Child | Applicant selection (product control); Coverage Amount (product control); Chronic Illness Rider (CIR) (product control) |
 | `coverage` | Coverage page · Office Overhead / Member | Applicant selection (product control); Coverage Amount (product control); Waiting Period (product control); Maximum Benefit Period (product control) |
 | `coverage` | Coverage page · Critical Illness / Member | Applicant selection (product control); Coverage Amount (product control) |
 | `coverage` | Coverage page · Critical Illness / Spouse | Applicant selection (product control); Coverage Amount (product control) |
@@ -637,58 +620,58 @@ A field can be referenced on several pages or in repeated records. Product, appl
 | `beneficiary` | Beneficiary page · Beneficiary Individual | `beneficiary-firstName`; `beneficiary-lastName`; `beneficiary-relationship`; `beneficiary-share` |
 | `beneficiary` | Beneficiary page · Beneficiary Trust | `beneficiary-trustName`; `beneficiary-trustDate` |
 | `beneficiary` | Beneficiary page · Beneficiary Controls | `beneficiary-information-opt-in`; `beneficiaryType` |
+| `beneficiary` | Beneficiary page · Beneficiary Copy Controls | `beneficiaryApplyTarget` |
 | `contact` | Contact page · Member | `street-address`; `apt-suite`; `city`; `state`; `zip-code`; `correspondence-to` |
-| `contact` | Contact page · Business / Employer Information | `business-name`; `business-type`; `business-address-same-as-home`; `business-street-address`; `business-apt-suite`; `business-city`; `business-state`; `business-zip-code`; `business-phone`; `business-phone-type` |
+| `contact` | Contact page · Member · Business / Employer Information | `business-name`; `business-type`; `business-address-same-as-home`; `business-street-address`; `business-apt-suite`; `business-city`; `business-state`; `business-zip-code`; `business-phone`; `business-phone-type` |
 | `contact` | Contact page · Spouse | `spouse-phone`; `spouse-phone-type`; `spouse-email` |
-| `profile` | Profile page · Profile Personal Member Physician | `physician-first-name`; `physician-last-name`; `physician-phone`; `medical-facility-name`; `medical-facility-street-address`; `medical-facility-apt-suite`; `medical-city`; `medical-state`; `medical-zip-code` |
 | `profile` | Profile page · Member · Personal information | `height-feet`; `height-inches`; `weight-lbs`; `weight-12-months-ago-lbs`; `social-security-number`; `marital-status`; `has-drivers-license`; `intend-live-outside-us`; `travel-outside-us-six-months` |
-| `profile` | Profile page · Profile Personal Member Drivers License | `drivers-license-number`; `drivers-license-state` |
-| `profile` | Profile page · Profile Personal Member Outside Us | `outside-us-months`; `outside-us-country` |
-| `profile` | Profile page · Profile Personal Member Travel Outside Us | `travel-outside-us-country` |
-| `profile` | Profile page · Profile Personal Spouse | `spouse-height-feet`; `spouse-height-inches`; `spouse-weight-lbs`; `spouse-weight-12-months-ago-lbs`; `spouse-social-security-number`; `spouse-has-drivers-license`; `spouse-intend-live-outside-us`; `spouse-travel-outside-us-six-months` |
-| `profile` | Profile page · Profile Personal Spouse Drivers License | `spouse-drivers-license-number`; `spouse-drivers-license-state` |
-| `profile` | Profile page · Profile Personal Spouse Outside Us | `spouse-outside-us-months`; `spouse-outside-us-country` |
-| `profile` | Profile page · Profile Personal Spouse Travel Outside Us | `spouse-travel-outside-us-country` |
-| `profile` | Profile page · Profile Personal Spouse Physician | `spouse-physician-first-name`; `spouse-physician-last-name`; `spouse-physician-phone`; `spouse-medical-facility-name`; `spouse-medical-facility-street-address`; `spouse-medical-facility-apt-suite`; `spouse-medical-city`; `spouse-medical-state`; `spouse-medical-zip-code` |
+| `profile` | Profile page · Member | `drivers-license-number`; `drivers-license-state`; `outside-us-country`; `travel-outside-us-country` |
+| `profile` | Profile page · Member · Physician information | `physician-first-name`; `physician-last-name`; `physician-phone`; `medical-facility-name`; `medical-facility-street-address`; `medical-facility-apt-suite`; `medical-city`; `medical-state`; `medical-zip-code` |
 | `profile` | Profile page · Member · Other coverage | `has-other-life-insurance`; `existing-life-insurance-amount`; `is-replacing-life-insurance`; `has-pending-life-insurance-applications`; `pending-life-insurance-amount`; `pending-life-insurance-company`; `has-disability-insurance`; `is-replacing-disability-insurance`; `disability-replacement-amount` |
 | `profile` | Profile page · Member · Financial questionnaire | `total-net-worth`; `total-annual-unearned-income`; `is-self-employed`; `is-sole-proprietor`; `is-professional-corporation`; `sole-proprietor-gross-income`; `sole-proprietor-gross-earnings`; `sole-proprietor-business-expenses`; `professional-corporation-annual-salary`; `professional-corporation-s-corp-distribution`; `professional-corporation-dividends`; `professional-corporation-bonus`; `bonus-payment-frequency`; `professional-corporation-commission`; `commission-payment-frequency`; `professional-corporation-benefits-cost`; `years-self-employed`; `work-from-home`; `has-work-location-outside-home`; `work-location-details` |
-| `profile` | Profile page · Profile Financial Spouse | `spouse-has-other-life-insurance`; `spouse-existing-life-insurance-amount`; `spouse-is-replacing-life-insurance`; `spouse-has-pending-life-insurance-applications`; `spouse-pending-life-insurance-amount`; `spouse-pending-life-insurance-company`; `spouse-has-disability-insurance`; `spouse-is-replacing-disability-insurance`; `spouse-disability-replacement-amount` |
+| `profile` | Profile page · Spouse · Personal information | `spouse-height-feet`; `spouse-height-inches`; `spouse-weight-lbs`; `spouse-weight-12-months-ago-lbs`; `spouse-social-security-number`; `spouse-has-drivers-license`; `spouse-intend-live-outside-us`; `spouse-travel-outside-us-six-months` |
+| `profile` | Profile page · Spouse | `spouse-drivers-license-number`; `spouse-drivers-license-state`; `spouse-outside-us-country`; `spouse-travel-outside-us-country` |
+| `profile` | Profile page · Spouse · Physician information | `spouse-physician-first-name`; `spouse-physician-last-name`; `spouse-physician-phone`; `spouse-medical-facility-name`; `spouse-medical-facility-street-address`; `spouse-medical-facility-apt-suite`; `spouse-medical-city`; `spouse-medical-state`; `spouse-medical-zip-code` |
+| `profile` | Profile page · Spouse · Other coverage | `spouse-has-other-life-insurance`; `spouse-existing-life-insurance-amount`; `spouse-is-replacing-life-insurance`; `spouse-has-pending-life-insurance-applications`; `spouse-pending-life-insurance-amount`; `spouse-pending-life-insurance-company`; `spouse-has-disability-insurance`; `spouse-is-replacing-disability-insurance`; `spouse-disability-replacement-amount` |
+| `profile` | Profile page · Disability Company | `di-company-name`; `di-company-monthly-benefit`; `di-company-benefit-period`; `di-company-waiting-period` |
 | `profile` | Profile page · Member / existing disability insurance | `di-company-name`; `di-company-monthly-benefit`; `di-company-benefit-period`; `di-company-waiting-period` |
 | `profile` | Profile page · Spouse / existing disability insurance | `di-company-name`; `di-company-monthly-benefit`; `di-company-benefit-period`; `di-company-waiting-period` |
-| `review` | Review page | `dividend-acknowledgement`; `dividend-first-name`; `dividend-last-name`; `dividend-birth-date` |
-| `review` | Review page · Member | `review-self-consent` |
-| `review` | Review page · Spouse | `review-spouse-consent` |
-| `health-li` | Health LI page | `health-li-q1`; `health-li-q2`; `health-li-q3`; `health-li-q4`; `health-li-q5`; `health-li-q6`; `health-li-q7`; `health-li-q8`; `health-li-q9`; `health-li-q10`; `health-li-q11`; `health-li-q12`; `health-li-q13`; `health-li-q14`; `health-li-q15`; `health-li-q1-spouse`; `health-li-q2-spouse`; `health-li-q3-spouse`; `health-li-q4-spouse`; `health-li-q5-spouse`; `health-li-q6-spouse`; `health-li-q7-spouse`; `health-li-q8-spouse`; `health-li-q9-spouse`; `health-li-q10-spouse`; `health-li-q11-spouse`; `health-li-q12-spouse`; `health-li-q13-spouse`; `health-li-q14-spouse`; `health-li-q15-spouse` |
-| `health-li` | Health LI page · Health Li Details | `health-li-detail-onset`; `health-li-detail-conditionsDetails`; `health-li-detail-physicianAddress` |
-| `health-di` | Health DI page | `health-di-q1`; `health-di-q2`; `health-di-q3`; `health-di-q4`; `health-di-q5`; `health-di-q6`; `health-di-q7`; `health-di-q1-spouse`; `health-di-q2-spouse`; `health-di-q3-spouse`; `health-di-q4-spouse`; `health-di-q5-spouse`; `health-di-q6-spouse`; `health-di-q7-spouse` |
-| `health-di` | Health DI page · Health Diq1Details | `health-di-q1-detail-assistanceType`; `health-di-q1-detail-onset`; `health-di-q1-detail-conditionsDetails`; `health-di-q1-detail-physicianAddress` |
-| `health-di` | Health DI page · Health Diq2Details | `health-di-q2-detail-fallType`; `health-di-q2-detail-onset`; `health-di-q2-detail-conditionsDetails`; `health-di-q2-detail-physicianAddress` |
-| `health-di` | Health DI page · Health Diq3Details | `health-di-q3-detail-onset`; `health-di-q3-detail-conditionsDetails`; `health-di-q3-detail-physicianAddress` |
-| `health-di` | Health DI page · Health Diq4Details | `health-di-q4-detail-onset`; `health-di-q4-detail-conditionsDetails`; `health-di-q4-detail-physicianAddress` |
-| `health-di` | Health DI page · Health Diq5Details | `health-di-q5-detail-onset`; `health-di-q5-detail-conditionsDetails`; `health-di-q5-detail-physicianAddress` |
-| `health-di` | Health DI page · Health Diq6Details | `health-di-q6-detail-onset`; `health-di-q6-detail-conditionsDetails`; `health-di-q6-detail-physicianAddress` |
-| `health-di` | Health DI page · Health Diq7Details | `health-di-q7-detail-details` |
-| `health-di` | Health DI page · Member and Spouse | `health-abe-form-160`; `health-abe-supp-di-detail-date`; `health-abe-supp-di-detail-treatment`; `health-abe-supp-di-detail-condition`; `health-abe-supp-di-detail-physician`; `health-abe-form-161`; `health-abe-supp-di-detail-medication`; `health-abe-supp-di-detail-dosage`; `health-abe-supp-di-detail-frequency`; `health-abe-supp-di-detail-reason`; `health-abe-form-163`; `health-abe-supp-di-detail-onset`; `health-abe-supp-di-detail-illness`; `health-abe-supp-di-detail-symptoms`; `health-abe-supp-di-detail-last-treatment`; `health-abe-supp-di-detail-episodes`; `health-abe-supp-di-detail-treatment-results`; `health-abe-form-164`; `health-abe-form-165`; `health-abe-form-166`; `health-abe-form-167`; `health-abe-supp-di-detail-last-use`; `health-abe-supp-di-detail-drug`; `health-abe-supp-di-detail-drug-details`; `health-abe-form-168`; `health-abe-supp-di-detail-benefits` |
-| `health-ci` | Health CI page · Member and Spouse | `health-abe-form-197`; `health-abe-form-198`; `health-abe-form-201`; `health-abe-form-202`; `health-abe-form-203`; `health-abe-form-204`; `health-abe-form-205`; `health-abe-form-206`; `health-abe-form-207`; `health-abe-form-208`; `health-abe-form-209`; `health-abe-form-209-ca`; `health-abe-form-210`; `health-abe-form-211`; `health-abe-form-213`; `health-abe-form-214`; `health-abe-form-215`; `health-abe-form-79`; `health-abe-form-80`; `health-abe-form-83`; `health-abe-form-84`; `health-abe-form-85`; `health-abe-form-86`; `health-abe-form-87`; `health-abe-form-88`; `health-abe-form-89`; `health-abe-form-90`; `health-abe-form-91`; `health-abe-form-91-ca`; `health-abe-form-92`; `health-abe-form-93`; `health-abe-form-95`; `health-abe-form-96`; `health-abe-form-97` |
-| `payment` | Payment page | `bank-name-on-account`; `bank-institution`; `bank-routing-number`; `bank-account-number`; `bank-authorization` |
+| `review` | Review page · Review Acknowledgements | `review-self-consent` |
+| `review` | Review page · Review Policy Fields | `dividend-acknowledgement`; `dividend-first-name`; `dividend-last-name`; `dividend-birth-date` |
+| `review` | Review page · Review Spouse Acknowledgement | `review-spouse-consent` |
+| `health-si` | Health SI page · Member | `health-si-q1`; `health-si-q2`; `health-si-q3`; `health-si-q4`; `health-si-q5` |
+| `health-si` | Health SI page · Spouse | `health-si-q1-spouse`; `health-si-q2-spouse`; `health-si-q3-spouse`; `health-si-q4-spouse`; `health-si-q5-spouse` |
+| `health-si` | Health SI page · Health Si Details | `health-si-detail-onset`; `health-si-detail-conditionsDetails`; `health-si-detail-physicianAddress` |
+| `health-tele` | Health TELE page · Member | `health-li-q1`; `health-li-q2`; `health-li-q3`; `health-li-q4`; `health-li-q5`; `health-li-q6`; `health-li-q7`; `health-li-q8`; `health-li-q9`; `health-li-q10`; `health-li-q11`; `health-li-q12`; `health-li-q13`; `health-li-q14`; `health-li-q15` |
+| `health-tele` | Health TELE page · Spouse | `health-li-q1-spouse`; `health-li-q2-spouse`; `health-li-q3-spouse`; `health-li-q4-spouse`; `health-li-q5-spouse`; `health-li-q6-spouse`; `health-li-q7-spouse`; `health-li-q8-spouse`; `health-li-q9-spouse`; `health-li-q10-spouse`; `health-li-q11-spouse`; `health-li-q12-spouse`; `health-li-q13-spouse`; `health-li-q14-spouse`; `health-li-q15-spouse` |
+| `health-tele` | Health TELE page · Health Li Details | `health-li-detail-onset`; `health-li-detail-conditionsDetails`; `health-li-detail-physicianAddress` |
+| `health-di-supp` | Health DI SUPP page · Member | `health-di-q1`; `health-di-q2`; `health-di-q3`; `health-di-q4`; `health-di-q5`; `health-di-q6`; `health-di-q7` |
+| `health-di-supp` | Health DI SUPP page · Spouse | `health-di-q1-spouse`; `health-di-q2-spouse`; `health-di-q3-spouse`; `health-di-q4-spouse`; `health-di-q5-spouse`; `health-di-q6-spouse`; `health-di-q7-spouse` |
+| `health-di-supp` | Health DI SUPP page · Health Diq1Details | `health-di-q1-detail-assistanceType`; `health-di-q1-detail-onset`; `health-di-q1-detail-conditionsDetails`; `health-di-q1-detail-physicianAddress` |
+| `health-di-supp` | Health DI SUPP page · Health Diq2Details | `health-di-q2-detail-fallType`; `health-di-q2-detail-onset`; `health-di-q2-detail-conditionsDetails`; `health-di-q2-detail-physicianAddress` |
+| `health-di-supp` | Health DI SUPP page · Health Diq3Details | `health-di-q3-detail-onset`; `health-di-q3-detail-conditionsDetails`; `health-di-q3-detail-physicianAddress` |
+| `health-di-supp` | Health DI SUPP page · Health Diq4Details | `health-di-q4-detail-onset`; `health-di-q4-detail-conditionsDetails`; `health-di-q4-detail-physicianAddress` |
+| `health-di-supp` | Health DI SUPP page · Health Diq5Details | `health-di-q5-detail-onset`; `health-di-q5-detail-conditionsDetails`; `health-di-q5-detail-physicianAddress` |
+| `health-di-supp` | Health DI SUPP page · Health Diq6Details | `health-di-q6-detail-onset`; `health-di-q6-detail-conditionsDetails`; `health-di-q6-detail-physicianAddress` |
+| `health-di-supp` | Health DI SUPP page · Health Diq7Details | `health-di-q7-detail-details` |
+| `health-cir` | Health CIR page · Member and Spouse | `health-chr-form-98`; `health-chr-activities`; `health-chr-form-99`; `health-chr-form-100`; `health-chr-form-101`; `health-chr-form-102`; `health-chr-form-103`; `health-chr-form-104`; `health-chr-form-105`; `health-chr-form-106`; `health-chr-form-107`; `health-chr-form-108`; `health-chr-dwelling-other`; `health-chr-form-109` |
 | `payment` | Payment page · Payment Controls | `payment-information-opt-in`; `payment-method`; `payment-frequency`; `payment-shared-method`; `payment-shared-frequency` |
-| `payment` | Payment page · Long-Term Disability | `payment-method`; `payment-frequency` |
+| `payment` | Payment page · Payment Bank | `bank-name-on-account`; `bank-institution`; `bank-routing-number`; `bank-account-number`; `bank-authorization` |
+| `payment` | Payment page · Group Disability Income Insurance | `payment-method`; `payment-frequency` |
 | `payment` | Payment page · Long-Term Disability Plus | `payment-method`; `payment-frequency` |
 | `payment` | Payment page · Mid-Term Disability | `payment-method`; `payment-frequency` |
-| `payment` | Payment page · 10-Year Level Term | `payment-method`; `payment-frequency` |
-| `payment` | Payment page · 20-Year Level Term | `payment-method`; `payment-frequency` |
+| `payment` | Payment page · Group 10-Year Level Term Life Insurance | `payment-method`; `payment-frequency` |
+| `payment` | Payment page · Group 20-Year Level Term Life Insurance | `payment-method`; `payment-frequency` |
 | `payment` | Payment page · 50+ Life | `payment-method`; `payment-frequency` |
-| `payment` | Payment page · Accidental Death and Dismemberment | `payment-method`; `payment-frequency` |
-| `payment` | Payment page · Term Life | `payment-method`; `payment-frequency` |
+| `payment` | Payment page · High-Limit Death and Dismemberment Insurance | `payment-method`; `payment-frequency` |
+| `payment` | Payment page · Group Term Life Insurance | `payment-method`; `payment-frequency` |
 | `payment` | Payment page · Office Overhead | `payment-method`; `payment-frequency` |
 | `payment` | Payment page · Critical Illness | `payment-method`; `payment-frequency` |
 | `payment` | Payment page · Hospital Money | `payment-method`; `payment-frequency` |
-| `resume` | Resume page | `resume-email` |
-| `resume-method` | Resume Method page | `resume-delivery-method` |
-| `resume-code` | Resume Code page | `resume-security-code` |
-| `advisor-login` | Advisor Login page | `advisor-flow-type` |
-| `advisor-login` | Advisor Login page · Advisor Login New | `advisor-email`; `advisor-phone`; `advisor-code` |
-| `advisor-login` | Advisor Login page · Advisor Login Saved | `applicant-email` |
+| `resume` | Resume page · Member | `resume-email`; `resume-phone` |
+| `resume-method` | Resume Method page · Member | `resume-delivery-method` |
+| `resume-code` | Resume Code page · Member | `resume-security-code` |
+| `advisor-login` | Advisor Login page · Member | `advisor-flow-type`; `advisor-email`; `advisor-phone`; `advisor-code`; `applicant-email` |
 | `home` | Needs calculator drawer | `needs-annual-income`; `needs-years-to-replace`; `needs-outstanding-debts`; `needs-existing-coverage` |
 | `membership` | Needs calculator drawer | `needs-annual-income`; `needs-years-to-replace`; `needs-outstanding-debts`; `needs-existing-coverage` |
 | `eligibility` | Needs calculator drawer | `needs-annual-income`; `needs-years-to-replace`; `needs-outstanding-debts`; `needs-existing-coverage` |
@@ -697,14 +680,15 @@ A field can be referenced on several pages or in repeated records. Product, appl
 | `contact` | Needs calculator drawer | `needs-annual-income`; `needs-years-to-replace`; `needs-outstanding-debts`; `needs-existing-coverage` |
 | `profile` | Needs calculator drawer | `needs-annual-income`; `needs-years-to-replace`; `needs-outstanding-debts`; `needs-existing-coverage` |
 | `review` | Needs calculator drawer | `needs-annual-income`; `needs-years-to-replace`; `needs-outstanding-debts`; `needs-existing-coverage` |
-| `health-li` | Needs calculator drawer | `needs-annual-income`; `needs-years-to-replace`; `needs-outstanding-debts`; `needs-existing-coverage` |
+| `health-si` | Needs calculator drawer | `needs-annual-income`; `needs-years-to-replace`; `needs-outstanding-debts`; `needs-existing-coverage` |
+| `health-tele` | Needs calculator drawer | `needs-annual-income`; `needs-years-to-replace`; `needs-outstanding-debts`; `needs-existing-coverage` |
 | `health-qd` | Needs calculator drawer | `needs-annual-income`; `needs-years-to-replace`; `needs-outstanding-debts`; `needs-existing-coverage` |
-| `health-di` | Needs calculator drawer | `needs-annual-income`; `needs-years-to-replace`; `needs-outstanding-debts`; `needs-existing-coverage` |
-| `health-ci` | Needs calculator drawer | `needs-annual-income`; `needs-years-to-replace`; `needs-outstanding-debts`; `needs-existing-coverage` |
+| `health-di-supp` | Needs calculator drawer | `needs-annual-income`; `needs-years-to-replace`; `needs-outstanding-debts`; `needs-existing-coverage` |
+| `health-cir` | Needs calculator drawer | `needs-annual-income`; `needs-years-to-replace`; `needs-outstanding-debts`; `needs-existing-coverage` |
 | `payment` | Needs calculator drawer | `needs-annual-income`; `needs-years-to-replace`; `needs-outstanding-debts`; `needs-existing-coverage` |
 | `docusign` | Needs calculator drawer | `needs-annual-income`; `needs-years-to-replace`; `needs-outstanding-debts`; `needs-existing-coverage` |
 | `receipt` | Needs calculator drawer | `needs-annual-income`; `needs-years-to-replace`; `needs-outstanding-debts`; `needs-existing-coverage` |
-| `home` | Quote calculator drawer | `quote-categories`; `gender`; `smoker`; `average-monthly-income`; `hours-worked-per-week`; `monthly-business-expenses`; `business-expense-responsibility`; Chronic Illness Rider (CIR) (product control); `quote-selection`; `quote-monthly-amount`; `quote-amount` |
+| `home` | Quote calculator drawer | `quote-categories`; `gender`; `smoker`; `average-monthly-income`; `hours-worked-per-week`; `monthly-business-expenses`; `business-expense-responsibility`; `tobacco-last-used`; `tobacco-products`; Chronic Illness Rider (CIR) (product control); `quote-selection`; `quote-monthly-amount`; `quote-amount` |
 <!-- ABE-FIELD-USAGE:END -->
 
 Field references come from saved page and section placements, Site overrides, field surface/collection configuration and health questionnaire assignments. The CI-only and combined CI forms reference their own saved definitions; Member and Spouse reuse each definition with separate answers. Generic Life and DI fields remain available for their applicable processing paths. Health SI is excluded for ABE.
@@ -720,117 +704,116 @@ This first-pass Components inventory comes from the same saved catalog as Portal
 <!-- ABE-COMPONENT-CATALOG:START -->
 | ID | Name | Description | Category | Example |
 | --- | --- | --- | --- | --- |
-| `component-details-table` | DetailsTable | Presents labeled values in a compact details table. | Components / Content and data display | `application-patterns-detailstable--confirmation-details` |
-| `component-yes-no-detail-list` | YesNoDetailList | Numbered yes/no questions that reveal a canonical DynamicList on “Yes”. | Components / Pages / Health / Sections / Question and follow-up layouts | `application-patterns-yesnodetaillist--interactive` |
-| `component-estimated-rate` | EstimatedRate | Product prices use 1.25rem; summary prices use body2 sizing. Both are bold and primary-colored. Inline inherits its context. | Components / Coverage and pricing | `components-estimated-rate--available` |
+| `component-app-shell` | AppShell | Chooses which header, menu and footer a page shows (application form, advisor, error). | Components / Layout | `layout-appshell--application-form-variant` |
+| `component-app-header` | AppHeader | Brand, help actions, application menu, cart and the step bar. | Components / Layout | `layout-appheader--homepage-variant` |
+| `component-app-menu` | AppMenu | Application navigation and informational drawers. | Components / Navigation | `layout-appmenu--default` |
+| `component-app-body` | AppBody | Main content container with responsive spacing. | Components / Layout | `layout-appbody--default` |
+| `component-app-footer` | AppFooter | Administrator, insurer, support and legal details. | Components / Layout | `layout-appfooter--default` |
+| `component-client-help-banner` | ClientHelpBanner | Client phone, chat and other support actions. | Components / Content and data display / Help and support | `layout-clienthelpbanner--default` |
+| `component-offline-banner` | OfflineBanner | Connection notice shown above the header. | Components / Feedback and overlays / Banners | `feedback-technical-error--offline` |
+| `component-progress-step` | ProgressStep | The steps (Getting started, Choose your coverage, and so on) and the breadcrumbs within the current step. | Components / Navigation | `navigation-progressstep--collapsed-steps` |
+| `component-form-route-page` | FormRoutePage | Wraps each consumer form page: title, steps, breadcrumbs, back, help, validation, saving and Next. | Components / Layout | `application-patterns-application-page-template--standard-form-page` |
+| `component-form-shell` | FormShell | The visual surface a form sits on. | Components / Layout / Containers | `layout-formshell--default` |
+| `component-page-shell` | PageShell | Shared page container and layout. | Components / Layout / Containers | `layout-pageshell--default` |
+| `component-page-header` | PageHeader | Page title, supporting copy, back action and contextual help. | Components / Layout / Headings and dividers | `layout-pageheader--default` |
+| `component-page-title` | PageTitle | Page heading, subtitle and supporting actions. | Components / Layout / Headings and dividers | `layout-pagetitle--title-only` |
+| `component-page-nav` | PageNav | The page's Next or Submit action. | Components / Navigation | `navigation-pagenav--default` |
+| `component-prototype-handoff-page` | PrototypeHandoffPage | Full-screen prototype image sequence with normal application saving and transitions. | Components / Feedback and overlays | `feedback-prototype-handoff--multiple-screens` |
+| `component-print-action` | PrintAction | Prints one disclosure or consent section without surrounding application content. | Components / Content | `content-print-action--disclosure` |
+| `component-standalone-form-page` | StandaloneFormPage | Presentational page, form surface and header shared by standalone forms. Callers own field state, security and workflow effects. | Components / Layout / Containers | `layout-standalone-form-page--default` |
+| `component-home-hero` | HomeHero | Global Home introduction with one primary action, a secondary paragraph/link, and a quote card or association image. | Components / Pages / Home / Sections | `pages-home-hero--standard-quote` |
+| `component-association-introduction` | AssociationIntroduction | Association logo, tagline and introductory paragraphs. | Components / Pages / Home / Sections | `pages-home-association-introduction--default` |
+| `component-home-coverage-section` | HomeCoverageSection | Coverage heading, description, category choices and product information. | Components / Pages / Home / Sections | `pages-home-coverage-options--default` |
+| `component-underwriter-credentials` | UnderwriterCredentials | Insurer logo, name, ratings, description and footnote. | Components / Pages / Home / Sections | `pages-home-new-york-life-credentials--default` |
+| `component-membership-status` | MembershipStatus | The membership question, with its link, eligibility and non-member feedback. | Components / Pages / Membership / Sections | `pages-membership-membership-status--default` |
+| `component-member-information` | MemberInformation | Applicant name, email and phone, collected once membership is confirmed. | Components / Pages / Membership / Sections | `pages-membership-member-information--default` |
+| `component-additional-membership-information` | AdditionalMembershipInformation | Conditional membership follow-up questions. | Components / Pages / Membership / Sections | `pages-membership-additional-membership-information--member-id` |
+| `component-eligibility-sections` | EligibilitySections | Personal information, covered applicants, spouse details and repeated children. | Components / Pages / Eligibility / Sections | `pages-eligibility-your-information--default` |
+| `component-coverage-questions` | CoverageQuestions | Category questions with their member and spouse follow-ups. | Components / Pages / Coverage / Sections | `coverage-commerce-coveragequestions--no-category-selected` |
+| `component-product-catalog` | ProductCatalog | Product choices with coverage and rider options per applicant, and the combined cost. | Components / Coverage and pricing / Product selection | `coverage-commerce-productcatalog--interactive` |
+| `component-coverage-category-selector` | CoverageCategorySelector | The available coverage categories and their current selections. | Components / Coverage and pricing | `coverage-commerce-coveragecategoryselector--default` |
+| `component-coverage-cart` | CoverageCart | Selected coverages and combined estimated cost, displayed inline or in a drawer. | Components / Feedback and overlays / Dialogs and drawers / Application dialogs | `coverage-commerce-coveragecart--empty-drawer` |
+| `component-coverage-portfolio-drawer` | CoveragePortfolioDrawer | Existing coverage made available after TPA verification. | Components / Feedback and overlays / Dialogs and drawers / Application dialogs | `coverage-commerce-coverageportfoliodrawer--member-only` |
+| `component-coverage-selection-feedback` | CoverageSelectionFeedback | Cart drawer for the first addition and compact feedback for later additions. | Components / Coverage and pricing / Product selection | `coverage-commerce-productcatalog--first-product-from-empty-cart` |
+| `component-beneficiary-product-records` | BeneficiaryProductRecords | Beneficiary records per product, with add, edit and remove. | Components / Pages / Beneficiary / Sections | `pages-beneficiary-product-records--empty` |
+| `component-contact-sections` | ContactSections | Lays out the contact sections below. | Components / Pages / Contact / Sections | `pages-contact-sections-together--default` |
+| `component-residential-address` | ResidentialAddress | Residential address and any mailing-address control. | Components / Pages / Contact / Sections | `pages-contact-residential-address--default` |
+| `component-business-information` | BusinessInformation | Business address, with a same-as-home option. | Components / Pages / Contact / Sections | `pages-contact-business-and-employer-information--default` |
+| `component-profile-sections` | ProfileSections | Personal information, physician details, other coverage and the member financial questionnaire in the configured section order. Member and spouse share field definitions with independent answers. Disability record lists reuse the configured dialog and keep separate storage. | Components / Pages / Profile / Sections | `pages-profile-sections--personal-information` |
+| `component-review-sections` | ReviewSections | Application summary, legal disclosures and the required consents. | Components / Pages / Review / Sections | `pages-review-sections--default` |
+| `component-payment-sections` | PaymentSections | Payment elections, banking fields and cost display. | Components / Pages / Payment / Sections | `pages-payment-sections--default` |
+| `component-health-question-list` | HealthQuestionList | Questions one at a time, answered separately for member and spouse, with Yes/No answers and follow-up details. | Components / Pages / Health / Sections / Question and follow-up layouts | `forms-health-question-list--member-and-spouse` |
+| `component-receipt-confirmation` | ReceiptConfirmation | Submission confirmation, independent next-step/security guidance and document downloads. Payment guidance requires active allowed payment method/frequency; Site wording cannot change this global condition. | Components / Pages / Receipt / Sections | `receipt-receiptconfirmation--documents` |
+| `component-receipt-decisions` | ReceiptDecisions | Product decisions with coverage and payment details in each decision card; the shared support component aligns beside the decisions section and stacks below it on small screens. | Components / Pages / Receipt / Sections | `components-pages-receipt-sections-decision-section--conditionally-approved` |
+| `component-expiring-code-alert` | ExpiringCodeAlert | Shows whether a secure link or code is active or expired, and confirms a send or resend. | Components / Feedback and overlays / Alerts | `feedback-resume-expiration--active-link` |
+| `component-resend-countdown-row` | ResendCountdownRow | Resend countdown and action. | Components / Feedback and overlays / Alerts | `feedback-resume-expiration--active-link` |
+| `component-details-table` | DetailsTable | Labeled values with a follow-up action: applicant email, send time and purge date, or the edit request details. | Components / Content and data display | `application-patterns-detailstable--confirmation-details` |
+| `component-application-error-state` | ApplicationErrorState | The one layout for every error page: icon or number, heading, message, guidance and actions. | Components / Pages / Error pages | `pages-error-pages--bad-request` |
+| `component-how-applying-works-panel` | HowApplyingWorksPanel | Existing application steps and informational drawers on Home. | Components / Pages / Home / Sections / How applying works | `coverage-commerce-howapplyingworkspanel--page-variant` |
+| `component-quote-calculator` | QuoteCalculator | Collects eligibility information, coverage choices and amounts used to estimate insurance costs. | Components / Coverage and pricing | `coverage-commerce-quotecalculator--collects-eligibility` |
+| `component-coverage-needs-calculator` | CoverageNeedsCalculator | Collects income, income-replacement years, outstanding debts and existing coverage to estimate coverage needs. | Components / Coverage and pricing | `coverage-commerce-coverageneedscalculator--default` |
+| `component-resume-session-warning` | ResumeSessionWarning | Shared PageAlert for the fixed MFA verification deadline, with a configured warning threshold and countdown and no extension action. | Components / Feedback and overlays / Alerts | `feedback-resume-expiration--mfa-warning` |
+| `component-button` | Button | An explicit page or section action. | Components / Actions | `forms-button--variants` |
+| `component-confirmation-dialog` | ConfirmationDialog | A decision dialog with confirm and cancel actions. | Components / Feedback and overlays / Dialogs and drawers / Application dialogs | `overlays-confirmationdialog--dependent-only-coverage` |
+| `component-page-alert` | PageAlert | Page-level alert under the header: notices (resumed application) and page errors (ineligibility, business validation). | Components / Feedback and overlays / Alerts | `feedback-pagealert--error` |
+| `component-dynamic-list` | DynamicList | Repeating entries (children, beneficiaries, companies): add or edit in a dialog, remove with confirmation, up to a maximum. | Components / Forms / Repeated records | `forms-dynamiclist--empty` |
+| `component-member-verification` | MemberVerification | Identity verification drawer opened when the TPA finds an existing member with active coverage. | Components / Feedback and overlays / Dialogs and drawers / Application dialogs | `coverage-commerce-memberverification--interactive` |
+| `component-verification-address` | VerificationAddress | Collects a residential address before configured member verification. | Components / Feedback and overlays / Dialogs and drawers / Application dialogs | `coverage-commerce-memberverification--address-before-verification` |
+| `component-estimated-rate` | EstimatedRate | Product and summary estimates use 1rem, bold, normal text color. TotalCostSummary emphasizes only its final total amount in primary color. Inline inherits its context. | Components / Coverage and pricing | `components-estimated-rate--available` |
 | `component-application-document-preview` | ApplicationDocumentPreview | Displays application data grouped into readable document sections. | Components / Content and data display | `content-applicationdocumentpreview--default` |
-| `component-help-chips` | HelpChips | Opens contextual help and reference content from labeled chips. | Components / Content and data display / Help and support | `content-helpchips--default` |
+| `component-page-help-chips` | PageHelpChips | Opens contextual help and reference content from labeled chips. | Components / Content and data display / Help and support | `content-helpchips--default` |
 | `component-legal-doc-list` | LegalDocList | Lists application documents and legal disclosures with links. | Components / Content and data display | `content-legaldoclist--terms-of-use` |
 | `component-quick-decision-explainer` | QuickDecisionExplainer | Explains the QuickDecision process and possible outcomes. | Components / Coverage and pricing | `content-quickdecision--drawer-explainer-content` |
 | `component-quick-decision-indicator` | QuickDecisionIndicator | Marks coverages that support QuickDecision with the configured client icon. | Components / Coverage and pricing | `content-quickdecision--mark-variants` |
-| `component-quick-decision-info-box` | QuickDecisionInfoBox | Reusable QuickDecision info panel shown on the Coverage page, landing page coverage options section, and app menu coverage drawer. | Components / Coverage and pricing | `content-quickdecision--info-box-inline-collapse` |
-| `component-coverage-cart` | CoverageCart | "drawer" — used inside AppDrawer (AppHeader cart icon, Coverage page summary). Shows header with close button, empty state, product cards, and total. "inline" — used inline on the Coverage page below ProductCatalog. Shows cart panel directly, no close button. Supports rate frequency toggle, edit/delete actions. | Components / Feedback and overlays / Dialogs and drawers / Application dialogs | `coverage-commerce-coveragecart--empty-drawer` |
-| `component-coverage-category-selector` | CoverageCategorySelector | Lets applicants choose the coverage categories they want to explore. | Components / Coverage and pricing | `coverage-commerce-coveragecategoryselector--default` |
-| `component-coverage-needs-calculator` | CoverageNeedsCalculator | Estimates life insurance needs from financial obligations and available resources. | Components / Coverage and pricing | `coverage-commerce-coverageneedscalculator--default` |
+| `component-quick-decision-info-box` | QuickDecisionInfoBox | Shared product-driven QuickDecision information notice with disclosure controls and optional one-second reveal attention; honors reduced motion and configured artwork. | Components / Coverage and pricing | `content-quickdecision--info-box-inline-collapse` |
 | `component-coverage-options-panel` | CoverageOptionsPanel | Explains available coverage categories and products on the homepage or in a drawer. | Components / Coverage and pricing | `coverage-commerce-coverageoptionspanel--page-variant` |
-| `component-coverage-portfolio-drawer` | CoveragePortfolioDrawer | Shows existing member and spouse coverage in a drawer. | Components / Feedback and overlays / Dialogs and drawers / Application dialogs | `coverage-commerce-coverageportfoliodrawer--member-only` |
-| `component-coverage-questions` | CoverageQuestions | Category question with its configured member/spouse follow-ups and additional product eligibility facts. | Components / Pages / Coverage / Sections | `coverage-commerce-coveragequestions--no-category-selected` |
-| `component-eligibility-fields` | EligibilityFields | Collects and validates applicant eligibility details. | Components / Pages / Eligibility / Sections | `coverage-commerce-eligibilityfields--default` |
+| `component-eligibility-fields` | EligibilityFields | Shared ZIP/state/DOB group for application and quotes; real guidance, inferred-state feedback and validation without empty helper spacers. | Components / Pages / Eligibility / Sections | `coverage-commerce-eligibilityfields--default` |
 | `component-estimator-product-card` | EstimatorProductCard | Displays a product, applicant selections, coverage amounts, and estimated cost. | Components / Coverage and pricing / Product selection | `coverage-commerce-estimatorproductcard--unselected` |
 | `component-featured-badge` | FeaturedBadge | Small "Featured" badge chip used on product cards to indicate featured coverage products. | Components / Coverage and pricing | `coverage-commerce-product-adornments--side-by-side` |
-| `component-how-applying-works-panel` | HowApplyingWorksPanel | Explains the three application steps using images or a configured animated preview. | Components / Pages / Home / Sections / How applying works | `coverage-commerce-howapplyingworkspanel--page-variant` |
-| `component-member-verification` | MemberVerification | Collects a verification method and security answers using the standard form fields, then reports the prototype verification result. | Components / Feedback and overlays / Dialogs and drawers / Application dialogs | `coverage-commerce-memberverification--interactive` |
 | `component-physician-information` | PhysicianInformation | Collects physician name, phone and facility details from supplied member or spouse fields. | Components / Pages / Profile / Sections | `coverage-commerce-physicianinformation--default` |
-| `component-product-catalog` | ProductCatalog | Product boxes with coverage and rider notes/options for each applicant, plus the combined cost of all selected products. | Components / Coverage and pricing / Product selection | `coverage-commerce-productcatalog--interactive` |
-| `component-product-cost-breakdown` | ProductCostBreakdown | Displays premium details and supplemental fees for a product. | Components / Coverage and pricing | `coverage-commerce-productcostbreakdown--monthly` |
-| `component-quote-calculator` | QuoteCalculator | Collects eligibility and coverage choices to estimate an applicant's cost. | Components / Coverage and pricing | `coverage-commerce-quotecalculator--collects-eligibility` |
+| `component-product-cost-breakdown` | ProductCostBreakdown | Itemizes reconciled quote components using shared estimate presentation and global content. | Components / Coverage and pricing | `coverage-commerce-productcostbreakdown--monthly` |
 | `component-rate-frequency-control` | RateFrequencyControl | Labeled monthly/annual control shared by quote and cart cost summaries. | Components / Coverage and pricing / Rate frequency | `coverage-commerce-ratefrequencycontrol--interactive` |
 | `component-rate-frequency-toggle` | RateFrequencyToggle | Custom styled toggle switch for monthly/annual rate frequency display. Used in cost summary panels and quote comparison views. | Components / Coverage and pricing / Rate frequency | `coverage-commerce-ratefrequencytoggle--unchecked` |
-| `component-total-cost-summary` | TotalCostSummary | Shared "Total Estimated Cost" panel used by EstimatedCostPanel (Coverage page) and CoverageSummary (ECart drawer). Styling: bg #f8fafd, border 2px solid primary, borderRadius 16px. Prices use EstimatedRate’s shared bold, primary-color presentation. | Components / Coverage and pricing | `coverage-commerce-totalcostsummary--default` |
+| `component-total-cost-summary` | TotalCostSummary | Estimated cost summary with optional item breakdown and shared rate states. All costs use 1rem; item amounts use normal text color and only the final total amount uses primary color. | Components / Coverage and pricing | `coverage-commerce-totalcostsummary--default` |
 | `component-app-snackbar` | AppSnackbar | Shows a temporary feedback message with an optional action. | Components / Feedback and overlays | `feedback-appsnackbar--success` |
 | `component-empty-state` | EmptyState | Explains why a section has no items and offers a next action. | Components / Feedback and overlays | `feedback-emptystate--default` |
-| `component-expiring-code-alert` | ExpiringCodeAlert | Shared active/expired/resend alert for resume links and verification codes. | Components / Feedback and overlays / Alerts | `feedback-resume-expiration--active-link` |
-| `component-page-alert` | PageAlert | Displays page-level errors, warnings, or informational messages. | Components / Feedback and overlays / Alerts | `feedback-pagealert--error` |
 | `component-page-transition-skeleton` | PageTransitionSkeleton | Shows loading placeholders while the next application page opens. | Components / Feedback and overlays / Loading and processing | `feedback-pagetransitionskeleton--with-message` |
-| `component-processing-status-page` | ProcessingStatusPage | Bounded prototype processing state; local completion/timeout variants share the recovery components. | Components / Feedback and overlays / Loading and processing | `feedback-processingstatuspage--external-service` |
 | `component-progress-saved-snackbar` | ProgressSavedSnackbar | Confirms that application progress has been saved. | Components / Feedback and overlays | `feedback-appsnackbar--progress-saved-preset` |
-| `component-resend-countdown-row` | ResendCountdownRow | Shows the resend countdown and action for a verification message. | Components / Feedback and overlays / Alerts | `feedback-resume-expiration--active-link` |
 | `component-conditional-group` | ConditionalGroup | ConditionalGroup renders a left-bordered, indented container that visually groups follow-up questions which are conditional on a prior answer. This is a pure visual wrapper — the parent is responsible for deciding when to render it. It does not own show/hide logic. | Components / Forms | `forms-conditionalgroup--hidden-and-revealed` |
-| `component-dynamic-list` | DynamicList | Collects repeated records through add, edit and remove actions in a dialog. | Components / Forms / Repeated records | `forms-dynamiclist--empty` |
 | `component-dynamic-list-item` | DynamicListItem | Displays one repeated record with its edit and remove controls. | Components / Forms / Repeated records | `forms-dynamiclistitem--default` |
 | `component-field-renderer` | FieldRenderer | Renders a configured field with its input, validation and conditional behavior. | Components / Forms | `forms-fieldrenderer--playground` |
 | `component-radio-selection-group` | RadioSelectionGroup | Presentational radio rows used by FieldRenderer; application fields use the renderer. | Components / Forms / Selection rows | `forms-radioselectiongroup--interactive` |
 | `component-selection-group` | SelectionGroup | Provides a selectable row or card with the shared selection styling. | Components / Forms / Selection rows | `forms-selectiongroup--checkbox-row-unselected` |
 | `component-application-preview` | ApplicationPreview | Decorative homepage illustration of coverage, health, and receipt scenes; its drawn controls do not collect application answers. | Components / Content and data display / Application illustrations | `home-applicationpreview--narrow-container` |
-| `component-app-body` | AppBody | Provides the main application content container and responsive spacing. | Components / Layout | `layout-appbody--default` |
-| `component-app-footer` | AppFooter | Displays administrator, insurer, support and legal details. | Components / Layout | `layout-appfooter--default` |
-| `component-app-header` | AppHeader | Displays the portal brand, help actions, application menu, cart, and progress. | Components / Layout | `layout-appheader--homepage-variant` |
 | `component-applicant-section-divider` | ApplicantSectionDivider | Labels an applicant section with an optional supporting note. | Components / Layout / Headings and dividers | `layout-applicantsectiondivider--member-section` |
-| `component-app-menu` | AppMenu | Provides application navigation and informational drawers. | Components / Navigation | `layout-appmenu--default` |
-| `component-app-shell` | AppShell | Controls which chrome elements AppLayout renders: - "applicationForm" Full chrome: header with hamburger menu + cart icon + progress bar, footer. Used for all application form pages. - "homepage" Marketing chrome: header with hamburger menu (no progress bar), footer. Used for the Home/Landing page. - "advisorLogin" \| "advisorSend" Utility chrome: header with logo only, no menu, no progress bar. Used for advisor flow pages. - "resumeEmailCode" Utility chrome: header with logo only, no menu, no progress bar. Used for the resume magic-link / phone-code pages. | Components / Layout | `layout-appshell--application-form-variant` |
 | `component-category-card` | CategoryCard | Surface card wrapping a category header + content stack. Used on Payment, Beneficiary, and ProductCatalog pages. | Components / Content and data display / Cards | `layout-categorycard--default` |
 | `component-category-header` | CategoryHeader | Heading with an optional icon for coverage category sections. Rendered as an h3 (nested under the page's h2) with h6 visual styling preserved. Icon renders in primary color; label renders in default text color. | Components / Layout / Headings and dividers | `layout-categoryheader--with-icon` |
-| `component-client-help-banner` | ClientHelpBanner | Provides client-configured phone, chat and other support actions. | Components / Content and data display / Help and support | `layout-clienthelpbanner--default` |
 | `component-field-grid` | FieldGrid | Fields stack by default. Address, name and other intentionally grouped fields can opt into responsive columns. | Components / Forms / Field groups | `layout-fieldgrid--stacked-fields` |
-| `component-form-shell` | FormShell | Provides the visual form surface; FormRoutePage owns form state and navigation. | Components / Layout / Containers | `layout-formshell--default` |
 | `component-mobile-preview-frame` | MobilePreviewFrame | Presentation-only mobile viewport shared by previews with otherwise unrelated data and interaction models. | Components / Content and data display / Application illustrations | `layout-mobilepreviewframe--default` |
-| `component-page-header` | PageHeader | Displays the page title, supporting copy, back action, and contextual help. | Components / Layout / Headings and dividers | `layout-pageheader--default` |
-| `component-page-shell` | PageShell | Provides a shared page container and layout. | Components / Layout / Containers | `layout-pageshell--default` |
-| `component-page-title` | PageTitle | Displays the page heading, subtitle and supporting actions. | Components / Layout / Headings and dividers | `layout-pagetitle--title-only` |
-| `component-product-card` | ProductCard | Shared product container with a weight-800 title, optional brochure link, QD indicator, description and page-specific content. | Components / Content and data display / Cards | `layout-productcard--unselected` |
+| `component-product-card` | ProductCard | Shared product container with a weight-800 title, optional brochure link, QD indicator, description, optional bold separate-line description notice and supplied flow content. | Components / Content and data display / Cards | `layout-productcard--unselected` |
 | `component-section-divider` | SectionDivider | Labels field-group sections with uppercase, letter-spaced text. Titled and untitled groups share a rounded FieldGroup surface matching the page background, with white inputs and increased section spacing. | Components / Layout / Headings and dividers | `layout-sectiondivider--subsection-preset` |
-| `component-page-nav` | PageNav | Provides the application page's Next or submit action. | Components / Navigation | `navigation-pagenav--default` |
-| `component-progress-step` | ProgressStep | Main application steps (Getting started, Choose your coverage and later stages), with Breadcrumbs exported from the same module for pages within the current main step; visibility follows the active flow and template. | Components / Navigation | `navigation-progressstep--collapsed-steps` |
 | `component-app-drawer` | AppDrawer | Displays supporting content in a drawer with a close action. | Components / Feedback and overlays / Dialogs and drawers / Containers | `overlays-appdrawer--default` |
 | `component-app-modal` | AppModal | Displays a focused dialog with primary and secondary actions. | Components / Feedback and overlays / Dialogs and drawers / Containers | `overlays-appmodal--default` |
-| `component-confirmation-dialog` | ConfirmationDialog | Requests confirmation before continuing a consequential application action. | Components / Feedback and overlays / Dialogs and drawers / Application dialogs | `overlays-confirmationdialog--dependent-only-coverage` |
 | `component-cookie-dialog` | CookieDialog | Displays cookie information and consent controls. | Components / Feedback and overlays / Banners | `overlays-cookiedialog--default` |
 | `component-send-application-dialog` | SendApplicationDialog | Lets advisors send an application or request an edit from an applicant. | Components / Feedback and overlays / Dialogs and drawers / Application dialogs | `overlays-sendapplicationdialog--default` |
 | `component-controlled-field-renderer` | ControlledFieldRenderer | Adapts externally owned values to the same renderer used by application forms. | Components / Forms / Individual fields | `forms-controlled-field-adapter--default` |
-| `component-form-route-page` | FormRoutePage | Application frame composing page surfaces, steps, breadcrumbs, heading/Back, help, form validation, transitions, saved values and Next; pages supply their sections. | Components / Layout | `application-patterns-application-page-template--standard-form-page` |
-| `component-button` | Button | Standard action button with pill shape by default; supports contained, outlined, text, disabled and loading states. | Components / Actions | `forms-button--variants` |
-| `component-eligibility-sections` | EligibilitySections | Configured Eligibility sections for personal information, covered applicants, spouse details and repeated child records. | Components / Pages / Eligibility / Sections | `pages-eligibility-your-information--default` |
-| `component-association-introduction` | AssociationIntroduction | Association logo, tagline and introductory paragraphs on the homepage. | Components / Pages / Home / Sections | `pages-home-association-introduction--default` |
-| `component-home-coverage-section` | HomeCoverageSection | Homepage coverage section with its heading, description, category choices and product information. | Components / Pages / Home / Sections | `pages-home-coverage-options--default` |
-| `component-home-hero` | HomeHero | Homepage introduction, application and resume actions, with a configured quote card or association image. | Components / Pages / Home / Sections | `pages-home-hero--standard-quote` |
-| `component-underwriter-credentials` | UnderwriterCredentials | Insurer logo, name, ratings, supporting description and footnote. | Components / Pages / Home / Sections | `pages-home-new-york-life-credentials--default` |
-| `component-additional-membership-information` | AdditionalMembershipInformation | Conditional membership questions, including physician and WAEPA follow-ups. | Components / Pages / Membership / Sections | `pages-membership-additional-membership-information--member-id` |
-| `component-member-information` | MemberInformation | Applicant name, email and phone collected after membership is confirmed. | Components / Pages / Membership / Sections | `pages-membership-member-information--default` |
-| `component-membership-help` | MembershipHelp | The membership page's coverage and applying help actions. | Components / Pages / Membership / Sections | `pages-membership-introduction-and-help--default` |
-| `component-membership-status` | MembershipStatus | Membership question with the page's existing link, eligibility and non-member feedback. | Components / Pages / Membership / Sections | `pages-membership-membership-status--default` |
-| `component-application-error-state` | ApplicationErrorState | One page template for 404/500, session timeout, maintenance, unavailable applications and technical/payment/submission failures. | Components / Pages / Error pages | `pages-error-pages--not-found` |
 | `component-application-recovery-actions` | ApplicationRecoveryActions | Shared recovery actions for unavailable, expired and failed application pages. | Components / Feedback and overlays / Alerts | `pages-shared-application-recovery-actions--default` |
 | `component-session-expiry-alert` | SessionExpiryAlert | Warning before application inactivity expiry. The countdown is not announced each second. | Components / Feedback and overlays / Dialogs and drawers / Application dialogs | `feedback-session-expiry-warning--two-minutes` |
-| `component-site-support` | SiteSupport | Site support card shared by receipts, maintenance and error pages; email uses the same contact data and copy. | Components / Content and data display / Help and support | `pages-shared-site-support--current-site` |
-| `component-recovery-alert` | RecoveryAlert | Shared persistent recovery alert with approved local copy, safe actions and contextual Site support. | Components / Feedback and overlays / Alerts | `feedback-technical-error--save-conflict` |
-| `component-coverage-selection-feedback` | CoverageSelectionFeedback | First addition opens the cart; later additions use the compact Added feedback. | Components / Coverage and pricing / Product selection | `coverage-commerce-productcatalog--first-product-from-empty-cart` |
+| `component-site-support` | SiteSupport | Shared Questions support content in a standard MUI info alert on every page, with matching email-compatible info styling. Effective Site contacts and global technical support use the same content source. | Components / Content and data display / Help and support | `pages-shared-site-support--current-site` |
 | `component-reference-rate-table-link` | ReferenceRateTableLink | Candidate consumer; install in applicant pricing areas at the later cutover. | Components / Coverage and pricing | `coverage-reference-rate-table--image` |
-| `component-contact-sections` | ContactSections | Compose caller-selected sections. Application adapters own visibility and Site rules. | Components / Pages / Contact / Sections | `pages-contact-sections-together--default` |
 | `component-address-fields` | AddressFields | Actual answer IDs for address groups whose names do not share one prefix. | Components / Forms / Field groups | `forms-field-groups-address-fields--default` |
-| `component-beneficiary-product-records` | BeneficiaryProductRecords | Record presentation and actions; eligibility, capacity and persistence belong to the caller. | Components / Pages / Beneficiary / Sections | `pages-beneficiary-product-records--empty` |
-| `component-business-information` | BusinessInformation | Local same-as-home interaction; product eligibility/participation is decided by the caller. | Components / Pages / Contact / Sections | `pages-contact-business-and-employer-information--default` |
-| `component-residential-address` | ResidentialAddress | Residential address and any supplied correspondence control. | Components / Pages / Contact / Sections | `pages-contact-residential-address--default` |
-| `component-spouse-contact` | SpouseContact | Independent contact bindings supplied by the caller. | Components / Pages / Contact / Sections | `pages-contact-spouse-contact-information--default` |
 | `component-application-review-drawer-content` | ApplicationReviewDrawerContent | Application Review Drawer Content component used by the portal. | Components / Pages / Home / Sections | `pages-home-how-applying-works--default` |
 | `component-phone-field` | PhoneField | Controlled number/type composition. Every value is bound explicitly by its caller. | Components / Forms / Field groups | `forms-phonefield--with-type` |
-| `component-profile-sections` | ProfileSections | Profile content in supplied section order; the page resolves Site participation and coverage policy. | Components / Pages / Profile / Sections | `pages-profile-sections--personal-information` |
 | `component-profile-personal-information` | ProfilePersonalInformation | Personal fields and local follow-ups shared by member and spouse, with independent answer identities. | Components / Pages / Profile / Sections | `pages-profile-personal-information--default` |
 | `component-legal-review-section` | LegalReviewSection | Shared disclosure heading, bordered content surface and print action. Copy and print behavior are supplied. | Components / Pages / Review / Sections | `forms-legal-review-section--default` |
 | `component-review-statement` | ReviewStatement | Text and native blocks share the actual Consent boundary, so source notes retain their placement without HTML injection or duplicate consent copy. | Components / Pages / Review / Sections | `forms-review-statement--default` |
-| `component-review-sections` | ReviewSections | Review composition receives resolved copy, fields, applicant state and document content; the page owns policy and routing. | Components / Pages / Review / Sections | `pages-review-sections--default` |
-| `component-health-question` | HealthQuestion | Renders an explicit health answer and its direct fields or repeated detail records. | Components / Pages / Health / Sections / Question and follow-up layouts | `forms-health-question--repeated-details` |
-| `component-health-question-list` | HealthQuestionList | One question at a time, with independent applicant controls and detail lists. | Components / Pages / Health / Sections / Question and follow-up layouts | `forms-health-question-list--member-and-spouse` |
-| `component-health-information-help` | HealthInformationHelp | Shared Health help chip and explanation drawer, including the QD loading page. | Components / Pages / Health / Sections | `forms-health-information-help--default` |
+| `component-health-question` | HealthQuestion | One explicit answer with conditional direct fields or repeated details. Supports supplied mappings, summary content and source-specific record limits. | Components / Pages / Health / Sections / Question and follow-up layouts | `forms-health-question--repeated-details` |
 | `component-shared-payment-controls` | SharedPaymentControls | Shared Payment Controls component used by the portal. | Components / Pages / Payment / Sections | `forms-shared-payment-controls--shared-method-and-frequency` |
-| `component-payment-sections` | PaymentSections | Payment content with explicit fields and display data; the page resolves policies, costs and submission. | Components / Pages / Payment / Sections | `pages-payment-sections--default` |
-| `component-receipt-confirmation` | ReceiptConfirmation | Submission receipt header, security notice and available document downloads. | Components / Pages / Receipt / Sections | `receipt-receiptconfirmation--documents` |
-| `component-receipt-coverage-decision` | ReceiptCoverageDecision | One coverage/applicant outcome within the shared decision section. | Components / Pages / Receipt / Sections | `receipt-receiptcoveragedecision--sent-for-review` |
-| `component-receipt-next-steps` | ReceiptNextSteps | Receipt acknowledgement with client-supplied payment and welcome-kit guidance. | Components / Pages / Receipt / Sections | `receipt-receiptnextsteps--default` |
-| `component-offline-banner` | OfflineBanner | Application-wide connection notice, above the header and client help bar. | Components / Feedback and overlays / Banners | `feedback-technical-error--offline` |
+| `component-receipt-coverage-decision` | ReceiptCoverageDecision | Shared product/applicant decision wording and outcome presentation for Receipt and its submission email. The page includes requested coverage and payment details; the compact static-email variation contains the product, applicant when needed, decision and explanation with inline theme styling. | Components / Pages / Receipt / Sections | `receipt-receiptcoveragedecision--sent-for-review` |
 | `component-link` | Link | Link component used by the portal. | Components / Actions | `components-actions-links--standard` |
-| `component-receipt-decisions` | ReceiptDecisions | Decision letters on the main page; the application receipt and help sit alongside them. | Components / Pages / Receipt / Sections | `components-pages-receipt-sections-decision-section--conditionally-approved` |
-| `component-receipt-application-summary` | ReceiptApplicationSummary | A receipt of the selected coverage and payment instructions; never a claim that payment was taken. | Components / Pages / Receipt / Sections | `components-pages-receipt-sections-application-receipt--mixed-payment-choices` |
-| `component-verification-address` | VerificationAddress | Collects and validates the full residential address before configured member verification, using the shared Contact address fields. | Components / Feedback and overlays / Dialogs and drawers / Application dialogs | `coverage-commerce-memberverification--address-before-verification` |
+| `component-page-help` | PageHelp | Shared page-help topics with chip selection and one active drawer; content is supplied. | Components / Content and data display / Help and support | `components-content-and-data-display-help-and-support-page-help--multiple-topics` |
+| `component-page-help-drawer` | PageHelpDrawer | Shared help drawer using AppDrawer with a supplied title and content. | Components / Feedback and overlays / Dialogs and drawers | `components-feedback-and-overlays-dialogs-and-drawers-page-help-drawer--default` |
+| `component-information-alert` | InformationAlert | Shared MUI information alert with supplied heading, description and content. | Components / Feedback and overlays / Alerts | `feedback-information-alert--default` |
 <!-- ABE-COMPONENT-CATALOG:END -->
 
 ### Initial review findings

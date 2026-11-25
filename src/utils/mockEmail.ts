@@ -36,7 +36,7 @@ import { resolveSiteSupportContact, resolveApplicationSupportReference } from '.
 import theme from "../app/theme";
 import {
   getActiveSite,
-  getClientForSite,
+  getHostingAssociationForSite,
   getSiteIdForClientAlias,
   resolveActiveAssociationFromApplication,
   resolveEffectiveBranding,
@@ -147,7 +147,7 @@ function getClientEmailPayload(
   example?: EmailExampleKind,
   library?: PrototypeLibrary,
 ) {
-  const client = library?.clientIdentity ?? getClientForSite(siteId)!;
+  const client = library?.clientIdentity ?? getHostingAssociationForSite(siteId)!;
   const association = resolveActiveAssociationFromApplication(
     siteId,
     values,

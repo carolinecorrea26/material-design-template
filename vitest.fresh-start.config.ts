@@ -12,7 +12,7 @@ export default defineConfig({
       'src/domain/restoredSites.test.ts',
       'src/domain/amaGiSite.test.ts',
     ],
-    maxWorkers: 1,
+    maxWorkers: 2,
     testTimeout: 60_000,
   },
 });

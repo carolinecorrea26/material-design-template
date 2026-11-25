@@ -9,7 +9,6 @@ import SinglePageSections from "../components/layout/SinglePageSections";
 import { ApplicationFormContext, type ApplicationFormValues } from "./ApplicationFormContext";
 import { ApplicationSessionProvider } from "./ApplicationSessionContext";
 import { useSinglePageFlow } from "./SinglePageFlowContext";
-import { MESSAGE_DURATION } from "../config/transitionMessages";
 import { sendAutosaveMockEmail } from "../utils/mockEmail";
 
 vi.mock("../config/clientFields/getClientPageFields", () => ({ getClientPageFields: (id: string) =>
@@ -75,14 +74,13 @@ async function click(node: HTMLElement, selector: string) {
 async function next(node: HTMLElement) {
   await act(async () => node.querySelector("form")!.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true })));
 }
-async function finishNext() { await act(async () => { await vi.advanceTimersByTimeAsync(MESSAGE_DURATION * 2); }); }
 
 describe("single-page transitions and breadcrumb navigation", () => {
   it("reopens later checkpoints when editing and requires successful validation before advancing again", async () => {
     const { node, close } = await mountFlow();
     try {
-      await next(node); await finishNext();
-      await next(node); await finishNext();
+      await next(node);
+      await next(node);
       expect(node.querySelector("#coverage-form")).not.toBeNull();
       await click(node, '[aria-label="Edit Getting started"]');
       expect(node.querySelector("#eligibility-form")).not.toBeNull();
@@ -90,22 +88,20 @@ describe("single-page transitions and breadcrumb navigation", () => {
       await click(node, '[data-clear]');
       await click(node, '[data-jump]');
       expect(node.querySelector("#eligibility-form")).not.toBeNull();
-      await next(node); await finishNext();
+      await next(node);
       expect(node.querySelector("#eligibility-form")).not.toBeNull();
       await click(node, '[data-restore]');
-      await next(node); await finishNext();
+      await next(node);
       expect(node.querySelector("#coverage-form")).not.toBeNull();
     } finally { await close(); }
   });
-  it("keeps loading Next/Back, one card per main step, and checks for completed breadcrumbs", async () => {
+  it("navigates immediately with one card per main step and checks completed breadcrumbs", async () => {
     const { node, close } = await mountFlow();
     try {
       const hero = node.querySelector("h1");
       await next(node);
-      expect(node.querySelector('[role="status"]')).not.toBeNull();
-      expect(node.querySelector("form")).toBeNull();
       expect(node.querySelector("h1")).toBe(hero);
-      await finishNext();
+     
       expect(node.querySelector("#eligibility-form")).not.toBeNull();
       const breadcrumbLink = node.querySelector<HTMLButtonElement>('.MuiBreadcrumbs-root [aria-label="Go to Membership"]');
       expect(breadcrumbLink?.querySelector('[data-testid="CheckCircleRoundedIcon"]')).not.toBeNull();
@@ -113,11 +109,9 @@ describe("single-page transitions and breadcrumb navigation", () => {
       expect(node.querySelector('.MuiBreadcrumbs-root [data-testid="EditRoundedIcon"]')).toBeNull();
 
       await click(node, '[aria-label="Go back"]');
-      expect(node.querySelector('[role="status"]')).not.toBeNull();
-      await act(async () => { await vi.advanceTimersByTimeAsync(MESSAGE_DURATION); });
       expect(node.querySelector("#membership-form")).not.toBeNull();
-      await next(node); await finishNext();
-      await next(node); await finishNext();
+      await next(node);
+      await next(node);
 
       const completed = node.querySelector('[data-single-page-step="getting-started"]')!;
       expect(completed.querySelector("form")).toBeNull();
@@ -133,7 +127,7 @@ describe("single-page transitions and breadcrumb navigation", () => {
       await click(node, '.MuiBreadcrumbs-root [aria-label="Go to Membership"]');
       expect(node.querySelector("#membership-form")).not.toBeNull();
       expect(completed.querySelector(".MuiStepIcon-root.Mui-completed")).toBeNull();
-      await next(node); await finishNext();
+      await next(node);
       expect(node.querySelector("#eligibility-form")).not.toBeNull();
       expect(node.querySelector("[data-location]")?.textContent).toBe("/");
       expect(node.querySelectorAll("form")).toHaveLength(1);
@@ -156,8 +150,8 @@ it.each(["next", "back"] as const)("multi-page %s navigation uses the configured
         </MemoryRouter></ApplicationSessionProvider>
       </ApplicationFormContext>,
     ));
-    if (direction === "next") { await next(node); await finishNext(); }
-    else { await click(node, '[aria-label="Go back"]'); await act(async () => { await vi.advanceTimersByTimeAsync(MESSAGE_DURATION); }); }
+    if (direction === "next") { await next(node); }
+    else await click(node, '[aria-label="Go back"]');
     expect(node.querySelector("[data-location]")?.textContent).toBe(direction === "next" ? "/saved-coverage" : "/saved-membership");
   } finally { await act(async () => root.unmount()); node.remove(); }
 });

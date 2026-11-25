@@ -1,7 +1,7 @@
 import type { CoverageDefinition } from "../../domain/coverage";
 import type { EffectiveSite } from "../../domain/effectiveSite";
 import { resolveCoverageJourneyPolicy } from "../../domain/coverageJourneyPolicy";
-import { coverageCategoryParameter } from './coverageCategoryScope';
+import { coverageCategoryParameter, invalidCoverageEntryPage } from './coverageCategoryScope';
 
 const entryParameters = [["applicant", "coverage-applicant-scope"], ["category", "coverage-category-scope"], ["prods", "coverage-product-scope"], ["featured_prod", "coverage-featured-product"], ["amt", "coverage-amount-defaults"], ["dprods", "coverage-amount-locks"], ["preselect", "coverage-preselect"], ["firstCategory", "coverage-first-category"]] as const;
 
@@ -30,7 +30,7 @@ export function activeCoverageProductRestriction(siteKey: string) {
   const key = `coverage-product-scope:${siteKey}`, params = new URLSearchParams(window.location.search);
   if (params.has("prods")) {
     // A product-only entry must not reuse another campaign's stored category.
-    const value = coverageCategoryParameter(params)?.trim() ? params.get("prods")! : "";
+    const value = invalidCoverageEntryPage(params) ? "" : params.get("prods")!;
     window.sessionStorage.setItem(key, value); return value;
   }
   // An explicit category starts a new campaign; omitted products means all

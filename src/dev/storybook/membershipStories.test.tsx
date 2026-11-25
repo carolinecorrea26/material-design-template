@@ -10,14 +10,13 @@ import { getPrototypeLibrary } from '../../domain/prototypeLibrary';
 import { StandardMembership, MemberConfirmed, NotAMember, NewOrCurrentMembership, CategoryMembership, AssociationSelection } from '../../components/membership/MembershipPage.stories';
 import { MemberId } from '../../components/membership/AdditionalMembershipInformation.stories';
 import { Default as MemberInformation } from '../../components/membership/MemberInformation.stories';
-import { MESSAGE_DURATION } from '../../config/transitionMessages';
 
 vi.mock('../../persistence/sharedCatalog', async original => {
   const source = await original<typeof import('../../persistence/sharedCatalog')>();
-  const { readFileSync } = await import('node:fs');
-  return { ...source, readSharedCatalog: async () => JSON.parse(readFileSync('public/catalog/portal.json', 'utf8')) };
+  return { ...source, readSharedCatalog: async () => catalog };
 });
 const catalog = JSON.parse(readFileSync('public/catalog/portal.json', 'utf8'));
+const originalCatalog = JSON.stringify(catalog);
 afterEach(() => vi.unstubAllGlobals());
 it.each([
   ['Unanswered', StandardMembership, false, false],
@@ -28,12 +27,11 @@ it.each([
   ['Association', AssociationSelection, false, false],
 ] as const)('renders Membership %s from configured composition and outcomes', async (name, story, hasContact, hasId) => {
   vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
-  const before = JSON.stringify(catalog), previous = getPrototypeLibrary();
+  const previous = getPrototypeLibrary();
   const container = document.createElement('div'), root = createRoot(container); document.body.append(container);
   const render = story.render as unknown as (args: object, context: object) => ReactNode;
   try {
     await act(async () => root.render(<MemoryRouter><ApplicationSessionContext.Provider value={{ reviewSubmitted: false, advisorApplicantFlow: false, markReviewSubmitted: () => {}, setAdvisorApplicantFlow: () => {}, resetApplicationSession: () => {} }}>{render({}, { id: name, loaded: { catalog } })}</ApplicationSessionContext.Provider></MemoryRouter>));
-    await act(async () => { await new Promise(resolve => setTimeout(resolve, MESSAGE_DURATION + 20)); });
     expect(!!container.querySelector('[name="first-name"]')).toBe(hasContact);
     expect(!!container.querySelector('[name="phone"]')).toBe(hasContact);
     if (hasContact) expect(container.querySelector<HTMLInputElement>('input[name="phone-type"]')?.value).toBe('mobile');
@@ -52,7 +50,7 @@ it.each([
       expect(container.querySelector('[name="first-name"]')).not.toBeNull();
       expect(container.querySelector<HTMLButtonElement>('button[type="submit"]')?.disabled).toBe(false);
     }
-    expect(JSON.stringify(catalog)).toBe(before);
+    expect(JSON.stringify(catalog)).toBe(originalCatalog);
   } finally { await act(async () => root.unmount()); container.remove(); }
   expect(getPrototypeLibrary()).toBe(previous);
 });

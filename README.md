@@ -1,5 +1,16 @@
 # Material Portal Prototype
 
+## Save a local copy
+
+Clone the `redesignv6` branch or extract a source ZIP. With Node from
+`.nvmrc`, run `npm run init` and then `npm run dev`. Use `npm run storybook`
+to open the local component library. The source includes the authored
+requirements, generated public catalog, database migrations, and Netlify
+functions. Dependency installation needs npm access or a populated cache.
+Local mock development reads the included catalog without database credentials.
+See [development and publishing](AGENTS.md#development-and-publishing-on-redesignv6)
+for the hosted workflow.
+
 ## Downloadable Admin Center
 
 Run `npm run build:admin-html` to create `dist/standalone/admin-center.html`.
@@ -44,13 +55,11 @@ Edit the owning requirements source, retaining stable IDs and relationships:
 - Retained identities and parked evidence: the catalog section files, only for
   records that have not transferred to fresh-start ownership.
 
-Then run
-`npm run catalog:build`, `npm run docs:abe`, `npm run docs:handoff` and
-`npm run build`. Do not edit `portal.json` directly. Run `npm run test:fresh-start`
-explicitly when testing ownership/inheritance changes; neither prototype nor
-Storybook builds run test suites. The prototype build checks that generated requirements tables match and copies the same file
-into `dist/catalog/portal.json` for Netlify. Deploy the resulting `dist` folder
-through the existing site deployment workflow. Reload the site after deploying.
+Run `npm run catalog:refresh` to regenerate `portal.json` and the derived
+indexes and documents, then run `npm run build:release` to validate the
+prototype, Storybook and standalone HTML together. Run
+`npm run test:fresh-start` explicitly when testing ownership or inheritance
+changes. Publish a validated commit with `npm run release:publish`.
 
 `npm run dev` retains the local mock services for synthetic quotes, payments,
 save/resume and Site Builder previews. Its base catalog is the same JSON file.
@@ -62,9 +71,10 @@ existing private local stores and are not part of the public catalog.
 
 The default static build reads the generated catalog. The GitHub-connected
 Netlify deployment can enable PostgreSQL for the same catalog, demo admin
-accounts, Site Builder drafts, and submitted prototype applications. See
-[Portal database setup](docs/project-review/portal-database.md). A failed catalog
-read is reported instead of substituting code defaults or browser copies.
+accounts, Site Builder drafts, and submitted prototype applications. The hosted
+build verifies the database catalog against the exact bundle it was built with.
+`npm run db:check` verifies the same match against a configured database
+without writing to it. See [Portal database setup](docs/project-review/portal-database.md).
 
 Startup accepts only active Sites in the loaded catalog. With no available Site
 in the URL or session, it selects the catalog's first active Site and remembers
@@ -94,7 +104,7 @@ Library/prototype/Storybook parity. Run focused tests for affected behavior;
 `npm run test:source-propagation` covers the migrated shared content readers.
 `catalog:check` also rejects missing display names and defaults outside authored options.
 
-The SQL migrations, Supabase adapter and Postgres verification scripts were archived
+The prior SQL migrations, Supabase adapter and Postgres verification scripts were archived
 in the `redesignv6` refactor and removed from the working tree. They remain in git at
 tag `archive/sql-postgres-v5`. Migration exports under `src/migration` remain only as
 historical fixtures until the requirements refactor replaces them. Local startup does
@@ -107,8 +117,9 @@ Its table counts, SQL dictionaries and relationship diagrams describe the archiv
 ## Requirements (fresh start)
 
 All 30 shared page definitions compile from fresh-start sources under
-[`requirements/`](requirements/). ASCE, AMA, AMA-GI, WAEPA and WAEPA GI are enrolled;
-source transfer does not imply that every business rule has completed review.
+[`requirements/`](requirements/). ASCE, ABE, AMA, AMA-GI, AVMA, CSEA, NSO,
+ISI Trust, WAEPA and WAEPA GI are enrolled.
+Business-rule reviews have their own acceptance checkpoints.
 The model, naming and layering rules are in the
 [requirements specification](docs/requirements-spec/README.md); explicitly requested
 changes are recorded in [`requirements/changelog.json`](requirements/changelog.json)
@@ -116,10 +127,10 @@ and shown in Admin Center. `golden/` holds reference snapshots for comparison, n
 
 ## Prototype verification
 
-Storage boundaries and verification: no database is used. Configuration comes from the
-JSON catalog; operational demo data stays in browser storage and `.mock-platform/`.
+Local configuration comes from the JSON catalog. Local operational demo data
+stays in browser storage and `.mock-platform/`.
 `npm test` (also `npm run test:all`) runs the focused prototype suite: shared rules
-and inheritance, effective configuration for all five enrolled Sites, representative
+and inheritance, effective Site configuration, representative
 member/spouse/child product journeys, invalid inputs, and Review/signing/Receipt
 end states. Shared mechanics run once; Site-specific checks cover actual overrides.
 No analytics, HTTP-server, pricing calculation or historical migration suites run.
@@ -130,9 +141,8 @@ Storybook organization without running the test archive.
 Historical and out-of-scope tests remain available only through the explicit
 `npm run test:archive` maintenance command; it is not a prototype or build gate.
 
-The prototype, Library and Storybook now carry ASCE, AMA, AMA-GI, WAEPA and WAEPA GI
-(`waepa-gi`). Enrollment derives from the fresh-start Site source folders;
-adding a Site requires migrating its assignments, not editing a separate allowlist.
+Prototype, Library and Storybook enrollment derives from the fresh-start Site source folders.
+Adding a Site requires migrating its assignments.
 Other Sites remain parked in the catalog parts. `test:fresh-start` includes the
 restoration cases. Application builds type-check source and stories; Vitest owns
 the focused test selection.
@@ -149,8 +159,9 @@ the user requests restoration. Document actions on Review and Receipt are placeh
 
 ## Persistent portal data
 
-The current configuration source is the shared JSON catalog described above.
-Operational demo services retain local persistence. No database is configured.
+The generated JSON catalog supplies configuration. Hosted PostgreSQL mode
+stores a published copy of that configuration along with hosted operational
+records. Local demo operations use separate browser and mock-service stores.
 
 For the browser fallback, call `resetLocalDemoData()` from
 `src/persistence/reset.ts` in a developer console/tooling entry point. No reset
@@ -183,15 +194,11 @@ The standard Docs addon is not installed: the registry returned HTTP 403 when in
 
 ## Storybook deployment
 
-Storybook is built separately with `npm run build-storybook`; deploy the
-generated `storybook-static` directory as its own Netlify site. In the deployed
-prototype site's Netlify environment, set:
-
-```text
-VITE_STORYBOOK_URL=https://<storybook-netlify-site>.netlify.app
-```
-
-Local development defaults to `http://localhost:6006`.
+The Storybook Netlify project builds from `redesignv6` using
+[`netlify/storybook/netlify.toml`](netlify/storybook/netlify.toml). The
+coordinated publish command verifies the deployed Storybook catalog against
+the Portal and database. Local development defaults to
+`http://localhost:6006`.
 
 ## Generated files and retained evidence
 

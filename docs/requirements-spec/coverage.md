@@ -155,7 +155,7 @@ existing names and formats; do not invent Site-specific parameters.
 | `amt` | Presets amount dropdowns for the listed G-number products. | `amt=G-0000-0_200000,G-1111-1_300000`. Illustrative G-numbers; pairs are comma-separated and amounts contain no currency signs or thousands separators. |
 | `dprods` | Disables the listed product/applicant amount control only with a currently valid `amt`. | Missing, malformed, duplicate or unavailable `amt` does not create a URL lock. Configured Site/product/applicant locks remain independent. |
 | `category`, `categories` | Equivalent category restrictions, including comma-separated categories. | `category=li,di` or `categories=li,di`. If both appear, `category` wins, even when empty. `all` clears category scope. |
-| `prods` | Restricts products by G-number. | `prods=G-0000-0,G-1111-1`; requires `category` or `categories`. |
+| `prods` | Restricts products by G-number. A matched variant G-number displays the product. Application answers and Site policy resolve the eligible option. | `categories=li,di&prods=G-0000-0,G-1111-1`. Missing or blank category opens the shared `/400` page, even when a previous campaign supplied a category. |
 | `featured_prod` | Featured chip; prioritize the listed product and its category. | `featured_prod=G-0000-0`. Presentation only. |
 | `firstCategory` | Display the named category first wherever categories are presented. | Replaces legacy `ctg`; example `firstCategory=di`. Connected to the shared category/product ordering resolver; `featured_prod` retains precedence. |
 | `applicant` | Restricts supported applicants/dependent choices. | Existing values: `member` or `member,spouse`; does not establish dependency satisfaction. |
@@ -180,6 +180,45 @@ applicant, ordering, amount, lock and preselection context. Save one canonical
 `category` key; alias-shaped restored context is normalized to that key. Invalid or
 empty restrictions offer no matching products; they do not expand the offering.
 CHG-095 records the confirmed alias and valid-amount-lock decisions.
+
+### G-number variants and backend identifiers
+
+The global template owns URL matching and eligibility rules. Each effective Site
+owns its G-numbers and their use for display, rating, issue, XML, PDF or portal
+variants. Products keep their stable keys across variants. A matching campaign
+G-number selects the product for display. Applicant answers and assigned policy
+determine the eligible option and downstream identifiers. Category and applicant
+URL restrictions still apply independently.
+
+Sites can scope the existing journey identifier mappings by applicant or by
+the membership type collected in the application, alongside existing
+association, applicant class and benefit settings. A membership-specific
+mapping takes precedence for that membership type. If a mapping depends on
+membership type, the mock journey waits for that answer before choosing an
+identifier. Other membership types use the configured general mapping when
+one applies.
+
+- ISI Trust assigns Group Term Life `G-31136-0` or `G-31139-0` according to the
+  resolved association. Both identify the same product.
+- AVMA Term Life uses portal/display `G-14884-8` and downstream `G-14884-0`.
+  Group Term Life uses `G-14884-0` for display, and several other AVMA products
+  use it downstream. The current matcher returns both Group Term Life and
+  Term Life for `category=li&prods=G-14884-0`. It returns Term Life alone for
+  `category=li&prods=G-14884-8`.
+
+**Planned decision.**
+
+1. Inventory published AVMA campaign links and compare their intended product
+   selections with the MCR and current display and downstream mappings.
+2. Decide whether `category=li&prods=G-14884-0` should show Group Term Life
+   alone through its display role, or both products by also matching the
+   downstream role. If the campaign needs a group of products, define whether
+   that should be an explicit Site alias or a shared downstream match.
+3. Verify any approved change against existing links, a same-category collision,
+   and a synthetic membership variant. Confirm the application still resolves
+   eligibility and downstream identifiers from the applicant’s answers.
+
+The existing matcher stays in effect while this policy is open.
 
 ## Current effective-site review boundaries
 

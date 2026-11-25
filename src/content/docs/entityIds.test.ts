@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { configurationsData } from "./configurations";
 import { siteRules } from "./siteRules";
-import { associationEntities, clientEntities, siteAssociationEntities, siteEntities, tpaEntities } from "../../data";
+import { associationEntities, hostingAssociations, siteAssociationEntities, siteEntities, tpaEntities } from "../../data";
 
 describe("documentation entity IDs", () => {
   it("assigns unique, deterministic configuration IDs", () => {
@@ -18,7 +18,7 @@ describe("documentation entity IDs", () => {
 
   it("exposes unique Client, Site, Association, and Site Association IDs", () => {
     for (const ids of [
-      clientEntities.map((entry) => entry.id),
+      hostingAssociations.map((entry) => entry.id),
       tpaEntities.map((entry) => entry.id),
       siteEntities.map((entry) => entry.id),
       associationEntities.map((entry) => entry.id),

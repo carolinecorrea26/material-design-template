@@ -12,13 +12,13 @@ export const effectiveConfigurationTables = [
   "configurationDefinitions", "configurationValues", "contentEntries", "contentValues", "brandingProfiles", "supportProfiles", "features", "siteFeatures",
 ] as const;
 
-export const effectiveSiteSnapshotTables = [...effectiveConfigurationTables, "sites", "clients", "organizations", "organizationProfiles", "siteProducts", "siteProductApplicants", "eligibilityConstraints", "semanticRequirements", "associations", "siteAssociations", "sitePolicies"] as const;
+export const effectiveSiteSnapshotTables = [...effectiveConfigurationTables, "sites", "associationEntities", "organizations", "organizationProfiles", "siteProducts", "siteProductApplicants", "eligibilityConstraints", "semanticRequirements", "associations", "siteAssociations", "sitePolicies"] as const;
 
 /** Read boundary only. Raw extraction, compatibility blobs and operational data are excluded. */
 export const normalizedSnapshotTables = [
   'associationEntities', 'associationAliases', 'associationAffiliations', 'siteAssociationContexts',
   ...effectiveConfigurationTables, "components",
-  "sites", "clients", "siteProducts", "siteProductApplicants", "eligibilityConstraints", "semanticRequirements",
+  "sites", "siteProducts", "siteProductApplicants", "eligibilityConstraints", "semanticRequirements",
   "organizations", "organizationProfiles", "associations", "siteAssociations", "sitePolicies", "siteEnvironmentLinks",
   "emailTemplates", "siteEmailTemplates", "documentDefinitions", "siteDocuments",
   "urlParameters", "urlParameterValues", "siteUrlParameters",

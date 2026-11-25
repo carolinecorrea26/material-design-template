@@ -26,7 +26,7 @@ function persist(db: DatabaseSchema, siteKey: string, key: string, target: Confi
   db.configurationDefinitions = db.configurationDefinitions.filter(r => r.key !== key);
   db.configurationValues = db.configurationValues.filter(r => r.key !== key);
   db.configurationDefinitions.push({ ...meta("configurationDefinitions", key), position: 0, definition: { path: null, metadata: { provisional: true, revisit: true }, target } });
-  db.configurationValues.push({ ...meta("configurationValues", key), position: 0, scope: "site", siteKey, clientKey: null, configurationKey: key, value: value as Json });
+  db.configurationValues.push({ ...meta("configurationValues", key), position: 0, scope: "site", siteKey, hostingAssociationKey: null, configurationKey: key, value: value as Json });
   const decisionKey = `provisional-decision.${key}`;
   // Ownership consolidation changes executable keys; retain the original decision evidence.
   if (preserveDecision && db.semanticRequirements.some(r => r.key === decisionKey)) return;
@@ -100,7 +100,7 @@ export function applyCoverageJourneyAdoption(db: DatabaseSchema) {
           if (!db.riders.some(row => row.key === key)) db.riders.push({ ...meta("riders", key), position: 0, definition: { id: r.id, name: r.name, description: "Source-linked candidate rider; rates unavailable.", premiumFactor: null, applicants: applicants.filter(a => a !== "child") as ("member" | "spouse")[] } });
           const link = `${key}.assignment`;
           db.productRiders = db.productRiders.filter(r => r.key !== link);
-          db.productRiders.push({ ...meta("productRiders", link), scope: "site", siteKey, clientKey: null, productKey, riderKey: key, position: keys.includes(key) ? keys.indexOf(key) : keys.length });
+          db.productRiders.push({ ...meta("productRiders", link), scope: "site", siteKey, hostingAssociationKey: null, productKey, riderKey: key, position: keys.includes(key) ? keys.indexOf(key) : keys.length });
           if (!keys.includes(key)) keys.push(key);
         }
         persist(db, siteKey, `${siteKey}.${productKey}.journey-rider-set`, { kind: "product-rider-set", productKey }, keys, sourceRefs);
@@ -189,7 +189,7 @@ export function applyCoverageJourneyAdoption(db: DatabaseSchema) {
             const when: MappingDimensions = { applicantKey, mode, ...(applicantClass ? { applicantClass } : {}), ...(associationKey ? { associationKey } : {}), ...(period ? { waitingPeriod: period.waitingKey, benefitPeriod: period.benefitPeriod } : {}) };
             const resolve = (kind: "gNumber" | "planCode") => {
               const rows = product.identifiers.filter(i => i.value.kind === kind);
-              const rank = { global: 0, client: 1, site: 2 };
+              const rank = { global: 0, association: 1, site: 2 };
               const selected = rows.sort((a,b) => rank[a.value.scope] - rank[b.value.scope]).at(-1)?.value.definition;
               const definition: Record<string, unknown> = selected && typeof selected === "object" && !Array.isArray(selected) ? { ...selected } : {};
               const variants = Array.isArray(definition.scoped) ? definition.scoped as Array<{ scope?: { applicantType?: string; applicantClassId?: string }; value: Record<string, unknown> }> : [];

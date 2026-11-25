@@ -39,7 +39,6 @@ export default function Membership() {
     <FormRoutePage
       pageId={pageId}
       help={<PageHelp items={pageHelpItems(pageId)} />}
-      initialTransitionMessage={requirementText("membership.loading")}
       disableNextButton={(values) => {
         const associationResolution = resolveActiveAssociationFromApplication(
           site.id,

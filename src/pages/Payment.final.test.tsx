@@ -3,7 +3,6 @@ import { act, type ReactNode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { MemoryRouter } from 'react-router-dom';
 import { expect, it, vi } from 'vitest';
-import { MESSAGE_DURATION } from '../config/transitionMessages';
 import * as stories from '../components/payment/PaymentPage.stories';
 vi.mock('../app/usePrototypeRates', () => ({ usePrototypeRates: () => ({ premium: () => 10, display: () => ({ status: 'available', amount: 10 }) }) }));
 const catalog = JSON.parse(readFileSync('public/catalog/portal.json', 'utf8'));
@@ -26,7 +25,6 @@ it('preselects ASCE defaults, hides a member-only label, collects bank consent a
     await set('bank-routing-number', '021000021'); await set('bank-account-number', '000123456');
     await act(async () => host.querySelector<HTMLInputElement>('input[name="bank-authorization"]')!.click());
     await act(async () => [...host.querySelectorAll('button')].find(button => button.textContent === 'Next')!.click());
-    await act(async () => { await new Promise(resolve => setTimeout(resolve, MESSAGE_DURATION * 2 + 100)); });
     expect(host.textContent).toContain('/docusign');
   } finally { await act(async () => root.unmount()); host.remove(); scroll.mockRestore(); vi.unstubAllGlobals(); }
 });
@@ -41,7 +39,6 @@ it('allows ASCE to decline payment collection and continue to DocuSign without b
     await act(async () => host.querySelector<HTMLInputElement>('input[name="payment-information-opt-in"][value="no"]')!.click());
     expect(host.querySelector('input[name="bank-account-number"]')).toBeNull();
     await act(async () => [...host.querySelectorAll('button')].find(button => button.textContent === 'Next')!.click());
-    await act(async () => { await new Promise(resolve => setTimeout(resolve, MESSAGE_DURATION * 2 + 100)); });
     expect(host.textContent).toContain('/docusign');
   } finally { await act(async () => root.unmount()); host.remove(); scroll.mockRestore(); vi.unstubAllGlobals(); }
 });

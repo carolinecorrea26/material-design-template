@@ -1,12 +1,14 @@
 // Generated storage contracts; business relationships use stable semantic keys.
 import type { Json } from "./common";
 import type { LibraryMetadata } from "../../domain/provenance";
+import type { PageId } from "../../domain/identities";
 export interface UrlParameters extends LibraryMetadata {
   id: string;
   key: string;
   parameter: string;
   behavior: string;
   status: string;
+  entryValidation?: { requiredParameter: string; alias: string; errorPage: PageId };
 }
 export interface SiteUrlParameters extends LibraryMetadata {
   id: string;
@@ -19,7 +21,7 @@ export interface SiteUrlParameters extends LibraryMetadata {
 export interface ClientEnvironmentLinks extends LibraryMetadata {
   id: string;
   key: string;
-  clientKey: string;
+  hostingAssociationKey: string;
   environment: string;
   url: string;
 }
@@ -42,7 +44,7 @@ export interface UrlUsages extends LibraryMetadata {
   id: string;
   key: string;
   urlKey: string;
-  clientKey: string | null;
+  hostingAssociationKey: string | null;
   usage: string;
   sourceOwner: string;
   status: string;

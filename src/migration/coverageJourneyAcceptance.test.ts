@@ -8,6 +8,7 @@ import { resolveNormalizedResidency } from '../domain/residencyPolicy';
 import { effectiveHealthFollowUps } from '../config/fields/healthPageFields';
 import { createCoverageJourneyFixture } from './coverageJourneyExceptionAcceptance';
 import { journeySite as site, journeySiteKeys, journeyCatalog, journeyAssignment, journeyLibrary, riderOnlyJourneySite, syntheticJourneySource } from './freshStartJourneyFixtures';
+import { restrictCoverageProducts } from '../config/client/coverageProductScope';
 
 const now = () => Date.parse('2026-10-02T12:00:00Z');
 const policyFixture = (siteKey: string): VerifiedPolicy => ({ policyId: 'mock-existing-1', ownerReference: 'mock-owner', siteKey, productKey: 'li-term', applicantKey: 'member', status: 'active', amount: 100000, riders: [], permittedChanges: ['increase', 'rider-only'], billing: { method: 'bank-account', frequency: 'monthly' }, effectiveDate: '2026-10-02', expiresAt: now() + 300000 });
@@ -49,6 +50,27 @@ describe('fresh-start effective journey acceptance', () => {
       const { input, policies } = createCoverageJourneyFixture(s, productKey, { applicantKey: 'member', mode: 'new' });
       expect(await evaluateCoverageJourney(s, { ...input, mode: 'rider-only', amount: 0 }, { policies })).toMatchObject({ allowed: false, submission: null });
     }
+  });
+  it('resolves a Site-assigned membership G-number from application answers after a product-only match', async () => {
+    const source = syntheticJourneySource();
+    const policy = journeyAssignment(source, 'example', 'li-term');
+    const standard = policy.mappings.find(mapping => mapping.when.mode === 'new' && mapping.when.applicantKey === 'member')!;
+    const associate = structuredClone(standard);
+    associate.when.membershipType = 'associate';
+    associate.identifiers.gNumber.display = 'G-90000-2';
+    associate.identifiers.gNumber.issue = 'G-90000-1';
+    policy.mappings.push(associate);
+    const library = journeyLibrary('example', source);
+    expect(restrictCoverageProducts(library.products, 'G-90000-2', library.site).map(product => product.id)).toEqual(['li-term']);
+    const { input, policies } = createCoverageJourneyFixture(library.site, 'li-term', associate.when);
+    expect(input.eligibility.membershipType).toBe('associate');
+    for (const [membershipType, issue] of [['associate', 'G-90000-1'], ['regular', standard.identifiers.gNumber.issue]]) {
+      const result = await evaluateCoverageJourney(library.site, { ...input, eligibility: { ...input.eligibility, membershipType } }, { policies });
+      expect(result, JSON.stringify(result)).toMatchObject({ allowed: true, submission: { identifiers: { gNumber: { issue } } } });
+    }
+    expect(await evaluateCoverageJourney(library.site, { ...input, eligibility: { ...input.eligibility, membershipType: undefined } }, { policies })).toMatchObject({
+      allowed: false, missingFacts: ['submissionMapping'], submission: null,
+    });
   });
   it('exercises verified rider-only applications once using a synthetic authored Site assignment', async () => {
     const s = riderOnlyJourneySite();

@@ -57,7 +57,7 @@ export function migrateFieldSurfaceData(data: EffectiveSiteData) {
   if (data.configurationDefinitions.some(row => row.definition.path?.join('.') === 'fieldSurfaces')) return changes;
   const key = 'field-surfaces';
   data.configurationDefinitions.push({ ...meta('configurationDefinitions', key), position: data.configurationDefinitions.length, definition: { path: ['fieldSurfaces'], metadata: null } });
-  data.configurationValues.push({ ...meta('configurationValues', `global.${key}`), position: data.configurationValues.length, configurationKey: key, scope: 'global', clientKey: null, siteKey: null, value: surfaces as unknown as Json });
+  data.configurationValues.push({ ...meta('configurationValues', `global.${key}`), position: data.configurationValues.length, configurationKey: key, scope: 'global', hostingAssociationKey: null, siteKey: null, value: surfaces as unknown as Json });
   changes.push(`configurationDefinitions:${key}`, `configurationValues:global.${key}`);
   return changes;
 }

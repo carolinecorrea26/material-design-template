@@ -54,7 +54,6 @@ it('reveals WAEPA estimates and hands off to Membership using only the quote fie
     const gender = [...document.querySelectorAll<HTMLElement>('[aria-labelledby="gender-label"] label')].find(node => node.textContent?.trim() === 'Female')!;
     await act(async () => gender.click());
     await act(async () => button('See my quote').click());
-    await act(async () => { await vi.advanceTimersByTimeAsync(1100); });
     const select = document.querySelector<HTMLInputElement>('input[name="li-group-term-selection"]')!;
     expect(select).not.toBeNull(); expect(select.disabled).toBe(false);
     expect(document.body.textContent).not.toContain('Jurisdiction and any required military status must be supplied');

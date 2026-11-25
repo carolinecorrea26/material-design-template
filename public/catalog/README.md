@@ -4,7 +4,7 @@ Start with the [developer handoff guide](../../docs/handoff/README.md). Folders 
 
 | Library section | Folder / files | Responsibility |
 | --- | --- | --- |
-| Overview | `overview/`: tpas, clients, associations, sites | Identity, support and Site relationships |
+| Overview | `overview/`: tpas, associations, sites | Identity, support and Site relationships |
 | Pages | `pages/pages.json` | Pages, configured sections and Site participation |
 | Fields | `fields/fields.json` | Definitions, placements, overrides and question sets |
 | Components | `components/components.json` | Shared components, production usages and Storybook references |
@@ -43,6 +43,6 @@ Component definitions explicitly distinguish `application-frame`, `page-section`
 
 `src/persistence/types` is the TypeScript persistence contract. The generated [dictionary](../../docs/handoff/data-dictionary.json) exports row properties, types, required/nullable flags and source locations for every catalog table. It is documentation, not a universal runtime JSON Schema validator. See the [relationship and scope guide](../../docs/handoff/contracts.md).
 
-`src/persistence/identityCatalog.ts` validates identity properties, profiles, enums, timestamps, booleans, IDs, unique keys and foreign references during builds and browser loads. Unknown identity properties and cross-client identity mismatches are rejected. Strings are not coerced into booleans or numbers. Other domains retain snapshot and domain validation.
+`src/persistence/identityCatalog.ts` validates identity properties, profiles, enums, timestamps, booleans, IDs, unique keys and foreign references during builds and browser loads. It rejects unknown identity properties and Site context links outside the hosting Association's affiliations. Other domains retain snapshot and domain validation.
 
-The Overview split retains existing table contracts: `organizations` stores TPAs, with no second `tpas` table. Association aliases preserve legacy identities, canonical hosting/member Associations and unresolved source-only records. Support profiles retain their explicit scope. Null metadata and unresolved association references remain null.
+In Overview, `organizations` stores TPAs, `associationEntities` stores Associations and `sites.hostingAssociationId` links each Site to its hosting Association. `siteAssociationContexts` records fixed and selectable Associations. Aliases retain original and unresolved source identities. Support profiles use global, hosting Association or Site scope.

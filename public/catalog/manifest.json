@@ -14,7 +14,6 @@
     "fields/fields.json",
     "flows/flows.json",
     "overview/associations.json",
-    "overview/clients.json",
     "overview/sites.json",
     "overview/tpas.json",
     "pages/pages.json",

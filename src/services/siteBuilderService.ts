@@ -7,7 +7,7 @@ import type { Json, SiteBuilderDraft } from "../persistence/types";
 import { active, audit, DEMO_ACTOR } from "./serviceUtils";
 
 export type BuilderDraftView = SiteBuilderDraft & { canEdit?: boolean };
-export type CreateDraftInput = Pick<SiteBuilderDraft, "clientId" | "siteKey" | "siteName" | "status" | "currentStep"> & Partial<Pick<SiteBuilderDraft, "draftDataJson" | "ownerId">>;
+export type CreateDraftInput = Pick<SiteBuilderDraft, "hostingAssociationId" | "siteKey" | "siteName" | "status" | "currentStep"> & Partial<Pick<SiteBuilderDraft, "draftDataJson" | "ownerId">>;
 export class SiteBuilderService {
   private readonly adapter: PersistenceAdapter;
   constructor(adapter: PersistenceAdapter = persistence) { this.adapter = adapter; }
@@ -18,7 +18,7 @@ export class SiteBuilderService {
     if (import.meta.env.VITE_MOCK_PLATFORM_ENABLED && isLibraryDraft(library)) {
       const { mockTransport, ...payload } = library;
       const saved = mockTransport ?? await mockRequest<{ id: string }>('/library/save', { expectedVersion: 0, payload });
-      return mockRequest<SiteBuilderDraft>('/builder/draft/create', { clientId: input.clientId, siteKey: input.siteKey, siteName: input.siteName, libraryDraftId: saved.id });
+      return mockRequest<SiteBuilderDraft>('/builder/draft/create', { hostingAssociationId: input.hostingAssociationId, siteKey: input.siteKey, siteName: input.siteName, libraryDraftId: saved.id });
     }
     const timestamp = now(); const row = await this.adapter.insert("siteBuilderDrafts", { id: newId(), ...input, draftDataJson: input.draftDataJson ?? {} as Json, ownerId: performedBy, createdAt: timestamp, updatedAt: timestamp, deletedAt: null }); await audit(this.adapter, { entityType: "site_builder_draft", entityId: row.id, action: "create", newValue: row as unknown as never, performedBy }); return row; }
   async updateDraft(id: string, patch: Partial<Pick<SiteBuilderDraft, "siteName" | "status" | "currentStep" | "draftDataJson" | "ownerId">>, performedBy = DEMO_ACTOR) {

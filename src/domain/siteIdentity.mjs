@@ -18,8 +18,9 @@ export function normalizeSiteReferences(value, field = '') {
   if (typeof value === 'string') return identityField(field) ? identity(value) : value;
   if (Array.isArray(value)) return value.map(item => normalizeSiteReferences(item, field));
   if (value && typeof value === 'object') {
-    const entries = Object.entries(value).map(([key, item]) => [siteDictionaries.has(field) ? identity(key) : key, normalizeSiteReferences(item, key)]);
-    if (new Set(entries.map(([key]) => key)).size !== entries.length) throw new Error('Conflicting old and current Site identities. Saved references require review.');
+    const dictionary = siteDictionaries.has(field);
+    const entries = Object.entries(value).map(([key, item]) => [dictionary ? identity(key) : key, normalizeSiteReferences(item, key)]);
+    if (dictionary && new Set(entries.map(([key]) => key)).size !== entries.length) throw new Error('Conflicting old and current Site identities. Saved references require review.');
     return Object.fromEntries(entries);
   }
   return value;

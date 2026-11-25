@@ -45,11 +45,6 @@ import ProgressStep, {
 } from "../components/navigation/ProgressStep";
 import { getActiveProgressStepIndex } from "../config/progressSteps";
 import { generateFormDataUpToPage } from "../dev/utils/generateFormData";
-import {
-  getForwardMessages,
-  getBackMessage,
-  MESSAGE_DURATION,
-} from "../config/transitionMessages";
 import { useApplicationSession } from "./ApplicationSessionContext";
 import { useSinglePageFlow } from "./SinglePageFlowContext";
 
@@ -112,7 +107,6 @@ type FormRoutePageProps = {
   onDevFill?: (context: DevFillContext) => void;
   onBeforeNext?: (context: BeforeNextContext) => boolean;
   resolveNextPageId?: (values: FormRoutePageValues) => PageId | null;
-  initialTransitionMessage?: string;
 };
 
 /** Restore configured repeatable records alongside scalar field defaults. */
@@ -249,14 +243,6 @@ function emitProgressSnapshot(values: FormRoutePageValues) {
   );
 }
 
-function emitPendingBreadcrumbCompletion(pageId: PageId | null) {
-  window.dispatchEvent(
-    new CustomEvent<PageId | null>("form:pendingbreadcrumbcompletion", {
-      detail: pageId,
-    }),
-  );
-}
-
 export default function FormRoutePage({
   pageId,
   title,
@@ -277,7 +263,6 @@ export default function FormRoutePage({
   onDevFill,
   onBeforeNext,
   resolveNextPageId,
-  initialTransitionMessage,
 }: FormRoutePageProps) {
   const analyticsRoot = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -434,28 +419,6 @@ export default function FormRoutePage({
   }, [devFillFields, getValues, onDevFill, pageId, runtimeFields, setValue]);
 
   const [pageError, setPageError] = useState<string | undefined>();
-  const [isTransitioning, setIsTransitioning] = useState(
-    !isSinglePage && Boolean(initialTransitionMessage),
-  );
-  const [transitionMessage, setTransitionMessage] = useState(
-    initialTransitionMessage ?? "",
-  );
-  const transitionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    if (initialTransitionMessage && !isSinglePage) {
-      transitionTimerRef.current = setTimeout(() => {
-        setIsTransitioning(false);
-        setTransitionMessage("");
-      }, MESSAGE_DURATION);
-    }
-  }, [initialTransitionMessage, isSinglePage]);
-
-  useEffect(() => {
-    return () => {
-      if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
-    };
-  }, []);
 
   const scrollToFirstError = useCallback(() => {
     requestAnimationFrame(() => {
@@ -483,26 +446,13 @@ export default function FormRoutePage({
         nextPageId ?? (pageId === "payment" ? "receipt" : null);
       if (!destination) return;
 
-
-      const [msg1, msg2] = getForwardMessages(pageId);
-
-      emitPendingBreadcrumbCompletion(pageId);
-      setTransitionMessage(msg1);
-      setIsTransitioning(true);
+      emitProgressSnapshot(nextNavigationValues);
       if (singlePageFlow) {
-        singlePageFlow.setNavigationPending(true);
-        document.getElementById(`${pageId}-form`)?.closest('[data-single-page-step]')?.scrollIntoView({ behavior: "smooth", block: "start" });
-      } else window.scrollTo({ top: 0 });
-
-      transitionTimerRef.current = setTimeout(() => {
-        setTransitionMessage(msg2);
-
-        transitionTimerRef.current = setTimeout(() => {
-          emitProgressSnapshot(nextNavigationValues);
-          if (singlePageFlow) singlePageFlow.completeSection(pageId, destination);
-          else navigate(getPagePath(destination), { state: { showProgressSaved: true } });
-        }, MESSAGE_DURATION);
-      }, MESSAGE_DURATION);
+        singlePageFlow.completeSection(pageId, destination);
+      } else {
+        window.scrollTo({ top: 0 });
+        navigate(getPagePath(destination), { state: { showProgressSaved: true } });
+      }
     },
     [navigate, pageId, resolveNextPageId, singlePageFlow],
   );
@@ -526,6 +476,7 @@ export default function FormRoutePage({
 
     analyticsEvent("submit");
     setPageError(undefined);
+    singlePageFlow?.setNavigationPending(true);
     try {
       if (!(portalDatabaseEnabled && pageId === 'docusign') && getConfiguredPages().find(page => page.id === pageId)?.saveProgress !== false) await saveApplication?.(nextNavigationValues, pageId === 'membership' || pageId === 'coverage' || pageId === 'review' ? pageId : undefined);
       if (pageId === 'docusign') {
@@ -535,6 +486,8 @@ export default function FormRoutePage({
     } catch {
       setPageError(applicationRecovery['technical-error'].message);
       return;
+    } finally {
+      singlePageFlow?.setNavigationPending(false);
     }
     setPageValues(nextNavigationValues);
     hasExplicitlySavedRef.current = true;
@@ -567,6 +520,7 @@ export default function FormRoutePage({
   }
 
   function handleBack() {
+    if (isSubmitting) return;
     const previousPageId = getPreviousFormPageId(pageId, watchedValues);
 
     if (previousPageId) {
@@ -578,25 +532,18 @@ export default function FormRoutePage({
       setPageValues(previousNavigationValues);
       hasExplicitlySavedRef.current = true;
 
-
-      emitPendingBreadcrumbCompletion(null);
-      setTransitionMessage(getBackMessage());
-      setIsTransitioning(true);
-      if (singlePageFlow) singlePageFlow.setNavigationPending(true);
-      else window.scrollTo({ top: 0 });
-
-      transitionTimerRef.current = setTimeout(() => {
-        emitProgressSnapshot(previousNavigationValues);
-        if (singlePageFlow) {
-          singlePageFlow.setNavigationPending(false);
-          singlePageFlow.goToSection(previousPageId);
-        } else navigate(getPagePath(previousPageId));
-      }, MESSAGE_DURATION);
+      emitProgressSnapshot(previousNavigationValues);
+      if (singlePageFlow) {
+        singlePageFlow.goToSection(previousPageId);
+      } else {
+        window.scrollTo({ top: 0 });
+        navigate(getPagePath(previousPageId));
+      }
     }
   }
 
   const renderProps: FormRouteRenderProps = {
-    navigationPending: isSubmitting || isTransitioning || !!singlePageFlow?.navigationPending,
+    navigationPending: isSubmitting || !!singlePageFlow?.navigationPending,
     pageError,
     control,
     errors,
@@ -645,54 +592,49 @@ export default function FormRoutePage({
               <Breadcrumbs pageId={pageId} />
             </Box>
           )}
-          {isTransitioning ? (
-            <PageTransitionSkeleton message={transitionMessage} />
-          ) : (
-            <>
-              {!noTitle && (
-                <PageHeader
-                  title={resolvedTitle}
-                  subhead={resolvedSubhead}
-                  onBack={
-                    !isAfterReview &&
-                    getPreviousFormPageId(pageId, watchedValues)
-                      ? handleBack
-                      : undefined
-                  }
-                  help={renderedHelp}
-                />
-              )}
-              {resolvedInfoNote && (
-                <Box sx={{ mb: 2 }}>
-                  <Alert severity="info" sx={{ width: "100%", whiteSpace: "pre-line" }}>
-                    {resolvedInfoNote}
-                  </Alert>
-                </Box>
-              )}
-              <PageAlert severity="error" message={pageError} />
-              <form
-                id={`${pageId}-form`}
-                noValidate
-                onSubmit={handleSubmit(onSubmit, onFormError)}
-              >
-                {typeof children === "function"
-                  ? children(renderProps)
-                  : children}
-              </form>
-            </>
-          )}
+          {isSubmitting && <PageTransitionSkeleton />}
+          <Box hidden={isSubmitting}>
+            {!noTitle && (
+              <PageHeader
+                title={resolvedTitle}
+                subhead={resolvedSubhead}
+                onBack={
+                  !isSubmitting && !isAfterReview &&
+                  getPreviousFormPageId(pageId, watchedValues)
+                    ? handleBack
+                    : undefined
+                }
+                help={renderedHelp}
+              />
+            )}
+            {resolvedInfoNote && (
+              <Box sx={{ mb: 2 }}>
+                <Alert severity="info" sx={{ width: "100%", whiteSpace: "pre-line" }}>
+                  {resolvedInfoNote}
+                </Alert>
+              </Box>
+            )}
+            <PageAlert severity="error" message={pageError} />
+            <form
+              id={`${pageId}-form`}
+              noValidate
+              onSubmit={handleSubmit(onSubmit, onFormError)}
+            >
+              {typeof children === "function"
+                ? children(renderProps)
+                : children}
+            </form>
+          </Box>
           {!hideActions &&
             !(typeof hideNextButton === "function"
               ? hideNextButton(watchedValues)
               : hideNextButton) && (
               <PageNav
                 formId={`${pageId}-form`}
-                isTransitioning={isTransitioning}
-                disabled={
-                  isSubmitting || (typeof disableNextButton === "function"
-                    ? disableNextButton(watchedValues)
-                    : Boolean(disableNextButton))
-                }
+                isTransitioning={isSubmitting}
+                disabled={typeof disableNextButton === "function"
+                  ? disableNextButton(watchedValues)
+                  : Boolean(disableNextButton)}
               />
             )}
           </Box>

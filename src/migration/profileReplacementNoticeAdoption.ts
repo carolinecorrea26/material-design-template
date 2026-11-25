@@ -10,7 +10,7 @@ export function applyProfileReplacementNoticeAdoption(db: DatabaseSchema) {
   const configurationKey = "shared.profile.lifeReplacementNotice";
   const meta = (table: string, key: string) => ({ id: key, key, ...libraryMetadata(table, key, authority) });
   const definition = { ...meta("configurationDefinitions", configurationKey), position: 0, definition: { path: ["applicantExperience", "profile", "lifeReplacementNotice"], metadata: { reusable: true, sourceReferences: ["Legal Disclosures!A14:D14"] }, target: null } };
-  const value = { ...meta("configurationValues", `global:${configurationKey}`), position: 0, scope: "global" as const, siteKey: null, clientKey: null, configurationKey, value: { jurisdictions: ["NY"], text, fontSizePt: 12, bold: true } };
+  const value = { ...meta("configurationValues", `global:${configurationKey}`), position: 0, scope: "global" as const, siteKey: null, hostingAssociationKey: null, configurationKey, value: { jurisdictions: ["NY"], text, fontSizePt: 12, bold: true } };
   const upsert = <T extends { key: string }>(rows: T[], row: T) => { const index = rows.findIndex(item => item.key === row.key); if (index < 0) rows.push(row); else rows[index] = row; };
   upsert(db.configurationDefinitions, definition); upsert(db.configurationValues, value);
   const key = profileReplacementNoticeKey;

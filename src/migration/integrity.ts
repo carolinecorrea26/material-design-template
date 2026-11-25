@@ -29,7 +29,7 @@ export function validateMigrationDatabase(db: DatabaseSchema): string[] {
   const errors: string[] = promotionIntegrityErrors(db);
   const tables: Record<string, Record<string, unknown>[]> = Object.fromEntries(Object.entries(db).map(([name, rows]) => [tableNames[name as keyof DatabaseSchema], rows.map((row: object) => Object.fromEntries(Object.entries(row).map(([key, value]) => [snake(key), value])))]));
   const keys = Object.fromEntries(Object.entries(tables).map(([name, rows]) => [name, new Set(rows.map(r => r.key))]));
-  for (const name of ["organizations", "clients", "sites", "site_coverages", "site_products", "site_riders"]) {
+  for (const name of ["organizations", "association_entities", "sites", "site_coverages", "site_products", "site_riders"]) {
     const rows = tables[name];
     for (const column of ["key", "display_id"]) if (new Set(rows.map(r => r[column])).size !== rows.length) errors.push(`${name}: duplicate ${column}`);
     for (const row of rows) {
@@ -56,7 +56,7 @@ export function validateMigrationDatabase(db: DatabaseSchema): string[] {
         if (allowed && !allowed[1].split(",").map(s => s.trim().replaceAll("'", "")).includes(String(value))) errors.push(`${name}.${row.key}: invalid ${column}`);
       }
       if ("scope" in row) {
-        const valid = row.scope === "global" ? row.client_key === null && row.site_key === null : row.scope === "client" ? typeof row.client_key === "string" && row.site_key === null : row.scope === "site" && typeof row.site_key === "string" && row.client_key === null;
+        const valid = row.scope === "global" ? row.hosting_association_key === null && row.site_key === null : row.scope === "association" ? typeof row.hosting_association_key === "string" && row.site_key === null : row.scope === "site" && typeof row.site_key === "string" && row.hosting_association_key === null;
         if (!valid) errors.push(`${name}.${row.key}: invalid scope`);
       }
     }
@@ -73,7 +73,7 @@ export function validateMigrationDatabase(db: DatabaseSchema): string[] {
   const effectiveConfiguration = (site: DatabaseSchema["sites"][number], products: Set<string>) => {
     let configuration = effectiveBenefits.get(site.key);
     if (!configuration) {
-      const client = db.clients.find(client => client.id === site.clientId);
+      const client = db.associationEntities.find(client => client.id === site.hostingAssociationId);
       if (!client) throw new Error("Missing policy Client");
       configuration = resolveEffectiveConfiguration(db, site.key, client.key, site.id, [...products]);
       effectiveBenefits.set(site.key, configuration);
@@ -84,7 +84,7 @@ export function validateMigrationDatabase(db: DatabaseSchema): string[] {
     const target = db.configurationDefinitions.find(definition => definition.key === row.configurationKey)?.definition.target;
     if (target?.kind === "product-rider-override") {
       let valid = row.scope !== "global" && riderOverrideProperties.some(property => property === target.property) && db.riders.some(rider => rider.key === target.riderKey);
-      const sites = db.sites.filter(site => row.scope === "site" ? site.key === row.siteKey : db.clients.some(client => client.id === site.clientId && client.key === row.clientKey));
+      const sites = db.sites.filter(site => row.scope === "site" ? site.key === row.siteKey : db.associationEntities.some(client => client.id === site.hostingAssociationId && client.key === row.hostingAssociationKey));
       if (!sites.length) valid = false;
       let assigned = false;
       for (const site of sites) try {
@@ -109,7 +109,7 @@ export function validateMigrationDatabase(db: DatabaseSchema): string[] {
     }
     if (target?.kind === "site-structure-ownership") {
       const site = db.sites.find(site => site.key === row.siteKey);
-      let valid = row.scope === "site" && row.clientKey === null && !!site;
+      let valid = row.scope === "site" && row.hostingAssociationKey === null && !!site;
       if (site) try {
         const products = new Set(db.siteProducts.filter(product => product.siteId === site.id && product.enabled).map(product => product.productKey));
         valid = valid && effectiveConfiguration(site, products).siteStructureOwnership === "stored-structure";
@@ -119,7 +119,7 @@ export function validateMigrationDatabase(db: DatabaseSchema): string[] {
     }
     if (target?.kind === "site-product-availability") {
       const site = db.sites.find(site => site.key === row.siteKey);
-      let valid = row.scope === "site" && row.clientKey === null && !!site;
+      let valid = row.scope === "site" && row.hostingAssociationKey === null && !!site;
       if (site) try {
         const products = new Set(db.siteProducts.filter(product => product.siteId === site.id && product.enabled).map(product => product.productKey));
         valid = valid && effectiveConfiguration(site, products).productAvailabilityOwnership === "siteProducts";
@@ -129,7 +129,7 @@ export function validateMigrationDatabase(db: DatabaseSchema): string[] {
     }
     if (target?.kind === "site-page-participation") {
       const site = db.sites.find(site => site.key === row.siteKey);
-      let valid = row.scope === "site" && row.clientKey === null && !!site;
+      let valid = row.scope === "site" && row.hostingAssociationKey === null && !!site;
       if (site) try {
         const products = new Set(db.siteProducts.filter(product => product.siteId === site.id && product.enabled).map(product => product.productKey));
         valid = valid && effectiveConfiguration(site, products).pageParticipation.source === "sitePages";
@@ -138,7 +138,7 @@ export function validateMigrationDatabase(db: DatabaseSchema): string[] {
       continue;
     }
     if (target?.kind === "site-routing-policy") {
-      const sites = db.sites.filter(site => row.scope === "global" || row.scope === "site" && site.key === row.siteKey || row.scope === "client" && db.clients.some(client => client.id === site.clientId && client.key === row.clientKey));
+      const sites = db.sites.filter(site => row.scope === "global" || row.scope === "site" && site.key === row.siteKey || row.scope === "association" && db.associationEntities.some(client => client.id === site.hostingAssociationId && client.key === row.hostingAssociationKey));
       let valid = sites.length > 0;
       for (const site of sites) try {
         const products = new Set(db.siteProducts.filter(product => product.siteId === site.id && product.enabled).map(product => product.productKey));
@@ -263,7 +263,7 @@ export function validateMigrationDatabase(db: DatabaseSchema): string[] {
   }
   for (const fact of db.semanticRequirements) {
     if (!targetKeys.get(fact.subjectTable)?.has(fact.subjectKey)) errors.push(`Orphan semantic subject ${fact.key}`);
-    const relations: Record<string, string> = { ruleKey: 'rules', flagKey: 'flagDefinitions', contentKey: 'contentEntries', productKey: 'products', questionKey: 'questionDefinitions', clientKey: 'clients' };
+    const relations: Record<string, string> = { ruleKey: 'rules', flagKey: 'flagDefinitions', contentKey: 'contentEntries', productKey: 'products', questionKey: 'questionDefinitions', hostingAssociationKey: 'associationEntities' };
     const inspect = (value: unknown) => {
       if (Array.isArray(value)) { value.forEach(inspect); return; }
       if (!value || typeof value !== 'object') return;
@@ -290,7 +290,7 @@ export function validateMigrationDatabase(db: DatabaseSchema): string[] {
     if (requirement.classification === "MAPPED" && !mappedRequirements.has(requirement.key)) errors.push(`Mapped requirement without destination ${requirement.key}`);
   }
   for (const assignment of db.flagAssignments) {
-    const scope = [assignment.clientKey, assignment.siteKey, assignment.productKey, assignment.coverageKey, assignment.riderKey, assignment.applicantKey, assignment.applicationId];
+    const scope = [assignment.hostingAssociationKey, assignment.siteKey, assignment.productKey, assignment.coverageKey, assignment.riderKey, assignment.applicantKey, assignment.applicationId];
     if (scope.filter(v => v !== null).length > 1) errors.push(`Invalid flag assignment scope ${assignment.key}`);
   }
   for (const assignment of [...db.flagAssignments, ...db.ruleFlags]) {
@@ -308,9 +308,9 @@ export function validateMigrationDatabase(db: DatabaseSchema): string[] {
   }
   for (const relation of db.siteAssociations) {
     const site = db.sites.find((r) => r.key === relation.siteKey);
-    const client = db.clients.find((r) => r.id === site?.clientId);
+    const client = db.associationEntities.find((r) => r.id === site?.hostingAssociationId);
     const association = db.associations.find((r) => r.key === relation.associationKey);
-    if (client?.key !== association?.clientKey) errors.push(`Cross-client association ${relation.key}`);
+    if (client?.key !== association?.hostingAssociationKey) errors.push(`Cross-client association ${relation.key}`);
   }
   for (const condition of db.conditions) if (!isConditionDefinition(condition.definition) || condition.key !== condition.definition.id
     || condition.definition.conditions.some(clause => !db.fields.some(field => field.key === clause.fieldId))) errors.push(`Invalid executable condition ${condition.key}`);

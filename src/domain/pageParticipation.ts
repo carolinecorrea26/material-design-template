@@ -18,7 +18,7 @@ export function resolvePageParticipationOwnership(data: Data, configurations: Co
     || !("version" in value) || value.version !== 2 || !("source" in value) || value.source !== "sitePages"
     || Object.keys(value).some(key => !["version", "source"].includes(key))) throw new Error("Invalid Site page participation contract");
   const assignments = markers[0].provenance.flatMap(source => source.table === "configurationValues" ? data.configurationValues.filter(row => row.key === source.key) : []);
-  if (assignments.length !== 1 || assignments[0].scope !== "site" || assignments[0].siteKey !== siteKey || assignments[0].clientKey !== null) throw new Error("Page participation ownership requires an exact Site assignment");
+  if (assignments.length !== 1 || assignments[0].scope !== "site" || assignments[0].siteKey !== siteKey || assignments[0].hostingAssociationKey !== null) throw new Error("Page participation ownership requires an exact Site assignment");
   if (configurations.some(configuration => isPageParticipationPath(data.configurationDefinitions.find(definition => definition.key === configuration.key)?.definition.path))) throw new Error("Page configuration copies compete with sitePages");
   const pages = resolvePageCatalog(data, siteKey);
   return { source: "sitePages" as const, provenance: [...markers[0].provenance, ...pages.filter(page => page.assigned).flatMap(page =>

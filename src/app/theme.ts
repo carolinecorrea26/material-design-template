@@ -75,6 +75,8 @@ export function createAppTheme(
       MuiBreadcrumbs: {
         styleOverrides: { root: ({ theme }) => ({
           ...theme.typography.caption,
+          fontSize: controlPresentation.typography.breadcrumbFontSize,
+          '& .MuiBreadcrumbs-li > *': { fontSize: 'inherit' },
           '& [aria-current="page"], & [data-completed="true"]': { fontWeight: 500 },
         }) },
       },

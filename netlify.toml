@@ -2,5 +2,9 @@
   command = "npm run build"
   publish = "dist"
 
+[context.redesignv6.environment]
+  VITE_PORTAL_DATABASE_ENABLED = "true"
+  VITE_STORYBOOK_URL = "https://material-design-template-storybook.netlify.app"
+
 [build.environment]
   NODE_VERSION = "24.15.0"

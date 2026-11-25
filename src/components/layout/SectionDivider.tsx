@@ -65,6 +65,7 @@ export default function SectionDivider({
   const size = variant === "subsection" ? "small" : sizeProp;
   const isSmall = size === "small";
   const chipSx = {
+    fontSize: presentation.typography.sectionDividerFontSize,
     fontWeight: 700,
     letterSpacing: "0.06em",
     textTransform: "uppercase",
@@ -89,6 +90,7 @@ export default function SectionDivider({
           <Typography
             variant="caption"
             sx={{
+              fontSize: presentation.typography.sectionDividerFontSize,
               fontWeight: 700,
               color: "text.secondary",
               textTransform: "uppercase",

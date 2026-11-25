@@ -22,12 +22,12 @@ export function applyCseaBenefitAdoption(db: DatabaseSchema) {
   db.configurationDefinitions = db.configurationDefinitions.filter(r => r.key !== key);
   db.configurationValues = db.configurationValues.filter(r => r.key !== key);
   db.configurationDefinitions.push({ ...meta("configurationDefinitions", key), position: 0, definition: { path: null, metadata: { provisional: true }, target: { kind: "product-benefit-policy", productKey: "di-ltd" } } });
-  db.configurationValues.push({ ...meta("configurationValues", key), position: 0, scope: "site", clientKey: null, siteKey: "csea", configurationKey: key, value: value as unknown as Json });
+  db.configurationValues.push({ ...meta("configurationValues", key), position: 0, scope: "site", hostingAssociationKey: null, siteKey: "csea", configurationKey: key, value: value as unknown as Json });
   const riderSetKey = "csea.di-ltd.included-rider-set";
   db.configurationDefinitions = db.configurationDefinitions.filter(r => r.key !== riderSetKey);
   db.configurationValues = db.configurationValues.filter(r => r.key !== riderSetKey);
   db.configurationDefinitions.push({ ...meta("configurationDefinitions", riderSetKey), position: 0, definition: { path: null, metadata: { source: "Riders!C29" }, target: { kind: "product-rider-set", productKey: "di-ltd" } } });
-  db.configurationValues.push({ ...meta("configurationValues", riderSetKey), position: 0, scope: "site", clientKey: null, siteKey: "csea", configurationKey: riderSetKey, value: ["csea.spouse-accident", "csea.child-outpatient"] });
+  db.configurationValues.push({ ...meta("configurationValues", riderSetKey), position: 0, scope: "site", hostingAssociationKey: null, siteKey: "csea", configurationKey: riderSetKey, value: ["csea.spouse-accident", "csea.child-outpatient"] });
   // AD&D is a separate AD product; the DI rider set contains only dependent benefits.
   db.productRiders = db.productRiders.filter(r => !(r.scope === "site" && r.siteKey === "csea" && r.productKey === "di-ltd" && r.riderKey === "mcr.rider.r25"));
   const benefits = [
@@ -39,14 +39,14 @@ export function applyCseaBenefitAdoption(db: DatabaseSchema) {
     db.riders.push({ ...meta("riders", benefit.id), position: 0, definition: { ...benefit, applicants: ["member"], defaultSelected: true, premiumFactor: null } });
     const assignment = `${riderSetKey}.${benefit.id}`;
     db.productRiders = db.productRiders.filter(r => r.key !== assignment);
-    db.productRiders.push({ ...meta("productRiders", assignment), scope: "site", siteKey: "csea", clientKey: null, productKey: "di-ltd", riderKey: benefit.id, position: benefit.dependentApplicant === "spouse" ? 1 : 2 });
+    db.productRiders.push({ ...meta("productRiders", assignment), scope: "site", siteKey: "csea", hostingAssociationKey: null, productKey: "di-ltd", riderKey: benefit.id, position: benefit.dependentApplicant === "spouse" ? 1 : 2 });
   }
   addCseaAccidentProduct(db);
   const experienceKey = "csea.applicant-experience";
   db.configurationDefinitions = db.configurationDefinitions.filter(r => r.key !== experienceKey);
   db.configurationValues = db.configurationValues.filter(r => r.key !== experienceKey);
   db.configurationDefinitions.push({ ...meta("configurationDefinitions", experienceKey), position: 0, definition: { path: ["applicantExperience"], metadata: { authority: "User clarification October 5, 2026; Main M/I/J/S/T246" } } });
-  db.configurationValues.push({ ...meta("configurationValues", experienceKey), position: 0, scope: "site", siteKey: "csea", clientKey: null, configurationKey: experienceKey, value: { factMappings: { applicantClass: { field: "csea-occupation-group", values: { "group-1-clerical": "clerical", "group-2-non-clerical": "non-clerical" } } }, eligibleStatesOnly: true, eligibleStates: ["NY","NJ","VT","PA","CT"], childEligibility: { mode: "notice-only", note: "Child must be under age 19 as of the date of this application." } } });
+  db.configurationValues.push({ ...meta("configurationValues", experienceKey), position: 0, scope: "site", siteKey: "csea", hostingAssociationKey: null, configurationKey: experienceKey, value: { factMappings: { applicantClass: { field: "csea-occupation-group", values: { "group-1-clerical": "clerical", "group-2-non-clerical": "non-clerical" } } }, eligibleStatesOnly: true, eligibleStates: ["NY","NJ","VT","PA","CT"], childEligibility: { mode: "notice-only", note: "Child must be under age 19 as of the date of this application." } } });
   const decisionKey = `provisional-decision.${key}`;
   db.semanticRequirements = db.semanticRequirements.filter(r => r.key !== decisionKey);
   db.semanticRequirements.push({ ...meta("semanticRequirements", decisionKey), domain: "provisional-source-decision", subjectTable: "sites", subjectKey: "csea", predicate: "occupation-benefits", status: "documented", value: { authority: provisionalDecisionAuthority, selected: value as unknown as Json, sourceReferences: ["Main!R246", "Disability!D45", "Disability!F45", "Disability!G45"], revisit: true, sourceReconciliation: "deferred", runtimeActivation: "pending", destinations: [{ table: "configurationValues", key, column: "value" }] } });
@@ -70,7 +70,7 @@ function addCseaAccidentProduct(db: DatabaseSchema) {
   for (const kind of ["gNumber", "planCode"] as const) {
     const key = `${siteKey}.${productKey}.mock-${kind}`;
     db.productIdentifiers = db.productIdentifiers.filter(r => !(r.siteKey === siteKey && r.productKey === productKey && r.kind === kind));
-    db.productIdentifiers.push({ ...meta("productIdentifiers", key), position: 0, scope: "site", siteKey, clientKey: null, productKey, kind, definition: { primary: `mock:${siteKey}:${productKey}:${kind}` } });
+    db.productIdentifiers.push({ ...meta("productIdentifiers", key), position: 0, scope: "site", siteKey, hostingAssociationKey: null, productKey, kind, definition: { primary: `mock:${siteKey}:${productKey}:${kind}` } });
     identifierDestinations.push({ table: "productIdentifiers", key, column: "definition" });
   }
   const identityDecisionKey = `provisional-decision.${siteKey}.${productKey}.mock-identity`;
@@ -82,13 +82,13 @@ function addCseaAccidentProduct(db: DatabaseSchema) {
   db.amountOptions = db.amountOptions.filter(r => r.amountPatternKey !== patternKey);
   db.coverageAmountPatterns.push({ ...meta("coverageAmountPatterns", patternKey), patternKey: "coverage-amount-options", amountType: "set", minimum: 10000, maximum: 100000, increment: null, formula: null, baseProductKey: null, baseApplicantKey: null, baseApplicantClass: null, multiplier: null });
   for (const [position, amount] of [10000,30000,50000,100000].entries()) db.amountOptions.push({ ...meta("amountOptions", `${patternKey}.${amount}`), amountPatternKey: patternKey, value: String(amount), label: String(amount), position });
-  db.productAmountRules.push({ ...meta("productAmountRules", `${patternKey}.rule`), siteKey, clientKey: null, productKey, applicantTypeKey: "member", applicantClass: null, amountPatternKey: patternKey, conditionKey: null, position: 0 });
+  db.productAmountRules.push({ ...meta("productAmountRules", `${patternKey}.rule`), siteKey, hostingAssociationKey: null, productKey, applicantTypeKey: "member", applicantClass: null, amountPatternKey: patternKey, conditionKey: null, position: 0 });
   const store = (suffix: string, target: ConfigurationTarget, value: Json) => {
     const key = `${siteKey}.${productKey}.${suffix}`;
     db.configurationDefinitions = db.configurationDefinitions.filter(r => r.key !== key);
     db.configurationValues = db.configurationValues.filter(r => r.key !== key);
     db.configurationDefinitions.push({ ...meta("configurationDefinitions", key), position: 0, definition: { path: null, metadata: { authority: "User clarification October 5, 2026" }, target } });
-    db.configurationValues.push({ ...meta("configurationValues", key), position: 0, scope: "site", siteKey, clientKey: null, configurationKey: key, value });
+    db.configurationValues.push({ ...meta("configurationValues", key), position: 0, scope: "site", siteKey, hostingAssociationKey: null, configurationKey: key, value });
   };
   store("name", { kind: "product-presentation", productKey, property: "name" }, "Group Accidental Death and Dismemberment");
   store("description", { kind: "product-presentation", productKey, property: "definition" }, "Optional member AD&D coverage. Choose a principal sum of $10,000, $30,000, $50,000 or $100,000. $5,000 Basic AD&D coverage is already included in the DI plan.");
@@ -101,7 +101,7 @@ function addCseaAccidentProduct(db: DatabaseSchema) {
     db.configurationDefinitions = db.configurationDefinitions.filter(r => r.key !== key);
     db.configurationValues = db.configurationValues.filter(r => r.key !== key);
     db.configurationDefinitions.push({ ...meta("configurationDefinitions", key), position: 0, definition: { path: [...path], metadata: { authority: "User clarification October 5, 2026" } } });
-    db.configurationValues.push({ ...meta("configurationValues", key), position: 0, scope: "site", siteKey, clientKey: null, configurationKey: key, value: JSON.parse(JSON.stringify(value)) as Json });
+    db.configurationValues.push({ ...meta("configurationValues", key), position: 0, scope: "site", siteKey, hostingAssociationKey: null, configurationKey: key, value: JSON.parse(JSON.stringify(value)) as Json });
   }
   store("rider-set", { kind: "product-rider-set", productKey }, []);
   store("reference-table", { kind: "product-reference-rate-table", productKey }, cseaAddTable as unknown as Json);

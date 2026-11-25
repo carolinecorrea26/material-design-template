@@ -5,7 +5,7 @@ import { libraryMetadata } from "../domain/provenance";
 import type { DatabaseSchema } from "../persistence/types";
 
 export const metadataColumns = { display_id: "bigint not null unique check (display_id > 0)", provided_by: "text references public.provenance_tags(key)", source_reference: "text" };
-export const expandedTableSpecs: Record<string, { columns: Record<string, string>; constraints: readonly string[] }> = {
+const historicalTableSpecs: Record<string, { columns: Record<string, string>; constraints: readonly string[] }> = {
   ...Object.fromEntries(Object.entries(migrationTableSpecs).map(([name, spec]) => [name, { ...spec, columns: { ...spec.columns, ...metadataColumns } }])),
   ...canonicalTableSpecs,
   components: { columns: { id: "text primary key", key: "text not null unique", position: "integer not null default 0", definition: "jsonb not null", ...metadataColumns }, constraints: [] },
@@ -14,10 +14,21 @@ export const expandedTableSpecs: Record<string, { columns: Record<string, string
   } },
 };
 
+// The old SQL generator remains reproducible. Review fixtures use the current
+// catalog's Association references when validating these table definitions.
+const associationReference = (text: string) => text
+  .replace(/\bclient_key\b/g, 'hosting_association_key')
+  .replaceAll('public.clients(key)', 'public.association_entities(key)')
+  .replaceAll("'client'", "'association'");
+export const expandedTableSpecs = Object.fromEntries(Object.entries(historicalTableSpecs).map(([table, spec]) => [table, {
+  columns: Object.fromEntries(Object.entries(spec.columns).map(([name, type]) => [associationReference(name), associationReference(type)])),
+  constraints: spec.constraints.map(associationReference),
+}]));
+
 /** Migration-only enrichment. Production seeds and consumers stay on existing sources. */
 export function addLibraryMetadata(db: DatabaseSchema) {
   for (const [name, rows] of Object.entries(db)) {
-    if (!(tableNames[name as keyof DatabaseSchema] in expandedTableSpecs) && !["organizations", "clients", "sites"].includes(name)) continue;
+    if (!(tableNames[name as keyof DatabaseSchema] in expandedTableSpecs) && !["organizations", "associationEntities", "sites"].includes(name)) continue;
     for (const row of rows as Array<{ key: string }>) Object.assign(row, { ...libraryMetadata(name, row.key, `prototype:${name}/${row.key}`), ...row });
   }
   for (const table of ["siteCoverages", "siteProducts", "siteRiders"] as const) for (const row of db[table]) {

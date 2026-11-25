@@ -15,7 +15,7 @@ export function readableValue(value: unknown): string {
   if (typeof value === 'object') return Object.entries(value).filter(([key, item]) => key !== 'id' && !libraryEvidenceKeys.has(key) && item !== null && item !== undefined).map(([key, item]) => `${humanize(key)}: ${readableValue(item)}`).join('\n') || '—';
   return String(value).replace(/<[^>]*>/g, ' ').replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ').trim();
 }
-const hidden = new Set(['id', 'key', 'position', 'displayId', 'providedBy', 'sourceReference', 'definition', 'createdAt', 'updatedAt', 'deletedAt', 'siteKey', 'clientKey', 'scope', 'enabled', 'include', 'status', 'kind', 'categoryKey', 'templateType', 'value', 'rule', 'name', 'label', 'type', 'area']);
+const hidden = new Set(['id', 'key', 'position', 'displayId', 'providedBy', 'sourceReference', 'definition', 'createdAt', 'updatedAt', 'deletedAt', 'siteKey', 'hostingAssociationKey', 'scope', 'enabled', 'include', 'status', 'kind', 'categoryKey', 'templateType', 'value', 'rule', 'name', 'label', 'type', 'area']);
 const excludedDefinition = new Set(['id', 'name', 'label', 'rule', 'type', 'area', 'metadata', 'ref', 'source', 'sourceReferences']);
 /** Promote each business attribute to a searchable column; technical row metadata is omitted. */
 export function libraryRecordColumns(rows: StoredRow[], relatedKeys: string[]): BrowseColumn<StoredRow>[] {

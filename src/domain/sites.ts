@@ -1,4 +1,4 @@
-import type { ClientEntityId, ClientConfigurationDefaults } from "./organizations";
+import type { HostingAssociationId, ClientConfigurationDefaults } from "./organizations";
 import type { ClientBranding, ClientSupport, ConfigurationId } from "./configuration";
 import type { AssociationSelection, AssociationBranding } from "./associations";
 import type { CoverageId } from "./identities";
@@ -8,7 +8,7 @@ import type { CmsEntryId } from "./content";
 export type SiteId = string;
 export type Site = {
   id: SiteId;
-  clientId: ClientEntityId;
+  hostingAssociationId: HostingAssociationId;
   name: string;
   templateType: "single" | "multi";
   status: "active" | "inactive";

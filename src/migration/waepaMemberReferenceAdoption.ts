@@ -9,7 +9,7 @@ export function applyWaepaMemberReferenceAdoption(db: DatabaseSchema) {
   if (!source.includes("MI (optional)")) throw new Error("WAEPA member-reference source changed");
   const fieldKey = "waepa-member-middle-initial";
   const field = { ...meta("fields", fieldKey), position: 30006, definition: { id: fieldKey, label: "Middle initial", inputType: "text" as const, required: false, maxLength: 1 } };
-  const assignment = { ...meta("siteFieldConfigurations", `site:waepa.membership.${fieldKey}.include`), position: 30006, scope: "site" as const, siteKey: "waepa", clientKey: null, pageKey: "membership", fieldKey, include: true, hidden: false, values: { visibilityConditionId: "condition-waepa-associated-member" } };
+  const assignment = { ...meta("siteFieldConfigurations", `site:waepa.membership.${fieldKey}.include`), position: 30006, scope: "site" as const, siteKey: "waepa", hostingAssociationKey: null, pageKey: "membership", fieldKey, include: true, hidden: false, values: { visibilityConditionId: "condition-waepa-associated-member" } };
   for (const [table, record] of [["fields", field], ["siteFieldConfigurations", assignment]] as const) {
     const rows = db[table] as Array<{ key: string }>; const index = rows.findIndex(row => row.key === record.key); if (index < 0) rows.push(record); else rows[index] = record;
   }

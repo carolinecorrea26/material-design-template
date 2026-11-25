@@ -19,7 +19,7 @@ export {
 } from "./associationSelection";
 import {
   getAssociationsForSite,
-  getClientForSite,
+  getHostingAssociationForSite,
   getEffectiveSiteConfig,
   getSite,
 } from "../repositories/sites";
@@ -32,7 +32,7 @@ export function resolveEffectiveBranding({
   associationId?: AssociationId | null;
 }): ClientBranding {
   const site = getSite(siteId);
-  const client = getClientForSite(siteId);
+  const client = getHostingAssociationForSite(siteId);
   if (!site || !client) throw new Error(`Unknown site id: ${siteId}`);
 
   const association = getAssociationsForSite(siteId).find(entry => entry.id === associationId);
@@ -62,7 +62,7 @@ export function resolveBranding(
 
 export type ResolvedSite = {
   site: NonNullable<ReturnType<typeof getSite>>;
-  client: NonNullable<ReturnType<typeof getClientForSite>>;
+  client: NonNullable<ReturnType<typeof getHostingAssociationForSite>>;
   clientDefaults: ClientConfig["pages"] | object;
   siteOverrides?: object;
   effective: ClientConfig;
@@ -71,7 +71,7 @@ export type ResolvedSite = {
 
 export function resolveSite(siteId: SiteId): ResolvedSite {
   const site = getSite(siteId);
-  const client = getClientForSite(siteId);
+  const client = getHostingAssociationForSite(siteId);
   if (!site || !client) throw new Error(`Unknown site id: ${siteId}`);
   return {
     site,

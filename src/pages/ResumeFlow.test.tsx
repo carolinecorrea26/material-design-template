@@ -128,7 +128,7 @@ describe('restored resume flow', () => {
     expect(container.textContent).toContain('(•••)•••1234');
     expect(container.textContent).not.toContain('1111');
   });
-  it('shows the countdown, verifies the saved application, and shows the success check before navigation', async () => {
+  it('shows the countdown and opens the saved application as soon as verification succeeds', async () => {
     let complete!: (result: never) => void;
     vi.mocked(applicantRecovery.verify).mockReturnValue(new Promise(resolve => { complete = resolve; }));
     await act(async () => root.render(<MemoryRouter initialEntries={[sessionPath()]}><ResumeCode /><LocationProbe /></MemoryRouter>));
@@ -139,9 +139,6 @@ describe('restored resume flow', () => {
     expect(container.querySelector('[aria-label="Verifying code"]')).not.toBeNull();
     await act(async () => complete({ recoveryActor: 'applicant', advisorFlow: false, resumePage: 'eligibility', values: { email: 'member@example.invalid' } } as never));
     expect(restore).toHaveBeenCalledOnce();
-    expect(container.querySelector('[aria-label="Verified successfully"]')).not.toBeNull();
-    expect(container.querySelector('output')?.textContent).toContain('/resume-code:');
-    await act(async () => vi.advanceTimersByTime(1200));
     expect(container.querySelector('output')?.textContent).toContain('/eligibility:{"resumeLoaded":true}');
   });
 });

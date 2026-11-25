@@ -11,7 +11,7 @@ import ResponsiveTableContainer from "../../components/docs/ResponsiveTableConta
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"];
 const colors = { current: "#1565c0", prior: "#90caf9" };
 const formatValue = (value: number, unit: AnalyticsMetric["unit"]) => unit === "percent" ? `${value.toFixed(1)}%` : Math.round(value).toLocaleString();
-const portfolio = (rows: AnalyticsMeasurement[]) => rows.filter((row) => !row.siteId && !row.clientId && !row.device);
+const portfolio = (rows: AnalyticsMeasurement[]) => rows.filter((row) => !row.siteId && !row.hostingAssociationId && !row.device);
 const yearOf = (row: AnalyticsMeasurement) => Number(row.periodStart.slice(0, 4));
 
 function totalFor(rows: AnalyticsMeasurement[], metricKey: string, year: number) {

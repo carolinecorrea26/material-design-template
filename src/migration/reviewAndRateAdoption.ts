@@ -19,7 +19,7 @@ export function applyReviewAndRateAdoption(db: DatabaseSchema) {
     db.configurationValues = db.configurationValues.filter(row => row.key !== key);
     const metadata = { id: key, key, ...libraryMetadata("configurationDefinitions", key, "docs/archive/step3-review-and-rating.md") };
     db.configurationDefinitions.push({ ...metadata, position: 0, definition: { path: null, metadata: { version: 1 }, target } });
-    db.configurationValues.push({ ...metadata, ...libraryMetadata("configurationValues", key, "docs/archive/step3-review-and-rating.md"), position: 0, scope: "site", siteKey, clientKey: null, configurationKey: key, value: value as Json });
+    db.configurationValues.push({ ...metadata, ...libraryMetadata("configurationValues", key, "docs/archive/step3-review-and-rating.md"), position: 0, scope: "site", siteKey, hostingAssociationKey: null, configurationKey: key, value: value as Json });
   };
   const cells = new Map(mcrSource.cells.map(cell => [`${cell.sheet}!${cell.cell}`, String(cell.value)]));
   for (const scope of activeSiteMigrationScope.sites) {
@@ -41,7 +41,7 @@ export function applyReviewAndRateAdoption(db: DatabaseSchema) {
       if (!db.fields.some(field => field.key === id)) db.fields.push({ id, key: id, ...libraryMetadata("fields", id, "src/config/fields/index.ts"), position: 0, definition: fieldCatalog[id] });
       const key = `${scope.key}.review.${id}.notice`;
       db.siteFieldConfigurations = db.siteFieldConfigurations.filter(row => row.key !== key);
-      db.siteFieldConfigurations.push({ id: key, key, ...libraryMetadata("siteFieldConfigurations", key, review.blocks.find(block => block.fields.includes(id))!.sourceReferences.join("; ")), position: 30000 + position, scope: "site", siteKey: scope.key, clientKey: null, pageKey: "review", fieldKey: id, include: true, hidden: false, values: {} });
+      db.siteFieldConfigurations.push({ id: key, key, ...libraryMetadata("siteFieldConfigurations", key, review.blocks.find(block => block.fields.includes(id))!.sourceReferences.join("; ")), position: 30000 + position, scope: "site", siteKey: scope.key, hostingAssociationKey: null, pageKey: "review", fieldKey: id, include: true, hidden: false, values: {} });
     }
     const site = db.sites.find(site => site.key === scope.key)!;
     for (const assignment of db.siteProducts.filter(product => product.siteId === site.id && product.enabled)) {

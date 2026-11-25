@@ -12,15 +12,15 @@ import type { SiteReadAdapter, SiteSnapshot } from "./siteRepository";
 export async function loadPersistedSiteAdapter(adapter: PersistenceAdapter): Promise<SiteReadAdapter> {
   const [clients, sites, organizations, profiles, associations, relationships, policies,
     definitions, values, branding, support, flows, steps, transitions, assignments] = await Promise.all([
-    adapter.list("clients"), adapter.list("sites"), adapter.list("organizations"), adapter.list("organizationProfiles"),
+    adapter.list("associationEntities"), adapter.list("sites"), adapter.list("organizations"), adapter.list("organizationProfiles"),
     adapter.list("associations"), adapter.list("siteAssociations"), adapter.list("sitePolicies"),
     adapter.list("configurationDefinitions"), adapter.list("configurationValues"),
     adapter.list("brandingProfiles"), adapter.list("supportProfiles"), adapter.list("flows"),
     adapter.list("flowSteps"), adapter.list("flowTransitions"), adapter.list("siteFlows"),
   ]);
-  const sameScope = (row: Scope, scope: "client" | "site", key: string) => row.scope === scope && (scope === "client" ? row.clientKey : row.siteKey) === key;
+  const sameScope = (row: Scope, scope: "association" | "site", key: string) => row.scope === scope && (scope === "association" ? row.hostingAssociationKey : row.siteKey) === key;
   const ordered = <T extends { position: number }>(rows: T[]) => [...rows].sort((a, b) => a.position - b.position);
-  function settings(scope: "client" | "site", key: string): Partial<ClientConfigurationDefaults> {
+  function settings(scope: "association" | "site", key: string): Partial<ClientConfigurationDefaults> {
     const result: Record<string, unknown> = {};
     for (const row of ordered(values.filter(v => sameScope(v, scope, key)))) {
       const definition = definitions.find(d => d.key === row.configurationKey);
@@ -48,22 +48,22 @@ export async function loadPersistedSiteAdapter(adapter: PersistenceAdapter): Pro
     if (Object.keys(overrides).length) result.flows = { overrides };
     return result as Partial<ClientConfigurationDefaults>;
   }
-  const clientEntities: SiteSnapshot["clientEntities"] = clients.filter(c => sites.some(s => !s.deletedAt && s.clientId === c.id)).map(client => {
+  const hostingAssociations: SiteSnapshot["hostingAssociations"] = clients.filter(c => sites.some(s => !s.deletedAt && s.hostingAssociationId === c.id)).map(client => {
     const organization = organizations.find(o => o.id === client.organizationId);
-    const clientBranding = branding.find(r => sameScope(r, "client", client.key));
-    const clientSupport = support.find(r => sameScope(r, "client", client.key));
-    const defaults = settings("client", client.key);
+    const clientBranding = branding.find(r => sameScope(r, "association", client.key));
+    const clientSupport = support.find(r => sameScope(r, "association", client.key));
+    const defaults = settings("association", client.key);
     if (!organization || !clientBranding || !clientSupport || !defaults.coverages) throw new Error(`Incomplete compatibility client: ${client.key}`);
     return { id: client.key, tpaId: organization.key, name: client.name, acronym: client.acronym,
       branding: clientBranding.definition as ClientBranding, support: clientSupport.definition as ClientSupport,
       configurationDefaults: defaults as ClientConfigurationDefaults };
   });
   const siteEntities: SiteSnapshot["siteEntities"] = sites.filter(s => !s.deletedAt).map(site => {
-    const client = clients.find(c => c.id === site.clientId);
+    const client = clients.find(c => c.id === site.hostingAssociationId);
     const policy = policies.find(p => p.siteKey === site.key);
     if (!client || !policy) throw new Error(`Incomplete compatibility site: ${site.key}`);
     const overrides = settings("site", site.key);
-    return { id: site.key, clientId: client.key, name: site.name, templateType: site.templateType,
+    return { id: site.key, hostingAssociationId: client.key, name: site.name, templateType: site.templateType,
       status: site.status === "active" ? "active" : "inactive",
       ...policy.definition,
       ...(Object.keys(overrides).length ? { configurationOverrides: overrides } : {}),
@@ -72,16 +72,16 @@ export async function loadPersistedSiteAdapter(adapter: PersistenceAdapter): Pro
     };
   });
   const snapshot: SiteSnapshot = {
-    clientEntities, siteEntities,
-    tpaEntities: organizations.filter(o => clientEntities.some(c => c.tpaId === o.key)).map(o => {
+    hostingAssociations, siteEntities,
+    tpaEntities: organizations.filter(o => hostingAssociations.some(c => c.tpaId === o.key)).map(o => {
       const profile = profiles.find(p => p.organizationKey === o.key);
       if (!profile) throw new Error(`Missing compatibility organization: ${o.key}`);
       return { id: o.key, ...profile.definition };
     }),
-    associationEntities: ordered(associations.filter(a => clientEntities.some(c => c.id === a.clientKey))).map(a => ({ id: a.key, clientId: a.clientKey, ...a.definition })),
+    associationEntities: ordered(associations.filter(a => hostingAssociations.some(c => c.id === a.hostingAssociationKey))).map(a => ({ id: a.key, hostingAssociationId: a.hostingAssociationKey, ...a.definition })),
     siteAssociationEntities: ordered(relationships.filter(r => siteEntities.some(s => s.id === r.siteKey))).map(r => ({ id: r.key, siteId: r.siteKey, associationId: r.associationKey, enabled: r.enabled })),
     siteCoverageEntities: siteEntities.flatMap(site => {
-      const client = clientEntities.find(c => c.id === site.clientId)!;
+      const client = hostingAssociations.find(c => c.id === site.hostingAssociationId)!;
       return (site.configurationOverrides?.coverages?.enabled ?? client.configurationDefaults.coverages.enabled ?? []).map(coverageId => ({ id: `${site.id}--${coverageId}`, siteId: site.id, coverageId, enabled: true }));
     }),
     aliases: sites.filter(s => !s.deletedAt).map(s => {

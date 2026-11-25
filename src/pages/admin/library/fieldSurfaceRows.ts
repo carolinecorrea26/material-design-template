@@ -1,7 +1,6 @@
-import { withFreshStartCatalog } from "../../../domain/freshStartCatalog";
 import { getPhoneTypeFieldId } from "../../../domain/phoneFields";
 import { resolveMappedFields, siteUsesRequirementFields } from "../../../domain/requirementFields";
-import type { LibraryCatalog } from "../../../services/libraryCatalogService";
+import { compileLibraryCatalog, isProjectedLibraryCatalog, type LibraryCatalog } from "../../../services/libraryCatalogService";
 import type { FieldDefinition } from "../../../domain/fields";
 import { getSiteFieldInventory } from "../../../config/fields/inspectionInventory";
 import { resolveCompiledPrototypeLibrary } from "../../../domain/prototypeLibrary";
@@ -16,9 +15,23 @@ export type FieldSurfaceRow = { position?: number; key: string; field: FieldDefi
 
 /** Saved page definitions remain authoritative; inspection metadata identifies shared tool surfaces. */
 export function fieldSurfaceRows(catalog: LibraryCatalog, siteKey: string): FieldSurfaceRow[] {
-  return compiledFieldSurfaceRows({ ...catalog, data: withFreshStartCatalog(catalog.data, siteKey === "all" ? undefined : siteKey, catalog.siteScope) }, siteKey);
+  return compiledFieldSurfaceRows(compileLibraryCatalog(catalog, siteKey), siteKey);
 }
+const fieldSurfacesByCatalog = new WeakMap<LibraryCatalog, Map<string, FieldSurfaceRow[]>>();
+
 export function compiledFieldSurfaceRows(catalog: LibraryCatalog, siteKey: string): FieldSurfaceRow[] {
+  if (!isProjectedLibraryCatalog(catalog)) return buildFieldSurfaceRows(catalog, siteKey);
+  let bySite = fieldSurfacesByCatalog.get(catalog);
+  if (!bySite) {
+    bySite = new Map();
+    fieldSurfacesByCatalog.set(catalog, bySite);
+  }
+  const rows = bySite.get(siteKey) ?? buildFieldSurfaceRows(catalog, siteKey);
+  bySite.set(siteKey, rows);
+  return rows;
+}
+
+function buildFieldSurfaceRows(catalog: LibraryCatalog, siteKey: string): FieldSurfaceRow[] {
   const fields = compiledStoredFieldRows(catalog, siteKey);
   const inlineKeys = (page: string) => catalog.data.pages.find(row => row.key === page)?.definition.inlineFieldKeys;
   const pageName = (page: string) => catalog.data.pages.find(row => row.key === page)?.definition.displayName ?? page;

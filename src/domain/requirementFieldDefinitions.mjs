@@ -7,6 +7,26 @@ const supportedKeys = new Set(["id", "name", "type", "label", "required", "peopl
 const configurationKeys = new Set(["default", "type", "label", "options", "placeholder", "labelVariant", "optionOutcome"]);
 const overrideKeys = new Set(["configuration", "label", "required", "options", "format", "inputMode", "minLength", "maxLength", "optionalForProducts"]);
 const object = (value) => value !== null && typeof value === "object" && !Array.isArray(value);
+
+/** One index for a compiler run. Keep every match so duplicates still fail validation. */
+export function createMappedFieldResolver(source) {
+    const indexRows = rows => {
+        const index = new Map();
+        for (const row of rows) {
+            if (!object(row)) continue;
+            const matches = index.get(row.id);
+            if (matches) matches.push(row);
+            else index.set(row.id, [row]);
+        }
+        return index;
+    };
+    const registered = source.fieldIds?.fields;
+    const details = source.fieldDetails?.fields;
+    const index = Array.isArray(registered) && Array.isArray(details)
+        ? { registered: indexRows(registered), details: indexRows(details) }
+        : undefined;
+    return (mapping, options) => resolveMappedFields(mapping, { ...options, source }, index);
+}
 /** A page can preserve its established saved-answer naming without duplicating fields. */
 export function resolveAnswerKey(field, person, patterns = {}) {
     if (!object(patterns) || Object.entries(patterns).some(([key, value]) => !['self', 'spouse', 'child', 'beneficiary'].includes(key) || typeof value !== 'string' || !/^(?:[a-z][a-z0-9-]*-)?\{field\}(?:-[a-z][a-z0-9-]*)?$/.test(value))) throw new Error('Invalid fresh-start answer key pattern');
@@ -66,7 +86,7 @@ function scopedFieldParticipation(sitePage, mapping, person) {
  * Resolve every field a page or component mapping lists for one person:
  * global definition + field details + option lists, then the site's overrides.
  */
-export function resolveMappedFields(mapping, { siteId, person = "self", page, includeAll = false, source } = {}) {
+export function resolveMappedFields(mapping, { siteId, person = "self", page, includeAll = false, source } = {}, indexedFields) {
     if (!object(source.fieldIds) || !Array.isArray(source.fieldIds.fields) ||
         !object(source.fieldDetails) || !Array.isArray(source.fieldDetails.fields) || !object(source.optionLists))
         throw new Error("Invalid field requirements");
@@ -107,8 +127,8 @@ export function resolveMappedFields(mapping, { siteId, person = "self", page, in
         if (applies(constraint?.included) && hidden.has(id)) throw new Error(`Required mapped field cannot be hidden: ${siteId}/${pageKey ?? mappingName(mapping)}/${id}`);
         if (!includeAll && (row.default === "off" ? !included.has(id) : hidden.has(id)))
             return [];
-        const listed = registered.filter(entry => object(entry) && entry.id === id);
-        const found = details.filter(entry => object(entry) && entry.id === id);
+        const listed = indexedFields ? indexedFields.registered.get(id) ?? [] : registered.filter(entry => object(entry) && entry.id === id);
+        const found = indexedFields ? indexedFields.details.get(id) ?? [] : details.filter(entry => object(entry) && entry.id === id);
         if (listed.length !== 1 || found.length !== 1 || !object(found[0]))
             throw new Error(`Missing or ambiguous field requirement: ${id}`);
         const unsupported = Object.keys(found[0]).filter(key => !supportedKeys.has(key));

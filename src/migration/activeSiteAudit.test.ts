@@ -14,9 +14,9 @@ describe("active Site migration contract", () => {
     expect(migrationSiteKeys).toEqual(["demo", "abe", "ama", "asce", "avma", "csea", "nso", "isitrust", "waepa", "waepa-gi"]);
     expect(implementedSiteKeys).toEqual(migrationSiteKeys);
     expect(report.sites.map(site => site.siteKey)).toEqual(migrationSiteKeys);
-    expect(report.sites.filter(site => site.clientKey === "waepa").map(site => site.siteKey)).toEqual(["waepa", "waepa-gi"]);
+    expect(report.sites.filter(site => site.hostingAssociationKey === "waepa").map(site => site.siteKey)).toEqual(["waepa", "waepa-gi"]);
     expect(report.sites.filter(site => !site.mcrRequired).map(site => site.siteKey)).toEqual(["demo"]);
-    expect(new Set(report.clientCatalogs.map(catalog => catalog.clientKey)).size).toBe(8);
+    expect(new Set(report.clientCatalogs.map(catalog => catalog.hostingAssociationKey)).size).toBe(8);
   });
   it("gives every enabled assignment a complete review register without declaring parity", () => {
     const assignments = db.siteProducts.filter(row => row.enabled);
@@ -47,13 +47,13 @@ describe("active Site migration contract", () => {
     expect(() => createActiveSiteAudit({ ...db, sites: [...db.sites, { ...db.sites[0], id: "new", key: "new" }] }, mcrSource)).toThrow("outside the approved scope");
   });
   it("keeps alias and product identity suggestions separate from adopted ownership", () => {
-    for (const clientKey of ["avma", "isitrust"]) {
-      const catalog = report.clientCatalogs.find(row => row.clientKey === clientKey)!;
+    for (const hostingAssociationKey of ["avma", "isitrust"]) {
+      const catalog = report.clientCatalogs.find(row => row.hostingAssociationKey === hostingAssociationKey)!;
       expect(catalog.products.length).toBeGreaterThan(0);
       expect(catalog.products.every(product => product.ownership === "review-hint-only")).toBe(true);
       expect(catalog.identityReviewHints.every(hint => hint.status === "review-required")).toBe(true);
     }
-    expect(report.clientCatalogs.find(row => row.clientKey === "csea")?.products).toEqual([]);
+    expect(report.clientCatalogs.find(row => row.hostingAssociationKey === "csea")?.products).toEqual([]);
     expect(report.sites.find(row => row.siteKey === "csea")?.products[0].identity.candidates).toEqual([]);
     expect(report.sites.flatMap(site => site.products).every(product => product.identity.adoptedSources.length === 0)).toBe(true);
     const mainCount = db.products.filter(product => /^Main!D\d+$/.test(product.sourceReference ?? "")).length;

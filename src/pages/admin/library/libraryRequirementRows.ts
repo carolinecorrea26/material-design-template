@@ -33,7 +33,7 @@ export function requirementValue(value: unknown): string {
   if (typeof value === 'object') return Object.entries(value).filter(([key]) => !libraryEvidenceKeys.has(key)).map(([key, item]) => `${humanize(key)}: ${requirementValue(item)}`).join('\n');
   return readableValue(value);
 }
-const metadata = new Set(['id', 'key', 'displayId', 'providedBy', 'sourceReference', 'createdAt', 'updatedAt', 'deletedAt', 'position', 'scope', 'siteKey', 'siteId', 'clientKey', 'clientId', 'productKey', 'riderKey', 'applicantTypeKey', 'applicantKey', 'definition']);
+const metadata = new Set(['id', 'key', 'displayId', 'providedBy', 'sourceReference', 'createdAt', 'updatedAt', 'deletedAt', 'position', 'scope', 'siteKey', 'siteId', 'hostingAssociationKey', 'clientId', 'productKey', 'riderKey', 'applicantTypeKey', 'applicantKey', 'definition']);
 
 export function configurationCategory(row: ConfigurationDefinitionRow): string {
   const kind = row.definition.target?.kind ?? configurationPath(row);
@@ -60,7 +60,7 @@ export function libraryRequirementRows(catalog: LibraryCatalog, siteKey: string,
   const plans = new Set(data.productCoveragePlans.filter(row => products.has(row.productKey)).map(row => row.planKey));
   const variants = new Set(data.coveragePlanVariants.filter(row => plans.has(row.planKey)).map(row => row.key));
   const source = (row: { sourceReference?: string | null }) => row.sourceReference ?? 'Source not recorded';
-  const scope = (row: StoredRow) => String(row.siteKey ?? row.clientKey ?? row.scope ?? 'Global');
+  const scope = (row: StoredRow) => String(row.siteKey ?? row.hostingAssociationKey ?? row.scope ?? 'Global');
   const rows: LibraryRequirementRow[] = [];
   for (const assignment of data.siteProducts.filter(row => !site || row.siteId === site.id)) {
     const assignedSite = data.sites.find(row => row.id === assignment.siteId);
@@ -72,7 +72,7 @@ export function libraryRequirementRows(catalog: LibraryCatalog, siteKey: string,
   for (const row of data.rules.filter(row => visible.has(row.key) && (row.definition.documentedIn ?? 'rules') === 'rules')) {
     const rule = row.definition;
     const authority = ruleAuthority(row);
-    const assignments = data.ruleAssignments.filter(assignment => assignment.ruleKey === row.key && (!site || assignment.scope === 'global' || assignment.siteKey === siteKey || assignment.scope === 'client' && assignment.clientKey === resolved?.clientKey));
+    const assignments = data.ruleAssignments.filter(assignment => assignment.ruleKey === row.key && (!site || assignment.scope === 'global' || assignment.siteKey === siteKey || assignment.scope === 'association' && assignment.hostingAssociationKey === resolved?.hostingAssociationKey));
     const predicates = data.rulePredicates.filter(item => item.ruleKey === row.key);
     const actions = data.structuredRuleActions.filter(item => item.ruleKey === row.key);
     const conditions = data.ruleConditions.filter(item => item.ruleKey === row.key).map(item => item.conditionKey);
@@ -80,7 +80,7 @@ export function libraryRequirementRows(catalog: LibraryCatalog, siteKey: string,
     rows.push({ id: `rules:${row.key}`, key: row.key, dataset: 'rules', name: rule.rule, templates: rule.templates, implementation: rule.ref, hierarchy: (rule.organization ?? organizeRule(rule)).path,
       behavior: [rule.behavior, ...(rule.execution ? [`Routing definition:\n${requirementValue(rule.execution)}`] : []), ...(conditions.length ? [`Conditions: ${conditions.join(', ')}`] : []), ...(decisions.length ? [`Decision inputs:\n${requirementValue(decisions)}`] : []), ...(predicates.length ? [`Inputs / conditions:\n${requirementValue(predicates.map(({ fact, operator, value }) => ({ fact, operator, value })))}`] : []), ...(actions.length ? [`Recorded outcomes (${authority.kind === 'source-pattern' || authority.kind === 'source-reference' ? 'reference model; not a running rule' : 'documentation'}):\n${requirementValue(actions.map(({ actionType, value }) => ({ actionType, value })))}`] : [])].join('\n\n'),
       categories: rule.categories ?? [rule.area], sequence: rule.sequence ?? row.position + 9000, dependsOn: rule.dependsOn ?? [], source: source(row) === 'Source not recorded' || row.sourceReference?.startsWith('prototype:') ? rule.ref : source(row),
-      site: assignments.map(item => item.siteKey ?? item.clientKey ?? 'Global').join(', ') || 'Unassigned', product: '', applicant: '', status: rule.documentationStatus === 'planned' ? 'Planned' : resolved?.configuration.routing?.ruleKeys.includes(row.key) ? 'Executable routing rule' : !resolved && rule.execution ? 'Routing definition; assignment required' : authority.kind === 'source-pattern' || authority.kind === 'source-reference' ? authority.label : 'Documented behavior',
+      site: assignments.map(item => item.siteKey ?? item.hostingAssociationKey ?? 'Global').join(', ') || 'Unassigned', product: '', applicant: '', status: rule.documentationStatus === 'planned' ? 'Planned' : resolved?.configuration.routing?.ruleKeys.includes(row.key) ? 'Executable routing rule' : !resolved && rule.execution ? 'Routing definition; assignment required' : authority.kind === 'source-pattern' || authority.kind === 'source-reference' ? authority.label : 'Documented behavior',
     });
   }
   for (const [dataset, category] of businessDatasets) {
@@ -114,7 +114,7 @@ export function libraryRequirementRows(catalog: LibraryCatalog, siteKey: string,
     const target = definition.definition.target;
     const product = target && 'productKey' in target ? target.productKey : /^coverages\.(?:coverageAmounts|ranges|overrides)\.([^.]+)/.exec(configurationPath(definition))?.[1] ?? '';
     if (site && product && !products.has(product)) continue;
-    const values = site ? effective.filter(row => row.key === definition.key).map(row => ({ key: row.key, value: row.value, provenance: row.provenance, scope: siteKey })) : data.configurationValues.filter(row => row.configurationKey === definition.key).map(row => ({ key: row.key, value: row.value, provenance: [row], scope: row.siteKey ?? row.clientKey ?? 'Global' }));
+    const values = site ? effective.filter(row => row.key === definition.key).map(row => ({ key: row.key, value: row.value, provenance: row.provenance, scope: siteKey })) : data.configurationValues.filter(row => row.configurationKey === definition.key).map(row => ({ key: row.key, value: row.value, provenance: [row], scope: row.siteKey ?? row.hostingAssociationKey ?? 'Global' }));
     for (const value of values) {
       const assignedSite = data.sites.find(row => row.key === value.scope);
       const normalizedAvailability = configurationPath(definition) === 'coverages.enabled' && assignedSite && data.siteProducts.some(row => row.siteId === assignedSite.id);

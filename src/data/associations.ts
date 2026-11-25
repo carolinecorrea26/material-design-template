@@ -31,7 +31,7 @@ const isitrustAssociationNames = [
 export const associationEntities: Association[] = [
   {
     id: "american-medical-association",
-    clientId: "ama",
+    hostingAssociationId: "ama",
     name: "American Medical Association",
     acronym: "AMA",
     logo: "/client/ama/logo.png",
@@ -39,7 +39,7 @@ export const associationEntities: Association[] = [
   },
   {
     id: "american-society-of-civil-engineers",
-    clientId: "asce",
+    hostingAssociationId: "asce",
     name: "American Society of Civil Engineers",
     acronym: "ASCE",
     logo: "/client/asce/logo.png",
@@ -47,7 +47,7 @@ export const associationEntities: Association[] = [
   },
   {
     id: "american-veterinary-medical-association",
-    clientId: "avma",
+    hostingAssociationId: "avma",
     name: "AVMA LIFE Trust",
     acronym: "AVMA",
     logo: "/client/avma/logo.png",
@@ -55,7 +55,7 @@ export const associationEntities: Association[] = [
   },
   {
     id: "waepa",
-    clientId: "waepa",
+    hostingAssociationId: "waepa",
     name: "Worldwide Assurance for Employees of Public Agencies",
     acronym: "WAEPA",
     logo: "/client/waepa/logo.png",
@@ -63,7 +63,7 @@ export const associationEntities: Association[] = [
   },
   ...isitrustAssociationNames.map(([id, name]): Association => ({
     id,
-    clientId: "isitrust",
+    hostingAssociationId: "isitrust",
     name,
   })),
 ];

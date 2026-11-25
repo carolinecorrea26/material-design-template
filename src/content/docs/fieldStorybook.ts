@@ -1,4 +1,4 @@
-import type { FieldDefinition } from "../../config/fields/types";
+import { getLabelVariant, type FieldDefinition } from "../../domain/fields";
 
 export type FieldStorybookReference = {
   label: string;
@@ -17,9 +17,7 @@ const story = (slug: string, label: string): FieldStorybookReference => ({
 export function getFieldStorybookReference(
   field: Pick<FieldDefinition, "id" | "label" | "inputType"> & Partial<FieldDefinition>,
 ): FieldStorybookReference | undefined {
-  const standardLabel =
-    field.labelVariant === "standard" ||
-    (!field.labelVariant && field.label.length >= 40);
+  const standardLabel = getLabelVariant(field) === "standard";
 
   if (field.multiline) return story("textarea", "Textarea");
 

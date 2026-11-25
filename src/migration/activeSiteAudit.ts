@@ -6,7 +6,7 @@ import { resolveDatabaseSite } from "./resolve";
 type SourceSnapshot = { workbook: string; sha256: string; checklistSha256: string };
 type Evidence = { table: string; key: string; sourceReference: string | null };
 type InspectionRow = { id: string; key?: string; productKey?: string; siteKey?: string | null; siteId?: string;
-  scope?: string; clientKey?: string | null; sourceReference?: string | null; definition?: { productKey?: string | null } };
+  scope?: string; hostingAssociationKey?: string | null; sourceReference?: string | null; definition?: { productKey?: string | null } };
 const compare = (a: string, b: string) => a < b ? -1 : a > b ? 1 : 0;
 const text = (value: string | undefined) => value?.trim().toLowerCase() ?? "";
 
@@ -24,8 +24,8 @@ export function createActiveSiteAudit(db: DatabaseSchema, snapshot: SourceSnapsh
       scopeErrors.push(`Missing, duplicate or inactive scoped Site: ${scoped.key}`);
       continue;
     }
-    const client = db.clients.find(row => row.id === site.clientId);
-    if (client?.key !== scoped.clientKey || client.status !== "active") scopeErrors.push(`Client ownership mismatch: ${scoped.key}`);
+    const client = db.associationEntities.find(row => row.id === site.hostingAssociationId);
+    if (client?.key !== scoped.hostingAssociationKey || client.status !== "active") scopeErrors.push(`Client ownership mismatch: ${scoped.key}`);
     const assignments = db.siteProducts.filter(row => row.siteId === site.id && row.enabled);
     if (new Set(assignments.map(row => row.productKey)).size !== assignments.length) scopeErrors.push(`Duplicate enabled products: ${scoped.key}`);
     if (!assignments.length) scopeErrors.push(`No enabled products: ${scoped.key}`);
@@ -44,16 +44,16 @@ export function createActiveSiteAudit(db: DatabaseSchema, snapshot: SourceSnapsh
     const number = /\d+$/.exec(row.cell)?.[0];
     if (number && row.value !== null && String(row.value).trim()) mainEvidence.set(number, [...mainEvidence.get(number) ?? [], row]);
   }
-  const clients = [...new Set(contract.sites.filter(site => site.mcrRequired).map(site => site.clientKey))];
-  const clientCatalogs = clients.sort(compare).map(clientKey => {
-    const owned = new Set(db.productClients.filter(row => row.clientKey === clientKey).map(row => row.productKey));
-    const hints = contract.clientIdentityReviewHints.filter(hint => hint.clientKey === clientKey);
+  const clients = [...new Set(contract.sites.filter(site => site.mcrRequired).map(site => site.hostingAssociationKey))];
+  const clientCatalogs = clients.sort(compare).map(hostingAssociationKey => {
+    const owned = new Set(db.productClients.filter(row => row.hostingAssociationKey === hostingAssociationKey).map(row => row.productKey));
+    const hints = contract.clientIdentityReviewHints.filter(hint => hint.hostingAssociationKey === hostingAssociationKey);
     const hinted = new Set(mainProducts.filter(product => {
       const rowNumber = Number(product.sourceReference!.replace("Main!D", ""));
       const acronym = mainCells.get(`B${rowNumber}`)?.value;
       return typeof acronym === "string" && hints.some(hint => text(hint.sourceAcronym) === text(acronym));
     }).map(product => product.key));
-    return { clientKey, identityReviewHints: hints, products: mainProducts.filter(product => owned.has(product.key) || hinted.has(product.key)).sort((a, b) => compare(a.key, b.key)).map(product => {
+    return { hostingAssociationKey, identityReviewHints: hints, products: mainProducts.filter(product => owned.has(product.key) || hinted.has(product.key)).sort((a, b) => compare(a.key, b.key)).map(product => {
       const rowNumber = Number(product.sourceReference!.replace("Main!D", ""));
       const evidence = mainEvidence.get(String(rowNumber)) ?? [];
       return { productKey: product.key, name: product.definition.name, categoryKey: product.categoryKey,
@@ -78,7 +78,7 @@ export function createActiveSiteAudit(db: DatabaseSchema, snapshot: SourceSnapsh
       capabilities = candidate.resolution.implementedScopes;
       candidateIssues = candidate.configuration.issues;
     } catch (error) { candidateError = error instanceof Error ? error.message : String(error); }
-    const clientCatalog = clientCatalogs.find(catalog => catalog.clientKey === scoped.clientKey);
+    const clientCatalog = clientCatalogs.find(catalog => catalog.hostingAssociationKey === scoped.hostingAssociationKey);
     const enabled = resolved.coverage.filter(product => product.enabled).sort((a, b) => compare(a.id, b.id));
     const products = enabled.map(({ effective: product }) => {
       // Only compare primary identifiers as an exact pair. Scoped variants require separate review.
@@ -95,7 +95,7 @@ export function createActiveSiteAudit(db: DatabaseSchema, snapshot: SourceSnapsh
         const rows = domain.tables.flatMap(table => (db[table as TableName] as unknown as InspectionRow[]).filter(row => {
           if ((table === "products" ? row.key : row.productKey ?? row.definition?.productKey) !== product.id) return false;
           if (row.siteId && row.siteId !== site.id || row.siteKey && row.siteKey !== scoped.key) return false;
-          if (row.scope === "client" && row.clientKey !== scoped.clientKey || row.scope === "site" && row.siteKey !== scoped.key) return false;
+          if (row.scope === "association" && row.hostingAssociationKey !== scoped.hostingAssociationKey || row.scope === "site" && row.siteKey !== scoped.key) return false;
           return true;
         }).map(row => reference(table, row))).sort((a, b) => compare(`${a.table}/${a.key}`, `${b.table}/${b.key}`));
         return { domain: domain.key, label: domain.label, acceptance: domain.acceptance,
@@ -116,11 +116,11 @@ export function createActiveSiteAudit(db: DatabaseSchema, snapshot: SourceSnapsh
         domains,
       };
     });
-    return { siteKey: site.key, clientKey: scoped.clientKey, name: `${resolved.branding.name} / ${site.name}`, mcrRequired: scoped.mcrRequired,
+    return { siteKey: site.key, hostingAssociationKey: scoped.hostingAssociationKey, name: `${resolved.branding.name} / ${site.name}`, mcrRequired: scoped.mcrRequired,
       status: "review-required", candidateError, candidateIssues,
       experience: { validation: "pending", evidence: {
         pages: db.sitePages.filter(row => row.siteKey === site.key).map(row => reference("sitePages", row)),
-        branding: db.brandingProfiles.filter(row => row.scope === "global" || row.scope === "client" && row.clientKey === scoped.clientKey || row.scope === "site" && row.siteKey === site.key).map(row => reference("brandingProfiles", row)),
+        branding: db.brandingProfiles.filter(row => row.scope === "global" || row.scope === "association" && row.hostingAssociationKey === scoped.hostingAssociationKey || row.scope === "site" && row.siteKey === site.key).map(row => reference("brandingProfiles", row)),
       }, acceptance: "Verify pages, fields, sections, flows, content, support, branding, feature assignments, ordering and provenance against the current template and recorded intentional changes." },
       products,
     };

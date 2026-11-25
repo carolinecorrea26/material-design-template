@@ -19,6 +19,10 @@
   "productCards": {
     "unselectedPrimaryOpacity": 0.04
   },
+  "typography": {
+    "breadcrumbFontSize": "0.875rem",
+    "sectionDividerFontSize": "0.75rem"
+  },
   "formFields": {
     "rowGap": 3,
     "columnGap": 2

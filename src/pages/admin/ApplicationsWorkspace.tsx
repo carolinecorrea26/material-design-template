@@ -16,9 +16,9 @@ async function load() {
     portalDatabaseEnabled
       ? portalRequest<{ applications: Application[]; events: ApplicationEvent[] }>('/applications', { action: 'list' })
       : Promise.all([applicationService.getApplications(), persistence.list('applicationEvents')]).then(([applications, events]) => ({ applications, events })),
-    foundationRepositories.sites.list(), foundationRepositories.clients.list(),
+    foundationRepositories.sites.list(), foundationRepositories.associationEntities.list(),
   ]);
-  return { ...operation, sites, clients };
+  return { ...operation, sites, associationEntities: clients };
 }
 export default function ApplicationsWorkspace() {
   const canEdit = useCanEdit();
@@ -42,7 +42,7 @@ export default function ApplicationsWorkspace() {
   }
   if (loading) return <Workspace><Typography>Loading applications…</Typography></Workspace>; if (error) return <Workspace><Alert severity="error">{error.message}</Alert></Workspace>;
   const application = data?.applications.find((entry) => entry.id === applicationId || entry.applicationNumber === applicationId);
-  if (application) { const site = data?.sites.find((item) => item.id === application.siteId); const client = data?.clients.find((item) => item.id === site?.clientId); const events = data?.events.filter((event) => event.applicationId === application.id).sort((a, b) => b.createdAt.localeCompare(a.createdAt)) ?? [];
+  if (application) { const site = data?.sites.find((item) => item.id === application.siteId); const client = data?.associationEntities.find((item) => item.id === site?.hostingAssociationId); const events = data?.events.filter((event) => event.applicationId === application.id).sort((a, b) => b.createdAt.localeCompare(a.createdAt)) ?? [];
     const reviewDisabled = !canEdit || saving || application.status !== 'Pending TPA Review';
     return <Workspace><WorkspaceHeader title={application.applicationNumber} description="Prototype application" />
       {actionError && <Alert severity="error">{actionError}</Alert>}
@@ -51,7 +51,7 @@ export default function ApplicationsWorkspace() {
           <Meta label="Status"><StatusChip label={application.status} /></Meta>
           <Meta label="Action owner"><StatusChip label={application.currentActionOwnerType} /></Meta>
           <Meta label="Site">{site?.displayName ?? site?.key}</Meta>
-          <Meta label="Client">{client?.name}</Meta>
+          <Meta label="Association">{client?.name}</Meta>
           <Meta label="Coverage">{application.coverages ? <ul style={{ paddingInlineStart: 20, margin: 0 }}>{application.coverages.map(item => <li key={`${item.productKey}:${item.applicant}`}>
             {item.productKey} · {item.applicant}{item.amount !== null && ` · ${item.amount.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })}`}
           </li>)}</ul> : application.productKey}</Meta>

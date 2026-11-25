@@ -13,7 +13,7 @@ export function applySharedLifeQuestionnaireAdoption(db: DatabaseSchema) {
     const site = db.sites.find(site => site.key === siteKey)!;
     const products = db.siteProducts.filter(link => link.siteId === site.id && link.enabled && db.products.some(product => product.key === link.productKey && product.categoryKey === "LI")).map(link => link.productKey);
     const policy: HealthQuestionnairePolicy = { version: 1, applicability: "site", associationKeys: [], pageId: "health-tele", variants: [{ key: "life", when: { any: products }, items: structuredClone(life.items) }] };
-    const key = `${siteKey}.general.health-questionnaires`, value = { ...meta("configurationValues", key), configurationKey: base.configurationKey, position: 0, scope: "site" as const, siteKey, clientKey: null, value: policy as unknown as Json };
+    const key = `${siteKey}.general.health-questionnaires`, value = { ...meta("configurationValues", key), configurationKey: base.configurationKey, position: 0, scope: "site" as const, siteKey, hostingAssociationKey: null, value: policy as unknown as Json };
     const index = db.configurationValues.findIndex(row => row.key === key); if (index < 0) db.configurationValues.push(value); else db.configurationValues[index] = value;
     return { siteKey, key, policy, fields: healthQuestionnaireFieldKeys(policy).map(key => ({ key, definition: structuredClone(db.fields.find(field => field.key === key)!.definition) })) };
   });

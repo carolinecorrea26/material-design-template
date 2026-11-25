@@ -59,9 +59,9 @@ export const DynamicFeedbackAndStatus = () => (
       </Typography>
     </DocsSection>
 
-    <DocsSection title="Loading & processing states" description="PageTransitionSkeleton preserves form layout during navigation; PrototypeHandoffPage presents the supplied external-screen images.">
+    <DocsSection title="Loading & processing states" description="PageTransitionSkeleton displays during pending form submissions or workspace loads; PrototypeHandoffPage presents the supplied external-screen images.">
       <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 720, mb: 1 }}>
-        <code>PageTransitionSkeleton</code> is shown by <code>FormRoutePage</code> while a page transition completes.
+        <code>PageTransitionSkeleton</code> is shown by <code>FormRoutePage</code> while form submission is pending.
         <code>PrototypeHandoffPage</code> replaces the viewport with configured QuickDecision or DocuSign prototype images; clicking the final image continues through the normal save and transition flow.
         The temporary external processing loaders have been removed. Use the existing amount reservation for inline cost calculation.
       </Typography>

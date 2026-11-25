@@ -1281,7 +1281,7 @@
     },
     {
       "name": "PageTransitionSkeleton",
-      "description": "Shows loading placeholders while the next application page opens.",
+      "description": "Shows loading placeholders while a submission or page is pending.",
       "displayName": "Page transition skeleton",
       "registration": {
         "source": "src/components/feedback/PageTransitionSkeleton.tsx",

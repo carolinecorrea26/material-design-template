@@ -20,7 +20,7 @@ export default function ProductsLibrary({ siteKey }: { siteKey: string }) {
     const product = String(row.productKey ?? (dataset === 'products' ? row.key : ''));
     return { ...row, dataset, recordType, product, name: readableValue(facts.name ?? facts.label ?? row.key),
       description: dataset === 'productIdentifiers' ? readableValue(row.definition) : readableValue(Object.fromEntries(Object.entries(facts).filter(([key]) => ['description', 'definition', 'brochureUrl', 'coverageNote', 'applicantNotes', 'productWarning', 'productContent', 'amountLabel', 'defaultSelected', 'included', 'displayAsProduct', 'hasAmount'].includes(key)))),
-      scopeName: readableValue(row.siteKey ?? (row.siteId ? catalog.data.sites.find(site => site.id === row.siteId)?.key : undefined) ?? row.clientKey ?? (row.scope && row.scope !== 'global' ? row.scope : 'Global template')),
+      scopeName: readableValue(row.siteKey ?? (row.siteId ? catalog.data.sites.find(site => site.id === row.siteId)?.key : undefined) ?? row.hostingAssociationKey ?? (row.scope && row.scope !== 'global' ? row.scope : 'Global template')),
       category: String(row.categoryKey ?? ''),
       relationships: readableValue({ ...(row.riderKey ? { rider: row.riderKey } : {}), ...(row.kind ? { identifierType: row.kind } : {}), ...(facts.groupPolicySitus ? { groupPolicySitus: facts.groupPolicySitus } : {}) }),
     };

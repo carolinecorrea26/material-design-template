@@ -5,7 +5,7 @@ import MigrationScheduleWorkspace from "./MigrationScheduleWorkspace";
 import { persistence } from "../../persistence/client";
 import { createSeedDatabase } from "../../persistence/seed";
 
-vi.mock("../../repositories/foundations", () => ({ foundationRepositories: { clients: { list: async () => createSeedDatabase().clients } } }));
+vi.mock("../../repositories/foundations", () => ({ foundationRepositories: { associationEntities: { list: async () => createSeedDatabase().associationEntities } } }));
 
 let root: Root;
 let container: HTMLDivElement;

@@ -21,7 +21,7 @@ describe("resolvePageVisibility", () => {
 
   it("disabled: a client that excludes a required page (page requirement = none)", () => {
     const excludedClient = {
-      ...clients.abe,
+      ...associationEntities.abe,
       pages: { requirements: { beneficiary: "none" as const } },
     };
     const result = resolvePageVisibility("beneficiary", excludedClient);

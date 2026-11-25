@@ -32,10 +32,9 @@ import { formatCoverageRange } from '../utils/formatCoverageRange';
 import * as legalStories from '../components/content/LegalDocList.stories';
 import type { ReactElement } from 'react';
 import { progressSteps } from '../config/progressSteps';
-import { getBackMessage, getForwardMessages } from '../config/transitionMessages';
 import { useComponentContent } from '../components/content/ComponentContentContext';
 import type { LibraryCatalog } from '../services/libraryCatalogService';
-import { buildContent } from '../content';
+import { buildContent, getContent } from '../content';
 import * as defaults from '../content/defaults';
 import { canonicalContentKey } from './contentReferences.mjs';
 import homeExamples from '../../requirements/global/prototype-fixtures/home-examples.json';
@@ -45,7 +44,7 @@ const catalog = JSON.parse(readFileSync('public/catalog/portal.json', 'utf8')) a
 afterEach(() => installPrototypeLibrary(null));
 function NavigationProbe() {
   const content = useComponentContent();
-  return <><span>{content.navigation.progressStepLabels['getting-started']}</span><span>{progressSteps.find(step => step.id === 'getting-started')!.label}</span><span>{getBackMessage()}</span></>;
+  return <><span>{content.navigation.progressStepLabels['getting-started']}</span><span>{progressSteps.find(step => step.id === 'getting-started')!.label}</span></>;
 }
 
 it('propagates changed JSON wording into Library, prototype, Storybook and standalone defaults', () => {
@@ -63,7 +62,7 @@ it('propagates changed JSON wording into Library, prototype, Storybook and stand
     expect(content.backMessage).toBe(source.content['navigation.back-message']);
     expect(content.transitionMessages.contact).toEqual(source.content['navigation.transition-messages.contact']);
   }
-  expect(rows.find(row => row.key === 'navigation.back-message')?.defaultValue).toBe(source.content['navigation.back-message']);
+  expect(rows.some(row => row.key === 'navigation.back-message')).toBe(false);
   expect(rows.find(row => row.key === 'navigation.progress-step-labels.getting-started')?.defaultValue).toBe(source.content['navigation.progress-step-labels.getting-started']);
   expect(rows.find(row => row.key === 'coverage.error.correct')?.defaultValue).toBe('Source-owned coverage correction');
   expect(rows.find(row => row.key === 'footer.terms-of-use-content.title')?.defaultValue).toBe('Source-owned legal document');
@@ -72,8 +71,7 @@ it('propagates changed JSON wording into Library, prototype, Storybook and stand
     expect(getMockEmailSamples(fixture.site.siteKey).find(email => email.type === 'autosave')?.html).toContain('Source-owned saved message for');
     const html = renderToStaticMarkup(<NavigationProbe />);
     expect(html).toContain('Source-owned progress heading');
-    expect(html).toContain('Source-owned back transition');
-    expect(getForwardMessages('contact')).toEqual(source.content['navigation.transition-messages.contact']);
+    expect(getContent().navigation.transitionMessages.contact).toEqual(source.content['navigation.transition-messages.contact']);
   }
   expect(rows.find(row => row.key === 'email.autosave.intro')?.defaultValue).toBe('Source-owned saved message for {{associationName}}.');
 });
@@ -84,7 +82,7 @@ it('reads a newly installed revision after navigation modules have already loade
   source.content['navigation.back-message'] = 'New revision back transition';
   installPrototypeLibrary(resolvePrototypeLibrary(catalog.data, 'asce', 'new-navigation-revision', source));
   expect(progressSteps.find(step => step.id === 'getting-started')?.label).toBe('New revision progress heading');
-  expect(getBackMessage()).toBe('New revision back transition');
+  expect(getContent().navigation.backMessage).toBe('New revision back transition');
   expect(renderToStaticMarkup(<NavigationProbe />)).not.toContain('Source-owned progress heading');
 });
 

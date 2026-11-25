@@ -5,7 +5,7 @@ import { isAssociationUnderwriting, type AssociationUnderwriting } from "./assoc
 import { isQuickDecisionPolicy, type QuickDecisionPolicy } from "./quickDecisionPolicy";
 
 export type IdentifierRoles = { display: string; rating: string; issue: string; xml: string; pdf: string; portalDummy: string | null };
-export type MappingDimensions = { applicantKey: string; mode: ApplicationMode; associationKey?: string; applicantClass?: string; waitingPeriod?: string; benefitPeriod?: string };
+export type MappingDimensions = { applicantKey: string; mode: ApplicationMode; associationKey?: string; membershipType?: string; applicantClass?: string; waitingPeriod?: string; benefitPeriod?: string };
 export type CoverageJourneyPolicy = {
   version: 1; applicants: string[]; associationChoices: Array<{ key: string; label: string }>;
   associationDisplayNames?: Record<string, string>;
@@ -43,7 +43,7 @@ export function isCoverageJourneyPolicy(v: unknown): v is CoverageJourneyPolicy 
   if (!Array.isArray(v.dependentElections) || !v.dependentElections.every(d => object(d) && string(d.key) && ["spouse", "child"].includes(String(d.applicantKey)) && typeof d.defaultSelected === "boolean" && typeof d.signatureRequired === "boolean" && string(d.attestation) && Array.isArray(d.amountChoices) && d.amountChoices.every(finite) && new Set(d.amountChoices).size === d.amountChoices.length && (d.fixedAmount === null ? d.amountChoices.length > 0 : finite(d.fixedAmount) && d.amountChoices.length === 0) && (d.maximumAgeYears === null || finite(d.maximumAgeYears) && Number.isInteger(d.maximumAgeYears)) && (d.visitsPerYear === null || finite(d.visitsPerYear) && Number.isInteger(d.visitsPerYear)))) return false;
   if (new Set(v.dependentElections.map(d => (d as { key: string }).key)).size !== v.dependentElections.length) return false;
   if (!Array.isArray(v.questions) || !v.questions.every(q => object(q) && (v.applicants as string[]).includes(String(q.applicantKey)) && strings(q.modes) && q.modes.length > 0 && q.modes.every(m => modes.includes(m)) && (q.healthPage === null || ["health-qd", "health-tele", "health-si", "health-di-supp"].includes(String(q.healthPage))) && strings(q.financialFields) && strings(q.tobaccoFields) && string(q.attestationKey) && string(q.attestationText))) return false;
-  if (!Array.isArray(v.mappings) || !v.mappings.length || !v.mappings.every(m => object(m) && object(m.when) && (v.applicants as string[]).includes(String(m.when.applicantKey)) && modes.includes(String(m.when.mode)) && Object.entries(m.when).every(([k, value]) => ["applicantKey", "mode", "associationKey", "applicantClass", "waitingPeriod", "benefitPeriod"].includes(k) && string(value)) && object(m.identifiers) && roles(m.identifiers.gNumber) && roles(m.identifiers.planCode) && object(m.riderCodes) && Object.entries(m.riderCodes).every(([k, c]) => string(k) && string(c)))) return false;
+  if (!Array.isArray(v.mappings) || !v.mappings.length || !v.mappings.every(m => object(m) && object(m.when) && (v.applicants as string[]).includes(String(m.when.applicantKey)) && modes.includes(String(m.when.mode)) && Object.entries(m.when).every(([k, value]) => ["applicantKey", "mode", "associationKey", "membershipType", "applicantClass", "waitingPeriod", "benefitPeriod"].includes(k) && string(value)) && object(m.identifiers) && roles(m.identifiers.gNumber) && roles(m.identifiers.planCode) && object(m.riderCodes) && Object.entries(m.riderCodes).every(([k, c]) => string(k) && string(c)))) return false;
   return new Set(v.mappings.map(m => JSON.stringify(Object.entries((m as { when: MappingDimensions }).when).sort()))).size === v.mappings.length;
 }
 export function resolveCoverageJourneyPolicy(site: EffectiveSite, productKey: string): CoverageJourneyPolicy | null {
@@ -56,7 +56,9 @@ export function resolveSubmissionMapping(policy: CoverageJourneyPolicy, facts: M
   if (policy.associationChoices.length && !facts.associationKey) return { status: "needs-information" as const, mapping: null };
   if (policy.associationChoices.length && !policy.associationChoices.some(a => a.key === facts.associationKey)) return { status: "unresolved" as const, mapping: null };
   const candidates = policy.mappings.filter(m => Object.entries(m.when).every(([k, v]) => facts[k as keyof MappingDimensions] === v));
-  const required = policy.mappings.filter(m => m.when.applicantKey === facts.applicantKey && m.when.mode === facts.mode && (!m.when.associationKey || m.when.associationKey === facts.associationKey));
+  const applicable = policy.mappings.filter(m => m.when.applicantKey === facts.applicantKey && m.when.mode === facts.mode && (!m.when.associationKey || m.when.associationKey === facts.associationKey));
+  if (!facts.membershipType && applicable.some(m => m.when.membershipType)) return { status: "needs-information" as const, mapping: null };
+  const required = applicable.filter(m => !m.when.membershipType || m.when.membershipType === facts.membershipType);
   for (const dimension of ["applicantClass", "waitingPeriod", "benefitPeriod"] as const) if (required.some(m => m.when[dimension])) {
     if (!facts[dimension]) return { status: "needs-information" as const, mapping: null };
     if (!required.some(m => m.when[dimension] === facts[dimension])) return { status: "unresolved" as const, mapping: null };

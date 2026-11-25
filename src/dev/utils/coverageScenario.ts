@@ -44,10 +44,11 @@ export function createCoverageJourneyFixture(site: EffectiveSite, productKey: st
   const jurisdiction = jurisdictions.find(j => !rider?.excludedJurisdictions.includes(j))!;
   const q = policy.questions.find(q => q.applicantKey === dimensions.applicantKey && q.modes.includes(dimensions.mode))!;
   const categoryPolicy = readCategoryEligibilityPolicy(site.configuration.categoryEligibilityPolicies);
-  const membershipType = categoryPolicy && Object.entries(categoryPolicy.allowedByAnswer).find(([, categories]) => categories.some(category => category === product.catalog!.value.categoryKey))?.[0];
+  const { membershipType: mappedMembershipType, ...mappingContext } = dimensions;
+  const membershipType = mappedMembershipType ?? (categoryPolicy && Object.entries(categoryPolicy.allowedByAnswer).find(([, categories]) => categories.some(category => category === product.catalog!.value.categoryKey))?.[0]);
   const answers = Object.fromEntries(site.configuration.pages.flatMap(p => p.fields).filter(f => f.included).map(f => [f.key, f.definition.options?.find(o => o.value === "no")?.value ?? f.definition.options?.[0]?.value ?? (["number", "percent"].includes(f.definition.inputType) ? 1000000 : f.definition.inputType === "checkbox" ? false : "mock-answer")]));
   const input: CoverageJourneyInput = {
-    ...dimensions, productKey, amount, membershipConfirmed: true, jurisdiction,
+    ...mappingContext, productKey, amount, membershipConfirmed: true, jurisdiction,
     eligibility: { associationKey: dimensions.associationKey, ageYears, ageDays: ageYears * 365, workHoursPerWeek: 40, firmMemberCount: 3, activeMilitary: false, activelyAtWork: true, averageMonthlyIncome: 1000000, associationMember: false, membershipType: membershipType || undefined, fullTimeStudent: true, selectedPlans: [{ productKey, categoryKey: product.catalog!.value.categoryKey, applicantKey: "member" }] },
     benefit: { monthlyIncome: 1000000, existingMonthlyBenefit: 0, memberCoverage: true, memberRequestedBenefit: 1000000, memberTotalMonthlyBenefit: 1000000, selfEmployed: false, retirement: false, monthlyLoanPayment: 1000000, eligibleMonthlyExpenses: 1000000, eligibleExpenseFraction: 1, selectedProducts: [productKey], otherMonthlyBenefits: Object.fromEntries((benefit?.aggregate?.productKeys ?? []).filter(k => k !== productKey).map(k => [k, 0])) },
     dependent: { baseAmounts: { member: memberAmount }, selectedApplicants: ["member"], coveredApplicants: ["member"], selectedProductKeys: [productKey] },

@@ -12,13 +12,13 @@ import AccessibilityWorkspace from "./AccessibilityWorkspace";
 import { accessibilityCriteria } from "../../content/docs/accessibility";
 import MockEmailPreview from "../MockEmailPreview";
 import BrowseTable from "../../components/docs/BrowseTable";
-import { readLibraryCatalog, type LibraryCatalog } from "../../services/libraryCatalogService";
+import { readLibraryCatalog, readLibraryIdentities, type LibraryCatalog } from "../../services/libraryCatalogService";
 
 import { analyticsTagId, type AnalyticsTag } from "../../domain/analytics";
 import { requirementChanges } from "./library/RequirementChangesLibrary";
 import { formulas } from "./library/FormulasLibrary";
 import { applicationFormRows } from "../../domain/applicationForms";
-vi.mock("../../services/libraryCatalogService", () => ({ readLibraryCatalog: vi.fn() }));
+vi.mock("../../services/libraryCatalogService", () => ({ readLibraryCatalog: vi.fn(), readLibraryIdentities: vi.fn() }));
 const savedTag: AnalyticsTag = { id: analyticsTagId("eligibility", "field", "stored-test"), elementKey: "stored-test", pageId: "eligibility", label: "Stored analytics control", kind: "field", events: ["change"], sites: ["waepa"], status: "proposed", trigger: "change", permittedProperties: ["siteKey"], description: "Stored description", source: "prototype-definition", sourceFile: "test", condition: "Child selected", adobe: { mapping: null, status: "not-configured" }, contentsquare: { mapping: null, status: "not-configured" } };
 const catalog: LibraryCatalog = { revision: "test", data: JSON.parse(readFileSync("public/catalog/portal.json", "utf8")).data, analyticsTags: [savedTag] };
 let root: Root;
@@ -33,16 +33,25 @@ beforeEach(() => {
     key: (index: number) => [...storage.keys()][index] ?? null,
     get length() { return storage.size; },
   });
-  vi.mocked(readLibraryCatalog).mockResolvedValue(catalog);
+  vi.mocked(readLibraryCatalog).mockReset().mockResolvedValue(catalog);
+  vi.mocked(readLibraryIdentities).mockReset().mockResolvedValue(catalog.data);
   vi.stubGlobal("ResizeObserver", class { observe() {} unobserve() {} disconnect() {} });
   (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
   container = document.createElement("div"); document.body.appendChild(container); root = createRoot(container);
 });
-afterEach(async () => { await act(async () => root.unmount()); container.remove(); vi.unstubAllGlobals(); });
+afterEach(async () => { await act(async () => root.unmount()); container.remove(); vi.unstubAllGlobals(); vi.unstubAllEnvs(); });
 function Location() { return h("output", { "data-location": true }, useLocation().pathname + useLocation().search); }
 async function render(path: string, element: ReactNode = h(PortalLibrary), route = "/admin-center/library/:domainId?") {
   await act(async () => root.render(h(ThemeProvider, { theme: createAppTheme({ type: "preset", preset: "default" }) }, h(MemoryRouter, { key: path, initialEntries: [path] }, h(Routes, null, h(Route, { path: route, element: h(ApplicationFormProvider, null, element) })), h(Location)))));
 }
+
+it('opens the local Library overview using only Site identities', async () => {
+  vi.stubEnv('VITE_MOCK_PLATFORM_ENABLED', 'true');
+  await render('/admin-center/library');
+  expect(container.querySelector('a[href="/admin-center/sites"]')?.textContent).toBe('View Site portfolio');
+  expect(readLibraryIdentities).toHaveBeenCalledTimes(1);
+  expect(readLibraryCatalog).not.toHaveBeenCalled();
+});
 
 it("shows ASCE Pages from the shared catalog with requirements, fields and saved preview routes", async () => {
   vi.mocked(readLibraryCatalog).mockResolvedValue({ ...JSON.parse(readFileSync("public/catalog/portal.json", "utf8")), revision: "saved-asce" });
@@ -153,12 +162,12 @@ describe("stored Portal Library navigation", () => {
     expect(container.textContent).toContain('Assessment is pending for waepa');
     expect(container.querySelector('a[href="/admin-center/library/accessibility?site=waepa"]')).not.toBeNull();
   });
-  it("opens Client information first, displays the real logo and links MCR TPA contacts", async () => {
+  it("opens Site information first and displays the saved branding and TPA details", async () => {
     await render('/admin-center/library?site=asce');
     expect(tab('Overview').getAttribute('aria-selected')).toBe('true');
-    expect(tab('Client information').getAttribute('aria-selected')).toBe('true');
+    expect(tab('Site information').getAttribute('aria-selected')).toBe('true');
     expect(container.querySelectorAll('table')).toHaveLength(1);
-    expect(container.querySelector('table[aria-label="Client information"]')?.textContent).toContain('Association information');
+    expect(container.querySelector('table[aria-label="Site information"]')?.textContent).toContain('Association contexts');
     expect(tab('TPA information')).toBeUndefined();
     expect(tab('Association information')).toBeUndefined();
     expect(container.querySelector('img[alt="ASCE logo"]')?.getAttribute('src')).toBeTruthy();
@@ -223,8 +232,8 @@ describe("stored Portal Library navigation", () => {
     const preview = container.querySelector("iframe")!;
     expect(new URL(preview.src).pathname).toBe("/");
     expect(new URL(preview.src).searchParams.get("site")).toBe("asce");
-    await click(tab('Client information'));
-    expect(container.querySelector('table[aria-label="Client information"]')).not.toBeNull();
+    await click(tab('Site information'));
+    expect(container.querySelector('table[aria-label="Site information"]')).not.toBeNull();
     await click(tab('Site preview'));
     expect(container.querySelector('iframe')).not.toBeNull();
   });
@@ -407,12 +416,13 @@ describe("stored Portal Library navigation", () => {
   });
   it("uses stored Association labels in the Site selector", async () => {
     const changed = structuredClone(catalog);
-    changed.data.clients.find(client => client.key === "asce")!.acronym = "SAVED ASSOCIATION";
-    vi.mocked(readLibraryCatalog).mockResolvedValue(changed);
+    changed.data.associationEntities.find(client => client.key === "asce")!.acronym = "SAVED ASSOCIATION";
+    vi.mocked(readLibraryIdentities).mockResolvedValue(changed.data);
     await render("/admin-center/library/client-information?site=asce");
     const selector = container.querySelector<HTMLInputElement>('[aria-label="Site scope selector"] input');
     expect(selector?.value).toContain("SAVED ASSOCIATION");
-    expect(vi.mocked(readLibraryCatalog).mock.calls.some(([site]) => site === "all")).toBe(true);
+    expect(readLibraryIdentities).toHaveBeenCalledTimes(1);
+    expect(readLibraryCatalog).toHaveBeenCalledExactlyOnceWith('asce');
   });
   it("shows a single template setting without placeholder templates", async () => {
     await render("/admin-center/library/configurations?site=all&view=theme&q=Application template");

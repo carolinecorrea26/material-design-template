@@ -2,7 +2,6 @@
   "sites": [
     {
       "id": "demo",
-      "clientId": "demo",
       "key": "demo",
       "name": "DEMO Site",
       "displayName": "DEMO Site",
@@ -20,7 +19,6 @@
     },
     {
       "id": "abe",
-      "clientId": "abe",
       "key": "abe",
       "name": "ABE Site",
       "displayName": "ABE Site",
@@ -38,7 +36,6 @@
     },
     {
       "id": "ama",
-      "clientId": "ama",
       "key": "ama",
       "name": "AMA Site",
       "displayName": "AMA Site",
@@ -56,7 +53,6 @@
     },
     {
       "id": "asce",
-      "clientId": "asce",
       "key": "asce",
       "name": "ASCE Site",
       "displayName": "ASCE Site",
@@ -74,7 +70,6 @@
     },
     {
       "id": "avma",
-      "clientId": "avma",
       "key": "avma",
       "name": "AVMA Site",
       "displayName": "AVMA Site",
@@ -92,7 +87,6 @@
     },
     {
       "id": "csea",
-      "clientId": "csea",
       "key": "csea",
       "name": "CSEA Site",
       "displayName": "CSEA Site",
@@ -110,7 +104,6 @@
     },
     {
       "id": "nso",
-      "clientId": "nso",
       "key": "nso",
       "name": "NSO Site",
       "displayName": "NSO Site",
@@ -128,7 +121,6 @@
     },
     {
       "id": "isitrust",
-      "clientId": "isitrust",
       "key": "isitrust",
       "name": "ISITRUST Site",
       "displayName": "ISITRUST Site",
@@ -146,7 +138,6 @@
     },
     {
       "id": "waepa",
-      "clientId": "waepa",
       "key": "waepa",
       "name": "Standard Application",
       "displayName": "Standard Application",
@@ -164,7 +155,6 @@
     },
     {
       "id": "waepa-gi",
-      "clientId": "waepa",
       "key": "waepa-gi",
       "name": "Guaranteed Issue Application",
       "displayName": "Guaranteed Issue Application",

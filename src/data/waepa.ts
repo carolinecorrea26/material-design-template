@@ -1,7 +1,7 @@
 import type { ClientConfig } from "../config/clients/types";
 import { rangeAssignments } from "../config/coverages/amounts";
 import { waepaTpaVerificationFlow } from "../config/clients/waepaFlowOverrides";
-import type { Client, Site } from "./model";
+import type { HostingAssociation, Site } from "./model";
 import { compatibilityTpaId } from "./tpas";
 import type { CoverageApplicantId, RiderDefinition } from "../domain/coverage";
 
@@ -22,7 +22,7 @@ const sharedRiders: RiderDefinition[] = [
   },
 ];
 
-export const waepaClientEntity: Client = {
+export const waepaClientEntity: HostingAssociation = {
   id: "waepa",
   tpaId: compatibilityTpaId("waepa"),
   name: "Worldwide Assurance for Employees of Public Agencies",
@@ -90,7 +90,7 @@ export const waepaClientEntity: Client = {
 export const waepaSites: Site[] = [
   {
     id: "waepa",
-    clientId: waepaClientEntity.id,
+    hostingAssociationId: waepaClientEntity.id,
     name: "Standard Application",
     templateType: "multi",
     status: "active",
@@ -121,7 +121,7 @@ export const waepaSites: Site[] = [
   },
   {
     id: "waepa-gi",
-    clientId: waepaClientEntity.id,
+    hostingAssociationId: waepaClientEntity.id,
     name: "Guaranteed Issue Application",
     templateType: "single",
     status: "active",

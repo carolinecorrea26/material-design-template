@@ -6,7 +6,7 @@
         "id": "site:{{site}}.theme.type",
         "key": "site:{{site}}.theme.type",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "theme.type",
         "value": "preset",
@@ -17,7 +17,7 @@
         "id": "site:{{site}}.theme.preset",
         "key": "site:{{site}}.theme.preset",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "theme.preset",
         "value": "dark-blue",
@@ -29,7 +29,7 @@
         "key": "{{site}}.facts.factMappings",
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "applicantExperience.factMappings",
         "value": {
           "applicantClass": {
@@ -49,7 +49,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "shared.review-policy",
         "value": {
           "version": 1,
@@ -218,7 +218,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "shared.beneficiary-notes",
         "value": {
           "version": 1,
@@ -253,7 +253,7 @@
         },
         "position": 0,
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "sourceReference": "prototype:brandingProfiles/client:csea"
       }
@@ -277,7 +277,7 @@
         },
         "position": 0,
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "sourceReference": "Associations!D60"
       }
@@ -435,7 +435,7 @@
     "sites": [
       {
         "id": "csea",
-        "clientId": "csea",
+        "hostingAssociationId": "csea",
         "key": "csea",
         "name": "CSEA Site",
         "displayName": "CSEA Site",
@@ -444,7 +444,6 @@
         "templateType": "single",
         "legacyClientId": "csea",
         "deletedAt": null,
-        "hostingAssociationId": "csea",
         "sourceReference": "prototype:sites/csea",
         "createdAt": "2026-09-01T12:00:00.000Z",
         "updatedAt": "2026-09-01T12:00:00.000Z"

@@ -43,3 +43,6 @@ migration-artifacts/
 
 # Generated standalone Admin Center (npm run build:admin-html)
 /output/admin-center.html
+
+# Local Netlify folder
+.netlify

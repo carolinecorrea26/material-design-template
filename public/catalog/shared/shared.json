@@ -69,7 +69,6 @@
       "providedBy": null,
       "sourceReference": "canonical:seedPatterns/tpa-integration",
       "patternKey": "tpa-integration",
-      "clientKey": null,
       "siteKey": null,
       "productKey": null,
       "applicantKey": null,
@@ -79,7 +78,8 @@
         "lexisNexis": true,
         "portfolio": true,
         "fallbackOutcome": "refer"
-      }
+      },
+      "hostingAssociationKey": null
     },
     {
       "id": "tpa-coverage-based-verification.capabilities",
@@ -88,7 +88,6 @@
       "providedBy": null,
       "sourceReference": "canonical:seedPatterns/tpa-coverage-based-verification",
       "patternKey": "tpa-coverage-based-verification",
-      "clientKey": null,
       "siteKey": null,
       "productKey": null,
       "applicantKey": null,
@@ -98,7 +97,8 @@
         "lexisNexis": true,
         "portfolio": true,
         "fallbackOutcome": "refer"
-      }
+      },
+      "hostingAssociationKey": null
     },
     {
       "id": "tpa-membership-based-auto-approval.capabilities",
@@ -107,7 +107,6 @@
       "providedBy": null,
       "sourceReference": "canonical:seedPatterns/tpa-membership-based-auto-approval",
       "patternKey": "tpa-membership-based-auto-approval",
-      "clientKey": null,
       "siteKey": null,
       "productKey": null,
       "applicantKey": null,
@@ -117,7 +116,8 @@
         "existingMemberOutcome": "refer",
         "lexisNexis": false,
         "portfolio": false
-      }
+      },
+      "hostingAssociationKey": null
     },
     {
       "id": "ama.tpa-coverage-based-verification",
@@ -126,7 +126,6 @@
       "providedBy": null,
       "sourceReference": "user:2026-09-30/tpa-flow-comparison",
       "patternKey": "tpa-coverage-based-verification",
-      "clientKey": "ama",
       "siteKey": null,
       "productKey": null,
       "applicantKey": null,
@@ -142,7 +141,8 @@
         ],
         "status": "documented",
         "active": false
-      }
+      },
+      "hostingAssociationKey": "ama"
     },
     {
       "id": "asce.tpa-coverage-based-verification",
@@ -151,7 +151,6 @@
       "providedBy": null,
       "sourceReference": "user:2026-09-30/tpa-flow-comparison",
       "patternKey": "tpa-coverage-based-verification",
-      "clientKey": "asce",
       "siteKey": null,
       "productKey": null,
       "applicantKey": null,
@@ -168,7 +167,8 @@
         ],
         "status": "documented",
         "active": false
-      }
+      },
+      "hostingAssociationKey": "asce"
     },
     {
       "id": "waepa.tpa-membership-based-auto-approval",
@@ -177,7 +177,6 @@
       "providedBy": null,
       "sourceReference": "user:2026-09-30/tpa-flow-comparison",
       "patternKey": "tpa-membership-based-auto-approval",
-      "clientKey": "waepa",
       "siteKey": null,
       "productKey": null,
       "applicantKey": null,
@@ -193,7 +192,8 @@
         "existingMemberOutcome": "refer",
         "status": "documented",
         "active": false
-      }
+      },
+      "hostingAssociationKey": "waepa"
     }
   ],
   "patternRules": [

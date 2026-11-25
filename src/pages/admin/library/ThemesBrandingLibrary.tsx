@@ -18,11 +18,11 @@ export default function ThemesBrandingLibrary() {
   const branding = effective ? Object.fromEntries(effective.branding.map(row => [row.key, row.value])) as ClientBranding : null;
   const rows = primaryConfigurationDefinitions(data.configurationDefinitions).filter(row => /^(theme|branding)(\.|$)/.test(configurationPath(row))).map(row => ({
     key: row.key, setting: configurationPath(row),
-    value: readableValue(effective ? effective.configurations.filter(value => value.key === row.key).map(value => value.value) : data.configurationValues.filter(value => value.configurationKey === row.key).map(value => ({ scope: value.siteKey ?? value.clientKey ?? 'Global', value: value.value }))),
+    value: readableValue(effective ? effective.configurations.filter(value => value.key === row.key).map(value => value.value) : data.configurationValues.filter(value => value.configurationKey === row.key).map(value => ({ scope: value.siteKey ?? value.hostingAssociationKey ?? 'Global', value: value.value }))),
     scope: siteKey,
   }));
   if (effective) rows.unshift(...effective.branding.map(row => ({ key: `branding.${row.key}`, setting: `Branding: ${row.key}`, value: readableValue(row.value), scope: siteKey })));
-  else rows.unshift(...data.brandingProfiles.map(row => ({ key: row.key, setting: 'Branding profile', value: readableValue(row.definition), scope: row.siteKey ?? row.clientKey ?? 'Global' })));
+  else rows.unshift(...data.brandingProfiles.map(row => ({ key: row.key, setting: 'Branding profile', value: readableValue(row.definition), scope: row.siteKey ?? row.hostingAssociationKey ?? 'Global' })));
   rows.unshift({ key: 'site.templateType', setting: 'Application template', value: site ? site.templateType : data.sites.map(row => `${row.name}: ${row.templateType}`).join('\n'), scope: siteKey });
   return <Stack spacing={3}>
     <Typography variant="body2" color="text.secondary">Logo, template, colors, buttons and custom icon settings. Try appearance changes in Site Builder’s Application theme preview.</Typography>

@@ -67,13 +67,19 @@ afterEach(() => yieldToWorker());
 // with the installed authoring files or invoking historical-snapshot audits.
 function compiledConfiguration(data: typeof catalog.data, siteKey: string) {
   const site = data.sites.find(site => site.key === siteKey)!;
-  const clientKey = data.clients.find(client => client.id === site.clientId)!.key;
+  const hostingAssociationKey = data.associationEntities.find(client => client.id === site.hostingAssociationId)!.key;
   const products = data.siteProducts.filter(product => product.siteId === site.id && product.enabled).map(product => product.productKey);
-  return { siteKey, clientKey, configuration: resolveEffectiveConfiguration(data, siteKey, clientKey, site.id, products) };
+  return { siteKey, hostingAssociationKey, configuration: resolveEffectiveConfiguration(data, siteKey, hostingAssociationKey, site.id, products) };
 }
 
+let strippedCatalog: typeof catalog.data | undefined;
+
 function withoutReviewedRecords() {
-  const data = structuredClone(catalog.data);
+  return structuredClone(strippedCatalog ??= removeReviewedRecords());
+}
+
+function removeReviewedRecords() {
+  const data = { ...catalog.data };
   const sections = new Set(data.pageSections.filter(row => reviewed.has(row.pageKey)).map(row => row.key));
   const fields = new Set(data.pageFields.filter(row => reviewed.has(row.pageKey)).map(row => row.fieldKey));
   for (const row of data.pageSectionFields) if (sections.has(row.sectionKey)) fields.add(row.fieldKey);
@@ -86,8 +92,9 @@ function withoutReviewedRecords() {
   data.pageSectionFields = data.pageSectionFields.filter(row => !sections.has(row.sectionKey));
   data.siteFieldConfigurations = data.siteFieldConfigurations.filter(row => !reviewed.has(row.pageKey));
   data.fields = data.fields.filter(row => !fields.has(row.key));
-  data.contentValues = data.contentValues.filter(row => ![...reviewed].some(page => row.contentKey.startsWith(`pages.${page}.`)));
-  data.contentEntries = data.contentEntries.filter(row => ![...reviewed].some(page => row.key.startsWith(`pages.${page}.`)));
+  const pageContentRoots = [...reviewed].map(page => `pages.${page}.`);
+  data.contentValues = data.contentValues.filter(row => !pageContentRoots.some(prefix => row.contentKey.startsWith(prefix)));
+  data.contentEntries = data.contentEntries.filter(row => !pageContentRoots.some(prefix => row.key.startsWith(prefix)));
   data.eligibilityConstraints = data.eligibilityConstraints.filter(row => row.siteKey !== "asce");
   // Remove the underlying product graph too, rather than proving only page
   // layout ownership while leaving benefit/rider/underwriting inputs behind.
@@ -109,7 +116,7 @@ describe("fresh-start reviewed page ownership", () => {
     input.components = [];
     for (const key of ['application.document-preview.prepared-on', 'application.document-preview.yes', 'application.document-preview.no']) {
       input.contentEntries.push({ ...catalog.data.contentEntries[0], id: key, key, definition: { path: key.split('.') } });
-      input.contentValues.push({ ...catalog.data.contentValues[0], id: key, key, contentKey: key, scope: 'global', siteKey: null, clientKey: null, value: 'Old display copy' });
+      input.contentValues.push({ ...catalog.data.contentValues[0], id: key, key, contentKey: key, scope: 'global', siteKey: null, hostingAssociationKey: null, value: 'Old display copy' });
     }
     const data = compileRequirementCatalog(input, source, 'asce');
     expect(data.components.find(row => row.key === 'component-send-application-dialog')?.definition.examples?.find(example => example.key === 'to-advisor')?.storyId).toBe('overlays-sendapplicationdialog--to-advisor');
@@ -330,6 +337,9 @@ describe("fresh-start reviewed page ownership", () => {
     expect(parameters.find(row => row.parameter === 'ctg')?.values).toEqual([]);
     expect(parameters.find(row => row.parameter === 'firstCategory')?.values).toEqual(['li', 'ad', 'di', 'oo', 'sh']);
     expect(parameters.find(row => row.parameter === 'dprods')?.behavior).toContain('only when amt');
+    expect(parameters.find(row => row.parameter === 'prods')?.entryValidation).toEqual({
+      requiredParameter: 'category', alias: 'categories', errorPage: 'error-400',
+    });
     for (const parameter of ['category', 'categories', 'prods', 'applicant', 'featured_prod', 'firstCategory', 'amt', 'dprods', 'preselect']) {
       const library = parameters.find(row => row.parameter === parameter)!;
       const reference = referenceUrlParameters.find(row => row.parameter === parameter)!;
@@ -706,7 +716,7 @@ describe("fresh-start reviewed page ownership", () => {
     const pathFor = (key: string) => [source.contentBindings[key]].flat()[0];
     for (const key of protectedKeys) {
       expect(slots).not.toContain(key);
-      data.contentValues.push({ ...catalog.data.contentValues[0], id: `stale-${key}`, key: `stale-${key}`, contentKey: pathFor(key), scope: 'site', siteKey: 'asce', clientKey: null, value: 'Superseded Site copy' });
+      data.contentValues.push({ ...catalog.data.contentValues[0], id: `stale-${key}`, key: `stale-${key}`, contentKey: pathFor(key), scope: 'site', siteKey: 'asce', hostingAssociationKey: null, value: 'Superseded Site copy' });
     }
     const model = resolvePrototypeLibrary(data, 'asce', 'receipt-approved-copy', source);
     const read = (path: string) => {
@@ -955,7 +965,7 @@ describe("fresh-start reviewed page ownership", () => {
     expect(library.content.home.nylCredentials.ratingsNote).toBe(library.content.footer.ratingsAsOf);
     const stale = structuredClone(input), retired = 'shared.applicantExperience.landingNotice';
     stale.configurationDefinitions.push({ ...stale.configurationDefinitions[0], id: retired, key: retired, definition: { path: ['applicantExperience', 'landingNotice'], metadata: null } });
-    stale.configurationValues.push({ ...stale.configurationValues[0], id: 'stale-home-notice', key: 'stale-home-notice', configurationKey: retired, scope: 'site', siteKey: 'asce', clientKey: null, value: { title: 'Old notice', text: 'Must not activate Home.' } });
+    stale.configurationValues.push({ ...stale.configurationValues[0], id: 'stale-home-notice', key: 'stale-home-notice', configurationKey: retired, scope: 'site', siteKey: 'asce', hostingAssociationKey: null, value: { title: 'Old notice', text: 'Must not activate Home.' } });
     const replaced = resolvePrototypeLibrary(stale, 'asce', 'home-stale-notice');
     expect(replaced.client.applicantExperience?.landingNotice).toBeUndefined();
     expect(replaced.client.features?.homeLandingNotice).toBe(false);
@@ -1056,7 +1066,7 @@ describe("fresh-start reviewed page ownership", () => {
     const source = freshStartSource(), data = withoutReviewedRecords();
     const canonical = source.products.catalog.configurationDefinitions.find(row => row.key === 'products.presentation.li-term.description')!;
     data.configurationDefinitions.push({ ...data.configurationDefinitions[0], id: 'old-term-copy', key: 'old-term-copy', definition: canonical.definition as never });
-    data.configurationValues.push({ ...data.configurationValues[0], id: 'old-term-copy', key: 'old-term-copy', configurationKey: 'old-term-copy', scope: 'site', siteKey: 'asce', clientKey: null, value: 'Superseded copy' });
+    data.configurationValues.push({ ...data.configurationValues[0], id: 'old-term-copy', key: 'old-term-copy', configurationKey: 'old-term-copy', scope: 'site', siteKey: 'asce', hostingAssociationKey: null, value: 'Superseded copy' });
     const compiled = compileRequirementCatalog(data, source, 'asce');
     expect(compiled.configurationDefinitions.some(row => row.key === 'old-term-copy')).toBe(false);
     const policy = compiledConfiguration(compiled, 'asce').configuration.products.find(product => product.productKey === 'li-term')!;
@@ -1354,7 +1364,7 @@ describe("fresh-start reviewed page ownership", () => {
     const data = withoutReviewedRecords();
     const key = 'shared.profile.financialCalculations';
     const globalValue = source.application.records.configurationValues.find(row => row.configurationKey === key)!;
-    data.configurationValues.push({ ...data.configurationValues[0], id: 'stale-profile-calculations', key: 'stale-profile-calculations', configurationKey: key, scope: 'site', siteKey: 'asce', clientKey: null, value: { obsolete: true } });
+    data.configurationValues.push({ ...data.configurationValues[0], id: 'stale-profile-calculations', key: 'stale-profile-calculations', configurationKey: key, scope: 'site', siteKey: 'asce', hostingAssociationKey: null, value: { obsolete: true } });
     const compiled = compileRequirementCatalog(data, source, 'asce');
     const site = compiledConfiguration(compiled, 'asce');
     const fields = site.configuration.pages.find(page => page.key === 'profile')!.fields;
@@ -1366,7 +1376,7 @@ describe("fresh-start reviewed page ownership", () => {
     const invalid = structuredClone(source);
     invalid.siteApplication.asce.records.configurationValues.push({ ...globalValue, id: 'site-profile-calculations', key: 'site-profile-calculations', scope: 'site', siteKey: '{{site}}' });
     expect(() => compileRequirementCatalog(data, invalid, 'asce')).toThrow(/Global-only application configuration/);
-    compiled.configurationValues.push({ ...compiled.configurationValues[0], id: 'direct-profile-calculations', key: 'direct-profile-calculations', scope: 'site', siteKey: 'asce', clientKey: null, configurationKey: key, value: { obsolete: true } });
+    compiled.configurationValues.push({ ...compiled.configurationValues[0], id: 'direct-profile-calculations', key: 'direct-profile-calculations', scope: 'site', siteKey: 'asce', hostingAssociationKey: null, configurationKey: key, value: { obsolete: true } });
     expect(() => compiledConfiguration(compiled, 'asce')).toThrow(/Global-only configuration/);
   });
   it('rejects invalid Profile field predicates and optional-product assignments', () => {
@@ -1707,7 +1717,7 @@ describe("fresh-start reviewed page ownership", () => {
     const retired = source.pages.docusign.retiredContentKeys!;
     for (const key of retired) {
       data.contentEntries.push({ ...catalog.data.contentEntries[0], id: key, key, definition: { path: key.split('.') } });
-      data.contentValues.push({ ...catalog.data.contentValues[0], id: key, key, contentKey: key, scope: 'global', siteKey: null, clientKey: null, value: 'Obsolete simulator action' });
+      data.contentValues.push({ ...catalog.data.contentValues[0], id: key, key, contentKey: key, scope: 'global', siteKey: null, hostingAssociationKey: null, value: 'Obsolete simulator action' });
     }
     const compiled = compileRequirementCatalog(data, source);
     expect(compiled.contentEntries.some(row => retired.includes(row.key))).toBe(false);
@@ -1740,7 +1750,7 @@ describe("fresh-start reviewed page ownership", () => {
     source.prototypeHandoffs.docusign[0].placeholder = 'Shared pending image';
     const input = withoutReviewedRecords();
     input.configurationDefinitions.push({ ...input.configurationDefinitions[0], id: 'captured-handoff-alias', key: 'captured-handoff-alias', definition: { path: ['prototypeHandoffs'], metadata: null } });
-    input.configurationValues.push({ ...input.configurationValues[0], id: 'captured-handoff-value', key: 'captured-handoff-value', configurationKey: 'captured-handoff-alias', scope: 'site', siteKey: 'asce', clientKey: null, value: { docusign: [{ src: '/prototype/stale.png', alt: 'Stale screen' }] } });
+    input.configurationValues.push({ ...input.configurationValues[0], id: 'captured-handoff-value', key: 'captured-handoff-value', configurationKey: 'captured-handoff-alias', scope: 'site', siteKey: 'asce', hostingAssociationKey: null, value: { docusign: [{ src: '/prototype/stale.png', alt: 'Stale screen' }] } });
     const data = compileRequirementCatalog(input, source);
     expect(data.configurationDefinitions.filter(row => row.definition.path?.join('.') === 'prototypeHandoffs')).toHaveLength(1);
     expect(data.configurationValues.some(row => row.configurationKey === 'captured-handoff-alias')).toBe(false);
@@ -2011,7 +2021,7 @@ describe("fresh-start reviewed page ownership", () => {
     const retiredSettings = ['coverages.allCategoriesExpanded', 'stale.expansion.alias', 'config-coverages-categorysectionlabels-allcategoriesexpanded'];
     for (const key of retiredSettings) {
       input.configurationDefinitions.push({ ...catalog.data.configurationDefinitions[0], id: key, key, definition: { path: key.startsWith('config-') ? null : ['coverages', 'allCategoriesExpanded'], metadata: { description: 'Stale allCategoriesExpanded control' } } });
-      input.configurationValues.push({ ...catalog.data.configurationValues[0], id: key, key, configurationKey: key, scope: 'global', siteKey: null, clientKey: null, value: true });
+      input.configurationValues.push({ ...catalog.data.configurationValues[0], id: key, key, configurationKey: key, scope: 'global', siteKey: null, hostingAssociationKey: null, value: true });
     }
     const compiled = compileRequirementCatalog(input, source, 'asce');
     expect(compiled.rules.some(row => row.key === retired)).toBe(false);
@@ -2046,7 +2056,7 @@ describe("fresh-start reviewed page ownership", () => {
     for (const suffix of ['', '.policyFee']) {
       const key = `stale-breakdown${suffix}`;
       input.configurationDefinitions.push({ ...catalog.data.configurationDefinitions[0], id: key, key, definition: { path: `coverages.productEstimatedCostBreakdown${suffix}`.split('.'), metadata: {} } });
-      input.configurationValues.push({ ...catalog.data.configurationValues[0], id: key, key, configurationKey: key, scope: 'site', siteKey: 'asce', clientKey: null, value: suffix ? 999 : { enabled: true, policyFee: { amount: 999 } } });
+      input.configurationValues.push({ ...catalog.data.configurationValues[0], id: key, key, configurationKey: key, scope: 'site', siteKey: 'asce', hostingAssociationKey: null, value: suffix ? 999 : { enabled: true, policyFee: { amount: 999 } } });
     }
     const baseline = compileRequirementCatalog(input, source, 'asce');
     expect(baseline.configurationDefinitions.some(row => row.key.startsWith('stale-breakdown'))).toBe(false);
@@ -2280,7 +2290,7 @@ describe("fresh-start reviewed page ownership", () => {
     for (const row of changed.data.contentValues) if (['help.quickDecision.availability', 'help.quickDecision.showMore', 'help.quickDecision.showLess'].includes(row.contentKey)) row.value = 'Stale QuickDecision copy';
     for (const row of changed.data.contentValues) if (row.contentKey.startsWith('home.') || row.contentKey.startsWith('pages.advisor-send-confirmation.') || row.contentKey.startsWith('pages.technical-error.')) row.value = 'Stale copy';
     changed.data.contentEntries.push({ ...changed.data.contentEntries[0], id: 'home.clientSection', key: 'home.clientSection', definition: { path: ['home', 'clientSection'] } });
-    changed.data.contentValues.push({ ...changed.data.contentValues[0], id: 'stale-home-section', key: 'stale-home-section', contentKey: 'home.clientSection', scope: 'site', siteKey: 'asce', clientKey: null, value: { tagline: 'Stale section', paragraphs: [] } });
+    changed.data.contentValues.push({ ...changed.data.contentValues[0], id: 'stale-home-section', key: 'stale-home-section', contentKey: 'home.clientSection', scope: 'site', siteKey: 'asce', hostingAssociationKey: null, value: { tagline: 'Stale section', paragraphs: [] } });
     const current = resolvePrototypeLibrary(changed.data, 'asce', changed.revision);
     const source = freshStartSource();
     expect(current.content.home.hero.title).toBe(source.content['home.hero.title']);

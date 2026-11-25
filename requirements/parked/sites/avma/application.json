@@ -6,7 +6,7 @@
         "id": "site:{{site}}.theme.type",
         "key": "site:{{site}}.theme.type",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "theme.type",
         "value": "preset",
@@ -17,7 +17,7 @@
         "id": "site:{{site}}.theme.preset",
         "key": "site:{{site}}.theme.preset",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "theme.preset",
         "value": "dark-blue",
@@ -28,7 +28,7 @@
         "id": "site:{{site}}.licenseInfo",
         "key": "site:{{site}}.licenseInfo",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "licenseInfo",
         "value": [
@@ -42,7 +42,7 @@
         "id": "site:{{site}}.coveragePolicy.aggregateNotes.LI",
         "key": "site:{{site}}.coveragePolicy.aggregateNotes.LI",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "coveragePolicy.aggregateNotes.LI",
         "value": {
@@ -60,7 +60,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "shared.review-policy",
         "value": {
           "version": 1,
@@ -210,7 +210,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "shared.beneficiary-notes",
         "value": {
           "version": 1,
@@ -315,7 +315,7 @@
         },
         "position": 0,
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "sourceReference": "prototype:brandingProfiles/client:avma"
       }
@@ -338,7 +338,7 @@
         },
         "position": 0,
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "sourceReference": "prototype:supportProfiles/client:avma"
       }
@@ -496,7 +496,7 @@
     "sites": [
       {
         "id": "avma",
-        "clientId": "avma",
+        "hostingAssociationId": "avma",
         "key": "avma",
         "name": "AVMA Site",
         "displayName": "AVMA Site",
@@ -505,7 +505,6 @@
         "templateType": "multi",
         "legacyClientId": "avma",
         "deletedAt": null,
-        "hostingAssociationId": "avma",
         "sourceReference": "prototype:sites/avma",
         "createdAt": "2026-09-01T12:00:00.000Z",
         "updatedAt": "2026-09-01T12:00:00.000Z"

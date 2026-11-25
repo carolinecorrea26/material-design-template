@@ -26,7 +26,7 @@ export function resolveAssociationSelection(
     id
       ? enabledAssociations.find(
           (association) =>
-            association.id === id && association.clientId === site.clientId,
+            association.id === id && association.hostingAssociationId === site.hostingAssociationId,
         )
       : undefined;
 

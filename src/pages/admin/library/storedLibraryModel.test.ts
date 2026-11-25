@@ -114,7 +114,7 @@ describe("stored Library collection and scope", () => {
   it("does not let superseded saved settings bypass authored inheritance", () => {
     const changed = structuredClone(catalog);
     changed.data.configurationDefinitions.push({ id: "draft.waepa.experience", key: "draft.waepa.experience", position: 0, definition: { path: ["applicantExperience"], metadata: null } });
-    changed.data.configurationValues.push({ id: "draft.waepa.experience", key: "draft.waepa.experience", position: 0, configurationKey: "draft.waepa.experience", scope: "site", clientKey: null, siteKey: "waepa", value: { childEligibility: { mode: "notice-only", note: "Superseded" } } });
+    changed.data.configurationValues.push({ id: "draft.waepa.experience", key: "draft.waepa.experience", position: 0, configurationKey: "draft.waepa.experience", scope: "site", hostingAssociationKey: null, siteKey: "waepa", value: { childEligibility: { mode: "notice-only", note: "Superseded" } } });
     expect(childCollection(changed, "waepa").mode).toBe(childCollection(catalog, "waepa").mode);
   });
   it("projects authoritative field labels and enabled products", () => {

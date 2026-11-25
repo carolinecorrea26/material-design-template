@@ -7,7 +7,7 @@
         "key": "{{site}}.di-ltd.reviewed-benefit-policy",
         "sourceReference": "Main!H192; Main!I192; Main!J192; Disability!A29; Disability!D29; Disability!F29; Disability!G29",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "template.di-ltd.reviewed-benefit-policy",
         "value": {
@@ -103,7 +103,7 @@
         "key": "{{site}}.di-ltd-plus.reviewed-benefit-policy",
         "sourceReference": "Main!H193; Main!I193; Main!J193; Disability!A31; Disability!D31",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "template.di-ltd-plus.reviewed-benefit-policy",
         "value": {
@@ -145,7 +145,7 @@
         "key": "{{site}}.di-short-term.reviewed-benefit-policy",
         "sourceReference": "Main!H194; Main!I194; Main!J194; Disability!A32; Disability!D32; Disability!F32",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "template.product-benefit-policy.di-short-term",
         "value": {
@@ -204,7 +204,7 @@
         "key": "{{site}}.oo-professional.reviewed-benefit-policy",
         "sourceReference": "Main!H196; Main!I196; Main!J196; Overhead Expense!A5; Overhead Expense!C5; Overhead Expense!D5; Overhead Expense!E5",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "template.oo-professional.reviewed-benefit-policy",
         "value": {
@@ -271,7 +271,7 @@
         "key": "{{site}}.li-group-term.reviewed-dependent-policy",
         "sourceReference": "Main!J187",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "template.product-dependent-policy.li-group-term",
         "value": {
@@ -306,7 +306,7 @@
         "key": "{{site}}.li-10yr.reviewed-dependent-policy",
         "sourceReference": "Main!J188",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "template.li-10yr.reviewed-dependent-policy",
         "value": {
@@ -341,7 +341,7 @@
         "key": "{{site}}.li-20yr.reviewed-dependent-policy",
         "sourceReference": "Main!J189",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "template.li-20yr.reviewed-dependent-policy",
         "value": {
@@ -376,7 +376,7 @@
         "key": "{{site}}.li-50plus.reviewed-dependent-policy",
         "sourceReference": "Main!I190",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "template.li-50plus.reviewed-dependent-policy",
         "value": {
@@ -403,7 +403,7 @@
         "key": "{{site}}.reviewed-life-aggregate",
         "sourceReference": "Main!K187; Main!K188; Main!K189; Main!H187; Main!I187; Main!H190; Main!I190",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "template.coveragePolicy.lifeAggregate",
         "value": {
@@ -432,7 +432,7 @@
         "key": "{{site}}.li-term.provisional-rate-outcome",
         "sourceReference": "docs/step3-provisional-decisions.md",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "template.li-term.provisional-rate-outcome",
         "value": {
@@ -448,7 +448,7 @@
         "key": "{{site}}.li-10yr.provisional-rate-outcome",
         "sourceReference": "docs/step3-provisional-decisions.md",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "template.li-10yr.provisional-rate-outcome",
         "value": {
@@ -464,7 +464,7 @@
         "key": "{{site}}.li-20yr.provisional-rate-outcome",
         "sourceReference": "docs/step3-provisional-decisions.md",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "template.li-20yr.provisional-rate-outcome",
         "value": {
@@ -480,7 +480,7 @@
         "key": "{{site}}.li-50plus.provisional-rate-outcome",
         "sourceReference": "docs/step3-provisional-decisions.md",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "template.li-50plus.provisional-rate-outcome",
         "value": {
@@ -496,7 +496,7 @@
         "key": "{{site}}.li-add.provisional-rate-outcome",
         "sourceReference": "docs/step3-provisional-decisions.md",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "template.li-add.provisional-rate-outcome",
         "value": {
@@ -512,7 +512,7 @@
         "key": "{{site}}.li-group-term.provisional-rate-outcome",
         "sourceReference": "docs/step3-provisional-decisions.md",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "template.product-rate-outcome.li-group-term",
         "value": {
@@ -528,7 +528,7 @@
         "key": "{{site}}.di-ltd-plus.provisional-rate-outcome",
         "sourceReference": "docs/step3-provisional-decisions.md",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "template.di-ltd-plus.provisional-rate-outcome",
         "value": {
@@ -544,7 +544,7 @@
         "key": "{{site}}.di-ltd.provisional-rate-outcome",
         "sourceReference": "docs/step3-provisional-decisions.md",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "template.di-ltd.provisional-rate-outcome",
         "value": {
@@ -560,7 +560,7 @@
         "key": "{{site}}.di-short-term.provisional-rate-outcome",
         "sourceReference": "docs/step3-provisional-decisions.md",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "template.product-rate-outcome.di-short-term",
         "value": {
@@ -576,7 +576,7 @@
         "key": "{{site}}.oo-professional.provisional-rate-outcome",
         "sourceReference": "docs/step3-provisional-decisions.md",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "template.oo-professional.provisional-rate-outcome",
         "value": {
@@ -592,7 +592,7 @@
         "key": "{{site}}.sh-critical-illness.provisional-rate-outcome",
         "sourceReference": "docs/step3-provisional-decisions.md",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "template.sh-critical-illness.provisional-rate-outcome",
         "value": {
@@ -608,7 +608,7 @@
         "key": "{{site}}.sh-hospital-income.provisional-rate-outcome",
         "sourceReference": "docs/step3-provisional-decisions.md",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "template.product-rate-outcome.sh-hospital-income",
         "value": {
@@ -624,7 +624,7 @@
         "key": "rates.reviewed-presentation.{{site}}",
         "sourceReference": "docs/archive/step3-major-outstanding-items.md",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "rates.reviewed-presentation",
         "value": {
@@ -642,7 +642,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.li-term.selection-policy",
         "value": {
           "version": 1,
@@ -674,7 +674,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.li-term.journey-policy",
         "value": {
           "underwritingByApplicant": {
@@ -830,7 +830,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.li-term.journey-residency",
         "value": {
           "version": 1,
@@ -902,7 +902,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.li-10yr.selection-policy",
         "value": {
           "version": 1,
@@ -934,7 +934,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.li-10yr.journey-policy",
         "value": {
           "underwritingByApplicant": {
@@ -1244,7 +1244,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.li-10yr.journey-residency",
         "value": {
           "version": 1,
@@ -1316,7 +1316,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.li-20yr.selection-policy",
         "value": {
           "version": 1,
@@ -1348,7 +1348,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.li-20yr.journey-policy",
         "value": {
           "underwritingByApplicant": {
@@ -1658,7 +1658,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.li-20yr.journey-residency",
         "value": {
           "version": 1,
@@ -1730,7 +1730,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.li-50plus.selection-policy",
         "value": {
           "version": 1,
@@ -1762,7 +1762,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.li-50plus.journey-policy",
         "value": {
           "underwritingByApplicant": {},
@@ -1997,7 +1997,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.li-50plus.journey-residency",
         "value": {
           "version": 1,
@@ -2066,7 +2066,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.li-add.selection-policy",
         "value": {
           "version": 1,
@@ -2098,7 +2098,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.li-add.journey-policy",
         "value": {
           "underwritingByApplicant": {
@@ -2320,7 +2320,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.li-add.journey-residency",
         "value": {
           "version": 1,
@@ -2392,7 +2392,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.product-selection-policy.li-group-term",
         "value": {
           "version": 1,
@@ -2462,7 +2462,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.product-journey-policy.li-group-term",
         "value": {
           "underwritingByApplicant": {
@@ -2879,7 +2879,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.product-residency-policy.li-group-term",
         "value": {
           "version": 1,
@@ -2951,7 +2951,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.di-ltd-plus.selection-policy",
         "value": {
           "version": 1,
@@ -2983,7 +2983,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.di-ltd-plus.journey-policy",
         "value": {
           "underwritingByApplicant": {},
@@ -3193,7 +3193,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.di-ltd-plus.journey-residency",
         "value": {
           "version": 1,
@@ -3265,7 +3265,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.di-ltd.selection-policy",
         "value": {
           "version": 2,
@@ -3323,7 +3323,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.di-ltd.journey-policy",
         "value": {
           "underwritingByApplicant": {},
@@ -3566,7 +3566,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.coveragePolicy.residency.di-ltd",
         "value": {
           "version": 1,
@@ -3638,7 +3638,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.product-selection-policy.di-short-term",
         "value": {
           "version": 1,
@@ -3670,7 +3670,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.product-journey-policy.di-short-term",
         "value": {
           "underwritingByApplicant": {},
@@ -3880,7 +3880,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.product-residency-policy.di-short-term",
         "value": {
           "version": 1,
@@ -3952,7 +3952,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.oo-professional.selection-policy",
         "value": {
           "version": 1,
@@ -3984,7 +3984,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.oo-professional.journey-policy",
         "value": {
           "underwritingByApplicant": {},
@@ -4196,7 +4196,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.oo-professional.journey-residency",
         "value": {
           "version": 1,
@@ -4268,7 +4268,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.sh-critical-illness.selection-policy",
         "value": {
           "version": 1,
@@ -4300,7 +4300,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.sh-critical-illness.journey-policy",
         "value": {
           "underwritingByApplicant": {},
@@ -4535,7 +4535,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.sh-critical-illness.journey-residency",
         "value": {
           "version": 1,
@@ -4595,7 +4595,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.product-selection-policy.sh-hospital-income",
         "value": {
           "version": 1,
@@ -4627,7 +4627,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.product-journey-policy.sh-hospital-income",
         "value": {
           "underwritingByApplicant": {
@@ -4939,7 +4939,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.product-residency-policy.sh-hospital-income",
         "value": {
           "version": 1,
@@ -5011,7 +5011,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.coveragePolicy.lifeAggregateParticipation",
         "value": {
           "version": 1,
@@ -5028,7 +5028,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.li-term.rate-modifier-policy",
         "value": {
           "version": 1,
@@ -5046,7 +5046,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.li-term.rate-input-policy",
         "value": {
           "version": 1,
@@ -5088,7 +5088,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.li-10yr.rate-modifier-policy",
         "value": {
           "version": 1,
@@ -5106,7 +5106,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.li-10yr.rate-input-policy",
         "value": {
           "version": 1,
@@ -5156,7 +5156,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.li-20yr.rate-modifier-policy",
         "value": {
           "version": 1,
@@ -5174,7 +5174,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.li-20yr.rate-input-policy",
         "value": {
           "version": 1,
@@ -5224,7 +5224,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.li-50plus.rate-modifier-policy",
         "value": {
           "version": 1,
@@ -5242,7 +5242,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.li-50plus.rate-input-policy",
         "value": {
           "version": 1,
@@ -5289,7 +5289,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.li-add.rate-modifier-policy",
         "value": {
           "version": 1,
@@ -5307,7 +5307,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.li-add.rate-input-policy",
         "value": {
           "version": 1,
@@ -5349,7 +5349,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.product-rate-modifier-policy.li-group-term",
         "value": {
           "version": 1,
@@ -5367,7 +5367,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.product-rate-input-policy.li-group-term",
         "value": {
           "version": 1,
@@ -5414,7 +5414,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.di-ltd-plus.rate-modifier-policy",
         "value": {
           "version": 1,
@@ -5432,7 +5432,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.di-ltd-plus.rate-input-policy",
         "value": {
           "version": 1,
@@ -5476,7 +5476,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.di-ltd.rate-modifier-policy",
         "value": {
           "version": 1,
@@ -5494,7 +5494,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.di-ltd.rate-input-policy",
         "value": {
           "version": 1,
@@ -5538,7 +5538,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.product-rate-modifier-policy.di-short-term",
         "value": {
           "version": 1,
@@ -5556,7 +5556,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.product-rate-input-policy.di-short-term",
         "value": {
           "version": 1,
@@ -5600,7 +5600,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.oo-professional.rate-modifier-policy",
         "value": {
           "version": 1,
@@ -5618,7 +5618,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.oo-professional.rate-input-policy",
         "value": {
           "version": 1,
@@ -5662,7 +5662,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.sh-critical-illness.rate-modifier-policy",
         "value": {
           "version": 1,
@@ -5680,7 +5680,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.sh-critical-illness.rate-input-policy",
         "value": {
           "version": 1,
@@ -5722,7 +5722,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.product-rate-modifier-policy.sh-hospital-income",
         "value": {
           "version": 1,
@@ -5740,7 +5740,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.product-rate-input-policy.sh-hospital-income",
         "value": {
           "version": 1,
@@ -5781,7 +5781,7 @@
         "sourceReference": "User-confirmed relational rider ownership, October 19, 2026",
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "position": 0,
         "configurationKey": "template.di-ltd.rider-set",
         "value": {
@@ -5795,7 +5795,7 @@
         "sourceReference": "User-confirmed relational rider ownership, October 19, 2026",
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "position": 0,
         "configurationKey": "template.ownership.abe.di-ltd-plus.rider-set",
         "value": {
@@ -5809,7 +5809,7 @@
         "sourceReference": "User-confirmed relational rider ownership, October 19, 2026",
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "position": 0,
         "configurationKey": "template.product-rider-set.di-short-term",
         "value": {
@@ -5823,7 +5823,7 @@
         "sourceReference": "User-confirmed relational rider ownership, October 19, 2026",
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "position": 0,
         "configurationKey": "template.li-10yr.rider-set",
         "value": {
@@ -5837,7 +5837,7 @@
         "sourceReference": "User-confirmed relational rider ownership, October 19, 2026",
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "position": 0,
         "configurationKey": "template.li-20yr.rider-set",
         "value": {
@@ -5851,7 +5851,7 @@
         "sourceReference": "User-confirmed relational rider ownership, October 19, 2026",
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "position": 0,
         "configurationKey": "template.ownership.abe.li-50plus.rider-set",
         "value": {
@@ -5865,7 +5865,7 @@
         "sourceReference": "User-confirmed relational rider ownership, October 19, 2026",
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "position": 0,
         "configurationKey": "template.li-add.rider-set",
         "value": {
@@ -5879,7 +5879,7 @@
         "sourceReference": "User-confirmed relational rider ownership, October 19, 2026",
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "position": 0,
         "configurationKey": "template.product-rider-set.li-group-term",
         "value": {
@@ -5893,7 +5893,7 @@
         "sourceReference": "User-confirmed relational rider ownership, October 19, 2026",
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "position": 0,
         "configurationKey": "template.li-term.rider-set",
         "value": {
@@ -5907,7 +5907,7 @@
         "sourceReference": "User-confirmed relational rider ownership, October 19, 2026",
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "position": 0,
         "configurationKey": "template.ownership.abe.oo-professional.rider-set",
         "value": {
@@ -5921,7 +5921,7 @@
         "sourceReference": "User-confirmed relational rider ownership, October 19, 2026",
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "position": 0,
         "configurationKey": "template.ownership.abe.sh-critical-illness.rider-set",
         "value": {
@@ -5935,7 +5935,7 @@
         "sourceReference": "User-confirmed relational rider ownership, October 19, 2026",
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "position": 0,
         "configurationKey": "template.product-rider-set.sh-hospital-income",
         "value": {
@@ -5950,7 +5950,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.page-participation",
         "value": {
           "version": 2,
@@ -5964,7 +5964,7 @@
         "position": 0,
         "configurationKey": "template.product-availability",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "value": {
           "version": 2,
@@ -5978,7 +5978,7 @@
         "position": 0,
         "configurationKey": "template.site-structure",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "value": {
           "version": 2,
@@ -6803,7 +6803,7 @@
         "applicantClass": null,
         "amountPatternKey": "{{site}}.li-term.amount.2",
         "conditionKey": null,
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "position": 2
       },
@@ -6816,7 +6816,7 @@
         "applicantClass": null,
         "amountPatternKey": "{{site}}.li-group-term.amount.0",
         "conditionKey": null,
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "position": 0
       },
@@ -6829,7 +6829,7 @@
         "applicantClass": null,
         "amountPatternKey": "{{site}}.li-group-term.amount.1",
         "conditionKey": null,
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "position": 1
       },
@@ -6842,7 +6842,7 @@
         "applicantClass": null,
         "amountPatternKey": "{{site}}.li-group-term.amount.2",
         "conditionKey": null,
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "position": 2
       },
@@ -6851,7 +6851,7 @@
         "key": "{{site}}.li-10yr.reviewed-numeric.member.amount",
         "sourceReference": "Main!H188",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "productKey": "li-10yr",
         "applicantTypeKey": "member",
         "applicantClass": null,
@@ -6864,7 +6864,7 @@
         "key": "{{site}}.li-10yr.reviewed-numeric.spouse.amount",
         "sourceReference": "Main!I188",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "productKey": "li-10yr",
         "applicantTypeKey": "spouse",
         "applicantClass": null,
@@ -6877,7 +6877,7 @@
         "key": "{{site}}.li-10yr.reviewed-numeric.child.amount",
         "sourceReference": "Main!J188",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "productKey": "li-10yr",
         "applicantTypeKey": "child",
         "applicantClass": null,
@@ -6890,7 +6890,7 @@
         "key": "{{site}}.li-20yr.reviewed-numeric.member.amount",
         "sourceReference": "Main!H189",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "productKey": "li-20yr",
         "applicantTypeKey": "member",
         "applicantClass": null,
@@ -6903,7 +6903,7 @@
         "key": "{{site}}.li-20yr.reviewed-numeric.spouse.amount",
         "sourceReference": "Main!I189",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "productKey": "li-20yr",
         "applicantTypeKey": "spouse",
         "applicantClass": null,
@@ -6916,7 +6916,7 @@
         "key": "{{site}}.li-20yr.reviewed-numeric.child.amount",
         "sourceReference": "Main!J189",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "productKey": "li-20yr",
         "applicantTypeKey": "child",
         "applicantClass": null,
@@ -6929,7 +6929,7 @@
         "key": "{{site}}.li-50plus.reviewed-numeric.member.amount",
         "sourceReference": "Main!H190",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "productKey": "li-50plus",
         "applicantTypeKey": "member",
         "applicantClass": null,
@@ -6942,7 +6942,7 @@
         "key": "{{site}}.li-50plus.reviewed-numeric.spouse.amount",
         "sourceReference": "Main!I190",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "productKey": "li-50plus",
         "applicantTypeKey": "spouse",
         "applicantClass": null,
@@ -6955,7 +6955,7 @@
         "key": "{{site}}.li-add.reviewed-numeric.member.amount",
         "sourceReference": "Main!H191",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "productKey": "li-add",
         "applicantTypeKey": "member",
         "applicantClass": null,
@@ -6968,7 +6968,7 @@
         "key": "{{site}}.li-add.reviewed-numeric.spouse.amount",
         "sourceReference": "Main!I191",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "productKey": "li-add",
         "applicantTypeKey": "spouse",
         "applicantClass": null,
@@ -6981,7 +6981,7 @@
         "key": "{{site}}.sh-critical-illness.reviewed-numeric.member.amount",
         "sourceReference": "Main!H195",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "productKey": "sh-critical-illness",
         "applicantTypeKey": "member",
         "applicantClass": null,
@@ -6994,7 +6994,7 @@
         "key": "{{site}}.sh-critical-illness.reviewed-numeric.spouse.amount",
         "sourceReference": "Main!I195",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "productKey": "sh-critical-illness",
         "applicantTypeKey": "spouse",
         "applicantClass": null,
@@ -7007,7 +7007,7 @@
         "key": "{{site}}.sh-hospital-income.reviewed-numeric.member.amount",
         "sourceReference": "Main!H198",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "productKey": "sh-hospital-income",
         "applicantTypeKey": "member",
         "applicantClass": null,
@@ -7020,7 +7020,7 @@
         "key": "{{site}}.sh-hospital-income.reviewed-numeric.spouse.amount",
         "sourceReference": "Main!I198",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "productKey": "sh-hospital-income",
         "applicantTypeKey": "spouse",
         "applicantClass": null,
@@ -7033,7 +7033,7 @@
         "key": "{{site}}.sh-hospital-income.reviewed-numeric.child.amount",
         "sourceReference": "Main!J198",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "productKey": "sh-hospital-income",
         "applicantTypeKey": "child",
         "applicantClass": null,
@@ -7046,7 +7046,7 @@
         "key": "{{site}}.di-ltd.reviewed-numeric.member.amount",
         "sourceReference": "Main!H192",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "productKey": "di-ltd",
         "applicantTypeKey": "member",
         "applicantClass": null,
@@ -7059,7 +7059,7 @@
         "key": "{{site}}.di-ltd.reviewed-numeric.spouse.amount",
         "sourceReference": "Main!I192",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "productKey": "di-ltd",
         "applicantTypeKey": "spouse",
         "applicantClass": null,
@@ -7072,7 +7072,7 @@
         "key": "{{site}}.di-ltd-plus.reviewed-numeric.member.amount",
         "sourceReference": "Main!H193",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "productKey": "di-ltd-plus",
         "applicantTypeKey": "member",
         "applicantClass": null,
@@ -7085,7 +7085,7 @@
         "key": "{{site}}.di-short-term.reviewed-numeric.member.amount",
         "sourceReference": "Main!H194",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "productKey": "di-short-term",
         "applicantTypeKey": "member",
         "applicantClass": null,
@@ -7098,7 +7098,7 @@
         "key": "{{site}}.oo-professional.reviewed-numeric.member.amount",
         "sourceReference": "Main!H196",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "productKey": "oo-professional",
         "applicantTypeKey": "member",
         "applicantClass": null,
@@ -7113,7 +7113,7 @@
         "key": "{{site}}.li-group-term.reviewed-identifier.gNumber",
         "sourceReference": "Main!E187",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "productKey": "li-group-term",
         "kind": "gNumber",
@@ -7127,7 +7127,7 @@
         "key": "{{site}}.li-group-term.reviewed-identifier.planCode",
         "sourceReference": "Main!G187",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "productKey": "li-group-term",
         "kind": "planCode",
@@ -7141,7 +7141,7 @@
         "key": "{{site}}.li-10yr.reviewed-identifier.gNumber",
         "sourceReference": "Main!E188",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "productKey": "li-10yr",
         "kind": "gNumber",
@@ -7155,7 +7155,7 @@
         "key": "{{site}}.li-10yr.reviewed-identifier.planCode",
         "sourceReference": "Main!G188",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "productKey": "li-10yr",
         "kind": "planCode",
@@ -7169,7 +7169,7 @@
         "key": "{{site}}.li-20yr.reviewed-identifier.gNumber",
         "sourceReference": "Main!E189",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "productKey": "li-20yr",
         "kind": "gNumber",
@@ -7183,7 +7183,7 @@
         "key": "{{site}}.li-20yr.reviewed-identifier.planCode",
         "sourceReference": "Main!G189",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "productKey": "li-20yr",
         "kind": "planCode",
@@ -7197,7 +7197,7 @@
         "key": "{{site}}.li-50plus.reviewed-identifier.gNumber",
         "sourceReference": "Main!E190",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "productKey": "li-50plus",
         "kind": "gNumber",
@@ -7211,7 +7211,7 @@
         "key": "{{site}}.li-50plus.reviewed-identifier.planCode",
         "sourceReference": "Main!G190",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "productKey": "li-50plus",
         "kind": "planCode",
@@ -7225,7 +7225,7 @@
         "key": "{{site}}.sh-critical-illness.reviewed-identifier.gNumber",
         "sourceReference": "Main!E195",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "productKey": "sh-critical-illness",
         "kind": "gNumber",
@@ -7239,7 +7239,7 @@
         "key": "{{site}}.sh-critical-illness.reviewed-identifier.planCode",
         "sourceReference": "Main!G195",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "productKey": "sh-critical-illness",
         "kind": "planCode",
@@ -7256,7 +7256,7 @@
         "sourceReference": "Main!L192",
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "productKey": "di-ltd",
         "riderKey": "rider.avma.r32",
         "position": 0
@@ -7267,7 +7267,7 @@
         "sourceReference": "Main!L187",
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "productKey": "li-group-term",
         "riderKey": "rider.avma.r44",
         "position": 0

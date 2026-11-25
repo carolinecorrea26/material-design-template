@@ -20,7 +20,7 @@ it('selects independent and combined TELE variants per adult from one source-com
   ] };
   const id = 'synthetic.tele-questionnaire';
   source.application.records.configurationDefinitions.push({ id, key: id, position: 0, definition: { target: { kind: 'site-health-questionnaires' } } });
-  source.siteApplication.asce.records.configurationValues.push({ id, key: id, configurationKey: id, scope: 'site', siteKey: '{{site}}', clientKey: null, position: 0, value: policy });
+  source.siteApplication.asce.records.configurationValues.push({ id, key: id, configurationKey: id, scope: 'site', siteKey: '{{site}}', hostingAssociationKey: null, position: 0, value: policy });
   const library = resolvePrototypeLibrary(catalog.data, 'asce', 'synthetic-tele-variants', source);
   for (const [index, key] of products.entries()) {
     const result = configuredHealthQuestionnaire(library.site, 'health-tele', 'member', { coverageSelections: [key], productApplicants: { [key]: ['member'] }, coverageAmounts: { [`${key}:member`]: 10000 } });

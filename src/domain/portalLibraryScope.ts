@@ -10,10 +10,17 @@ export function portalLibraryData(data: CatalogData): CatalogData {
   const result = { ...data };
   const internalPages = new Set(data.pages.filter(page => page.definition.flow === 'internal' || page.definition.type === 'internal' || internalRoute(page.definition.path)).map(page => page.key));
   const sectionKeys = new Set(data.pageSections.filter(section => internalPages.has(section.pageKey)).map(section => section.key));
-  const internalFields = new Set(data.fields.filter(field => {
-    const placements = [...data.pageFields.filter(row => row.fieldKey === field.key).map(row => row.pageKey), ...data.pageSectionFields.filter(row => row.fieldKey === field.key).flatMap(row => data.pageSections.filter(section => section.key === row.sectionKey).map(section => section.pageKey))];
-    return placements.length > 0 && placements.every(key => internalPages.has(key));
-  }).map(field => field.key));
+  const publicSectionKeys = new Set(data.pageSections.filter(section => !internalPages.has(section.pageKey)).map(section => section.key));
+  const internalPlacements = new Set<string>();
+  const publicPlacements = new Set<string>();
+  for (const row of data.pageFields) {
+    (internalPages.has(row.pageKey) ? internalPlacements : publicPlacements).add(row.fieldKey);
+  }
+  for (const row of data.pageSectionFields) {
+    if (sectionKeys.has(row.sectionKey)) internalPlacements.add(row.fieldKey);
+    if (publicSectionKeys.has(row.sectionKey)) publicPlacements.add(row.fieldKey);
+  }
+  const internalFields = new Set(data.fields.filter(field => internalPlacements.has(field.key) && !publicPlacements.has(field.key)).map(field => field.key));
   const internalConditions = new Set(data.conditions.filter(condition => condition.definition.conditions.length > 0 && condition.definition.conditions.every(clause => internalFields.has(clause.fieldId))).map(condition => condition.key));
   const internalRules = new Set(data.rules.filter(rule => {
     const refs = rule.definition.ref.split(';').map(ref => ref.trim()).filter(Boolean);

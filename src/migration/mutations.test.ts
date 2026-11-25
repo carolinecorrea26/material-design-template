@@ -10,18 +10,18 @@ import { readFileSync } from "node:fs";
 const original = createMigrationDatabase();
 const baseline = resolveDatabaseSite(original, "ama");
 const changes: [string, (db: DatabaseSchema) => void][] = [
-  ["branding", (db) => { db.brandingProfiles.find((r) => r.clientKey === "ama")!.definition.logo = "/changed.png"; }],
-  ["support", (db) => { db.supportProfiles.find((r) => r.clientKey === "ama")!.definition.email = "changed@example.test"; }],
+  ["branding", (db) => { db.brandingProfiles.find((r) => r.hostingAssociationKey === "ama")!.definition.logo = "/changed.png"; }],
+  ["support", (db) => { db.supportProfiles.find((r) => r.hostingAssociationKey === "ama")!.definition.email = "changed@example.test"; }],
   ["pages", (db) => { db.sitePages.find((r) => r.siteKey === "ama" && r.pageKey === "payment")!.requirement = "none"; }],
   ["fields", (db) => { db.validationRules.find((r) => r.fieldKey === "email")!.definition.required = false; }],
   ["coverage", (db) => { db.siteProducts.find((r) => r.siteId === "ama" && r.enabled)!.enabled = false; }],
   ["rules", (db) => { db.ruleAssignments = db.ruleAssignments.filter((r) => r.ruleKey !== baseline.rules[0].id); }],
   ["flows", (db) => { db.flowSteps[0].definition.label = "changed step"; }],
-  ["features", (db) => { db.configurationValues.find((r) => r.clientKey === "ama" && r.configurationKey === "features.scheduleUrl")!.value = "https://example.test/changed"; }],
+  ["features", (db) => { db.configurationValues.find((r) => r.hostingAssociationKey === "ama" && r.configurationKey === "features.scheduleUrl")!.value = "https://example.test/changed"; }],
   ["content", (db) => { db.contentValues.find((r) => r.scope === "global" && r.contentKey === "footer.administeredByLabel")!.value = "changed"; }],
-  ["configurations", (db) => { db.configurationValues.find((r) => r.clientKey === "ama" && r.configurationKey === "theme.preset")!.value = "teal"; }],
+  ["configurations", (db) => { db.configurationValues.find((r) => r.hostingAssociationKey === "ama" && r.configurationKey === "theme.preset")!.value = "teal"; }],
   ["associations", (db) => { db.siteAssociations.find((r) => r.siteKey === "ama")!.enabled = false; }],
-  ["emailConfiguration", (db) => { db.supportProfiles.find((r) => r.clientKey === "ama")!.definition.phoneDisplay = "changed"; }],
+  ["emailConfiguration", (db) => { db.supportProfiles.find((r) => r.hostingAssociationKey === "ama")!.definition.phoneDisplay = "changed"; }],
 ];
 it.each(changes)("a persisted %s mutation changes the independently resolved behavior", (domain, change) => {
   const changed = structuredClone(original);

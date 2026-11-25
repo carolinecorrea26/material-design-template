@@ -20,7 +20,7 @@ const clean = (value: unknown) => JSON.parse(JSON.stringify(value));
 // Architecture contract: additions require deliberate compatibility review.
 // All other tables (including future normalized decision tables) are isolated.
 const compatibilityTables = new Set<TableName>([
-  "clients", "sites", "organizations", "organizationProfiles", "associations",
+  "associationEntities", "sites", "organizations", "organizationProfiles", "associations",
   "siteAssociations", "sitePolicies", "configurationDefinitions", "configurationValues",
   "brandingProfiles", "supportProfiles", "flows", "flowSteps", "flowTransitions", "siteFlows",
 ]);
@@ -104,7 +104,7 @@ describe("Phase 5 persisted compatibility transport", () => {
   it("does not defer new unknowns or incomplete Site data", async () => {
     const sample = structuredClone(db);
     const definition = sample.configurationDefinitions.find(d => d.definition.path?.includes("unresolved"))!;
-    const value = sample.configurationValues.find(v => v.configurationKey === definition.key && v.siteKey === "asce") ?? sample.configurationValues.find(v => v.configurationKey === definition.key && v.clientKey === "asce")!;
+    const value = sample.configurationValues.find(v => v.configurationKey === definition.key && v.siteKey === "asce") ?? sample.configurationValues.find(v => v.configurationKey === definition.key && v.hostingAssociationKey === "asce")!;
     if (!Array.isArray(value.value)) throw new Error("Expected unresolved array");
     value.value.push({ id: "new-unknown", description: "New unreviewed requirement", source: "synthetic" });
     expect(mcrCoverageReport(sample).phase5Ready).toBe(false);

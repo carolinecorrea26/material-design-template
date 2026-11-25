@@ -33,9 +33,9 @@ import {
   type ProjectSummary,
 } from "../content/docs/portalProject";
 import {
-  getAssociationsForClient,
-  getClientsForTpa,
-  getSitesForClient,
+  getMemberAssociationsForHost,
+  getHostingAssociationsForTpa,
+  getSitesForHostingAssociation,
   tpaEntities,
 } from "../data";
 import ResponsiveTableContainer from "../components/docs/ResponsiveTableContainer";
@@ -228,7 +228,7 @@ export default function PortalAdmin() {
 
             <Box component="section">
               <Typography variant="h5" component="h2" sx={{ fontWeight: 800, mb: 0.5 }}>
-                TPA → Client → Site hierarchy
+                TPA → Association → Site hierarchy
               </Typography>
               <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                 Canonical administration identities. Provisional compatibility TPAs are clearly
@@ -241,15 +241,15 @@ export default function PortalAdmin() {
                       <TableCell>TPA ID</TableCell>
                       <TableCell>TPA Name</TableCell>
                       <TableCell>Acronym</TableCell>
-                      <TableCell>Client Count</TableCell>
+                      <TableCell>Hosting Associations</TableCell>
                       <TableCell>Contact</TableCell>
-                      <TableCell>Clients / Sites / Associations</TableCell>
+                      <TableCell>Hosting Associations / Sites / Member Associations</TableCell>
                       <TableCell>Status</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {tpaEntities.map((tpa) => {
-                      const clients = getClientsForTpa(tpa.id);
+                      const clients = getHostingAssociationsForTpa(tpa.id);
                       return (
                         <TableRow key={tpa.id}>
                           <TableCell sx={{ fontFamily: "monospace" }}>{tpa.id}</TableCell>
@@ -263,7 +263,7 @@ export default function PortalAdmin() {
                           </TableCell>
                           <TableCell>
                             {clients.map((client) =>
-                              `${client.acronym}: ${getSitesForClient(client.id).length} site(s), ${getAssociationsForClient(client.id).length} association(s)`,
+                              `${client.acronym}: ${getSitesForHostingAssociation(client.id).length} site(s), ${getMemberAssociationsForHost(client.id).length} association(s)`,
                             ).join("; ")}
                           </TableCell>
                           <TableCell>{tpa.provisional ? "Provisional" : "Confirmed"}</TableCell>

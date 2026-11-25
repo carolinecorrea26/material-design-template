@@ -65,7 +65,7 @@ export function applyDependentCoverageAdoption(db: DatabaseSchema, cells: readon
       db.configurationDefinitions.push({ ...metadata("configurationDefinitions", key, reference), definition: { path: null, metadata: { version: 1, fullPolicyAcceptance: "pending" }, target: kind === "site-life-aggregate" ? { kind } : { kind, productKey: productKey! } }, position: 0 });
     }
     db.configurationValues = db.configurationValues.filter(row => row.key !== key);
-    db.configurationValues.push({ ...metadata("configurationValues", key, reference), scope: "site", clientKey: null, siteKey, configurationKey, value, position: 0 });
+    db.configurationValues.push({ ...metadata("configurationValues", key, reference), scope: "site", hostingAssociationKey: null, siteKey, configurationKey, value, position: 0 });
     const decisionKey = `migration-decision.${key}`;
     db.semanticRequirements = db.semanticRequirements.filter(row => row.key !== decisionKey);
     db.semanticRequirements.push({ ...metadata("semanticRequirements", decisionKey, reference), domain: "reviewed-site-adoption", subjectTable: "sites", subjectKey: siteKey, predicate: kind, status: "partial", value: { productKey: productKey ?? null, runtimeActivation: "pending", fullPolicyAcceptance: "pending", destinations: [{ table: "configurationValues", key, column: "value" }] } });

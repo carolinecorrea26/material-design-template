@@ -61,7 +61,7 @@ export const Textarea: StoryObj = { render: () => <FieldHarness field={authored(
 export const DropdownFloatingLabel: StoryObj = { name: 'Dropdown — floating label', render: () => <FieldHarness field={authored('title')} /> };
 export const DropdownStandardLabel: StoryObj = { name: 'Dropdown — standard label', render: () => <FieldHarness field={{ ...authored('title'), labelVariant: 'standard' }} /> };
 export const SearchableSelect: StoryObj = { render: () => <FieldHarness field={authored('state-province')} /> };
-export const MultiSelect: StoryObj = { render: () => <FieldHarness field={authored('tobacco-products')} /> };
+export const MultiSelect: StoryObj = { render: () => <FieldHarness field={authored('membership-referral-source')} /> };
 export const Radio: StoryObj = { render: () => <FieldHarness field={authored('gender')} /> };
 export const CheckboxSingle: StoryObj = { name: 'Checkbox — single', render: () => <FieldHarness field={authored('bank-authorization')} /> };
 export const CheckboxGroup: StoryObj = { render: () => <FieldHarness field={authored('dependents')} /> };

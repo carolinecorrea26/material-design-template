@@ -36,7 +36,7 @@ export function applyAbeCirQuestionnaireAdoption(db: DatabaseSchema) {
   const definitionIndex = db.configurationDefinitions.findIndex(row => row.key === configurationKey);
   if (definitionIndex < 0) db.configurationDefinitions.push(definition); else db.configurationDefinitions[definitionIndex] = definition;
   const key = "abe.health-cir.source-questionnaire";
-  const configuration = { ...meta("configurationValues", key), configurationKey, scope: "site" as const, siteKey: "abe", clientKey: null, position: 0, value: policy as unknown as Json };
+  const configuration = { ...meta("configurationValues", key), configurationKey, scope: "site" as const, siteKey: "abe", hostingAssociationKey: null, position: 0, value: policy as unknown as Json };
   const index = db.configurationValues.findIndex(row => row.key === key);
   if (index < 0) db.configurationValues.push(configuration); else db.configurationValues[index] = configuration;
   const page = db.sitePages.find(row => row.siteKey === "abe" && row.pageKey === "health-cir");

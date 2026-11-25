@@ -8,10 +8,13 @@ const read = file => JSON.parse(fs.readFileSync(file, 'utf8'));
 const reviewed = read(path.join(directory, 'database.json'));
 const local = read(path.join(directory, 'operations-data.json'));
 const inventory = read(`${destination}/inventory.json`);
-const client = new Map(reviewed.clients.map(row => [row.key, row]));
-const localClients = new Map(local.clients.map(row => [row.key, row]));
+const hostingRecords = data => data.clients ?? data.associationEntities.filter(row => row.kind === 'hosting' || data.sites.some(site => site.hostingAssociationId === row.id));
+const hostingKey = row => row.hostingAssociationKey ?? row.clientKey;
+const reviewedHosts = hostingRecords(reviewed);
+const hostByKey = new Map(reviewedHosts.map(row => [row.key, row]));
+const localHosts = new Map(hostingRecords(local).map(row => [row.key, row]));
 const organizations = new Map(reviewed.organizations.map(row => [row.id, row]));
-const rootForSite = site => reviewed.clients.find(row => row.id === site.clientId);
+const rootForSite = site => reviewedHosts.find(row => row.id === (site.hostingAssociationId ?? site.clientId));
 const policyForSite = site => reviewed.sitePolicies.find(row => row.siteKey === site.key)?.definition;
 const sites = reviewed.sites.map(site => {
   const owner = rootForSite(site); if (!owner) throw Error(`Unresolved owner for ${site.key}`);
@@ -29,17 +32,17 @@ const sites = reviewed.sites.map(site => {
     applicationSelectionLimit: 1,
   };
 });
-const roots = reviewed.clients.map(row => {
+const roots = reviewedHosts.map(row => {
   const ownedSites = sites.filter(site => site.sourceOwnerKey === row.key);
-  const lowerRows = reviewed.associations.filter(association => association.clientKey === row.key);
+  const lowerRows = reviewed.associations.filter(association => hostingKey(association) === row.key);
   const organization = organizations.get(row.organizationId);
   if (!organization) throw Error(`Missing organization for ${row.key}`);
   const activeChoiceKeys = new Set(ownedSites.filter(site => site.associationContext === 'multi-association-context').flatMap(site => site.assignedAssociations.filter(a => a.enabled).map(a => a.associationKey)));
   return {
-    sourceTable: 'clients', sourceId: row.id, sourceKey: row.key, name: row.name,
+    sourceTable: reviewed.clients ? 'clients' : 'associationEntities', sourceId: row.id, sourceKey: row.key, name: row.name,
     sourceOrganizationId: row.organizationId, sourceOrganizationKey: organization.key, sourceOrganizationName: organization.name,
-    localOrganizationId: localClients.get(row.key)?.organizationId ?? null,
-    ownershipDiffersBetweenExports: localClients.has(row.key) && localClients.get(row.key).organizationId !== row.organizationId,
+    localOrganizationId: localHosts.get(row.key)?.organizationId ?? null,
+    ownershipDiffersBetweenExports: localHosts.has(row.key) && localHosts.get(row.key).organizationId !== row.organizationId,
     proposedRole: 'hosting-association',
     classification: row.key === 'ama' ? 'business-confirmed-single-association' : !ownedSites.length ? 'source-only-no-site-do-not-activate' : activeChoiceKeys.size ? 'observed-multi-association-site-setup' : ownedSites.some(site => site.associationContext === 'fixed-context-no-selector') ? 'observed-fixed-context-setup' : 'unresolved-site-association-context',
     siteKeys: ownedSites.map(site => site.siteKey),
@@ -48,7 +51,7 @@ const roots = reviewed.clients.map(row => {
   };
 });
 const associations = reviewed.associations.map(row => {
-  const owner = client.get(row.clientKey); if (!owner) throw Error(`Missing owner ${row.key}`);
+  const owner = hostByKey.get(hostingKey(row)); if (!owner) throw Error(`Missing owner ${row.key}`);
   const assignments = sites.flatMap(site => site.assignedAssociations.filter(a => a.associationKey === row.key).map(a => ({ siteKey: site.siteKey, context: site.associationContext, enabled: a.enabled })));
   const selectable = assignments.some(a => a.enabled && a.context === 'multi-association-context');
   const fixed = assignments.some(a => a.context === 'fixed-context-no-selector');
@@ -81,7 +84,7 @@ const report = {
   counts: { hostingAssociationCandidates: roots.length, lowerAssociationRows: associations.length, sites: sites.length, siteAssociationAssignments: reviewed.siteAssociations.length, sourceOnlyHostingCandidates: roots.filter(r => !r.siteKeys.length).length, selectableAssociationCandidates: associations.filter(r => r.observedRole === 'association-offered-on-multi-association-site').length, directColumnsImpacted: scalarImpact.length, ownershipDifferencesBetweenExports: roots.filter(r => r.ownershipDiffersBetweenExports).length },
   hostingAssociationCandidates: roots, existingAssociationRows: associations, sites, scalarImpact, indirectImpact,
 };
-if (roots.length !== reviewed.clients.length || associations.length !== reviewed.associations.length || sites.length !== reviewed.sites.length) throw Error('Incomplete crosswalk');
+if (roots.length !== reviewedHosts.length || associations.length !== reviewed.associations.length || sites.length !== reviewed.sites.length) throw Error('Incomplete crosswalk');
 if (new Set(roots.map(r => r.sourceKey)).size !== roots.length || new Set(associations.map(r => r.sourceKey)).size !== associations.length) throw Error('Ambiguous source keys');
 const amaSites = sites.filter(site => site.sourceOwnerKey === 'ama');
 if (!amaSites.length || amaSites.some(site => site.associationContext !== 'fixed-context-no-selector')) throw Error('Current AMA configuration conflicts with confirmed no-selector behavior');
@@ -89,7 +92,7 @@ if (sites.reduce((total, site) => total + site.assignedAssociations.length, 0) !
 for (const site of sites) {
   for (const assignment of site.assignedAssociations) {
     const association = reviewed.associations.find(row => row.key === assignment.associationKey);
-    if (!association || association.clientKey !== site.sourceOwnerKey) throw Error(`Invalid source Association ownership for ${site.siteKey}/${assignment.associationKey}`);
+    if (!association || hostingKey(association) !== site.sourceOwnerKey) throw Error(`Invalid source Association ownership for ${site.siteKey}/${assignment.associationKey}`);
   }
   if (site.existingAssociationSelection?.mode === 'fixed' && !site.assignedAssociations.some(row => row.enabled && row.associationKey === site.existingAssociationSelection.fixedAssociationId)) throw Error(`Unresolved fixed Association context for ${site.siteKey}`);
 }

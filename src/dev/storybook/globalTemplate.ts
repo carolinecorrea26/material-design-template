@@ -131,7 +131,7 @@ export function buildGlobalTemplate(catalog: SharedCatalog, capability: Template
       assignment.value = { version: 1, praseConfigured: false, quoteToolEnabled: false, coverageQuoteEnabled: false };
       const configurationKey = 'storybook.di-reference-rates';
       requirements.products.catalog.configurationDefinitions.push({ id: configurationKey, key: configurationKey, position: 0, definition: { target: { kind: 'product-reference-rate-table', productKey: 'di-ltd' } } });
-      requirements.siteProducts[key].catalog!.configurationValues.push({ id: configurationKey, key: configurationKey, configurationKey, scope: 'site', siteKey: '{{site}}', clientKey: null, position: 0,
+      requirements.siteProducts[key].catalog!.configurationValues.push({ id: configurationKey, key: configurationKey, configurationKey, scope: 'site', siteKey: '{{site}}', hostingAssociationKey: null, position: 0,
         value: { version: 1, kind: 'html-table', title: 'Sample disability reference rates', notes: ['Reference rates. Your actual premium depends on the issued coverage. Fictional prototype values.'], columns: ['Monthly benefit', 'Sample monthly cost'], rows: [['$1,000', '$12.00'], ['$2,000', '$24.00']] } });
     }
     if (beneficiary?.requirement) {
@@ -165,7 +165,7 @@ export function buildGlobalTemplate(catalog: SharedCatalog, capability: Template
       const value = { version: 1, enabled: true, applicant: 'member', rules: [profile.financialQuestionnaire], sourceReferences: ['Synthetic Storybook Profile policy'] };
       if (existing.length) existing[0].value = value;
       else {
-        assignment.configurationValues.push({ id: keyName, key: keyName, configurationKey: keyName, scope: 'site', siteKey: '{{site}}', clientKey: null, position: 0, value });
+        assignment.configurationValues.push({ id: keyName, key: keyName, configurationKey: keyName, scope: 'site', siteKey: '{{site}}', hostingAssociationKey: null, position: 0, value });
       }
     }
     if (review) {
@@ -213,7 +213,7 @@ export function buildGlobalTemplate(catalog: SharedCatalog, capability: Template
         if (value.pageId !== health.page) throw new Error('Mismatched synthetic Health questionnaire');
         const id = `storybook.${health.page}.questionnaire`;
         requirements.application.records.configurationDefinitions.push({ id, key: id, position: 0, definition: { target: { kind: 'site-health-questionnaires' } } });
-        authoring.configurationValues.push({ id, key: id, configurationKey: id, scope: 'site', siteKey: '{{site}}', clientKey: null, position: 0, value });
+        authoring.configurationValues.push({ id, key: id, configurationKey: id, scope: 'site', siteKey: '{{site}}', hostingAssociationKey: null, position: 0, value });
       }
     }
     const data = structuredClone(prototypeCatalogData(catalog));
@@ -223,7 +223,7 @@ export function buildGlobalTemplate(catalog: SharedCatalog, capability: Template
   const names = sources.flatMap(library => [library.clientIdentity.name, ...library.associationContext.allAssociations.map(association => association.name)]);
   const library = genericPresentation(structuredClone(source), names);
   library.site.siteKey = globalTemplateKey;
-  library.site.clientKey = 'demo';
+  library.site.hostingAssociationKey = 'demo';
   library.site.name.value = presentation.siteName;
   library.client.id = 'demo';
   library.clientIdentity.key = 'demo';
@@ -231,8 +231,8 @@ export function buildGlobalTemplate(catalog: SharedCatalog, capability: Template
   library.clientIdentity.acronym = presentation.clientIdentity.acronym;
   library.client.branding = { ...library.client.branding, ...presentation.branding };
   library.client.support = { ...library.client.support, ...structuredClone(presentation.support) };
-  library.associationContext.associations.forEach(association => { association.name = presentation.clientIdentity.name; association.clientId = library.site.clientKey; });
-  library.associationContext.allAssociations.forEach((association, index) => { association.name = `${presentation.clientIdentity.name} ${index + 1}`; association.clientId = library.site.clientKey; });
+  library.associationContext.associations.forEach(association => { association.name = presentation.clientIdentity.name; association.hostingAssociationId = library.site.hostingAssociationKey; });
+  library.associationContext.allAssociations.forEach((association, index) => { association.name = `${presentation.clientIdentity.name} ${index + 1}`; association.hostingAssociationId = library.site.hostingAssociationKey; });
   // Keep relational data in the same synthetic scope as the installed library.
   library.associationContext.links.forEach(link => { if (link.siteKey === source.site.siteKey) link.siteKey = globalTemplateKey; });
   library.pageData.sitePages = library.pageData.sitePages.filter(page => page.siteKey === source.site.siteKey).map(page => ({ ...page, siteKey: globalTemplateKey }));

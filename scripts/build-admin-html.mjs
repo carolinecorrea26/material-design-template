@@ -1,4 +1,5 @@
 import { build } from 'vite';
+import { createHash } from 'node:crypto';
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { resolve, extname, sep } from 'node:path';
@@ -38,7 +39,9 @@ const literals = [...new Set(code.match(/"\/[^"\n]+\.(?:svg|png|jpe?g|gif|webp|i
 for (const literal of literals) code = code.replaceAll(literal, JSON.stringify(await embedAsset(JSON.parse(literal))));
 let css = output.filter(item => item.type === 'asset' && item.fileName.endsWith('.css')).map(item => String(item.source)).join('\n');
 for (const match of [...css.matchAll(/url\(["']?(\/[^)'"\s]+)["']?\)/g)]) css = css.replaceAll(match[0], `url("${await embedAsset(match[1])}")`);
-const catalog = await embedCatalog(JSON.parse(await readFile(resolve('public/catalog/portal.json'), 'utf8')));
+const catalogText = await readFile(resolve('public/catalog/portal.json'), 'utf8');
+const catalogHash = createHash('sha256').update(catalogText).digest('hex');
+const catalog = await embedCatalog(JSON.parse(catalogText));
 const logo = await embedAsset('/favicon.svg');
 const boot = `
 if (!location.hash || location.hash === '#') location.replace(location.href.split('#')[0] + '#/admin-center');
@@ -56,7 +59,7 @@ function localLinks(root) {
 new MutationObserver(() => localLinks(document)).observe(document.getElementById('root'), {childList: true, subtree: true, attributes: true, attributeFilter: ['href']});
 `;
 const html = `<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Admin Center — Local Prototype</title><link rel="icon" href="${logo}"><style>${css.replaceAll('</style', '<\\/style')}</style></head>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="portal-catalog-sha256" content="${catalogHash}"><title>Admin Center — Local Prototype</title><link rel="icon" href="${logo}"><style>${css.replaceAll('</style', '<\\/style')}</style></head>
 <body><noscript>Enable JavaScript to open Admin Center.</noscript><div id="root"></div>
 <script id="standalone-catalog" type="application/json">${JSON.stringify(catalog).replaceAll('<', '\\u003c')}</script>
 <script>${boot}${code.replaceAll('</script', '<\\/script')}</script></body></html>`;

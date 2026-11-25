@@ -62,8 +62,8 @@ it("resolves opt-in artwork and restricts it to the single-page template", () =>
   const inherited = resolveClientConfigurations(clients.demo).find(row => row.key === key)!;
   expect(inherited.effective).toBe("none");
   expect(inherited.status).toBe("inherited");
-  const features = { ...clients.demo.features, singlePageArtwork: "clouds-cat-umbrella" as const };
-  const configured = resolveClientConfigurations({ ...clients.demo, features }).find(row => row.key === key)!;
+  const features = { ...associationEntities.demo.features, singlePageArtwork: "clouds-cat-umbrella" as const };
+  const configured = resolveClientConfigurations({ ...associationEntities.demo, features }).find(row => row.key === key)!;
   expect(configured.effective).toBe("clouds-cat-umbrella");
   expect(configured.status).toBe("overridden");
   expect(showSinglePageArtwork("single")).toBe(false);

@@ -5,7 +5,7 @@ import { getFlowGateDefinition, coverageUnlocksPage, siteFlowContext } from "../
 import { getPrototypeLibrary } from "../../../domain/prototypeLibrary";
 import { resolvePageCatalog } from "../../../domain/pageCatalog";
 import { getPageCategory } from "../../../config/resolvers/resolveClientPages";
-import { getClientForSite } from "../../../data";
+import { getHostingAssociationForSite } from "../../../data";
 import type { LibraryScope } from "./LibraryScope";
 import { libraryRepository } from "../../../repositories/libraryRepository";
 import { getSiteDetailsPageOrder } from "../../../config/resolvers/resolveClientPages";
@@ -46,7 +46,7 @@ export function ruleDisplayType(rule: RuleDefinition) {
 export function getLibraryRules(scope: LibraryScope, siteId: string) {
   return scope === "global"
     ? libraryRepository.read("siteRules")
-    : getApplicableSiteRules({ clientId: getClientForSite(siteId)!.id, siteId });
+    : getApplicableSiteRules({ clientId: getHostingAssociationForSite(siteId)!.id, siteId });
 }
 
 /** Canonical fields may have no placement in a particular Site. Do not link to absent rows. */

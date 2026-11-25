@@ -3,17 +3,17 @@ import { clients as legacyClients } from "../config/clients";
 import { resolveClientCoverage } from "../config/resolvers";
 import { buildContent } from "../content";
 import {
-  clientEntities,
+  hostingAssociations,
   siteEntities,
-  getClientForSite,
+  getHostingAssociationForSite,
   getSite,
   getClientAliasForSite,
   getSiteIdForClientAlias,
-  getSitesForClient,
-  getClientsForTpa,
+  getSitesForHostingAssociation,
+  getHostingAssociationsForTpa,
   getSitesForTpa,
   getTpa,
-  getTpaForClient,
+  getTpaForAssociation,
   tpaEntities,
   validateTpaIntegrity,
   resolveSite,
@@ -35,14 +35,14 @@ describe("normalized Client → Site model", () => {
   });
 
   it("allows one client to own multiple sites with mixed template modes", () => {
-    const sites = getSitesForClient("waepa");
+    const sites = getSitesForHostingAssociation("waepa");
     expect(sites.map((site) => site.id)).toEqual(["waepa", "waepa-gi"]);
     expect(sites.map((site) => site.templateType)).toEqual(["multi", "single"]);
   });
 
   it("resolves Site → Client", () => {
-    expect(getClientForSite("waepa-gi")?.id).toBe("waepa");
-    expect(getSite("waepa-gi")?.clientId).toBe("waepa");
+    expect(getHostingAssociationForSite("waepa-gi")?.id).toBe("waepa");
+    expect(getSite("waepa-gi")?.hostingAssociationId).toBe("waepa");
   });
 
   it("configures CSEA as a single-page Site", () => {
@@ -65,8 +65,8 @@ describe("normalized Client → Site model", () => {
   });
 
   it("keeps every existing single-site client resolvable", () => {
-    for (const client of clientEntities.filter((entry) => entry.id !== "waepa")) {
-      const sites = getSitesForClient(client.id);
+    for (const client of hostingAssociations.filter((entry) => entry.id !== "waepa")) {
+      const sites = getSitesForHostingAssociation(client.id);
       expect(sites).toHaveLength(1);
       expect(resolveSite(sites[0].id).effective.id).toBe(getClientAliasForSite(sites[0].id));
     }
@@ -81,7 +81,7 @@ describe("normalized Client → Site model", () => {
   it("preserves each domain-specific effective value and content resolution", () => {
     for (const site of siteEntities) {
       const legacy = legacyClients[getClientAliasForSite(site.id)];
-      expect(getClientForSite(site.id)?.id).toBe(site.clientId);
+      expect(getHostingAssociationForSite(site.id)?.id).toBe(site.hostingAssociationId);
       expect(resolveEffectiveBranding({ siteId: site.id })).toEqual(legacy.branding);
       expect(resolveSiteSupport(site.id)).toEqual(legacy.support);
       expect(resolveSiteFeatures(site.id)).toEqual(legacy.features);
@@ -119,15 +119,15 @@ describe("normalized TPA → Client → Site model", () => {
   it("resolves every Client to exactly one distinct TPA identity", () => {
     expect(validateTpaIntegrity()).toEqual([]);
     expect(new Set(tpaEntities.map((tpa) => tpa.id)).size).toBe(tpaEntities.length);
-    for (const client of clientEntities) {
-      expect(getTpaForClient(client.id)?.id).toBe(client.tpaId);
+    for (const client of hostingAssociations) {
+      expect(getTpaForAssociation(client.id)?.id).toBe(client.tpaId);
       expect(getTpa(client.tpaId)?.id).not.toBe(client.id);
     }
   });
 
   it("supports TPA traversal through Clients to Sites", () => {
-    const tpa = getTpaForClient("waepa")!;
-    expect(getClientsForTpa(tpa.id).map((client) => client.id)).toEqual(["waepa"]);
+    const tpa = getTpaForAssociation("waepa")!;
+    expect(getHostingAssociationsForTpa(tpa.id).map((client) => client.id)).toEqual(["waepa"]);
     expect(getSitesForTpa(tpa.id).map((site) => site.id)).toEqual([
       "waepa",
       "waepa-gi",
@@ -137,9 +137,9 @@ describe("normalized TPA → Client → Site model", () => {
   it("keeps the cardinality API valid for one or many Clients per TPA", () => {
     const sharedTpaId = tpaEntities[0].id;
     const fixtureClients = [
-      { ...clientEntities[0], id: "fixture-a", tpaId: sharedTpaId },
-      { ...clientEntities[1], id: "fixture-b", tpaId: sharedTpaId },
+      { ...hostingAssociations[0], id: "fixture-a", tpaId: sharedTpaId },
+      { ...hostingAssociations[1], id: "fixture-b", tpaId: sharedTpaId },
     ];
-    expect(getClientsForTpa(sharedTpaId, fixtureClients)).toHaveLength(2);
+    expect(getHostingAssociationsForTpa(sharedTpaId, fixtureClients)).toHaveLength(2);
   });
 });

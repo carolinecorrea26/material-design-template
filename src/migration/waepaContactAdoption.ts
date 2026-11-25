@@ -10,7 +10,7 @@ export function applyWaepaContactAdoption(db: DatabaseSchema) {
   if (!db.configurationDefinitions.some(row => row.key === configurationKey)) db.configurationDefinitions.push({ ...meta("configurationDefinitions", configurationKey), position: 0,
     definition: { path: ["applicantExperience", "contact", "businessAddressProducts"], metadata: { reusable: true, assignmentRequired: true }, target: null } });
   const key = "site:waepa.applicantExperience.contact.businessAddressProducts";
-  const record = { ...meta("configurationValues", key), position: 0, scope: "site" as const, siteKey: "waepa", clientKey: null, configurationKey, value: ["di-short-term"] };
+  const record = { ...meta("configurationValues", key), position: 0, scope: "site" as const, siteKey: "waepa", hostingAssociationKey: null, configurationKey, value: ["di-short-term"] };
   const index = db.configurationValues.findIndex(row => row.key === key);
   if (index < 0) db.configurationValues.push(record); else db.configurationValues[index] = record;
   const refs: Array<{ table: string; key: string; column?: string }> = [

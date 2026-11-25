@@ -10,12 +10,12 @@
         "logoAlt": "Demo Client logo"
       },
       "position": 0,
-      "scope": "client",
-      "clientKey": "demo",
+      "scope": "association",
       "siteKey": null,
       "displayId": 115642963028690,
       "providedBy": null,
-      "sourceReference": "prototype:brandingProfiles/client:demo"
+      "sourceReference": "prototype:brandingProfiles/client:demo",
+      "hostingAssociationKey": "demo"
     },
     {
       "id": "client:abe",
@@ -27,12 +27,12 @@
         "logoAlt": "ABE Logo"
       },
       "position": 0,
-      "scope": "client",
-      "clientKey": "abe",
+      "scope": "association",
       "siteKey": null,
       "displayId": 153729455122985,
       "providedBy": null,
-      "sourceReference": "prototype:brandingProfiles/client:abe"
+      "sourceReference": "prototype:brandingProfiles/client:abe",
+      "hostingAssociationKey": "abe"
     },
     {
       "id": "client:avma",
@@ -44,12 +44,12 @@
         "logoAlt": "AVMA Logo"
       },
       "position": 0,
-      "scope": "client",
-      "clientKey": "avma",
+      "scope": "association",
       "siteKey": null,
       "displayId": 272693664026788,
       "providedBy": null,
-      "sourceReference": "prototype:brandingProfiles/client:avma"
+      "sourceReference": "prototype:brandingProfiles/client:avma",
+      "hostingAssociationKey": "avma"
     },
     {
       "id": "client:csea",
@@ -61,12 +61,12 @@
         "logoAlt": "CSEA Logo"
       },
       "position": 0,
-      "scope": "client",
-      "clientKey": "csea",
+      "scope": "association",
       "siteKey": null,
       "displayId": 221092954454621,
       "providedBy": null,
-      "sourceReference": "prototype:brandingProfiles/client:csea"
+      "sourceReference": "prototype:brandingProfiles/client:csea",
+      "hostingAssociationKey": "csea"
     },
     {
       "id": "client:nso",
@@ -78,12 +78,12 @@
         "logoAlt": "NSO Logo"
       },
       "position": 0,
-      "scope": "client",
-      "clientKey": "nso",
+      "scope": "association",
       "siteKey": null,
       "displayId": 273577460109039,
       "providedBy": null,
-      "sourceReference": "prototype:brandingProfiles/client:nso"
+      "sourceReference": "prototype:brandingProfiles/client:nso",
+      "hostingAssociationKey": "nso"
     },
     {
       "id": "client:isitrust",
@@ -95,12 +95,12 @@
         "logoAlt": "ISITRUST Logo"
       },
       "position": 0,
-      "scope": "client",
-      "clientKey": "isitrust",
+      "scope": "association",
       "siteKey": null,
       "displayId": 125011441419282,
       "providedBy": null,
-      "sourceReference": "prototype:brandingProfiles/client:isitrust"
+      "sourceReference": "prototype:brandingProfiles/client:isitrust",
+      "hostingAssociationKey": "isitrust"
     }
   ]
 }

@@ -22,7 +22,7 @@ export interface FlagAssignments extends LibraryMetadata {
   id: string;
   key: string;
   flagKey: string;
-  clientKey: string | null;
+  hostingAssociationKey: string | null;
   siteKey: string | null;
   productKey: string | null;
   coverageKey: string | null;

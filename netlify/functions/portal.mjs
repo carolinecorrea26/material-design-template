@@ -1,5 +1,6 @@
 import { randomBytes, randomUUID } from 'node:crypto';
-import { gzipSync } from 'node:zlib';
+import { promisify } from 'node:util';
+import { gzip } from 'node:zlib';
 import { getDatabase } from '@netlify/database';
 import { createApplicantSaves } from '../../scripts/applicant-saves.mjs';
 import { connectPortalDatabase, digest, inTransaction, verifyPassword } from '../../scripts/portal-db.mjs';
@@ -12,6 +13,7 @@ const cookie = (token, maxAge, url) => `${sessionCookie}=${token}; HttpOnly; Sam
 const projection = `SELECT u.id, u.email, u.display_name AS "displayName", u.role_key AS "roleKey",
   ARRAY(SELECT site_key FROM portal_user_sites WHERE user_id = u.id ORDER BY site_key) AS "siteKeys" FROM portal_users u`;
 const draftColumns = 'id, site_key AS "siteKey", base_revision AS "baseRevision", version, form_template AS "formTemplate", updated_at AS "updatedAt"';
+const compressCatalog = promisify(gzip);
 
 async function readCatalog(db, includePayload = false) {
   const { rows: [catalog] } = await db.query(includePayload ? 'SELECT revision, payload::text FROM portal_catalog WHERE id = 1' : 'SELECT revision FROM portal_catalog WHERE id = 1');
@@ -171,13 +173,45 @@ async function applicant(db, path, body) {
 }
 
 export function createPortalHandler(db) {
+  let compressed;
+
+  async function catalogResponse(request) {
+    const ifNoneMatch = request.headers.get('If-None-Match');
+    const matches = etag => ifNoneMatch?.split(',').some(tag => {
+      const value = tag.trim();
+      return value === '*' || value.replace(/^W\//, '') === etag.slice(2);
+    });
+    const headers = revision => ({
+      'Content-Type': 'application/gzip',
+      'Cache-Control': 'no-cache',
+      'X-Portal-Catalog-Revision': revision,
+      ETag: `W/"${revision}"`,
+    });
+    const cached = compressed;
+    if (cached || ifNoneMatch) {
+      const { revision } = await readCatalog(db);
+      const metadata = headers(revision);
+      if (matches(metadata.ETag)) return new Response(null, { status: 304, headers: metadata });
+      if (cached?.revision === revision) return new Response(await cached.body, { headers: metadata });
+    }
+    // Read the revision and payload together when a new catalog is published.
+    const { revision, payload } = await readCatalog(db, true);
+    const metadata = headers(revision);
+    if (matches(metadata.ETag)) return new Response(null, { status: 304, headers: metadata });
+    if (compressed?.revision !== revision) {
+      const entry = { revision, body: compressCatalog(payload) };
+      compressed = entry;
+      void entry.body.catch(() => { if (compressed === entry) compressed = undefined; });
+    }
+    return new Response(await compressed.body, { headers: metadata });
+  }
+
   return async request => {
     try {
       const url = new URL(request.url);
       const path = url.pathname.replace(/^\/api\/portal|^\/\.netlify\/functions\/portal/, '');
       if (path === '/catalog' && request.method === 'GET') {
-        const catalog = await readCatalog(db, true);
-        return new Response(gzipSync(catalog.payload), { headers: { 'Content-Type': 'application/gzip', 'Cache-Control': 'no-cache', 'X-Portal-Catalog-Revision': catalog.revision } });
+        return await catalogResponse(request);
       }
       if (!['GET', 'POST'].includes(request.method)) fail(405, 'Unsupported request method.');
       let body = {};
@@ -192,9 +226,11 @@ export function createPortalHandler(db) {
       const user = await getUser(db, request);
       if (!user) fail(401, 'Sign in to Portal Admin.');
       if (path === '/sites' && request.method === 'GET') {
-        const { rows } = await db.query(`SELECT site_key, identity, migration_stage AS "migrationStage", migration_status AS "migrationStatus"
-          FROM portal_sites WHERE active ORDER BY identity->>'organizationName', identity->>'associationName', identity->>'name'`);
-        return reply(rows.filter(row => canRead(user, row.site_key)).map(row => ({ ...row.identity, migrationStage: row.migrationStage, migrationStatus: row.migrationStatus })));
+        const { rows } = await db.query(`SELECT s.site_key, s.identity, a.id AS "hostingAssociationId", t.id AS "organizationId",
+          a.name AS "associationName", t.name AS "organizationName", s.migration_stage AS "migrationStage", s.migration_status AS "migrationStatus"
+          FROM portal_sites s JOIN portal_associations a ON a.id = s.hosting_association_id JOIN portal_tpas t ON t.id = a.tpa_id
+          WHERE s.active ORDER BY t.name, a.name, s.identity->>'name'`);
+        return reply(rows.filter(row => canRead(user, row.site_key)).map(({ site_key: _siteKey, identity, ...relationships }) => ({ ...identity, ...relationships })));
       }
       if (path === '/users' && request.method === 'GET') {
         requireAdmin(user);

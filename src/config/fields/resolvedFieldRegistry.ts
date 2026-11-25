@@ -125,10 +125,10 @@ export function getResolvedFieldResolutionsForSite(
   const client = sources.clientForSite(site);
   const overrides = getApplicableFieldOverrides(
     [
-      ...normalizeClientFieldOverrides(client, site.clientId),
+      ...normalizeClientFieldOverrides(client, site.hostingAssociationId),
       ...sources.fieldOverrides,
     ],
-    { clientId: site.clientId, siteId: site.id, pageId },
+    { clientId: site.hostingAssociationId, siteId: site.id, pageId },
   );
   if (pageId === "coverage" || pageId === "eligibility") {
     const factIds = pageId === "coverage" ? coverageFactFieldIds(getClientCoverages(client)) : eligibilityFactFieldIds(getClientCoverages(client));
@@ -174,7 +174,7 @@ export function getResolvedFieldRegistry(
   return sources.sites.flatMap((site) => {
     const client = sources.clientForSite(site);
     const overrides = [
-      ...normalizeClientFieldOverrides(client, site.clientId),
+      ...normalizeClientFieldOverrides(client, site.hostingAssociationId),
       ...sources.fieldOverrides,
     ];
     const pageIds = new Set<PageId>([

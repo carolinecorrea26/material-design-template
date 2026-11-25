@@ -77,8 +77,8 @@ it("reconciles legacy excluded/optional arrays with explicit requirement precede
     const key = `pages.${property}`;
     const existing = original.configurationDefinitions.find(row => row.definition.path?.join(".") === key);
     if (!existing) original.configurationDefinitions.push({ ...meta("configurationDefinitions", key), position: 0, definition: { path: ["pages", property], metadata: null } });
-    original.configurationValues = original.configurationValues.filter(row => !(row.scope === "client" && row.clientKey === "asce" && row.configurationKey === (existing?.key ?? key)));
-    original.configurationValues.push({ ...meta("configurationValues", `test.asce.${property}`), position: 0, scope: "client", siteKey: null, clientKey: "asce", configurationKey: existing?.key ?? key, value: [...value] });
+    original.configurationValues = original.configurationValues.filter(row => !(row.scope === "association" && row.hostingAssociationKey === "asce" && row.configurationKey === (existing?.key ?? key)));
+    original.configurationValues.push({ ...meta("configurationValues", `test.asce.${property}`), position: 0, scope: "association", siteKey: null, hostingAssociationKey: "asce", configurationKey: existing?.key ?? key, value: [...value] });
   }
   for (const row of original.sitePages.filter(row => row.siteKey === "asce")) {
     if (["health-cir", "contact"].includes(row.pageKey)) row.requirement = "none";

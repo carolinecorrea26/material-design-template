@@ -40,6 +40,20 @@ it("keeps ZIP formatting and external errors in the shared renderer", async () =
   expect(container.textContent).toContain("Enter a valid ZIP / Postal Code.");
 });
 
+it("automatically uses a standard label for the authored referral multi-select", async () => {
+  const field = resolveMappedFields({ component: 'membership' }, { includeAll: true }).find(field => field.id === 'membership-referral-source')!;
+  const onChange = vi.fn();
+  await act(async () => root.render(<ControlledFieldRenderer field={field} value={['tv']} onChange={onChange} />));
+  const label = container.querySelector('.MuiFormLabel-root:not(.MuiInputLabel-root)');
+  const select = container.querySelector('[role="combobox"]')!;
+  expect(label?.textContent).toContain(field.label);
+  expect(select.getAttribute('aria-labelledby')?.split(' ')).toContain(label?.id);
+  expect(select.textContent).toBe('TV');
+
+  await act(async () => root.render(<ControlledFieldRenderer field={{ ...field, labelVariant: 'floating' }} value={['tv']} onChange={onChange} />));
+  expect(container.querySelector('.MuiInputLabel-root')?.textContent).toContain(field.label);
+});
+
 it.each(["phone", "ssn"] as const)("reports formatted %s edits to the parent", async format => {
   const onChange = vi.fn();
   await act(async () => root.render(<ControlledFieldRenderer field={{ id: format, label: format, inputType: "text", format, showPhoneTypeSelector: false }} value="" onChange={onChange} />));

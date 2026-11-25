@@ -1,6 +1,6 @@
 import { act, type ComponentProps } from "react";
 import { createRoot, type Root } from "react-dom/client";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter, useLocation } from "react-router-dom";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import FormRoutePage, { type BeforeNextContext } from "./RoutePage";
 import { ApplicationFormContext } from "./ApplicationFormContext";
@@ -15,7 +15,6 @@ vi.mock("../config/pageSections", async original => ({ ...await original<typeof 
 vi.mock("../config/progressSteps", async original => ({ ...await original<typeof import("../config/progressSteps")>(), getActiveProgressStepIndex: () => -1, getActiveProgressSteps: () => [] }));
 vi.mock("../analytics/runtime", () => ({ attachPageAnalytics: () => () => {}, emitPageAnalytics: () => {} }));
 vi.mock("../utils/mockEmail", () => ({ sendAutosaveMockEmail: vi.fn(async () => {}) }));
-vi.mock('../config/transitionMessages', async original => ({ ...await original<typeof import('../config/transitionMessages')>(), getBackMessage: () => 'Back transition from the content source' }));
 
 let root: Root, container: HTMLDivElement;
 const save = vi.fn(), setValues = vi.fn(), scrollIntoView = vi.fn();
@@ -30,8 +29,10 @@ afterEach(async () => {
   await act(async () => root.unmount()); container.remove(); vi.useRealTimers(); vi.unstubAllGlobals();
   if (originalScroll) Object.defineProperty(HTMLElement.prototype, "scrollIntoView", originalScroll); else Reflect.deleteProperty(HTMLElement.prototype, "scrollIntoView");
 });
+function Location() { return <output data-location>{useLocation().pathname}</output>; }
+
 async function render({ pageId = "membership", name = "Taylor", validate, onBeforeNext, prepareSubmitValues }: { pageId?: PageId; name?: string; validate?: () => string | undefined; onBeforeNext?: (context: BeforeNextContext) => boolean; prepareSubmitValues?: ComponentProps<typeof FormRoutePage>["prepareSubmitValues"] } = {}) {
-  await act(async () => root.render(<MemoryRouter><ApplicationFormContext.Provider value={{ values: { "first-name": name }, setPageValues: setValues, resetValues: () => {}, saveApplication: save }}><FormRoutePage pageId={pageId} validate={validate} onBeforeNext={onBeforeNext} prepareSubmitValues={prepareSubmitValues}>{({ allFields, control, errors }) => <FieldRenderer field={allFields[0]} control={control} errors={errors} />}</FormRoutePage></ApplicationFormContext.Provider></MemoryRouter>));
+  await act(async () => root.render(<MemoryRouter><Location /><ApplicationFormContext.Provider value={{ values: { "first-name": name }, setPageValues: setValues, resetValues: () => {}, saveApplication: save }}><FormRoutePage pageId={pageId} validate={validate} onBeforeNext={onBeforeNext} prepareSubmitValues={prepareSubmitValues}>{({ allFields, control, errors }) => <FieldRenderer field={allFields[0]} control={control} errors={errors} />}</FormRoutePage></ApplicationFormContext.Provider></MemoryRouter>));
 }
 async function submit() { await act(async () => container.querySelector("form")!.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }))); }
 
@@ -53,7 +54,7 @@ it("holds the completed page until the intermediate-step callback continues", as
   await submit(); expect(save).toHaveBeenCalledOnce(); expect(resume).toBeDefined();
   expect(container.querySelector("form")).not.toBeNull(); expect(container.textContent).not.toContain("Confirming");
   await act(async () => resume!());
-  expect(container.querySelector("form")).toBeNull();
+  expect(container.querySelector("[data-location]")?.textContent).toBe("/eligibility");
 });
 it("hides Back at entry and after submitted Review, and exposes it before submission", async () => {
   await render(); expect(container.querySelector('[aria-label="Go back"]')).toBeNull();
@@ -62,10 +63,10 @@ it("hides Back at entry and after submitted Review, and exposes it before submis
   await render({ pageId: "payment" }); expect(container.querySelector('[aria-label="Go back"]')).toBeNull();
 });
 
-it('uses the resolved Back transition wording when navigating', async () => {
+it('navigates Back immediately without saving', async () => {
   await render({ pageId: 'payment' });
   await act(async () => container.querySelector<HTMLButtonElement>('[aria-label="Go back"]')!.click());
-  expect(container.textContent).toContain('Back transition from the content source');
+  expect(container.querySelector('[data-location]')?.textContent).toBe('/review');
   expect(save).not.toHaveBeenCalled();
 });
 

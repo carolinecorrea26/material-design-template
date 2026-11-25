@@ -7,7 +7,7 @@ export function resolveFieldDefinitionOwnership(data: Data) {
   const rows = data.configurationValues.filter(row => keys.has(row.configurationKey));
   if (!rows.length) return "legacy" as const;
   const row = rows[0], value = row.value;
-  if (rows.length !== 1 || row.scope !== "global" || row.siteKey !== null || row.clientKey !== null || value === null || typeof value !== "object" || Array.isArray(value)
+  if (rows.length !== 1 || row.scope !== "global" || row.siteKey !== null || row.hostingAssociationKey !== null || value === null || typeof value !== "object" || Array.isArray(value)
     || (value.version !== 2 && value.version !== 3) || value.source !== "fields" || Object.keys(value).some(key => !["version", "source"].includes(key))) throw new Error("Invalid shared field definition ownership");
   for (const rule of data.validationRules) for (const property of ["inputType", "format", ...(value.version === 3 ? ["required"] : [])]) {
     if (Object.hasOwn(rule.definition, property)) throw new Error(`Field presentation property belongs to fields: ${rule.fieldKey}/${property}`);

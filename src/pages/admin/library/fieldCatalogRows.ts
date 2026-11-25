@@ -1,5 +1,4 @@
-import { withFreshStartCatalog } from "../../../domain/freshStartCatalog";
-import type { LibraryCatalog } from "../../../services/libraryCatalogService";
+import { compileLibraryCatalog, type LibraryCatalog } from "../../../services/libraryCatalogService";
 import type { FieldDefinition, FieldOption } from "../../../domain/fields";
 import { compiledFieldSurfaceRows, type FieldSurfaceRow } from "./fieldSurfaceRows";
 
@@ -14,7 +13,7 @@ export function fieldCatalogDefinition(field: FieldDefinition) {
 /** One saved definition per ID. Generated controls retain their definition
  * reference in usage; product/applicant instance IDs never become field rows. */
 export function fieldCatalogRows(catalog: LibraryCatalog, siteKey: string, usages?: FieldSurfaceRow[]) {
-  catalog = { ...catalog, data: withFreshStartCatalog(catalog.data, siteKey === "all" ? undefined : siteKey, catalog.siteScope) };
+  catalog = compileLibraryCatalog(catalog, siteKey);
   usages ??= compiledFieldSurfaceRows(catalog, siteKey);
   const byDefinition = new Map<string, FieldSurfaceRow[]>();
   for (const usage of usages) if (usage.definitionKey) {

@@ -4,7 +4,7 @@ import { buildPrototypeClient, buildPrototypeContent } from "./prototypeConfigur
 import { resolveStoredFieldCollections } from "./fieldCollections";
 import { resolvePageCatalog } from "./pageCatalog";
 import { resolveCompiledEffectiveSite, type EffectiveSite, type EffectiveSiteData } from './effectiveSite';
-import { isLibraryDraft } from './libraryDraft';
+import { hasLibraryDraftSnapshot } from './libraryDraft';
 import { buildPrototypeProduct } from "./prototypeProductProjection";
 import { buildPrototypeAssociationContext } from "./prototypeAssociationProjection";
 import { canonicalSiteKey } from "./siteIdentity.mjs";
@@ -76,6 +76,6 @@ export function projectPrototypeLibrary(data: EffectiveSiteData & Pick<DatabaseS
 }
 export function validatePrototypeEnvelope(value: unknown, siteKey: string) {
   const envelope = value as { mode: string; revision: string; payload: unknown };
-  if (envelope?.mode !== 'mock' || typeof envelope.revision !== 'string' || !isLibraryDraft(envelope.payload) || envelope.payload.siteKey !== siteKey) throw new Error('Invalid persisted prototype Library');
+  if (envelope?.mode !== 'mock' || typeof envelope.revision !== 'string' || !hasLibraryDraftSnapshot(envelope.payload) || envelope.payload.siteKey !== siteKey) throw new Error('Invalid persisted prototype Library');
   return resolvePrototypeLibrary(envelope.payload.data, siteKey, envelope.revision);
 }

@@ -96,7 +96,7 @@ type ProductCatalogProps = {
   selectionCalculating: boolean;
   showRateFrequencyToggle: boolean;
   showProducts: boolean;
-  productsLoading: boolean;
+  productsLoading?: boolean;
   grandTotal: number;
   activeClient: { support: { phoneDisplay?: string; email?: string } };
   onToggleApplicant: (

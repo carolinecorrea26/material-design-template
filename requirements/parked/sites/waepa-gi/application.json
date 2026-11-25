@@ -6,7 +6,7 @@
         "id": "client:{{site}}.theme.type",
         "key": "client:{{site}}.theme.type",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "theme.type",
         "value": "custom",
@@ -17,7 +17,7 @@
         "id": "client:{{site}}.theme.primary",
         "key": "client:{{site}}.theme.primary",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "theme.primary",
         "value": "#002c85",
@@ -28,7 +28,7 @@
         "id": "client:{{site}}.licenseInfo",
         "key": "client:{{site}}.licenseInfo",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "licenseInfo",
         "value": [
@@ -45,7 +45,7 @@
         "position": 0,
         "configurationKey": "theme.buttonShape",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "value": "standard"
       },
@@ -55,7 +55,7 @@
         "sourceReference": "prototype:configurationValues/client:waepa.theme.primaryAction",
         "position": 0,
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "theme.primaryAction",
         "value": {
@@ -70,7 +70,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "shared.review-policy",
         "value": {
           "version": 1,
@@ -208,7 +208,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "shared.beneficiary-notes",
         "value": {
           "version": 1,
@@ -233,7 +233,7 @@
         "id": "site:{{site}}.applicantExperience.factMappings.activeMilitary.field",
         "key": "site:{{site}}.applicantExperience.factMappings.activeMilitary.field",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "applicantExperience.factMappings.activeMilitary.field",
         "value": "active-military",
@@ -244,7 +244,7 @@
         "id": "site:{{site}}.applicantExperience.factMappings.activeMilitary.values.yes",
         "key": "site:{{site}}.applicantExperience.factMappings.activeMilitary.values.yes",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "applicantExperience.factMappings.activeMilitary.values.yes",
         "value": "yes",
@@ -255,7 +255,7 @@
         "id": "site:{{site}}.applicantExperience.factMappings.activeMilitary.values.no",
         "key": "site:{{site}}.applicantExperience.factMappings.activeMilitary.values.no",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "applicantExperience.factMappings.activeMilitary.values.no",
         "value": "no",
@@ -283,7 +283,7 @@
         },
         "position": 0,
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "sourceReference": "prototype:brandingProfiles/client:waepa; prototype:brandingProfiles/site:waepa-gi"
       }
@@ -307,7 +307,7 @@
         },
         "position": 0,
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "sourceReference": "Associations!D346"
       }
@@ -465,7 +465,7 @@
     "sites": [
       {
         "id": "waepa-gi",
-        "clientId": "waepa",
+        "hostingAssociationId": "waepa",
         "key": "waepa-gi",
         "name": "Guaranteed Issue Application",
         "displayName": "Guaranteed Issue Application",
@@ -474,7 +474,6 @@
         "templateType": "single",
         "legacyClientId": "waepagi",
         "deletedAt": null,
-        "hostingAssociationId": "waepa",
         "sourceReference": "prototype:sites/waepa-gi",
         "createdAt": "2026-09-01T12:00:00.000Z",
         "updatedAt": "2026-09-01T12:00:00.000Z"

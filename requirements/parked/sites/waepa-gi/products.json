@@ -10,7 +10,7 @@
         "id": "client:{{site}}.coverages.categories",
         "key": "client:{{site}}.coverages.categories",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "coverages.categories",
         "value": [
@@ -24,7 +24,7 @@
         "id": "client:{{site}}.coverages.overrides.li-group-term.underwritingType",
         "key": "client:{{site}}.coverages.overrides.li-group-term.underwritingType",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "products.presentation.li-group-term.underwritingType",
         "value": "QD",
@@ -35,7 +35,7 @@
         "id": "client:{{site}}.coverages.overrides.li-group-term.productWarning.severity",
         "key": "client:{{site}}.coverages.overrides.li-group-term.productWarning.severity",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "coverages.overrides.li-group-term.productWarning.severity",
         "value": "info",
@@ -46,7 +46,7 @@
         "id": "client:{{site}}.coverages.overrides.li-group-term.productWarning.title",
         "key": "client:{{site}}.coverages.overrides.li-group-term.productWarning.title",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "coverages.overrides.li-group-term.productWarning.title",
         "value": "",
@@ -57,7 +57,7 @@
         "id": "client:{{site}}.coverages.overrides.li-group-term.productWarning.message",
         "key": "client:{{site}}.coverages.overrides.li-group-term.productWarning.message",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "coverages.overrides.li-group-term.productWarning.message",
         "value": "Optional Chronic Illness Rider available.",
@@ -69,7 +69,7 @@
         "key": "rates.reviewed-presentation.waepa",
         "sourceReference": "docs/archive/step3-major-outstanding-items.md",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "rates.reviewed-presentation",
         "value": {
@@ -86,7 +86,7 @@
         "sourceReference": "Main!O386",
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.product-eligibility-facts.li-group-term.member",
         "value": [
           {
@@ -101,7 +101,7 @@
         "key": "{{site}}.li-group-term.provisional-rate-outcome",
         "sourceReference": "docs/step3-provisional-decisions.md",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "template.product-rate-outcome.li-group-term",
         "value": {
@@ -118,7 +118,7 @@
         "sourceReference": "Main!M386; Main!N386",
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.product-residency-policy.li-group-term",
         "value": {
           "version": 1,
@@ -196,7 +196,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.product-selection-policy.li-group-term",
         "value": {
           "version": 1,
@@ -228,7 +228,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.product-journey-policy.li-group-term",
         "value": {
           "underwritingByApplicant": {},
@@ -378,7 +378,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.coveragePolicy.lifeAggregateParticipation",
         "value": {
           "version": 1,
@@ -395,7 +395,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.product-rate-modifier-policy.li-group-term",
         "value": {
           "version": 1,
@@ -413,7 +413,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.product-rate-input-policy.li-group-term",
         "value": {
           "version": 1,
@@ -453,7 +453,7 @@
         "sourceReference": "User-confirmed relational rider ownership, October 19, 2026",
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "position": 0,
         "configurationKey": "template.product-rider-set.li-group-term",
         "value": {
@@ -468,7 +468,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "template.page-participation",
         "value": {
           "version": 2,
@@ -482,7 +482,7 @@
         "position": 0,
         "configurationKey": "template.product-availability",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "value": {
           "version": 2,
@@ -496,7 +496,7 @@
         "position": 0,
         "configurationKey": "template.site-structure",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "value": {
           "version": 2,
@@ -508,7 +508,7 @@
         "key": "{{site}}.hide-smoker-question",
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "coverages.hideSmokerQuestion",
         "value": true,
         "position": 0,
@@ -598,7 +598,7 @@
         "key": "{{site}}.li-group-term.mcr-fixed-member-offer",
         "sourceReference": "Main!H386",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "productKey": "li-group-term",
         "applicantTypeKey": "member",
         "applicantClass": null,
@@ -614,7 +614,7 @@
         "sourceReference": "Main!E386",
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "productKey": "li-group-term",
         "kind": "gNumber",
         "definition": {
@@ -628,7 +628,7 @@
         "sourceReference": "Main!G386",
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "productKey": "li-group-term",
         "kind": "planCode",
         "definition": {

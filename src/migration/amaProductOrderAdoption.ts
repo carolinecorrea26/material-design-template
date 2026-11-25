@@ -10,7 +10,7 @@ export function applyAmaProductOrderAdoption(db: DatabaseSchema) {
   for (const [cell, text] of Object.entries(expected)) if (String(currentMcrSource.cells.find(row => row.sheet === "Order of Products Across Site" && row.cell === cell)?.value).trim() !== text) throw new Error(`AMA order source changed: ${cell}`);
   const definitionKey = "shared.coverages.productOrder", key = "site:ama.coverages.productOrder";
   const definition = { ...meta("configurationDefinitions", definitionKey), position: 0, definition: { path: ["coverages", "productOrder"], metadata: { reusable: true, assignmentRequired: true, purpose: "Optional product order within each category; URL featured product/category take precedence" }, target: null } };
-  const value = { ...meta("configurationValues", key), position: 0, scope: "site" as const, siteKey: "ama", clientKey: null, configurationKey: definitionKey, value: [...amaSourceProductOrder] };
+  const value = { ...meta("configurationValues", key), position: 0, scope: "site" as const, siteKey: "ama", hostingAssociationKey: null, configurationKey: definitionKey, value: [...amaSourceProductOrder] };
   const previous = db.configurationValues.find(row => row.key === key)?.configurationKey;
   for (const [table, record] of [["configurationDefinitions", definition], ["configurationValues", value]] as const) {
     const rows = db[table] as Array<{ key: string }>; const index = rows.findIndex(row => row.key === record.key); if (index < 0) rows.push(record); else rows[index] = record;

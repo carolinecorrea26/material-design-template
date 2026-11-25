@@ -18,7 +18,7 @@ export function applyProvisionalSourceDecisions(db: DatabaseSchema, cells: reado
   for (const reference of references) if (!actual.has(reference) || JSON.stringify(actual.get(reference)) !== JSON.stringify(expected.get(reference)) || !db.sourceRequirements.some(row => row.sheetKey === "main" && `Main!${row.cell}` === reference)) throw new Error(`Provisional source changed: ${reference}`);
   for (const scoped of activeSiteMigrationScope.sites) {
     const sites = db.sites.filter(site => site.key === scoped.key);
-    if (sites.length !== 1 || db.clients.find(client => client.id === sites[0].clientId)?.key !== scoped.clientKey) throw new Error(`Invalid provisional Site: ${scoped.key}`);
+    if (sites.length !== 1 || db.associationEntities.find(client => client.id === sites[0].hostingAssociationId)?.key !== scoped.hostingAssociationKey) throw new Error(`Invalid provisional Site: ${scoped.key}`);
   }
   const decision = (siteKey: string, suffix: string, issue: string, selected: Json, sourceReferences: string[], destinations: Destination[]) => {
     const key = `provisional-decision.${siteKey}.${suffix}`;
@@ -63,7 +63,7 @@ export function applyProvisionalSourceDecisions(db: DatabaseSchema, cells: reado
     db.configurationDefinitions = db.configurationDefinitions.filter(row => row.key !== key);
     db.configurationDefinitions.push({ ...metadata("configurationDefinitions", key), definition: { path: null, metadata: { provisional: true, revisit: true }, target: { kind, productKey } }, position: 0 });
     db.configurationValues = db.configurationValues.filter(row => row.key !== key);
-    db.configurationValues.push({ ...metadata("configurationValues", key), scope: "site", clientKey: null, siteKey, configurationKey: key, value, position: 0 });
+    db.configurationValues.push({ ...metadata("configurationValues", key), scope: "site", hostingAssociationKey: null, siteKey, configurationKey: key, value, position: 0 });
     return { table: "configurationValues", key, column: "value" } satisfies Destination;
   };
 
@@ -71,7 +71,7 @@ export function applyProvisionalSourceDecisions(db: DatabaseSchema, cells: reado
   for (const [kind, primary] of [["gNumber", "G-11628-0"], ["planCode", "601"]] as const) {
     const key = `csea.di-ltd.provisional-identity.${kind}`;
     db.productIdentifiers = db.productIdentifiers.filter(row => !(row.scope === "site" && row.siteKey === "csea" && row.productKey === "di-ltd" && row.kind === kind));
-    db.productIdentifiers.push({ ...metadata("productIdentifiers", key), scope: "site", clientKey: null, siteKey: "csea", productKey: "di-ltd", kind, definition: { primary }, position: 0 });
+    db.productIdentifiers.push({ ...metadata("productIdentifiers", key), scope: "site", hostingAssociationKey: null, siteKey: "csea", productKey: "di-ltd", kind, definition: { primary }, position: 0 });
     cseaIdentifiers.push({ table: "productIdentifiers", key, column: "definition" });
   }
   const cseaAge = age("csea", "di-ltd", "member", 17, 65);
@@ -107,7 +107,7 @@ export function applyProvisionalSourceDecisions(db: DatabaseSchema, cells: reado
     db.amountBands = db.amountBands.filter(row => row.amountPatternKey !== patternKey);
     const bandKey = `${patternKey}.band`;
     db.amountBands.push({ ...metadata("amountBands", bandKey), amountPatternKey: patternKey, minimum: 5000, maximum: 100000, increment: 5000, conditionKey: null, position: 0 });
-    db.productAmountRules.push({ ...metadata("productAmountRules", key), siteKey: "isitrust", clientKey: null, productKey: "sh-critical-illness", applicantTypeKey, applicantClass: null, amountPatternKey: patternKey, conditionKey: null, position });
+    db.productAmountRules.push({ ...metadata("productAmountRules", key), siteKey: "isitrust", hostingAssociationKey: null, productKey: "sh-critical-illness", applicantTypeKey, applicantClass: null, amountPatternKey: patternKey, conditionKey: null, position });
     isiTargets.push({ table: "productAmountRules", key, column: "amountPatternKey" }, { table: "amountBands", key: bandKey, column: "maximum" }, age("isitrust", "sh-critical-illness", applicantTypeKey, 18, 64));
   }
   decision("isitrust", "critical-illness-stage2", "Stage 2 requirements are incomplete; retain this existing product with the recorded numeric choices and ages, and preserve other existing candidate terms provisionally.", { enabled: true, applicants: ["member", "spouse"], minimum: 5000, maximum: 100000, increment: 5000, minimumAgeYears: 18, maximumAgeYears: 64, remainingTerms: "existing-candidate-provisional" }, ["Main!D286", "Main!H286", "Main!I286", "Main!J286", "Main!O286", "Main!P286"], isiTargets);

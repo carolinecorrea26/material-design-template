@@ -9,7 +9,6 @@ import Eligibility from "./Eligibility";
 import { installPrototypeLibrary, resolvePrototypeLibrary } from "../domain/prototypeLibrary";
 import { validateSharedCatalog } from "../persistence/sharedCatalog";
 import { applicationRecovery } from "../content/applicationRecovery";
-import { MESSAGE_DURATION } from "../config/transitionMessages";
 import membershipContent from "../../requirements/global/content/membership.json";
 import { freshStartSource } from '../domain/freshStartCatalog';
 
@@ -56,7 +55,6 @@ async function renderPage(page: "membership" | "eligibility", values: Record<str
   document.body.append(container);
   root = createRoot(container);
   await act(async () => root!.render(<MemoryRouter>{page === "membership" ? <Membership /> : <Eligibility />}</MemoryRouter>));
-  if (page === "membership") await act(async () => { await new Promise(resolve => setTimeout(resolve, MESSAGE_DURATION + 20)); });
 }
 
 const next = () => container.querySelector<HTMLButtonElement>('button[type="submit"]:not([aria-hidden="true"])')!;

@@ -12,7 +12,7 @@ export function applyAmaDependentCollectionAdoption(db: DatabaseSchema) {
   if (!field?.definition.options) throw new Error("Missing shared dependent field");
   const conditionKey = "condition-membership-ama-valid-applicant";
   const condition = { ...meta("conditions", conditionKey), position: 30010, definition: { id: conditionKey, match: "all" as const, conditions: [{ fieldId: "membership", operator: "oneOf" as const, value: ["physician", "resident", "student", "retired", "spouse"] }] } };
-  const assignment = { ...meta("siteFieldConfigurations", "site:ama.eligibility.dependents.source-presentation"), position: 30010, scope: "site" as const, siteKey: "ama", clientKey: null, pageKey: "eligibility", fieldKey: "dependents", include: null, hidden: null, values: { options: field.definition.options.map(option => option.value === "spouse" ? { ...option, label } : structuredClone(option)), visibilityConditionId: conditionKey } };
+  const assignment = { ...meta("siteFieldConfigurations", "site:ama.eligibility.dependents.source-presentation"), position: 30010, scope: "site" as const, siteKey: "ama", hostingAssociationKey: null, pageKey: "eligibility", fieldKey: "dependents", include: null, hidden: null, values: { options: field.definition.options.map(option => option.value === "spouse" ? { ...option, label } : structuredClone(option)), visibilityConditionId: conditionKey } };
   for (const [table, row] of [["conditions", condition], ["siteFieldConfigurations", assignment]] as const) {
     const rows = db[table] as Array<{ key: string }>; const index = rows.findIndex(record => record.key === row.key); if (index < 0) rows.push(row); else rows[index] = row;
   }

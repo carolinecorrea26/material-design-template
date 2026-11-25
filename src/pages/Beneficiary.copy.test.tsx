@@ -37,7 +37,7 @@ it.each([['li-10yr', false], ['di-ltd', true]] as const)('uses the resolved fixe
   const source = structuredClone(freshStartSource());
   const base = resolvePrototypeLibrary(catalog.data, 'asce', 'beneficiary-association-base');
   const key = 'shared.beneficiary-participation';
-  source.siteApplication.asce.records.configurationValues.push({ id: key, key, position: 0, configurationKey: key, scope: 'site', siteKey: '{{site}}', clientKey: null, value: { version: 1, rules: [{ productKey, applicantKey: 'member', associationKeys: [base.site.enabledAssociationKeys[0]], collect }] } });
+  source.siteApplication.asce.records.configurationValues.push({ id: key, key, position: 0, configurationKey: key, scope: 'site', siteKey: '{{site}}', hostingAssociationKey: null, value: { version: 1, rules: [{ productKey, applicantKey: 'member', associationKeys: [base.site.enabledAssociationKeys[0]], collect }] } });
   const library = resolvePrototypeLibrary(catalog.data, 'asce', 'beneficiary-association-test', source);
   installPrototypeLibrary(library);
   form.values = { membership: 'yes', 'beneficiary-information-opt-in': 'yes', 'birth-date': '1990-01-01', 'state-province': 'VA', coverageSelections: [productKey], productApplicants: { [productKey]: ['member'] }, coverageAmounts: { [`${productKey}:member`]: productKey === 'di-ltd' ? 1000 : 100000 }, beneficiaries: {} };

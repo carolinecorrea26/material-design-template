@@ -97,21 +97,21 @@ describe("relational rider ownership", () => {
 
   it("resolves client and Site properties independently and retains both sources", () => {
     const changed = structuredClone(db);
-    for (const [scope, property, value] of [["client", "description", "Association waiver wording"], ["site", "name", "Site waiver label"]] as const) {
+    for (const [scope, property, value] of [["association", "description", "Association waiver wording"], ["site", "name", "Site waiver label"]] as const) {
       const key = `test.${scope}.waiver.${property}`;
       changed.configurationDefinitions.push({ ...meta("configurationDefinitions", key), position: 0, definition: { path: null, metadata: null,
         target: { kind: "product-rider-override", productKey: "li-term", riderKey: "rider.ama.r38", property } } });
       changed.configurationValues.push({ ...meta("configurationValues", key), position: 0, configurationKey: key, scope,
-        clientKey: scope === "client" ? "ama" : null, siteKey: scope === "site" ? "ama" : null, value });
+        hostingAssociationKey: scope === "association" ? "ama" : null, siteKey: scope === "site" ? "ama" : null, value });
     }
     const rider = resolveEffectiveSite(changed, "ama").configuration.products.find(product => product.productKey === "li-term")!.riders.find(rider => rider.key === "rider.ama.r38")!;
     expect(rider.definition!.value).toMatchObject({ name: "Site waiver label", description: "Association waiver wording" });
     expect(rider.definition!.provenance.map(source => source.key)).toEqual(expect.arrayContaining(["rider.ama.r38", "test.client.waiver.description", "test.site.waiver.name"]));
     // The Site value wins only for the property it overrides.
-    changed.configurationValues.push({ ...meta("configurationValues", "test.site.waiver.description"), position: 0, configurationKey: "test.client.waiver.description", scope: "site", clientKey: null, siteKey: "ama", value: "Site waiver wording" });
+    changed.configurationValues.push({ ...meta("configurationValues", "test.site.waiver.description"), position: 0, configurationKey: "test.client.waiver.description", scope: "site", hostingAssociationKey: null, siteKey: "ama", value: "Site waiver wording" });
     expect(preview(changed).products.find(product => product.id === "li-term")!.riders![0].description).toBe("Site waiver wording");
     const global = changed.configurationValues.find(row => row.key === "test.client.waiver.description")!;
-    global.scope = "global"; global.clientKey = null;
+    global.scope = "global"; global.hostingAssociationKey = null;
     expect(() => preview(changed)).toThrow("Global rider properties");
   });
 
@@ -138,7 +138,7 @@ describe("relational rider ownership", () => {
     const key = "test.waepa.client.rider-description";
     changed.configurationDefinitions.push({ ...meta("configurationDefinitions", key), position: 0, definition: { path: null, metadata: null,
       target: { kind: "product-rider-override", productKey: "li-group-term", riderKey: "rider.waepa.r34", property: "description" } } });
-    changed.configurationValues.push({ ...meta("configurationValues", key), position: 0, configurationKey: key, scope: "client", clientKey: "waepa", siteKey: null, value: "Shared CIR wording" });
+    changed.configurationValues.push({ ...meta("configurationValues", key), position: 0, configurationKey: key, scope: "association", hostingAssociationKey: "waepa", siteKey: null, value: "Shared CIR wording" });
     expect(preview(changed, "waepa").products.find(product => product.id === "li-group-term")!.riders!.find(rider => rider.id === "cir")!.description).toBe("Shared CIR wording");
     expect(preview(changed, "waepa-gi").products.find(product => product.id === "li-group-term")!.riders).toEqual([]);
     expect(validateMigrationDatabase(changed)).toEqual([]);
@@ -157,7 +157,7 @@ describe("relational rider ownership", () => {
     const key = `test.rider.${scenario}`;
     const riderKey = scenario === "orphan" ? "rider.ama.r40" : "rider.ama.r38";
     changed.configurationDefinitions.push({ ...meta("configurationDefinitions", key), position: 0, definition: { path: null, metadata: null, target: { kind: "product-rider-override", productKey: "li-10yr", riderKey, property } } });
-    changed.configurationValues.push({ ...meta("configurationValues", key), scope: "site", siteKey: "ama", clientKey: null, configurationKey: key, position: 0,
+    changed.configurationValues.push({ ...meta("configurationValues", key), scope: "site", siteKey: "ama", hostingAssociationKey: null, configurationKey: key, position: 0,
       value: scenario === "coverageAmounts" ? [{ selections: [{ type: "range", min: 100, max: 50, increment: 0 }] }] : "invalid-or-conflicting" });
     if (scenario === "duplicate") {
       changed.configurationDefinitions.push({ ...changed.configurationDefinitions.at(-1)!, ...meta("configurationDefinitions", `${key}.second`) });
@@ -171,7 +171,7 @@ describe("relational rider ownership", () => {
     const changed = structuredClone(db);
     const key = "test.historical-rider-array";
     changed.configurationDefinitions.push({ ...meta("configurationDefinitions", key), position: 0, definition: { path: null, metadata: null, target: { kind: "product-presentation", productKey: "li-10yr", property: "riders" } } });
-    changed.configurationValues.push({ ...meta("configurationValues", key), scope: "site", siteKey: "ama", clientKey: null, configurationKey: key, position: 0, value: [] });
+    changed.configurationValues.push({ ...meta("configurationValues", key), scope: "site", siteKey: "ama", hostingAssociationKey: null, configurationKey: key, position: 0, value: [] });
     expect(() => preview(changed)).toThrow("Whole-rider overrides");
     changed.configurationValues.find(row => row.key === "ownership.ama.li-10yr.rider-set")!.value = [];
     const before = JSON.stringify(changed);

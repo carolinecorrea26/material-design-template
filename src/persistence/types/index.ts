@@ -16,7 +16,7 @@ export * from "./migrationSchedule";
 
 export interface DatabaseSchema extends LibrarySchema, SiteConfigurationSchema, CanonicalSchema, StructuralSchema {
   migrationSchedules: import("./migrationSchedule").MigrationSchedule[];
-  organizations: O.Organization[]; clients: O.Client[]; sites: O.Site[];
+  organizations: O.Organization[]; sites: O.Site[];
   siteCoverages: O.SiteCoverage[]; siteProducts: O.SiteProduct[]; siteRiders: O.SiteRider[]; siteConfigurations: O.SiteConfiguration[];
   applications: P.Application[]; applicationParticipants: P.ApplicationParticipant[]; applicationEvents: P.ApplicationEvent[];
   applicants: import('./applicants').Applicant[];

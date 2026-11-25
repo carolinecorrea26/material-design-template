@@ -48,7 +48,7 @@ export function compiledStoredLibraryRows(catalog: LibraryCatalog, table: Snapsh
   let rows = data[table] as unknown as StoredRow[];
   if (siteKey === "all") return table === "pages" ? orderedPages(catalog, siteKey) : rows;
   if (!site) return [];
-  rows = rows.filter(row => (!row.siteKey || row.siteKey === siteKey) && (!row.siteId || row.siteId === site.id) && (!row.clientKey || row.clientKey === data.clients.find(c => c.id === site.clientId)?.key) && (!row.clientId || row.clientId === site.clientId));
+  rows = rows.filter(row => (!row.siteKey || row.siteKey === siteKey) && (!row.siteId || row.siteId === site.id) && (!row.hostingAssociationKey || row.hostingAssociationKey === data.associationEntities.find(c => c.id === site.hostingAssociationId)?.key) && (!row.hostingAssociationId || row.hostingAssociationId === site.hostingAssociationId));
   const resolved = resolveCompiledEffectiveSite(data, siteKey);
   const pageKeys = new Set(resolved.configuration.pages.filter(page => page.requirement !== "none" && page.definition?.value.type !== "internal").map(page => page.key));
   const productKeys = new Set(resolved.products.map(product => product.productKey));

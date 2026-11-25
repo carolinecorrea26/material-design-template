@@ -82,7 +82,7 @@ export function applyAtpeQuestionnaireAdoption(db: DatabaseSchema) {
   }
   const configurationKey = "shared.health-questionnaires", key = "isitrust.atpe.health-questionnaires";
   if (!db.configurationDefinitions.some(row => row.key === configurationKey)) db.configurationDefinitions.push({ ...meta("configurationDefinitions", configurationKey), position: 0, definition: { path: null, metadata: { reusable: true, assignmentRequired: true }, target: { kind: "site-health-questionnaires" } } });
-  const value = { ...meta("configurationValues", key), position: 0, scope: "site" as const, siteKey: "isitrust", clientKey: null, configurationKey, value: policy as unknown as Json };
+  const value = { ...meta("configurationValues", key), position: 0, scope: "site" as const, siteKey: "isitrust", hostingAssociationKey: null, configurationKey, value: policy as unknown as Json };
   const index = db.configurationValues.findIndex(row => row.key === key);
   if (index < 0) db.configurationValues.push(value); else db.configurationValues[index] = value;
   const rateKey = "isitrust.reviewed-rate-presentation";
@@ -90,7 +90,7 @@ export function applyAtpeQuestionnaireAdoption(db: DatabaseSchema) {
   if (!existing || !isRatePresentationPolicy(existing.value)) throw new Error("Missing ISITRUST rate presentation baseline");
   // Use the same existing definition identity for Site precedence; a second
   // identity would create two effective policies rather than a scoped override.
-  const rate = { ...meta("configurationValues", rateKey), position: 0, scope: "site" as const, siteKey: "isitrust", clientKey: null, configurationKey: existing.configurationKey, value: { ...existing.value, suppressedAssociationKeys: [atpeAssociationKey] } as unknown as Json };
+  const rate = { ...meta("configurationValues", rateKey), position: 0, scope: "site" as const, siteKey: "isitrust", hostingAssociationKey: null, configurationKey: existing.configurationKey, value: { ...existing.value, suppressedAssociationKeys: [atpeAssociationKey] } as unknown as Json };
   const rateIndex = db.configurationValues.findIndex(row => row.key === rateKey);
   if (rateIndex < 0) db.configurationValues.push(rate); else db.configurationValues[rateIndex] = rate;
   const review = db.configurationValues.find(row => row.key === "isitrust.review-policy");

@@ -1,10 +1,9 @@
 import { createHash, randomBytes, scryptSync, timingSafeEqual } from 'node:crypto';
 import pg from 'pg';
 
-export function connectPortalDatabase() {
-  const connectionString = process.env.DATABASE_URL || process.env.NETLIFY_DB_URL;
+export function connectPortalDatabase(connectionString = process.env.DATABASE_URL || process.env.NETLIFY_DB_URL) {
   if (!connectionString) throw new Error('Set NETLIFY_DB_URL or DATABASE_URL for the Portal database.');
-  return new pg.Pool({ connectionString, max: 2, connectionTimeoutMillis: 5000 });
+  return new pg.Pool({ connectionString, max: 2, connectionTimeoutMillis: 10000, enableChannelBinding: true });
 }
 
 export async function inTransaction(pool, work) {

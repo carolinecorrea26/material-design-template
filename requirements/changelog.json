@@ -699,6 +699,11 @@
       "id": "CHG-140",
       "description": "Enrolled AMA-GI under the existing AMA Client/TPA and association with the shared single-page flow. The applicant attests Student or Spouse; the shared associated-person fields supply Medical Student Information for Spouse. Assigned Medical Student GI Life ($50,000/$100,000) and GI Disability ($1,000; Student only), no health questions, no Payment, optional Beneficiary and SSN-only Profile. The confirmed webpage state exclusions and 30-day/12-month Disability periods apply; the MCR supplies ages 17–39 and plan/policy identifiers. Hero displays AMA-Sponsored Medical Student Program and the July 1–December 31 enrollment window.",
       "reason": "User AMA-GI enrollment and confirmations November 19, 2026. Extended the existing application-source enrollment, global Profile section configuration and shared associated-person content slots; Site values remain in requirements/parked/sites/ama-gi/. Preview admission derives from enrollment/catalog identities."
+    },
+    {
+      "id": "CHG-141",
+      "description": "Require a nonempty category or categories value on fresh prods URLs. Invalid entry opens the existing global 400 recovery page before campaign state is captured. A matched variant G-number scopes product display, and application answers continue to resolve eligible options and downstream identifiers.",
+      "reason": "User November 25, 2026 confirmed variant links should show the product and let the application resolve the eligible option. Backend-only and shared G-number URL semantics remain a separate decision. The template owns entry validation, and effective Sites own identifier assignments."
     }
   ]
 }

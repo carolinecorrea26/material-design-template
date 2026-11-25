@@ -15,7 +15,7 @@ export function applyAbeApprovedReviewAdoption(db: DatabaseSchema) {
   // This historical capture predates explicit premium-statement policy. Preserve
   // its accepted base copy even as today's global Review content evolves.
   const contentKey = "review.readAndSignContent", contentId = "abe.accepted-review-base";
-  const content = { ...meta("contentValues", contentId), scope: "site" as const, siteKey: "abe", clientKey: null, contentKey, value: text("Read & Sign", "B7"), position: 40000 };
+  const content = { ...meta("contentValues", contentId), scope: "site" as const, siteKey: "abe", hostingAssociationKey: null, contentKey, value: text("Read & Sign", "B7"), position: 40000 };
   db.contentValues = [...db.contentValues.filter(row => !(row.scope === "site" && row.siteKey === "abe" && row.contentKey === contentKey)), content];
   const row = db.configurationValues.find(row => row.key === "abe.review-policy");
   if (!row || !isReviewPolicy(row.value)) throw new Error("Invalid ABE Review policy");
@@ -44,7 +44,7 @@ export function applyAbeApprovedReviewAdoption(db: DatabaseSchema) {
   row.value.blocks = [...row.value.blocks.filter(block => !blocks.some(next => next.key === block.key)), ...blocks];
   const fieldKey = "abe-member-id";
   const field = { ...meta("fields", fieldKey), position: 31000, definition: { id: fieldKey, label: "Membership ID", inputType: "text" as const, required: false } };
-  const assignment = { ...meta("siteFieldConfigurations", "abe.membership.member-id"), position: 31000, scope: "site" as const, siteKey: "abe", clientKey: null, pageKey: "membership", fieldKey, include: true, hidden: false, values: {} };
+  const assignment = { ...meta("siteFieldConfigurations", "abe.membership.member-id"), position: 31000, scope: "site" as const, siteKey: "abe", hostingAssociationKey: null, pageKey: "membership", fieldKey, include: true, hidden: false, values: {} };
   for (const [table, record] of [["fields", field], ["siteFieldConfigurations", assignment]] as const) {
     const rows = db[table] as Array<{ key: string }>, index = rows.findIndex(row => row.key === record.key);
     if (index < 0) rows.push(record); else rows[index] = record;

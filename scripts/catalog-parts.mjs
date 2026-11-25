@@ -11,7 +11,7 @@ const ownerFor = table => table === 'analyticsTags' ? 'analytics' : owners.find(
 // File boundaries follow entity identity; Library navigation can still group them.
 const identityParts = {
   organizations: 'tpas', organizationProfiles: 'tpas',
-  clients: 'clients', supportProfiles: 'clients',
+  supportProfiles: 'associations',
   sites: 'sites', siteEnvironmentLinks: 'sites', siteAssociations: 'sites', siteAssociationContexts: 'sites',
   associations: 'associations', associationEntities: 'associations', associationAliases: 'associations', associationAffiliations: 'associations',
 };

@@ -20,7 +20,7 @@ import { effectiveHealthFollowUps } from '../config/fields/healthPageFields';
 import { validateHealthFollowUps } from './healthQuestionnaire';
 export { resolveJourneyUnderwriting } from "./coverageJourneyUnderwriting";
 
-export type CoverageJourneyInput = MappingDimensions & {
+export type CoverageJourneyInput = Omit<MappingDimensions, 'membershipType'> & {
   productKey: string; mode: ApplicationMode; amount: number; membershipConfirmed?: boolean;
   eligibility: EligibilityFacts; benefit?: BenefitFacts; dependent?: DependentFacts;
   jurisdiction?: string; existingPolicy?: Pick<PolicyLookup, "policyId" | "ownerReference">;
@@ -216,7 +216,7 @@ export async function evaluateCoverageJourney(site: EffectiveSite, input: Covera
   const skipPayment = selection.allowed && selection.skipPayment || policy.payment.collection === "none";
   const payment = skipPayment ? { method: null, frequency: null } : reconcilePaymentSelection(policy.payment, input.payment?.method ?? null, input.payment?.frequency ?? null);
   if (!skipPayment && policy.payment.collection === "required" && (!input.payment || !paymentSelectionAllowed(policy.payment, input.payment.method, input.payment.frequency))) missingFacts.push("payment");
-  const mapping = resolveSubmissionMapping(policy, input);
+  const mapping = resolveSubmissionMapping(policy, { ...input, membershipType: eligibilityFacts.membershipType });
   if (mapping.status !== "resolved") (mapping.status === "needs-information" ? missingFacts : errors).push("submissionMapping");
   const allowed = !errors.length && !missingFacts.length;
   const submission = allowed && mapping.mapping ? {

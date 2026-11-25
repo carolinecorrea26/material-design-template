@@ -11,11 +11,11 @@ import {
   Typography,
 } from "@mui/material";
 import {
-  clientEntities,
+  hostingAssociations,
   getSiteIdForClientAlias,
-  getSitesForClient,
-  getClientForSite,
-  type Client,
+  getSitesForHostingAssociation,
+  getHostingAssociationForSite,
+  type HostingAssociation,
   type Site,
 } from "../../data";
 import { cmsEntries } from "../../content/docs/cmsEntries";
@@ -25,15 +25,15 @@ import { CLIENT_HIGHLIGHT_BG, CLIENT_HIGHLIGHT_BORDER } from "./ClientNote";
 const DEFAULT_SITE_ID = getSiteIdForClientAlias("demo");
 
 export default function ClientCmsPanel({ siteId: controlledSiteId, hideSelector = false, hideHeading = false }: { siteId?: string; hideSelector?: boolean; hideHeading?: boolean } = {}) {
-  const [selectedClient, setSelectedClient] = useState<Client>(() => clientEntities.find((client) => client.id === "demo")!);
+  const [selectedClient, setSelectedClient] = useState<HostingAssociation>(() => hostingAssociations.find((client) => client.id === "demo")!);
   const [selectedSiteId, setSelectedSiteId] = useState(DEFAULT_SITE_ID);
   const activeSiteId = controlledSiteId ?? selectedSiteId;
-  const activeClientEntity = controlledSiteId ? getClientForSite(controlledSiteId) ?? selectedClient : selectedClient;
+  const activeClientEntity = controlledSiteId ? getHostingAssociationForSite(controlledSiteId) ?? selectedClient : selectedClient;
 
-  const handleClientChange = useCallback((nextClient: Client | null) => {
+  const handleClientChange = useCallback((nextClient: HostingAssociation | null) => {
     if (!nextClient) return;
     setSelectedClient(nextClient);
-    setSelectedSiteId(getSitesForClient(nextClient.id)[0].id);
+    setSelectedSiteId(getSitesForHostingAssociation(nextClient.id)[0].id);
   }, []);
 
   const handleSiteChange = useCallback((nextSite: Site | null) => {
@@ -58,7 +58,7 @@ export default function ClientCmsPanel({ siteId: controlledSiteId, hideSelector 
     <Stack spacing={3}>
       {!hideHeading && <Box>
         <Typography variant="h5" sx={{ fontWeight: 800, mb: 1 }}>
-          Client Content
+          HostingAssociation Content
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 920 }}>
           The fully resolved content for one client's site — global defaults, with that client's
@@ -97,7 +97,7 @@ export default function ClientCmsPanel({ siteId: controlledSiteId, hideSelector 
           </Typography>
           <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ mt: 2 }}>
             <Autocomplete
-              options={clientEntities}
+              options={hostingAssociations}
               value={activeClientEntity}
               onChange={(_, value) => handleClientChange(value)}
               disableClearable
@@ -106,15 +106,15 @@ export default function ClientCmsPanel({ siteId: controlledSiteId, hideSelector 
               isOptionEqualToValue={(option, value) => option.id === value.id}
               sx={{ flex: 1, maxWidth: 420 }}
               renderInput={(params) => (
-                <TextField {...params} label="Client" placeholder="Search clients…" />
+                <TextField {...params} label="HostingAssociation" placeholder="Search clients…" />
               )}
             />
             <Autocomplete
-              options={getSitesForClient(activeClientEntity.id)}
-              value={getSitesForClient(activeClientEntity.id).find((s) => s.id === activeSiteId) ?? getSitesForClient(activeClientEntity.id)[0]}
+              options={getSitesForHostingAssociation(activeClientEntity.id)}
+              value={getSitesForHostingAssociation(activeClientEntity.id).find((s) => s.id === activeSiteId) ?? getSitesForHostingAssociation(activeClientEntity.id)[0]}
               onChange={(_, value) => handleSiteChange(value)}
               disableClearable
-              disabled={getSitesForClient(activeClientEntity.id).length <= 1}
+              disabled={getSitesForHostingAssociation(activeClientEntity.id).length <= 1}
               getOptionLabel={(option) => getSiteAcronym(option.id)}
               getOptionKey={(option) => option.id}
               isOptionEqualToValue={(option, value) => option.id === value.id}

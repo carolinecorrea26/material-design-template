@@ -15,7 +15,7 @@ export function applyMembershipLookupAndLandingAdoption(db: DatabaseSchema) {
   ]) {
     const configurationKey = `shared.applicantExperience.${entry.path}`, key = `${entry.site}.${entry.path}`;
     upsert(db.configurationDefinitions, { ...meta("configurationDefinitions", configurationKey), position: 0, definition: { path: ["applicantExperience", entry.path], metadata: { reusable: true, assignmentRequired: true }, target: null } });
-    upsert(db.configurationValues, { ...meta("configurationValues", key), position: 0, configurationKey, scope: "site", siteKey: entry.site, clientKey: null, value: entry.value as unknown as Json });
+    upsert(db.configurationValues, { ...meta("configurationValues", key), position: 0, configurationKey, scope: "site", siteKey: entry.site, hostingAssociationKey: null, value: entry.value as unknown as Json });
     upsert(db.semanticRequirements, { ...meta("semanticRequirements", entry.key), domain: "approved-business-decision", subjectTable: "sites", subjectKey: entry.site, predicate: entry.path, status: "documented", value: {
       authority, approvalStatus: "approved", sourceReconciliation: "approved-new-template-interpretation", runtimeActivation: "reviewed-seed", sourceReferences: entry.sources, interpretation: entry.interpretation,
       owners: [{ table: "configurationValues", key, column: "value", reviewedValue: entry.value }], destinations: [{ table: "configurationValues", key, column: "value" }],

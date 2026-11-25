@@ -5,7 +5,6 @@ import { MemoryRouter, useLocation } from 'react-router-dom';
 import { afterEach, expect, it, vi } from 'vitest';
 import Review from './Review';
 import { installPrototypeLibrary, resolvePrototypeLibrary } from '../domain/prototypeLibrary';
-import { MESSAGE_DURATION } from '../config/transitionMessages';
 
 const form = vi.hoisted(() => ({ values: {}, setPageValues: vi.fn(), saveApplication: vi.fn(async () => null) }));
 const session = vi.hoisted(() => ({ reviewSubmitted: false, advisorApplicantFlow: false, setAdvisorApplicantFlow: vi.fn(), markReviewSubmitted: vi.fn() }));
@@ -58,6 +57,5 @@ it.each([false, true])('continues the applicant to the applicable health step af
   await render(advisorPrepared);
   await act(async () => host.querySelector('form')!.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })));
   expect(session.markReviewSubmitted).toHaveBeenCalledOnce();
-  await act(async () => vi.advanceTimersByTimeAsync(MESSAGE_DURATION * 2));
   expect(location()).toBe('/health-qd');
 });

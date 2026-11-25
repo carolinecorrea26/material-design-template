@@ -1,8 +1,8 @@
 import type { Json, RecordStatus, SoftDeletable, Timestamped } from './common';
+import type { LibraryMetadata } from '../../domain/provenance';
 
-/** Canonical Association; legacy clients represent hosting Associations. */
-export interface AssociationEntity extends Timestamped, SoftDeletable {
-  id: string; key: string; organizationId: string; name: string;
+export interface AssociationEntity extends Partial<LibraryMetadata>, Timestamped, SoftDeletable {
+  id: string; key: string; organizationId: string; name: string; acronym: string;
   kind: 'hosting' | 'member'; status: RecordStatus;
 }
 export interface AssociationAlias {

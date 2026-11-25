@@ -103,7 +103,7 @@ function ProductCatalogDemo({ scenario }: { scenario: CoverageStoryScenario }) {
           selectionCalculating={state.selectionCalculating}
           showRateFrequencyToggle={state.showRateFrequencyToggle}
           showProducts={state.showProducts}
-          productsLoading={scenario.previewState === "loading" || state.productsLoading}
+          productsLoading={scenario.previewState === "loading"}
           grandTotal={state.grandTotal}
           activeClient={state.activeClient}
           onToggleApplicant={state.toggleApplicantForProduct}
@@ -119,7 +119,7 @@ function ProductCatalogDemo({ scenario }: { scenario: CoverageStoryScenario }) {
           hasSpouse={state.hasSpouse}
         />
       )}
-      {state.showProducts && !state.productsLoading && scenario.previewState !== 'loading' && <>
+      {state.showProducts && scenario.previewState !== 'loading' && <>
         <Button variant="outlined" sx={{ alignSelf: 'flex-start' }} onClick={() => setValidationMessage(state.validate(values))}>Check selection requirements</Button>
         <PageAlert severity="error" message={validationMessage} />
       </>}

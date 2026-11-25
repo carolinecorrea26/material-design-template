@@ -26,7 +26,7 @@ export function applyResidencyAdoption(db: DatabaseSchema, cells: readonly Sourc
     db.configurationDefinitions = db.configurationDefinitions.filter(row => row.key !== key);
     db.configurationDefinitions.push({ ...metadata("configurationDefinitions", key, reference), definition: { path: null, metadata: { fullPolicyAcceptance: "pending" }, target: { kind: "product-residency-policy", productKey: slice.productKey } }, position: 0 });
     db.configurationValues = db.configurationValues.filter(row => row.key !== key);
-    db.configurationValues.push({ ...metadata("configurationValues", key, reference), scope: "site", siteKey: slice.siteKey, clientKey: null, configurationKey: key, value: slice.policy as unknown as Json, position: 0 });
+    db.configurationValues.push({ ...metadata("configurationValues", key, reference), scope: "site", siteKey: slice.siteKey, hostingAssociationKey: null, configurationKey: key, value: slice.policy as unknown as Json, position: 0 });
     const decisionKey = `provisional-decision.${key}`;
     db.semanticRequirements = db.semanticRequirements.filter(row => row.key !== decisionKey);
     db.semanticRequirements.push({ ...metadata("semanticRequirements", decisionKey, provisionalDecisionReference), domain: "provisional-source-decision", subjectTable: "sites", subjectKey: slice.siteKey, predicate: "residency", status: "documented", value: { authority: provisionalDecisionAuthority, sourceReconciliation: "deferred", revisit: true, selected: slice.policy as unknown as Json, sourceReferences: slice.references, destinations: [{ table: "configurationValues", key, column: "value" }], runtimeActivation: "pending" } });

@@ -737,14 +737,14 @@ const configurationInventory: ConfigRowSource[] = [
   },
   {
     group: "Page & help content",
-    label: "Navigation & transition messages",
+    label: "Navigation & progress labels",
     name: "content.navigation",
     description:
-      "Route transition messages (by destination page), progress step labels (by stage ID), and the shared Back navigation message. Pages excluded from the flow must not appear in step labels.",
+      "Progress step labels by stage ID and shared navigation labels. The active flow determines which stages are shown.",
     sourcePath:
-      "src/content/defaults/navigation.ts / src/config/transitionMessages.ts",
+      "requirements/global/content-bindings.json",
     scope: "Global",
-    usedIn: "PageTransitionSkeleton, ProgressStep",
+    usedIn: "PageNav, ProgressStep",
   },
   // ── M. Footer, legal & compliance ─────────────────────────────────────────
   {

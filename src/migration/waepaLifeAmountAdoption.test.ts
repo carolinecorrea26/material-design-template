@@ -158,10 +158,10 @@ describe("source-backed WAEPA Life amount ownership", () => {
     expect(getCoverageAmountChoices(legacy.products.find(row => row.id === product.id)!, "member").at(-1)).toBe(500000);
     expect(JSON.stringify(old)).toBe(before);
     const draft = createLibraryDraft(await createPortalDataRepository(new LocalStorageAdapter(db)).open(), "waepa");
-    const host = draft.data.clients.find(row => row.key === "waepa")!;
+    const host = draft.data.associationEntities.find(row => row.key === "waepa")!;
     const tpa = draft.data.organizations!.find(row => row.id === host.organizationId)!;
     const copy = createSiteBuild(draft, { siteKey: "waepa-cap-copy", siteName: "WAEPA cap copy", template: "multi", organizationKey: tpa.key, organizationName: tpa.name,
-      newOrganization: false, clientKey: host.key, clientName: host.name, newClient: false });
+      newOrganization: false, hostingAssociationKey: host.key, clientName: host.name, newClient: false });
     const copySite = resolveEffectiveSite(copy.data, copy.siteKey);
     expect(resolveNormalizedAmountCap(copySite, product.id, "member", 65)).toMatchObject({ status: "resolved", maximum: 550000 });
     copy.data.benefitCaps.find(row => row.aggregateLimitKey.startsWith("build.waepa-cap-copy.") && row.aggregateLimitKey.includes("member.age-cap") && row.minimumAgeYears === 65)!.maximum = 600000;

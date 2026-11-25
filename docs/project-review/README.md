@@ -6,6 +6,9 @@ instructions. The project now uses the [JSON catalog](../../README.md#current-sh
 Retained ownership and requirement evidence must be interpreted separately from
 the old database implementation.
 
+The [current PostgreSQL pilot audit](portal-database.md) covers the published
+catalog, hosted operational records and downloadable local copies.
+
 The package covers **147 SQL tables**, **141 generic collections**, **100 Library snapshot tables**, **400 foreign keys** and **70 JSON columns**. 289 scalar reference/vocabulary candidates without FKs and 327 observed JSON leaf paths are registered. These are review coverage counts, not final ownership or reference acceptance.
 
 ## Package

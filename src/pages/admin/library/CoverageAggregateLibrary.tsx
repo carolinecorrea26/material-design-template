@@ -28,7 +28,7 @@ function AggregateRows({ siteKey }: { siteKey: string | null }) {
       <ResponsiveTableContainer><Table size="small" aria-label="Reviewed aggregate limits"><TableHead><TableRow>
         <TableCell>Client / Site</TableCell><TableCell>Category</TableCell><TableCell>Applicants</TableCell><TableCell>Aggregate maximum</TableCell><TableCell>Included products</TableCell><TableCell>Excluded products / conditions</TableCell>
       </TableRow></TableHead><TableBody>{rows.map(row => <TableRow key={row.key}>
-        <TableCell>{row.clientKey}<div>{row.siteKey}</div></TableCell><TableCell>{row.category}</TableCell><TableCell>{row.applicants}</TableCell><TableCell>{row.maximum}</TableCell>
+        <TableCell>{row.hostingAssociationKey}<div>{row.siteKey}</div></TableCell><TableCell>{row.category}</TableCell><TableCell>{row.applicants}</TableCell><TableCell>{row.maximum}</TableCell>
         <TableCell>{row.included.length ? row.included.map(product => <div key={product}>{product}</div>) : "—"}</TableCell>
         <TableCell>{row.excluded.length > 0 && <div>Excluded: {row.excluded.join(", ")}</div>}{row.notes.map(note => <div key={note}>{note}</div>)}{row.sources.length > 0 && <details><summary>Source evidence</summary>{row.sources.map(source => <div key={source}>{source}</div>)}</details>}</TableCell>
       </TableRow>)}</TableBody></Table></ResponsiveTableContainer>

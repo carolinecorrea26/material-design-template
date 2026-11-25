@@ -10,7 +10,7 @@ describe("snapshot structural validation", () => {
     expect(data.sites[0].name).toBe(123);
   });
 
-  it.each([null, [], {}, { sites: [], clients: [] }])("rejects unexpected table structure %j", data => {
+  it.each([null, [], {}, { sites: [], associationEntities: [] }])("rejects unexpected table structure %j", data => {
     expect(() => validateSnapshotData(data, ["sites"])).toThrow("Incomplete or unexpected snapshot tables.");
   });
 

@@ -3,7 +3,7 @@ import { isLifeAggregatePolicy, resolveLifeAggregateParticipation } from "./life
 import { isBenefitPolicy } from "./benefitPolicy";
 
 export type AggregateInspectionRow = {
-  key: string; siteKey: string; clientKey: string; category: string;
+  key: string; siteKey: string; hostingAssociationKey: string; category: string;
   applicants: string; maximum: string; included: string[]; excluded: string[];
   notes: string[]; sources: string[];
 };
@@ -23,7 +23,7 @@ export function inspectSiteAggregates(site: EffectiveSite): AggregateInspectionR
   };
   const row = (key: string, category: string, productKeys: string[], applicants: string, maximum: string, notes: string[], sources: string[]): AggregateInspectionRow => {
     validateProducts(productKeys);
-    return { key, siteKey: site.siteKey, clientKey: site.clientKey, category, applicants, maximum,
+    return { key, siteKey: site.siteKey, hostingAssociationKey: site.hostingAssociationKey, category, applicants, maximum,
       included: productKeys.map(label), excluded: products.filter(product => product.catalog?.value.categoryKey === category && !productKeys.includes(product.productKey)).map(product => label(product.productKey)), notes, sources: [...new Set(sources)] };
   };
   const result: AggregateInspectionRow[] = [];
@@ -71,7 +71,7 @@ export function inspectSiteAggregates(site: EffectiveSite): AggregateInspectionR
   result.push(...[...groups.values()].map(group => group.row));
   for (const category of ["LI", "DI"]) {
     if (!result.some(item => item.category === category) && products.some(product => product.catalog?.value.categoryKey === category)) {
-      result.push({ key: `${site.siteKey}.${category}.pending`, siteKey: site.siteKey, clientKey: site.clientKey, category, applicants: "—", maximum: "Not yet migrated", included: [], excluded: [], notes: ["No reviewed aggregate policy is recorded. Individual product limits are separate."], sources: [] });
+      result.push({ key: `${site.siteKey}.${category}.pending`, siteKey: site.siteKey, hostingAssociationKey: site.hostingAssociationKey, category, applicants: "—", maximum: "Not yet migrated", included: [], excluded: [], notes: ["No reviewed aggregate policy is recorded. Individual product limits are separate."], sources: [] });
     }
   }
   return result;

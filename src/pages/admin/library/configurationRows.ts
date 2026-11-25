@@ -1,5 +1,5 @@
-import { freshStartSource, withFreshStartCatalog } from "../../../domain/freshStartCatalog";
-import type { LibraryCatalog } from '../../../services/libraryCatalogService';
+import { freshStartSource } from "../../../domain/freshStartCatalog";
+import { compileLibraryCatalog, type LibraryCatalog } from '../../../services/libraryCatalogService';
 import { resolveCompiledEffectiveSite } from '../../../domain/effectiveSite';
 import { configurationOwner, configurationPath, flagOwner, primaryConfigurationDefinitions, type LibraryOwner } from '../../../domain/libraryOwnership';
 import { humanize, readableValue } from './libraryRecordColumns';
@@ -11,7 +11,7 @@ import productPresentation from '../../../../requirements/global/configurations/
 export type ConfigurationInspectionRow = { key: string; name: string; description: string; group: string; values: string; options: string; scope: string; usedIn: string; source: string; owner: LibraryOwner; referenceKey: string };
 
 export function configurationRows(catalog: LibraryCatalog, siteKey: string): ConfigurationInspectionRow[] {
-  catalog = { ...catalog, data: withFreshStartCatalog(catalog.data, siteKey === "all" ? undefined : siteKey, catalog.siteScope) };
+  catalog = compileLibraryCatalog(catalog, siteKey);
   const { data } = catalog;
   const site = data.sites.find(row => row.key === siteKey);
   if (siteKey !== 'all' && !site) return [];
@@ -28,7 +28,7 @@ export function configurationRows(catalog: LibraryCatalog, siteKey: string): Con
     const target = row.definition.target;
     const product = target && 'productKey' in target ? target.productKey : '';
     if (site && product && !resolved!.products.some(item => item.productKey === product)) return null;
-    const values = site ? effective.filter(value => value.key === row.key).map(value => value.value) : data.configurationValues.filter(value => value.configurationKey === row.key).map(value => ({ scope: value.siteKey ?? value.clientKey ?? 'Global', value: value.value }));
+    const values = site ? effective.filter(value => value.key === row.key).map(value => value.value) : data.configurationValues.filter(value => value.configurationKey === row.key).map(value => ({ scope: value.siteKey ?? value.hostingAssociationKey ?? 'Global', value: value.value }));
     const declaredDefault = metadata.defaultValue;
     return { key: row.key, name: String(metadata.label ?? metadata.name ?? humanize(configurationPath(row) || row.key)), description: String(metadata.description ?? `Controls ${humanize(target?.kind ?? (configurationPath(row) || row.key)).toLowerCase()}.`), group: String(metadata.group ?? (owner === 'rules' ? 'Business policy references' : 'Portal settings')),
       values: owner !== 'configurations' ? 'See owning requirements' : values.length ? readableValue(values) : declaredDefault !== undefined ? `Declared default: ${readableValue(declaredDefault)}\nNo stored assignment` : 'Not configured',
@@ -45,8 +45,8 @@ export function configurationRows(catalog: LibraryCatalog, siteKey: string): Con
   }
   rows.unshift({ key: 'site.templateType', name: 'Application template', description: `Select the application layout. ${formTemplate.status}; default: ${formTemplate.default}.`, group: 'Application layout', values: site ? site.templateType : data.sites.map(site => `${site.name}: ${site.templateType}`).join('\n'), options: formTemplate.options!.join('\n'), scope: 'Global template', usedIn: 'Application layout and page previews', source: 'requirements/global/configurations/presentation.json#form-template; effective-Site Home configuration', owner: 'configurations', referenceKey: 'site.templateType' });
   for (const flag of data.flagDefinitions.filter(row => flagOwner(row.persistence) === 'configurations')) {
-    const assignments = data.flagAssignments.filter(row => row.flagKey === flag.key && (!site || (!row.siteKey || row.siteKey === siteKey) && (!row.clientKey || row.clientKey === resolved?.clientKey)));
-    rows.push({ key: flag.key, name: flag.name, description: flag.description, group: 'Site switches', values: assignments.length ? readableValue(assignments.map(row => ({ scope: row.siteKey ?? row.clientKey ?? 'Global', value: row.value }))) : 'Not configured', options: readableValue(flag.allowedValues ?? (flag.valueType === 'boolean' ? [true, false] : null)), scope: flag.level, usedIn: 'Applicant portal', source: flag.sourceReference ?? 'Source not recorded', owner: 'configurations', referenceKey: flag.key });
+    const assignments = data.flagAssignments.filter(row => row.flagKey === flag.key && (!site || (!row.siteKey || row.siteKey === siteKey) && (!row.hostingAssociationKey || row.hostingAssociationKey === resolved?.hostingAssociationKey)));
+    rows.push({ key: flag.key, name: flag.name, description: flag.description, group: 'Site switches', values: assignments.length ? readableValue(assignments.map(row => ({ scope: row.siteKey ?? row.hostingAssociationKey ?? 'Global', value: row.value }))) : 'Not configured', options: readableValue(flag.allowedValues ?? (flag.valueType === 'boolean' ? [true, false] : null)), scope: flag.level, usedIn: 'Applicant portal', source: flag.sourceReference ?? 'Source not recorded', owner: 'configurations', referenceKey: flag.key });
   }
   for (const current of (site ? [site] : data.sites)) {
     const effectiveSite = site ? resolved! : resolveCompiledEffectiveSite(data, current.key);

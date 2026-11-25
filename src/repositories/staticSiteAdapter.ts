@@ -9,12 +9,12 @@ import { cseaClient } from "../config/clients/csea";
 import { demoClient } from "../config/clients/demo";
 import { isitrustClient } from "../config/clients/isitrust";
 import { nsoClient } from "../config/clients/nso";
-import type { AssociationId, Client, Site, SiteCoverage, SiteId, Tpa } from "../data/model";
+import type { AssociationId, HostingAssociation, Site, SiteCoverage, SiteId, Tpa } from "../data/model";
 import { waepaClientEntity, waepaSites } from "../data/waepa";
 import { associationEntities, siteAssociationEntities } from "../data/associations";
 import { compatibilityTpaId, toCompatibilityTpa } from "../data/tpas";
 
-function toClientEntity(config: ClientConfig): Client {
+function toClientEntity(config: ClientConfig): HostingAssociation {
   const configurationDefaults = { ...config } as Partial<ClientConfig>;
   delete configurationDefaults.id;
   delete configurationDefaults.branding;
@@ -26,11 +26,11 @@ function toClientEntity(config: ClientConfig): Client {
     acronym: config.branding.acronym,
     branding: config.branding,
     support: config.support,
-    configurationDefaults: configurationDefaults as Client["configurationDefaults"],
+    configurationDefaults: configurationDefaults as HostingAssociation["configurationDefaults"],
   };
 }
 
-// Each canonical Client and Site is listed explicitly. The imported objects are
+// Each canonical HostingAssociation and Site is listed explicitly. The imported objects are
 // source-controlled authoring definitions; registry identity no longer depends
 // on iterating the legacy `clients` compatibility map.
 const singleSiteDefinitions = [
@@ -44,7 +44,7 @@ const singleSiteDefinitions = [
   isitrustClient,
 ] as const;
 
-const clientEntities: Client[] = [
+const hostingAssociations: HostingAssociation[] = [
   ...singleSiteDefinitions.map(toClientEntity),
   waepaClientEntity,
 ];
@@ -71,7 +71,7 @@ const siteEntities: Site[] = [
     const fixedAssociationId = fixedAssociationIds[config.id];
     return {
       id: config.id,
-      clientId: config.id,
+      hostingAssociationId: config.id,
       name: `${config.branding.acronym} Site`,
       templateType: config.features?.defaultTemplate ?? "multi",
       status: "active",
@@ -105,8 +105,8 @@ const clientAliasBySiteId = new Map(
 );
 
 function resolveEntityConfiguration(site: Site): ClientConfig {
-  const client = clientEntities.find((entry) => entry.id === site.clientId);
-  if (!client) throw new Error(`Unknown client id: ${site.clientId}`);
+  const client = hostingAssociations.find((entry) => entry.id === site.hostingAssociationId);
+  if (!client) throw new Error(`Unknown client id: ${site.hostingAssociationId}`);
   return {
     id: getClientAliasForSite(site.id),
     branding: mergeConfiguration(client.branding, site.brandingOverride),
@@ -129,4 +129,4 @@ function getClientAliasForSite(siteId: SiteId): ClientId {
   return clientAliasBySiteId.get(siteId) ?? "demo";
 }
 
-export const staticSiteAdapter = { read: () => ({ clientEntities, tpaEntities, siteEntities, associationEntities, siteAssociationEntities, siteCoverageEntities, aliases: [...siteIdByClientAlias] }) };
+export const staticSiteAdapter = { read: () => ({ hostingAssociations, tpaEntities, siteEntities, associationEntities, siteAssociationEntities, siteCoverageEntities, aliases: [...siteIdByClientAlias] }) };

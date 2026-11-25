@@ -1,9 +1,7 @@
+import { lazy } from "react";
 import { recoveryTemplate } from '../content/applicationRecovery';
 import Home from "../pages/Home";
 import ErrorPage from "../pages/ErrorPage";
-import IssueLogWorkspace from "../pages/admin/IssueLogWorkspace";
-import AdminPlaceholder from "../pages/admin/AdminPlaceholder";
-import AccountSettings from "../pages/admin/AccountSettings";
 // src/app/router.tsx
 
 import { applicationPageComponents } from "./pageComponents";
@@ -16,31 +14,16 @@ import PortalTemplateProject from "../pages/PortalTemplateProject";
 import PortalRequirementsProject from "../pages/PortalRequirementsProject";
 import Cms from "../pages/Cms";
 
-import { createBrowserRouter, createHashRouter } from "react-router-dom";
+import { createBrowserRouter, createHashRouter, replace, type LoaderFunctionArgs } from "react-router-dom";
 import AppShell, { type AppShellVariant } from "../components/layout/AppShell";
 import InternalPageShell from "../components/layout/InternalPageShell";
 import { getPagePath, getConfiguredPages } from "../config/pages";
 import type { PageId } from "../types";
 import AdminCenterShell from "../components/admin/AdminCenterShell";
-import AdminHome from "../pages/admin/AdminHome";
-import MigrationScheduleWorkspace from "../pages/admin/MigrationScheduleWorkspace";
-import SitesWorkspace from "../pages/admin/SitesWorkspace";
-import PortalLibrary from "../pages/admin/PortalLibrary";
-import ChangesWorkspace from "../pages/admin/ChangesWorkspace";
-import ReleasesWorkspace from "../pages/admin/ReleasesWorkspace";
-import ApplicantAdminWorkspace from "../pages/admin/ApplicantAdminWorkspace";
-import TutorialsWorkspace from "../pages/admin/TutorialsWorkspace";
-import SiteBuilderWorkspace from "../pages/admin/SiteBuilderWorkspace";
-import ApplicationsWorkspace from "../pages/admin/ApplicationsWorkspace";
-import AnalyticsWorkspace from "../pages/admin/AnalyticsWorkspace";
-import AccessibilityWorkspace from "../pages/admin/AccessibilityWorkspace";
 import { getFormTemplate } from "../config/template/resolveTemplate";
 import { getResolvedFormFlow } from "../config/formFlow";
-import AdministrationWorkspace from "../pages/admin/AdministrationWorkspace";
-import PortalPortfolio from '../pages/admin/PortalPortfolio';
-import PortalBuilderWorkspace from '../pages/admin/PortalBuilderWorkspace';
-import PortalUsers from '../pages/admin/PortalUsers';
 import { portalDatabaseEnabled } from '../services/portalClient';
+import { acceptsCoverageEntry, coverageEntryRedirect } from './coverageEntryNavigation';
 
 /**
  * Maps each page ID to its React component.
@@ -49,6 +32,26 @@ import { portalDatabaseEnabled } from '../services/portalClient';
 
 
 const pageComponents = { ...applicationPageComponents, "mock-email-preview": MockEmailPreview, "site-features": SiteFeatures, "site-details": SiteDetails, "design-system": DesignSystem, "portal-admin": PortalAdmin, "portal-template-project": PortalTemplateProject, "portal-requirements-project": PortalRequirementsProject, "cms": Cms };
+
+const IssueLogWorkspace = lazy(() => import("../pages/admin/IssueLogWorkspace"));
+const AdminPlaceholder = lazy(() => import("../pages/admin/AdminPlaceholder"));
+const AccountSettings = lazy(() => import("../pages/admin/AccountSettings"));
+const AdminHome = lazy(() => import("../pages/admin/AdminHome"));
+const MigrationScheduleWorkspace = lazy(() => import("../pages/admin/MigrationScheduleWorkspace"));
+const SitesWorkspace = lazy(() => import("../pages/admin/SitesWorkspace"));
+const PortalLibrary = lazy(() => import("../pages/admin/PortalLibrary"));
+const ChangesWorkspace = lazy(() => import("../pages/admin/ChangesWorkspace"));
+const ReleasesWorkspace = lazy(() => import("../pages/admin/ReleasesWorkspace"));
+const ApplicantAdminWorkspace = lazy(() => import("../pages/admin/ApplicantAdminWorkspace"));
+const TutorialsWorkspace = lazy(() => import("../pages/admin/TutorialsWorkspace"));
+const SiteBuilderWorkspace = lazy(() => import("../pages/admin/SiteBuilderWorkspace"));
+const ApplicationsWorkspace = lazy(() => import("../pages/admin/ApplicationsWorkspace"));
+const AnalyticsWorkspace = lazy(() => import("../pages/admin/AnalyticsWorkspace"));
+const AccessibilityWorkspace = lazy(() => import("../pages/admin/AccessibilityWorkspace"));
+const AdministrationWorkspace = lazy(() => import("../pages/admin/AdministrationWorkspace"));
+const PortalPortfolio = lazy(() => import('../pages/admin/PortalPortfolio'));
+const PortalBuilderWorkspace = lazy(() => import('../pages/admin/PortalBuilderWorkspace'));
+const PortalUsers = lazy(() => import('../pages/admin/PortalUsers'));
 
 const configuredPages = getConfiguredPages();
 const pageTypeById = new Map(configuredPages.map(page => [page.id, page.type]));
@@ -64,10 +67,15 @@ const pageVariants: Partial<Record<PageId, AppShellVariant>> = {
 };
 
 const createRouter = import.meta.env.VITE_STANDALONE_HTML ? createHashRouter : createBrowserRouter;
+const validateCoverageEntry = ({ request }: LoaderFunctionArgs) => {
+  const destination = coverageEntryRedirect(new URL(request.url).searchParams);
+  return destination ? replace(destination) : null;
+};
 export const router = createRouter(
   [
     { path: "*", element: <AppShell variant={recoveryTemplate.header as AppShellVariant}><ErrorPage status={404} /></AppShell> },
-    ...configuredPages.map(({ id: pageId, type, flow }) => {
+    ...configuredPages.map(page => {
+    const { id: pageId, type, flow } = page;
     const PageComponent = pageComponents[pageId];
     if (!PageComponent) throw new Error(`No renderer registered for stored page: ${pageId}`);
     const variant = type === "error" ? recoveryTemplate.header as AppShellVariant : pageVariants[pageId] ?? "applicationForm";
@@ -75,6 +83,7 @@ export const router = createRouter(
 
     return {
       path: getPagePath(pageId),
+      ...(acceptsCoverageEntry(page) && { loader: validateCoverageEntry }),
       errorElement: <AppShell variant={recoveryTemplate.header as AppShellVariant}><ErrorPage status="technical-error" /></AppShell>,
       element:
         pageTypeById.get(pageId) === "internal" ? (

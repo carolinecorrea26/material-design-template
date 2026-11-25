@@ -57,7 +57,7 @@ export function applyAbeHealthQuestionnairesAdoption(db: DatabaseSchema) {
   for (const policy of [ciPolicy, diPolicy]) {
     const configurationKey = `shared.abe-source-forms.${policy.pageId}`;
     if (!db.configurationDefinitions.some(row => row.key === configurationKey)) db.configurationDefinitions.push({ ...meta("configurationDefinitions", configurationKey), position: 0, definition: { path: null, metadata: { reusable: true, assignmentRequired: true }, target: { kind: "site-health-questionnaires" } } });
-    const key = `abe.${policy.pageId}.source-questionnaire`, row = { ...meta("configurationValues", key), position: 0, scope: "site" as const, siteKey: "abe", clientKey: null, configurationKey, value: policy as unknown as Json }, index = db.configurationValues.findIndex(row => row.key === key);
+    const key = `abe.${policy.pageId}.source-questionnaire`, row = { ...meta("configurationValues", key), position: 0, scope: "site" as const, siteKey: "abe", hostingAssociationKey: null, configurationKey, value: policy as unknown as Json }, index = db.configurationValues.findIndex(row => row.key === key);
     if (index < 0) db.configurationValues.push(row); else db.configurationValues[index] = row;
   }
   const page = db.sitePages.find(row => row.siteKey === "abe" && row.pageKey === "health-tele"); if (!page) throw new Error("Missing CI page assignment"); page.requirement = "required";
@@ -80,7 +80,7 @@ export function applyAbeHealthQuestionnairesAdoption(db: DatabaseSchema) {
   const ciQuestions = journey.value.questions;
   const tobacco = Object.fromEntries(["self", "spouse"].map(applicant => [applicant, [...new Set(ciQuestions.filter(row => row.applicantKey === (applicant === "self" ? "member" : applicant)).flatMap(row => row.tobaccoFields))]]));
   const questionKey = "abe.coverage-category-questions";
-  const categoryQuestions = { ...meta("configurationValues", questionKey), configurationKey: questionDefinition.key, scope: "site" as const, siteKey: "abe", clientKey: null, position: 0, value: { ...questionDefaults, SH: tobacco } as Json };
+  const categoryQuestions = { ...meta("configurationValues", questionKey), configurationKey: questionDefinition.key, scope: "site" as const, siteKey: "abe", hostingAssociationKey: null, position: 0, value: { ...questionDefaults, SH: tobacco } as Json };
   const questionIndex = db.configurationValues.findIndex(row => row.key === questionKey);
   if (questionIndex < 0) db.configurationValues.push(categoryQuestions); else db.configurationValues[questionIndex] = categoryQuestions;
   const key = abeHealthDecisionKey, decision = { ...meta("semanticRequirements", key), domain: "approved-business-decision", subjectTable: "sites", subjectKey: "abe", predicate: "abe-source-health-questionnaires", status: "documented", value: {

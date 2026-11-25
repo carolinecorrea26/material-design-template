@@ -23,8 +23,8 @@ export function compileCoveragePolicies(output, source, site, row, setConfigurat
   const setTarget = (target, path, value) => {
     const matches = output.configurationDefinitions.filter(row => Object.entries(target).every(([key, value]) => row.definition.target?.[key] === value));
     const keys = new Set(matches.map(row => row.key));
-    const clientKey = output.clients.find(client => client.id === site.clientId)?.key;
-    output.configurationValues = output.configurationValues.filter(row => !keys.has(row.configurationKey) || !(row.scope === 'global' || row.siteKey === site.key || row.scope === 'client' && row.clientKey === clientKey));
+    const hostingAssociationKey = output.associationEntities.find(client => client.id === site.hostingAssociationId)?.key;
+    output.configurationValues = output.configurationValues.filter(row => !keys.has(row.configurationKey) || !(row.scope === 'global' || row.siteKey === site.key || row.scope === 'association' && row.hostingAssociationKey === hostingAssociationKey));
     const definitions = source.products.catalog.configurationDefinitions.filter(row => Object.entries(target).every(([key, value]) => row.definition.target?.[key] === value));
     if (definitions.length !== 1 || !definitions[0].definition.path) throw new Error(`Missing shared fresh-start policy definition: ${path}`);
     const definition = definitions[0];
@@ -46,8 +46,8 @@ export function compileCoveragePolicies(output, source, site, row, setConfigurat
     })), reference);
     for (const product of source.products.products.filter(product => product.amounts && life.products.includes(product.id))) {
       const legacyUnderwriting = new Set(output.configurationDefinitions.filter(row => row.definition.target?.kind === 'product-presentation' && row.definition.target.productKey === product.id && row.definition.target.property === 'underwritingBands').map(row => row.key));
-      const clientKey = output.clients.find(client => client.id === site.clientId)?.key;
-      output.configurationValues = output.configurationValues.filter(row => !legacyUnderwriting.has(row.configurationKey) || !(row.scope === 'global' || row.siteKey === site.key || row.scope === 'client' && row.clientKey === clientKey));
+      const hostingAssociationKey = output.associationEntities.find(client => client.id === site.hostingAssociationId)?.key;
+      output.configurationValues = output.configurationValues.filter(row => !legacyUnderwriting.has(row.configurationKey) || !(row.scope === 'global' || row.siteKey === site.key || row.scope === 'association' && row.hostingAssociationKey === hostingAssociationKey));
       const obsolete = new Set(output.productAmountRules.filter(rule => rule.siteKey === site.key && rule.productKey === product.id).map(rule => rule.amountPatternKey));
       output.productAmountRules = output.productAmountRules.filter(rule => rule.siteKey !== site.key || rule.productKey !== product.id);
       const unused = new Set([...obsolete].filter(key => !output.productAmountRules.some(rule => rule.amountPatternKey === key)));
@@ -69,7 +69,7 @@ export function compileCoveragePolicies(output, source, site, row, setConfigurat
         output.coverageAmountPatterns.push(row('coverageAmountPatterns', key, 'requirements/global/products.json', { patternKey: 'coverage-amount-options', amountType: fixed ? 'fixed' : 'range', minimum: amount.minimum, maximum, increment: amount.increment, formula: null, baseProductKey: null, baseApplicantKey: null, baseApplicantClass: null, multiplier: null }));
         if (!fixed) output.amountBands.push(row('amountBands', `${key}.band`, 'requirements/global/products.json', { amountPatternKey: key, minimum: amount.minimum, maximum, increment: amount.increment, conditionKey: null, position: 0 }));
         for (const applicant of amount.applicants) {
-          output.productAmountRules.push(row('productAmountRules', `${key}.${applicant}`, 'requirements/global/products.json', { productKey: product.id, applicantTypeKey: applicant, applicantClass: null, amountPatternKey: key, conditionKey: null, clientKey: null, siteKey: site.key, position: position++ }));
+          output.productAmountRules.push(row('productAmountRules', `${key}.${applicant}`, 'requirements/global/products.json', { productKey: product.id, applicantTypeKey: applicant, applicantClass: null, amountPatternKey: key, conditionKey: null, hostingAssociationKey: null, siteKey: site.key, position: position++ }));
           if (applicant === 'child') continue;
           // A terminal FUW interval ends at the product ceiling, not a second
           // independently authored coverage maximum. QD thresholds stay intact.

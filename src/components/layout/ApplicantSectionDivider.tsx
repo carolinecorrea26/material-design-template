@@ -13,6 +13,7 @@ import {
   type ApplicantSectionId,
 } from "../../config/formSectionTitle";
 import type { ClientApplicantLabels } from "../../config/clients/types";
+import presentation from '../../../requirements/global/presentation-tokens.json';
 
 export function ApplicantSectionLabel({
   label,
@@ -52,7 +53,7 @@ export function ApplicantSectionLabel({
         />
       )}
       <Typography
-        sx={{ fontSize: "0.875rem", fontWeight: 700, lineHeight: 1.4 }}
+        sx={{ fontSize: presentation.typography.sectionDividerFontSize, fontWeight: 700, lineHeight: 1.4 }}
       >
         {label}
       </Typography>

@@ -69,16 +69,16 @@ export function seedCanonicalCatalog(db: DatabaseSchema) {
   for (const pattern of db.patterns) for (const flag of db.flagDefinitions.filter(f => pattern.category === "integration" && f.key.includes("qd"))) db.patternFlagDefinitions.push({ ...row("patternFlagDefinitions", `${pattern.key}.${flag.key}`, pattern.sourceReference!), patternKey: pattern.key, relatedKey: flag.key, relationshipType: "uses" });
   for (const p of db.patterns.filter(p => p.category === "integration")) {
     // Explicit capabilities, never application client-name branches. Assignment requires confirmation.
-    db.patternAssignments.push({ ...row("patternAssignments", `${p.key}.capabilities`, p.sourceReference!), patternKey: p.key, clientKey: null, siteKey: null, productKey: null, applicantKey: null, configuration: p.key === "tpa-membership-based-auto-approval" ? { membershipLookup: true, newMemberAutoApproval: true, existingMemberOutcome: "refer", lexisNexis: false, portfolio: false } : { membershipLookup: true, coverageLookup: true, lexisNexis: true, portfolio: true, fallbackOutcome: "refer" } });
+    db.patternAssignments.push({ ...row("patternAssignments", `${p.key}.capabilities`, p.sourceReference!), patternKey: p.key, hostingAssociationKey: null, siteKey: null, productKey: null, applicantKey: null, configuration: p.key === "tpa-membership-based-auto-approval" ? { membershipLookup: true, newMemberAutoApproval: true, existingMemberOutcome: "refer", lexisNexis: false, portfolio: false } : { membershipLookup: true, coverageLookup: true, lexisNexis: true, portfolio: true, fallbackOutcome: "refer" } });
   }
   const coveragePolicy = { requiresExistingMember: true, requiresActiveCoverage: true, verifiedOutcome: "approve", fallbackOutcome: "refer" };
   const lookupFields = ["first-name", "last-name", "birth-date"];
-  const assignments: Array<{ clientKey: string; patternKey: string; configuration: Json }> = [
-    { clientKey: "ama", patternKey: "tpa-coverage-based-verification", configuration: { ...coveragePolicy, lookupFields } },
-    { clientKey: "asce", patternKey: "tpa-coverage-based-verification", configuration: { ...coveragePolicy, lookupFields: [...lookupFields, "member-id"] } },
-    { clientKey: "waepa", patternKey: "tpa-membership-based-auto-approval", configuration: { lookupFields, lexisNexis: false, portfolio: false, newMemberOutcome: "approve", existingMemberOutcome: "refer" } },
+  const assignments: Array<{ hostingAssociationKey: string; patternKey: string; configuration: Json }> = [
+    { hostingAssociationKey: "ama", patternKey: "tpa-coverage-based-verification", configuration: { ...coveragePolicy, lookupFields } },
+    { hostingAssociationKey: "asce", patternKey: "tpa-coverage-based-verification", configuration: { ...coveragePolicy, lookupFields: [...lookupFields, "member-id"] } },
+    { hostingAssociationKey: "waepa", patternKey: "tpa-membership-based-auto-approval", configuration: { lookupFields, lexisNexis: false, portfolio: false, newMemberOutcome: "approve", existingMemberOutcome: "refer" } },
   ];
-  for (const assignment of assignments) db.patternAssignments.push({ ...row("patternAssignments", `${assignment.clientKey}.${assignment.patternKey}`, "user:2026-09-30/tpa-flow-comparison"), patternKey: assignment.patternKey, clientKey: assignment.clientKey, siteKey: null, productKey: null, applicantKey: null, configuration: { ...(assignment.configuration as Record<string, Json>), status: "documented", active: false } });
+  for (const assignment of assignments) db.patternAssignments.push({ ...row("patternAssignments", `${assignment.hostingAssociationKey}.${assignment.patternKey}`, "user:2026-09-30/tpa-flow-comparison"), patternKey: assignment.patternKey, hostingAssociationKey: assignment.hostingAssociationKey, siteKey: null, productKey: null, applicantKey: null, configuration: { ...(assignment.configuration as Record<string, Json>), status: "documented", active: false } });
 }
 
 /** Cell ledger is lossless. MAPPED requires a real destination, not merely archived text. */
@@ -128,8 +128,8 @@ export function seedMcr(db: DatabaseSchema) {
     const tpaNames: Record<string, string> = { ABE: 'American Bar Endowment', AMAIA: 'AMA Insurance Agency, Inc.', AAFPIS: 'AAFP Insurance Services, Inc.', Lockton: 'Lockton Affinity, LLC', USI: 'USI Affinity', Pearl: 'Pearl Insurance', PCA: 'Pearl Carroll & Associates, LLC', WAEPA: 'Worldwide Assurance for Employees of Public Agencies, Inc.' };
     let organization = db.organizations.find(o => o.name.toLowerCase() === tpa.toLowerCase() || o.name === tpaNames[tpa] || o.key.toLowerCase() === tpa.toLowerCase() || tpa === "Pearl" && o.name === "Pearl Insurance");
     if (!organization) { const key = `mcr.tpa.${slug(tpa)}`; organization = { ...identity(key), ...libraryMetadata("organizations", key, `Associations!B${n}`), name: tpaNames[tpa] ?? tpa, type: "TPA", status: "inactive", ...timestamp }; db.organizations.push(organization); }
-    let client = db.clients.find(c => c.acronym.toLowerCase() === acronym.toLowerCase() || acronym === "ISI" && c.key === "isitrust");
-    if (!client) { const key = `mcr.client.${slug(acronym)}`; client = { ...identity(key), ...libraryMetadata("clients", key, `Associations!A${n}:C${n}`), name, acronym, organizationId: organization.id, status: "inactive", ...timestamp }; db.clients.push(client); }
+    let client = db.associationEntities.find(c => c.acronym.toLowerCase() === acronym.toLowerCase() || acronym === "ISI" && c.key === "isitrust");
+    if (!client) { const key = `mcr.client.${slug(acronym)}`; client = { ...identity(key), ...libraryMetadata("associationEntities", key, `Associations!A${n}:C${n}`), name, acronym, organizationId: organization.id, kind: "hosting", deletedAt: null, status: "inactive", ...timestamp }; db.associationEntities.push(client); }
     // MCR replaces synthetic compatibility ownership; established named ownership is retained.
     const previousOrganization = db.organizations.find(o => o.id === client.organizationId);
     if (previousOrganization?.name.startsWith("Compatibility TPA for")) client.organizationId = organization.id;
@@ -138,17 +138,17 @@ export function seedMcr(db: DatabaseSchema) {
     if (!profile) { profile = { ...identity(`profile.${organization.key}`), ...libraryMetadata("organizationProfiles", `profile.${organization.key}`, `Associations!B${n}:D${n}`), organizationKey: organization.key, position: db.organizationProfiles.length, definition: { name: organization.name, acronym: tpa, provisional: false, administrationContacts: [] } }; db.organizationProfiles.push(profile); }
     profile.definition.acronym = tpa;
     profile.definition.administrationContacts ??= [];
-    if (contact && !profile.definition.administrationContacts.some(c => c.clientKey === client!.key && c.details === contact)) profile.definition.administrationContacts.push({ clientKey: client.key, details: contact, source: `Associations!D${n}` });
+    if (contact && !profile.definition.administrationContacts.some(c => c.hostingAssociationKey === client!.key && c.details === contact)) profile.definition.administrationContacts.push({ hostingAssociationKey: client.key, details: contact, source: `Associations!D${n}` });
     if (client.organizationId !== organization.id) {
       const requirement = requirements.get(sourceKey("Associations", `B${n}`)); if (requirement) requirement.reason = "MCR TPA differs from the current client ownership; requires identity reconciliation.";
     } else mapped("Associations", `B${n}`, "organizations", organization.key, "name");
-    mapped("Associations", `C${n}`, "clients", client.key, "acronym");
+    mapped("Associations", `C${n}`, "associationEntities", client.key, "acronym");
     const associationKey = `mcr.association.${slug(acronym)}.${n}`;
-    db.associations.push({ ...identity(associationKey), ...libraryMetadata("associations", associationKey, `Associations!A${n}:C${n}`), clientKey: client.key, definition: { name, acronym }, position: db.associations.length });
+    db.associations.push({ ...identity(associationKey), ...libraryMetadata("associations", associationKey, `Associations!A${n}:C${n}`), hostingAssociationKey: client.key, definition: { name, acronym }, position: db.associations.length });
     mapped("Associations", `A${n}`, "associations", associationKey, "definition");
   }
   // Keep missing source identities explicit, but never present compatibility labels as TPAs.
-  const referencedOrganizations = new Set(db.clients.map(c => c.organizationId));
+  const referencedOrganizations = new Set(db.associationEntities.map(c => c.organizationId));
   db.organizations = db.organizations.filter(o => referencedOrganizations.has(o.id) || !o.name.startsWith("Compatibility TPA for"));
   for (const organization of db.organizations.filter(o => o.name.startsWith("Compatibility TPA for"))) organization.name = organization.key === "tpa-demo" ? "Demo administrator" : "TPA not recorded in MCR";
   db.organizationProfiles = db.organizationProfiles.filter(p => db.organizations.some(o => o.key === p.organizationKey));
@@ -161,8 +161,8 @@ export function seedMcr(db: DatabaseSchema) {
     // Row identity distinguishes duplicate product names/codes without fabricated client/site records.
     const key = `mcr.${slug(acronym)}.${slug(name)}.${n}`;
     db.products.push({ ...identity(key), ...libraryMetadata("products", key, `Main!D${n}`), position: db.products.length, categoryKey, definition: { id: key, name, code: null, categoryId: categoryKey, groupPolicySitus: value("Main", "F", n) || undefined, underwritingType: "UNRESOLVED", definition: `MCR catalog product; source Main!D${n}`, applicants: [], options: [] } });
-    const owner = db.clients.find(c => c.acronym.toLowerCase() === acronym.toLowerCase());
-    if (owner) { const relationKey = `${key}.${owner.key}`; db.productClients.push({ ...row("productClients", relationKey, `Main!B${n}`), productKey: key, clientKey: owner.key }); mapped("Main", `B${n}`, "productClients", relationKey, "clientKey"); }
+    const owner = db.associationEntities.find(c => c.acronym.toLowerCase() === acronym.toLowerCase());
+    if (owner) { const relationKey = `${key}.${owner.key}`; db.productClients.push({ ...row("productClients", relationKey, `Main!B${n}`), productKey: key, hostingAssociationKey: owner.key }); mapped("Main", `B${n}`, "productClients", relationKey, "hostingAssociationKey"); }
     mapped("Main", `D${n}`, "products", key, "definition"); mapped("Main", `C${n}`, "products", key, "categoryKey");
     if (value("Main", "F", n)) mapped("Main", `F${n}`, "products", key, "definition");
     for (const [col, kind] of [["E", "gNumber"], ["G", "planCode"]] as const) if (value("Main", col, n)) {
@@ -173,7 +173,7 @@ export function seedMcr(db: DatabaseSchema) {
       const parsed = parseAmount(value("Main", col, n)); if (!parsed) continue;
       const amountKey = `${key}.${applicantTypeKey}`;
       db.coverageAmountPatterns.push({ ...row("coverageAmountPatterns", amountKey, `Main!${col}${n}`), patternKey: "coverage-amount-options", amountType: parsed.amountType, minimum: parsed.minimum, maximum: parsed.maximum, increment: parsed.increment, formula: parsed.base ?? null, baseProductKey: null, baseApplicantKey: parsed.base === "member coverage" ? "member" : null, baseApplicantClass: null, multiplier: parsed.multiplier ?? null });
-      db.productAmountRules.push({ ...row("productAmountRules", amountKey, `Main!${col}${n}`), productKey: key, applicantTypeKey, applicantClass: null, amountPatternKey: amountKey, conditionKey: null, clientKey: null, siteKey: null, position: 0 });
+      db.productAmountRules.push({ ...row("productAmountRules", amountKey, `Main!${col}${n}`), productKey: key, applicantTypeKey, applicantClass: null, amountPatternKey: amountKey, conditionKey: null, hostingAssociationKey: null, siteKey: null, position: 0 });
       db.productApplicantEligibility.push({ ...row("productApplicantEligibility", amountKey, `Main!${col}${n}`), productKey: key, applicantTypeKey, siteKey: null, eligible: parsed.amountType !== "none", conditionKey: null });
       parsed.options.forEach((value, position) => db.amountOptions.push({ ...row("amountOptions", `${amountKey}.${position}`, `Main!${col}${n}`), amountPatternKey: amountKey, value: String(value), label: String(value), position }));
       mapped("Main", `${col}${n}`, "coverageAmountPatterns", amountKey, "amountType");
@@ -297,11 +297,11 @@ export function seedMcr(db: DatabaseSchema) {
   // Client URLs are catalog data and do not create or activate a runnable Site.
   const urlRows = [...new Set(mcrSource.cells.filter(c => c.sheet === "URLs").map(c => Number(c.cell.replace(/[A-Z]/g, ""))))].filter(n => n > 1);
   for (const n of urlRows) {
-    const owner = db.clients.find(c => c.acronym.toLowerCase() === value("URLs", "A", n).toLowerCase()); if (!owner) continue;
+    const owner = db.associationEntities.find(c => c.acronym.toLowerCase() === value("URLs", "A", n).toLowerCase()); if (!owner) continue;
     for (const [column, environment] of [["B", "production"], ["C", "test"], ["D", "pre-production"], ["E", "automation"]]) {
       const url = value("URLs", column, n); if (!/^https?:\/\/\S+$/.test(url)) continue;
       const key = sourceKey("URLs", `${column}${n}`);
-      db.clientEnvironmentLinks.push({ ...row("clientEnvironmentLinks", key, `URLs!${column}${n}`), clientKey: owner.key, environment, url });
+      db.clientEnvironmentLinks.push({ ...row("clientEnvironmentLinks", key, `URLs!${column}${n}`), hostingAssociationKey: owner.key, environment, url });
       mapped("URLs", `${column}${n}`, "clientEnvironmentLinks", key, "url");
     }
   }

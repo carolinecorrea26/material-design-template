@@ -57,11 +57,11 @@ export function consolidateRiderOwnership(db: DatabaseSchema, cells: readonly So
   }
   const targetKeys = new Set(db.configurationDefinitions.filter(row => row.definition.target?.kind === "product-rider-set").map(row => row.key));
   db.configurationValues = db.configurationValues.filter(row => {
-    if (!targetKeys.has(row.configurationKey) || !business.some(site => row.scope === "site" ? row.siteKey === site.key : row.scope === "client" && row.clientKey === site.clientKey)) return true;
+    if (!targetKeys.has(row.configurationKey) || !business.some(site => row.scope === "site" ? row.siteKey === site.key : row.scope === "association" && row.hostingAssociationKey === site.hostingAssociationKey)) return true;
     const key = `ownership-evidence.rider-marker.${row.key}`;
     if (!db.semanticRequirements.some(evidence => evidence.key === key) && !row.key.startsWith("ownership.")) db.semanticRequirements.push({ ...meta("semanticRequirements", key),
       subjectTable: "configurationDefinitions", subjectKey: row.configurationKey, domain: "information-ownership", predicate: "superseded-rider-set", status: "documented",
-      value: { authority, previousValue: row.value, scope: row.scope, siteKey: row.siteKey, clientKey: row.clientKey } });
+      value: { authority, previousValue: row.value, scope: row.scope, siteKey: row.siteKey, hostingAssociationKey: row.hostingAssociationKey } });
     return false;
   });
   for (const { site, product, mappings } of captured) {
@@ -78,7 +78,7 @@ export function consolidateRiderOwnership(db: DatabaseSchema, cells: readonly So
       if (!global) { global = { ...meta("riders", entry.key, reference), position: 0, definition: structuredClone(definition) }; db.riders.push(global); }
       if (global.definition.id !== definition.id || global.definition.premiumFactor !== definition.premiumFactor) throw new Error(`Conflicting rider identity or pricing: ${entry.key}`);
       const key = `ownership.${site.siteKey}.${product.productKey}.${entry.key}`;
-      db.productRiders.push({ ...meta("productRiders", key, reference), scope: "site", siteKey: site.siteKey, clientKey: null, productKey: product.productKey, riderKey: entry.key, position });
+      db.productRiders.push({ ...meta("productRiders", key, reference), scope: "site", siteKey: site.siteKey, hostingAssociationKey: null, productKey: product.productKey, riderKey: entry.key, position });
       const siteId = db.sites.find(row => row.key === site.siteKey)!.id;
       if (!db.siteRiders.some(row => row.siteId === siteId && row.riderKey === entry.key)) db.siteRiders.push({ ...meta("siteRiders", `ownership.${site.siteKey}.${entry.key}`, reference), siteId, riderKey: entry.key, enabled: true,
         createdAt: "2026-10-19T00:00:00.000Z", updatedAt: "2026-10-19T00:00:00.000Z" });
@@ -90,7 +90,7 @@ export function consolidateRiderOwnership(db: DatabaseSchema, cells: readonly So
         if (!db.configurationDefinitions.some(row => row.key === overrideKey)) db.configurationDefinitions.push({ ...meta("configurationDefinitions", overrideKey, reference), position: 0,
           definition: { path: null, metadata: { authority }, target: { kind: "product-rider-override", productKey: product.productKey, riderKey: entry.key, property } } });
         db.configurationValues = db.configurationValues.filter(row => row.key !== overrideKey);
-        db.configurationValues.push({ ...meta("configurationValues", overrideKey, reference), scope: "site", siteKey: site.siteKey, clientKey: null, position: 0, configurationKey: overrideKey,
+        db.configurationValues.push({ ...meta("configurationValues", overrideKey, reference), scope: "site", siteKey: site.siteKey, hostingAssociationKey: null, position: 0, configurationKey: overrideKey,
           value: value === undefined ? null : JSON.parse(JSON.stringify(value)) });
       }
       for (const amount of db.riderAmountRules.filter(row => rider.key !== entry.key && row.riderKey === rider.key && (row.baseProductKey === null || row.baseProductKey === product.productKey))) {
@@ -101,7 +101,7 @@ export function consolidateRiderOwnership(db: DatabaseSchema, cells: readonly So
     const markerKey = `ownership.${site.siteKey}.${product.productKey}.rider-set`;
     if (!db.configurationDefinitions.some(row => row.key === markerKey)) db.configurationDefinitions.push({ ...meta("configurationDefinitions", markerKey), position: 0,
       definition: { path: null, metadata: { authority }, target: { kind: "product-rider-set", productKey: product.productKey } } });
-    db.configurationValues.push({ ...meta("configurationValues", markerKey), scope: "site", siteKey: site.siteKey, clientKey: null, position: 0, configurationKey: markerKey, value: { version: 2, source: "productRiders" } });
+    db.configurationValues.push({ ...meta("configurationValues", markerKey), scope: "site", siteKey: site.siteKey, hostingAssociationKey: null, position: 0, configurationKey: markerKey, value: { version: 2, source: "productRiders" } });
     for (const value of db.configurationValues.filter(row => row.scope === "site" && row.siteKey === site.siteKey)) {
       const target = db.configurationDefinitions.find(definition => definition.key === value.configurationKey)?.definition.target;
       if (!target || !("productKey" in target) || target.productKey !== product.productKey) continue;

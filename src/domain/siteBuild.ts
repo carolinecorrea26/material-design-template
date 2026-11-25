@@ -1,51 +1,131 @@
 import { mapSelectionAmountReferences } from "./structuredSelectionPolicy";
 import { libraryDisplayId } from './provenance';
-import { isLibraryDraft, type LibraryDraft } from './libraryDraft';
+import { hasLibraryDraftSnapshot, type LibraryDraft } from './libraryDraft';
 import { resolvePrototypeLibrary } from './prototypeLibrary';
+import { withFreshStartCatalog } from './freshStartCatalog';
 import { isAmountCapPolicy } from './amountCapPolicy';
+import type { ClientSupportContact } from './configuration';
+import { isSiteLogo } from './siteLogo';
+import { isValidZipOrPostalCode } from '../utils/zipToStateProvince';
+import { effectiveSiteSnapshotTables } from '../persistence/catalogTables';
 
-export type SiteBuildIdentity = { siteKey: string; siteName: string; template: 'single' | 'multi'; organizationKey: string; organizationName: string; clientKey: string; clientName: string; newOrganization: boolean; newClient: boolean; organizationAcronym?: string; organizationContact?: string; organizationEmail?: string; organizationPhone?: string; clientAcronym?: string; clientContact?: string; clientEmail?: string; clientPhone?: string; clientLogo?: string };
+export type SiteBuildIdentity = {
+  siteKey: string; siteName: string; template: 'single' | 'multi';
+  organizationKey: string; organizationName: string; newOrganization: boolean;
+  organizationAcronym?: string; organizationEmail?: string; organizationPhone?: string;
+  organizationWebsite?: string; organizationAddress?: ClientSupportContact['address']; organizationLogo?: string;
+  hostingAssociationKey: string; associationName: string; newAssociation: boolean;
+  associationAcronym?: string; associationEmail?: string; associationPhone?: string;
+  associationWebsite?: string; associationAddress?: ClientSupportContact['address']; associationLogo?: string;
+};
+
+export function suggestIdentityAcronym(name: string): string {
+  const words = name.match(/[\p{L}\p{N}]+/gu) ?? [];
+  return (words.length === 1 ? words[0] : words.map(word => [...word][0]).join('')).toUpperCase();
+}
+
+function normalizedWebsite(value = '') {
+  const website = value.trim();
+  if (!website) return '';
+  try {
+    const url = new URL(website.includes('://') ? website : `https://${website}`);
+    return ['http:', 'https:'].includes(url.protocol) ? url.href : undefined;
+  } catch { return undefined; }
+}
+
+export function prefillAssociationFromTpa(draft: LibraryDraft, identity: SiteBuildIdentity): Partial<SiteBuildIdentity> {
+  const support = identity.newOrganization
+    ? { website: identity.organizationWebsite, email: identity.organizationEmail, phone: identity.organizationPhone, address: identity.organizationAddress }
+    : draft.data.organizationProfiles.find(profile => profile.organizationKey === identity.organizationKey)?.definition.support;
+  if (!support) return {};
+  const { website, email, phone, address } = support;
+  const addressFields = ['street', 'unit', 'city', 'state', 'zip'] as const;
+  const availableAddress = addressFields.filter(key => address?.[key]?.trim());
+  return {
+    ...(website?.trim() && { associationWebsite: website }),
+    ...(email?.trim() && { associationEmail: email }),
+    ...(phone?.trim() && { associationPhone: phone }),
+    ...(availableAddress.length > 0 && { associationAddress: Object.fromEntries(availableAddress.map(key => [key, address?.[key]])) }),
+  };
+}
+
+function identitySupport(identity: SiteBuildIdentity, kind: 'organization' | 'association'): ClientSupportContact {
+  const website = normalizedWebsite(identity[`${kind}Website`]);
+  return {
+    email: identity[`${kind}Email`]?.trim(),
+    phone: identity[`${kind}Phone`],
+    address: identity[`${kind}Address`],
+    ...(website && { website }),
+  };
+}
+
+export function siteBuildIdentityIssue(identity: SiteBuildIdentity, step: 'tpa' | 'association'): string | undefined {
+  const tpa = step === 'tpa';
+  const kind = tpa ? 'organization' : 'association';
+  const name = identity[`${kind}Name`].trim();
+  if (!(tpa ? identity.organizationKey : identity.hostingAssociationKey) || !name) return tpa ? 'Provide TPA details.' : 'Provide Association details.';
+  if (tpa ? !identity.newOrganization : !identity.newAssociation) return;
+  const acronym = identity[`${kind}Acronym`] ?? suggestIdentityAcronym(name);
+  const phone = identity[`${kind}Phone`];
+  const email = identity[`${kind}Email`]?.trim();
+  const address = identity[`${kind}Address`];
+  if (!acronym.trim() || phone?.replace(/\D/g, '').length !== 10 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email ?? '')) return 'Enter an acronym, a valid email and a 10-digit phone number.';
+  if (!address?.street?.trim() || !address.city?.trim() || !address.state?.trim() || !isValidZipOrPostalCode(address.zip ?? '')) return 'Enter a street address, city, state or province, and valid ZIP or postal code.';
+  if (normalizedWebsite(identity[`${kind}Website`]) === undefined) return 'Enter a valid website address.';
+  if (tpa && identity.organizationLogo && !isSiteLogo(identity.organizationLogo)) return 'Upload a valid TPA logo.';
+  if (!tpa && !isSiteLogo(identity.associationLogo)) return 'Upload the required Association logo.';
+}
 /** Copy scoped rows and their references; shared Library definitions retain their identity. */
 export function createSiteBuild(source: LibraryDraft, identity: SiteBuildIdentity): LibraryDraft {
-  if (!/^[a-z][a-z0-9-]{2,79}$/.test(identity.siteKey) || !identity.organizationKey || !identity.clientKey || !identity.siteName.trim() || !identity.clientName.trim() || !identity.organizationName.trim()) throw new Error('Enter site, TPA and client names and a unique lowercase site key.');
-  for (const kind of ['organization', 'client'] as const) {
-    if (!(kind === 'organization' ? identity.newOrganization : identity.newClient)) continue;
-    if (![identity[`${kind}Acronym`], identity[`${kind}Contact`], identity[`${kind}Phone`]].every(value => value?.trim()) || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identity[`${kind}Email`] ?? '')) throw new Error('Provide an acronym, contact name, valid email and phone for each new TPA or client.');
-  }
-  const draft = structuredClone(source);
+  if (!/^[a-z][a-z0-9-]{2,79}$/.test(identity.siteKey) || !identity.organizationKey || !identity.hostingAssociationKey || !identity.siteName.trim() || !identity.associationName.trim() || !identity.organizationName.trim()) throw new Error('Enter site, TPA and association names and a unique lowercase site key.');
+  if (identity.newOrganization && !identity.newAssociation) throw new Error('A new TPA requires its first Association.');
+  const identityIssue = siteBuildIdentityIssue(identity, 'tpa') ?? siteBuildIdentityIssue(identity, 'association');
+  if (identityIssue) throw new Error(identityIssue);
+  const compiled = withFreshStartCatalog(source.data, source.siteKey);
+  const data = Object.fromEntries(effectiveSiteSnapshotTables.map(table => [table, compiled[table]])) as LibraryDraft['data'];
+  const draft = { ...source, data: structuredClone(data) };
   if (draft.data.sites.some(s => s.key === identity.siteKey)) throw new Error('That site key already exists. Edit the existing Site instead.');
   const organizations = draft.data.organizations;
   if (!organizations) throw new Error('Load the TPA Library before creating a Site.');
   const sourceSite = draft.data.sites.find(s => s.key === source.siteKey)!;
-  const sourceClient = draft.data.clients.find(c => c.id === sourceSite.clientId)!;
+  const sourceAssociation = draft.data.associationEntities.find(c => c.id === sourceSite.hostingAssociationId)!;
   const org = organizations.find(o => o.key === identity.organizationKey);
   if (!identity.newOrganization && !org) throw new Error('Select an existing TPA.');
   if (identity.newOrganization && org) throw new Error('TPA key already exists.');
-  const client = draft.data.clients.find(c => c.key === identity.clientKey);
-  if (!identity.newClient && (!client || client.organizationId !== org?.id)) throw new Error('Choose a client belonging to the selected TPA.');
-  if (identity.newClient && client) throw new Error('Client key already exists.');
-  const copyClientDefaults = identity.newClient || !draft.data.configurationValues.some(r => r.scope === 'client' && r.clientKey === identity.clientKey);
+  const association = draft.data.associationEntities.find(c => c.key === identity.hostingAssociationKey);
+  if (!identity.newAssociation && (!association || association.organizationId !== org?.id)) throw new Error('Choose an Association belonging to the selected TPA.');
+  if (identity.newAssociation && association) throw new Error('Association key already exists.');
+  const copyAssociationDefaults = identity.newAssociation || !draft.data.configurationValues.some(r => r.scope === 'association' && r.hostingAssociationKey === identity.hostingAssociationKey);
   const timestamp = new Date().toISOString();
   const organizationId = org?.id ?? `build-org-${identity.organizationKey}`;
-  const clientId = client?.id ?? `build-client-${identity.clientKey}`;
-  if (identity.newOrganization) organizations.push({ ...organizations.find(o => o.id === sourceClient.organizationId)!, id: organizationId, key: identity.organizationKey, displayId: libraryDisplayId('organizations', identity.organizationKey), name: identity.organizationName, createdAt: timestamp, updatedAt: timestamp });
-  if (identity.newClient) draft.data.clients.push({ ...sourceClient, id: clientId, key: identity.clientKey, displayId: libraryDisplayId('clients', identity.clientKey), name: identity.clientName.trim(), status: 'active', acronym: identity.clientAcronym?.trim() || identity.clientKey.toUpperCase(), organizationId, createdAt: timestamp, updatedAt: timestamp });
+  const hostingAssociationId = association?.id ?? `build-association-${identity.hostingAssociationKey}`;
+  const associationAcronym = (identity.associationAcronym ?? suggestIdentityAcronym(identity.associationName)).trim();
+  if (identity.newOrganization) organizations.push({ ...organizations.find(o => o.id === sourceAssociation.organizationId)!, id: organizationId, key: identity.organizationKey, displayId: libraryDisplayId('organizations', identity.organizationKey), name: identity.organizationName, createdAt: timestamp, updatedAt: timestamp });
+  if (identity.newAssociation) draft.data.associationEntities.push({ ...sourceAssociation, id: hostingAssociationId, key: identity.hostingAssociationKey, displayId: libraryDisplayId('associationEntities', identity.hostingAssociationKey), name: identity.associationName.trim(), status: 'active', acronym: associationAcronym, organizationId, createdAt: timestamp, updatedAt: timestamp });
   if (identity.newOrganization) {
     draft.data.organizationProfiles ??= [];
-    draft.data.organizationProfiles.push({ id: `profile-${organizationId}`, key: `profile-${organizationId}`, organizationKey: identity.organizationKey, position: draft.data.organizationProfiles.length, definition: { name: identity.organizationName, acronym: identity.organizationAcronym, support: { contactName: identity.organizationContact, email: identity.organizationEmail, phone: identity.organizationPhone } } });
+    const acronym = identity.organizationAcronym ?? suggestIdentityAcronym(identity.organizationName);
+    draft.data.organizationProfiles.push({
+      id: `profile-${organizationId}`, key: `profile-${organizationId}`, organizationKey: identity.organizationKey, position: draft.data.organizationProfiles.length,
+      definition: {
+        name: identity.organizationName.trim(), acronym: acronym.trim(),
+        ...(identity.organizationLogo && { branding: { logo: identity.organizationLogo, logoAlt: `${identity.organizationName.trim()} logo` } }),
+        support: identitySupport(identity, 'organization'),
+      },
+    });
   }
-  if (client) client.status = 'active';
+  if (association) association.status = 'active';
   const riderAmountKeys = new Set<string>();
-  for (const row of draft.data.configurationValues.filter(row => row.siteKey === source.siteKey || row.scope === 'client' && row.clientKey === sourceClient.key)) {
+  for (const row of draft.data.configurationValues.filter(row => row.siteKey === source.siteKey || row.scope === 'association' && row.hostingAssociationKey === sourceAssociation.key)) {
     mapSelectionAmountReferences(structuredClone(row.value), key => { riderAmountKeys.add(key); return key; });
   }
   const riderPatternKeys = new Set(draft.data.riderAmountRules.filter(row => riderAmountKeys.has(row.key)).map(row => row.amountPatternKey));
   const copies: { tableName: string; table: Record<string, unknown>[]; row: Record<string, unknown> }[] = [];
   const ids = new Map<string, string>([[sourceSite.id, `build-site-${identity.siteKey}`]]);
   for (const [tableName, rows] of Object.entries(draft.data)) {
-    if (['sites', 'clients', 'organizations', 'organizationProfiles'].includes(tableName)) continue;
+    if (['sites', 'associationEntities', 'organizations', 'organizationProfiles'].includes(tableName)) continue;
     for (const row of rows as unknown as Record<string, unknown>[]) {
-      if (row.siteKey === source.siteKey || row.siteId === sourceSite.id || copyClientDefaults && row.clientKey === sourceClient.key && row.scope === 'client'
+      if (row.siteKey === source.siteKey || row.siteId === sourceSite.id || copyAssociationDefaults && row.hostingAssociationKey === sourceAssociation.key && row.scope === 'association'
         || tableName === 'riderAmountRules' && riderAmountKeys.has(String(row.key))
         || tableName === 'coverageAmountPatterns' && riderPatternKeys.has(String(row.key))
         || ['amountBands', 'amountOptions'].includes(tableName) && riderPatternKeys.has(String(row.amountPatternKey))
@@ -65,10 +145,10 @@ export function createSiteBuild(source: LibraryDraft, identity: SiteBuildIdentit
     const copied = structuredClone(row);
     for (const [key, value] of Object.entries(copied)) {
       if (key === 'siteKey' && value === source.siteKey) copied[key] = identity.siteKey;
-      else if (key === 'clientKey' && value === sourceClient.key) copied[key] = identity.clientKey;
+      else if (key === 'hostingAssociationKey' && value === sourceAssociation.key) copied[key] = identity.hostingAssociationKey;
       else if (typeof value === 'string' && (key === 'id' || key.endsWith('Id')) && ids.has(value)) copied[key] = ids.get(value);
     }
-    if (copied.scope === 'client' && copied.clientKey === identity.clientKey && !identity.newClient && ['brandingProfiles', 'supportProfiles'].includes(tableName)) continue;
+    if (copied.scope === 'association' && copied.hostingAssociationKey === identity.hostingAssociationKey && !identity.newAssociation && ['brandingProfiles', 'supportProfiles'].includes(tableName)) continue;
     if (typeof copied.key === 'string') copied.key = `build.${identity.siteKey}.${copied.key}`;
     if (tableName === 'benefitCaps' && limitKeys.has(copied.aggregateLimitKey)) copied.aggregateLimitKey = limitKeys.get(copied.aggregateLimitKey);
     if (['riderAmountRules', 'amountBands', 'amountOptions'].includes(tableName) && typeof copied.amountPatternKey === 'string' && copiedRiderPatternKeys.has(copied.amountPatternKey)) copied.amountPatternKey = copiedRiderPatternKeys.get(copied.amountPatternKey);
@@ -96,17 +176,17 @@ export function createSiteBuild(source: LibraryDraft, identity: SiteBuildIdentit
     copied.displayId = libraryDisplayId(tableName, String(copied.key ?? copied.id));
     table.push(copied);
   }
-  if (copyClientDefaults && !identity.newClient) {
-    for (const [table, definition] of [['brandingProfiles', { name: identity.clientName, acronym: client!.acronym, logo: '', logoAlt: identity.clientName }], ['supportProfiles', {}]] as const) {
-      if (!draft.data[table].some(r => r.scope === 'client' && r.clientKey === identity.clientKey)) draft.data[table].push({ id: `build-${identity.siteKey}-${table}`, key: `build-${identity.siteKey}-${table}`, position: draft.data[table].length, scope: 'client', clientKey: identity.clientKey, siteKey: null, definition });
+  if (copyAssociationDefaults) {
+    for (const [table, definition] of [['brandingProfiles', { name: identity.associationName, acronym: association?.acronym ?? associationAcronym, logo: '', logoAlt: identity.associationName }], ['supportProfiles', {}]] as const) {
+      if (!draft.data[table].some(r => r.scope === 'association' && r.hostingAssociationKey === identity.hostingAssociationKey)) draft.data[table].push({ id: `build-${identity.siteKey}-${table}`, key: `build-${identity.siteKey}-${table}`, position: draft.data[table].length, scope: 'association', hostingAssociationKey: identity.hostingAssociationKey, siteKey: null, definition });
     }
   }
-  if (identity.newClient && identity.clientAcronym) {
-    for (const row of draft.data.supportProfiles.filter(r => r.scope === 'client' && r.clientKey === identity.clientKey)) row.definition = { contactName: identity.clientContact, email: identity.clientEmail, phone: identity.clientPhone };
-    for (const row of draft.data.brandingProfiles.filter(r => r.scope === 'client' && r.clientKey === identity.clientKey)) Object.assign(row.definition, { name: identity.clientName, acronym: identity.clientAcronym, logo: identity.clientLogo || '', logoAlt: identity.clientName });
+  if (identity.newAssociation) {
+    for (const row of draft.data.supportProfiles.filter(r => r.scope === 'association' && r.hostingAssociationKey === identity.hostingAssociationKey)) row.definition = identitySupport(identity, 'association');
+    for (const row of draft.data.brandingProfiles.filter(r => r.scope === 'association' && r.hostingAssociationKey === identity.hostingAssociationKey)) Object.assign(row.definition, { name: identity.associationName.trim(), acronym: associationAcronym, logo: identity.associationLogo, logoAlt: identity.associationName.trim() });
   }
-  if (identity.clientKey !== sourceClient.key) {
-    // Copied Site overrides must not display another client's identity or contacts.
+  if (identity.hostingAssociationKey !== sourceAssociation.key) {
+    // Copied Site overrides must not display another association's identity or contacts.
     draft.data.brandingProfiles = draft.data.brandingProfiles.filter(r => r.siteKey !== identity.siteKey);
     draft.data.supportProfiles = draft.data.supportProfiles.filter(r => r.siteKey !== identity.siteKey);
     // Association identities belong to the source host. A different host must
@@ -117,12 +197,12 @@ export function createSiteBuild(source: LibraryDraft, identity: SiteBuildIdentit
       delete policy.definition.associationBranding;
     }
   }
-  draft.data.sites.push({ ...sourceSite, id: ids.get(sourceSite.id)!, key: identity.siteKey, displayId: libraryDisplayId('sites', identity.siteKey), clientId, hostingAssociationId: clientId, name: identity.siteName, displayName: identity.siteName, templateType: identity.template, environment: 'prototype', createdAt: timestamp, updatedAt: timestamp });
+  draft.data.sites.push({ ...sourceSite, id: ids.get(sourceSite.id)!, key: identity.siteKey, displayId: libraryDisplayId('sites', identity.siteKey), hostingAssociationId, name: identity.siteName, displayName: identity.siteName, templateType: identity.template, environment: 'prototype', createdAt: timestamp, updatedAt: timestamp });
   draft.siteKey = identity.siteKey; draft.editVersion = 0; delete draft.mockTransport;
-  if (!isLibraryDraft(draft)) throw new Error('The selected Library cannot be copied into a valid Site.');
+  if (!hasLibraryDraftSnapshot(draft)) throw new Error('The selected Library cannot be copied into a valid Site.');
   resolvePrototypeLibrary(draft.data, draft.siteKey, draft.baseRevision);
   return draft;
 }
 
 /** Opaque generated IDs are independent of user-facing names and acronyms. */
-export function newBuildKey(kind: 'site' | 'client' | 'tpa') { return `${kind}-${crypto.randomUUID()}`; }
+export function newBuildKey(kind: 'site' | 'association' | 'tpa') { return `${kind}-${crypto.randomUUID()}`; }

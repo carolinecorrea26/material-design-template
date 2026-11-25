@@ -6,7 +6,7 @@
         "id": "site:{{site}}.theme.type",
         "key": "site:{{site}}.theme.type",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "theme.type",
         "value": "preset",
@@ -17,7 +17,7 @@
         "id": "site:{{site}}.theme.preset",
         "key": "site:{{site}}.theme.preset",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "theme.preset",
         "value": "dark-blue",
@@ -28,7 +28,7 @@
         "id": "site:{{site}}.licenseInfo",
         "key": "site:{{site}}.licenseInfo",
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "configurationKey": "licenseInfo",
         "value": [
@@ -45,7 +45,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "shared.review-policy",
         "value": {
           "version": 1,
@@ -266,7 +266,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "shared.beneficiary-notes",
         "value": {
           "version": 1,
@@ -351,7 +351,7 @@
         "position": 0,
         "scope": "site",
         "siteKey": "{{site}}",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "configurationKey": "shared.beneficiary-participation",
         "value": {
           "version": 1,
@@ -517,7 +517,7 @@
         },
         "position": 0,
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "sourceReference": "prototype:brandingProfiles/client:isitrust"
       }
@@ -553,7 +553,7 @@
         },
         "position": 0,
         "scope": "site",
-        "clientKey": null,
+        "hostingAssociationKey": null,
         "siteKey": "{{site}}",
         "sourceReference": "Associations!D387"
       }
@@ -711,7 +711,7 @@
     "sites": [
       {
         "id": "isitrust",
-        "clientId": "isitrust",
+        "hostingAssociationId": "isitrust",
         "key": "isitrust",
         "name": "ISITRUST Site",
         "displayName": "ISITRUST Site",
@@ -720,7 +720,6 @@
         "templateType": "multi",
         "legacyClientId": "isitrust",
         "deletedAt": null,
-        "hostingAssociationId": "isitrust",
         "sourceReference": "prototype:sites/isitrust",
         "createdAt": "2026-09-01T12:00:00.000Z",
         "updatedAt": "2026-09-01T12:00:00.000Z"

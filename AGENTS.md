@@ -52,3 +52,49 @@ This is an established architecture, not an open design question.
 
 Ownership reference: `docs/requirements-spec/README.md`.
 Coverage definitions and effective-site evidence: `docs/requirements-spec/coverage.md`.
+
+## Development and publishing on redesignv6
+
+- Clone `carolinecorrea26/material-design-template` on branch `redesignv6`.
+  With Node from `.nvmrc`, run `npm run init` to install locked dependencies,
+  validate the committed catalog and prepare the local mock data. Use
+  `npm run dev` and `npm run storybook` for local work. For a dedicated local
+  PostgreSQL instance, set its `DATABASE_URL` in the ignored `.env` and run
+  `npm run db:setup` and `npm run db:check`.
+- Edit the owning JSON or catalog source. Run `npm run catalog:refresh` to
+  regenerate the Library bundle and derived indexes and documents. Commit the
+  source and generated files together. Run `npm run build:release` to build the
+  prototype and Library in `dist/`, Storybook in `storybook-static/`, and
+  `dist/standalone/admin-center.html` from the same catalog. It checks artifact
+  parity. Run relevant tests explicitly.
+- Publishing requires GitHub and Netlify access for macOS, Linux or WSL.
+  Authenticate with `gh auth login`, `gh auth setup-git` and `netlify login`.
+  If linking this checkout for other Netlify commands, use
+  `netlify link --id 86159baa-204c-4672-b586-00f5b8caa786` for the Portal.
+  `npm run db:hosted:status` queries the hosted `redesignv6` PostgreSQL branch
+  over verified TLS. `npm run db:hosted:check` also checks exact catalog parity.
+- Publish from a clean, committed `redesignv6` checkout with
+  `npm run release:publish`. It validates the builds, transactionally applies
+  the checked-in schema and catalog to the hosted database branch, checks the
+  stored bytes, and pushes the same commit to GitHub without force. Netlify
+  builds `redesignv6` as a branch deploy on `material-design-template` and as
+  the production deploy on `material-design-template-storybook`. Keep the
+  Portal's production branch on `main`. Use the coordinated command for
+  release pushes. It waits for both deploys and checks both public catalog
+  copies against the Portal API. Resume monitoring with
+  `npm run release:verify` from the release checkout.
+- Run one release at a time. The hosted pilot serves one catalog revision, so
+  Portal startup can report a revision mismatch between database import and its
+  Netlify deploy. If the Git push fails after import, retry the same release
+  after resolving the error. If a build fails after the push, fix the failure or
+  retry the matching deploy in Netlify, then run `npm run release:verify`.
+- Keep SQL in `netlify/database/migrations/`. Add new idempotent SQL files to the
+  ordered import in `scripts/seed-portal-db.mjs` and test upgrades with
+  `npm run test:db`. The published catalog flows from the committed JSON to
+  PostgreSQL. Accounts, sessions, Site status, drafts and applicant records stay
+  in their operational stores. Keep credentials, database dumps, local state
+  and source ZIPs out of Git. The hosted release uses the Netlify CLI session;
+  it does not need a saved database connection string or demo passwords.
+
+Netlify project settings and database details are in
+[`docs/project-review/portal-database.md`](docs/project-review/portal-database.md).

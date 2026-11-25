@@ -3,7 +3,6 @@ import { createRoot, type Root } from 'react-dom/client';
 import { MemoryRouter, useLocation } from 'react-router-dom';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { ApplicationFormContext } from '../app/ApplicationFormContext';
-import { MESSAGE_DURATION } from '../config/transitionMessages';
 import Profile from './Profile';
 
 vi.mock('../app/ApplicationSessionContext', () => ({ useApplicationSession: () => ({ reviewSubmitted: false, advisorApplicantFlow: false, markReviewSubmitted: vi.fn() }) }));
@@ -36,17 +35,15 @@ it.each(['new', 'saved'])('hands an advisor %s application to the confirmation p
   expect(location()).toBe('/profile');
   expect(document.querySelector('[role="alertdialog"]')?.textContent).toContain('jordan@example.com');
   await act(async () => button('Cancel').click());
-  await act(async () => vi.advanceTimersByTimeAsync(MESSAGE_DURATION * 2));
+  await act(async () => vi.advanceTimersByTimeAsync(300));
   expect(location()).toBe('/profile');
   expect(document.querySelector('[role="alertdialog"]')).toBeNull();
   await submit();
   await act(async () => button('Send').click());
-  await act(async () => vi.advanceTimersByTimeAsync(MESSAGE_DURATION * 2));
   expect(location()).toBe('/advisor-send-confirmation');
 });
 it('continues a consumer application from Profile to Review without an advisor dialog', async () => {
   await render(); await submit();
   expect(document.querySelector('[role="alertdialog"]')).toBeNull();
-  await act(async () => vi.advanceTimersByTimeAsync(MESSAGE_DURATION * 2));
   expect(location()).toBe('/review');
 });

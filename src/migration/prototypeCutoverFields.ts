@@ -14,7 +14,7 @@ export function addPrototypeCutoverFields(db: DatabaseSchema) {
     const fieldKey = `prototype-fact:${target.productKey}:member:${operand}`, key = `${config.siteKey}.${fieldKey}`;
     const definition: FieldDefinition = { id: fieldKey, label: operand === 'activeMilitary' ? 'Are you on active military duty?' : 'Are you a member of the association?', inputType: 'radio', required: true, options: [{ value: 'yes', label: 'Yes' }, { value: 'no', label: 'No' }] };
     if (!db.fields.some(f => f.key === fieldKey)) db.fields.push({ id: fieldKey, key: fieldKey, position: 0, definition, ...libraryMetadata('fields', fieldKey, 'prototype-cutover:reviewed-operands') });
-    if (!db.siteFieldConfigurations.some(f => f.key === key)) db.siteFieldConfigurations.push({ id: key, key, position: 40000 + db.siteFieldConfigurations.length, scope: 'site', siteKey: config.siteKey, clientKey: null, pageKey: 'coverage', fieldKey, include: true, hidden: false, values: {}, ...libraryMetadata('siteFieldConfigurations', key, 'prototype-cutover:reviewed-operands') });
+    if (!db.siteFieldConfigurations.some(f => f.key === key)) db.siteFieldConfigurations.push({ id: key, key, position: 40000 + db.siteFieldConfigurations.length, scope: 'site', siteKey: config.siteKey, hostingAssociationKey: null, pageKey: 'coverage', fieldKey, include: true, hidden: false, values: {}, ...libraryMetadata('siteFieldConfigurations', key, 'prototype-cutover:reviewed-operands') });
   }
 
   for (const config of db.configurationValues) {
@@ -34,7 +34,7 @@ export function addPrototypeCutoverFields(db: DatabaseSchema) {
         const definition: FieldDefinition = { id: fieldKey, label, inputType, required: true, ...(inputType === 'radio' ? { options: [{ value: 'yes', label: 'Yes' }, { value: 'no', label: 'No' }] } : inputType === 'dropdown' ? { options: config.value.applicants.filter(r => r.applicantKey === rule.applicantKey && r.applicantClass).map(r => ({ value: r.applicantClass!, label: r.applicantClass! })) } : {}) };
         if (name === 'eligibleExpenseFraction') { definition.allowDecimal = true; definition.inputMode = 'decimal'; }
         if (!db.fields.some(f => f.key === fieldKey)) db.fields.push({ id: fieldKey, key: fieldKey, position: 0, definition, ...libraryMetadata('fields', fieldKey, 'prototype-cutover:reviewed-benefit-operands') });
-        db.siteFieldConfigurations.push({ id: key, key, position: 40000 + db.siteFieldConfigurations.length, scope: 'site', siteKey: config.siteKey, clientKey: null, pageKey: 'coverage', fieldKey, include: true, hidden: false, values: {}, ...libraryMetadata('siteFieldConfigurations', key, 'prototype-cutover:reviewed-benefit-operands') });
+        db.siteFieldConfigurations.push({ id: key, key, position: 40000 + db.siteFieldConfigurations.length, scope: 'site', siteKey: config.siteKey, hostingAssociationKey: null, pageKey: 'coverage', fieldKey, include: true, hidden: false, values: {}, ...libraryMetadata('siteFieldConfigurations', key, 'prototype-cutover:reviewed-benefit-operands') });
       }
     }
   }  for (const config of db.configurationValues) {

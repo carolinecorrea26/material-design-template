@@ -11,17 +11,17 @@ import { applicable, merge, put, scopeRank } from "./values";
 
 type PositionedScope = Scope & { position: number };
 const ordered = <T extends { position: number }>(rows: T[]) => [...rows].sort((a, b) => a.position - b.position);
-const scoped = <T extends PositionedScope>(rows: T[], siteKey: string, clientKey: string) => rows.filter((r) => applicable(r, siteKey, clientKey)).sort((a, b) => scopeRank[a.scope] - scopeRank[b.scope] || a.position - b.position);
+const scoped = <T extends PositionedScope>(rows: T[], siteKey: string, hostingAssociationKey: string) => rows.filter((r) => applicable(r, siteKey, hostingAssociationKey)).sort((a, b) => scopeRank[a.scope] - scopeRank[b.scope] || a.position - b.position);
 function requireRow<T extends { key: string }>(rows: T[], key: string): T {
   const row = rows.find((r) => r.key === key);
   if (!row) throw new Error(`Missing migration reference: ${key}`);
   return row;
 }
-function valuesTree(db: DatabaseSchema, rows: (ConfigurationValueRow | ContentValueRow)[], siteKey: string, clientKey: string) {
+function valuesTree(db: DatabaseSchema, rows: (ConfigurationValueRow | ContentValueRow)[], siteKey: string, hostingAssociationKey: string) {
   let result: Record<string, unknown> = {};
-  for (const scope of ["global", "client", "site"] as const) {
+  for (const scope of ["global", "association", "site"] as const) {
     const layer: Record<string, unknown> = {};
-    for (const value of scoped(rows, siteKey, clientKey).filter((r) => r.scope === scope)) {
+    for (const value of scoped(rows, siteKey, hostingAssociationKey).filter((r) => r.scope === scope)) {
       const definition = "configurationKey" in value ? requireRow(db.configurationDefinitions, value.configurationKey) : requireRow(db.contentEntries, value.contentKey);
       if (definition.definition.path) put(layer, definition.definition.path, value.value);
     }
@@ -43,7 +43,7 @@ function identifiers(base: ScopedIdentifierSet<ProductIdentifierSet> | undefined
 
 export function resolveDatabaseSite(db: DatabaseSchema, siteKey: string) {
   const site = requireRow(db.sites, siteKey);
-  const client = db.clients.find((r) => r.id === site.clientId);
+  const client = db.associationEntities.find((r) => r.id === site.hostingAssociationId);
   if (!client) throw new Error(`Missing client for ${siteKey}`);
   const settings = valuesTree(db, db.configurationValues, siteKey, client.key) as ClientConfigurationDefaults & { routingGates: { pageId: string; gate: Record<string, unknown> }[]; coveragePolicy: { categoryMaxAggregate: Record<string, string | null>; aggregateNotes: Record<string, { member: string; spouse: string; child?: string } | null>; questionRequirements: Record<string, Partial<Record<"self" | "spouse", string[]>>> } };
   const branding = scoped(db.brandingProfiles, siteKey, client.key).reduce((base, r) => merge(base, r.definition), {} as ClientBranding);
@@ -51,8 +51,8 @@ export function resolveDatabaseSite(db: DatabaseSchema, siteKey: string) {
   const policy = requireRow(db.sitePolicies, siteKey).definition;
   const associations = ordered(db.siteAssociations.filter((r) => r.siteKey === siteKey && r.enabled)).map((r) => {
     const association = requireRow(db.associations, r.associationKey);
-    if (association.clientKey !== client.key) throw new Error(`Cross-client association ${r.key}`);
-    return { id: association.key, clientId: association.clientKey, ...association.definition };
+    if (association.hostingAssociationKey !== client.key) throw new Error(`Cross-client association ${r.key}`);
+    return { id: association.key, hostingAssociationId: association.hostingAssociationKey, ...association.definition };
   });
   const pages = ordered(db.pages).map((page) => {
     const assignment = db.sitePages.find((r) => r.siteKey === siteKey && r.pageKey === page.key);
@@ -104,7 +104,7 @@ export function resolveDatabaseSite(db: DatabaseSchema, siteKey: string) {
       return path?.join(".") === `coverages.overrides.${product.key}.riders`;
     }), siteKey, client.key).at(-1);
     effective.riders = enabled && riderAssignment
-      ? ordered(db.productRiders.filter((r) => r.productKey === product.key && r.scope === riderAssignment.scope && r.clientKey === riderAssignment.clientKey && r.siteKey === riderAssignment.siteKey)).map((r) => resolvedRider(r.riderKey))
+      ? ordered(db.productRiders.filter((r) => r.productKey === product.key && r.scope === riderAssignment.scope && r.hostingAssociationKey === riderAssignment.hostingAssociationKey && r.siteKey === riderAssignment.siteKey)).map((r) => resolvedRider(r.riderKey))
       : baseRiders.length ? baseRiders : undefined;
     if (enabled) effective.applicants = ordered(db.siteProductApplicants.filter((r) => r.siteKey === siteKey && r.productKey === product.key)).map((r) => requireRow(db.applicantTypes, r.applicantKey).definition.applicantType);
     return { id: product.key, enabled, effective };

@@ -128,7 +128,7 @@ it.each([['ordinary', '/eligibility', false], ['advisor', '/review', true], ['un
   await render(codePath(advisorFlow)); expect(form.restoreApplication).not.toHaveBeenCalled();
   await input('123456'); await submit();
   expect(form.restoreApplication).toHaveBeenCalledOnce(); expect(session.setAdvisorApplicantFlow).toHaveBeenCalledWith(advisorFlow);
-  await act(async () => vi.advanceTimersByTimeAsync(1200)); expect(container.querySelector('output')?.textContent).toContain(destination);
+  expect(container.querySelector('output')?.textContent).toContain(destination);
 });
 it('disables both expired-code resend controls during a pending request', async () => {
   vi.mocked(applicantRecovery.challenge).mockReturnValue(new Promise(() => {}));

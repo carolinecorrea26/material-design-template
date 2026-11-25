@@ -114,7 +114,7 @@ describe("implemented field inventory", () => {
     if (!process.env.FIELD_AUDIT_EXPORT) return;
     const counts=siteEntities.map(site=>{
       const rows=getSiteFieldInventory(site.id);
-      return {site:site.id,client:site.clientId,placements:rows.length,fields:new Set(rows.map(r=>r.field.id)).size,pages:[...new Set(rows.map(r=>r.pageId))].length,byPage:Object.fromEntries([...new Set(rows.map(r=>r.pageId))].map(page=>[page,rows.filter(r=>r.pageId===page).length]))};
+      return {site:site.id,client:site.hostingAssociationId,placements:rows.length,fields:new Set(rows.map(r=>r.field.id)).size,pages:[...new Set(rows.map(r=>r.pageId))].length,byPage:Object.fromEntries([...new Set(rows.map(r=>r.pageId))].map(page=>[page,rows.filter(r=>r.pageId===page).length]))};
     });
     writeFileSync(process.env.FIELD_AUDIT_EXPORT, JSON.stringify({globalPlacements:global.length,globalFields:new Set(global.map(r=>r.field.id)).size,sites:counts},null,2));
   });

@@ -28,7 +28,7 @@ export function applyBeneficiaryNoteAdoption(db: DatabaseSchema) {
     if (!notes.length) continue;
     const policy: BeneficiaryNotePolicy = { version: 1, notes };
     if (!isBeneficiaryNotePolicy(policy)) throw new Error(`Invalid adopted beneficiary notes ${scope.key}`);
-    const key = `${scope.key}.beneficiary-notes`, row = { ...meta("configurationValues", key), position: 0, scope: "site" as const, siteKey: scope.key, clientKey: null, configurationKey, value: policy as unknown as Json };
+    const key = `${scope.key}.beneficiary-notes`, row = { ...meta("configurationValues", key), position: 0, scope: "site" as const, siteKey: scope.key, hostingAssociationKey: null, configurationKey, value: policy as unknown as Json };
     const index = db.configurationValues.findIndex(row => row.key === key);
     if (index < 0) db.configurationValues.push(row); else db.configurationValues[index] = row;
     const decisionKey = `${beneficiaryNoteDecisionPrefix}.${scope.key}`;

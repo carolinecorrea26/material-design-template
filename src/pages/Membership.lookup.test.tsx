@@ -5,7 +5,6 @@ import { afterEach, beforeAll, expect, it, vi } from "vitest";
 import Membership from "./Membership";
 import { createReviewedMigrationDatabase } from "../migration/fixtures";
 import { installPrototypeLibrary, resolvePrototypeLibrary } from "../domain/prototypeLibrary";
-import { MESSAGE_DURATION } from "../config/transitionMessages";
 import type { DatabaseSchema } from "../persistence/types";
 
 const form = vi.hoisted(() => ({ values: {} as Record<string, unknown>, setPageValues: vi.fn(), saveApplication: vi.fn(async () => null), setActiveAssociationId: vi.fn() }));
@@ -59,7 +58,6 @@ it("continues AMA Membership without a record dialog or an extra date-of-birth s
   expect(lookup).not.toHaveBeenCalled();
   expect(form.saveApplication).toHaveBeenCalled();
   expect(form.values.membershipLookupResult).toBeUndefined();
-  await act(async () => { await vi.advanceTimersByTimeAsync(MESSAGE_DURATION * 2); });
   expect(flow.completeSection).toHaveBeenCalledWith("membership", "eligibility");
 });
 

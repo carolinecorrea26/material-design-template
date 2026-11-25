@@ -1,7 +1,7 @@
 import { TextLikeField } from "./TextLikeField";
 import PhoneField from "./PhoneField";
 import { getPhoneTypeFieldId } from "../../domain/phoneFields";
-import { getLabelVariant, isZipOrPostalField, isFieldComplete, isFieldInError, renderCompletedIcon, renderErrorIcon, renderCompletedAdornment, renderErrorAdornment, renderCompletedSelectIcon, renderErrorSelectIcon, renderFieldLabel, type FieldStatusState } from "./fieldInputPresentation";
+import { isZipOrPostalField, isFieldComplete, isFieldInError, renderCompletedIcon, renderErrorIcon, renderCompletedAdornment, renderErrorAdornment, renderCompletedSelectIcon, renderErrorSelectIcon, renderFieldLabel, type FieldStatusState } from "./fieldInputPresentation";
 import { getFieldValidationRules } from "../../utils/fieldValidation";
 import {
   useRef,
@@ -30,6 +30,7 @@ import {
 } from "@mui/material";
 import InputAdornment from "@mui/material/InputAdornment";
 import LockRoundedIcon from "@mui/icons-material/LockRounded";
+import { getLabelVariant } from "../../domain/fields";
 import type { FieldDefinition, FieldOption } from "../../config/fields/types";
 import { fieldCatalog } from "../../config/fields";
 import { FieldDefinitionsContext } from "./FieldDefinitionsContext";
@@ -588,6 +589,7 @@ function FieldRendererInput({
 
   if (field.inputType === "multi-select") {
     const labelId = `${field.id}-label`;
+    const standardLabel = getLabelVariant(field) === "standard";
 
     return (
       <Controller
@@ -614,16 +616,21 @@ function FieldRendererInput({
               error={Boolean(errors[field.id])}
               required={field.required}
             >
-              <InputLabel id={labelId} required={field.required}>
-                {renderFieldLabel(field)}
-              </InputLabel>
+              {standardLabel ? (
+                <FormLabel id={labelId} sx={{ mb: 1 }}>
+                  {renderFieldLabel(field)}
+                </FormLabel>
+              ) : (
+                <InputLabel id={labelId}>{renderFieldLabel(field)}</InputLabel>
+              )}
 
               <Box sx={{ position: "relative" }}>
                 <Select<string[]>
                   fullWidth
                   labelId={labelId}
-                  label={field.label}
+                  label={standardLabel ? undefined : field.label}
                   multiple
+                  displayEmpty={standardLabel}
                   value={selectedValues}
                   onChange={(event) => {
                     const value = event.target.value;
@@ -633,7 +640,9 @@ function FieldRendererInput({
                     onValueChange?.();
                   }}
                   onBlur={controllerField.onBlur}
-                  renderValue={(selected) => selected.map(value => field.options?.find(option => option.value === value)?.label ?? value).join(", ")}
+                  renderValue={(selected) => selected.length === 0
+                    ? <em>{field.placeholder ?? "Select"}</em>
+                    : selected.map(value => field.options?.find(option => option.value === value)?.label ?? value).join(", ")}
                   sx={{
                     "& .MuiSelect-select": {
                       pr: hasIcon ? "64px !important" : undefined,

@@ -379,7 +379,7 @@ function buildCapturedRequirementCrosswalk(db: DatabaseSchema) {
     const authority = ruleAuthority(rule);
     const assignments = db.ruleAssignments.filter(assignment => assignment.ruleKey === rule.key);
     const siteKeys = unique(assignments.flatMap(assignment => assignment.scope === "global" ? [...activeSiteMigrationScope.sites.map(site => site.key)]
-      : assignment.siteKey ? [assignment.siteKey] : activeSiteMigrationScope.sites.filter(site => site.clientKey === assignment.clientKey).map(site => site.key)));
+      : assignment.siteKey ? [assignment.siteKey] : activeSiteMigrationScope.sites.filter(site => site.hostingAssociationKey === assignment.hostingAssociationKey).map(site => site.key)));
     const rationale = authority.kind === "source-pattern" || authority.kind === "source-reference"
       ? "Preserve the imported canonical/source model as a reference. Its catalog presence does not activate its predicates/actions or establish runtime coverage."
       : authority.kind === "planned" ? "Retain the documented future behavior and planned status. An implementation and explicit applicable assignments are still required."

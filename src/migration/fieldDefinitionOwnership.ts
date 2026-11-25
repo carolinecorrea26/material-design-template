@@ -26,5 +26,5 @@ export function consolidateFieldDefinitionOwnership(db: DatabaseSchema) {
       disposition: "fields owns inputType and format; required constraints retain existing validation precedence. Page/surface/collection overrides remain scoped." } });
   for (const rule of db.validationRules) { delete rule.definition.inputType; delete rule.definition.format; }
   db.configurationDefinitions.push({ ...meta("configurationDefinitions", key), position: 0, definition: { path: null, metadata: { authority }, target: { kind: "field-definition-ownership" } } });
-  db.configurationValues.push({ ...meta("configurationValues", key), position: 0, configurationKey: key, scope: "global", siteKey: null, clientKey: null, value: { version: 2, source: "fields" } });
+  db.configurationValues.push({ ...meta("configurationValues", key), position: 0, configurationKey: key, scope: "global", siteKey: null, hostingAssociationKey: null, value: { version: 2, source: "fields" } });
 }

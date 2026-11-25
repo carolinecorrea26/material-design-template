@@ -76,7 +76,7 @@ export default function Receipt() {
 
   return (
     <PageShell title={getPageTitle("receipt")} maxWidth="lg" noTitle>
-      <AppSnackbar open={documentPlaceholderOpen} autoHideDuration={4000} onClose={() => setDocumentPlaceholderOpen(false)} severity="info" message={requirementText("application.ui.document-downloads-are-placeholders-in-this-prototype")} />
+      <AppSnackbar open={documentPlaceholderOpen} autoHideDuration={4000} onClose={() => setDocumentPlaceholderOpen(false)} severity="info" message={requirementText("application.ui.document-downloads-unavailable")} />
       <FormShell sx={{ p: { xs: 3, md: 5 } }}>
         <Stack spacing={4}>
           {sections.map(section => {

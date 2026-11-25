@@ -7,7 +7,6 @@ import Membership from './Membership';
 import Profile from './Profile';
 import { installPrototypeLibrary, resolvePrototypeLibrary } from '../domain/prototypeLibrary';
 import type { ApplicationFormValues } from '../app/ApplicationFormContext';
-import { MESSAGE_DURATION } from '../config/transitionMessages';
 const form = vi.hoisted(() => ({ values: {} as ApplicationFormValues, setPageValues: vi.fn(), setActiveAssociationId: vi.fn(), saveApplication: vi.fn(async () => null) }));
 vi.mock('../app/ApplicationFormContext', () => ({ useApplicationForm: () => form }));
 vi.mock('../app/ApplicationSessionContext', () => ({ useApplicationSession: () => ({ reviewSubmitted: false, markReviewSubmitted: vi.fn() }) }));
@@ -23,7 +22,6 @@ async function render(page: 'membership' | 'profile') {
   installPrototypeLibrary(resolvePrototypeLibrary(catalog.data, 'ama-gi', 'ama-gi-page'));
   host = document.createElement('div'); document.body.append(host); root = createRoot(host);
   await act(async () => root!.render(<MemoryRouter>{page === 'membership' ? <Membership /> : <Profile />}</MemoryRouter>));
-  await act(async () => { await vi.advanceTimersByTimeAsync(MESSAGE_DURATION + 20); });
 }
 it.each(['student', 'spouse'])('renders the shared associated-student fields only for the %s membership path', async role => {
   form.values = { membership: role, 'ama-physician-first-name': 'RetainedStudentDraft' };

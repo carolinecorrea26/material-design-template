@@ -1,5 +1,5 @@
 import { getPrototypeLibrary, type PrototypeLibrary } from '../domain/prototypeLibrary';
-import { getClientForSite, getEffectiveSiteConfig, getTpaForClient } from '../repositories/sites';
+import { getHostingAssociationForSite, getEffectiveSiteConfig, getTpaForAssociation } from '../repositories/sites';
 import type { SiteId } from '../domain/sites';
 import { applicationSupportReference, type ApplicationSupportIds } from '../domain/applicationSupportReference';
 import { readSavedApplication } from '../services/applicantSaveService';
@@ -23,12 +23,12 @@ export type SiteSupportContact = {
 
 /** One contact resolution for site cards and email HTML. Email visibility stays email-specific. */
 export function resolveSiteSupportContact(siteId: SiteId, library: PrototypeLibrary | null = getPrototypeLibrary(siteId)): SiteSupportContact {
-  const client = library?.clientIdentity ?? getClientForSite(siteId);
+  const client = library?.clientIdentity ?? getHostingAssociationForSite(siteId);
   if (!client) throw new Error(`Unknown support Site: ${siteId}`);
   const configuration = library?.client ?? getEffectiveSiteConfig(siteId);
   const support = configuration.support;
   const email = configuration.emailSupport;
-  const administrator = getTpaForClient(client.id);
+  const administrator = getTpaForAssociation(client.id);
   return {
     name: email?.contactOverride?.name || administrator?.name || client.name,
     acronym: email?.contactOverride?.acronym || administrator?.acronym || client.acronym,

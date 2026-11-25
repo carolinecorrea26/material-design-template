@@ -64,7 +64,7 @@ export const applicantIcons = [
   { Icon: CancelRounded, name: "CancelRounded", label: "CancelRounded", sources: ["src/components/forms/fieldInputPresentation.tsx","src/components/verification/MemberVerification.tsx"] },
   { Icon: ChatBubbleOutlineRounded, name: "ChatBubbleOutlineRounded", label: "ChatBubbleOutlineRounded", sources: ["src/components/layout/ClientHelpBanner.tsx"] },
   { Icon: CheckCircleRounded, name: "CheckCircleRounded", label: "CheckCircleRounded", sources: ["src/components/coverage/CoverageCart.tsx","src/components/feedback/recoveryIcons.ts","src/components/forms/fieldInputPresentation.tsx","src/components/navigation/ProgressStep.tsx","src/components/verification/MemberVerification.tsx","src/utils/mockEmail.ts"] },
-  { Icon: CheckRounded, name: "CheckRounded", label: "CheckRounded", sources: ["src/components/forms/EligibilityFields.tsx","src/components/home/ApplicationPreview.tsx","src/pages/ResumeCode.tsx"] },
+  { Icon: CheckRounded, name: "CheckRounded", label: "CheckRounded", sources: ["src/components/forms/EligibilityFields.tsx","src/components/home/ApplicationPreview.tsx"] },
   { Icon: CloseRounded, name: "CloseRounded", label: "CloseRounded", sources: ["src/components/coverage/CoverageCart.tsx","src/components/layout/AppDrawer.tsx","src/components/layout/AppMenu.tsx","src/components/layout/AppModal.tsx","src/components/layout/CookieDialog.tsx"] },
   { Icon: CreditCardOffRounded, name: "CreditCardOffRounded", label: "CreditCardOffRounded", sources: ["src/content/helpContent.tsx"] },
   { Icon: DeleteOutlineRounded, name: "DeleteOutlineRounded", label: "DeleteOutlineRounded", sources: ["src/components/coverage/CoverageCart.tsx","src/content/helpContent.tsx","src/utils/mockEmail.ts"] },

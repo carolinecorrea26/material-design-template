@@ -1,7 +1,8 @@
 import type { ChangeEvent, ReactNode } from 'react';
 import { FormControl, FormHelperText, FormLabel, TextField, type TextFieldProps } from '@mui/material';
 import type { FieldDefinition } from '../../config/fields/types';
-import { getLabelVariant, isFieldComplete, isFieldInError, renderCompletedAdornment, renderErrorAdornment, renderFieldLabel } from './fieldInputPresentation';
+import { getLabelVariant } from '../../domain/fields';
+import { isFieldComplete, isFieldInError, renderCompletedAdornment, renderErrorAdornment, renderFieldLabel } from './fieldInputPresentation';
 
 export type TextLikeFieldProps = {
   field: FieldDefinition; value: string; onChange: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void; onBlur?: () => void;

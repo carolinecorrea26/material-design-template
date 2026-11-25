@@ -83,7 +83,7 @@ export function applyActiveSiteNumericAdoption(db: DatabaseSchema, cells: readon
         targets.push({ table: "amountOptions", key: optionKey, column: "value", reference });
       }
       const ruleKey = `${key}.amount`;
-      db.productAmountRules.push({ ...metadata("productAmountRules", ruleKey, reference), siteKey, clientKey: null, productKey, applicantTypeKey, applicantClass: null, amountPatternKey: patternKey, conditionKey: null, position });
+      db.productAmountRules.push({ ...metadata("productAmountRules", ruleKey, reference), siteKey, hostingAssociationKey: null, productKey, applicantTypeKey, applicantClass: null, amountPatternKey: patternKey, conditionKey: null, position });
       targets.push({ table: "coverageAmountPatterns", key: patternKey, column: "amountType", reference }, { table: "productAmountRules", key: ruleKey, column: "amountPatternKey", reference });
     }
     const decisionKey = `migration-decision.${prefix}`;

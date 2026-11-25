@@ -6,14 +6,14 @@ import { readLibraryCatalog } from "../../services/libraryCatalogService";
 import { useServiceData } from "../../hooks/useServiceData";
 import { useCanEdit } from "../../admin/AccountContext";
 
-type Scope = "TPA" | "Client" | "Site";
+type Scope = "TPA" | "Association" | "Site";
 type Issue = { id: string; title: string; description: string; scope: Scope; targetId: string; targetName: string; priority: string; createdAt: string; status: "Open" | "Resolved" };
 const storageKey = "portal.prototype.manualIssues.v1";
 const loadIdentities = () => readLibraryCatalog('all');
 function readIssues(): Issue[] {
   const parsed: unknown = JSON.parse(localStorage.getItem(storageKey) ?? "[]");
-  if (!Array.isArray(parsed) || !parsed.every(row => row && typeof row.id === "string" && typeof row.title === "string" && typeof row.description === "string" && ["TPA", "Client", "Site"].includes(row.scope) && typeof row.targetId === "string" && typeof row.targetName === "string" && typeof row.priority === "string" && typeof row.createdAt === "string" && ["Open", "Resolved"].includes(row.status))) throw new Error("Saved issues could not be read.");
-  return parsed;
+  if (!Array.isArray(parsed) || !parsed.every(row => row && typeof row.id === "string" && typeof row.title === "string" && typeof row.description === "string" && ["TPA", "Client", "Association", "Site"].includes(row.scope) && typeof row.targetId === "string" && typeof row.targetName === "string" && typeof row.priority === "string" && typeof row.createdAt === "string" && ["Open", "Resolved"].includes(row.status))) throw new Error("Saved issues could not be read.");
+  return parsed.map(issue => issue.scope === "Client" ? { ...issue, scope: "Association" } : issue);
 }
 
 export default function IssueLogWorkspace() {
@@ -30,7 +30,7 @@ export default function IssueLogWorkspace() {
   const [targetId, setTargetId] = useState("");
   const [priority, setPriority] = useState("Medium");
   const [attempted, setAttempted] = useState(false);
-  const targets = (scope === "TPA" ? identities.data?.data.organizations : scope === "Client" ? identities.data?.data.clients : identities.data?.data.sites) ?? [];
+  const targets = (scope === "TPA" ? identities.data?.data.organizations : scope === "Association" ? identities.data?.data.associationEntities : identities.data?.data.sites) ?? [];
   const target = targets.find(row => row.id === targetId);
   const writable = canEdit && !initial.error && !identities.loading && !identities.error;
   function save(next: Issue[]) {
@@ -46,7 +46,7 @@ export default function IssueLogWorkspace() {
   }
   const openIssues = issues.filter(issue => issue.status === "Open");
   return <Workspace>
-    <WorkspaceHeader title="Issue Log" description="Track open issues for TPAs, clients, and sites." />
+    <WorkspaceHeader title="Issue Log" description="Track open issues for TPAs, Associations, and Sites." />
     <Alert severity="info">Prototype: manual issues are saved in this browser only.</Alert>
     {error && <Alert severity="error">{error}</Alert>}
     {identities.loading && <Typography>Loading TPA, Association and Site records…</Typography>}
@@ -60,7 +60,7 @@ export default function IssueLogWorkspace() {
         {tab === "jira" ? <Paper variant="outlined" sx={{ p: 3 }}><Stack spacing={1}><Typography variant="h6">Jira · TBD</Typography><Typography color="text.secondary">Jira issues will appear here in a future release. No Jira integration is connected in this prototype.</Typography></Stack></Paper> : <BrowseTable label="Open issues" rows={openIssues} rowKey={row => row.id} acceptUrlFilters={false} hiddenColumns={["displayId"]} columns={[
           { id: "title", label: "Issue", value: row => `${row.title} ${row.description}`, width: 340, render: row => <><Typography variant="body2" fontWeight={700}>{row.title}</Typography><Typography variant="body2" color="text.secondary">{row.description}</Typography></> },
           { id: "scope", label: "Scope", value: row => row.scope, filter: true, width: 120 },
-          { id: "target", label: "TPA / Client / Site", value: row => row.targetName, filter: true, width: 240 },
+          { id: "target", label: "TPA / Association / Site", value: row => row.targetName, filter: true, width: 240 },
           { id: "priority", label: "Priority", value: row => row.priority, filter: true, width: 120 },
           { id: "created", label: "Created", value: row => row.createdAt.slice(0, 10), width: 140 },
           { id: "status", label: "Status", value: row => row.status, width: 180, render: row => <Stack spacing={1}><Typography variant="body2">Open</Typography>{writable && <Button size="small" variant="outlined" onClick={() => save(issues.map(issue => issue.id === row.id ? { ...issue, status: "Resolved" } : issue))}>Mark resolved</Button>}</Stack> },
@@ -74,7 +74,7 @@ export default function IssueLogWorkspace() {
           {error && <Alert severity="error">{error}</Alert>}
           <TextField autoFocus label="Issue title" required value={title} onChange={event => setTitle(event.target.value)} error={attempted && !title.trim()} helperText={attempted && !title.trim() ? "Enter an issue title." : undefined} />
           <TextField label="Description" multiline minRows={3} value={description} onChange={event => setDescription(event.target.value)} />
-          <TextField select label="Scope" value={scope} onChange={event => { setScope(event.target.value as Scope); setTargetId(""); }}>{(["TPA", "Client", "Site"] as const).map(value => <MenuItem key={value} value={value}>{value}</MenuItem>)}</TextField>
+          <TextField select label="Scope" value={scope} onChange={event => { setScope(event.target.value as Scope); setTargetId(""); }}>{(["TPA", "Association", "Site"] as const).map(value => <MenuItem key={value} value={value}>{value}</MenuItem>)}</TextField>
           <TextField select label={scope} required value={targetId} onChange={event => setTargetId(event.target.value)} error={attempted && !target} helperText={attempted && !target ? `Select a ${scope.toLowerCase()}.` : undefined}>{targets.map(row => <MenuItem key={row.id} value={row.id}>{row.name} · {row.id}</MenuItem>)}</TextField>
           <TextField select label="Priority" value={priority} onChange={event => setPriority(event.target.value)}>{["Low", "Medium", "High", "Critical"].map(value => <MenuItem key={value} value={value}>{value}</MenuItem>)}</TextField>
         </Stack></DialogContent>

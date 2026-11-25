@@ -21,7 +21,7 @@ export function applyScalarSiteIdentifiers(db: DatabaseSchema, cells: readonly S
     const key = `${siteKey}.${productKey}.reviewed-identifier.${kind}`;
     const metadata = { id: key, key, ...libraryMetadata("productIdentifiers", key, reference) };
     db.productIdentifiers = db.productIdentifiers.filter(identifier => !(identifier.scope === "site" && identifier.siteKey === siteKey && identifier.productKey === productKey && identifier.kind === kind));
-    db.productIdentifiers.push({ ...metadata, scope: "site", clientKey: null, siteKey, productKey, kind, definition: { primary }, position: 0 });
+    db.productIdentifiers.push({ ...metadata, scope: "site", hostingAssociationKey: null, siteKey, productKey, kind, definition: { primary }, position: 0 });
     const requirementKey = `mcr.main.${column}${row}`;
     const requirement = db.sourceRequirements.find(requirement => requirement.key === requirementKey)!;
     requirement.promotionState = "SITE_CONFIGURATION";

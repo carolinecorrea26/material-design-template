@@ -8,9 +8,9 @@ export function applyAbeFirmSizeAdoption(db: DatabaseSchema) {
   const meta = (table: string, key: string) => ({ id: key, key, ...libraryMetadata(table, key, authority) });
   const fieldKey = "firm-member-count", definitionKey = "shared.oo-professional.firm-member-eligibility", key = "abe.oo-professional.firm-member-eligibility";
   const field = { ...meta("fields", fieldKey), position: 30010, definition: { id: fieldKey, label: "How many members are in your firm?", inputType: "number" as const, required: true, inputMode: "numeric" as const, helperText: "Professional Overhead coverage is available to firms with 1–5 members." } };
-  const assignment = { ...meta("siteFieldConfigurations", `site:abe.coverage.${fieldKey}.include`), position: 30010, scope: "site" as const, siteKey: "abe", clientKey: null, pageKey: "coverage", fieldKey, include: true, hidden: false, values: {} };
+  const assignment = { ...meta("siteFieldConfigurations", `site:abe.coverage.${fieldKey}.include`), position: 30010, scope: "site" as const, siteKey: "abe", hostingAssociationKey: null, pageKey: "coverage", fieldKey, include: true, hidden: false, values: {} };
   const definition = { ...meta("configurationDefinitions", definitionKey), position: 0, definition: { path: null, metadata: { reusable: true, assignmentRequired: true }, target: { kind: "product-eligibility-facts" as const, productKey: "oo-professional", applicantKey: "member" } } };
-  const value = { ...meta("configurationValues", key), position: 0, scope: "site" as const, siteKey: "abe", clientKey: null, configurationKey: definitionKey, value: [{ fact: "firmMemberCount", minimum: 1, maximum: 5, integer: true }] as unknown as Json };
+  const value = { ...meta("configurationValues", key), position: 0, scope: "site" as const, siteKey: "abe", hostingAssociationKey: null, configurationKey: definitionKey, value: [{ fact: "firmMemberCount", minimum: 1, maximum: 5, integer: true }] as unknown as Json };
   for (const [table, record] of [["fields", field], ["siteFieldConfigurations", assignment], ["configurationDefinitions", definition], ["configurationValues", value]] as const) {
     const rows = db[table] as Array<{ key: string }>; const index = rows.findIndex(row => row.key === record.key); if (index < 0) rows.push(record); else rows[index] = record;
   }
