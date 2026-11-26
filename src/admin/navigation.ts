@@ -35,6 +35,7 @@ export const adminNavigation: AdminNavigationGroup[] = [
     { label: "Advisor Admin", path: "/admin-center/advisor-admin", icon: SupportAgentRoundedIcon },
   ] },
   { label: "SYSTEM", items: [
+    { label: "Template & Site Editor", path: "/admin-center/template-editor", icon: ConstructionRoundedIcon },
     { label: "Portal Library", path: "/admin-center/library", icon: LibraryBooksRoundedIcon },
     { label: "Tutorials", path: "/admin-center/tutorials", icon: SchoolRoundedIcon },
     { label: "Storybook", path: getStorybookUrl(), icon: AutoStoriesRoundedIcon, external: true },
@@ -56,6 +57,6 @@ const libraryNavigation = ['Portal Library', 'Storybook', 'Tutorials', 'Applican
 const siteNavigation = ['Sites', 'Site Builder'];
 export const visibleAdminNavigation = (database = false, admin = false, mock = false) => adminNavigation
   .map(group => ({ ...group, items: group.items
-    .filter(item => libraryNavigation.includes(item.label) || (database || mock) && siteNavigation.includes(item.label) || database && (item.label === 'Applications' || admin && item.masterAdminOnly))
+    .filter(item => libraryNavigation.includes(item.label) || (database || mock) && siteNavigation.includes(item.label) || database && (item.label === 'Applications' || admin && (item.masterAdminOnly || item.label === 'Template & Site Editor')))
     .map(item => database && item.masterAdminOnly ? { ...item, label: 'Portal users' } : item) }))
   .filter(group => group.items.length > 0);

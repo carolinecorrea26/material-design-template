@@ -1,10 +1,13 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { dirname, join } from 'node:path';
 import { test } from 'node:test';
 import { gzipSync } from 'node:zlib';
 import { PGlite } from '@electric-sql/pglite';
 import { createServer } from 'vite';
 import { createPortalHandler } from '../netlify/functions/portal.mjs';
+import { processTemplateRelease, templateSourceWrites } from './template-editor-release.mjs';
 import { checkPortalCatalog, preparePortalDatabase } from './seed-portal-db.mjs';
 
 test('the published catalog, admin scope, draft preview and submitted application round-trip through PostgreSQL', async () => {
@@ -93,6 +96,98 @@ test('the published catalog, admin scope, draft preview and submitted applicatio
       assert.deepEqual(prototype.fields, stories.get(key).fields);
       assert.deepEqual(prototype.products, stories.get(key).products);
     }
+
+
+    const editor = await call('/template-editor', { action: 'list' }, admin);
+    await call('/template-editor', { action: 'list' }, manager, 403);
+    assert.equal(editor.values['contact-title'].asce.assigned, null);
+    const stage = { action: 'save', baseRevision: revision, reason: 'Test editor pilot' };
+    await call('/template-editor', { ...stage, changes: [{ property: 'beneficiary-dialog', site: 'asce', value: 'Add someone' }] }, admin, 400);
+    const edit = await call('/template-editor', { ...stage, changes: [
+      { property: 'contact-title', site: 'asce', value: 'Contact preferences' },
+      { property: 'contact-title', site: 'ama', value: 'Contact preferences' },
+      { property: 'beneficiary-dialog', site: null, value: 'Name a beneficiary' },
+    ] }, admin);
+    const edited = await call('/template-editor', {
+      ...stage, id: edit.id, expectedVersion: edit.version,
+      changes: [{ property: 'continue', site: null, value: 'Continue application' }],
+    }, admin);
+    assert.equal(edited.version, edit.version + 1);
+    assert.equal(edited.changes.length, 4);
+    const scope = { id: edited.id, expectedVersion: edited.version, site: 'asce' };
+    await call('/template-editor', { action: 'preview', ...scope }, manager, 403);
+    await call('/template-editor', { action: 'preview', ...scope, expectedVersion: edit.version }, admin, 404);
+    const staged = await call('/template-editor', { action: 'preview', ...scope }, admin);
+    const { applyTemplateEdits } = await vite.ssrLoadModule('/src/domain/templateEdits.mjs');
+    const { freshStartSource } = await vite.ssrLoadModule('/src/domain/freshStartCatalog.ts');
+    const { compileRequirementCatalog } = await vite.ssrLoadModule('/src/domain/requirementCatalog.mjs');
+    const candidateSource = applyTemplateEdits(freshStartSource(), staged.changes);
+    const candidateData = compileRequirementCatalog(catalog.data, candidateSource);
+    const asce = resolveCompiledPrototypeLibrary(candidateData, 'asce', revision);
+    const abe = resolveCompiledPrototypeLibrary(candidateData, 'abe', revision);
+    assert.equal(asce.content.pages.contact.title, 'Contact preferences');
+    assert.equal(abe.content.pages.contact.title, editor.values['contact-title'].abe.effective);
+    assert.equal(asce.content.dialogs.beneficiary.addTitle, 'Name a beneficiary');
+    for (const key of ['home.landing-notice.continue', 'coverage.dialog.dependent.confirm', 'eligibility.verification.continue']) {
+      assert.equal(candidateData.contentValues.find(row => row.contentKey === key && row.scope === 'global').value, 'Continue application');
+    }
+    assert.equal((await call('/template-editor', { action: 'list' }, admin)).values['contact-title'].asce.effective, editor.values['contact-title'].asce.effective);
+    const files = await templateSourceWrites(staged.changes, path => readFile(new URL('../' + path, import.meta.url), 'utf8').catch(error => {
+      if (error.code === 'ENOENT') return null;
+      throw error;
+    }));
+    assert.equal(files.get('requirements/global/content/common.json').document['action.continue'], 'Continue application');
+    assert.equal(files.get('requirements/parked/sites/ama/pages/contact.json').document.content['contact.title'], 'Contact preferences');
+    await assert.rejects(templateSourceWrites(staged.changes.map(change => ({ ...change, previous: 'Changed by another release' })), () => null), /changed since staging/);
+    const queued = await call('/template-editor', { action: 'queue', ...scope }, admin);
+    assert.equal(queued.status, 'queued');
+    const competing = await call('/template-editor', { ...stage, changes: [{ property: 'continue', site: null, value: 'Go on' }] }, admin);
+    await call('/template-editor', { action: 'queue', id: competing.id, expectedVersion: competing.version }, admin, 409);
+    const beforePublish = await request('/api/portal/catalog');
+    assert.equal(beforePublish.headers.get('X-Portal-Catalog-Revision'), revision);
+    await beforePublish.body.cancel();
+    const checkout = await mkdtemp(join(tmpdir(), 'portal-editor-test-'));
+    try {
+      for (const [path, file] of files) {
+        if (file.original === null) continue;
+        const destination = join(checkout, path);
+        await mkdir(dirname(destination), { recursive: true });
+        await writeFile(destination, file.original);
+      }
+      const workingCatalog = join(checkout, 'public/catalog/portal.json');
+      await mkdir(dirname(workingCatalog), { recursive: true });
+      await writeFile(workingCatalog, catalogText);
+      const options = {
+        checkout,
+        refresh: () => writeFile(workingCatalog, JSON.stringify({ ...staticCatalog, revision: undefined, data: candidateData })),
+        buildLocal: async () => { throw new Error('Test build failure'); },
+        prepare: (catalogText, expectedRevision) => preparePortalDatabase(pool, { catalogText, expectedRevision }),
+      };
+      await assert.rejects(processTemplateRelease(pool, options), /Test build failure/);
+      const failed = (await call('/template-editor', { action: 'list' }, admin)).drafts.find(draft => draft.id === edited.id);
+      assert.equal(failed.status, 'failed');
+      assert.equal(failed.releaseError, 'Test build failure');
+      assert.equal(await checkPortalCatalog(pool, catalogText), revision);
+      await call('/template-editor', { action: 'retry', id: failed.id, expectedVersion: failed.version }, admin);
+      assert.equal(await processTemplateRelease(pool, { ...options, buildLocal: async () => {} }), true);
+    } finally {
+      await rm(checkout, { recursive: true, force: true });
+    }
+    const afterPublish = await call('/template-editor', { action: 'list' }, admin);
+    assert.equal(afterPublish.values['contact-title'].asce.assigned, 'Contact preferences');
+    assert.equal(afterPublish.values['contact-title'].ama.assigned, 'Contact preferences');
+    assert.equal(afterPublish.values['contact-title'].abe.assigned, null);
+    const older = await createSharedCatalogReader(path => request(path), '/', hash)();
+    assert.equal(older.revision, revision);
+    await call('/template-editor', { action: 'queue', id: competing.id, expectedVersion: competing.version }, admin, 409);
+    const released = afterPublish.drafts.find(draft => draft.id === edited.id);
+    assert.equal(released.status, 'published');
+    assert.equal(released.targetRevision, afterPublish.revision);
+    const revert = await call('/template-editor', { action: 'revert', id: edited.id, expectedVersion: released.version }, admin);
+    assert.equal(revert.revertsId, edited.id);
+    assert.equal(revert.changes.find(change => change.property === 'contact-title' && change.site === 'asce').value, null);
+    assert.equal(revert.changes.find(change => change.property === 'continue').value, editor.values.continue.global.effective);
+    await preparePortalDatabase(pool, { catalogText, expectedRevision: released.targetRevision });
 
     const draft = await call('/drafts', { action: 'create', siteKey: 'asce', baseRevision: revision }, admin);
     const saveDraft = { action: 'save', id: draft.id, expectedVersion: draft.version, formTemplate: 'single' };

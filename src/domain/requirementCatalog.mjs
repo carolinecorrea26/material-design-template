@@ -119,12 +119,15 @@ export function compileRequirementCatalog(data, source, selectedSite, siteScope)
   output.configurationDefinitions = output.configurationDefinitions.filter(record => !retiredConfigurations.has(record.key));
   output.configurationValues = output.configurationValues.filter(record => !retiredConfigurations.has(record.configurationKey));
   const siteContent = new Map();
+  const siteContentSources = new Map();
   for (const site of sites.length ? sites : [{ key: undefined }]) {
     const overrides = {};
+    const sources = {};
     for (const [pageKey, assignment] of Object.entries(source.fields.sitePages?.[site.key] ?? {})) {
       for (const [key, value] of Object.entries(assignment.content ?? {})) {
         if (!source.pages[pageKey]?.contentSlots?.[key]) throw new Error(`Undeclared Site content slot: ${pageKey}/${key}`);
         overrides[key] = value;
+        sources[key] = `requirements/parked/sites/${site.key}/pages/${pageKey}.json`;
       }
     }
     for (const [id, values] of Object.entries(source.siteProducts[site.key]?.categories ?? {})) {
@@ -156,6 +159,7 @@ export function compileRequirementCatalog(data, source, selectedSite, siteScope)
       }
     }
     siteContent.set(site.key, overrides);
+    siteContentSources.set(site.key, sources);
   }
   const text = (key, siteKey) => {
     const value = siteContent.get(siteKey)?.[key] ?? source.content[key];
@@ -634,7 +638,10 @@ export function compileRequirementCatalog(data, source, selectedSite, siteScope)
         setConfiguration(site, path, value, reference);
       }
     }
-    for (const [key, targets] of Object.entries(source.contentBindings)) for (const target of [targets].flat()) setContent(site, target, text(key, site.key), 'requirements/global/content-bindings.json');
+    for (const [key, targets] of Object.entries(source.contentBindings)) {
+      const reference = siteContentSources.get(site.key)?.[key] ?? 'requirements/global/content-bindings.json';
+      for (const target of [targets].flat()) setContent(site, target, text(key, site.key), reference);
+    }
     for (const [role, key] of [['member', 'self'], ['spouse', 'spouse'], ['child', 'child']]) {
       setConfiguration(site, `applicantLabels.${role}`, text(`people.${key}`), 'requirements/global/content/people.json');
     }

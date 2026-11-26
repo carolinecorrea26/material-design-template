@@ -1,6 +1,6 @@
 export const portalDatabaseEnabled = import.meta.env.VITE_PORTAL_DATABASE_ENABLED === 'true' && !import.meta.env.VITE_STANDALONE_HTML;
 // The Library's existing autofill links are detached page inspections.
-export const portalPageInspection = portalDatabaseEnabled && typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('autofill');
+export const portalPageInspection = portalDatabaseEnabled && typeof window !== 'undefined' && ['autofill', 'templateDraft'].some(key => new URLSearchParams(window.location.search).has(key));
 
 export async function portalRequest<T>(path: string, body?: unknown): Promise<T> {
   const response = await fetch(`/api/portal${path}`, {

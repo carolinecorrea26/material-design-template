@@ -45,7 +45,7 @@ function AdminCenterContent({ mockPlatformEnabled }: { mockPlatformEnabled: bool
 
   const legacyRoute = /^\/admin-center\/(?:library|tutorials|applicant-admin)(?:\/|$)/.test(location.pathname);
   const siteRoute = /^\/admin-center\/(?:sites|site-builder)(?:\/|$)/.test(location.pathname);
-  const databaseRoute = /^\/admin-center\/(?:applications|administration)(?:\/|$)/.test(location.pathname);
+  const databaseRoute = /^\/admin-center\/(?:applications|administration|template-editor)(?:\/|$)/.test(location.pathname);
   const siteWorkspacesEnabled = portalDatabaseEnabled || mockPlatformEnabled;
   if (!legacyRoute && !(siteWorkspacesEnabled && siteRoute) && !(portalDatabaseEnabled && databaseRoute)) {
     return <Navigate to={`/admin-center/${siteWorkspacesEnabled ? 'sites' : 'library'}${location.search}`} replace />;

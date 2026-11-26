@@ -30,6 +30,7 @@ export default defineConfig({
       'src/domain/fieldSourceParity.test.tsx',
       'src/domain/ruleTemplates.test.ts',
       'src/pages/admin/library/libraryRequirements.test.ts',
+      'src/pages/admin/TemplateEditorChat.test.tsx',
       'src/app/RoutePage.navigation.test.tsx',
       'src/app/singlePageFlow.test.tsx',
       'src/pages/Coverage.scenarios.test.tsx',

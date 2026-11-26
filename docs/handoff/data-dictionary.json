@@ -2509,7 +2509,7 @@
     {
       "table": "contentEntries",
       "file": "public/catalog/content/content.json",
-      "rowCount": 860,
+      "rowCount": 859,
       "rowType": "ContentEntryRow",
       "properties": [
         {
@@ -2662,7 +2662,7 @@
     {
       "table": "contentValues",
       "file": "public/catalog/content/content.json",
-      "rowCount": 9445,
+      "rowCount": 9434,
       "rowType": "ContentValueRow",
       "properties": [
         {

@@ -242,9 +242,6 @@
   "beneficiary.loading": [
     "navigation.transitionMessages.beneficiary"
   ],
-  "beneficiary.add": [
-    "dialogs.beneficiary.addTitle"
-  ],
   "beneficiary.error.missing": [
     "beneficiary.missingBeneficiaryError"
   ],
@@ -323,7 +320,10 @@
   "beneficiary.designation.contingent": "beneficiary.designation.contingent",
   "beneficiary.note.replaces-prior": "beneficiary.note.replaces-prior",
   "beneficiary.note.new-insurance": "beneficiary.note.new-insurance",
-  "beneficiary.dialog.add-title": "beneficiary.dialog.add-title",
+  "beneficiary.dialog.add-title": [
+    "dialogs.beneficiary.addTitle",
+    "beneficiary.dialog.add-title"
+  ],
   "beneficiary.apply.confirm": "beneficiary.apply.confirm",
   "beneficiary.apply.cancel": "beneficiary.apply.cancel",
   "beneficiary.individual-label": "beneficiary.individual-label",

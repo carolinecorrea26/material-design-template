@@ -2,6 +2,7 @@ import { randomBytes, randomUUID } from 'node:crypto';
 import { promisify } from 'node:util';
 import { gzip } from 'node:zlib';
 import { getDatabase } from '@netlify/database';
+import { templateEditor } from '../../scripts/template-editor.mjs';
 import { createApplicantSaves } from '../../scripts/applicant-saves.mjs';
 import { connectPortalDatabase, digest, inTransaction, verifyPassword } from '../../scripts/portal-db.mjs';
 
@@ -15,7 +16,13 @@ const projection = `SELECT u.id, u.email, u.display_name AS "displayName", u.rol
 const draftColumns = 'id, site_key AS "siteKey", base_revision AS "baseRevision", version, form_template AS "formTemplate", updated_at AS "updatedAt"';
 const compressCatalog = promisify(gzip);
 
-async function readCatalog(db, includePayload = false) {
+async function readCatalog(db, includePayload = false, expectedRevision) {
+  if (expectedRevision) {
+    const columns = includePayload ? 'revision, payload::text' : 'revision';
+    const { rows: [matching] } = await db.query(`SELECT ${columns} FROM portal_catalog WHERE revision = $1
+      UNION ALL SELECT ${columns} FROM portal_catalog_revisions WHERE revision = $1 LIMIT 1`, [expectedRevision]);
+    return matching ?? fail(409, 'The published Library catalog does not match this Portal build.');
+  }
   const { rows: [catalog] } = await db.query(includePayload ? 'SELECT revision, payload::text FROM portal_catalog WHERE id = 1' : 'SELECT revision FROM portal_catalog WHERE id = 1');
   return catalog ?? fail(503, 'Load the published Library catalog into the Portal database.');
 }
@@ -175,7 +182,9 @@ async function applicant(db, path, body) {
 export function createPortalHandler(db) {
   let compressed;
 
-  async function catalogResponse(request) {
+  async function catalogResponse(request, url) {
+    const expectedRevision = url.searchParams.get('revision');
+    if (expectedRevision !== null && !/^postgres:v1:sha256:[a-f0-9]{64}$/.test(expectedRevision)) fail(400, 'Invalid catalog revision.');
     const ifNoneMatch = request.headers.get('If-None-Match');
     const matches = etag => ifNoneMatch?.split(',').some(tag => {
       const value = tag.trim();
@@ -189,13 +198,13 @@ export function createPortalHandler(db) {
     });
     const cached = compressed;
     if (cached || ifNoneMatch) {
-      const { revision } = await readCatalog(db);
+      const { revision } = await readCatalog(db, false, expectedRevision);
       const metadata = headers(revision);
       if (matches(metadata.ETag)) return new Response(null, { status: 304, headers: metadata });
       if (cached?.revision === revision) return new Response(await cached.body, { headers: metadata });
     }
     // Read the revision and payload together when a new catalog is published.
-    const { revision, payload } = await readCatalog(db, true);
+    const { revision, payload } = await readCatalog(db, true, expectedRevision);
     const metadata = headers(revision);
     if (matches(metadata.ETag)) return new Response(null, { status: 304, headers: metadata });
     if (compressed?.revision !== revision) {
@@ -203,7 +212,8 @@ export function createPortalHandler(db) {
       compressed = entry;
       void entry.body.catch(() => { if (compressed === entry) compressed = undefined; });
     }
-    return new Response(await compressed.body, { headers: metadata });
+    const { body } = compressed;
+    return new Response(await body, { headers: metadata });
   }
 
   return async request => {
@@ -211,7 +221,7 @@ export function createPortalHandler(db) {
       const url = new URL(request.url);
       const path = url.pathname.replace(/^\/api\/portal|^\/\.netlify\/functions\/portal/, '');
       if (path === '/catalog' && request.method === 'GET') {
-        return await catalogResponse(request);
+        return await catalogResponse(request, url);
       }
       if (!['GET', 'POST'].includes(request.method)) fail(405, 'Unsupported request method.');
       let body = {};
@@ -235,6 +245,10 @@ export function createPortalHandler(db) {
       if (path === '/users' && request.method === 'GET') {
         requireAdmin(user);
         return reply((await db.query(`${projection} ORDER BY u.display_name`)).rows);
+      }
+      if (path === '/template-editor' && request.method === 'POST') {
+        requireAdmin(user);
+        return reply(await templateEditor(db, user, body));
       }
       if (path === '/drafts' && request.method === 'POST') return reply(await drafts(db, user, body));
       if (path === '/applications' && request.method === 'POST') return reply(await applications(db, user, body));

@@ -3,10 +3,12 @@ import { compileApplicationSiteIdentities } from './domain/requirementApplicatio
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { resolveSiteId } from "./data/activeSite";
-import { installPrototypeLibrary, resolveCompiledPrototypeLibrary, validatePrototypeEnvelope } from "./domain/prototypeLibrary";
+import { installPrototypeLibrary, resolveCompiledPrototypeLibrary, resolvePrototypeLibrary, validatePrototypeEnvelope } from "./domain/prototypeLibrary";
 import { prototypeCatalogData, PublishedCatalogMismatchError, readSharedCatalog } from './persistence/sharedCatalog';
 import { mockRequest } from "./mock/client";
-import { portalDatabaseEnabled, portalPageInspection } from './services/portalClient';
+import { portalDatabaseEnabled, portalPageInspection, portalRequest } from './services/portalClient';
+import { applyTemplateEdits } from './domain/templateEdits.mjs';
+import type { TemplateDraft } from './services/templateEditor';
 import { openPortalDraft, resolvePortalDraft } from './services/portalDrafts';
 
 async function start() {
@@ -16,7 +18,20 @@ async function start() {
   const sourceSite = resolveSiteId(identities.sites.filter(site => site.status === 'active' && !site.deletedAt).map(site => site.key));
   const params = new URLSearchParams(window.location.search);
   const draftId = portalDatabaseEnabled ? params.get('portalDraft') : null;
-  if (draftId) {
+  const templateDraftId = portalDatabaseEnabled ? params.get('templateDraft') : null;
+  if (templateDraftId) {
+    try {
+      if (params.get('site') !== sourceSite) throw new Error('Choose a Site for the preview.');
+      const draft = await portalRequest<TemplateDraft & { previewRevision: string }>('/template-editor', {
+        action: 'preview', id: templateDraftId, site: sourceSite, expectedVersion: Number(params.get('draftVersion')),
+      });
+      if (draft.previewRevision !== catalog.revision) throw new PublishedCatalogMismatchError();
+      installPrototypeLibrary(resolvePrototypeLibrary(data, sourceSite, `draft:${draft.id}:${draft.version}`, applyTemplateEdits(freshStartSource(), draft.changes)));
+    } catch (error) {
+      document.getElementById('root')!.textContent = `Draft preview unavailable. ${error instanceof Error ? error.message : ''}`;
+      return;
+    }
+  } else if (draftId) {
     try {
       if (params.get('site') !== sourceSite) throw new Error('Choose the Site associated with this draft.');
       installPrototypeLibrary(resolvePortalDraft(catalog, sourceSite, await openPortalDraft(draftId)));
@@ -48,7 +63,7 @@ async function start() {
   if (invalidEntry) window.history.replaceState(window.history.state, '', invalidEntry);
   // Applicant modules capture their configuration at import time.
   const { default: App } = await import('./app/App');
-  const previewNotice = draftId ? 'Site Builder draft preview. Submissions are disabled.'
+  const previewNotice = templateDraftId ? 'Template & Site Editor draft preview. Submissions are disabled.' : draftId ? 'Site Builder draft preview. Submissions are disabled.'
     : portalPageInspection ? 'Library page preview. Submissions are disabled.' : null;
   ReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode>
     {previewNotice && <p role="status" style={{ margin: 0, padding: '0.5rem', textAlign: 'center', background: '#e9f3ff' }}>{previewNotice}</p>}

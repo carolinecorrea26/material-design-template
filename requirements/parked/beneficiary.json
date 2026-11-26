@@ -197,7 +197,6 @@
       "beneficiary.loading",
       "beneficiary.help.what-is",
       "beneficiary.help.share",
-      "beneficiary.add",
       "beneficiary.designation.primary",
       "beneficiary.designation.contingent",
       "beneficiary.note.replaces-prior",
@@ -463,6 +462,9 @@
   ],
   "retiredComponentKeys": [
     "component-help-chips"
+  ],
+  "retiredContentKeys": [
+    "beneficiary.add"
   ],
   "contentSlots": {
     "beneficiary.title": {

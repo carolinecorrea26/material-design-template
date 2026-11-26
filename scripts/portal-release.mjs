@@ -3,9 +3,11 @@ import { readFile } from 'node:fs/promises';
 import { setTimeout as delay } from 'node:timers/promises';
 import { gunzipSync } from 'node:zlib';
 import { connectPortalDatabase, digest } from './portal-db.mjs';
+import { processTemplateRelease } from './template-editor-release.mjs';
 import { checkPortalCatalog, preparePortalDatabase } from './seed-portal-db.mjs';
 
 const branch = 'redesignv6';
+const hostedReleaseLock = 8615916;
 const repository = 'https://github.com/carolinecorrea26/material-design-template';
 const portal = {
   name: 'material-design-template', id: '86159baa-204c-4672-b586-00f5b8caa786',
@@ -165,18 +167,87 @@ async function publish() {
   run('git', ['push', '--dry-run', 'origin', refspec]);
   run('npm', ['run', 'build:release']);
   if (assertReleaseCheckout() !== commit) throw new Error('The release checkout changed during the build.');
-  const expectedRevision = revisionFor(await staticHash(portal));
   await withHostedDatabase(async db => {
-    const result = await preparePortalDatabase(db, { catalogText, expectedRevision });
-    await checkPortalCatalog(db, catalogText);
-    console.log(`Synchronized ${result.siteCount} Sites to the hosted database at ${result.revision}.`);
+    const lock = await db.connect();
+    try {
+      const { rows: [result] } = await lock.query('SELECT pg_try_advisory_lock($1) AS held', [hostedReleaseLock]);
+      if (!result.held) throw new Error('Another coordinated release is running. Wait for it before retrying.');
+      const expectedRevision = revisionFor(await staticHash(portal));
+      // Recheck the remote while holding the release lock.
+      run('git', ['push', '--dry-run', 'origin', refspec]);
+      const imported = await preparePortalDatabase(db, { catalogText, expectedRevision });
+      await checkPortalCatalog(db, catalogText);
+      console.log(`Synchronized ${imported.siteCount} Sites to the hosted database at ${imported.revision}.`);
+      run('git', ['push', 'origin', refspec]);
+      await verifyRelease(commit);
+    } finally {
+      await lock.query('SELECT pg_advisory_unlock($1)', [hostedReleaseLock]).finally(() => lock.release());
+    }
   });
-  run('git', ['push', 'origin', refspec]);
-  await verifyRelease(commit);
+}
+
+async function runEditorQueue(db, hosted) {
+  const watch = process.argv.includes('--watch');
+  const options = {
+    refresh: () => run('npm', ['run', 'catalog:refresh']),
+    buildLocal: () => run('npm', ['run', 'build:release']),
+    prepare: (catalogText, expectedRevision) => preparePortalDatabase(db, { catalogText, expectedRevision }),
+  };
+  if (hosted) Object.assign(options, {
+    inspectCheckout: assertReleaseCheckout,
+    // The draft ID is recorded in the commit so a restarted worker can identify it.
+    recoverCommit: id => {
+      const marker = `Template Editor draft ${id}`;
+      return output('git', ['log', '-1', '--format=%s']) === marker ? output('git', ['rev-parse', 'HEAD']) : null;
+    },
+    resetStaged: () => run('git', ['restore', '--staged', '--', 'requirements', 'public/catalog', 'docs']),
+    commit: id => {
+      run('git', ['add', '--update', '--', 'requirements', 'public/catalog', 'docs']);
+      // A Site override may create a new Contact assignment file.
+      run('git', ['add', '--', 'requirements/parked/sites']);
+      run('git', ['commit', '-m', `Template Editor draft ${id}`]);
+      return output('git', ['rev-parse', 'HEAD']);
+    },
+    publishHosted: () => run('npm', ['run', 'release:publish']),
+  });
+  do {
+    try {
+      const published = await processTemplateRelease(db, options);
+      if (published) console.log('Template & Site Editor release published.');
+      else if (!watch) console.log('No editor release is queued.');
+    } catch (error) {
+      if (!watch) throw error;
+      console.error(error.message);
+    }
+    if (watch) await delay(5000);
+  } while (watch);
+}
+
+function localEditorDatabase() {
+  const url = new URL(process.env.DATABASE_URL ?? 'postgresql://invalid');
+  if (!['postgres:', 'postgresql:'].includes(url.protocol) || !['localhost', '127.0.0.1', '[::1]'].includes(url.hostname)) {
+    throw new Error('Set DATABASE_URL for the dedicated local PostgreSQL instance.');
+  }
+  return url.toString();
 }
 
 try {
   switch (process.argv[2]) {
+    case 'editor-dev':
+      localEditorDatabase();
+      process.env.VITE_PORTAL_DATABASE_ENABLED = 'true';
+      run('netlify', ['dev', '--offline', '--command', 'npm run dev:catalog -- --port 5173 --strictPort', '--target-port', '5173', '--no-open']);
+      break;
+    case 'editor-hosted':
+      await withHostedDatabase(db => runEditorQueue(db, true));
+      break;
+    case 'editor-local': {
+      // A local Editor worker must not pick up a hosted pilot credential.
+      const db = connectPortalDatabase(localEditorDatabase());
+      try { await runEditorQueue(db, false); }
+      finally { await db.end(); }
+      break;
+    }
     case 'db-status':
       await withHostedDatabase(async (db, result) => {
         const { rows: [server] } = await db.query("SELECT current_database() AS database, to_regclass('portal_catalog') AS catalog_table");
@@ -200,7 +271,7 @@ try {
       await publish();
       break;
     default:
-      throw new Error('Expected db-status, db-check, check-artifacts, verify or publish.');
+      throw new Error('Expected db-status, db-check, check-artifacts, verify, publish, editor-dev, editor-local or editor-hosted.');
   }
 } catch (error) {
   console.error(error.message);

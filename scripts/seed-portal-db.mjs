@@ -26,7 +26,7 @@ export async function preparePortalDatabase(pool, { catalogText, adminPassword, 
   const sites = data.sites.filter(site => site.status === 'active' && !site.deletedAt);
   if (!sites.length) throw new Error('The Library catalog contains no active Sites.');
   const revision = revisionOf(catalogText);
-  const schema = await Promise.all(['0001_portal.sql', '0002_association_identity.sql'].map(file =>
+  const schema = await Promise.all(['0001_portal.sql', '0002_association_identity.sql', '0003_template_editor.sql'].map(file =>
     readFile(new URL(`../netlify/database/migrations/${file}`, import.meta.url), 'utf8')));
 
   await inTransaction(pool, async db => {
@@ -70,6 +70,8 @@ export async function preparePortalDatabase(pool, { catalogText, adminPassword, 
         AND NOT EXISTS (SELECT 1 FROM portal_site_drafts current WHERE current.site_key = draft.site_key AND current.base_revision = $1)`,
       [revision, previous.revision]);
     }
+    await db.query(`INSERT INTO portal_catalog_revisions (revision, payload)
+      SELECT revision, payload FROM portal_catalog WHERE id = 1 AND revision <> $1 ON CONFLICT DO NOTHING`, [revision]);
     await db.query(`INSERT INTO portal_catalog (id, revision, payload) VALUES (1, $1, $2)
       ON CONFLICT (id) DO UPDATE SET revision = EXCLUDED.revision, payload = EXCLUDED.payload`, [revision, catalogText]);
 

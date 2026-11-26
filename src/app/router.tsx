@@ -39,6 +39,7 @@ const AccountSettings = lazy(() => import("../pages/admin/AccountSettings"));
 const AdminHome = lazy(() => import("../pages/admin/AdminHome"));
 const MigrationScheduleWorkspace = lazy(() => import("../pages/admin/MigrationScheduleWorkspace"));
 const SitesWorkspace = lazy(() => import("../pages/admin/SitesWorkspace"));
+const TemplateEditorWorkspace = lazy(() => import('../pages/admin/TemplateEditorWorkspace'));
 const PortalLibrary = lazy(() => import("../pages/admin/PortalLibrary"));
 const ChangesWorkspace = lazy(() => import("../pages/admin/ChangesWorkspace"));
 const ReleasesWorkspace = lazy(() => import("../pages/admin/ReleasesWorkspace"));
@@ -108,6 +109,7 @@ export const router = createRouter(
         ...['TPA Admin', 'Customer Admin', 'Advisor Admin', 'Adobe Analytics', 'Contentsquare'].map(title => ({ path: title.toLowerCase().replaceAll(' ', '-'), element: <AdminPlaceholder title={title} /> })),
         { path: "migration-schedule", element: <MigrationScheduleWorkspace /> },
         { path: "sites", element: portalDatabaseEnabled ? <PortalPortfolio /> : <SitesWorkspace /> },
+        { path: "template-editor", element: <TemplateEditorWorkspace /> },
         { path: "library", element: <PortalLibrary /> },
         { path: "library/:domainId", element: <PortalLibrary /> },
         { path: "changes", element: <ChangesWorkspace /> },

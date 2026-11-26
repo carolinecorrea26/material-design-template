@@ -56,7 +56,8 @@ export function createSharedCatalogReader(fetcher: typeof fetch, baseUrl: string
   let pending: Promise<SharedCatalog & { revision: string }> | undefined;
   return () => pending ??= (async () => {
     const database = databaseCatalogHash !== undefined;
-    const response = await fetcher(database ? '/api/portal/catalog' : `${baseUrl}${sharedCatalogPath}`, { cache: 'no-cache' });
+    const response = await fetcher(database ? `/api/portal/catalog?revision=postgres:v1:sha256:${databaseCatalogHash}` : `${baseUrl}${sharedCatalogPath}`, { cache: 'no-cache' });
+    if (database && response.status === 409) throw new PublishedCatalogMismatchError();
     if (!response.ok) throw new Error(`Shared JSON catalog unavailable (${response.status}).`);
     if (database) {
       const revision = response.headers.get('X-Portal-Catalog-Revision');

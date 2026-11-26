@@ -113,3 +113,35 @@ the single import while it fits the deployment limits comfortably. As more
 Sites enroll, measure payload and load time and split delivery into shared
 definitions plus Site projections when needed. Keep every response tied to the
 same published revision. [Netlify Functions limits](https://docs.netlify.com/build/functions/configuration/)
+
+## Template & Site Editor pilot
+
+The Portal Admin navigation includes a separate Template & Site Editor alongside
+the Portal Library. The pilot supports shared Continue wording, the Contact
+heading (global or selected Sites), and the Add Beneficiary dialog title. The
+editor previews the compiled applicant page for a selected Site. Shared changes
+show each affected Site and preserved overrides. Drafts are private to Portal
+Admins. A published edit can be reverted by staging its previous assignments,
+subject to a conflict check against later edits.
+
+- **Local**: Set a loopback PostgreSQL `DATABASE_URL` and a demo admin password
+  in the ignored `.env`. Run `npm run db:setup`, then `npm run editor:dev`
+  and sign in with the configured admin. In Drafts & releases, queue a publication.
+  Run `npm run editor:publish:local` from the same checkout to apply it, then
+  restart the development server so it uses the new catalog hash.
+- **Hosted**: After the editor deployment and database migration, run
+  `npm run editor:publish:hosted -- --watch` from a dedicated, clean
+  `redesignv6` checkout with the existing GitHub and Netlify CLI access. This
+  processes queued edits serially, commits the owners and regenerated catalog,
+  calls the coordinated publication command, and waits for Portal and Storybook
+  parity. Without `--watch`, the runner processes one queued release. Use the
+  same checkout to retry a failed release. Coordinate regular code releases
+  with the editor runner so only one release runs at a time.
+- **Ask to edit** walks Portal Admins through a property, global or selected
+  Site scope, wording, and reason using guided prompts. Review and confirm the
+  proposed edits to save them through the same draft workflow as the manual
+  editor. The guided conversation uses the existing Portal Admin sign-in.
+
+PostgreSQL retains prior public catalog bytes by revision so a Portal build
+can request the exact revision it was built with during a release transition.
+The current catalog endpoint still reports the active database revision.
